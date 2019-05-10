@@ -2177,6 +2177,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVLocationsViewModel> LocationList = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
             List<NAVClientsViewModel> ClientsList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<TiposRefeição> MealList = DBMealTypes.GetAll();
+            List<ClientServicesViewModel> AllServiceGroup = DBClientServices.GetAllServiceGroup(string.Empty, true);
 
             try
             {
@@ -2225,6 +2226,7 @@ namespace Hydra.Such.Portal.Controllers
                     AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
                     AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
                     ServiceGroupCode = x.CódGrupoServiço,
+                    ServiceGroupCodeDescription = AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "",
                     ResourceType = x.TipoRecurso,
                     FolhaHoras = x.NºFolhaHoras,
                     InternalRequest = x.RequisiçãoInterna,
@@ -2764,9 +2766,16 @@ namespace Hydra.Such.Portal.Controllers
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
                 projMovements.ForEach(x =>
                 {
-                    if (x.FunctionalAreaCode.StartsWith("5") && !x.MealType.HasValue)
+                    if (x.FunctionalAreaCode == null)
                     {
-                        result.eMessages.Add(new TraceInformation(TraceType.Error, "O tipo de refeição é obrigatório nas linhas com Área Funcional Nutrição"));
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "O Campo Área Funcional é de preenchimento obrigatório"));
+                    }
+                    else
+                    {
+                        if (x.FunctionalAreaCode.StartsWith("5") && !x.MealType.HasValue)
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "O tipo de refeição é obrigatório nas linhas com Área Funcional Nutrição"));
+                        }
                     }
                 });
 
@@ -3286,7 +3295,7 @@ namespace Hydra.Such.Portal.Controllers
             string errorMessage = string.Empty;
             bool hasErrors = false;
             ErrorHandler result = new ErrorHandler();
-            string projeto = string.Empty;
+            //string projeto = string.Empty;
 
             if (authProjectMovements == null)
             {
@@ -3299,7 +3308,7 @@ namespace Hydra.Such.Portal.Controllers
             var billingGroups = authProjectMovements.Select(x => x.GrupoFactura).Distinct();
             var customersIds = authProjectMovements.Select(x => x.CodCliente).Distinct();
             List<PreçosServiçosCliente> customersServicesPrices = new List<PreçosServiçosCliente>();
-            projeto = authProjectMovements.Select(x => x.CodProjeto).FirstOrDefault();
+            //projeto = authProjectMovements.Select(x => x.CodProjeto).FirstOrDefault();
 
             //get all movements from authProjects
             List<SPInvoiceListViewModel> data = null;
@@ -3770,7 +3779,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     foreach (var header in groupedbyclient)
                     {
+                        string codproject = "";
                         var itemsToInvoice = header.Items.Select(x => new Tuple<string, int>(x.ProjectNo, x.InvoiceGroup.Value)).Distinct().ToList();
+                        if (header.Items != null && header.Items.Count() > 0)
+                            codproject = !string.IsNullOrEmpty(header.Items.FirstOrDefault().ProjectNo) ? header.Items.FirstOrDefault().ProjectNo : "";
+
                         try
                         {
                             //var invoiceHeader = header.Items.First();
@@ -3783,7 +3796,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
                             SPInvoiceListViewModel Ship = new SPInvoiceListViewModel();
-                            Projetos proj = DBProjects.GetById(projeto);
+                            Projetos proj = DBProjects.GetById(codproject);
                             Contratos cont = DBContracts.GetByIdLastVersion(proj.NºContrato);
                             NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, proj.NºCliente);
 
@@ -3844,7 +3857,9 @@ namespace Hydra.Such.Portal.Controllers
                             if (proj.FaturaPrecosIvaIncluido == true)
                                 header.FaturaPrecosIvaIncluido = true;
 
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
+
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, codproject, Ship);
+                            //Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
@@ -6724,6 +6739,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Cód. Grupo Serviço");
                     Col = Col + 1;
                 }
+                if (dp["serviceGroupCodeDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Grupo Serviço");
+                    Col = Col + 1;
+                }
                 if (dp["resourceType"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Tipo Recurso");
@@ -7033,6 +7053,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceGroupCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ServiceGroupCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["serviceGroupCodeDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ServiceGroupCodeDescription);
                             Col = Col + 1;
                         }
                         if (dp["resourceType"]["hidden"].ToString() == "False")

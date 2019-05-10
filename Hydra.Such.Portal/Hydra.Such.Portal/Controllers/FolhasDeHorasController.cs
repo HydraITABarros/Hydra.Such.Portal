@@ -2909,7 +2909,8 @@ namespace Hydra.Such.Portal.Controllers
                     List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x =>
                         (x.DataChegadaDataPartida == false) &&
                         (x.DistanciaMinima <= GetSUMDistancia(data.FolhaDeHorasNo)) &&
-                        (x.TipoCusto != 1)
+                        (x.TipoCusto != 1) &&
+                        (x.CodigoTipoCusto != "AJC0009") //Não existe Ajudas de Custo para Estadias como confirmado com o Carlos Rodrigues 08/05/2019
                         ).ToList();
 
                     if (AjudaCusto != null && AjudaCusto.Count() > 0)

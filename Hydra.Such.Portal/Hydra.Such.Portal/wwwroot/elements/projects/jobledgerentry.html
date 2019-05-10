@@ -589,6 +589,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.serviceGroupCodeDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceGroupCodeDescription">Grupo Serviço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceGroupCodeDescription" />
+                </template>
+                <template>
+                    {{item.serviceGroupCodeDescription}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.resourceType.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="resourceType">Tipo Recurso</vaadin-grid-sorter>
@@ -945,6 +955,7 @@
                         "autorizatedInvoice2": { hidden: false, label: "Faturação Autorizada 2" },
                         "autorizatedInvoiceData": { hidden: false, label: "Data Autorização Faturação" },
                         "serviceGroupCode": { hidden: false, label: "Cód. Grupo Serviço" },
+                        "serviceGroupCodeDescription": { hidden: false, label: "Grupo Serviço" },
                         "resourceType": { hidden: false, label: "Tipo Recurso" },
                         "folhaHoras": { hidden: false, label: "Nº Folha Horas" },
                         "internalRequest": { hidden: false, label: "Requisição Interna" },

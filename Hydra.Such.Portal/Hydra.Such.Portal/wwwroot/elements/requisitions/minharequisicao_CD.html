@@ -22,6 +22,8 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 <dom-module id="x-minharequisitiondetails">
     <template>
@@ -316,12 +318,12 @@
                    content-type="application/json"></iron-ajax>
 
         <!--<iron-ajax url="/GestaoRequisicoes/VerificarUserAprovacao"
-           last-response="{{verificarUserAprovacao}}"
-           method="post"
-           handle-as="json"
-           id="action_databound"
-           on-response="_verificarUserAprovacaoResponseProcessor"
-           content-type="application/json"></iron-ajax>-->
+       last-response="{{verificarUserAprovacao}}"
+       method="post"
+       handle-as="json"
+       id="action_databound"
+       on-response="_verificarUserAprovacaoResponseProcessor"
+       content-type="application/json"></iron-ajax>-->
 
         <iron-ajax url="/GestaoRequisicoes/GetReqAprovadores"
                    id="dlg_GetAprovadores_ajax"
@@ -336,6 +338,14 @@
                    handle-as="json"
                    id="ajax_TodasLinhasNotaEncomenda"
                    on-response="_TodasLinhasNotaEncomendaResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/DeleteAttachments"
+                   last-response="{{deleted_files}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_files_ajax"
+                   on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
@@ -373,17 +383,17 @@
                                             <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
                                         </div>
                                         <!--<div class="col-md-3" id="divLocalMarketRegions">
-                                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled$="{{ !_permissions.update }}">
-                                                <template>
-                                                    <table width="180px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </div>-->
+                                        <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled$="{{ !_permissions.update }}">
+                                            <template>
+                                                <table width="180px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>
+                                    </div>-->
                                         <div class="col-md-3 " hidden>
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
@@ -473,20 +483,20 @@
                                     <div class="row break_clear">
                                         <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                                         <vaadin-upload id="UploadRequest"
-                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       target="/PreRequisicoes/FileUpload/{{_requisitionid}}/{{_lineno}}"
                                                        method="POST"
                                                        headers="{'Accept': 'application/json'}"
                                                        hidden="{{ !_permissions.update }}"
                                                        timeout=15000>
                                         </vaadin-upload>
                                         <!--<vaadin-upload id="UploadRequest"
-                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
-                                                       accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
-                                                       method="POST"
-                                                       headers="{'Accept': 'application/json'}"
-                                                       hidden="{{ !_permissions.update }}"
-                                                       timeout=15000>
-                                        </vaadin-upload>-->
+                                                   target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                   accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                   method="POST"
+                                                   headers="{'Accept': 'application/json'}"
+                                                   hidden="{{ !_permissions.update }}"
+                                                   timeout=15000>
+                                    </vaadin-upload>-->
                                         <!--</template>-->
                                     </div>
                                     <div class="row break_clear">
@@ -546,10 +556,9 @@
                                 </template>
 
                                 <!--<paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>-->
-
                                 <!--<template is="dom-if" if="{{ !isReadOnly() }}">
-                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
-                                </template>-->
+                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
+                            </template>-->
                             </div>
                         </div>
 
@@ -1730,18 +1739,18 @@
                     //}
 
                     //if (this._requisitionstatus === 3) { //Validado - GESTÃO REQUISIÇÕES
-                        //$(_self.$.btnLocalMarketValidation).addClass('hidden');
-                        //$(_self.$.btnValidate).addClass('hidden');
-                        //$(_self.$.btnAnularAprovacao).addClass('hidden');
-                        //$(_self.$.menuRegister).removeClass('hidden');
-                        //$(_self.$.menuFunctios).removeClass('hidden');
+                    //$(_self.$.btnLocalMarketValidation).addClass('hidden');
+                    //$(_self.$.btnValidate).addClass('hidden');
+                    //$(_self.$.btnAnularAprovacao).addClass('hidden');
+                    //$(_self.$.menuRegister).removeClass('hidden');
+                    //$(_self.$.menuFunctios).removeClass('hidden');
                     //}
 
                     //if (this._requisitionstatus === 4) { //Aprovado - VALIDAÇÃO REQUISIÇÕES
-                        //$(_self.$.btnValidate).removeClass('hidden');
-                        //$(_self.$.btnAnularAprovacao).removeClass('hidden');
-                        //$(_self.$.menuRegister).addClass('hidden');
-                        //$(_self.$.menuFunctios).addClass('hidden');
+                    //$(_self.$.btnValidate).removeClass('hidden');
+                    //$(_self.$.btnAnularAprovacao).removeClass('hidden');
+                    //$(_self.$.menuRegister).addClass('hidden');
+                    //$(_self.$.menuFunctios).addClass('hidden');
                     //}
 
                     if (this._isCreate == false && this.$.UploadRequest != null) {
@@ -2817,6 +2826,46 @@
                         }
                     }
                 },
+
+                _deleteFiles: function (e) {
+                    var index = this.Requisition.lines.indexOf(e.model.item);
+                    this.Requisition.lines.splice(index, 1);
+
+                    var ajax_request = this.$.delete_files_ajax;
+                    ajax_request.body = JSON.stringify(e.model.item)
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende Eliminar o Anexo?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteAnexo) {
+                            if (deleteAnexo) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _deletedAttachResponse: function (e) {
+                    if (this.deleted_files.eReasonCode === 1) {
+                        this._openToast("Anexo eliminado com sucesso.");
+
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._requisitionid });
+                        this.$.page_update_ajax.generateRequest();
+
+                    } else if (this.deleted_files.eReasonCode === 2) {
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
+                    }
+                },
+
+
 
             });
         });

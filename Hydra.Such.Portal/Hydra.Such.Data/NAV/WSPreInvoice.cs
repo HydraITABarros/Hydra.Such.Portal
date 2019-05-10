@@ -199,8 +199,18 @@ namespace Hydra.Such.Data.NAV
                     Shipment_Date = PreInvoiceToCreate.ShipmentDate,
                     Periodo_de_Fact_Contrato = PreInvoiceToCreate.PeriododeFact_Contrato,
                     Valor_Contrato = PreInvoiceToCreate.ValorContrato,
+
                     Ship_to_Address = PreInvoiceToCreate.Ship_toAddress,
+                    Ship_to_Address_2 = PreInvoiceToCreate.Ship_toAddress2,
+                    Ship_to_City = PreInvoiceToCreate.Ship_toCity,
+                    Ship_to_Code = PreInvoiceToCreate.Ship_toCode,
+                    Ship_to_Contact = PreInvoiceToCreate.Ship_toContact,
+                    Ship_to_Country_Region_Code = PreInvoiceToCreate.Ship_toCountryRegionCode,
+                    Ship_to_County = PreInvoiceToCreate.Ship_toCounty,
+                    Ship_to_Name = PreInvoiceToCreate.Ship_toName,
+                    Ship_to_Name_2 = PreInvoiceToCreate.Ship_toName2,
                     Ship_to_Post_Code = PreInvoiceToCreate.Ship_toPostCode,
+
                     Currency_Code = PreInvoiceToCreate.CurrencyCode,
                     Due_Date = PreInvoiceToCreate.DueDate,
                     Payment_Terms_Code = PreInvoiceToCreate.PaymentTermsCode,
@@ -228,6 +238,8 @@ namespace Hydra.Such.Data.NAV
                     Due_DateSpecified=true,
                     Order_DateSpecified=true,
                     Data_EncomendaSpecified=true,
+                    CommentSpecified=true,
+                    Debit_MemoSpecified=true,
                     
                     //Dimensions
                     ResponsabilityCenterCode20 = PreInvoiceToCreate.ResponsabilityCenterCode20,

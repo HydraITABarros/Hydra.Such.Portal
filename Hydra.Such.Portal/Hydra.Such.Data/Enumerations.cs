@@ -179,6 +179,9 @@ namespace Hydra.Such.Data
             FHReportAjCustoRH = 65,
             [Description("Contrato Criar Fatura")]
             ContratosCriarFatura = 66,
+            [Description("Linhas de Contratos")]
+            LinhasContratos = 67,
+
 
 
             [Description("Administração Geral")]
