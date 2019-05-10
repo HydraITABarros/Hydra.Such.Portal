@@ -136,7 +136,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
+        <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" multi-sort="true">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.contratoClienteCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contratoClienteCode">Cliente</vaadin-grid-sorter>
@@ -410,9 +410,6 @@
                     _permissions: {
                         type: Array
                     },
-                    activeItem: {
-                        observer: '_rowSelected'
-                    },
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -536,6 +533,13 @@
                         this._ifHistoric = true;
                         this._isHistoric = false;
                     }
+
+                    /*FILTROS*/
+                    var filters = {};
+                    this.$.gridContracts._filters.map(function (value, index) {
+                        filters[value.path] = value.value;
+                    });
+                    window.setGridFilter('contracts-contractlineslist', filters || {});
                 },
 
                 _filterOptionSelected: function (e) {
@@ -650,6 +654,13 @@
                 /* end - ColumnToggle */
 
                 _goBack: function (e) {
+                    /*FILTROS*/
+                    var filters = {};
+                    this.$.gridContracts._filters.map(function (value, index) {
+                        filters[value.path] = value.value;
+                    });
+                    window.setGridFilter('contracts-contractlineslist', filters || {});
+
                     window.history.back();
                 },
 

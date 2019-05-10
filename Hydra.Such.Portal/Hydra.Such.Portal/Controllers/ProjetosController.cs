@@ -3295,7 +3295,7 @@ namespace Hydra.Such.Portal.Controllers
             string errorMessage = string.Empty;
             bool hasErrors = false;
             ErrorHandler result = new ErrorHandler();
-            string projeto = string.Empty;
+            //string projeto = string.Empty;
 
             if (authProjectMovements == null)
             {
@@ -3308,7 +3308,7 @@ namespace Hydra.Such.Portal.Controllers
             var billingGroups = authProjectMovements.Select(x => x.GrupoFactura).Distinct();
             var customersIds = authProjectMovements.Select(x => x.CodCliente).Distinct();
             List<PreçosServiçosCliente> customersServicesPrices = new List<PreçosServiçosCliente>();
-            projeto = authProjectMovements.Select(x => x.CodProjeto).FirstOrDefault();
+            //projeto = authProjectMovements.Select(x => x.CodProjeto).FirstOrDefault();
 
             //get all movements from authProjects
             List<SPInvoiceListViewModel> data = null;
@@ -3779,7 +3779,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     foreach (var header in groupedbyclient)
                     {
+                        string codproject = "";
                         var itemsToInvoice = header.Items.Select(x => new Tuple<string, int>(x.ProjectNo, x.InvoiceGroup.Value)).Distinct().ToList();
+                        if (header.Items != null && header.Items.Count() > 0)
+                            codproject = !string.IsNullOrEmpty(header.Items.FirstOrDefault().ProjectNo) ? header.Items.FirstOrDefault().ProjectNo : "";
+
                         try
                         {
                             //var invoiceHeader = header.Items.First();
@@ -3792,7 +3796,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
                             SPInvoiceListViewModel Ship = new SPInvoiceListViewModel();
-                            Projetos proj = DBProjects.GetById(projeto);
+                            Projetos proj = DBProjects.GetById(codproject);
                             Contratos cont = DBContracts.GetByIdLastVersion(proj.NºContrato);
                             NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, proj.NºCliente);
 
@@ -3853,7 +3857,9 @@ namespace Hydra.Such.Portal.Controllers
                             if (proj.FaturaPrecosIvaIncluido == true)
                                 header.FaturaPrecosIvaIncluido = true;
 
-                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
+
+                            Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, codproject, Ship);
+                            //Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)
