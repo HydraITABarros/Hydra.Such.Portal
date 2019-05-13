@@ -11,9 +11,14 @@ const menuItemStyles = css`&& {
     font-size: 14px;
     line-height: 24px;
     color: ${props => props.color || _theme.palette.primary.default};
-    padding-left: ${props => props.group ? '16px' : '18px'};
+    padding-left: ${props => props.group ? '18px' : '23px'};
+    ${'' /* background: ${props => props.group ? _theme.palette.primary.keylines : 'inherit'}; */}
     pointer-events: ${props => props.group ? 'none' : ''};
-    opacity: ${props => props.group ? '.8' : '1'};
+    opacity: ${props => props.group ? '.5' : '1'};
+
+    &&[class*="MuiListItem-selected"] {
+        background-color: ${Color(_theme.palette.primary.keylines).lighten(0.5).rgb()};
+    }
 }
 `
 
