@@ -13,6 +13,7 @@ const Wrapper = styled.div`
     text-align: ${props => props.textAlign || "left"};
     line-height: ${props => props.lineHeight || "inherit"};
     display: ${props => props.inline ? 'inline-block' : 'block'};
+    position: relative;
     @media (max-width: ${breakpoints["md"] + "px"}) {
         padding: ${props => props.mdPadding || (props.padding || 0)};
         text-align: ${props => props.mdTextAlign || (props.textAlign || "left")};
