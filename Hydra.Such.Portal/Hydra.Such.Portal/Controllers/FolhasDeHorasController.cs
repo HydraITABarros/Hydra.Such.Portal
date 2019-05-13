@@ -3015,7 +3015,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         result.eReasonCode = 1;
-                        result.eMessage = "Com os dados preenchidos nesta Folha de Horas não é possível calcular Ajudas de Custo.";
+                        result.eMessage = "Com os dados preenchidos nesta Folha de Horas não é possível calcular Ajudas de Custo, verifique as distâncias nos Percursos inseridos.";
                     }
 
                     FolhasDeHoras dbUpdateResult = DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);

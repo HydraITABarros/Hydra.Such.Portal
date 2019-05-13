@@ -1,0 +1,5 @@
+```js
+<div>
+    <Colors/>
+</div>
+```
