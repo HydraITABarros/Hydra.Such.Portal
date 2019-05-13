@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash';
 import styled, { css, theme } from 'styled-components'
 import Color from 'color'
+import { Button, Icon } from 'components'
 import DayPicker, { DateUtils } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
@@ -28,6 +29,16 @@ const styles = css`&& {
         margin-left: 0;
         margin-right: 1em;
         margin-left: 1em;
+    }
+    .DayPicker-Months {
+        width: 100%;
+    }
+    .DayPicker-NavBar {
+        position: absolute;
+        padding: 10px;
+        top: 0;
+        left: 0;
+        right: 0;
     }
 
     && .DayPicker-Day {
@@ -141,6 +152,44 @@ const WEEKDAYS_LONG = { pt: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
 const WEEKDAYS_SHORT = { pt: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'] };
 const langProps = { locale, months: MONTHS_SHORT[locale], weekdaysLong: WEEKDAYS_LONG[locale], weekdaysShort: WEEKDAYS_SHORT[locale] }
 
+function Navbar({
+    nextMonth,
+    previousMonth,
+    onPreviousClick,
+    onNextClick,
+    className,
+    localeUtils,
+}) {
+    const months = localeUtils.getMonths();
+    const prev = months[previousMonth.getMonth()];
+    const next = months[nextMonth.getMonth()];
+    const styleLeft = {
+        float: 'left',
+    };
+    const styleRight = {
+        float: 'right',
+    };
+
+    const LeftButton = styled(Button)`&& {
+            float: left;
+            font-size: 24px;
+        }
+    `;
+
+    const RightButton = styled(Button)`&& {
+            float: right;
+            font-size: 24px;
+        }
+    `;
+
+    return (
+        <div className={className}>
+            <LeftButton iconSolo onClick={() => onPreviousClick()}> <Icon arrow-left /></LeftButton>
+            <RightButton iconSolo onClick={() => onNextClick()} > <Icon arrow-right /></RightButton>
+        </div>
+    );
+}
+
 class DatePicker extends React.Component {
     static defaultProps = {
         numberOfMonths: 3
@@ -151,7 +200,14 @@ class DatePicker extends React.Component {
         this.handleDayClick = this.handleDayClick.bind(this);
         this.handleResetClick = this.handleResetClick.bind(this);
         this.state = this.getInitialState();
+        this.state.from = props.from;
+        this.state.to = props.to;
     }
+
+    componentWillReceiveProps(props) {
+        this.setState({ to: props.to, from: props.from });
+    }
+
     getInitialState() {
         return {
             from: undefined,
@@ -166,18 +222,17 @@ class DatePicker extends React.Component {
         this.setState(this.getInitialState());
     }
     render() {
-        const { from, to } = this.state;
-        const modifiers = { start: from, end: to };
         return (
             <div>
                 <CustomDayPicker
                     {...langProps}
                     {...this.props}
-                    className={from && to && from.toString() != to.toString() ? 'DayPicker--range' : ''}
+                    className={this.state.from && this.state.to && this.state.from.toString() != this.state.to.toString() ? 'DayPicker--range' : ''}
                     numberOfMonths={this.props.numberOfMonths}
-                    modifiers={modifiers}
+                    modifiers={{ start: this.state.from, end: this.state.to }}
                     onDayClick={this.handleDayClick}
-                    selectedDays={[from, { from, to }]}
+                    selectedDays={[this.state.from, { from: this.state.from, to: this.state.to }]}
+                    navbarElement={<Navbar />}
                 />
             </div>
         )
