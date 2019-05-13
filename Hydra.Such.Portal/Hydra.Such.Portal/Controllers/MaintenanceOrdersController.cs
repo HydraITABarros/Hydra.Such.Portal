@@ -23,10 +23,12 @@ using NJsonSchema;
 using NJsonSchema.Generation;
 using Manatee.Json.Schema;
 using System.Text.RegularExpressions;
+using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data;
 
 namespace Hydra.Such.Portal.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
@@ -42,11 +44,17 @@ namespace Hydra.Such.Portal.Controllers
             this.evolutionWEBContext = evolutionWEBContext;
         }
 
-        //[Authorize]
         [Route("")]
         public IActionResult Index()
         {
-            return View();
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
+            UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                return View();
+            }
+            return RedirectToAction("AccessDenied", "Error");
         }
 
         
@@ -55,23 +63,41 @@ namespace Hydra.Such.Portal.Controllers
         {
             if(from== null || to == null) {  return NotFound(); }
             
-            var pageSize = 100;
+            var pageSize = 30;
 
-            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to).OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
 
-            var result = new PageResult<dynamic>(list, nextLink, total);  
+            List<MaintenanceOrder> newList;
+            try
+            {
+             newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrder>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
+            } catch
+            {
+                newList = new List<MaintenanceOrder>();
+            }
+
+            newList.ForEach((item) =>
+            {
+                var technicals = GetTechnicals(null, item.No, null);
+                if(technicals != null)
+                {
+                    item.Technicals = technicals.ToList();
+                }
+            });
+
+            var result = new PageResult<dynamic>(newList, nextLink, total);  
 
             var query = maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to)
-                .Select(m => new {m.IsToExecute, m.IsPreventive }).ToList();
+                .Select(m => new {m.IsToExecute, m.IsPreventive, m.OrderType, m.FinishingDate }).ToList();
 
             var ordersCounts = new {
-                preventive = query.Where(o => o.IsPreventive).Count(),
-                preventiveToExecute = query.Where(n => n.IsPreventive && n.IsToExecute).Count(),
-                curative = query.Where(o => !o.IsPreventive).Count(),
-                curativeToExecute = query.Where(n => !n.IsPreventive && n.IsToExecute).Count(),
+                preventive = query.Where(o => o.IsPreventive && !o.IsToExecute).Count(),
+                preventiveToExecute = query.Where(o => o.IsPreventive && o.IsToExecute).Count(),
+                curative = query.Where(o => !o.IsPreventive && !o.IsToExecute).Count(),
+                curativeToExecute = query.Where(o => !o.IsPreventive && o.IsToExecute).Count(),
             };
           
             return Json(new {
@@ -83,19 +109,25 @@ namespace Hydra.Such.Portal.Controllers
 
         
         [Route("technicals"), HttpGet]
-        public ActionResult GetTecnicalls(string local, string orderId, string technicalid)
+        public ActionResult HttpGetTecnicalls(string local, string orderId, string technicalid)
         {
-           if ((local == null || local == "") && (orderId == null|| orderId == "") && (technicalid == null || technicalid == "")) { return NotFound(); }
+            if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return NotFound(); }
+            return Json(new { technicals = GetTechnicals( local, orderId, technicalid).OrderBy(o=>o.Nome) });
+        }
 
-           IQueryable<Utilizador> technicals;
-           if (technicalid != null && technicalid != "" )
-           {
+
+        private IQueryable<Utilizador> GetTechnicals(string local, string orderId, string technicalid) {
+            if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return null; }
+
+            IQueryable<Utilizador> technicals;
+            if (technicalid != null && technicalid != "")
+            {
                 technicals = evolutionWEBContext.Utilizador.Where(u => u.NumMec == technicalid);
-                return Json(new { technicals });
-           }
+                return technicals;
+            }
 
-           if (orderId != null && orderId != "")
-           {
+            if (orderId != null && orderId != "")
+            {
                 var order = maintnenceOrdersRepository.AsQueryable().Where(m => m.No == orderId).FirstOrDefault();
                 var technicalsId = new List<int>();
 
@@ -103,18 +135,18 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     var prop = order.GetType().GetProperty("IdTecnico" + i.ToString());
                     int? name = (int?)(prop.GetValue(order, null));
-                    if(name != null)
+                    if (name != null)
                     {
                         technicalsId.Add((int)name);
                     }
                 }
 
                 technicals = evolutionWEBContext.Utilizador.Where(u => technicalsId.Contains(u.Id));
-                return Json(new { technicals });
+                return technicals;
             }
 
             technicals = evolutionWEBContext.Utilizador.Where(a => a.Code1 == local);
-            return Json(new { technicals });
+            return technicals;
         }
         
 
