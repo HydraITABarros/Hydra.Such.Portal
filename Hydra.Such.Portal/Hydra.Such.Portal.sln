@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hydra.Such.Portal", "Hydra.Such.Portal\Hydra.Such.Portal.csproj", "{B0405C3F-DBAD-460A-B32C-4D8B6375FF4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hydra.Such.Portal", "Hydra.Such.Portal\Hydra.Such.Portal.csproj", "{B0405C3F-DBAD-460A-B32C-4D8B6375FF4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hydra.Such.Data", "Hydra.Such.Data\Hydra.Such.Data.csproj", "{EC7EFC8A-2D27-4CA6-9C2C-9B17DBD1229D}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hydra.Such.Tester", "Hydra.
 EndProject
 Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "Hydra.Such.Reports", "Hydra.Such.Reports\Hydra.Such.Reports.rptproj", "{9B5E479C-389A-4806-8934-03111BCE6152}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hydra.Such.Data.Evolution", "Hydra.Such.Data.Evolution\Hydra.Such.Data.Evolution.csproj", "{8765282D-DC4E-46E0-9D1C-A6D811B33E40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hydra.Such.Data.Evolution", "Hydra.Such.Data.Evolution\Hydra.Such.Data.Evolution.csproj", "{8765282D-DC4E-46E0-9D1C-A6D811B33E40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,14 +38,15 @@ Global
 		{0A0EE102-174F-48B2-847D-66668C54337A}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
 		{0A0EE102-174F-48B2-847D-66668C54337A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A0EE102-174F-48B2-847D-66668C54337A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B5E479C-389A-4806-8934-03111BCE6152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B5E479C-389A-4806-8934-03111BCE6152}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B5E479C-389A-4806-8934-03111BCE6152}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{9B5E479C-389A-4806-8934-03111BCE6152}.DebugLocal|Any CPU.ActiveCfg = DebugLocal|Any CPU
-		{9B5E479C-389A-4806-8934-03111BCE6152}.DebugLocal|Any CPU.Build.0 = DebugLocal|Any CPU
-		{9B5E479C-389A-4806-8934-03111BCE6152}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B5E479C-389A-4806-8934-03111BCE6152}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B5E479C-389A-4806-8934-03111BCE6152}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{9B5E479C-389A-4806-8934-03111BCE6152}.Debug|Any CPU.ActiveCfg = Debug
+		{9B5E479C-389A-4806-8934-03111BCE6152}.Debug|Any CPU.Build.0 = Debug
+		{9B5E479C-389A-4806-8934-03111BCE6152}.Debug|Any CPU.Deploy.0 = Debug
+		{9B5E479C-389A-4806-8934-03111BCE6152}.DebugLocal|Any CPU.ActiveCfg = DebugLocal
+		{9B5E479C-389A-4806-8934-03111BCE6152}.DebugLocal|Any CPU.Build.0 = DebugLocal
+		{9B5E479C-389A-4806-8934-03111BCE6152}.DebugLocal|Any CPU.Deploy.0 = DebugLocal
+		{9B5E479C-389A-4806-8934-03111BCE6152}.Release|Any CPU.ActiveCfg = Release
+		{9B5E479C-389A-4806-8934-03111BCE6152}.Release|Any CPU.Build.0 = Release
+		{9B5E479C-389A-4806-8934-03111BCE6152}.Release|Any CPU.Deploy.0 = Release
 		{8765282D-DC4E-46E0-9D1C-A6D811B33E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8765282D-DC4E-46E0-9D1C-A6D811B33E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8765282D-DC4E-46E0-9D1C-A6D811B33E40}.DebugLocal|Any CPU.ActiveCfg = Debug|Any CPU
