@@ -11,7 +11,7 @@ const tooltip = css`&& {
     border: 1px solid ${_theme.palette.primary.light};
     border-radius: 5px;
     padding: 7px 16px 7px 41px;
-    padding-left: ${props => props.icon ? '41px' : '16px'};
+    padding-left: ${props => props.icon ? /*'41px'*/ '16px' : '16px'};
     color: black;
     &&:after {
         border-top-color: ${_theme.palette.primary.light};
@@ -20,16 +20,17 @@ const tooltip = css`&& {
 }
 `
 
-const Icon = styled.span`
-    font-size: 23px;
-    color: ${props => props.color};
-    position: absolute;
-    top: -2px;
-    left: 1px;
-    bottom: 0;
-    margin: auto;
-    text-shadow: 0 0 1px ${props => props.color};
-    padding: 9px;
+const Icon = styled.span`&& {
+        font-size: 23px;
+        color: ${props => props.color};
+        position: absolute;
+        top: -2px;
+        left: 1px;
+        bottom: 0;
+        margin: auto;
+        text-shadow: 0 0 1px ${props => props.color};
+        padding: 9px;
+    }
 `
 
 const Hidden = styled(ReactTooltip)`${tooltip}`;
