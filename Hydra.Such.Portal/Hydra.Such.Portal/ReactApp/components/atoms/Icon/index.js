@@ -27,6 +27,7 @@ const IconFont = styled.span`
     font-variant: normal;
     text-transform: none;
     line-height: 1;
+    font-size: ${props => props.size || props.decline ? "14px" : "24px"};
 
     /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
