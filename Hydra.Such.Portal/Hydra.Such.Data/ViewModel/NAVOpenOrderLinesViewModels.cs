@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.OData.Edm.Library;
 
 namespace Hydra.Such.Data.ViewModel
 {

@@ -18,6 +18,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http.Features;
 using Hydra.Such.Portal.Filters;
+using SharpRepository.Ioc.Microsoft.DependencyInjection;
+using Hydra.Such.Data.Evolution.Database;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.OData.Edm;
+using Microsoft.AspNet.OData.Extensions;
+using JavaScriptEngineSwitcher.ChakraCore;
+using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
+using React.AspNet;
+using Microsoft.AspNetCore.SpaServices.Webpack;
+using Hydra.Such.Data.Evolution.Repositories;
+using SharpRepository.Repository;
 
 namespace Hydra.Such.Portal
 {
@@ -35,11 +47,18 @@ namespace Hydra.Such.Portal
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+
+            services.AddOData();
+
             services.AddMvc(options => {
                 options.Filters.Add(new NavigationFilter());
+            }).AddJsonOptions(options => {
+                options.SerializerSettings.ContractResolver =
+                    new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
             });
+
             services.Configure<FormOptions>(x =>
             {
                 x.ValueLengthLimit = int.MaxValue;
@@ -64,7 +83,6 @@ namespace Hydra.Such.Portal
             })
             .AddCookie();
 
-
             // ABARROS -> ADD NAV CONFIGURATIONS TO THE SERVICE
             var NAVConfigurations = Configuration.GetSection("NAVConfigurations");
             services.Configure<NAVConfigurations>(NAVConfigurations);
@@ -77,11 +95,17 @@ namespace Hydra.Such.Portal
             var GeneralConfigurations = Configuration.GetSection("GeneralConfigurations");
             services.Configure<GeneralConfigurations>(GeneralConfigurations);
 
-
             // ABARROS -> Activate Session Variables
             services.AddSession(s => s.IdleTimeout = TimeSpan.FromMinutes(30));
             
             Data.Database.SuchDBContext.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            /*sharpRepository for evolution database - IoC*/
+            services.AddDbContext<EvolutionWEBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EvolutionConnection")), ServiceLifetime.Transient);
+
+            services.AddTransient<MaintnenceOrdersRepository>(r => new MaintnenceOrdersRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository"))));
+
+            return services.UseSharpRepository(Configuration.GetSection("sharpRepository"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,6 +115,10 @@ namespace Hydra.Such.Portal
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
+                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                {
+                    HotModuleReplacement = true
+                });
             }
             else
             {
@@ -111,15 +139,11 @@ namespace Hydra.Such.Portal
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-            });
 
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //      name: "areas",
-            //      template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-            //    );
-            //});
+                routes.Select().Expand().Filter().OrderBy().MaxTop(null).Count();
+                routes.EnableDependencyInjection();
+            });
+            
         }
 
         // Handle sign-in errors differently than generic errors.
@@ -129,6 +153,6 @@ namespace Hydra.Such.Portal
             context.Response.Redirect("/Error/Login?message=" + context.Failure.Message);
             return Task.FromResult(0);
         }
-
+        
     }
 }

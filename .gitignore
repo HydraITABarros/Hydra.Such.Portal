@@ -306,3 +306,5 @@ __pycache__/
 /Hydra.Such.Portal/Hydra.Such.Portal/wwwroot/Upload
 /Hydra.Such.Portal/.vscode/launch.json
 /Hydra.Such.Portal/.vscode/tasks.json
+*.DS_Store
+yarn.lock

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Hydra.Such.Data.Database
 {
@@ -17,12 +16,12 @@ namespace Hydra.Such.Data.Database
         public decimal? ValorAdjudicacao { get; set; }
         public string UtilizadorAdjudicacao { get; set; }
         public DateTime? DataAdjudicacao { get; set; }
-        public TimeSpan? HoraAdjudicacao { get; set; }
+        public DateTime? HoraAdjudicacao { get; set; }
         public string ComentarioNotificacao { get; set; }
         public int? DiasPrazoNotificacao { get; set; }
         public string UtilizadorNotificacao { get; set; }
         public DateTime? DataNotificacao { get; set; }
-        public TimeSpan? HoraNotificacao { get; set; }
+        public DateTime? HoraNotificacao { get; set; }
 
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }

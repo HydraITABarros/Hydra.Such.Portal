@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
   </PropertyGroup>
 
@@ -30,6 +30,11 @@
     <None Remove="wwwroot\lib\paper-multi-select\paper-checkbox\**" />
     <None Remove="wwwroot\lib\vaadin-time-picker-master\bower_components\**" />
     <None Remove="__Notes\**" />
+    <Content Remove="package.json" />
+    <Content Remove="Views\Shared\_Layout %28copy%29.cshtml" />
+    <Content Remove="Views\Shared\_LayoutReact.cshtml" />
+    <None Remove="yarn.lock" />
+    <Content Remove="wwwroot\css\site.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,11 +48,32 @@
     <Content Remove="wwwroot\Upload\hydra08%40such.pt_Novo Documento de Texto.txt" />
   </ItemGroup>
 
+  <!--<ItemGroup>
+    <Content Include="wwwroot\elements\**" />
+    <Content Include="wwwroot\fonts\**" />
+    <Content Include="wwwroot\js\**" />
+    <Content Include="wwwroot\css\**" />
+  </ItemGroup>-->
+
   <ItemGroup>
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.1" />
-    <PackageReference Include="EPPlus" Version="4.5.2" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
+    <PackageReference Include="EPPlus" Version="4.5.3.1" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore" Version="3.0.7" />
+    <PackageReference Include="JavaScriptEngineSwitcher.Extensions.MsDependencyInjection" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="React.AspNet" Version="4.1.1" />
+    <PackageReference Include="SharpRepository.EfCoreRepository" Version="2.0.2.2" />
+    <PackageReference Include="SharpRepository.Ioc.Microsoft.DependencyInjection" Version="2.0.2.2" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.osx-x64" Version="3.0.7" />
+    <PackageReference Include="JavaScriptEngineSwitcher.ChakraCore.Native.win-x64" Version="3.0.7" />
+    <PackageReference Include="React.Core" Version="4.1.1" />
+    <PackageReference Include="React.Router" Version="4.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.10" />
+    <PackageReference Include="NJsonSchema" Version="9.13.28" />
+    <PackageReference Include="Manatee.Json" Version="10.1.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,6 +81,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hydra.Such.Data.Evolution\Hydra.Such.Data.Evolution.csproj" />
     <ProjectReference Include="..\Hydra.Such.Data\Hydra.Such.Data.csproj" />
   </ItemGroup>
 
@@ -63,6 +90,7 @@
     <Folder Include="Areas\Compras\Models\" />
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
+    <Folder Include="wwwroot\fonts\" />
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\Infinity\" />
     <Folder Include="wwwroot\lib\paper-menu-master\.github\" />
@@ -70,6 +98,10 @@
     <Folder Include="wwwroot\lib\paper-menu-master\test\" />
     <Folder Include="wwwroot\reports\" />
     <Folder Include="wwwroot\Upload\" />
+    <Folder Include="wwwroot\react-components\" />
+    <Folder Include="wwwroot\react-components\pages\" />
+    <Folder Include="wwwroot\react-components\atoms\" />
+    <Folder Include="wwwroot\react-components\molecules\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -96,6 +128,10 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="package.json" />
+    <None Include="wwwroot\css\site.css" />
+  </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
