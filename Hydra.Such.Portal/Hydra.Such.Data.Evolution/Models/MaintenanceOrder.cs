@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Hydra.Such.Data.Evolution.Database
 {
@@ -19,8 +20,12 @@ namespace Hydra.Such.Data.Evolution.Database
         [NotMapped]
         public bool IsToExecute
         {
-            get { return this.FinishingDate == new DateTime (1753,1,1); }
+            get { return !(this.FinishingDate > new DateTime (1753,1,1)); }
         }
+
+
+        [NotMapped]
+        public List<Utilizador> Technicals;
     }
 
 
