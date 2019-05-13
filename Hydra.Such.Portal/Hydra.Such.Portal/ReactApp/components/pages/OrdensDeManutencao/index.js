@@ -29,6 +29,7 @@ import Highlighter from "react-highlight-words";
 import MuiTextField from '@material-ui/core/TextField';
 import MuiInput from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import { renderToString } from 'react-dom/server';
 
 const { DialogTitle, DialogContent, DialogActions } = Modal;
 
@@ -318,6 +319,8 @@ const SearchWrapper = styled.div`
     padding: 0 25px 0;
 `;
 
+var timer = 0;
+
 class OrdensDeManutencao extends Component {
     state = {
         isLoading: true,
@@ -341,6 +344,7 @@ class OrdensDeManutencao extends Component {
         maintenenceOrders: [],
         maintenenceOrdersFiltered: [],
         maintenenceOrdersIsLoading: true,
+        maintenenceOrdersSearchValue: "",
         maintenenceOrdersNext: "",
         technicals: [],
         technicalsFiltered: [],
@@ -372,7 +376,7 @@ class OrdensDeManutencao extends Component {
         this.getInitials = this.getInitials.bind(this);
         this.handleGridScroll = this.handleGridScroll.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
-        this.filterListByKeyValue = this.filterListByKeyValue.bind(this);
+        this.filterListByKeysValue = this.filterListByKeysValue.bind(this);
         this.handleTechnicalsClose = this.handleTechnicalsClose.bind(this);
     }
 
@@ -384,10 +388,10 @@ class OrdensDeManutencao extends Component {
                 if (data.data && data.data.technicals) {
                     this.setState({
                         technicals: data.data.technicals,
-                        technicalsFiltered: this.filterListByKeyValue({ list: data.data.technicals, key: 'nome', value: this.state.technicalsSearchValue })
+                        technicalsFiltered: this.filterListByKeysValue({ list: data.data.technicals, keys: ['nome'], value: this.state.technicalsSearchValue })
                     });
                 }
-                console.log(data);
+
             }).catch((error) => {
                 cb ? cb(error) : console.log(error);
             }).then((data) => {
@@ -409,12 +413,17 @@ class OrdensDeManutencao extends Component {
         });
     }
 
-    fetchMaintenenceOrders({ from, to }, cb) {
+    fetchMaintenenceOrders({ from, to, search }, cb) {
+        var filter = null;
+        if (search && search != '') {
+            filter = "contains(description,'" + search + "') or contains(customerName,'" + search + "') or contains(no,'" + search + "')"
+        }
         axios.get('/ordens-de-manutencao/all', {
             params: {
                 from: from.format('YYYY-MM-DD'),
                 to: to.format('YYYY-MM-DD'),
-                $select: 'no, description, customerName, orderType, idTecnico1, idTecnico2, idTecnico3, idTecnico4, idTecnico5, orderDate, shortcutDimension1Code'
+                $select: 'no, description, customerName, orderType, idTecnico1, idTecnico2, idTecnico3, idTecnico4, idTecnico5, orderDate, shortcutDimension1Code',
+                $filter: filter
             }
         }).then((result) => {
             var data = result.data;
@@ -554,17 +563,24 @@ class OrdensDeManutencao extends Component {
         }
     }
 
-    filterListByKeyValue({ list, key, value }) {
+    filterListByKeysValue({ list, keys, value }) {
+        keys = keys || [];
         value = value || "";
         value = value.toLowerCase();
         let filteredList = list.filter((item) => {
-            return item.nome.toLowerCase().search(value) != -1;
+            var find = false;
+            keys.map((k) => {
+                if (item[k].toLowerCase().search(value) != -1) {
+                    find = true;
+                }
+            });
+            return find;
         });
         return filteredList;
     }
 
     render() {
-        const { isLoading, ordersCounts, maintenenceOrders, calendar } = this.state;
+        const { isLoading, ordersCounts, maintenenceOrders, calendar, maintenenceOrdersIsLoading } = this.state;
 
         return (
             <PageTemplate >
@@ -625,6 +641,18 @@ class OrdensDeManutencao extends Component {
                             inputProps={{ autoComplete: "off" }}
                             id="oms-search"
                             onChange={(e) => {
+                                this.state.maintenenceOrdersSearchValue;
+                                let search = e.target.value.toLowerCase();
+                                this.setState({
+                                    maintenenceOrdersSearchValue: search,
+                                    maintenenceOrdersFiltered: this.filterListByKeysValue({ list: this.state.maintenenceOrders, keys: ['description', 'no', 'customerName'], value: search })
+                                }, () => { });
+
+                                clearTimeout(timer);
+                                timer = setTimeout(() => {
+                                    this.setState({ maintenenceOrdersIsLoading: true });
+                                    this.fetchMaintenenceOrders({ from: this.state.calendar.from, to: this.state.calendar.to, search: this.state.maintenenceOrdersSearchValue })
+                                }, 1500);
 
                             }}
                             type="search"
@@ -641,7 +669,7 @@ class OrdensDeManutencao extends Component {
 
                 {this.state.listContainerStyle.marginTop ?
                     <ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} >
-                        <div style={{ height: '100%', width: '100%', textAlign: 'center' }} className={isLoading ? "" : "hidden"}>
+                        <div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading || maintenenceOrdersIsLoading ? "" : "hidden"}>
                             <CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} />
                         </div>
                         <AutoSizer className={!isLoading ? "" : "hidden"} >
@@ -664,13 +692,15 @@ class OrdensDeManutencao extends Component {
                                                                     <Icon preventiva style={{ fontSize: '29px', top: "8px", position: "relative" }} data-tip={'Preventiva'} /> :
                                                                     <Icon curativa style={{ fontSize: '29px', top: "8px", position: "relative", color: _theme.palette.secondary.default }} data-tip={'Curativa'} />}
                                                             </Wrapper>
-                                                            <Text b data-tip={item.no} >{item.no}</Text>
+                                                            <Text b data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.no}></Highlighter>)} ><Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.no}></Highlighter></Text>
                                                         </ListGridItemTextOverflow>
                                                         <ListGridItemTextOverflow item xs={3}>
-                                                            <Text b data-tip={item.description} >{item.description}</Text>
+                                                            <Text b data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.description}></Highlighter>)} ><Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.description}></Highlighter></Text>
                                                         </ListGridItemTextOverflow>
                                                         <ListGridItemTextOverflow item xs={3}>
-                                                            <Text p data-tip={item.customerName} >{item.customerName}</Text>
+                                                            <Text p data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.customerName}></Highlighter>)} >
+                                                                <Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.customerName}></Highlighter>
+                                                            </Text>
                                                         </ListGridItemTextOverflow>
                                                         <ListGridItem item xs={3}>
                                                             {item.technicals.length > 0 ?
@@ -708,7 +738,7 @@ class OrdensDeManutencao extends Component {
                                         let search = e.target.value.toLowerCase();
                                         this.setState({
                                             technicalsSearchValue: search,
-                                            technicalsFiltered: this.filterListByKeyValue({ list: this.state.technicals, key: 'nome', value: search })
+                                            technicalsFiltered: this.filterListByKeysValue({ list: this.state.technicals, keys: ['nome'], value: search })
                                         })
                                     }}
                                     type="search"
