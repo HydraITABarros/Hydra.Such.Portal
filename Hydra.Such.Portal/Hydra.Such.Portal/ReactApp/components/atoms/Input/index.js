@@ -19,6 +19,10 @@ const styles = css`&& {
             padding: 11px 35px 11px 15px;
         }
         &[class*="MuiInputBase-focused"] {
+            background-color: white;
+            [class*="MuiSelect-select"] {
+                background-color: transparent;
+            }
             fieldset {
                 border-color: ${_theme.palette.secondary.default};
             }
@@ -29,7 +33,6 @@ const styles = css`&& {
 const DefaultOutlinedInput = styled(MuiOutlinedInput)`${styles}`;
 
 const Input = ({ ...props }) => {
-
     return <DefaultOutlinedInput fullWidth={props.fullWidth || true} labelWidth={props.labelWidth || 0} {...props} />
 }
 
