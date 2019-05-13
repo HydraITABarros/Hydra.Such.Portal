@@ -14,23 +14,24 @@ injectGlobal`
             font-style: normal;
     }
 `
-
-const Title = styled.h1`
-    font-family: ${_theme.fonts.primary};
-    font-style: normal;
-    font-weight: 200;
-    font-size: 48px;
-    line-height: 56px;
-    color: ${props => props.color || _theme.palette.primary.default};
-
+const Title = styled.h1` && {
+        font-family: ${_theme.fonts.primary};
+        font-style: normal;
+        font-weight: 200;
+        font-size: 48px;
+        line-height: 56px;
+        color: ${props => props.color || _theme.palette.primary.default};
+    }
 `
-const Header = styled.h2`
-    font-family: ${_theme.fonts.primary};
-    font-style: normal;
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 32px;
-    color: ${props => props.color || _theme.palette.primary.default};
+const Header = styled.h2` && {
+        font-family: ${_theme.fonts.primary};
+        font-style: normal;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 32px;
+        margin: 0;
+        color: ${props => props.color || _theme.palette.primary.default};
+    }
 `
 const SubHeader = styled.h3`
     font-family: ${_theme.fonts.primary};
@@ -46,8 +47,8 @@ const Paragraph = styled.p`
     font-weight: 400;
     font-size: 14px;
     line-height: 24px;
+    margin: 0;
     color: ${props => props.color || _theme.palette.primary.default};
-     
 `
 const Bold = styled.b`
     font-family: ${_theme.fonts.primary};
@@ -56,7 +57,6 @@ const Bold = styled.b`
     font-size: 14px;
     line-height: 24px;
     color: ${props => props.color || _theme.palette.primary.default};
-     
 `
 const Label = styled.label`
     font-family: ${_theme.fonts.primary};
@@ -78,8 +78,10 @@ const DataBig = styled.span`
     font-family: ${_theme.fonts.data};
     font-style: light;
     font-weight: 300;
-    font-size: 104px;
-    line-height: 104px;
+    /* font-size: 104px; */
+    font-size: 99px;
+    /* line-height: 104px; */
+    line-height: 99px;
     color: ${props => props.color || _theme.palette.primary.dark};    
 `
 const DataSmall = styled.span`
@@ -94,23 +96,23 @@ const DataSmall = styled.span`
 const Text = ({ ...props }) => {
 
     if (props.h1) {
-        return <Title {...props} />
+        return <Title {..._.omit(props, ['h1'])} />
     } else if (props.h2) {
-        return <Header {...props} />
+        return <Header {..._.omit(props, ['h2'])} />
     } else if (props.h3) {
-        return <SubHeader {...props} />
+        return <SubHeader {..._.omit(props, ['h3'])} />
     } else if (props.p) {
-        return <Paragraph {...props} />
+        return <Paragraph {..._.omit(props, ['p'])} />
     } else if (props.b) {
-        return <Bold {...props} />
+        return <Bold {..._.omit(props, ['b'])} />
     } else if (props.label) {
-        return <Label {...props} />
+        return <Label {..._.omit(props, ['label'])} />
     } else if (props.dataBig) {
-        return <DataBig {...props} />
+        return <DataBig {..._.omit(props, ['dataBig'])} />
     } else if (props.dataSmall) {
-        return <DataSmall {...props} />
+        return <DataSmall {..._.omit(props, ['dataSmall'])} />
     }
-    return <Default {...props} />
+    return <Default {..._.omit(props, ['span'])} />
 }
 
 export default Text;
