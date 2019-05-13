@@ -6,6 +6,22 @@ import { HomePage, SamplePage, NotFoundPage, Template, OrdensDeManutencao } from
 
 // https://github.com/diegohaz/arc/wiki/Styling
 import theme from './themes/default'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { red } from '@material-ui/core/colors';
+import Color from 'color';
+
+const muiTheme = createMuiTheme({
+    palette: {
+        action: {
+            selected: Color(theme.palette.primary.keylines).rgb().fade(0.1).toString(),
+            hover: Color(theme.palette.primary.keylines).rgb().fade(0.5).toString(),
+            active: Color(theme.palette.primary.ligkeylinesht).rgb().fade(0.5).toString(),
+            disabled: Color(theme.palette.primary.keylines).rgb().fade(0.8).toString(),
+        }
+    }
+});
+
+console.log(muiTheme);
 
 injectGlobal`
   body {
@@ -16,12 +32,14 @@ injectGlobal`
 const App = () => {
     return (
         <ThemeProvider theme={theme}>
-            <Switch>
-                {/* <Route path="/" component={HomePage} exact /> */}
-                {/* <Route component={Template} /> */}
-                <Route path="/ordens-de-manutencao" component={OrdensDeManutencao} />
-                {/* <Route component={NotFoundPage} /> */}
-            </Switch>
+            <MuiThemeProvider theme={muiTheme}>
+                <Switch>
+                    {/* <Route path="/" component={HomePage} exact /> */}
+                    {/* <Route component={Template} /> */}
+                    <Route path="/ordens-de-manutencao" component={OrdensDeManutencao} />
+                    {/* <Route component={NotFoundPage} /> */}
+                </Switch>
+            </MuiThemeProvider>
         </ThemeProvider>
     )
 }
