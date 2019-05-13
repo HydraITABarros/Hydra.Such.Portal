@@ -1,35 +1,56 @@
 import React from 'react'
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import styled, { css, theme } from 'styled-components'
+import styled, { css, theme, injectGlobal } from 'styled-components'
 import Color from 'color'
 import DayPicker, { DateUtils } from 'react-day-picker';
 // import DayPickerInput from 'react-day-picker/DayPickerInput';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Button from '@material-ui/core/Button';
+import Drawer from '@material-ui/core/Drawer';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import Divider from '@material-ui/core/Divider';
 
 import { withStyles } from '@material-ui/core/styles';
-import { OutlinedInput, Wrapper, DatePicker, Text, Spacer, MenuItem } from 'components';
-import Select from 'components/atoms/Select';
+import { OutlinedInput, Wrapper, DatePicker, Text, Spacer, MenuItem, Select, Icon, Button } from 'components';
 
 import Paper from '@material-ui/core/Paper';
 
-var rangeColor = "#FFE8D9";
-var selectedColor = "#F9703E";
-var textColor = "#333333";
+injectGlobal`
+    [class*="MuiModal-root"] {
+        &[class*="MuiDrawer-root"] {
+            &[class*="MuiDrawer-modal"] {
+                [class*="MuiPaper-root"] {
+                    transform: translate(0px, 0px) !important;
+                    opacity: 0;
+                }
+            }
+        }
+    }
+    body {
+        &[style*="overflow: hidden;"] {
+            [class*="MuiModal-root"] {
+                &[class*="MuiDrawer-root"] {
+                    &[class*="MuiDrawer-modal"] {
+                        & [class*="MuiPaper-root"] {
+                            transform: translate(0px, 0px) !important;
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
 
-// const Wrapper = styled.div`
-//     padding: 25px;
-// `
-const locale = "pt";
-const MONTHS = { pt: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'] };
-const WEEKDAYS_LONG = { pt: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'] };
-const WEEKDAYS_SHORT = { pt: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'] };
-const langProps = { locale, months: MONTHS[locale], weekdaysLong: WEEKDAYS_LONG[locale], weekdaysShort: WEEKDAYS_SHORT[locale] }
+const closeIcon = css`
+    position: absolute;
+    top: 8px;
+    right: 8px;
+`;
+
+const CloseIcon = styled(Button)`${closeIcon}`;
+
 
 const StyledCloseButton = styled(IconButton)`&& {
     position: absolute;
@@ -38,33 +59,42 @@ const StyledCloseButton = styled(IconButton)`&& {
 }`;
 
 class DatePickerInput extends React.Component {
-    static defaultProps = {
+    state = {
         numberOfMonths: 3,
         open: false,
+        staticRange: null,
+        selected: null,
+        from: null,
+        to: null,
     }
 
     constructor(props) {
         super(props);
         this.handleDayClick = this.handleDayClick.bind(this);
         this.handleResetClick = this.handleResetClick.bind(this);
-        this.state = this.getInitialState();
+        this.handleStaticRange = this.handleStaticRange.bind(this);
 
     }
-    getInitialState() {
-        return {
-            from: undefined,
-            to: undefined,
-            open: false,
-            hasSelect: false
-        };
-    }
     handleDayClick(day) {
-        const range = DateUtils.addDayToRange(day, this.state);
-        this.setState(range, () => _.invoke(this.props, 'onChange', this.state));
+        // const range = DateUtils.addDayToRange(day, this.state);
+        // this.setState(range);
+        // console.log('imp', range);
+        //this.setState(range, () => _.invoke(this.props, 'onChange', this.state));
     }
     handleResetClick() {
         this.setState(this.getInitialState());
     }
+    handleStaticRange(e) {
+        var selected = e.target.value.split("_");
+        var value = this.props.staticRanges[selected[0]].ranges[selected[1]];
+
+        this.setState({
+            from: value.from,
+            to: value.to,
+            selected: e.target.value
+        });
+    }
+
     toggleDrawer = (open) => () => {
         this.setState({
             open
@@ -72,6 +102,7 @@ class DatePickerInput extends React.Component {
     };
 
     render() {
+        const { classes, theme } = this.props;
         const { from, to } = this.state;
         const modifiers = { start: from, end: to };
         const hasSelect = this.state.hasSelect;
@@ -81,34 +112,35 @@ class DatePickerInput extends React.Component {
                 <Wrapper textAlign="left" padding="5px 16px 5px 0">
                     <Text b>Seleccionar datas...</Text>
                 </Wrapper>
-                <Select >
+                <Select value={this.state.selected || ''} onChange={this.handleStaticRange} >
                     {this.props.staticRanges.map((group, k) =>
-                        [(k != 0 ? <Divider component="li" /> : ""), (group.label && group.label != "" ? <MenuItem group ><Text p>{group.label}</Text></MenuItem> : ""), group.ranges.map((item, key) =>
-                            <MenuItem value={key + "" + k} > {item.label}</MenuItem>
+                        [(k != 0 ? <Divider component="li" /> : ""), (group.label && group.label != "" ? <MenuItem group="true" ><Text p>{group.label}</Text></MenuItem> : ""), group.ranges.map((item, key) =>
+                            <MenuItem value={k + "_" + key} name={item}> {item.label}</MenuItem>
                         )]
-                    )
-                    }
+                    )}
                 </Select>
             </Wrapper>
         }
         return (
             <div>
-
-                <Button onClick={this.toggleDrawer(true)}>Open Top</Button>
-
-                <SwipeableDrawer ModalProps={{ disableBackdropClick: true }} anchor="top" open={this.state.open} onClose={this.toggleDrawer(false)} onOpen={this.toggleDrawer(true)} >
+                <Drawer
+                    variant="persistent"
+                    ModalProps={{ disableBackdropClick: true }}
+                    anchor="top"
+                    open={this.state.open}
+                    onClose={this.toggleDrawer(false)}
+                    onOpen={this.toggleDrawer(true)}
+                >
                     <div tabIndex={0} role="button" onKeyDown={this.toggleDrawer(false)} >
                         <Wrapper padding="22px" >
-
-                            <StyledCloseButton aria-label="Delete" onClick={this.toggleDrawer(false)} > <CloseIcon fontSize="small" /> </StyledCloseButton>
+                            <CloseIcon iconSolo onClick={this.toggleDrawer(false)} ><Icon decline /></CloseIcon>
                             {select}
                             <Wrapper maxWidth="950" padding="0" inline>
-                                <DatePicker {...langProps} {...this.props} className={from && to && from.toString() != to.toString() ? 'DayPicker--range' : ''}
-                                    numberOfMonths={this.props.numberOfMonths} modifiers={modifiers} onDayClick={this.handleDayClick} selectedDays={[from, { from, to }]} />
+                                <DatePicker {...this.props} onChange={this.handleDayClick} from={from} to={to} month={from} />
                             </Wrapper>
                         </Wrapper>
                     </div>
-                </SwipeableDrawer>
+                </Drawer>
             </div>
         )
     }
