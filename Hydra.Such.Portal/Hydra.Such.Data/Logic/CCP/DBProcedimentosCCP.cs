@@ -197,7 +197,7 @@ namespace Hydra.Such.Data.Logic.CCP
 
                     //Procedimento.TipoNavigation = _context.TipoProcedimentoCcp.Where(t => t.IdTipo == Procedimento.Tipo).FirstOrDefault();
                     //Procedimento.FundamentoLegalTipoProcedimentoCcp = _context.FundamentoLegalTipoProcedimentoCcp.Where(f => f.IdTipo == Procedimento.Tipo && f.IdFundamento == Procedimento.FundamentoLegalTipo).FirstOrDefault();
-                    Procedimento.LoteProcedimentoCcp = GetAllLotesFromProcedimento(Procedimento.Nº);
+                    Procedimento.LoteProcedimentoCcp = GetAllBatchesFromProcedimento(Procedimento.Nº);
                 }
                 
                 return Procedimento;
@@ -1362,8 +1362,206 @@ namespace Hydra.Such.Data.Logic.CCP
                 return false;
             }
         }
-        #endregion 
+        #endregion
 
+        #region ALT_CCP_#001.y2019
+        public static List<LoteProcedimentoCcp> GetAllBatchesFromProcedimento(string id)
+        {
+            var _context = new SuchDBContext();
+
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            try
+            {
+                return _context.LoteProcedimentoCcp.Where(l => l.NoProcedimento == id).
+                    OrderBy(l => l.IdLote).
+                    ToList();
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
+
+        public static LoteProcedimentoCcp GetBatchDetails(string noProcedimento, int idLote)
+        {
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+                return _context.LoteProcedimentoCcp.Where(l => l.NoProcedimento == noProcedimento && l.IdLote == idLote).LastOrDefault();
+            }
+            catch (Exception ex)
+            {
+                return null;
+                
+            }
+            
+        }
+        public static int GetIdLoteOfBatch(string noProcedimento)
+        {
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+                LoteProcedimentoCcp lote = _context.LoteProcedimentoCcp.
+                    Where(l => l.NoProcedimento == noProcedimento).
+                    OrderBy(l => l.NoProcedimento).
+                    ThenBy(l => l.IdLote).
+                    LastOrDefault();
+
+                if (lote == null)
+                    return 1;
+
+                return lote.IdLote + 1;
+            }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+            
+        }
+        public static bool __CreateBatch(LoteProcedimentoCcp lote)
+        {
+            if (lote == null)
+                return false;
+
+            if (string.IsNullOrEmpty(lote.NoProcedimento) || lote.IdLote == 0)
+                return false;
+
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+                _context.LoteProcedimentoCcp.Add(lote);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public static bool __UpdateBatch(LoteProcedimentoCcp lote)
+        {
+            if (lote == null)
+                return false;
+
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+                _context.LoteProcedimentoCcp.Update(lote);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
+        public static bool __DeleteAllBatches(string noProcedimento)
+        {
+            if (string.IsNullOrEmpty(noProcedimento))
+                return false;
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+                _context.LoteProcedimentoCcp.RemoveRange(_context.LoteProcedimentoCcp.Where(l => l.NoProcedimento == noProcedimento));
+                _context.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+        public static bool __DeleteBatch(string noProcedimento, int idLote)
+        {
+            int startingId = idLote;
+
+            if (string.IsNullOrEmpty(noProcedimento) || idLote == 0)
+                return false;
+
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+                List<LoteProcedimentoCcp> lotes = GetAllBatchesFromProcedimento(noProcedimento);
+
+                if (lotes == null)
+                    return false;
+
+                if (lotes.Count == 1)
+                {
+                    _context.LoteProcedimentoCcp.RemoveRange(_context.LoteProcedimentoCcp.Where(l => l.NoProcedimento == noProcedimento && l.IdLote == idLote));
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    __DeleteAllBatches(noProcedimento);
+
+                    lotes.Remove(lotes.Where(l => l.NoProcedimento==noProcedimento && l.IdLote == idLote).FirstOrDefault());
+
+                    foreach(var l in lotes)
+                    {
+                        if(l.IdLote > idLote)
+                        {
+                            l.IdLote = startingId;
+                            startingId += 1;
+                        }
+
+                        __CreateBatch(l);
+                    }
+                }                                    
+                                                        
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
+        public static bool ReorderBatches(string noProcedimento, int idLote)
+        {
+            int startingBatchId = idLote;
+            try
+            {
+                SuchDBContext _context = new SuchDBContext();
+
+                List<LoteProcedimentoCcp> lotes = _context.LoteProcedimentoCcp.
+                    Where(l => l.NoProcedimento == noProcedimento && l.IdLote > idLote).
+                    OrderBy(l => l.IdLote).
+                    ToList();
+
+                if (lotes == null)
+                    return true;
+                else
+                {
+                    foreach (var l in lotes)
+                    {
+                        l.IdLote = startingBatchId;
+                        _context.Update(l);
+
+                        startingBatchId += 1;
+                    }
+                    _context.SaveChanges();
+                }
+              
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+        #endregion
         #region parse ProcedimentosCCPView
         public static List<ProcedimentoCCPView> GetAllProcedimentosViewByProcedimentoTypeToList(int type, int hist)
         {
@@ -1693,24 +1891,6 @@ namespace Hydra.Such.Data.Logic.CCP
         }
         #endregion
 
-
-        #region LotesProcedimentos
-        public static List<LoteProcedimentoCcp> GetAllLotesFromProcedimento(string id)
-        {
-            var _context = new SuchDBContext();
-
-            try
-            {
-                return _context.LoteProcedimentoCcp.Where(l => l.NoProcedimento == id).ToList();
-            }
-            catch (Exception ex)
-            {
-
-                return null;
-            }
-            
-        }
-        #endregion
 
         #region Working days calculation
         // only excludes weekends

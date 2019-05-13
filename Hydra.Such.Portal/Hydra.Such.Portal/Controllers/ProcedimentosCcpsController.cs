@@ -926,7 +926,47 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult CreateLote([FromBody]LoteProcedimentoCcp data)
+        {
+            if (data == null)
+                return Json(false);
+
+            data.UtilizadorCriacao = User.Identity.Name;
+            data.DataCriacao = DateTime.Now;
+
+            return Json(DBProcedimentosCCP.__CreateBatch(data));
+        }
+        [HttpPost]
+        public JsonResult UpdateLote([FromBody]LoteProcedimentoCcp data)
+        {
+            return Json(null);
+        }
+        [HttpPost]
+        public JsonResult DeleteLote([FromBody]JObject requestParam)
+        {
+            if (requestParam == null)
+                return Json(false);
+
+            string noProcedimento = requestParam["noProcedimento"] == null ? "" : (string)requestParam["noProcedimento"];
+            int idLote = requestParam["idLote"] == null ? 0 : (int)requestParam["idLote"];
+
+            if (noProcedimento == "")
+                return Json(false);
+
+            if (idLote == 0)
+                return Json(false);
+
+            if (idLote == -1)
+            {
+                return Json(DBProcedimentosCCP.__DeleteAllBatches(noProcedimento));
+            }
+
+            return Json(DBProcedimentosCCP.__DeleteBatch(noProcedimento, idLote));
+        }
         #endregion
+
         [HttpPost]
         public JsonResult GetUserFeatures()
         {

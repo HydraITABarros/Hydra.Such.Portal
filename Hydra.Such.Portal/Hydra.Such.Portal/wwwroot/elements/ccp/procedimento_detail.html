@@ -900,6 +900,24 @@
                    content-type="application/json">
         </iron-ajax>
         <!-- MenuButton Funções.e -->
+        <!-- zpgm.ALT_CCP_#001.y2019.b -->
+        <iron-ajax url="/ProcedimentosCcps/CreateLote"
+                   last-response="{{ loteCreated }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_create_lote_ajax"
+                   on-response="_createLoteResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/DeleteLote"
+                   last-response="{{ loteDeleted }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_delete_lote_ajax"
+                   on-response="_deleteLoteResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- zpgm.ALT_CCP_#001.y2019.e -->
         <!-- Controller actions.e -->
 
         <div class="subMenu">
@@ -1025,7 +1043,7 @@
                                             items="[[LType]]"
                                             text-path="descricaoView"
                                             value-path="idTipo"
-                                            fields='[{"field":"idTipo", "name":"Código"}, {"field":"abreviatura", "name":"Abreviatura"}, {"field":"descricaoTipo", "name":"Descrição"}]'
+                                            fields='[{"field":"abreviatura", "name":"Abreviatura"}, {"field":"descricaoTipo", "name":"Descrição"}]'
                                             required error-message="Este campo é obrigatório">
                             </such-selectbox>
                             <!-- zpgm.ALT_CCP_#001.y2019.e -->
@@ -1039,7 +1057,7 @@
                                             items="[[fundamentosTipo]]"
                                             text-path="descricaoFundamento"
                                             value-path="idFundamento"
-                                            fields='[{"field":"idFundamento", "name":"Código"}, {"field":"descricaoFundamento", "name":"Descrição"}]'
+                                            fields='[{"field":"descricaoFundamento", "name":"Descrição"}]'
                                             required error-message="Este campo é obrigatório">
                             </such-selectbox>
                         </div>
@@ -1160,9 +1178,53 @@
                                         <div class="row break_clear">
                                             <!-- zpgm.ALT_CCP_#001.y2019 -->
                                             <br />
-                                            <vaadin-checkbox id="procediemntoLotes" checked="{{ data.procedimentoEmLotes }}">Procedimento Em Lotes?</vaadin-checkbox>
+                                            <vaadin-checkbox id="procedimentoEmLotes" checked="{{ data.procedimentoEmLotes }}" on-checked-changed="_showBatchesSection">Procedimento Em Lotes?</vaadin-checkbox>
                                         </div>
                                     </div>
+                                    <!-- zpgm.ALT_CCP_#001.y2019 - Adicionar Lotes.b -->
+                                    <div id="batchesSection" class="row break_clear">
+                                        <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Lotes do Procedimento</h2>
+                                        <div class="table inlineForm">
+                                            <div class="col-sm-3">
+                                                <vaadin-text-field id="valorEstimadoLote" name="valorEstimadoLote" label="Valor Estimado Lote" value="{{_valorEstimadoLote}}" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <br />
+                                                <paper-button class="btnSave" id="buttonAddLote" raised on-tap="_createLote"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Adicionar</paper-button>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-lg-6">
+                                                <vaadin-grid id="gridLotesProcedimento1" aria-label="gridLotesProcedimento1" items="{{data.loteProcedimentoCcp}}" class="grid" style="height:170px;">
+                                                    <vaadin-grid-column>
+                                                        <template class="header">
+                                                        </template>
+                                                        <template>
+                                                            <paper-button raised class="btnRemove" id="deleteBatchBtn1" on-tap="_deleteLote"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                                        </template>
+                                                    </vaadin-grid-column>
+                                                    <vaadin-grid-column>
+                                                        <template class="header">
+                                                            Lote Nº
+                                                        </template>
+                                                        <template>
+                                                            <vaadin-text-field id="idLote1" value="{{item.idLote}}" disabled="true"></vaadin-text-field>
+                                                        </template>
+                                                    </vaadin-grid-column>
+                                                    <vaadin-grid-column>
+                                                        <template class="header">
+                                                            Valor Estimado
+                                                        </template>
+                                                        <template>
+                                                            <vaadin-text-field id="valorEstimado1" value="{{item.valorEstimado}}"></vaadin-text-field>
+                                                        </template>
+                                                    </vaadin-grid-column>
+                                                </vaadin-grid>
+                                            </div>
+                                        </div>
+                                        <h2 class="separator" style="border-bottom:1px dotted; padding:0;"></h2>
+                                    </div>
+                                    <!-- zpgm.ALT_CCP_#001.y2019 - Adicionar Lotes.e -->
                                     <!-- Elementos Juri section.b -->
                                     <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Elementos do Juri a designar pela UP</h2>
                                     <div class="table inlineForm">
@@ -3853,13 +3915,22 @@
                     },
                     _reportserverurl: {
                         type: String,
+                    },
+                    _valorEstimadoLote: {
+                        type: Number,
+                        value: 0
                     }
-
+                    
                 },
                 _testFunction: function () {
 
                 },
                 ready: function () {
+                    // ALT_CCP_#001.y2019.b
+                    var _self = this;
+                    $(_self.$.batchesSection).addClass('hidden');
+                    // ALT_CCP_#001.y2019.e
+
                     this.$.ajax_userpermissions.body = this.data;
                     this.$.ajax_userpermissions.generateRequest();
 
@@ -4125,6 +4196,9 @@
                                     this.$.fundamentoLegalTipo.value = self.data.fundamentoLegalTipo;                                     
                                 }
                             }
+                            if (self.data.procedimentoEmLotes) {
+                                $(self.$.batchesSection).removeClass('hidden');
+                            }
                             // zpgm.ALT_CCP_#001.y2019.e
                             if (self.data.temposPaCcp != null) {
                                 for (key in self.data.temposPaCcp) {
@@ -4151,6 +4225,7 @@
                     }
                 },
 
+                // zpgm.ALT_CCP_#001.y2019.b
                 _fundamentosResponse: function (e) {
                     debugger;;
                     if (this.data != undefined) {
@@ -4162,6 +4237,7 @@
                         }
                     }
                 },
+                // zpgm.ALT_CCP_#001.y2019.e
 
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
@@ -6282,6 +6358,102 @@
                             this.$.ajax_fundamentos_page.generateRequest();
                         }
                     }
+                },
+                _showBatchesSection: function (e) {
+                    debugger;;
+                    if (this.data != undefined) {
+                        var _self = this;
+                        if (_self.$.procedimentoEmLotes.checked) {
+                            $(_self.$.batchesSection).removeClass('hidden');
+                        } else {
+                            $(_self.$.batchesSection).addClass('hidden');
+                            this.$.page_delete_lote_ajax.body = JSON.stringify({ "noProcedimento": this.data.no, "idLote": -1 });
+                            this.$.page_delete_lote_ajax.generateRequest();
+                        }
+                    }  
+                },
+                _createLote: function (e) {
+                    debugger;;
+                    if (this.data != undefined) {
+                        if (this._valorEstimadoLote <= 0) {
+                            this._showErrorMessage("Valor Estimado tem que ser maior que zero!");
+                            return;
+                        }
+
+                        var _lotes = this.data.loteProcedimentoCcp;
+                        var index = 1;
+                        if (_lotes != null && _lotes.length > 0) {
+                            index += _lotes[_lotes.length - 1].idLote;
+                        }
+
+                        var _valor = this.__preciseRound(parseFloat(this._valorEstimadoLote), 2);
+
+                        var loteToAdd = {
+                            "noProcedimento": this.data.no,
+                            "idLote": index,
+                            "valorEstimado": _valor
+                        };
+
+                        this.$.page_create_lote_ajax.body = JSON.stringify(loteToAdd);
+
+                        this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                        var sav = this.$.ajax_update_procedimento.generateRequest();
+                        var lin = this.$.page_create_lote_ajax.generateRequest();
+                        Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                            //var savReq = requests[0].result;
+                            //var linReq = requests[1].result;
+                        });
+
+                        this.$.gridLotesProcedimento1.clearCache();
+                    }
+                },
+                _createLoteResponse: function (e) {
+                    debugger;;
+                    if (this.loteCreated) {
+                        this._openToast('Lote adicionado com sucesso');
+                        this.$.page_databound_ajax.generateRequest();
+
+                        this.$.gridLotesProcedimento1.clearCache();
+
+                        this._valorEstimadoLote = 0;
+                        this.$.valorEstimadoLote.value = 0;
+
+                    } else {
+                        this._showErrorMessage("Não foi possível criar o Lote!");
+                    }
+                },
+
+                _deleteLote: function (e) {
+                    var _lotes = this.data.loteProcedimentoCcp;
+                    var _model = e.model.item;
+
+                    var index = _lotes.indexOf(_model);
+                    _lotes.splice(index, 1);
+
+                    this.$.page_delete_lote_ajax.body = JSON.stringify({ "noProcedimento": _model.noProcedimento, "idLote": _model.idLote });
+                    this.$.page_delete_lote_ajax.generateRequest();
+
+                    this.$.gridLotesProcedimento1.clearCache();
+                },
+
+                _deleteLoteResponse: function (e) {
+                    if (this.loteDeleted) {
+                        this._openToast("Lote(s) eliminado com sucesso!");
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$.gridLotesProcedimento1.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi possível eliminar o(s) Lote(s)!");
+                    }
+                },
+
+                __preciseRound: function (num, dec) {
+                    if ((typeof num !== 'number') || (typeof dec !== 'number'))
+                        return 0;
+
+                    var num_sign = num >= 0 ? 1 : -1;
+
+                    return (Math.round((num * Math.pow(10, dec)) + (num_sign * 0.0001)) / Math.pow(10, dec)).toFixed(dec);
                 },
                 // zpgm.ALT_CCP_#001.y2019.e
 
