@@ -1,8 +1,8 @@
 ```jsx
 import Button from '../Button';
 import Text from '../Text';
-import {Modal,DialogTitle,DialogContent,DialogActions} from './';
-import { Icon } from 'components';
+import { Icon, Modal } from 'components';
+const {DialogTitle,DialogContent,DialogActions} = Modal;
 
 const ModalContent = (
     <div>

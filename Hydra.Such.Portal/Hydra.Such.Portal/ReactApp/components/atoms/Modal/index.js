@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css, theme } from 'styled-components';
 import _theme from '../../themes/default';
-import { Text, Button, Icon } from 'components';
+// import { Text, Button, Icon } from 'components';
+import Text from '../Text';
+import Button from '../Button';
+import Icon from '../Icon';
 import MuiDialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
@@ -12,11 +15,17 @@ const ActionDiv = styled.div`
     display: inline-block;
 `;
 
-const closeIcon = css`
-    position: absolute;
-    top: 8px;
-    right: 8px;
+const closeIcon = css`&& {
+        position: absolute;
+        z-index: 10;
+        top: 8px;
+        right: 8px;
+        span[class*="icon"] {
+            font-size: 14px;
+        }
+    }
 `
+
 const CloseIcon = styled(Button)`${closeIcon}`;
 
 const dialog = css`
@@ -31,8 +40,6 @@ const dialog = css`
     }
 `
 const Dialog = styled(MuiDialog)`${dialog}`;
-
-
 
 const Action = ({ ...props }) => {
     return <ActionDiv {...props}>{props.children}</ActionDiv>
@@ -49,14 +56,18 @@ class Modal extends React.Component {
     }
 
     handleClickOpen = () => {
-        console.log(23423423);
+
         this.setState({
             open: true,
+        }, () => {
+            this.props.onOpen ? this.props.onOpen() : '';
         });
     };
 
     handleClose = () => {
-        this.setState({ open: false });
+        this.setState({ open: false }, () => {
+            this.props.onClose ? this.props.onClose() : '';
+        });
     };
 
     render() {
@@ -65,12 +76,8 @@ class Modal extends React.Component {
                 <Action onClick={this.handleClickOpen} >
                     {this.props.action}
                 </Action>
-                <Dialog
-                    onClose={this.handleClose}
-                    aria-labelledby="customized-dialog-title"
-                    open={this.state.open}
-                >
-                <CloseIcon iconSolo><Icon decline/></CloseIcon>
+                <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.props.open || this.state.open} >
+                    <CloseIcon iconSolo onClick={this.handleClose}><Icon decline /></CloseIcon>
                     {this.props.children}
                 </Dialog>
             </div>
@@ -86,41 +93,33 @@ const styles = css`&& {
     
     &[class*="MuiPaper-rounded"]{
         border-radius: 0;
-        }
+    }
     
-    &[class*="MuiDialogTitle-root"]{
-        padding: 48px 40px 16px 40px;
-        margin: 0;
-        overflow: auto;
-        }   
-        
-    &[class*="Modal__DialogContent"]{
-        height: 344px;
-        padding: 8px 40px 0 40px;
-        margin: 0;
-        }
-
     &[class*="MuiDialogActions-root"]{
-        padding: 16px 40px 40px 40px;
+        padding: 16px 35px 35px 35px;
         margin: 0;
-        }
-}
-`
-const dialogTitle = css`&& {
-    [class*="icon-"] {
-        padding: 0;
     }
 }
 `
-
-const DialogTitle = styled(MuiDialogTitle)`${dialogTitle}${styles}`;
-const DialogContent = styled(MuiDialogContent)`${styles}`;
+const DialogTitle = styled(MuiDialogContent)`&&&& {
+        position:relative;
+        padding: 52px 35px 10px 35px;
+        margin: 0;
+        overflow: hidden;
+    }   
+    [class*="icon-"] {
+        padding: 0;
+    }
+`;
+const DialogContent = styled(MuiDialogContent)`&& {
+        height: 344px;
+        padding: 8px 35px 0 35px;
+        margin: 0;
+    }`;
 const DialogActions = styled(MuiDialogActions)`${styles}`;
 
+Modal.DialogTitle = DialogTitle;
+Modal.DialogContent = DialogContent;
+Modal.DialogActions = DialogActions;
 
-export {
-    Modal,
-    DialogTitle,
-    DialogContent,
-    DialogActions
-};
+export default Modal;
