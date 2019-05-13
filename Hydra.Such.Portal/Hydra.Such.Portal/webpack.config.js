@@ -7,6 +7,7 @@ const WebpackNotifierPlugin = require("webpack-notifier");
 const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const HappyPack = require('happypack');
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const sourceDir = process.env.SOURCE || 'ReactApp'
 const publicPath = `/${process.env.PUBLIC_PATH || ''}/`.replace('//', '/')
@@ -23,6 +24,14 @@ module.exports = {
         publicPath: 'dist/'
     },
     plugins: [
+        new CircularDependencyPlugin({
+            // exclude detection of files based on a RegExp
+            exclude: /a\.js|node_modules/,
+            // add errors to webpack instead of warnings
+            failOnError: true,
+            // set the current working directory for displaying module paths
+            cwd: process.cwd(),
+        }),
         new webpack.ProgressPlugin(),
         new HappyPack({
             loaders: ['babel-loader']
