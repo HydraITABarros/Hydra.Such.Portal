@@ -65,7 +65,7 @@ namespace Hydra.Such.Portal.Controllers
             
             var pageSize = 30;
 
-            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to).OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1)) ).OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);

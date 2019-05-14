@@ -15,14 +15,12 @@ namespace Hydra.Such.Data.Evolution.Database
         {
             get { return this.OrderType == "DMNCATE" || this.OrderType == "DMNANU" || this.OrderType == "DMNDBI" || this.OrderType == "DMNCREE" || this.OrderType == "CTTCAT"; }
         }
-
         
         [NotMapped]
         public bool IsToExecute
         {
-            get { return !(this.FinishingDate > new DateTime (1753,1,1)); }
+            get { return !(this.DataFecho > new DateTime (1753,1,1)); }
         }
-
 
         [NotMapped]
         public List<Utilizador> Technicals;

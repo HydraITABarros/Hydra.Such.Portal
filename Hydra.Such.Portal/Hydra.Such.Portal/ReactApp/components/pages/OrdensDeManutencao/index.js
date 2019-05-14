@@ -6,12 +6,11 @@ import { PageTemplate } from 'components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ReactTooltip from 'react-tooltip';
 import _theme from '../../themes/default';
 import styled, { css, theme, injectGlobal } from 'styled-components';
 import MuiGrid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, Modal } from 'components';
+import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, Modal, Tooltip } from 'components';
 import MuiDeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
@@ -30,6 +29,7 @@ import Highlighter from "react-highlight-words";
 import MuiTextField from '@material-ui/core/TextField';
 import MuiInput from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import { renderToString } from 'react-dom/server';
 
 const { DialogTitle, DialogContent, DialogActions } = Modal;
 
@@ -74,6 +74,7 @@ injectGlobal`
 
 const Grid = styled(MuiGrid)`
     position: relative;
+
 `
 
 const TableCell = styled(MuiTableCell)` && { 
@@ -192,6 +193,7 @@ const ListContainer = styled.div`
 `
 const Hr = styled.hr`
     margin-bottom: 0;
+    margin-top: 0;
 `;
 //updateTechnicals({ orderId: "OM1901562", technicalsId: ["42664", "105590", "106624"] });
 
@@ -310,12 +312,14 @@ const SearchButton = styled(Button)` && {
 const SearchWrapper = styled.div`
     position: absolute;
     display: block;
-    width: 50%;
+    width: ${props => props.width || '50%'};
     bottom: 0;
     right: 0;
     z-index: 2;
     padding: 0 25px 0;
 `;
+
+var timer = 0;
 
 class OrdensDeManutencao extends Component {
     state = {
@@ -340,6 +344,7 @@ class OrdensDeManutencao extends Component {
         maintenenceOrders: [],
         maintenenceOrdersFiltered: [],
         maintenenceOrdersIsLoading: true,
+        maintenenceOrdersSearchValue: "",
         maintenenceOrdersNext: "",
         technicals: [],
         technicalsFiltered: [],
@@ -371,7 +376,7 @@ class OrdensDeManutencao extends Component {
         this.getInitials = this.getInitials.bind(this);
         this.handleGridScroll = this.handleGridScroll.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
-        this.filterListByKeyValue = this.filterListByKeyValue.bind(this);
+        this.filterListByKeysValue = this.filterListByKeysValue.bind(this);
         this.handleTechnicalsClose = this.handleTechnicalsClose.bind(this);
     }
 
@@ -383,10 +388,10 @@ class OrdensDeManutencao extends Component {
                 if (data.data && data.data.technicals) {
                     this.setState({
                         technicals: data.data.technicals,
-                        technicalsFiltered: this.filterListByKeyValue({ list: data.data.technicals, key: 'nome', value: this.state.technicalsSearchValue })
+                        technicalsFiltered: this.filterListByKeysValue({ list: data.data.technicals, keys: ['nome'], value: this.state.technicalsSearchValue })
                     });
                 }
-                console.log(data);
+
             }).catch((error) => {
                 cb ? cb(error) : console.log(error);
             }).then((data) => {
@@ -408,12 +413,17 @@ class OrdensDeManutencao extends Component {
         });
     }
 
-    fetchMaintenenceOrders({ from, to }, cb) {
+    fetchMaintenenceOrders({ from, to, search }, cb) {
+        var filter = null;
+        if (search && search != '') {
+            filter = "contains(description,'" + search + "') or contains(customerName,'" + search + "') or contains(no,'" + search + "')"
+        }
         axios.get('/ordens-de-manutencao/all', {
             params: {
                 from: from.format('YYYY-MM-DD'),
                 to: to.format('YYYY-MM-DD'),
-                $select: 'no, description, customerName, orderType, idTecnico1, idTecnico2, idTecnico3, idTecnico4, idTecnico5, orderDate, shortcutDimension1Code'
+                $select: 'no, description, customerName, orderType, idTecnico1, idTecnico2, idTecnico3, idTecnico4, idTecnico5, orderDate, shortcutDimension1Code',
+                $filter: filter
             }
         }).then((result) => {
             var data = result.data;
@@ -460,21 +470,31 @@ class OrdensDeManutencao extends Component {
     handleGridScroll(e) {
         (() => {
             setTimeout(() => {
+                Tooltip.Hidden.hide();
+                Tooltip.Hidden.rebuild();
                 var listWrapper = ReactDOM.findDOMNode(this.listWrapper);
                 var scrollTop = listWrapper.scrollTop;
                 var containerHeight = listWrapper.clientHeight;
                 if (scrollTop > containerHeight && !this.state.maintenenceOrdersIsLoading) {
                     this.setState({ maintenenceOrdersIsLoading: true }, () => {
                         axios.get(this.state.maintenenceOrdersNext).then((result) => {
+                            Tooltip.Hidden.hide();
+                            Tooltip.Hidden.rebuild();
                             var data = result.data;
                             this.setTableMarginTop();
                             if (data.ordersCounts && data.result && data.result.items) {
                                 var list = data.result.items;
                                 var nextPageLink = data.result.nextPageLink;
-                                this.setState({ ordersCounts: data.ordersCounts, maintenenceOrders: this.state.maintenenceOrders.concat(list), maintenenceOrdersNext: nextPageLink }, () => { });
+                                this.setState({ ordersCounts: data.ordersCounts, maintenenceOrders: this.state.maintenenceOrders.concat(list), maintenenceOrdersNext: nextPageLink }, () => {
+                                    Tooltip.Hidden.hide();
+                                    Tooltip.Hidden.rebuild();
+                                });
                             }
                         }).catch().then(() => {
-                            this.setState({ maintenenceOrdersIsLoading: false });
+                            this.setState({ maintenenceOrdersIsLoading: false }, () => {
+                                Tooltip.Hidden.hide();
+                                Tooltip.Hidden.rebuild();
+                            });
                         });;
                     });
                 }
@@ -494,13 +514,17 @@ class OrdensDeManutencao extends Component {
         }
     }
     handleTechnicalsOpen(item) {
+        Tooltip.Hidden.hide();
+        Tooltip.Hidden.rebuild();
         if (this.state.technicalsOpen == false) {
             this.setState({ technicalsOpen: true, technicalsSelectedOrder: item, technicalsSelectedOrderOld: _.cloneDeep(item) });
             this.fetchTechnicals({ local: item.shortcutDimension1Code });
         }
     }
     handleTechnicalsClose() {
-        this.setState({ technicalsSearchValue: "", technicalsOpen: false, technicals: [], technicalsFiltered: [], technicalsSelectedOrder: { technicals: [] }, technicalsSelectedOrderOld: { technicals: [] } });
+        this.setState({ technicalsSearchValue: "", technicalsOpen: false, technicals: [], technicalsFiltered: [], technicalsSelectedOrder: { technicals: [] }, technicalsSelectedOrderOld: { technicals: [] } }, () => {
+            Tooltip.Hidden.rebuild();
+        });
     }
     setTableMarginTop() {
         (() => {
@@ -539,78 +563,113 @@ class OrdensDeManutencao extends Component {
         }
     }
 
-    filterListByKeyValue({ list, key, value }) {
+    filterListByKeysValue({ list, keys, value }) {
+        keys = keys || [];
         value = value || "";
         value = value.toLowerCase();
         let filteredList = list.filter((item) => {
-            return item.nome.toLowerCase().search(value) != -1;
+            var find = false;
+            keys.map((k) => {
+                if (item[k].toLowerCase().search(value) != -1) {
+                    find = true;
+                }
+            });
+            return find;
         });
         return filteredList;
     }
 
     render() {
-        const { isLoading, ordersCounts, maintenenceOrders, calendar } = this.state;
+        const { isLoading, ordersCounts, maintenenceOrders, calendar, maintenenceOrdersIsLoading } = this.state;
 
         return (
             <PageTemplate >
+                <Wrapper padding={'0 0 20px'} width="100%">
+                    <Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} ref={el => this.highlightWrapper = el} padding={"200px"}>
+                        <Grid item xs>
+                            <Wrapper padding={'25px 25px 0'}>
+                                <TextHeader h2>Ordens de Manutenção <br /> <b>Por executar</b></TextHeader>
+                                <PullRight>
+                                    <Hidden mdUp xsDown><Button icon={<Icon archive />}>Arquivo</Button></Hidden>
+                                </PullRight>
+                            </Wrapper>
+                        </Grid>
+                        <Grid container item md={6} xs={12}>
 
-                <Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} ref={el => this.highlightWrapper = el}>
-                    <Grid item xs>
-                        <Wrapper padding={'25px 25px 0'}>
-                            <TextHeader h2>Ordens de Manutenção <br /> <b>Por executar</b></TextHeader>
-                            <PullRight>
-                                <Hidden mdUp xsDown><Button icon={<Icon archive />}>Arquivo</Button></Hidden>
-                            </PullRight>
-                        </Wrapper>
-                    </Grid>
-                    <Grid container item md={6} xs={12}>
+                            <Wrapper padding={'15px'} textAlign="center" width="100%">
+                                <PickerButton ref={el => this.pickerButton = el} picker icon={<Icon calendar />} onClick={(e) => {
+                                    this.setState({ datePickerOpen: !this.state.datePickerOpen }, () => {
+                                        if (!this.state.datePickerOpen) this.handleDateChange(e);
+                                    });
+                                }}>
+                                    {calendar.from ? calendar.from.format('DD MMM YYYY') : ''} - {calendar.to ? calendar.to.format('DD MMM YYYY') : ''}
+                                </PickerButton>
+                            </Wrapper>
+                            <CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
+                                <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.primary.light} color={this.state.isLoading ? 'white' : _theme.palette.primary.default}>
+                                    <Icon preventiva data-tip="Preventiva" />
+                                </CircleOm.icon>
+                                <CircleOm.chart>
+                                    <Circle loading={this.state.isLoading} label="Executadas" strokeValue={this.state.isLoading ? 0 : ordersCounts.curative} trailValue={ordersCounts.preventive} strokeIcon={<Icon curativa />} trailIcon={<Icon preventiva />} width={191} />
+                                </CircleOm.chart>
+                                <CircleOm.chart>
+                                    <Circle loading={this.state.isLoading} label="Por executar" strokeValue={this.state.isLoading ? 0 : ordersCounts.curativeToExecute} trailValue={ordersCounts.preventiveToExecute} strokeIcon={<Icon curativa />} trailIcon={<Icon preventiva />} width={191} />
+                                </CircleOm.chart>
+                                <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.secondary.default} color={'white'}>
+                                    <Icon curativa data-tip="Curativa" />
+                                </CircleOm.icon>
+                            </CircleOmWrapper>
+                        </Grid>
+                        <Grid item xs>
+                            <Wrapper padding={'25px'} textAlign="right" smTextAlign="center">
+                                <Hidden only="sm" ><Button icon={<Icon archive />}>Arquivo</Button></Hidden>
+                            </Wrapper>
+                        </Grid>
 
-                        <Wrapper padding={'15px'} textAlign="center" width="100%">
-                            <PickerButton ref={el => this.pickerButton = el} picker icon={<Icon calendar />} onClick={(e) => {
-                                this.setState({ datePickerOpen: !this.state.datePickerOpen }, () => {
-                                    if (!this.state.datePickerOpen) this.handleDateChange(e);
-                                });
-                            }}>
-                                {calendar.from ? calendar.from.format('DD MMM YYYY') : ''} - {calendar.to ? calendar.to.format('DD MMM YYYY') : ''}
-                            </PickerButton>
-                        </Wrapper>
-                        <CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
-                            <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.primary.light} color={this.state.isLoading ? 'white' : _theme.palette.primary.default}>
-                                <Icon preventiva data-tip="Preventiva" />
-                            </CircleOm.icon>
-                            <CircleOm.chart>
-                                <Circle loading={this.state.isLoading} label="Executadas" strokeValue={this.state.isLoading ? 0 : ordersCounts.curative} trailValue={ordersCounts.preventive} strokeIcon={<Icon curativa />} trailIcon={<Icon preventiva />} width={191} />
-                            </CircleOm.chart>
-                            <CircleOm.chart>
-                                <Circle loading={this.state.isLoading} label="Por executar" strokeValue={this.state.isLoading ? 0 : ordersCounts.curativeToExecute} trailValue={ordersCounts.preventiveToExecute} strokeIcon={<Icon curativa />} trailIcon={<Icon preventiva />} width={191} />
-                            </CircleOm.chart>
-                            <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.secondary.default} color={'white'}>
-                                <Icon curativa data-tip="Curativa" />
-                            </CircleOm.icon>
-                        </CircleOmWrapper>
+                        <OmDatePicker
+                            ref={el => this.datePicker = el}
+                            open={this.state.datePickerOpen}
+                            from={calendar.from}
+                            to={calendar.to}
+                            onChange={(e) => this.setState({ calendar: { ...this.datePicker.value() } })}
+                            onCloseClick={this.handleDateChange}
+                            margintop={this.state.datePickerMarginTop}>
+                        </OmDatePicker>
                     </Grid>
-                    <Grid item xs>
-                        <Wrapper padding={'25px'} textAlign="right" smTextAlign="center">
-                            <Hidden only="sm" ><Button icon={<Icon archive />}>Arquivo</Button></Hidden>
-                        </Wrapper>
-                    </Grid>
+                    <SearchWrapper width={"25%"}>
+                        <TextField
+                            inputProps={{ autoComplete: "off" }}
+                            id="oms-search"
+                            onChange={(e) => {
+                                this.state.maintenenceOrdersSearchValue;
+                                let search = e.target.value.toLowerCase();
+                                this.setState({
+                                    maintenenceOrdersSearchValue: search,
+                                    maintenenceOrdersFiltered: this.filterListByKeysValue({ list: this.state.maintenenceOrders, keys: ['description', 'no', 'customerName'], value: search })
+                                }, () => { });
 
-                    <OmDatePicker
-                        ref={el => this.datePicker = el}
-                        open={this.state.datePickerOpen}
-                        from={calendar.from}
-                        to={calendar.to}
-                        onChange={(e) => this.setState({ calendar: { ...this.datePicker.value() } })}
-                        onCloseClick={this.handleDateChange}
-                        margintop={this.state.datePickerMarginTop}></OmDatePicker>
-                </Grid>
-                <OmDatePicker.backdrop open={this.state.datePickerOpen} />
+                                clearTimeout(timer);
+                                timer = setTimeout(() => {
+                                    this.setState({ maintenenceOrdersIsLoading: true });
+                                    this.fetchMaintenenceOrders({ from: this.state.calendar.from, to: this.state.calendar.to, search: this.state.maintenenceOrdersSearchValue })
+                                }, 1500);
+
+                            }}
+                            type="search"
+                            margin="none"
+                            endAdornment={
+                                <InputAdornment position="end" onClick={() => { document.getElementById("oms-search").focus() }}><SearchButton round boxShadow={"none"} ><Icon search /></SearchButton></InputAdornment>
+                            }
+                        />
+                    </SearchWrapper>
+                </Wrapper>
                 <Hr />
+                <OmDatePicker.backdrop open={this.state.datePickerOpen} />
 
 
                 {this.state.listContainerStyle.marginTop ?
                     <ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} >
-                        <div style={{ height: '100%', width: '100%', textAlign: 'center' }} className={isLoading ? "" : "hidden"}>
+                        <div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading || maintenenceOrdersIsLoading ? "" : "hidden"}>
                             <CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} />
                         </div>
                         <AutoSizer className={!isLoading ? "" : "hidden"} >
@@ -619,31 +678,40 @@ class OrdensDeManutencao extends Component {
                                     <ListWindow ref={el => this.listWrapper = el} onScroll={this.handleGridScroll} className="List" height={height} itemCount={this.state.maintenenceOrders.length} itemSize={75} width={width} >
                                         {({ index, style }) => {
                                             var item = this.state.maintenenceOrders[index];
+                                            setTimeout(() => {
+                                                Tooltip.Hidden.hide();
+                                                Tooltip.Hidden.rebuild();
+                                            });
                                             return (
                                                 <ListGridRow container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} style={{ ...style }}>
-                                                    <Grid item lg={3} md={1} xs={12}></Grid>
-                                                    <Grid container item lg={7} md={10} xs={12}>
-                                                        <ListGridItemTextOverflow item xs={5}>
+                                                    <Grid item lg={2} md={1} xs={12}></Grid>
+                                                    <Grid container item lg={9} md={10} xs={12}>
+                                                        <ListGridItemTextOverflow item xs={3}>
                                                             <Wrapper inline padding="0 25px 0 15px" margin="-10px 0 -10px">
                                                                 {item.isPreventive ?
-                                                                    <Icon preventiva style={{ fontSize: '29px', top: "8px", position: "relative" }} /> :
-                                                                    <Icon curativa style={{ fontSize: '29px', top: "8px", position: "relative", color: _theme.palette.secondary.default }} />}
+                                                                    <Icon preventiva style={{ fontSize: '29px', top: "8px", position: "relative" }} data-tip={'Preventiva'} /> :
+                                                                    <Icon curativa style={{ fontSize: '29px', top: "8px", position: "relative", color: _theme.palette.secondary.default }} data-tip={'Curativa'} />}
                                                             </Wrapper>
-                                                            <Text b>{item.description}</Text>
+                                                            <Text b data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.no}></Highlighter>)} ><Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.no}></Highlighter></Text>
                                                         </ListGridItemTextOverflow>
-                                                        <ListGridItemTextOverflow item xs={4}>
-                                                            <Text p>{item.customerName}</Text>
+                                                        <ListGridItemTextOverflow item xs={3}>
+                                                            <Text b data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.description}></Highlighter>)} ><Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.description}></Highlighter></Text>
+                                                        </ListGridItemTextOverflow>
+                                                        <ListGridItemTextOverflow item xs={3}>
+                                                            <Text p data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.customerName}></Highlighter>)} >
+                                                                <Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.customerName}></Highlighter>
+                                                            </Text>
                                                         </ListGridItemTextOverflow>
                                                         <ListGridItem item xs={3}>
                                                             {item.technicals.length > 0 ?
                                                                 <AvatarGroup style={{ top: "-10px", position: "relative" }} onClick={(e) => this.handleTechnicalsOpen(item)}>
-                                                                    {item.technicals.map((_item, i) => (<Avatars.Avatars key={i} letter color={this.state.avatarColors[i]} title={_item.nome} >{this.getInitials(_item.nome)}</Avatars.Avatars>))}
+                                                                    {item.technicals.map((_item, i) => (<Avatars.Avatars key={i} letter color={this.state.avatarColors[i]} data-tip={_item.nome} >{this.getInitials(_item.nome)}</Avatars.Avatars>))}
                                                                 </AvatarGroup>
                                                                 :
-                                                                <Button round style={{ top: "-10px" }} onClick={(e) => this.handleTechnicalsOpen(item)}><MuiAddIcon /></Button>}
+                                                                <Button round style={{ top: "-10px" }} onClick={(e) => this.handleTechnicalsOpen(item)} data-tip="Editar Técnicos"><MuiAddIcon /></Button>}
                                                         </ListGridItem>
                                                     </Grid>
-                                                    <Grid item lg={2} md={12} xs={12}></Grid>
+                                                    <Grid item lg={1} md={12} xs={12}></Grid>
                                                 </ListGridRow>
                                             )
                                         }}
@@ -651,6 +719,7 @@ class OrdensDeManutencao extends Component {
                                 )
                             }}
                         </AutoSizer>
+                        <Tooltip.Hidden id={'oms-tooltip'} />
                     </ListContainer>
                     : <div></div>
                 }
@@ -669,7 +738,7 @@ class OrdensDeManutencao extends Component {
                                         let search = e.target.value.toLowerCase();
                                         this.setState({
                                             technicalsSearchValue: search,
-                                            technicalsFiltered: this.filterListByKeyValue({ list: this.state.technicals, key: 'nome', value: search })
+                                            technicalsFiltered: this.filterListByKeysValue({ list: this.state.technicals, keys: ['nome'], value: search })
                                         })
                                     }}
                                     type="search"
@@ -677,7 +746,6 @@ class OrdensDeManutencao extends Component {
                                     endAdornment={
                                         <InputAdornment position="end" onClick={() => { document.getElementById("technicals-search").focus() }}><SearchButton round boxShadow={"none"} ><Icon search /></SearchButton></InputAdornment>
                                     }
-                                // className={"MuiInputBase-focused"}
                                 />
                             </SearchWrapper>
                         </DialogTitle>
@@ -700,7 +768,7 @@ class OrdensDeManutencao extends Component {
                                                     var _item = this.state.technicalsFiltered[index];
                                                     var orderTechnicals = this.state.technicalsSelectedOrder.technicals;
                                                     var checked = _.find(orderTechnicals, ['numMec', _item.numMec]);
-                                                    console.log('find num mec', _.find(orderTechnicals, ['numMec', _item.numMec]), _item.numMec, orderTechnicals);
+
                                                     return (
                                                         <TechnicalsListItem key={index} style={{ padding: '16px 30px 0 30px', ...style }}>
 
@@ -716,7 +784,7 @@ class OrdensDeManutencao extends Component {
                                                                     _.remove(__orderTechnicals, ['numMec', __numMec]);
                                                                 }
                                                                 this.setState({ technicalsSelectedOrder: { technicals: __orderTechnicals, ...this.state.technicalsSelectedOrder } }, () => {
-                                                                    console.log('IMP', _.isEqual(this.state.technicalsSelectedOrder, this.state.technicalsSelectedOrderOld));
+
                                                                 })
                                                             }} />
 

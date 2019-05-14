@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.Database
         public string NoProcedimento { get; set; }
         public int IdLote { get; set; }
         public int? EstadoLote { get; set; }
+        public string DescricaoObjectoLote { get; set; }
         public decimal? ValorEstimado { get; set; }
         public decimal? ValorAdjudicacao { get; set; }
         public string UtilizadorAdjudicacao { get; set; }
