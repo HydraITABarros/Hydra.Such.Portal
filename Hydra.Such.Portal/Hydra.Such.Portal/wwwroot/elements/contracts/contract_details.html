@@ -1723,20 +1723,20 @@
                 <vaadin-grid aria-label="InvoiceLinesList" id="grid_contractInvoiceLinesList" items="[[invoiceLinesList]]" class="grid" multi-sort="true">
                     <vaadin-grid-column resizable>
                         <template class="header">
-                            <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="no_" />
-                        </template>
-                        <template>
-                            {{item.no_}}
-                        </template>
-                    </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="docNo">Código</vaadin-grid-sorter>
+                            <vaadin-grid-sorter path="docNo">Nº Fatura</vaadin-grid-sorter>
                             <vaadin-grid-filter path="docNo" />
                         </template>
                         <template>
                             {{item.docNo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="no_">Código</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="no_" />
+                        </template>
+                        <template>
+                            {{item.no_}}
                         </template>
                     </vaadin-grid-column>
                     <vaadin-grid-column resizable>

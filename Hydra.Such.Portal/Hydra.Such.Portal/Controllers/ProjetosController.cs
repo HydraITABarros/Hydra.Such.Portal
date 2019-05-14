@@ -3800,9 +3800,9 @@ namespace Hydra.Such.Portal.Controllers
                             Contratos cont = DBContracts.GetByIdLastVersion(proj.NºContrato);
                             NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, proj.NºCliente);
 
-                            if (proj != null && !string.IsNullOrEmpty(proj.EnvioAEndereço))
+                            if (proj != null && !string.IsNullOrEmpty(proj.CódEndereçoEnvio))
                             {
-                                NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(proj.EnvioAEndereço, _config.NAVDatabaseName, _config.NAVCompanyName);
+                                NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(proj.CódEndereçoEnvio, _config.NAVDatabaseName, _config.NAVCompanyName);
                                 if (SHIP != null)
                                 {
                                     Ship.Ship_to_Address = SHIP.Address1;
@@ -3819,9 +3819,9 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                if (cont != null && !string.IsNullOrEmpty(cont.EnvioAEndereço))
+                                if (cont != null && !string.IsNullOrEmpty(cont.CódEndereçoEnvio))
                                 {
-                                    NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(cont.EnvioAEndereço, _config.NAVDatabaseName, _config.NAVCompanyName);
+                                    NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(cont.CódEndereçoEnvio, _config.NAVDatabaseName, _config.NAVCompanyName);
                                     if (SHIP != null)
                                     {
                                         Ship.Ship_to_Address = SHIP.Address1;

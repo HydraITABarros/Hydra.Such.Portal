@@ -410,6 +410,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ContractsList = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value == true);
+                ContractsList.RemoveAll(x => x.NºDeContrato.StartsWith("VCI"));
 
                 ContractsLinesList = DBContractLines.GetAll().Where(x => x.TipoContrato == 3).ToList();
                 ContractsLinesList.RemoveAll(x => ContractsList.Find(y => y.NºDeContrato == x.NºContrato && y.NºVersão == x.NºVersão) == null);
@@ -419,6 +420,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ContractsList = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
                 ContractsList.RemoveAll(x => x.Arquivado == null || x.Arquivado == false);
+                ContractsList.RemoveAll(x => x.NºDeContrato.StartsWith("VCI"));
 
                 ContractsLinesList = DBContractLines.GetAll().Where(x => x.TipoContrato == 3).ToList();
                 ContractsLinesList.RemoveAll(x => ContractsList.Find(y => y.NºDeContrato == x.NºContrato && y.NºVersão == x.NºVersão) == null);
@@ -3954,7 +3956,8 @@ namespace Hydra.Such.Portal.Controllers
                             if (ClientRequisition != null)
                             {
                                 PreInvoiceToCreate.No_Compromisso = !string.IsNullOrEmpty(ClientRequisition.NºCompromisso) ? ClientRequisition.NºCompromisso : "";
-                                PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
+                                if (ClientRequisition.DataRequisição != null)
+                                    PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
                             }
 
