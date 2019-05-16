@@ -542,7 +542,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Data Estado Proposta</Value>
+                    <Value>Data Envio</Value>
                     <Style>
                       <FontFamily>Arial</FontFamily>
                       <FontSize>9pt</FontSize>
@@ -1007,6 +1007,7 @@
                     <Style>
                       <FontFamily>Arial</FontFamily>
                       <FontSize>8pt</FontSize>
+                      <Format>dd/MM/yyyy</Format>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -2244,7 +2245,6 @@
             </TablixRowHierarchy>
             <DataSetName>LINHAS</DataSetName>
             <Top>9.52917cm</Top>
-            <Left>0cm</Left>
             <Height>1.2cm</Height>
             <Width>19cm</Width>
             <ZIndex>46</ZIndex>
@@ -2269,7 +2269,6 @@
           </Tablix>
           <Line Name="Line1">
             <Top>9.35278cm</Top>
-            <Left>0cm</Left>
             <Height>0cm</Height>
             <Width>19cm</Width>
             <ZIndex>47</ZIndex>
