@@ -200,7 +200,7 @@ namespace Hydra.Such.Data.NAV
                     Periodo_de_Fact_Contrato = PreInvoiceToCreate.PeriododeFact_Contrato,
                     Valor_Contrato = PreInvoiceToCreate.ValorContrato,
 
-                    Ship_to_Address = PreInvoiceToCreate.Ship_toAddress,
+                    Ship_to_Address = PreInvoiceToCreate.Ship_toAddress.Length >= 50 ? PreInvoiceToCreate.Ship_toAddress.Substring(0, 49) : PreInvoiceToCreate.Ship_toAddress,
                     Ship_to_Address_2 = PreInvoiceToCreate.Ship_toAddress2,
                     Ship_to_City = PreInvoiceToCreate.Ship_toCity,
                     Ship_to_Code = PreInvoiceToCreate.Ship_toCode,

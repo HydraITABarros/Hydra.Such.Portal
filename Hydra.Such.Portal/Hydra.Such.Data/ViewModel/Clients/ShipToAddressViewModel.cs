@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Clients
     {
         public string Code { get; set; }
         public string Name { get; set; }
+        public string Name_2 { get; set; }
         public string Address { get; set; }
         public string Address_2 { get; set; }
         public string Post_Code { get; set; }

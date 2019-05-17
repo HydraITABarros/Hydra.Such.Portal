@@ -225,6 +225,36 @@
                                 </template>
                             </vaadin-grid-column>
 
+                            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dimensionRegion.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dimensionRegion">Cód. Região</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="dimensionRegion" />
+                                </template>
+                                <template>
+                                    {{item.dimensionRegion}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dimensionArea.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dimensionArea">Cód. Área</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="dimensionArea" />
+                                </template>
+                                <template>
+                                    {{item.dimensionArea}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dimensionCresp.hidden }}">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dimensionCresp">Cód. Cresp</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="dimensionCresp" />
+                                </template>
+                                <template>
+                                    {{item.dimensionCresp}}
+                                </template>
+                            </vaadin-grid-column>
+
                             <vaadin-grid-column width="50px" resizable>
                                 <template class="header">
                                 </template>
@@ -392,7 +422,10 @@
                         "answer": { hidden: false, label: "Resposta" },
                         "answerDateText": { hidden: false, label: "Data da Resposta" },
                         "answerTimeText": { hidden: false, label: "Hora da Resposta" },
-                        "answeredByText": { hidden: false, label: "Utilizador da Resposta" }
+                        "answeredByText": { hidden: false, label: "Utilizador da Resposta" },
+                        "dimensionRegion": { hidden: false, label: "Cód. Região" },
+                        "dimensionArea": { hidden: false, label: "Cód. Área" },
+                        "dimensionCresp": { hidden: false, label: "Cód. Cresp" }
                     };
 
                     if (localStorage["stateofplaydetails.ToggleColumn"]) {

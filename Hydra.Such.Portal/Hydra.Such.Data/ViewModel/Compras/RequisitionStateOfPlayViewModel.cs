@@ -32,6 +32,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string AnswerTimeText { get; set; }
         public string AnsweredBy { get; set; }
         public string AnsweredByText { get; set; }
+        public string DimensionRegion { get; set; }
+        public string DimensionArea { get; set; }
+        public string DimensionCresp { get; set; }
 
         /// <summary>
         /// Indicates whether the question has been read

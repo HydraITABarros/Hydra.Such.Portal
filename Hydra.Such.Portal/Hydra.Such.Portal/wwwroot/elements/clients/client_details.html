@@ -842,28 +842,31 @@
                                     <div class="col-xs-12">
                                         <div class="row break_clear">
                                             <div class="col-lg-4">
-                                                <vaadin-text-field value="{{shippingData.code}}" maxlength="100" id="shippingData.code" name="shippingData.code" label="Código" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{shippingData.code}}" maxlength="10" id="shippingData.code" name="shippingData.code" label="Código" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                             </div>
-                                            <div class="col-lg-8">
-                                                <vaadin-text-field value="{{shippingData.name}}" maxlength="100" id="shippingData.name" name="shippingData.name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            <div class="col-lg-4">
+                                                <vaadin-text-field value="{{shippingData.name}}" maxlength="50" id="shippingData.name" name="shippingData.name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <vaadin-text-field value="{{shippingData.name_2}}" maxlength="50" id="shippingData.name_2" name="shippingData.name_2" label="Nome 2" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                             </div>
                                         </div>
 
                                         <div class="row break_clear">
                                             <div class="col-lg-6">
-                                                <vaadin-text-field value="{{shippingData.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingData.address" name="shippingData.address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                                <vaadin-text-field value="{{shippingData.address}}" maxlength="50" disabled="{{ !_permissions.update }}" id="shippingData.address" name="shippingData.address" label="Endereço" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                             </div>
                                             <div class="col-lg-6">
-                                                <vaadin-text-field value="{{shippingData.address_2}}" maxlength="255" id="shippingData.address_2" name="shippingData.address_2" label="Endereço 2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                <vaadin-text-field value="{{shippingData.address_2}}" maxlength="50" id="shippingData.address_2" name="shippingData.address_2" label="Endereço 2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
 
                                             <div class="col-lg-3">
-                                                <vaadin-text-field value="{{shippingData.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingData.post_Code" name="shippingData.post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                                <vaadin-text-field value="{{shippingData.post_Code}}" maxlength="20" disabled="{{ !_permissions.update }}" id="shippingData.post_Code" name="shippingData.post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                             </div>
                                             <div class="col-lg-3">
-                                                <vaadin-text-field value="{{shippingData.city}}" maxlength="100" id="shippingData.city" name="shippingData.city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{shippingData.city}}" maxlength="30" id="shippingData.city" name="shippingData.city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                             </div>
 
                                             <div class="col-lg-3">
@@ -881,13 +884,13 @@
                                         <div class="row break_clear">
 
                                             <div class="col-lg-3">
-                                                <vaadin-text-field value="{{shippingData.contact}}" disabled="{{ !_permissions.update }}" id="shippingData.contact" name="shippingData.contact" label="Contacto"></vaadin-text-field>
+                                                <vaadin-text-field value="{{shippingData.contact}}" maxlength="50" disabled="{{ !_permissions.update }}" id="shippingData.contact" name="shippingData.contact" label="Contacto"></vaadin-text-field>
                                             </div>
                                             <div class="col-lg-3">
                                                 <vaadin-text-field pattern="^(?:\s*\d){9}$" value="{{shippingData.fax_No}}" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="shippingData.fax_No" name="shippingData.fax_No" label="Nº Fax"></vaadin-text-field>
                                             </div>
                                             <div class="col-lg-3">
-                                                <vaadin-text-field value="{{shippingData.e_Mail}}" maxlength="255" id="shippingData.e_Mail" name="shippingData.e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{shippingData.e_Mail}}" maxlength="80" id="shippingData.e_Mail" name="shippingData.e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                             </div>
                                         </div>
                                     </div>
@@ -926,10 +929,25 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.name}}" maxlength="100" id="shippingList.name" name="shippingList.name" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.name}}" maxlength="50" id="shippingList.name" name="shippingList.name" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.name}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="100px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="name_2">Nome 2</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="name_2" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field value="{{item.name_2}}" maxlength="50" id="shippingList.name_2" name="shippingList.name_2" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.name_2}}
                                                 </template>
                                             </template>
                                         </vaadin-grid-column>
@@ -941,7 +959,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.address}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingList.address" name="shippingList.address" required></vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.address}}" maxlength="50" disabled="{{ !_permissions.update }}" id="shippingList.address" name="shippingList.address" required></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.address}}
@@ -956,7 +974,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.address_2}}" maxlength="255" id="shippingList.address_2" name="shippingList.address_2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.address_2}}" maxlength="50" id="shippingList.address_2" name="shippingList.address_2" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.address_2}}
@@ -971,7 +989,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.post_Code}}" maxlength="255" disabled="{{ !_permissions.update }}" id="shippingList.post_Code" name="shippingList.post_Code"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.post_Code}}" maxlength="20" disabled="{{ !_permissions.update }}" id="shippingList.post_Code" name="shippingList.post_Code"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.post_Code}}
@@ -986,7 +1004,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.city}}" maxlength="100" id="shippingList.city" name="shippingList.city" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.city}}" maxlength="30" id="shippingList.city" name="shippingList.city" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.city}}
@@ -1035,7 +1053,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.contact}}" disabled="{{ !_permissions.update }}" id="shippingList.contact" name="shippingList.contact"></vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.contact}}" maxlength="50" disabled="{{ !_permissions.update }}" id="shippingList.contact" name="shippingList.contact"></vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.contact}}
@@ -1065,7 +1083,7 @@
                                             </template>
                                             <template>
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field value="{{item.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="255" id="shippingList.e_Mail" name="shippingList.e_Mail" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
+                                                    <vaadin-text-field value="{{item.e_Mail}}" pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$' maxlength="80" id="shippingList.e_Mail" name="shippingList.e_Mail" disabled="{{ !_permissions.update }}" required> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.e_Mail}}

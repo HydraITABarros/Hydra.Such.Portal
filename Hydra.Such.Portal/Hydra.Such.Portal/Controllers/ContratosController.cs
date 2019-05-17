@@ -404,25 +404,23 @@ namespace Hydra.Such.Portal.Controllers
             List<Contratos> ContractsList = null;
             List<LinhasContratos> ContractsLinesList = null;
             Contratos contrato = new Contratos();
-            int type = 1; //CONTRATOS
+            //int type = 1; //CONTRATOS
 
             if ((Archived == 0 || ContractNo == "") && (Historic == 0))
             {
-                ContractsList = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
-                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value == true);
-                ContractsList.RemoveAll(x => x.NºDeContrato.StartsWith("VCI"));
+                int type = 1; //CONTRATOS
+                ContractsList = DBContracts.GetAll().Where(x => x.TipoContrato == (int)ContractType.Contract && x.Tipo == type).ToList();
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
 
-                ContractsLinesList = DBContractLines.GetAll().Where(x => x.TipoContrato == 3).ToList();
+                ContractsLinesList = DBContractLines.GetAll().Where(x => x.TipoContrato == (int)ContractType.Contract).ToList();
                 ContractsLinesList.RemoveAll(x => ContractsList.Find(y => y.NºDeContrato == x.NºContrato && y.NºVersão == x.NºVersão) == null);
-
             }
             else if (Historic == 1)
             {
-                ContractsList = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
-                ContractsList.RemoveAll(x => x.Arquivado == null || x.Arquivado == false);
-                ContractsList.RemoveAll(x => x.NºDeContrato.StartsWith("VCI"));
+                ContractsList = DBContracts.GetAll().Where(x => x.TipoContrato == (int)ContractType.Contract && x.Historico == true).ToList();
+                ContractsList.RemoveAll(x => x.Tipo != 1);
 
-                ContractsLinesList = DBContractLines.GetAll().Where(x => x.TipoContrato == 3).ToList();
+                ContractsLinesList = DBContractLines.GetAll().Where(x => x.TipoContrato == (int)ContractType.Contract).ToList();
                 ContractsLinesList.RemoveAll(x => ContractsList.Find(y => y.NºDeContrato == x.NºContrato && y.NºVersão == x.NºVersão) == null);
             }
 
