@@ -170,16 +170,16 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.ProjectNo = projeto;
             invoiceHeader.MovementType = billingHeader.MovementType;
 
-            invoiceHeader.Ship_to_Address = Ship.Ship_to_Address;
-            invoiceHeader.Ship_to_Address_2 = Ship.Ship_to_Address_2;
-            invoiceHeader.Ship_to_City = Ship.Ship_to_City;
             invoiceHeader.Ship_to_Code = Ship.Ship_to_Code;
-            invoiceHeader.Ship_to_Contact = Ship.Ship_to_Contact;
-            invoiceHeader.Ship_to_Country_Region_Code = Ship.Ship_to_Country_Region_Code;
-            invoiceHeader.Ship_to_County = Ship.Ship_to_County;
-            invoiceHeader.Ship_to_Name = Ship.Ship_to_Name;
-            invoiceHeader.Ship_to_Name_2 = Ship.Ship_to_Name_2;
-            invoiceHeader.Ship_to_Post_Code = Ship.Ship_to_Post_Code;
+            //invoiceHeader.Ship_to_Address = Ship.Ship_to_Address;
+            //invoiceHeader.Ship_to_Address_2 = Ship.Ship_to_Address_2;
+            //invoiceHeader.Ship_to_City = Ship.Ship_to_City;
+            //invoiceHeader.Ship_to_Contact = Ship.Ship_to_Contact;
+            //invoiceHeader.Ship_to_Country_Region_Code = Ship.Ship_to_Country_Region_Code;
+            //invoiceHeader.Ship_to_County = Ship.Ship_to_County;
+            //invoiceHeader.Ship_to_Name = Ship.Ship_to_Name;
+            //invoiceHeader.Ship_to_Name_2 = Ship.Ship_to_Name_2;
+            //invoiceHeader.Ship_to_Post_Code = Ship.Ship_to_Post_Code;
 
             invoiceHeader.FaturaPrecosIvaIncluido = billingHeader.FaturaPrecosIvaIncluido.HasValue ? (bool)billingHeader.FaturaPrecosIvaIncluido : false;
 
@@ -200,16 +200,16 @@ namespace Hydra.Such.Data.NAV
                     Periodo_de_Fact_Contrato = PreInvoiceToCreate.PeriododeFact_Contrato,
                     Valor_Contrato = PreInvoiceToCreate.ValorContrato,
 
-                    Ship_to_Address = PreInvoiceToCreate.Ship_toAddress.Length >= 50 ? PreInvoiceToCreate.Ship_toAddress.Substring(0, 49) : PreInvoiceToCreate.Ship_toAddress,
-                    Ship_to_Address_2 = PreInvoiceToCreate.Ship_toAddress2,
-                    Ship_to_City = PreInvoiceToCreate.Ship_toCity,
                     Ship_to_Code = PreInvoiceToCreate.Ship_toCode,
-                    Ship_to_Contact = PreInvoiceToCreate.Ship_toContact,
-                    Ship_to_Country_Region_Code = PreInvoiceToCreate.Ship_toCountryRegionCode,
-                    Ship_to_County = PreInvoiceToCreate.Ship_toCounty,
-                    Ship_to_Name = PreInvoiceToCreate.Ship_toName,
-                    Ship_to_Name_2 = PreInvoiceToCreate.Ship_toName2,
-                    Ship_to_Post_Code = PreInvoiceToCreate.Ship_toPostCode,
+                    //Ship_to_Address = PreInvoiceToCreate.Ship_toAddress.Length >= 50 ? PreInvoiceToCreate.Ship_toAddress.Substring(0, 49) : PreInvoiceToCreate.Ship_toAddress,
+                    //Ship_to_Address_2 = PreInvoiceToCreate.Ship_toAddress2,
+                    //Ship_to_City = PreInvoiceToCreate.Ship_toCity,
+                    //Ship_to_Contact = PreInvoiceToCreate.Ship_toContact,
+                    //Ship_to_Country_Region_Code = PreInvoiceToCreate.Ship_toCountryRegionCode,
+                    //Ship_to_County = PreInvoiceToCreate.Ship_toCounty,
+                    //Ship_to_Name = PreInvoiceToCreate.Ship_toName,
+                    //Ship_to_Name_2 = PreInvoiceToCreate.Ship_toName2,
+                    //Ship_to_Post_Code = PreInvoiceToCreate.Ship_toPostCode,
 
                     Currency_Code = PreInvoiceToCreate.CurrencyCode,
                     Due_Date = PreInvoiceToCreate.DueDate,
@@ -268,7 +268,7 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations,string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento, bool PricesIncludingVAT)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations, string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento, bool PricesIncludingVAT, string Ship_to_Code)
         {
             DateTime now = DateTime.Now;
             ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
@@ -310,7 +310,9 @@ namespace Hydra.Such.Data.NAV
                     ResponsabilityCenterCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoCentroResponsabilidade) ? CreateInvoice.CódigoCentroResponsabilidade : "",
 
                     Prices_Including_VAT = PricesIncludingVAT,
-                    Prices_Including_VATSpecified = true
+                    Prices_Including_VATSpecified = true,
+
+                    Ship_to_Code = !string.IsNullOrEmpty(Ship_to_Code) ? Ship_to_Code : ""
                 }
             };
 

@@ -1938,7 +1938,11 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.EnvioAEndereço)
                     .HasColumnName("Envio-a Endereço")
-                    .HasMaxLength(100);
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.EnvioAEndereço2)
+                    .HasColumnName("Envio-a Endereço2")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.EnvioALocalidade)
                     .HasColumnName("Envio-a Localidade")
@@ -1946,7 +1950,11 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.EnvioANome)
                     .HasColumnName("Envio-a Nome")
-                    .HasMaxLength(100);
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.EnvioANome2)
+                    .HasColumnName("Envio-a Nome2")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.EstadoAlteração).HasColumnName("Estado Alteração");
 

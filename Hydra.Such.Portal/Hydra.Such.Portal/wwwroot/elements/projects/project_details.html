@@ -63,7 +63,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProjectContractsByClient" last-response="{{LProjectContracts}}" id="projects_ajax" method="post" handle-as="json" content-type="application/json" id="contracts_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectContractsByClient" last-response="{{LProjectContracts}}" id="projects_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetGroupContProject" last-response="{{LProjectGroupContab}}" auto method="post" handle-as="json" content-type="application/json" id="groupcontab_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetEmployees" last-response="{{LProjectEmployees}}" auto method="post" handle-as="json" content-type="application/json" id="employees_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{LProjectClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
@@ -333,7 +333,7 @@
             <!--Envio-->
             <div>
                 <div class="row">
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <such-selectbox id="sbClientShippingAddresses" value="{{data.shippingAddressCode}}" label="Cód. Endereço Envio"
                                         items="[[ClientShippingAddresses]]"
                                         text-path="code"
@@ -344,27 +344,32 @@
                         </such-selectbox>
                     </div>
 
-                    <div class="col-lg-3">
+                    <div class="col-lg-5">
                         <vaadin-text-field value="{{data.shippingName}}" maxlength="100" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled> </vaadin-text-field>
                     </div>
 
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingAddress}}" maxlength="100" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled></vaadin-text-field>
-
-                    </div>
-
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingPostalCode}}" maxlength="20" id="ShippingPostalCode" name="ShippingPostalCode" label="Envio-a Cód. Postal" disabled> </vaadin-text-field>
+                    <div class="col-lg-5">
+                        <vaadin-text-field value="{{data.shippingName2}}" maxlength="100" id="ShippingName2" name="ShippingName2" label="Envio-a Nome 2" disabled> </vaadin-text-field>
                     </div>
                 </div>
 
                 <div class="row break_clear">
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingLocality}}" maxlength="30" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled> </vaadin-text-field>
+                    <div class="col-lg-4">
+                        <vaadin-text-field value="{{data.shippingAddress}}" maxlength="100" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled></vaadin-text-field>
+
                     </div>
 
-                    <div class="col-lg-3">
-                        <vaadin-text-field value="{{data.shippingContact}}" maxlength="50" id="ShippingContact" name="ShippingContact" label="Envio-a Contato" disabled> </vaadin-text-field>
+                    <div class="col-lg-4">
+                        <vaadin-text-field value="{{data.shippingAddress2}}" maxlength="100" id="ShippingAddress2" name="ShippingAddress2" label="Envio-a Endereço 2" disabled></vaadin-text-field>
+
+                    </div>
+
+                    <div class="col-lg-2">
+                        <vaadin-text-field value="{{data.shippingPostalCode}}" maxlength="20" id="ShippingPostalCode" name="ShippingPostalCode" label="Envio-a Cód. Postal" disabled> </vaadin-text-field>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <vaadin-text-field value="{{data.shippingLocality}}" maxlength="30" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled> </vaadin-text-field>
                     </div>
                 </div>
             </div>
@@ -786,11 +791,12 @@
                     var selItem = this.ClientShippingAddresses != null ? this.ClientShippingAddresses.find(x => x.code == e.detail.value) : null;
                     if (selItem != null) {
                         //Fill Data
-                        this.$.ShippingName.value = selItem.name;
-                        this.$.ShippingAddress.value = selItem.address;
+                        this.$.ShippingName.value = selItem.name1;
+                        this.$.ShippingName2.value = selItem.name2;
+                        this.$.ShippingAddress.value = selItem.address1;
+                        this.$.ShippingAddress2.value = selItem.address2;
                         this.$.ShippingPostalCode.value = selItem.zipCode;
                         this.$.ShippingLocality.value = selItem.city;
-                        this.$.ShippingContact.value = selItem.contact;
                     }
                     else {
                         var cliItem = this.LProjectClients != null ? this.LProjectClients.find(x => x.no_ == this.data.clientNo) : null;
@@ -798,17 +804,19 @@
                         if (cliItem != null) {
                             //Fill Data
                             this.$.ShippingName.value = cliItem.name;
-                            this.$.ShippingAddress.value = cliItem.address;
+                            this.$.ShippingName2.value = "";
+                            this.$.ShippingAddress.value = cliItem.address1;
+                            this.$.ShippingAddress2.value = cliItem.address2;
                             this.$.ShippingPostalCode.value = cliItem.postCode;
                             this.$.ShippingLocality.value = cliItem.city;
-                            this.$.ShippingContact.value = cliItem.phoneNo;
                         }
                         else {
                             this.$.ShippingName.value = "";
+                            this.$.ShippingName2.value = "";
                             this.$.ShippingAddress.value = "";
+                            this.$.ShippingAddress2.value = "";
                             this.$.ShippingPostalCode.value = "";
                             this.$.ShippingLocality.value = "";
-                            this.$.ShippingContact.value = "";
                         }
                     }
                 },
@@ -845,6 +853,27 @@
                         this.$.shippinhAddress_ajax.generateRequest();
                         this.data.shippingAddressCode = "";
                         this.$.sbClientShippingAddresses._clearSelection();
+                    }
+                    else {
+                        this.$.ProjectClientNo.value = "";
+                        this.$.ContractNo._clearSelection();
+
+                        this.$.sbClientShippingAddresses._clearSelection();
+                        this.$.ShippingName.value = "";
+                        this.$.ShippingName2.value = "";
+                        this.$.ShippingAddress.value = "";
+                        this.$.ShippingAddress2.value = "";
+                        this.$.ShippingPostalCode.value = "";
+                        this.$.ShippingLocality.value = "";
+
+                        this.$.projects_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.projects_ajax.generateRequest();
+                        this.$.shippinhAddress_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.shippinhAddress_ajax.generateRequest();
+                    }
+
+                    if (this.data.clientNo != e.detail.value) {
+                        this.$.ContractNo._clearSelection();
                     }
                 },
 

@@ -93,7 +93,7 @@
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{CBPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetAllClients" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>-->
-        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsNaoInternos" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{CBFunctionalAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractStatus" last-response="{{CBStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractChangeStatus" last-response="{{CBChangeStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -741,12 +741,12 @@
                                 <!--Envio-->
                                 <div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2 ">
                                             <!--<vaadin-combo-box items="[[CBShippingAddresses]]" item-value-path="id" item-label-path="value" id="codeShippingAddress" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <b>[[item.value]]</b>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                <template>
+                    <b>[[item.value]]</b>
+                </template>
+            </vaadin-combo-box>-->
                                             <such-selectbox id="codeShippingAddress" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio"
                                                             items="[[CBShippingAddresses]]"
                                                             text-path="id"
@@ -757,18 +757,24 @@
                                                             disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-5 ">
                                             <vaadin-text-field value="{{data.shippingName}}" maxlength="100" id="ShippingName" name="ShippingName" label="Envio-a Nome" disabled> </vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingAddress}}" maxlength="100" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled></vaadin-text-field>
-                                        </div>
-                                        <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.shippingZipCode}}" maxlength="20" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled> </vaadin-text-field>
+                                        <div class="col-md-5 ">
+                                            <vaadin-text-field value="{{data.shippingName2}}" maxlength="100" id="ShippingName2" name="ShippingName2" label="Envio-a Nome 2" disabled> </vaadin-text-field>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-4 ">
+                                            <vaadin-text-field value="{{data.shippingAddress}}" maxlength="100" id="ShippingAddress" name="ShippingAddress" label="Envio-a Endereço" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-4 ">
+                                            <vaadin-text-field value="{{data.shippingAddress2}}" maxlength="100" id="ShippingAddress2" name="ShippingAddress2" label="Envio-a Endereço 2" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-2 ">
+                                            <vaadin-text-field value="{{data.shippingZipCode}}" maxlength="20" id="shippingZipCode" name="shippingZipCode" label="Envio-a Cód. Postal" disabled> </vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-2 ">
                                             <vaadin-text-field value="{{data.shippingLocality}}" maxlength="30" id="ShippingLocality" name="ShippingLocality" label="Envio-a Localidade" disabled> </vaadin-text-field>
                                         </div>
                                     </div>
@@ -2241,11 +2247,23 @@
                     if (typeof this.CBClients != 'undefined') {
                         var client = this.CBClients.find(x => x.no_ == e.detail.value);
                         if (client != null) {
-                            this.$.codeShippingAddress.value = "";
+                            this.$.codeShippingAddress._clearSelection();
+                            this.$.codeShippingAddress._clearSelection;
                             this.$.ShippingName.value = client.name;
-                            this.$.ShippingAddress.value = client.address;
+                            this.$.ShippingName2.value = "";
+                            this.$.ShippingAddress.value = client.address1;
+                            this.$.ShippingAddress2.value = client.address2;
                             this.$.shippingZipCode.value = client.postCode;
                             this.$.ShippingLocality.value = client.city;
+                        }
+                        else {
+                            this.$.codeShippingAddress._clearSelection();
+                            this.$.ShippingName.value = "";
+                            this.$.ShippingName2.value = "";
+                            this.$.ShippingAddress.value = "";
+                            this.$.ShippingAddress2.value = "";
+                            this.$.shippingZipCode.value = "";
+                            this.$.ShippingLocality.value = "";
                         }
                     }
                     this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
@@ -2447,7 +2465,9 @@
                     if (this.addressData != null) {
                         //Fill Data
                         this.$.ShippingName.value = this.addressData.name;
+                        this.$.ShippingName2.value = this.addressData.name2;
                         this.$.ShippingAddress.value = this.addressData.address;
+                        this.$.ShippingAddress2.value = this.addressData.address2;
                         this.$.shippingZipCode.value = this.addressData.zipCode;
                         this.$.ShippingLocality.value = this.addressData.city;
                         //this.$.ShippingContact.value = this.addressData.contact;

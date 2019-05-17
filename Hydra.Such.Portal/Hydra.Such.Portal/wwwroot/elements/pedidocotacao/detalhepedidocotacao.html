@@ -620,45 +620,6 @@
                             <div class="row break_clear">
                                 <div class="panel-body">
                                     <vaadin-grid id="tabSelecaoEntidades" aria-label="TabelaSelecaoEntidades" items="[[ data.seleccaoEntidades ]]" class="grid" active-item="{{_SelectedLine}}" multi-sort="true">
-                                        <vaadin-grid-column resizable hidden>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="idSeleccaoEntidades" style="text-align:center;">ID</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="idSeleccaoEntidades"></vaadin-grid-filter>
-                                            </template>
-                                            <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadesidSeleccaoEntidades" id="tabSelecaoEntidadesidSeleccaoEntidades" value="{{item.idSeleccaoEntidades}}" disabled="true"></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable hidden>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="numConsultaMercado" style="text-align:center;">Nº Consulta Mercado</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="numConsultaMercado"></vaadin-grid-filter>
-                                            </template>
-                                            <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadesnumConsultaMercado" id="tabSelecaoEntidadesnumConsultaMercado" value="{{item.numConsultaMercado}}" disabled="true"></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable width="250px" hidden>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="codActividade" style="text-align:center;">Cód. Actividade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="codActividade"></vaadin-grid-filter>
-                                            </template>
-                                            <template>
-                                                <vaadin-combo-box items="[[CBActividades_List]]" id="tabSelecaoEntidadescodActividade" name="tabSelecaoEntidadescodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="true">
-                                                    <template>
-                                                        <table width="200px">
-                                                            <tr>
-                                                                <td width="40%">[[item.id]]</td>
-                                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                                            </tr>
-                                                        </table>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                        </vaadin-grid-column>
-
                                         <vaadin-grid-column resizable width="80px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="fase" style="text-align:center;">Fase</vaadin-grid-sorter>
@@ -708,35 +669,6 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable width="250px" hidden>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="codFormaPagamento" style="text-align:center;">Formas Pagamento</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="codFormaPagamento"></vaadin-grid-filter>
-                                            </template>
-                                            <template>
-                                                <vaadin-combo-box items="[[CBPaymentForms]]" id="tabSelecaoEntidadescodFormaPagamento" item-value-path="id" item-label-path="id" value="{{item.codFormaPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}">
-                                                    <template>
-                                                        <table>
-                                                            <tr>
-                                                                <td width="40%">[[item.id]]</td>
-                                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                                            </tr>
-                                                        </table>
-                                                    </template>
-                                                </vaadin-combo-box>
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable hidden>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="emailFornecedor" style="text-align:center;">EmailFornecedor</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="emailFornecedor"></vaadin-grid-filter>
-                                            </template>
-                                            <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadesemailFornecedor" id="tabSelecaoEntidadesemailFornecedor" value="{{item.emailFornecedor}}" disabled="true"></vaadin-text-field>
-                                            </template>
-                                        </vaadin-grid-column>
-
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="dataEnvioAoFornecedor_Show" style="text-align:center;">DataEnvioAoFornecedor</vaadin-grid-sorter>
@@ -762,13 +694,42 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable width="250px">
+                                        <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="prazoResposta" style="text-align:center;">Prazo Resposta</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="prazoResposta"></vaadin-grid-filter>
+                                                <vaadin-grid-sorter path="naoRespostaDoFornecedor" style="text-align:center;">Não Resposta Fornecedor</vaadin-grid-sorter>
                                             </template>
                                             <template>
-                                                <vaadin-text-field name="tabSelecaoEntidadesprazoResposta" id="tabSelecaoEntidadesprazoResposta" value="{{item.prazoResposta}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                <vaadin-checkbox id="tabSelecaoEntidadesnaoRespostaDoFornecedor" checked="{{item.naoRespostaDoFornecedor}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataEnvioPropostaArea">Data Envio Proposta Área</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataEnvioPropostaArea" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataEnvioPropostaArea" name="_dataEnvioPropostaArea" value="{{item.dataEnvioPropostaArea_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataEnvioPropostaArea_Show}}
+                                                </template>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column width="150px" resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataRespostaArea">Data Resposta Área</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataRespostaArea" />
+                                            </template>
+                                            <template>
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-date-picker id="_dataRespostaArea" name="_dataRespostaArea" value="{{item.dataRespostaArea_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataRespostaArea" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.dataRespostaArea_Show}}
+                                                </template>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -817,6 +778,16 @@
                                             </template>
                                         </vaadin-grid-column>
 
+                                        <vaadin-grid-column resizable width="250px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="prazoResposta" style="text-align:center;">Prazo Resposta</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="prazoResposta"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesprazoResposta" id="tabSelecaoEntidadesprazoResposta" value="{{item.prazoResposta}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                            </template>
+                                        </vaadin-grid-column>
+
                                         <vaadin-grid-column width="150px" resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="dataRespostaDoFornecedor">Data Resposta Fornecedor</vaadin-grid-sorter>
@@ -832,42 +803,71 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column resizable>
+                                        <vaadin-grid-column resizable hidden>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="naoRespostaDoFornecedor" style="text-align:center;">Não Resposta Fornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="idSeleccaoEntidades" style="text-align:center;">ID</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="idSeleccaoEntidades"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <vaadin-checkbox id="tabSelecaoEntidadesnaoRespostaDoFornecedor" checked="{{item.naoRespostaDoFornecedor}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                                <vaadin-text-field name="tabSelecaoEntidadesidSeleccaoEntidades" id="tabSelecaoEntidadesidSeleccaoEntidades" value="{{item.idSeleccaoEntidades}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column width="150px" resizable>
+                                        <vaadin-grid-column resizable hidden>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataEnvioPropostaArea">Data Envio Proposta Área</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataEnvioPropostaArea" />
+                                                <vaadin-grid-sorter path="numConsultaMercado" style="text-align:center;">Nº Consulta Mercado</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="numConsultaMercado"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-date-picker id="_dataEnvioPropostaArea" name="_dataEnvioPropostaArea" value="{{item.dataEnvioPropostaArea_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataEnvioPropostaArea" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.dataEnvioPropostaArea_Show}}
-                                                </template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesnumConsultaMercado" id="tabSelecaoEntidadesnumConsultaMercado" value="{{item.numConsultaMercado}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column width="150px" resizable>
+                                        <vaadin-grid-column resizable width="250px" hidden>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataRespostaArea">Data Resposta Área</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataRespostaArea" />
+                                                <vaadin-grid-sorter path="codActividade" style="text-align:center;">Cód. Actividade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codActividade"></vaadin-grid-filter>
                                             </template>
                                             <template>
-                                                <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-date-picker id="_dataRespostaArea" name="_dataRespostaArea" value="{{item.dataRespostaArea_Show}}" on-blur="_updateLinhaSeleccaoEntidade_DataRespostaArea" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                                </template>
-                                                <template is="dom-if" if="{{ !item.selected }}">
-                                                    {{item.dataRespostaArea_Show}}
-                                                </template>
+                                                <vaadin-combo-box items="[[CBActividades_List]]" id="tabSelecaoEntidadescodActividade" name="tabSelecaoEntidadescodActividade" item-value-path="id" item-label-path="id" value="{{item.codActividade}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="true">
+                                                    <template>
+                                                        <table width="200px">
+                                                            <tr>
+                                                                <td width="40%">[[item.id]]</td>
+                                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="250px" hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codFormaPagamento" style="text-align:center;">Formas Pagamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codFormaPagamento"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-combo-box items="[[CBPaymentForms]]" id="tabSelecaoEntidadescodFormaPagamento" item-value-path="id" item-label-path="id" value="{{item.codFormaPagamento}}" on-blur="_updateLinhaSeleccaoEntidade" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <table>
+                                                            <tr>
+                                                                <td width="40%">[[item.id]]</td>
+                                                                <td width="60%"> <b>[[item.value]]</b></td>
+                                                            </tr>
+                                                        </table>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable hidden>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="emailFornecedor" style="text-align:center;">EmailFornecedor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="emailFornecedor"></vaadin-grid-filter>
+                                            </template>
+                                            <template>
+                                                <vaadin-text-field name="tabSelecaoEntidadesemailFornecedor" id="tabSelecaoEntidadesemailFornecedor" value="{{item.emailFornecedor}}" disabled="true"></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 

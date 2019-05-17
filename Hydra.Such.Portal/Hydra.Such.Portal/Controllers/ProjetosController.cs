@@ -3802,57 +3802,79 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (proj != null && !string.IsNullOrEmpty(proj.CódEndereçoEnvio))
                             {
-                                NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(proj.CódEndereçoEnvio, _config.NAVDatabaseName, _config.NAVCompanyName);
-                                if (SHIP != null)
-                                {
-                                    Ship.Ship_to_Address = SHIP.Address1;
-                                    Ship.Ship_to_Address_2 = SHIP.Address2;
-                                    Ship.Ship_to_City = SHIP.City;
-                                    Ship.Ship_to_Code = SHIP.Code;
-                                    Ship.Ship_to_Contact = SHIP.Contact;
-                                    Ship.Ship_to_Country_Region_Code = "";
-                                    Ship.Ship_to_County = "";
-                                    Ship.Ship_to_Name = SHIP.Name1;
-                                    Ship.Ship_to_Name_2 = SHIP.Name2;
-                                    Ship.Ship_to_Post_Code = proj.EnvioACódPostal;
-                                }
+                                header.InvoiceToClientNo = !string.IsNullOrEmpty(proj.NºCliente) ? proj.NºCliente : "";
+                                Ship.Ship_to_Code = !string.IsNullOrEmpty(proj.CódEndereçoEnvio) ? proj.CódEndereçoEnvio : "";
                             }
                             else
                             {
                                 if (cont != null && !string.IsNullOrEmpty(cont.CódEndereçoEnvio))
                                 {
-                                    NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(cont.CódEndereçoEnvio, _config.NAVDatabaseName, _config.NAVCompanyName);
-                                    if (SHIP != null)
-                                    {
-                                        Ship.Ship_to_Address = SHIP.Address1;
-                                        Ship.Ship_to_Address_2 = SHIP.Address2;
-                                        Ship.Ship_to_City = SHIP.City;
-                                        Ship.Ship_to_Code = SHIP.Code;
-                                        Ship.Ship_to_Contact = SHIP.Contact;
-                                        Ship.Ship_to_Country_Region_Code = "";
-                                        Ship.Ship_to_County = "";
-                                        Ship.Ship_to_Name = SHIP.Name1;
-                                        Ship.Ship_to_Name_2 = SHIP.Name2;
-                                        Ship.Ship_to_Post_Code = cont.EnvioACódPostal;
-                                    }
+                                    header.InvoiceToClientNo = !string.IsNullOrEmpty(cont.NºCliente) ? cont.NºCliente : "";
+                                    Ship.Ship_to_Code = !string.IsNullOrEmpty(cont.CódEndereçoEnvio) ? cont.CódEndereçoEnvio : "";
                                 }
                                 else
                                 {
                                     if (cli != null)
                                     {
-                                        Ship.Ship_to_Address = cli.Address1;
-                                        Ship.Ship_to_Address_2 = cli.Address2;
-                                        Ship.Ship_to_City = cli.City;
+                                        header.InvoiceToClientNo = !string.IsNullOrEmpty(cli.No_) ? cli.No_ : "";
                                         Ship.Ship_to_Code = "";
-                                        Ship.Ship_to_Contact = cli.PhoneNo;
-                                        Ship.Ship_to_Country_Region_Code = cli.CountryRegionCode;
-                                        Ship.Ship_to_County = cli.County;
-                                        Ship.Ship_to_Name = cli.Name.Length >= 50 ? cli.Name.Substring(0, 49) : cli.Name;
-                                        Ship.Ship_to_Name_2 = "";
-                                        Ship.Ship_to_Post_Code = cli.PostCode;
                                     }
                                 }
                             }
+
+                            //if (proj != null && !string.IsNullOrEmpty(proj.CódEndereçoEnvio))
+                            //{
+                            //    NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(proj.CódEndereçoEnvio, _config.NAVDatabaseName, _config.NAVCompanyName);
+                            //    if (SHIP != null)
+                            //    {
+                            //        Ship.Ship_to_Address = SHIP.Address1;
+                            //        Ship.Ship_to_Address_2 = SHIP.Address2;
+                            //        Ship.Ship_to_City = SHIP.City;
+                            //        Ship.Ship_to_Code = SHIP.Code;
+                            //        Ship.Ship_to_Contact = SHIP.Contact;
+                            //        Ship.Ship_to_Country_Region_Code = "";
+                            //        Ship.Ship_to_County = "";
+                            //        Ship.Ship_to_Name = SHIP.Name1;
+                            //        Ship.Ship_to_Name_2 = SHIP.Name2;
+                            //        Ship.Ship_to_Post_Code = proj.EnvioACódPostal;
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    if (cont != null && !string.IsNullOrEmpty(cont.CódEndereçoEnvio))
+                            //    {
+                            //        NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(cont.CódEndereçoEnvio, _config.NAVDatabaseName, _config.NAVCompanyName);
+                            //        if (SHIP != null)
+                            //        {
+                            //            Ship.Ship_to_Address = SHIP.Address1;
+                            //            Ship.Ship_to_Address_2 = SHIP.Address2;
+                            //            Ship.Ship_to_City = SHIP.City;
+                            //            Ship.Ship_to_Code = SHIP.Code;
+                            //            Ship.Ship_to_Contact = SHIP.Contact;
+                            //            Ship.Ship_to_Country_Region_Code = "";
+                            //            Ship.Ship_to_County = "";
+                            //            Ship.Ship_to_Name = SHIP.Name1;
+                            //            Ship.Ship_to_Name_2 = SHIP.Name2;
+                            //            Ship.Ship_to_Post_Code = cont.EnvioACódPostal;
+                            //        }
+                            //    }
+                            //    else
+                            //    {
+                            //        if (cli != null)
+                            //        {
+                            //            Ship.Ship_to_Address = cli.Address1;
+                            //            Ship.Ship_to_Address_2 = cli.Address2;
+                            //            Ship.Ship_to_City = cli.City;
+                            //            Ship.Ship_to_Code = "";
+                            //            Ship.Ship_to_Contact = cli.PhoneNo;
+                            //            Ship.Ship_to_Country_Region_Code = cli.CountryRegionCode;
+                            //            Ship.Ship_to_County = cli.County;
+                            //            Ship.Ship_to_Name = cli.Name.Length >= 50 ? cli.Name.Substring(0, 49) : cli.Name;
+                            //            Ship.Ship_to_Name_2 = "";
+                            //            Ship.Ship_to_Post_Code = cli.PostCode;
+                            //        }
+                            //    }
+                            //}
 
                             if (proj.FaturaPrecosIvaIncluido == true)
                                 header.FaturaPrecosIvaIncluido = true;
