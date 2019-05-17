@@ -941,7 +941,15 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateLote([FromBody]LoteProcedimentoCcp data)
         {
-            return Json(null);
+            if (data == null)
+                return Json(false);
+
+            data.UtilizadorModificacao = User.Identity.Name;
+            data.DataModificacao = DateTime.Now;
+
+            return Json(DBProcedimentosCCP.__UpdateBatch(data));
+
+            //return Json(null);
         }
         [HttpPost]
         public JsonResult DeleteLote([FromBody]JObject requestParam)

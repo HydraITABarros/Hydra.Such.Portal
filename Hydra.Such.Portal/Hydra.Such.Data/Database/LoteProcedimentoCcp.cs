@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.Database
         public string DescricaoObjectoLote { get; set; }
         public decimal? ValorEstimado { get; set; }
         public decimal? ValorAdjudicacao { get; set; }
+        public string ComentarioAutorizacaoAdjudicacao { get; set; }
         public string UtilizadorAdjudicacao { get; set; }
         public DateTime? DataAdjudicacao { get; set; }
         public DateTime? HoraAdjudicacao { get; set; }
@@ -23,6 +24,9 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorNotificacao { get; set; }
         public DateTime? DataNotificacao { get; set; }
         public DateTime? HoraNotificacao { get; set; }
+
+        public bool? VistoAberturaPeloAprovisionamento { get; set; }
+        public bool? VistoAdjudicacaoPeloAprovisionamento { get; set; }
 
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }

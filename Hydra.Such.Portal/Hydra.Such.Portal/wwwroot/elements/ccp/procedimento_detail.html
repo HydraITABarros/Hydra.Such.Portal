@@ -909,6 +909,14 @@
                    on-response="_createLoteResponse"
                    content-type="application/json">
         </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/UpdateLote"
+                   last-response="{{ loteUpdated }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_lote_ajax"
+                   on-response="_updateLoteResponse"
+                   content-type="application/json">
+        </iron-ajax>
         <iron-ajax url="/ProcedimentosCcps/DeleteLote"
                    last-response="{{ loteDeleted }}"
                    method="post"
@@ -1185,8 +1193,11 @@
                                     <div id="batchesSection" class="row break_clear">
                                         <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Lotes do Procedimento</h2>
                                         <div class="table inlineForm">
-                                            <div class="col-sm-3">
-                                                <vaadin-text-field id="valorEstimadoLote" name="valorEstimadoLote" label="Valor Estimado Lote" value="{{_valorEstimadoLote}}" prevent-invalid-input pattern="[0-9.]*"></vaadin-text-field>
+                                            <div class="col-sm-7">
+                                                <vaadin-text-field id="descricaoObjectoLote" name="descricaoObjectoLote" label="Descrição Objecto" value="{{_descricaoObjectoLote}}" required></vaadin-text-field>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <vaadin-text-field id="valorEstimadoLote" name="valorEstimadoLote" label="Valor Estimado Lote" value="{{_valorEstimadoLote}}" prevent-invalid-input pattern="[0-9.]*" required error-message="Campo obrigatório"></vaadin-text-field>
                                             </div>
                                             <div class="col-sm-3">
                                                 <br />
@@ -1194,16 +1205,16 @@
                                             </div>
                                         </div>
                                         <div class="row break_clear">
-                                            <div class="col-lg-6">
+                                            <div class="col-sm-12">
                                                 <vaadin-grid id="gridLotesProcedimento1" aria-label="gridLotesProcedimento1" items="{{data.loteProcedimentoCcp}}" class="grid" style="height:170px;">
-                                                    <vaadin-grid-column>
+                                                    <vaadin-grid-column width="5%">
                                                         <template class="header">
                                                         </template>
                                                         <template>
-                                                            <paper-button raised class="btnRemove" id="deleteBatchBtn1" on-tap="_deleteLote"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                                            <paper-button raised class="btnRemove" id="deleteBatchBtn1" on-tap="_deleteLote"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp;</paper-button>
                                                         </template>
                                                     </vaadin-grid-column>
-                                                    <vaadin-grid-column>
+                                                    <vaadin-grid-column width="5%">
                                                         <template class="header">
                                                             Lote Nº
                                                         </template>
@@ -1211,12 +1222,20 @@
                                                             <vaadin-text-field id="idLote1" value="{{item.idLote}}" disabled="true"></vaadin-text-field>
                                                         </template>
                                                     </vaadin-grid-column>
-                                                    <vaadin-grid-column>
+                                                    <vaadin-grid-column width="80%">
+                                                        <template class="header">
+                                                            Descrição do Objecto
+                                                        </template>
+                                                        <template>
+                                                            <vaadin-text-field id="descricaoObjecto1" value="{{item.descricaoObjectoLote}}" on-blur="_updateLote" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                        </template>
+                                                    </vaadin-grid-column>
+                                                    <vaadin-grid-column width="10%">
                                                         <template class="header">
                                                             Valor Estimado
                                                         </template>
                                                         <template>
-                                                            <vaadin-text-field id="valorEstimado1" value="{{item.valorEstimado}}"></vaadin-text-field>
+                                                            <vaadin-text-field id="valorEstimado1" value="{{item.valorEstimado}}" on-blur="_updateLote" prevent-invalid-input pattern="[0-9.]*" required error-message="Campo obrigatório"></vaadin-text-field>
                                                         </template>
                                                     </vaadin-grid-column>
                                                 </vaadin-grid>
@@ -3919,6 +3938,14 @@
                     _valorEstimadoLote: {
                         type: Number,
                         value: 0
+                    },
+                    _descricaoObjectoLote: {
+                        type: String,
+                        value:""
+                    },
+                    _showUpdateProcedimentoMsg: {
+                        type: Boolean,
+                        value: true
                     }
                     
                 },
@@ -4168,7 +4195,8 @@
                     if (this.ProcedimentoUpdated.eReasonCode != 0) {
                         this._openToast(this.ProcedimentoUpdated.eMessage);
                     } else {
-                        this._openToast("Procedimento actualizado com sucesso.")
+                        if (this._showUpdateProcedimentoMsg)
+                            this._openToast("Procedimento actualizado com sucesso.")
                     }
                 },
 
@@ -4461,16 +4489,20 @@
                         return false;
                     }
 
-                    // zpgm.06052019.b
+                    // zpgm.ALT_CCP_#001.y2019.b
                     if (this.$.valorPrecoBase.value <= 0) {
                         this._openToast("Valor Preço Base: tem que indicar um valor!")
                         return false;
                     }
+
+                    this.$.valorPrecoBase.value = this.__preciseRound(parseFloat(this.$.valorPrecoBase.value), 2);
+                    this.data.valorPrecoBase = this.$.valorPrecoBase.value;
+
                     if (this.$.fundamentacaoPrecoBase.value == null || this.$.fundamentacaoPrecoBase == "") {
                         this._openToast("Fundamentação Preço Base: tem que fundamentar o preço indicado!")
                         return false;
                     }
-                    // zpgm.06052019.e
+                    // zpgm.ALT_CCP_#001.y2019.e
 
                     if (this.data.estimativaPreco == null || this.data.estimativaPreco == 0) {
                         this._openToast("Obrigatório definir uma Estimativa de Preço, mesmo que não seja definido Preço Base!");
@@ -6364,19 +6396,56 @@
                     if (this.data != undefined) {
                         var _self = this;
                         if (_self.$.procedimentoEmLotes.checked) {
+                            this.data.procedimentoEmLotes = true;
                             $(_self.$.batchesSection).removeClass('hidden');
                         } else {
-                            $(_self.$.batchesSection).addClass('hidden');
+                            this._showUpdateProcedimentoMsg = false;
+
+                            this.data.procedimentoEmLotes = false;
+
                             this.$.page_delete_lote_ajax.body = JSON.stringify({ "noProcedimento": this.data.no, "idLote": -1 });
-                            this.$.page_delete_lote_ajax.generateRequest();
+                            this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+
+                            var sav = this.$.ajax_update_procedimento.generateRequest();
+                            var lin = this.$.page_delete_lote_ajax.generateRequest();
+                            Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                                //var savReq = requests[0].result;
+                                //var linReq = requests[1].result;
+                            });
+                            $(_self.$.batchesSection).addClass('hidden');   
                         }
                     }  
                 },
                 _createLote: function (e) {
                     debugger;;
                     if (this.data != undefined) {
+                        var _valorPrecoBase = parseFloat(this.$.valorPrecoBase.value);
+
+                        if (isNaN(_valorPrecoBase)) {
+                            this._showErrorMessage("Valor preço base tem que ser um número!");
+                            return;
+                        }
+
+                        if (this.$.valorPrecoBase.value <= 0) {
+                            this._showErrorMessage("Valor preço base tem que ser maior que zero!");
+                            return;
+                        }
+
+                        debugger;;
+                        var _valor = parseFloat(this._valorEstimadoLote);
+
+                        if (isNaN(_valor)) {
+                            this._showErrorMessage("Valor do lote tem que ser um número!");
+                            return;
+                        }
+
                         if (this._valorEstimadoLote <= 0) {
                             this._showErrorMessage("Valor Estimado tem que ser maior que zero!");
+                            return;
+                        }
+
+                        if (this._descricaoObjectoLote == "") {
+                            this._showErrorMessage("É obrigatório descrever o objecto do lote!");
                             return;
                         }
 
@@ -6386,11 +6455,25 @@
                             index += _lotes[_lotes.length - 1].idLote;
                         }
 
-                        var _valor = this.__preciseRound(parseFloat(this._valorEstimadoLote), 2);
+                        var _totalLotes = 0;
+                        if (_lotes != null) {
+                            for (var i = 0; i < _lotes.length; i++) {
+                                _totalLotes += _lotes[i].valorEstimado;
+                            };
+                        }
+
+                        debugger;;
+                        _valor = this.__preciseRound(_valor, 2);
+
+                        if (this.__preciseRound(parseFloat(_totalLotes) + parseFloat(_valor), 2) > this.__preciseRound(parseFloat(this.data.valorPrecoBase), 2)) {
+                           this._showErrorMessage("O somatório dos Lotes é superior ao Preço Base!");
+                            return;
+                        }
 
                         var loteToAdd = {
                             "noProcedimento": this.data.no,
                             "idLote": index,
+                            "descricaoObjectoLote": this._descricaoObjectoLote,
                             "valorEstimado": _valor
                         };
 
@@ -6419,6 +6502,10 @@
                         this._valorEstimadoLote = 0;
                         this.$.valorEstimadoLote.value = 0;
 
+                        this._descricaoObjectoLote = "";
+                        this.$.descricaoObjectoLote = "";
+                        this.$.descricaoObjectoLote.valueText = "";
+
                     } else {
                         this._showErrorMessage("Não foi possível criar o Lote!");
                     }
@@ -6439,6 +6526,7 @@
 
                 _deleteLoteResponse: function (e) {
                     if (this.loteDeleted) {
+                        this._showUpdateProcedimentoMsg = true;
                         this._openToast("Lote(s) eliminado com sucesso!");
                         this.$.page_databound_ajax.generateRequest();
                         this.$.gridLotesProcedimento1.clearCache();
@@ -6447,7 +6535,48 @@
                     }
                 },
 
+                _updateLote: function (e) {
+                    debugger;
+                    if (this.data != undefined) {
+                        var _lotes = this.data.loteProcedimentoCcp;
+                        var index = _lotes.indexOf(e.model.item);
+
+                        var _loteToUpdate = _lotes[index];
+                        var _loteValorEstimado = parseFloat(_loteToUpdate.valorEstimado);
+
+                        if (isNaN(_loteValorEstimado)) {
+                            this._showErrorMessage("Valor do lote tem que ser um número!");
+                            return;
+                        }
+
+                        if (_loteValorEstimado <= 0) {
+                            this._showErrorMessage("Valor do lote tem que ser maior que zero!");
+                            return;
+                        }
+
+                        if (_loteToUpdate.descricaoObjectoLote == "" || _loteToUpdate.descricaoObjectoLote == null) {
+                            this._showErrorMessage("Descrição do Objecto do lote tem que estar preenchido!");
+                            return;
+                        }
+                        
+                        _loteToUpdate.valorEstimado = this.__preciseRound(_loteValorEstimado, 2);
+
+                        this.$.page_update_lote_ajax.body = JSON.stringify(_loteToUpdate);
+                        this.$.page_update_lote_ajax.generateRequest();
+
+                        this.$.gridLotesProcedimento1.clearCache();
+                    }
+                },
+
+                _updateLoteResponse: function (e) {
+                    if (!this.loteUpdated) {
+                        this._showErrorMessage("Não foi possível actualizar o Lote!");
+                    }
+                },
+
                 __preciseRound: function (num, dec) {
+                    var _typeDebug = typeof num;
+
                     if ((typeof num !== 'number') || (typeof dec !== 'number'))
                         return 0;
 

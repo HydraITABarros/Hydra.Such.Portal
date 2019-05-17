@@ -7689,9 +7689,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.UtilizadorNotificacao).HasMaxLength(100);
 
-                entity.Property(e => e.ValorAdjudicacao).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.ValorAdjudicacao).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.ValorEstimado).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.ValorEstimado).HasColumnType("decimal(18, 2)");
 
                 entity.HasOne(e => e.NoProcedimentoNavigation)
                     .WithMany(p => p.LoteProcedimentoCcp)
