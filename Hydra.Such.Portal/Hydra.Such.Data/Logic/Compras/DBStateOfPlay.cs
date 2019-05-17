@@ -5,6 +5,7 @@ using System.Text;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel.Compras;
 using Microsoft.EntityFrameworkCore;
+using static Hydra.Such.Data.Enumerations;
 
 namespace Hydra.Such.Data.Logic.Request
 {
@@ -142,6 +143,9 @@ namespace Hydra.Such.Data.Logic.Request
                     AnsweredBy = item.UtilizadorResposta,
                     AnsweredByText = item.UtilizadorResposta == null ? "" : DBUserConfigurations.GetById(item.UtilizadorResposta).Nome,
                     Read = item.ConfirmaçãoLeitura
+                    //DimensionRegion = "",
+                    //DimensionArea = "",
+                    //DimensionCresp = ""
                 };
             }
             return null;

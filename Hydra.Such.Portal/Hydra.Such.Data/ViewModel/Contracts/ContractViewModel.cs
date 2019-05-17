@@ -22,7 +22,9 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string CodeResponsabilityCenter { get; set; }
         public string CodeShippingAddress { get; set; }
         public string ShippingName { get; set; }
+        public string ShippingName2 { get; set; }
         public string ShippingAddress { get; set; }
+        public string ShippingAddress2 { get; set; }
         public string ShippingZipCode { get; set; }
         public string ShippingLocality { get; set; }
         public int? InvocePeriod { get; set; }

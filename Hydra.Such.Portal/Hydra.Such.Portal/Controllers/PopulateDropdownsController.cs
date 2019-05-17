@@ -1300,11 +1300,16 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetNAVShippingAddressesByClientNo([FromBody] string ClientNo)
         {
-            List<DDMessageString> result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            if (!string.IsNullOrEmpty(ClientNo))
             {
-                id = X.Code,
-                value = X.Address + " - " + X.City
-            }).ToList();
+                result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).Select(X => new DDMessageString()
+                {
+                    id = X.Code,
+                    value = X.Address + " - " + X.City
+                }).ToList();
+            }
             return Json(result);
         }
 
@@ -1312,7 +1317,12 @@ namespace Hydra.Such.Portal.Controllers
         //Retuns a list of NAVAddressesViewModel
         public JsonResult GetNAVShippingAddressesByClientNoAsVM([FromBody] string ClientNo)
         {
-            var result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            List<NAVAddressesViewModel> result = new List<NAVAddressesViewModel>();
+
+            if (!string.IsNullOrEmpty(ClientNo))
+            {
+                result = DBNAV2017ShippingAddresses.GetByClientNo(ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            }
             return Json(result);
         }
 
@@ -1559,6 +1569,18 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult GetAllClientsInternos()
+        {
+            var result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            result.RemoveAll(x => x.ClienteInterno == false);
+            return Json(result);
+        }
+        public JsonResult GetAllClientsNaoInternos()
+        {
+            var result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            result.RemoveAll(x => x.ClienteInterno == true);
+            return Json(result);
+        }
         [HttpPost]
         public JsonResult GetAllContactsServicos()
         {
@@ -1640,14 +1662,19 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectContractsByClient([FromBody]string clientNo)
         {
-            List<Contratos> lcontracts = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
-            lcontracts.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
-            lcontracts.RemoveAll(x => x.NºCliente != clientNo);
-            List<DDMessageString> result = lcontracts.Select(x => new DDMessageString()
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            if (!string.IsNullOrEmpty(clientNo))
             {
-                id = x.NºDeContrato,
-                value = x.Descrição
-            }).ToList();
+                List<Contratos> lcontracts = DBContracts.GetAll().Where(x => x.TipoContrato == 3).ToList();
+                lcontracts.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+                lcontracts.RemoveAll(x => x.NºCliente != clientNo);
+                result = lcontracts.Select(x => new DDMessageString()
+                {
+                    id = x.NºDeContrato,
+                    value = x.Descrição
+                }).ToList();
+            }
 
             return Json(result);
         }

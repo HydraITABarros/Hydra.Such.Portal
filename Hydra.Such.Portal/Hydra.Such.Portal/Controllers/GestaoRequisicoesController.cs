@@ -2874,6 +2874,19 @@ namespace Hydra.Such.Portal.Controllers
                     .OrderBy(x => x.Read)
                     .ToList();
             }
+
+            List<Requisição> ListaRequisicoes = DBRequest.GetAll((int)RequisitionTypes.Normal);
+            foreach (StateOfPlayViewModel ponto in items)
+            {
+                Requisição req = ListaRequisicoes.Find(x => x.NºRequisição == ponto.RequisitionNo);
+                if (req != null)
+                {
+                    ponto.DimensionRegion = !string.IsNullOrEmpty(req.CódigoRegião) ? req.CódigoRegião : "";
+                    ponto.DimensionArea = !string.IsNullOrEmpty(req.CódigoÁreaFuncional) ? req.CódigoÁreaFuncional : "";
+                    ponto.DimensionCresp = !string.IsNullOrEmpty(req.CódigoCentroResponsabilidade) ? req.CódigoCentroResponsabilidade : "";
+                }
+            };
+
             return Json(items.OrderByDescending(x => x.RequisitionNo));
         }
 
@@ -3512,6 +3525,21 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Utilizador da Resposta");
                     Col = Col + 1;
                 }
+                if (dp["dimensionRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["dimensionArea"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Área");
+                    Col = Col + 1;
+                }
+                if (dp["dimensionCresp"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Cresp");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
@@ -3574,6 +3602,21 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["answeredByText"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.AnsweredByText);
+                            Col = Col + 1;
+                        }
+                        if (dp["dimensionRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DimensionRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["dimensionArea"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DimensionArea);
+                            Col = Col + 1;
+                        }
+                        if (dp["dimensionCresp"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DimensionCresp);
                             Col = Col + 1;
                         }
                         count++;

@@ -169,7 +169,6 @@ namespace Hydra.Such.Data.NAV
                 navUpdate.WSCustomer.Cliente_InternoSpecified = true;
                 navUpdate.WSCustomer.Cliente_NacionalSpecified = true;
                 navUpdate.WSCustomer.Data_Cliente_PaiSpecified = true;
-                navUpdate.WSCustomer.Last_Date_ModifiedSpecified = true;
                 navUpdate.WSCustomer.Natureza_ClienteSpecified = true;
                 navUpdate.WSCustomer.Regiao_ClienteSpecified = true;
                 navUpdate.WSCustomer.Taxa_AprovisionamentoSpecified = true;

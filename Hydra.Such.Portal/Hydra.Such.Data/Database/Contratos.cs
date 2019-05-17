@@ -24,7 +24,9 @@ namespace Hydra.Such.Data.Database
         public string CódigoCentroResponsabilidade { get; set; }
         public string CódEndereçoEnvio { get; set; }
         public string EnvioANome { get; set; }
+        public string EnvioANome2 { get; set; }
         public string EnvioAEndereço { get; set; }
+        public string EnvioAEndereço2 { get; set; }
         public string EnvioACódPostal { get; set; }
         public string EnvioALocalidade { get; set; }
         public int? PeríodoFatura { get; set; }

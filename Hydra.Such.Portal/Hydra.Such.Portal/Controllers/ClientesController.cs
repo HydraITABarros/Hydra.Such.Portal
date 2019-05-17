@@ -95,6 +95,8 @@ namespace Hydra.Such.Portal.Controllers
                      No = c.No_,
                      Name = c.Name,
                      Address = c.Address,
+                     Address_1 = c.Address1,
+                     Address_2 = c.Address2,
                      Post_Code = c.PostCode,
                      City = c.City,
                      County = c.County,
