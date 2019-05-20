@@ -142,7 +142,8 @@ namespace Hydra.Such.Data.Logic
                     AprovadorPedidoPag2 = item.AprovadorPedidoPag2,
                     AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento,
                     ValidarPedidoPagamento = item.ValidarPedidoPagamento,
-                    CriarProjetoSemAprovacao = item.CriarProjetoSemAprovacao
+                    CriarProjetoSemAprovacao = item.CriarProjetoSemAprovacao,
+                    CMHistoricoToActivo = item.CMHistoricoToActivo
                 };
             }
             return null;
@@ -195,7 +196,8 @@ namespace Hydra.Such.Data.Logic
                     AprovadorPedidoPag2 = item.AprovadorPedidoPag2,
                     AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento,
                     ValidarPedidoPagamento = item.ValidarPedidoPagamento,
-                    CriarProjetoSemAprovacao = item.CriarProjetoSemAprovacao
+                    CriarProjetoSemAprovacao = item.CriarProjetoSemAprovacao,
+                    CMHistoricoToActivo = item.CMHistoricoToActivo
                 };
             }
             return null;

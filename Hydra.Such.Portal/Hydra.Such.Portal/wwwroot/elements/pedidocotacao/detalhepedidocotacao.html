@@ -1169,6 +1169,9 @@
                                             <span class="red2"><span class="glyphicon glyphicon-user red2"></span> &nbsp;&nbsp;{{fornecedor1}}</span>
                                         </template>
                                         <template>
+                                            <!--<vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor1 }}">
+                                                <div slot="suffix">€</div>
+                                            </vaadin-text-field>-->
                                             <vaadin-text-field name="tabRegistoDePropostasfornecedor1Preco" id="tabRegistoDePropostasfornecedor1Preco" value="{{item.fornecedor1Preco}}" on-blur="_updateLinhaRegistoProposta" disabled="{{ !enablefornecedor1 }}">
                                                 <div slot="suffix">€</div>
                                             </vaadin-text-field>
@@ -3026,6 +3029,11 @@
                             _self._showErrorMessage("Não pode selecionar este campo, pois não tem Entidade!");
                             return;
                         }
+                        else {
+                            var preco = e.model.item.fornecedor1Preco.toString();
+                            preco = preco.replace(",", ".");
+                            e.model.item.fornecedor1Preco = parseFloat(preco).toFixed(4);
+                        }
                     }
 
                     if (e.model.item.fornecedor2Preco != null) {
@@ -3036,6 +3044,11 @@
 
                             _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
                             return;
+                        }
+                        else {
+                            var preco = e.model.item.fornecedor2Preco.toString();
+                            preco = preco.replace(",", ".");
+                            e.model.item.fornecedor2Preco = parseFloat(preco).toFixed(4);
                         }
                     }
 
@@ -3048,6 +3061,11 @@
                             _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
                             return;
                         }
+                        else {
+                            var preco = e.model.item.fornecedor3Preco.toString();
+                            preco = preco.replace(",", ".");
+                            e.model.item.fornecedor3Preco = parseFloat(preco).toFixed(4);
+                        }
                     }
 
                     if (e.model.item.fornecedor4Preco != null) {
@@ -3058,6 +3076,11 @@
 
                             _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
                             return;
+                        }
+                        else {
+                            var preco = e.model.item.fornecedor4Preco.toString();
+                            preco = preco.replace(",", ".");
+                            e.model.item.fornecedor4Preco = parseFloat(preco).toFixed(4);
                         }
                     }
 
@@ -3070,6 +3093,11 @@
                             _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
                             return;
                         }
+                        else {
+                            var preco = e.model.item.fornecedor5Preco.toString();
+                            preco = preco.replace(",", ".");
+                            e.model.item.fornecedor5Preco = parseFloat(preco).toFixed(4);
+                        }
                     }
 
                     if (e.model.item.fornecedor6Preco != null) {
@@ -3080,6 +3108,11 @@
 
                             _self._showErrorMessage("Não pode preencher este campo, pois não tem Entidade!");
                             return;
+                        }
+                        else {
+                            var preco = e.model.item.fornecedor6Preco.toString();
+                            preco = preco.replace(",", ".");
+                            e.model.item.fornecedor6Preco = parseFloat(preco).toFixed(4);
                         }
                     }
 
@@ -3485,7 +3518,12 @@
                 },
                 _goBack: function (e) {
                     window.history.back();
-                }
+                },
+
+
+
+
+
             });
         });
     </script>

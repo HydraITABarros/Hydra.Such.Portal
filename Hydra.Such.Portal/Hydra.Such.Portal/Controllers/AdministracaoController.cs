@@ -169,6 +169,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.AprovadorPedidoPag2 = userConfig.AprovadorPedidoPag2;
                 result.AnulacaoPedidoPagamento = userConfig.AnulacaoPedidoPagamento.HasValue ? userConfig.AnulacaoPedidoPagamento : false;
                 result.CriarProjetoSemAprovacao = userConfig.CriarProjetoSemAprovacao.HasValue ? userConfig.CriarProjetoSemAprovacao : false;
+                result.CMHistoricoToActivo = userConfig.CMHistoricoToActivo.HasValue ? userConfig.CMHistoricoToActivo : false;
                 result.ValidarPedidoPagamento = userConfig.ValidarPedidoPagamento.HasValue ? userConfig.ValidarPedidoPagamento : false;
 
 
@@ -234,8 +235,9 @@ namespace Hydra.Such.Portal.Controllers
                 AprovadorPedidoPag1 = data.AprovadorPedidoPag1,
                 AprovadorPedidoPag2 = data.AprovadorPedidoPag2,
                 AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false,
-                CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false
-        });
+                CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false,
+                CMHistoricoToActivo = data.CMHistoricoToActivo.HasValue ? data.CMHistoricoToActivo : false
+            });
 
             data.IdUser = ObjectCreated.IdUtilizador;
 
@@ -315,6 +317,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.AprovadorPedidoPag2 = data.AprovadorPedidoPag2;
                 userConfig.AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false;
                 userConfig.CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false;
+                userConfig.CMHistoricoToActivo = data.CMHistoricoToActivo.HasValue ? data.CMHistoricoToActivo : false;
                 userConfig.ValidarPedidoPagamento = data.ValidarPedidoPagamento.HasValue ? data.ValidarPedidoPagamento : false;
 
                 DBUserConfigurations.Update(userConfig);

@@ -138,6 +138,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.acao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="acao">Ação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="acao" value="[[filter.acao]]" />
+                </template>
+                <template>
+                    {{item.acao}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.url.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="url">Link da Página</vaadin-grid-sorter>
@@ -502,6 +512,7 @@
                         "id": { hidden: false, label: "ID" },
                         "processo": { hidden: false, label: "Processo" },
                         "descricao": { hidden: false, label: "Descrição" },
+                        "acao": { hidden: false, label: "Ação" },
                         "url": { hidden: false, label: "Link da Página" },
                         "estadoText": { hidden: false, label: "Estado" },
                         "dataEstadoText": { hidden: false, label: "Data do Estado" },

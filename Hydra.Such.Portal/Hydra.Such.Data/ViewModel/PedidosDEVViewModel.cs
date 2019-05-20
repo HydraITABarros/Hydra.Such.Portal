@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.ViewModel
         public int ID { get; set; }
         public string Processo { get; set; }
         public string Descricao { get; set; }
+        public string Acao { get; set; }
         public string URL { get; set; }
         public int? Estado { get; set; }
         public string EstadoText { get; set; }
