@@ -58,6 +58,7 @@
         <iron-ajax url="/ConsultaMercado/GetAllConsultaMercado_Historico" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CreateConsultaMercado" last-response="{{NewConsultaMercado}}" method="post" handle-as="json" id="ajax_createconsulta" on-response="_newConsultaMercadoResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultaMercado" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/HistoricoToAtivo" last-response="{{HistoricoToAtivoResult}}" method="post" handle-as="json" id="page_HistoricoToAtivo_ajax" on-response="_HistoricoToAtivoResponse" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
@@ -82,6 +83,17 @@
         </div>
 
         <vaadin-grid column-reordering-allowed aria-label="ConsultaMercadoGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column hidden resizable>
+            <!--<vaadin-grid-column hidden="{{checked}}" resizable>-->
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button id="btn_HistoricoToAtivo" class="btnEdit tableBtn" raised on-tap="_historicoToAtivo" disabled="{{ !_permissions.create }}" title="Reativar"><i class="fa fa-registered" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numConsultaMercado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
@@ -286,6 +298,10 @@
                             return {};
                         }
                     },
+                    checked: {
+                        type: Boolean,
+                        value: true
+                    },
                     /*FILTROS*/
                     filter: {
                         type: Object,
@@ -338,9 +354,11 @@
                         if (this._historico == 0) {
                             this._historico = 1;
                             this._isHistoric = "true";
+                            this.checked = false;
                         } else {
                             this._historico = 0;
                             this._isHistoric = "false";
+                            this.checked = true;
                         }
                         this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
                         this.$.grid_databound_ajax.generateRequest();
@@ -482,7 +500,44 @@
                     if (value != null && value != 0) {
                         return currency(value, { separator: '.', decimal: ',' }).format();
                     }
-                }
+                },
+
+                _historicoToAtivo: function (e) {
+                    if (this._historico == 1) {
+                    }
+                    else {
+                        var Consulta = e.model.item.numConsultaMercado;
+                        var ajax_request = this.$.page_HistoricoToAtivo_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende reativar a Consulta ao Mercado?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (historicoToAtivo) {
+                                if (historicoToAtivo) {
+                                    ajax_request.body = JSON.stringify({ numConsultaMercado: Consulta });
+                                    ajax_request.generateRequest();
+
+                                    this.$.grid.clearCache();
+                                }
+                            }
+                        });
+                    }
+                },
+
+
+
+
+
+
             });
         });
     </script>
