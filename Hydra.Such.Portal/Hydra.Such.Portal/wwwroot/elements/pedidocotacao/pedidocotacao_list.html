@@ -58,7 +58,7 @@
         <iron-ajax url="/ConsultaMercado/GetAllConsultaMercado_Historico" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/CreateConsultaMercado" last-response="{{NewConsultaMercado}}" method="post" handle-as="json" id="ajax_createconsulta" on-response="_newConsultaMercadoResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultaMercado" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/ConsultaMercado/HistoricoToAtivo" last-response="{{HistoricoToAtivoResult}}" method="post" handle-as="json" id="page_HistoricoToAtivo_ajax" on-response="_HistoricoToAtivoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/ConsultaMercado/HistoricoToAtivo" last-response="{{historicoToAtivoResult}}" method="post" handle-as="json" id="page_HistoricoToAtivo_ajax" on-response="_HistoricoToAtivoResponse" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
             <template is="dom-if" if="{{ _permissions.create }}">
@@ -82,14 +82,23 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid column-reordering-allowed aria-label="ConsultaMercadoGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column hidden resizable>
-            <!--<vaadin-grid-column hidden="{{checked}}" resizable>-->
+        <vaadin-grid column-reordering-allowed aria-label="ConsultaMercadoGrid" id="grid" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column hidden="{{checked}}" width="50px" resizable>
                 <template class="header">
                 </template>
                 <template>
                     <center>
                         <paper-button id="btn_HistoricoToAtivo" class="btnEdit tableBtn" raised on-tap="_historicoToAtivo" disabled="{{ !_permissions.create }}" title="Reativar"><i class="fa fa-registered" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="50px" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_showDetails" title="Detalhes"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -273,11 +282,17 @@
             Polymer({
                 is: 'x-pedidocotacaolist',
                 properties: {
-                    activeItem: {
-                        observer: '_rowSelected'
-                    },
+                    //activeItem: {
+                    //    observer: '_rowSelected'
+                    //},
                     _permissions: {
                         type: Array
+                    },
+                    _reportserverurl: {
+                        type: String,
+                    },
+                    _cmhistoricotoactivo: {
+                        type: String,
                     },
                     _showHistoryMessage: {
                         type: String,
@@ -308,18 +323,18 @@
                         value: {},
                     },
                 },
-                _rowSelected: function (item) {
-                    if (item != null) {
-                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado + "?isHistoric=" + this._isHistoric;
+                //_rowSelected: function (item) {
+                //    if (item != null) {
+                //        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado + "?isHistoric=" + this._isHistoric;
 
-                        /*FILTROS*/
-                        var filters = {};
-                        this.$.grid._filters.map(function (value, index) {
-                            filters[value.path] = value.value;
-                        });
-                        window.setGridFilter('consultamercado-consultamercado', filters || {});
-                    }
-                },
+                //        /*FILTROS*/
+                //        var filters = {};
+                //        this.$.grid._filters.map(function (value, index) {
+                //            filters[value.path] = value.value;
+                //        });
+                //        window.setGridFilter('consultamercado-consultamercado', filters || {});
+                //    }
+                //},
                 /*FILTROS*/
                 created: function () {
                     this.filter = window.getGridFilter('consultamercado-consultamercado');
@@ -354,12 +369,22 @@
                         if (this._historico == 0) {
                             this._historico = 1;
                             this._isHistoric = "true";
-                            this.checked = false;
                         } else {
                             this._historico = 0;
                             this._isHistoric = "false";
+                        }
+
+                        if (this._cmhistoricotoactivo == 1) {
+                            if (this._historico == 0) {
+                                this.checked = true;
+                            } else {
+                                this.checked = false;
+                            }
+                        }
+                        else {
                             this.checked = true;
                         }
+
                         this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
                         this.$.grid_databound_ajax.generateRequest();
                         this._setButtonTexts();
@@ -503,14 +528,14 @@
                 },
 
                 _historicoToAtivo: function (e) {
-                    if (this._historico == 1) {
+                    if (this._historico == 0) {
                     }
                     else {
                         var Consulta = e.model.item.numConsultaMercado;
                         var ajax_request = this.$.page_HistoricoToAtivo_ajax;
 
                         bootbox.confirm({
-                            message: "Tem a certeza que pretende reativar a Consulta ao Mercado?",
+                            message: "Tem a certeza que pretende reativar a Consulta de Mercado?",
                             buttons: {
                                 confirm: {
                                     label: 'Sim',
@@ -532,7 +557,35 @@
                         });
                     }
                 },
+                _HistoricoToAtivoResponse: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
 
+                    if (this.historicoToAtivoResult.eReasonCode == 1) {
+                        this._showMessage(this.historicoToAtivoResult.eMessage);
+
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                    else {
+                        this._showErrorMessage(this.historicoToAtivoResult.eMessage);
+                    }
+                },
+
+                _showDetails: function (e) {
+                    if (e != null) {
+                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + e.model.item.numConsultaMercado + "?isHistoric=" + this._isHistoric;
+
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('consultamercado-consultamercado', filters || {});
+                    }
+                },
 
 
 

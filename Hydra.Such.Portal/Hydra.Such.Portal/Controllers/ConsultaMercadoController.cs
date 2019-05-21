@@ -45,6 +45,12 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult ConsultaMercado()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.PedidoCotacao);
+            ConfigUtilizadores CUser = DBUserConfigurations.GetById(User.Identity.Name);
+
+            if (CUser != null && CUser.CMHistoricoToActivo.HasValue && CUser.CMHistoricoToActivo == true)
+                ViewBag.CMHistoricoToActivo = 1;
+            else
+                ViewBag.CMHistoricoToActivo = 0;
 
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -316,6 +322,66 @@ namespace Hydra.Such.Portal.Controllers
                 
                 return Json(result);
             }
+        }
+
+        [HttpPost]
+        public JsonResult HistoricoToAtivo([FromBody] ConsultaMercado data)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 99;
+            result.eMessage = "Ocorreu um erro.";
+
+            if (data != null)
+            {
+                ConfigUtilizadores CUser = DBUserConfigurations.GetById(User.Identity.Name);
+
+                if (CUser != null && CUser.CMHistoricoToActivo.HasValue && CUser.CMHistoricoToActivo == true)
+                {
+                    if (!string.IsNullOrEmpty(data.NumConsultaMercado))
+                    {
+                        ConsultaMercado CM = DBConsultaMercado.GetDetalheConsultaMercado(data.NumConsultaMercado);
+
+                        if (CM != null)
+                        {
+                            CM.UserHistoricoToAtivo = User.Identity.Name;
+                            CM.Historico = false;
+
+                            if (DBConsultaMercado.Update(CM) != null)
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "A Consulta de Mercado foi reativada com sucesso.";
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Ocorreu um erro na reativação da Consuta de Mercado.";
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 3;
+                            result.eMessage = "Não foi possivel obter a Consulta de Mercado.";
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 4;
+                        result.eMessage = "Não foi possivel obter o Número da Consulta de Mercado";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 5;
+                    result.eMessage = "Não possui permissões para Reativar a Consulta de Mercado.";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 6;
+                result.eMessage = "Não foi possivel obter os dados da Consulta de Mercado.";
+            }
+
+            return Json(result);
         }
 
         [HttpPost]

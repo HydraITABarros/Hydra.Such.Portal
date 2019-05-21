@@ -53,6 +53,7 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public bool? Urgente { get; set; }
         public bool? Historico { get; set; }
         public string Obs { get; set; }
+        public string UserHistoricoToAtivo { get; set; }
 
         public ICollection<CondicoesPropostasFornecedoresView> CondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasCondicoesPropostasFornecedoresView> LinhasCondicoesPropostasFornecedores { get; set; }
