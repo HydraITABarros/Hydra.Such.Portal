@@ -932,7 +932,7 @@ namespace Hydra.Such.Portal.Controllers
                             hasErrors = true;
 
                         result.eReasonCode = 2;
-                        result.eMessage = " Erro ao criar a Transferência.";
+                        result.eMessage = " Erro ao criar a Transferência:" + ex.Message;
                         return Json(result);
                     }
                 }
