@@ -2363,7 +2363,7 @@
                     <div class="panel panel-default">
                         <paper-collapse-group>
                             <paper-collapse-item header="A Preencher pelas Compras (15)" opened>
-                                <div class="col-xs-12">
+                                <div id="authorizeRegularSection" class="col-xs-12">
                                     <div class="break_clear row">
                                         <div class="col-sm-12">
                                             <div class="row">
@@ -2425,6 +2425,65 @@
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="mb-15"></div>
+                                <!-- ALT_CCP_#001.y2019.b -->
+                                <div id="authorizeBatchesSection" class="col-xs-12">
+                                    <h2>Lotes Procedimento</h2>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <vaadin-grid id="gridLotesProcedimento2" aria-label="gridLotesProcedimento2" items="{{data.loteProcedimentoCcp}}" class="grid" style="height:170px;">
+                                                <vaadin-grid-column width="6%">
+                                                    <template class="header">
+                                                        Adjudicar?
+                                                    </template>
+                                                    <template>
+                                                        <paper-button raised class="btn--confirm" id="authorizeBatchBtn" on-tap="_authorizeBatch"><i class="fa fa-road" aria-hidden="true"></i>&nbsp;</paper-button>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="5%">
+                                                    <template class="header">
+                                                        Lote Nº
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="idLote2" value="{{item.idLote}}" disabled="true"></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="29%">
+                                                    <template class="header">
+                                                        Descrição do Objecto
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="descricaoObjecto2" value="{{item.descricaoObjectoLote}}" disabled></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="10%">
+                                                    <template class="header">
+                                                        Valor Estimado
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="valorEstimado2" value="{{item.valorEstimado}}" disabled></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="10%">
+                                                    <template class="header">
+                                                        Valor Adjudicar
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="valorAdjudicar" value="{{item.valorAdjudicacao}}" required></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="40%">
+                                                    <template class="header">
+                                                                            Comentário Adjudicação
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="comentarioAutorizacaoAdjudicacao" value="{{item.comentarioAutorizacaoAdjudicacao}}" required></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ALT_CCP_#001.y2019.e -->
                             </paper-collapse-item>
                             <paper-collapse-item header="A Preencher pela Área - Pedido de Adjudicação (16)">
                                 <div class="col-xs-12">
@@ -3956,6 +4015,7 @@
                     // ALT_CCP_#001.y2019.b
                     var _self = this;
                     $(_self.$.batchesSection).addClass('hidden');
+                    $(_self.$.authorizeBatchesSection).addClass('hidden');
                     // ALT_CCP_#001.y2019.e
 
                     this.$.ajax_userpermissions.body = this.data;
@@ -4226,6 +4286,10 @@
                             }
                             if (self.data.procedimentoEmLotes) {
                                 $(self.$.batchesSection).removeClass('hidden');
+                                $(self.$.authorizeBatchesSection).removeClass('hidden');
+
+                                $(self.$.authorizeRegularSection).addClass('hidden');
+                                
                             }
                             // zpgm.ALT_CCP_#001.y2019.e
                             if (self.data.temposPaCcp != null) {
@@ -6398,6 +6462,11 @@
                         if (_self.$.procedimentoEmLotes.checked) {
                             this.data.procedimentoEmLotes = true;
                             $(_self.$.batchesSection).removeClass('hidden');
+                            $(_self.$.authorizeRegularSection).addClass('hidden');
+                            $(_self.$.authorizeBatchesSection).removeClass('hidden');
+
+                            this.$.ajax_update_procedimento.body = JSON.stringify(this.data);
+                            this.$.ajax_update_procedimento.generateRequest();
                         } else {
                             this._showUpdateProcedimentoMsg = false;
 
@@ -6412,7 +6481,10 @@
                                 //var savReq = requests[0].result;
                                 //var linReq = requests[1].result;
                             });
-                            $(_self.$.batchesSection).addClass('hidden');   
+                            $(_self.$.batchesSection).addClass('hidden'); 
+                            
+                            $(_self.$.authorizeRegularSection).removeClass('hidden');
+                            $(_self.$.authorizeBatchesSection).addClass('hidden');
                         }
                     }  
                 },
@@ -6465,7 +6537,7 @@
                         debugger;;
                         _valor = this.__preciseRound(_valor, 2);
 
-                        if (this.__preciseRound(parseFloat(_totalLotes) + parseFloat(_valor), 2) > this.__preciseRound(parseFloat(this.data.valorPrecoBase), 2)) {
+                        if (_lotes != null && (this.__preciseRound(parseFloat(_totalLotes) + parseFloat(_valor), 2) > this.__preciseRound(parseFloat(this.data.valorPrecoBase), 2))) {
                            this._showErrorMessage("O somatório dos Lotes é superior ao Preço Base!");
                             return;
                         }
@@ -6601,6 +6673,8 @@
                         $(_self.$.tabLinhaProdutos).addClass('disabled');
                         $(_self.$.tabNotas).addClass('disabled');
 
+                        // zpgm.ALT_CCP_#001.y2019
+                        $(_self.$.gridLotesProcedimento1).addClass('disabled');
                         //div
                         $(_self.$.botoes_accao).addClass('hidden');
 
@@ -6652,7 +6726,17 @@
                             $(_self.$.btnDeleteLinhaProdutoServico).addClass('disabled');
 
                             $(_self.$.tabLinhaProdutos).addClass('disabled');
+
+                            // zpgm.ALT_CCP_#001.y2019
+                            $(_self.$.gridLotesProcedimento1).addClass('disabled');
+                            $(_self.$.buttonAddLote).addClass('disabled');
+                            
                         }
+
+                        // zpgm.ALT_CCP_#001.y2019
+                        _self.$.procedimentoEmLotes.disabled = (data.estado != 0);
+                        _self.$.descricaoObjectoLote.disabled = (data.estado != 0);
+                        _self.$.valorEstimadoLote.disabled = (data.estado != 0);
 
                         _self.$.informacaoTecnica.disabled = (data.estado != 0);
                         _self.$.fundamentacaoAquisicao.disabled = (data.estado != 0);
