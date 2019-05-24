@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.Database
         public int ID { get; set; }
         public string Processo { get; set; }
         public string Descricao { get; set; }
+        public string Acao { get; set; }
         public string URL { get; set; }
         public int? Estado { get; set; }
         public DateTime? DataEstado { get; set; }

@@ -1078,15 +1078,15 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                                <template>
-                                                    <table width="200px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>-->
+                    <template>
+                        <table width="200px">
+                            <tr>
+                                <td width="40%">[[item.id]]</td>
+                                <td width="60%"> <b>[[item.value]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
                                                             items="[[UnitsOfMmeasure]]"
                                                             text-path="id"
@@ -1271,7 +1271,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                    </vaadin-grid-filter>-->
+            </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1413,14 +1413,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.name]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.name]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1452,14 +1452,14 @@
                                                             fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
                                             </such-selectbox>
                                             <!--<vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.no]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.no]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.projectNo}}
@@ -1645,6 +1645,20 @@
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ item.discountPercentage ]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Sem Efeito</p>
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-checkbox id="chkSemEfeito" checked="{{item.semEfeito}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew"></vaadin-checkbox>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            <vaadin-checkbox checked="{{item.semEfeito}}" disabled></vaadin-checkbox>
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
@@ -2256,6 +2270,7 @@
                                         vatProductPostingGroup: e.model.item.vatProductPostingGroup,
                                         discountPercentage: e.model.item.discountPercentage,
                                         selected: e.model.item.selected,
+                                        semEfeito: e.model.item.semEfeito,
                                     });
                                     this.$.Lines_UpdateLinhaRequisicao_ajax.generateRequest();
                                     this.$.grdRequisitionLines.clearCache();

@@ -639,6 +639,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         Urgente = ConsultaMercado.Urgente,
                         Historico = ConsultaMercado.Historico,
                         Obs = ConsultaMercado.Obs,
+                        UserHistoricoToAtivo = ConsultaMercado.UserHistoricoToAtivo,
                         Destino_Show = ConsultaMercado.Destino == 1 ? "Armazém" : ConsultaMercado.Destino == 2 ? "Projeto" : string.Empty,
                         Estado_Show = ConsultaMercado.Estado == 0 ? "Aberto" : ConsultaMercado.Estado == 1 ? "Liberto" : string.Empty,
                         Fase_Show = ConsultaMercado.Fase == 0 ? "Abertura" : ConsultaMercado.Fase == 1 ? "Consulta" : ConsultaMercado.Fase == 2 ? "Negociação e Contratação" : ConsultaMercado.Fase == 3 ? "Adjudicação" : ConsultaMercado.Fase == 4 ? "Fecho" : string.Empty,
@@ -738,6 +739,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 Urgente = ObjectToTransform.Urgente,
                 Historico = ObjectToTransform.Historico,
                 Obs = ObjectToTransform.Obs,
+                UserHistoricoToAtivo = ObjectToTransform.UserHistoricoToAtivo,
                 Destino_Show = ObjectToTransform.Destino == 1 ? "Armazém" : ObjectToTransform.Destino == 2 ? "Projeto" : string.Empty,
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
                 Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
@@ -864,7 +866,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 Amostra = ObjectToTransform.Amostra,
                 Urgente = ObjectToTransform.Urgente,
                 Historico = ObjectToTransform.Historico,
-                Obs = ObjectToTransform.Obs
+                Obs = ObjectToTransform.Obs,
+                UserHistoricoToAtivo = ObjectToTransform.UserHistoricoToAtivo
             };
 
             //Falta o cast das icollections

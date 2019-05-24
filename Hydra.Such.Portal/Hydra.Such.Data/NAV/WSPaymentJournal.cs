@@ -27,7 +27,6 @@ namespace Hydra.Such.Data.NAV
                     Journal_Batch_Name = PaymentJournalToCreate.Journal_Batch_Name,
                     Line_No = PaymentJournalToCreate.Line_No,
                     Line_NoSpecified = true,
-
                     Account_Type = PaymentJournalToCreate.Account_Type,
                     Account_TypeSpecified = true,
                     Account_No = PaymentJournalToCreate.Account_No,
@@ -37,7 +36,8 @@ namespace Hydra.Such.Data.NAV
                     Document_Type = PaymentJournalToCreate.Document_Type,
                     Document_TypeSpecified = true,
                     Amount = PaymentJournalToCreate.Amount,
-                    AmountSpecified = true
+                    AmountSpecified = true,
+                    
                 }
             };
             //NAVCreate.CurrentJnlBatchName = NAVCreate.WSPaymentJournal.Journal_Batch_Name;

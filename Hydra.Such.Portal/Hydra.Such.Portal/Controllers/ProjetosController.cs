@@ -1512,8 +1512,6 @@ namespace Hydra.Such.Portal.Controllers
                 response.Items = dp;
             }
 
-
-
             response.eReasonCode = 1;
             response.eMessage = "Diário de Projeto atualizado.";
 
@@ -1577,16 +1575,16 @@ namespace Hydra.Such.Portal.Controllers
                                             FaturaANºCliente = projecto.NºCliente,
                                             Moeda = pjD.Currency,
                                             ValorUnitárioAFaturar = pjD.UnitValueToInvoice,
-                                            TipoRefeição = pjD.MealType,
-                                            CódGrupoServiço = pjD.ServiceGroupCode,
-                                            NºGuiaResíduos = pjD.ResidueGuideNo,
-                                            NºGuiaExterna = pjD.ExternalGuideNo,
-                                            DataConsumo = pjD.ConsumptionDate == "" || pjD.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(pjD.ConsumptionDate),
-                                            CódServiçoCliente = pjD.ServiceClientCode,
                                             PréRegisto = false,
                                             CódDestinoFinalResíduos = pjD.ResidueFinalDestinyCode,
-                                            TipoRecurso = pjD.ResourceType
-                                            
+                                            TipoRecurso = pjD.ResourceType,
+
+                                            NºGuiaResíduos = pjD.ResidueGuideNo,
+                                            NºGuiaExterna = pjD.ExternalGuideNo,
+                                            TipoRefeição = pjD.MealType,
+                                            CódGrupoServiço = pjD.ServiceGroupCode,
+                                            DataConsumo = pjD.ConsumptionDate == "" || pjD.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(pjD.ConsumptionDate),
+                                            CódServiçoCliente = pjD.ServiceClientCode,
                                         };
                                         if (pjD.LineNo > 0)
                                         {
@@ -1679,17 +1677,16 @@ namespace Hydra.Such.Portal.Controllers
                             FaturaANºCliente = projecto.NºCliente,
                             Moeda = x.Currency,
                             ValorUnitárioAFaturar = x.UnitValueToInvoice,
-                            TipoRefeição = x.MealType,
-                            CódGrupoServiço = x.ServiceGroupCode,
-                            NºGuiaResíduos = x.ResidueGuideNo,
-                            NºGuiaExterna = x.ExternalGuideNo,
-                            DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
-                            CódServiçoCliente = x.ServiceClientCode,
                             PréRegisto = false,
                             CódDestinoFinalResíduos = x.ResidueFinalDestinyCode,
-                            TipoRecurso = x.ResourceType
+                            TipoRecurso = x.ResourceType,
 
-
+                            NºGuiaResíduos = x.ResidueGuideNo,
+                            NºGuiaExterna = x.ExternalGuideNo,
+                            TipoRefeição = x.MealType,
+                            CódGrupoServiço = x.ServiceGroupCode,
+                            DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == String.Empty ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                            CódServiçoCliente = x.ServiceClientCode,
                         };
 
                         if (x.LineNo > 0)
@@ -2287,9 +2284,8 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string ProjDiaryPrice)
+        public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string ProjDiaryPrice, bool InverterSinal)
         {
-
             List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
@@ -2299,7 +2295,7 @@ namespace Hydra.Such.Portal.Controllers
                 Type = x.Tipo,
                 Code = x.Código,
                 Description = x.Descrição,
-                Quantity = x.Quantidade,
+                Quantity = InverterSinal == false ? x.Quantidade : x.Quantidade * -1,
                 MeasurementUnitCode = x.CódUnidadeMedida,
                 LocationCode = x.CódLocalização,
                 ProjectContabGroup = x.GrupoContabProjeto,
@@ -2308,17 +2304,20 @@ namespace Hydra.Such.Portal.Controllers
                 ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                 User = x.Utilizador,
                 UnitCost = x.CustoUnitário,
-                TotalCost = x.CustoTotal,
+                TotalCost = InverterSinal == false ? x.CustoTotal : x.CustoTotal * -1,
                 UnitPrice = x.PreçoUnitário,
-                TotalPrice = x.PreçoTotal,
+                TotalPrice = InverterSinal == false ? x.PreçoTotal : x.PreçoTotal * -1,
                 Billable = x.Faturável,
                 Registered = x.Registado,
                 DocumentNo = x.NºDocumento,
-                MealType = x.TipoRefeição,
-                ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
-                ResidueGuideNo = x.NºGuiaResíduos,
                 ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+
+                ResidueGuideNo = x.NºGuiaResíduos,
                 ExternalGuideNo = x.NºGuiaExterna,
+                MealType = x.TipoRefeição,
+                ServiceGroupCode = x.CódGrupoServiço,
+                ConsumptionDate = x.DataConsumo == null ? String.Empty : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
+                ServiceClientCode = x.CódServiçoCliente,
             }).ToList();
             if (!string.IsNullOrEmpty(NoDocument))
             {

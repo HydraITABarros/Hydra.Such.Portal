@@ -2112,24 +2112,20 @@ namespace WSPaymentJournalNAV
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=0)]
-        public string CurrentJnlBatchName;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         public string Journal_Template_Name;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=2)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         public string Journal_Batch_Name;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=3)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=2)]
         public int Line_No;
         
         public Read()
         {
         }
         
-        public Read(string CurrentJnlBatchName, string Journal_Template_Name, string Journal_Batch_Name, int Line_No)
+        public Read(string Journal_Template_Name, string Journal_Batch_Name, int Line_No)
         {
-            this.CurrentJnlBatchName = CurrentJnlBatchName;
             this.Journal_Template_Name = Journal_Template_Name;
             this.Journal_Batch_Name = Journal_Batch_Name;
             this.Line_No = Line_No;
@@ -2164,18 +2160,14 @@ namespace WSPaymentJournalNAV
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=0)]
-        public string CurrentJnlBatchName;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         public string recId;
         
         public ReadByRecId()
         {
         }
         
-        public ReadByRecId(string CurrentJnlBatchName, string recId)
+        public ReadByRecId(string recId)
         {
-            this.CurrentJnlBatchName = CurrentJnlBatchName;
             this.recId = recId;
         }
     }
@@ -2208,25 +2200,21 @@ namespace WSPaymentJournalNAV
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=0)]
-        public string CurrentJnlBatchName;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         [System.Xml.Serialization.XmlElementAttribute("filter")]
         public WSPaymentJournalNAV.WSPaymentJournal_Filter[] filter;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=2)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         public string bookmarkKey;
         
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=3)]
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=2)]
         public int setSize;
         
         public ReadMultiple()
         {
         }
         
-        public ReadMultiple(string CurrentJnlBatchName, WSPaymentJournalNAV.WSPaymentJournal_Filter[] filter, string bookmarkKey, int setSize)
+        public ReadMultiple(WSPaymentJournalNAV.WSPaymentJournal_Filter[] filter, string bookmarkKey, int setSize)
         {
-            this.CurrentJnlBatchName = CurrentJnlBatchName;
             this.filter = filter;
             this.bookmarkKey = bookmarkKey;
             this.setSize = setSize;
@@ -2341,18 +2329,14 @@ namespace WSPaymentJournalNAV
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=0)]
-        public string CurrentJnlBatchName;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         public WSPaymentJournalNAV.WSPaymentJournal WSPaymentJournal;
         
         public Create()
         {
         }
         
-        public Create(string CurrentJnlBatchName, WSPaymentJournalNAV.WSPaymentJournal WSPaymentJournal)
+        public Create(WSPaymentJournalNAV.WSPaymentJournal WSPaymentJournal)
         {
-            this.CurrentJnlBatchName = CurrentJnlBatchName;
             this.WSPaymentJournal = WSPaymentJournal;
         }
     }
@@ -2383,9 +2367,6 @@ namespace WSPaymentJournalNAV
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=0)]
-        public string CurrentJnlBatchName;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
         public WSPaymentJournalNAV.WSPaymentJournal[] WSPaymentJournal_List;
         
@@ -2393,9 +2374,8 @@ namespace WSPaymentJournalNAV
         {
         }
         
-        public CreateMultiple(string CurrentJnlBatchName, WSPaymentJournalNAV.WSPaymentJournal[] WSPaymentJournal_List)
+        public CreateMultiple(WSPaymentJournalNAV.WSPaymentJournal[] WSPaymentJournal_List)
         {
-            this.CurrentJnlBatchName = CurrentJnlBatchName;
             this.WSPaymentJournal_List = WSPaymentJournal_List;
         }
     }
@@ -2427,18 +2407,14 @@ namespace WSPaymentJournalNAV
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=0)]
-        public string CurrentJnlBatchName;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         public WSPaymentJournalNAV.WSPaymentJournal WSPaymentJournal;
         
         public Update()
         {
         }
         
-        public Update(string CurrentJnlBatchName, WSPaymentJournalNAV.WSPaymentJournal WSPaymentJournal)
+        public Update(WSPaymentJournalNAV.WSPaymentJournal WSPaymentJournal)
         {
-            this.CurrentJnlBatchName = CurrentJnlBatchName;
             this.WSPaymentJournal = WSPaymentJournal;
         }
     }
@@ -2469,9 +2445,6 @@ namespace WSPaymentJournalNAV
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=0)]
-        public string CurrentJnlBatchName;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
         public WSPaymentJournalNAV.WSPaymentJournal[] WSPaymentJournal_List;
         
@@ -2479,9 +2452,8 @@ namespace WSPaymentJournalNAV
         {
         }
         
-        public UpdateMultiple(string CurrentJnlBatchName, WSPaymentJournalNAV.WSPaymentJournal[] WSPaymentJournal_List)
+        public UpdateMultiple(WSPaymentJournalNAV.WSPaymentJournal[] WSPaymentJournal_List)
         {
-            this.CurrentJnlBatchName = CurrentJnlBatchName;
             this.WSPaymentJournal_List = WSPaymentJournal_List;
         }
     }
@@ -2514,18 +2486,14 @@ namespace WSPaymentJournalNAV
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=0)]
-        public string CurrentJnlBatchName;
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspaymentjournal", Order=1)]
         public string Key;
         
         public Delete()
         {
         }
         
-        public Delete(string CurrentJnlBatchName, string Key)
+        public Delete(string Key)
         {
-            this.CurrentJnlBatchName = CurrentJnlBatchName;
             this.Key = Key;
         }
     }
@@ -2606,10 +2574,9 @@ namespace WSPaymentJournalNAV
             return base.Channel.ReadAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSPaymentJournalNAV.Read_Result> ReadAsync(string CurrentJnlBatchName, string Journal_Template_Name, string Journal_Batch_Name, int Line_No)
+        public System.Threading.Tasks.Task<WSPaymentJournalNAV.Read_Result> ReadAsync(string Journal_Template_Name, string Journal_Batch_Name, int Line_No)
         {
             WSPaymentJournalNAV.Read inValue = new WSPaymentJournalNAV.Read();
-            inValue.CurrentJnlBatchName = CurrentJnlBatchName;
             inValue.Journal_Template_Name = Journal_Template_Name;
             inValue.Journal_Batch_Name = Journal_Batch_Name;
             inValue.Line_No = Line_No;
@@ -2622,10 +2589,9 @@ namespace WSPaymentJournalNAV
             return base.Channel.ReadByRecIdAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSPaymentJournalNAV.ReadByRecId_Result> ReadByRecIdAsync(string CurrentJnlBatchName, string recId)
+        public System.Threading.Tasks.Task<WSPaymentJournalNAV.ReadByRecId_Result> ReadByRecIdAsync(string recId)
         {
             WSPaymentJournalNAV.ReadByRecId inValue = new WSPaymentJournalNAV.ReadByRecId();
-            inValue.CurrentJnlBatchName = CurrentJnlBatchName;
             inValue.recId = recId;
             return ((WSPaymentJournalNAV.WSPaymentJournal_Port)(this)).ReadByRecIdAsync(inValue);
         }
@@ -2636,10 +2602,9 @@ namespace WSPaymentJournalNAV
             return base.Channel.ReadMultipleAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSPaymentJournalNAV.ReadMultiple_Result> ReadMultipleAsync(string CurrentJnlBatchName, WSPaymentJournalNAV.WSPaymentJournal_Filter[] filter, string bookmarkKey, int setSize)
+        public System.Threading.Tasks.Task<WSPaymentJournalNAV.ReadMultiple_Result> ReadMultipleAsync(WSPaymentJournalNAV.WSPaymentJournal_Filter[] filter, string bookmarkKey, int setSize)
         {
             WSPaymentJournalNAV.ReadMultiple inValue = new WSPaymentJournalNAV.ReadMultiple();
-            inValue.CurrentJnlBatchName = CurrentJnlBatchName;
             inValue.filter = filter;
             inValue.bookmarkKey = bookmarkKey;
             inValue.setSize = setSize;
@@ -2698,10 +2663,9 @@ namespace WSPaymentJournalNAV
             return base.Channel.DeleteAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSPaymentJournalNAV.Delete_Result> DeleteAsync(string CurrentJnlBatchName, string Key)
+        public System.Threading.Tasks.Task<WSPaymentJournalNAV.Delete_Result> DeleteAsync(string Key)
         {
             WSPaymentJournalNAV.Delete inValue = new WSPaymentJournalNAV.Delete();
-            inValue.CurrentJnlBatchName = CurrentJnlBatchName;
             inValue.Key = Key;
             return ((WSPaymentJournalNAV.WSPaymentJournal_Port)(this)).DeleteAsync(inValue);
         }
@@ -2734,7 +2698,8 @@ namespace WSPaymentJournalNAV
         {
             if ((endpointConfiguration == EndpointConfiguration.WSPaymentJournal_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.11:7047/DynamicsNAV100/WS/SUCH/Page/WSPaymentJournal");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/WSPaymentJou" +
+                        "rnal");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

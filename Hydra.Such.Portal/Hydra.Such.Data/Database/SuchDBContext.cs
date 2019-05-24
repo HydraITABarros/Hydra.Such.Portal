@@ -5025,6 +5025,9 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Viatura).HasMaxLength(10);
 
+                entity.Property(e => e.SemEfeito).HasColumnName("SemEfeito");
+
+
                 entity.HasOne(d => d.NºProjetoNavigation)
                     .WithMany(p => p.LinhasRequisição)
                     .HasForeignKey(d => d.NºProjeto)
@@ -10946,6 +10949,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descricao)
                     .HasColumnName("Descricao")
+                    .HasMaxLength(2000);
+
+                entity.Property(e => e.Acao)
+                    .HasColumnName("Acao")
                     .HasMaxLength(2000);
 
                 entity.Property(e => e.URL)

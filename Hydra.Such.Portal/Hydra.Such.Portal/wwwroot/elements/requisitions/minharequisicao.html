@@ -1025,15 +1025,15 @@
                                                             on-change="_onProductInGridChanged">
                                             </such-selectbox>
                                             <!--<vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_onProductInGridChanged" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}">
-                                            <template>
-                                                <table width="180px">
-                                                    <tr>
-                                                        <td width="40%">[[item.code]]</td>
-                                                        <td width="60%"> <b>[[item.name]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                    <template>
+                        <table width="180px">
+                            <tr>
+                                <td width="40%">[[item.code]]</td>
+                                <td width="60%"> <b>[[item.name]]</b></td>
+                            </tr>
+                        </table>
+                    </template>
+                </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.code}}
@@ -1264,7 +1264,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                    </vaadin-grid-filter>-->
+            </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1406,14 +1406,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.name]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.name]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1446,14 +1446,14 @@
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                             <!--<vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.no]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.no]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.projectNo}}
@@ -1639,6 +1639,20 @@
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ item.discountPercentage ]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <p class="alignCenter">Sem Efeito</p>
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-checkbox id="chkSendPrePurchase" checked="{{item.semEfeito}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            <vaadin-checkbox checked="{{item.semEfeito}}" disabled></vaadin-checkbox>
                                         </template>
                                     </template>
                                 </vaadin-grid-column>

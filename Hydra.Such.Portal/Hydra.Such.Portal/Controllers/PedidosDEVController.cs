@@ -317,6 +317,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["id"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("ID"); Col = Col + 1; }
                 if (dp["processo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Processo"); Col = Col + 1; }
                 if (dp["descricao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
+                if (dp["acao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Ação"); Col = Col + 1; }
                 if (dp["url"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Link da Página"); Col = Col + 1; }
                 if (dp["estadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
                 if (dp["dataEstadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data do Estado"); Col = Col + 1; }
@@ -342,6 +343,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["id"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ID); Col = Col + 1; }
                         if (dp["processo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Processo); Col = Col + 1; }
                         if (dp["descricao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Descricao); Col = Col + 1; }
+                        if (dp["acao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Acao); Col = Col + 1; }
                         if (dp["url"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.URL); Col = Col + 1; }
                         if (dp["estadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstadoText); Col = Col + 1; }
                         if (dp["dataEstadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataEstadoText); Col = Col + 1; }
