@@ -2143,7 +2143,7 @@
                 _update: function () {
                     this.data.area = this._areaid;
                     if (this.chkReposicaoStock == false || this.chkReposicaoStock == undefined) {
-                        if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                        if (this.$.projectNo.value != null && this.$.projectNo.value != "") {
                             this.data.stockReplacement = this.chkReposicaoStock == true ? true : false;
 
                             this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
@@ -2187,7 +2187,7 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
-                            if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                            if (this.$.projectNo.value != null && this.$.projectNo.value != "") {
                                 this._executeRequest("/PreRequisicoes/CreatePreRequesition", this.data)
                             }
                             else {

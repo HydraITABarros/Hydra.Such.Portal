@@ -389,7 +389,7 @@
 
                                     <div class="row break_clear">
                                         <div class="col-sm-3 ">
-                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-sm-3">
@@ -407,7 +407,7 @@
 
                                     <div class="row break_clear">
                                         <div class="col-sm-6 ">
-                                            <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                            <such-textarea rows="5" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Observações" disabled> </such-textarea>
                                         </div>
 
                                         <div class="col-sm-6 ">
@@ -824,7 +824,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.unitCostWithIVA}}" id="_CLGridUnitCostWithIVA" name="_CLGridUnitCostWithIVA" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.unitCostWithIVA}}" id="_CLGridUnitCostWithIVA" name="_CLGridUnitCostWithIVA" disabled on-value-changed="_ConvertDecimals" on-blur="_updateRequisitionLines"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitCostWithIVA}}
@@ -1002,7 +1002,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-checkbox id="chkCriarNotaEncomenda" checked="{{item.criarNotaEncomenda}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"></vaadin-checkbox>
+                                            <vaadin-checkbox id="chkCriarNotaEncomenda" checked="{{item.criarNotaEncomenda}}" disabled on-blur="_updateRequisitionLines"></vaadin-checkbox>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             <vaadin-checkbox checked="{{item.criarNotaEncomenda}}" disabled></vaadin-checkbox>
@@ -1059,7 +1059,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.createdOrderNo}}" id="_CLGridcreatedOrderNo" name="_CLGridcreatedOrderNo" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines"> </vaadin-text-field>
+                                            <vaadin-text-field value="{{item.createdOrderNo}}" id="_CLGridcreatedOrderNo" name="_CLGridcreatedOrderNo" disabled on-blur="_updateRequisitionLines"> </vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.createdOrderNo}}
@@ -1325,7 +1325,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field id="cmbDiscountPercentage" on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" on-blur="_updateRequisitionLines"></vaadin-text-field>
+                                            <vaadin-text-field id="cmbDiscountPercentage" on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" disabled on-blur="_updateRequisitionLines"></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ item.discountPercentage ]]

@@ -1914,6 +1914,12 @@
 
                     if (item == null)
                         return;
+
+                    if (this.$.CBHeaderProjects.value == null || this.$.CBHeaderProjects.value == "") {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        return;
+                    };
+
                     switch (item.value) {
                         case 1: //"Disponibilizar"
                             this._RegistProvide();
@@ -1963,8 +1969,15 @@
                 },
                 _functionsMenuItemSelected: function (e) {
                     var item = e.detail.value;
+
                     if (item == null)
                         return;
+
+                    if (this.$.CBHeaderProjects.value == null || this.$.CBHeaderProjects.value == "") {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        return;
+                    };
+
                     switch (item.value) {
                         case 1: //"Criar Consulta Mercado"
                             this._createMarketConsult();
@@ -2179,7 +2192,12 @@
                 },
                 _update: function () {
                     if (this._validateReqHeaderInput()) {
-                        this._sendReqRequest("/GestaoRequisicoes/UpdateRequisition", this.Requisition)
+                        if (this.$.CBHeaderProjects.value != null && this.$.CBHeaderProjects.value != "") {
+                            this._sendReqRequest("/GestaoRequisicoes/UpdateRequisition", this.Requisition)
+                        }
+                        else {
+                            this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                        }
                     }
                 },
                 _delete: function () {
@@ -2311,8 +2329,13 @@
                 },
 
                 _validateLocalMarket: function () {
-                    this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.validateLocalMarket_datasource.generateRequest();
+                    if (this.$.CBHeaderProjects.value != null && this.$.CBHeaderProjects.value != "") {
+                        this.$.validateLocalMarket_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validateLocalMarket_datasource.generateRequest();
+                    }
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
                 },
                 _validateLocalMarketResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
@@ -2327,8 +2350,13 @@
                     this.$.requisition_datasource.generateRequest();
                 },
                 _validateRequisition: function () {
-                    this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
-                    this.$.validaterequisition_datasource.generateRequest();
+                    if (this.$.CBHeaderProjects.value != null && this.$.CBHeaderProjects.value != "") {
+                        this.$.validaterequisition_datasource.body = JSON.stringify(this.Requisition);
+                        this.$.validaterequisition_datasource.generateRequest();
+                    }
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
                 },
                 _validateRequisitionResponse: function (e) {
                     if (this.Requisition.eReasonCode == "1") {
@@ -2501,54 +2529,74 @@
                 },
                 _createRequisitionLine: function () {
                     if (this._validateUserInputForLine()) {
-                        var newReqLine = {
-                            requestNo: this.$.requisitionNo.value,
-                            code: this.$.CBProducts.value,
-                            description: this.$.txtProductDesciption.value,
-                            description2: this.$.txtProductDesciption2.value,
-                            unitMeasureCode: this.$.CBUnitsOfMmeasure.value,
-                            localCode: this.$.CBLocations.value,
-                            quantityToRequire: this.$.quantityToRequireId.value,
-                            quantityRequired: this.$.quantityRequiredId.value,
-                            quantityToProvide: this.$.quantityToProvideId.value,
-                            quantityAvailable: this.$.quantityAvailableId.value,
-                            quantityReceivable: this.$.quantityReceivableId.value,
-                            quantityReceived: this.$.quantityReceivedId.value,
-                            unitCost: this.$.unitCostId.value,
-                            regionCode: this.$.RegionCode.value,
-                            functionalAreaCode: this.$.FunctionalAreaCode.value,
-                            centerResponsibilityCode: this.$.ResponsabilityCenterCode.value,
-                            vehicle: this.$.CBVehicles.value,
-                            unitCostSould: this.$.unitCostsouldId.value,
-                            budgetValue: this.$.budgetValueId.value,
-                            maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
-                            createMarketSearch: this.$.createMarketSearchId.__data.checked ? 1 : 0, //Criar Consulta Mercado
-                            criarNotaEncomenda: this.$.criarNotaEncomendaId.__data.checked ? 1 : 0, //Criar Nota Encomenda
-                            submitPrePurchase: this.$.submitPrePurchaseId.__data.checked ? 1 : 0,   //Enviado Pré Compra
-                            sendPrePurchase: this.$.sendPrePurchaseId.__data.checked ? 1 : 0,       //Enviar Pré Compra
-                            supplierNo: this.$.CBSuppliers.value,
-                            openOrderNo: this.$.CBPurchaseHeader.value,
-                            openOrderLineNo: this.$.CBPurchaseLine.value,
-                            queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
-                            projectNo: this.$.CBLineProjects.value,
-                            localMarket: this.$.chkLocalMarket.__data.checked ? 1 : 0,              //Mercado Local
-                            vatBusinessPostingGroup: "",
-                            vatProductPostingGroup: "",
-                            quantidadeInicial: this.$.txtQuantidadeInicial.value,
-                            createdOrderNo: this.$.txtNoEncomendaCriada.value,
-                        };
-                        //Set default VATPostingGroups
-                        var supplier = this.Suppliers.find(x => x.no_ == newReqLine.supplierNo);
-                        if (supplier != null) {
-                            newReqLine.vatBusinessPostingGroup = supplier.vatBusinessPostingGroup;
-                        }
-                        var product = this.Products.find(x => x.code == newReqLine.code);
-                        if (product != null) {
-                            newReqLine.vatProductPostingGroup = product.vatProductPostingGroup;
-                        }
+                        if (this.$.CBProducts.value != null && this.$.CBProducts.value != "") {
+                            if (this.$.CBLocations.value != null && this.$.CBLocations.value != "") {
+                                if (this.$.quantityToRequireId.value != null && this.$.quantityToRequireId.value != "" && parseFloat(this.$.quantityToRequireId.value) > 0) {
+                                    if (this.$.CBLineProjects.value != null && this.$.CBLineProjects.value != "") {
+                                        var newReqLine = {
+                                            requestNo: this.$.requisitionNo.value,
+                                            code: this.$.CBProducts.value,
+                                            description: this.$.txtProductDesciption.value,
+                                            description2: this.$.txtProductDesciption2.value,
+                                            unitMeasureCode: this.$.CBUnitsOfMmeasure.value,
+                                            localCode: this.$.CBLocations.value,
+                                            quantityToRequire: this.$.quantityToRequireId.value,
+                                            quantityRequired: this.$.quantityRequiredId.value,
+                                            quantityToProvide: this.$.quantityToProvideId.value,
+                                            quantityAvailable: this.$.quantityAvailableId.value,
+                                            quantityReceivable: this.$.quantityReceivableId.value,
+                                            quantityReceived: this.$.quantityReceivedId.value,
+                                            unitCost: this.$.unitCostId.value,
+                                            regionCode: this.$.RegionCode.value,
+                                            functionalAreaCode: this.$.FunctionalAreaCode.value,
+                                            centerResponsibilityCode: this.$.ResponsabilityCenterCode.value,
+                                            vehicle: this.$.CBVehicles.value,
+                                            unitCostSould: this.$.unitCostsouldId.value,
+                                            budgetValue: this.$.budgetValueId.value,
+                                            maintenanceOrderLineNo: this.$.maintenanceOrderLineNoId.value,
+                                            createMarketSearch: this.$.createMarketSearchId.__data.checked ? 1 : 0, //Criar Consulta Mercado
+                                            criarNotaEncomenda: this.$.criarNotaEncomendaId.__data.checked ? 1 : 0, //Criar Nota Encomenda
+                                            submitPrePurchase: this.$.submitPrePurchaseId.__data.checked ? 1 : 0,   //Enviado Pré Compra
+                                            sendPrePurchase: this.$.sendPrePurchaseId.__data.checked ? 1 : 0,       //Enviar Pré Compra
+                                            supplierNo: this.$.CBSuppliers.value,
+                                            openOrderNo: this.$.CBPurchaseHeader.value,
+                                            openOrderLineNo: this.$.CBPurchaseLine.value,
+                                            queryCreatedMarketNo: this.$.queryCreatedMarketNoId.value,
+                                            projectNo: this.$.CBLineProjects.value,
+                                            localMarket: this.$.chkLocalMarket.__data.checked ? 1 : 0,              //Mercado Local
+                                            vatBusinessPostingGroup: "",
+                                            vatProductPostingGroup: "",
+                                            quantidadeInicial: this.$.txtQuantidadeInicial.value,
+                                            createdOrderNo: this.$.txtNoEncomendaCriada.value,
+                                        };
+                                        //Set default VATPostingGroups
+                                        var supplier = this.Suppliers.find(x => x.no_ == newReqLine.supplierNo);
+                                        if (supplier != null) {
+                                            newReqLine.vatBusinessPostingGroup = supplier.vatBusinessPostingGroup;
+                                        }
+                                        var product = this.Products.find(x => x.code == newReqLine.code);
+                                        if (product != null) {
+                                            newReqLine.vatProductPostingGroup = product.vatProductPostingGroup;
+                                        }
 
-                        this.$.createReqLine_ajax.body = JSON.stringify(newReqLine);
-                        this.$.createReqLine_ajax.generateRequest();
+                                        this.$.createReqLine_ajax.body = JSON.stringify(newReqLine);
+                                        this.$.createReqLine_ajax.generateRequest();
+                                    }
+                                    else {
+                                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                                    }
+                                }
+                                else {
+                                    this._openToastError('O campo Quantidade A Requerer é de preenchimento obrigatório e superior a 0.');
+                                }
+                            }
+                            else {
+                                this._openToastError('O campo Código Localização é de preenchimento obrigatório.');
+                            }
+                        }
+                        else {
+                            this._openToastError('O campo Cód. Produto é de preenchimento obrigatório.');
+                        }
                     }
                 },
                 _createReqLineResponse: function (e) {
@@ -2671,7 +2719,7 @@
                                     }, 1000);
                             }
                             else {
-                                this._openDlgMessageError(this.data.eMessage);
+                                this._openDlgMessageError(this.Requisition.eMessage);
                             }
                             this._isCreate = !(this.Requisition.eReasonCode == "1");
                         }
@@ -2681,7 +2729,7 @@
                                 this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition";
                             }
                             else {
-                                this._openDlgMessageError(this.data.eMessage);
+                                this._openDlgMessageError(this.Requisition.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("UpdateRequisitionLines") !== -1) {
@@ -2691,7 +2739,7 @@
                                 this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition";
                             }
                             else {
-                                this._openDlgMessageError(this.data.eMessage);
+                                this._openDlgMessageError(this.Requisition.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("Delete") !== -1) {
@@ -2988,35 +3036,40 @@
                 },
 
                 _anularAprovacao: function (e) {
-                    var loads = this;
-                    var TMessage = this.$.ToastMessageSuccess;
-                    var TMessageError = this.$.ToastMessageError;
+                    if (this.$.CBHeaderProjects.value != null && this.$.CBHeaderProjects.value != "") {
+                        var loads = this;
+                        var TMessage = this.$.ToastMessageSuccess;
+                        var TMessageError = this.$.ToastMessageError;
 
-                    bootbox.prompt({
-                        title: "Introduza o motivo da Anulação!",
-                        inputType: 'textarea',
-                        buttons: {
-                            confirm: {
-                                label: 'Anular',
-                                className: 'btn-success'
+                        bootbox.prompt({
+                            title: "Introduza o motivo da Anulação!",
+                            inputType: 'textarea',
+                            buttons: {
+                                confirm: {
+                                    label: 'Anular',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Cancelar',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Cancelar',
-                                className: 'btn-danger'
-                            }
-                        },
-                        callback: function (result) {
-                            if (result == "") {
-                                TMessageError.text = "É necessário preencher o motivo de rejeição.";
-                                TMessageError.open();
-                                return false;
-                            } else if (result == null) {
+                            callback: function (result) {
+                                if (result == "") {
+                                    TMessageError.text = "É necessário preencher o motivo de rejeição.";
+                                    TMessageError.open();
+                                    return false;
+                                } else if (result == null) {
 
-                            } else {
-                                loads._RegistCancelApproval(result);
+                                } else {
+                                    loads._RegistCancelApproval(result);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
+                    }
                 },
 
                 _aprovarRequisicao: function () {
