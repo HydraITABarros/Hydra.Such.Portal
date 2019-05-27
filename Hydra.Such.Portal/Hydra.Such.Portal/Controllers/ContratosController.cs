@@ -2751,24 +2751,33 @@ namespace Hydra.Such.Portal.Controllers
                         //AMARO 04/05/219
                         List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
                         RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
-                        if (contractLine.ÚltimaDataFatura == null)
+
+                        ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+                        if (ListaContratos != null && ListaContratos.Count > 0)
                         {
-                            contractLine.ÚltimaDataFatura = Lastdate;
-
-                            ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
-
                             Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
-                                && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
-                                && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                                && x.DataInícioCompromisso <= Lastdate
+                                && x.DataFimCompromisso >= Lastdate);
                         }
-                        else
-                        {
-                            ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
 
-                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
-                                && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
-                                && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
-                        }
+                        //if (contractLine.ÚltimaDataFatura == null)
+                        //{
+                        //    contractLine.ÚltimaDataFatura = Lastdate;
+
+                        //    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                        //    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                        //        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                        //        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                        //}
+                        //else
+                        //{
+                        //    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                        //    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                        //        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                        //        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                        //}
                         if (Reqcontract != null)
                         {
                             Reqcontract.DataÚltimaFatura = Lastdate;
@@ -3054,25 +3063,34 @@ namespace Hydra.Such.Portal.Controllers
                                 //AMARO 04/05/219
                                 List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
                                 RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
-                                if (contractLine.ÚltimaDataFatura == null)
+
+                                ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+                                if (ListaContratos != null && ListaContratos.Count > 0)
                                 {
-                                    contractLine.ÚltimaDataFatura = Lastdate;
-
-                                    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
-
                                     Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
-                                        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
-                                        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                                        && x.DataInícioCompromisso <= Lastdate
+                                        && x.DataFimCompromisso >= Lastdate);
                                 }
-                                else
-                                {
-                                    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
 
-                                    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
-                                        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
-                                        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                                //if (contractLine.ÚltimaDataFatura == null)
+                                //{
+                                //    contractLine.ÚltimaDataFatura = Lastdate;
 
-                                }
+                                //    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                                //    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                //        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                //        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+                                //}
+                                //else
+                                //{
+                                //    ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+
+                                //    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                                //        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
+                                //        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
+
+                                //}
                                 if (Reqcontract != null)
                                 {
                                     Reqcontract.DataÚltimaFatura = Lastdate;
