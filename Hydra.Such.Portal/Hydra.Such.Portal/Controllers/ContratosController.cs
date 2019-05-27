@@ -117,6 +117,24 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult ListContratosInternosLinhas(int? archived, string contractNo)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.LinhasContratosInternos);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UploadURL = _generalConfig.FileUploadFolder;
+                ViewBag.Archived = archived == null ? 0 : 1;
+                ViewBag.ContractNo = contractNo ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         //public IActionResult Details(string id, string version)
         //{
         //    UserAccessesViewModel UPerm = DBUserAccesses.ParseToViewModel(DBUserAccesses.GetByUserId(User.Identity.Name).Where(x => x.Área == 1 && x.Funcionalidade == 2).FirstOrDefault());
@@ -525,6 +543,88 @@ namespace Hydra.Such.Portal.Controllers
             });
 
             return Json(result);
+        }
+
+        public JsonResult GetListContractsInternosLines([FromBody] JObject requestParams)
+        {
+            int Archived = int.Parse(requestParams["Archived"].ToString());
+            string ContractNo = requestParams["ContractNo"].ToString();
+            int Historic = 0;
+            if (requestParams["Historic"] != null)
+                Historic = int.Parse(requestParams["Historic"].ToString());
+
+            List<Contratos> ContractsList = null;
+            List<LinhasContratos> ContractsLinesList = null;
+            Contratos contrato = new Contratos();
+            //int type = 1; //CONTRATOS
+
+            if ((Archived == 0 || ContractNo == "") && (Historic == 0))
+            {
+                int type = 2; //CONTRATOS INTERNOS
+                ContractsList = DBContracts.GetAll().Where(x => x.TipoContrato == (int)ContractType.Contract && x.Tipo == type).ToList();
+                ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
+
+                ContractsLinesList = DBContractLines.GetAll().Where(x => x.TipoContrato == (int)ContractType.Contract).ToList();
+                ContractsLinesList.RemoveAll(x => ContractsList.Find(y => y.NºDeContrato == x.NºContrato && y.NºVersão == x.NºVersão) == null);
+            }
+            else if (Historic == 1)
+            {
+                int type = 2; //CONTRATOS INTERNOS
+                ContractsList = DBContracts.GetAll().Where(x => x.TipoContrato == (int)ContractType.Contract && x.Tipo == type && x.Historico == true).ToList();
+                ContractsList.RemoveAll(x => x.Tipo != 1);
+
+                ContractsLinesList = DBContractLines.GetAll().Where(x => x.TipoContrato == (int)ContractType.Contract).ToList();
+                ContractsLinesList.RemoveAll(x => ContractsList.Find(y => y.NºDeContrato == x.NºContrato && y.NºVersão == x.NºVersão) == null);
+            }
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsLinesList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+
+            //FunctionalAreas
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                ContractsLinesList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.CódigoÁreaFuncional || string.IsNullOrEmpty(x.CódigoÁreaFuncional))));
+
+            //ResponsabilityCenter
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                ContractsLinesList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+            List<ContractLineViewModel> result = new List<ContractLineViewModel>();
+
+            ContractsLinesList.ForEach(x => result.Add(DBContractLines.ParseToViewModel(x)));
+
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            List<EnumData> AllStatus = EnumerablesFixed.ContractStatus;
+            List<EnumData> AllContractBillingTypes = EnumerablesFixed.ContractBillingTypes;
+            //List<ClientServicesViewModel> AllClientServices = new List<ClientServicesViewModel>();
+
+            result.ForEach(x => {
+                contrato = ContractsList.Find(y => y.NºDeContrato == x.ContractNo && y.NºVersão == x.VersionNo);
+                if (contrato != null)
+                {
+                    x.ContratoClienteCode = !string.IsNullOrEmpty(contrato.NºCliente) ? contrato.NºCliente : "";
+                    x.ContratoClienteNome = !string.IsNullOrEmpty(contrato.NºCliente) ? AllClients.Where(y => y.No_ == contrato.NºCliente) != null ? AllClients.Where(y => y.No_ == contrato.NºCliente).FirstOrDefault().Name : "" : "";
+
+
+
+                    x.ContractoEstado = contrato.Estado != null ? AllStatus.Where(y => y.Id == contrato.Estado) != null ? AllStatus.Where(y => y.Id == contrato.Estado).FirstOrDefault().Value : "" : "";
+                    x.ContractEndereco = !string.IsNullOrEmpty(contrato.EnvioAEndereço) ? contrato.EnvioAEndereço : "";
+                    x.ContratoCodigoPostal = !string.IsNullOrEmpty(contrato.EnvioACódPostal) ? contrato.EnvioACódPostal : "";
+                    x.ContratoTipo = contrato.TipoContrato != null ? contrato.TipoContrato.ToString() : "";
+                    x.ContratoAvencaFixa = contrato.ContratoAvençaFixa.HasValue ? contrato.ContratoAvençaFixa == true ? "Sim" : "Não" : "Não";
+                    x.ContratoDataExpiracao = contrato.DataExpiração.HasValue ? Convert.ToDateTime(contrato.DataExpiração).ToShortDateString() : "";
+                    x.ContratoTipoFaturacao = contrato.TipoFaturação != null ? AllContractBillingTypes.Where(y => y.Id == contrato.TipoFaturação) != null ? AllContractBillingTypes.Where(y => y.Id == contrato.TipoFaturação).FirstOrDefault().Value : "" : "";
+
+                    //AllClientServices = DBClientServices.GetAllFromClientWithDescription(contrato.NºCliente);
+                    //if (AllClientServices != null && AllClientServices.Count > 0 && x.ServiceClientNo != null && x.ServiceClientNo != "0")
+                    //    x.ServiceClientName = AllClientServices.Where(y => y.ServiceCode == x.ServiceClientNo) != null ? AllClientServices.Where(y => y.ServiceCode == x.ServiceClientNo).FirstOrDefault().ServiceDescription : "";
+                }
+                x.ContratoTipo = !string.IsNullOrEmpty(x.ContratoTipo) ? x.ContratoTipo == "1" ? "Oportunidade" : x.ContratoTipo == "2" ? "Proposta" : x.ContratoTipo == "3" ? "Contrato" : "" : "";
+            });
+
+            return Json(result.OrderBy(x => x.ContractNo).ThenBy(y => y.VersionNo).ThenBy(z => z.LineNo));
         }
 
         public JsonResult GetListContractsQuotas([FromBody] JObject requestParams)
@@ -5223,6 +5323,109 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas de Contratos.xlsx");
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_ContratosInternosLinhas([FromBody] List<ContractLineViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Linhas de Contratos");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["contratoClienteCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente"); Col = Col + 1; }
+                if (dp["contratoClienteNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Cliente"); Col = Col + 1; }
+                if (dp["contractEndereco"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Endereço"); Col = Col + 1; }
+                if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Contrato"); Col = Col + 1; }
+                if (dp["versionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Versão"); Col = Col + 1; }
+                if (dp["contractoEstado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
+                if (dp["contratoCodigoPostal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Postal"); Col = Col + 1; }
+                if (dp["contratoTipo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Contrato"); Col = Col + 1; }
+                if (dp["contratoAvencaFixa"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Avença Fixa"); Col = Col + 1; }
+                if (dp["lineNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Linha"); Col = Col + 1; }
+                if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº"); Col = Col + 1; }
+                if (dp["contratoTipoFaturacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo"); Col = Col + 1; }
+                if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
+                if (dp["description2"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1; }
+                if (dp["quantity"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Quantidade"); Col = Col + 1; }
+                if (dp["codeMeasureUnit"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Unidade Medida"); Col = Col + 1; }
+                if (dp["unitPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Preço Unitário"); Col = Col + 1; }
+                if (dp["codeRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
+                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
+                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["serviceClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Serv. Cliente"); Col = Col + 1; }
+                if (dp["serviceClientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Des. Serv. Cliente"); Col = Col + 1; }
+                if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Fatura"); Col = Col + 1; }
+                if (dp["versionStartDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Inicio Versão"); Col = Col + 1; }
+                if (dp["versionEndDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Fim Versão"); Col = Col + 1; }
+                if (dp["contratoDataExpiracao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Expiração Contrato"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ContractLineViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["contratoClienteCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoClienteCode); Col = Col + 1; }
+                        if (dp["contratoClienteNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoClienteNome); Col = Col + 1; }
+                        if (dp["contractEndereco"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractEndereco); Col = Col + 1; }
+                        if (dp["contractNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractNo); Col = Col + 1; }
+                        if (dp["versionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VersionNo); Col = Col + 1; }
+                        if (dp["contractoEstado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContractoEstado); Col = Col + 1; }
+                        if (dp["contratoCodigoPostal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoCodigoPostal); Col = Col + 1; }
+                        if (dp["contratoTipo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoTipo); Col = Col + 1; }
+                        if (dp["contratoAvencaFixa"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoAvencaFixa); Col = Col + 1; }
+                        if (dp["lineNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LineNo); Col = Col + 1; }
+                        if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1; }
+                        if (dp["contratoTipoFaturacao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoTipoFaturacao); Col = Col + 1; }
+                        if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1; }
+                        if (dp["description2"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1; }
+                        if (dp["quantity"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantity.ToString()); Col = Col + 1; }
+                        if (dp["codeMeasureUnit"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodeMeasureUnit); Col = Col + 1; }
+                        if (dp["unitPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitPrice.ToString()); Col = Col + 1; }
+                        if (dp["codeRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodeRegion); Col = Col + 1; }
+                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea); Col = Col + 1; }
+                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter); Col = Col + 1; }
+                        if (dp["serviceClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ServiceClientNo); Col = Col + 1; }
+                        if (dp["serviceClientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ServiceClientName); Col = Col + 1; }
+                        if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceGroup.ToString()); Col = Col + 1; }
+                        if (dp["versionStartDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VersionStartDate); Col = Col + 1; }
+                        if (dp["versionEndDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VersionEndDate); Col = Col + 1; }
+                        if (dp["contratoDataExpiracao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContratoDataExpiracao); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_ContratosInternosLinhas(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas de Contratos Internos.xlsx");
         }
 
         //1

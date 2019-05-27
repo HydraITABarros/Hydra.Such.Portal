@@ -974,92 +974,84 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
-                    if (!string.IsNullOrEmpty(data.ProjectNo))
+                    bool Anexos = false;
+                    if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
+                        Anexos = true;
+
+                    PréRequisição PreRequisicaoDB = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
+
+                    if (PreRequisicaoDB != null)
                     {
-                        bool Anexos = false;
-                        if (DBAttachments.GetById(User.Identity.Name).Count() > 0)
-                            Anexos = true;
+                        PreRequisicaoDB.NºPréRequisição = data.PreRequesitionsNo;
+                        PreRequisicaoDB.Área = data.Area;
+                        PreRequisicaoDB.TipoRequisição = data.RequesitionType;
+                        PreRequisicaoDB.NºProjeto = data.ProjectNo;
+                        PreRequisicaoDB.CódigoRegião = data.RegionCode;
+                        PreRequisicaoDB.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                        PreRequisicaoDB.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                        PreRequisicaoDB.Urgente = data.Urgent;
+                        PreRequisicaoDB.Amostra = data.Sample;
+                        PreRequisicaoDB.Anexo = Anexos;
+                        PreRequisicaoDB.Imobilizado = data.Immobilized;
+                        PreRequisicaoDB.CompraADinheiro = data.MoneyBuy;
+                        PreRequisicaoDB.CódigoLocalRecolha = data.LocalCollectionCode;
+                        PreRequisicaoDB.CódigoLocalEntrega = data.LocalDeliveryCode;
+                        PreRequisicaoDB.Observações = data.Notes;
+                        PreRequisicaoDB.NoDocumento = data.NoDocumento;
+                        PreRequisicaoDB.ModeloDePréRequisição = data.PreRequesitionModel;
+                        PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
+                        PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
+                        PreRequisicaoDB.DataHoraModificação = data.UpdateDateTime;
+                        PreRequisicaoDB.UtilizadorModificação = User.Identity.Name;
+                        PreRequisicaoDB.Exclusivo = data.Exclusive;
+                        PreRequisicaoDB.JáExecutado = data.AlreadyExecuted;
+                        PreRequisicaoDB.Equipamento = data.Equipment;
+                        PreRequisicaoDB.ReposiçãoDeStock = data.StockReplacement;
+                        PreRequisicaoDB.Reclamação = data.Complaint;
+                        PreRequisicaoDB.CódigoLocalização = data.LocationCode;
+                        PreRequisicaoDB.CabimentoOrçamental = data.FittingBudget;
+                        PreRequisicaoDB.NºFuncionário = data.EmployeeNo;
+                        PreRequisicaoDB.Viatura = data.Vehicle;
+                        PreRequisicaoDB.NºRequesiçãoReclamada = data.ClaimedRequesitionNo;
+                        PreRequisicaoDB.ResponsávelCriação = data.CreateResponsible;
+                        PreRequisicaoDB.ResponsávelAprovação = data.ApprovalResponsible;
+                        PreRequisicaoDB.ResponsávelValidação = data.ValidationResponsible;
+                        PreRequisicaoDB.ResponsávelReceção = data.ReceptionResponsible;
+                        PreRequisicaoDB.DataAprovação = data.ApprovalDate;
+                        PreRequisicaoDB.DataValidação = data.ValidationDate;
+                        PreRequisicaoDB.DataReceção = data.ReceptionDate != "" && data.ReceptionDate != null ? DateTime.Parse(data.ReceptionDate) : (DateTime?)null;
+                        PreRequisicaoDB.UnidadeProdutivaAlimentação = data.FoodProductionUnit;
+                        PreRequisicaoDB.RequisiçãoNutrição = data.NutritionRequesition;
+                        PreRequisicaoDB.RequisiçãoDetergentes = data.DetergentsRequisition;
+                        PreRequisicaoDB.NºProcedimentoCcp = data.CCPProcedureNo;
+                        PreRequisicaoDB.Aprovadores = data.Approvers;
+                        PreRequisicaoDB.MercadoLocal = data.LocalMarket;
+                        PreRequisicaoDB.RegiãoMercadoLocal = data.LocalMarketRegion;
+                        PreRequisicaoDB.ReparaçãoComGarantia = data.WarrantyRepair;
+                        PreRequisicaoDB.Emm = data.EMM;
+                        PreRequisicaoDB.DataEntregaArmazém = data.DeliveryWarehouseDate != "" && data.DeliveryWarehouseDate != null ? DateTime.Parse(data.DeliveryWarehouseDate) : (DateTime?)null;
+                        PreRequisicaoDB.LocalDeRecolha = data.CollectionLocal;
+                        PreRequisicaoDB.MoradaRecolha = data.CollectionAddress;
+                        PreRequisicaoDB.Morada2Recolha = data.CollectionAddress2;
+                        PreRequisicaoDB.CodigoPostalRecolha = data.CollectionPostalCode;
+                        PreRequisicaoDB.LocalidadeRecolha = data.CollectionLocality;
+                        PreRequisicaoDB.ContatoRecolha = data.CollectionContact;
+                        PreRequisicaoDB.ResponsávelReceçãoRecolha = data.CollectionReceptionResponsible;
+                        PreRequisicaoDB.LocalEntrega = data.DeliveryLocal;
+                        PreRequisicaoDB.MoradaEntrega = data.DeliveryAddress;
+                        PreRequisicaoDB.Morada2Entrega = data.DeliveryAddress2;
+                        PreRequisicaoDB.CódigoPostalEntrega = data.DeliveryPostalCode;
+                        PreRequisicaoDB.LocalidadeEntrega = data.DeliveryLocality;
+                        PreRequisicaoDB.ContatoEntrega = data.DeliveryContact;
+                        PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
+                        PreRequisicaoDB.NºFatura = data.InvoiceNo;
+                        PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
+                        PreRequisicaoDB.ValorTotalDocComIVA = data.ValorTotalDocComIVA;
 
-                        PréRequisição PreRequisicaoDB = DBPreRequesition.GetByNo(data.PreRequesitionsNo);
-
-                        if (PreRequisicaoDB != null)
-                        {
-                            PreRequisicaoDB.NºPréRequisição = data.PreRequesitionsNo;
-                            PreRequisicaoDB.Área = data.Area;
-                            PreRequisicaoDB.TipoRequisição = data.RequesitionType;
-                            PreRequisicaoDB.NºProjeto = data.ProjectNo;
-                            PreRequisicaoDB.CódigoRegião = data.RegionCode;
-                            PreRequisicaoDB.CódigoÁreaFuncional = data.FunctionalAreaCode;
-                            PreRequisicaoDB.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
-                            PreRequisicaoDB.Urgente = data.Urgent;
-                            PreRequisicaoDB.Amostra = data.Sample;
-                            PreRequisicaoDB.Anexo = Anexos;
-                            PreRequisicaoDB.Imobilizado = data.Immobilized;
-                            PreRequisicaoDB.CompraADinheiro = data.MoneyBuy;
-                            PreRequisicaoDB.CódigoLocalRecolha = data.LocalCollectionCode;
-                            PreRequisicaoDB.CódigoLocalEntrega = data.LocalDeliveryCode;
-                            PreRequisicaoDB.Observações = data.Notes;
-                            PreRequisicaoDB.NoDocumento = data.NoDocumento;
-                            PreRequisicaoDB.ModeloDePréRequisição = data.PreRequesitionModel;
-                            PreRequisicaoDB.DataHoraCriação = data.CreateDateTime;
-                            PreRequisicaoDB.UtilizadorCriação = data.CreateUser;
-                            PreRequisicaoDB.DataHoraModificação = data.UpdateDateTime;
-                            PreRequisicaoDB.UtilizadorModificação = User.Identity.Name;
-                            PreRequisicaoDB.Exclusivo = data.Exclusive;
-                            PreRequisicaoDB.JáExecutado = data.AlreadyExecuted;
-                            PreRequisicaoDB.Equipamento = data.Equipment;
-                            PreRequisicaoDB.ReposiçãoDeStock = data.StockReplacement;
-                            PreRequisicaoDB.Reclamação = data.Complaint;
-                            PreRequisicaoDB.CódigoLocalização = data.LocationCode;
-                            PreRequisicaoDB.CabimentoOrçamental = data.FittingBudget;
-                            PreRequisicaoDB.NºFuncionário = data.EmployeeNo;
-                            PreRequisicaoDB.Viatura = data.Vehicle;
-                            PreRequisicaoDB.NºRequesiçãoReclamada = data.ClaimedRequesitionNo;
-                            PreRequisicaoDB.ResponsávelCriação = data.CreateResponsible;
-                            PreRequisicaoDB.ResponsávelAprovação = data.ApprovalResponsible;
-                            PreRequisicaoDB.ResponsávelValidação = data.ValidationResponsible;
-                            PreRequisicaoDB.ResponsávelReceção = data.ReceptionResponsible;
-                            PreRequisicaoDB.DataAprovação = data.ApprovalDate;
-                            PreRequisicaoDB.DataValidação = data.ValidationDate;
-                            PreRequisicaoDB.DataReceção = data.ReceptionDate != "" && data.ReceptionDate != null ? DateTime.Parse(data.ReceptionDate) : (DateTime?)null;
-                            PreRequisicaoDB.UnidadeProdutivaAlimentação = data.FoodProductionUnit;
-                            PreRequisicaoDB.RequisiçãoNutrição = data.NutritionRequesition;
-                            PreRequisicaoDB.RequisiçãoDetergentes = data.DetergentsRequisition;
-                            PreRequisicaoDB.NºProcedimentoCcp = data.CCPProcedureNo;
-                            PreRequisicaoDB.Aprovadores = data.Approvers;
-                            PreRequisicaoDB.MercadoLocal = data.LocalMarket;
-                            PreRequisicaoDB.RegiãoMercadoLocal = data.LocalMarketRegion;
-                            PreRequisicaoDB.ReparaçãoComGarantia = data.WarrantyRepair;
-                            PreRequisicaoDB.Emm = data.EMM;
-                            PreRequisicaoDB.DataEntregaArmazém = data.DeliveryWarehouseDate != "" && data.DeliveryWarehouseDate != null ? DateTime.Parse(data.DeliveryWarehouseDate) : (DateTime?)null;
-                            PreRequisicaoDB.LocalDeRecolha = data.CollectionLocal;
-                            PreRequisicaoDB.MoradaRecolha = data.CollectionAddress;
-                            PreRequisicaoDB.Morada2Recolha = data.CollectionAddress2;
-                            PreRequisicaoDB.CodigoPostalRecolha = data.CollectionPostalCode;
-                            PreRequisicaoDB.LocalidadeRecolha = data.CollectionLocality;
-                            PreRequisicaoDB.ContatoRecolha = data.CollectionContact;
-                            PreRequisicaoDB.ResponsávelReceçãoRecolha = data.CollectionReceptionResponsible;
-                            PreRequisicaoDB.LocalEntrega = data.DeliveryLocal;
-                            PreRequisicaoDB.MoradaEntrega = data.DeliveryAddress;
-                            PreRequisicaoDB.Morada2Entrega = data.DeliveryAddress2;
-                            PreRequisicaoDB.CódigoPostalEntrega = data.DeliveryPostalCode;
-                            PreRequisicaoDB.LocalidadeEntrega = data.DeliveryLocality;
-                            PreRequisicaoDB.ContatoEntrega = data.DeliveryContact;
-                            PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
-                            PreRequisicaoDB.NºFatura = data.InvoiceNo;
-                            PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
-                            PreRequisicaoDB.ValorTotalDocComIVA = data.ValorTotalDocComIVA;
-
-                            PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
-                        }
-                        data.eReasonCode = 1;
-                        data.eMessage = "Pré-Requisição atualizada com sucesso.";
+                        PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
                     }
-                    else
-                    {
-                        data.eReasonCode = 2;
-                        data.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
-                    }
+                    data.eReasonCode = 1;
+                    data.eMessage = "Pré-Requisição atualizada com sucesso.";
                 }
             }
             catch (Exception ex)

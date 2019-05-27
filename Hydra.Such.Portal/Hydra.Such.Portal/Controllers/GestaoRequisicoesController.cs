@@ -705,7 +705,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                if (!string.IsNullOrEmpty(item.ProjectNo))
+                if (item.StockReplacement == true)
                 {
                     item.Attachment = false;
                     if (DBAttachments.GetById(item.RequisitionNo).Count() > 0)
@@ -728,9 +728,33 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    //item = new RequisitionViewModel();
-                    item.eReasonCode = 2;
-                    item.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
+                    if (!string.IsNullOrEmpty(item.ProjectNo))
+                    {
+                        item.Attachment = false;
+                        if (DBAttachments.GetById(item.RequisitionNo).Count() > 0)
+                            item.Attachment = true;
+
+                        item.UpdateUser = User.Identity.Name;
+                        var updatedItem = DBRequest.Update(item.ParseToDB());
+                        if (updatedItem != null)
+                        {
+                            item = updatedItem.ParseToViewModel();
+                            item.eReasonCode = 1;
+                            item.eMessage = "Registo atualizado com sucesso.";
+                        }
+                        else
+                        {
+                            //item = new RequisitionViewModel();
+                            item.eReasonCode = 2;
+                            item.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                        }
+                    }
+                    else
+                    {
+                        //item = new RequisitionViewModel();
+                        item.eReasonCode = 2;
+                        item.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
+                    }
                 }
             }
             else
@@ -1438,562 +1462,515 @@ namespace Hydra.Such.Portal.Controllers
                 string ReqLineNotCreateDP = "";
                 int ReqLinesToHistCount = 0;
 
-                if (!string.IsNullOrEmpty(item.ProjectNo))
+                switch (registType)
                 {
-                    switch (registType)
-                    {
-                        case "Disponibilizar":
-                            if (item.State == RequisitionStates.Validated || item.State == RequisitionStates.Received || item.State == RequisitionStates.Available)
+                    case "Disponibilizar":
+                        if (item.State == RequisitionStates.Validated || item.State == RequisitionStates.Received || item.State == RequisitionStates.Available)
+                        {
+                            //Garantir que produtos existem e não estão bloqueados
+                            try
                             {
-                                //Garantir que produtos existem e não estão bloqueados
-                                try
+                                result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
+                            }
+                            catch
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao verificar a disponibilidade dos produtos em armazém.";
+                            }
+
+                            if (result.eReasonCode != 1)
+                            {
+                                //Existe pelo menos um produto que não existe
+                                if (result.eReasonCode == 2)
                                 {
-                                    result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    //CÓDIGO ORIGINAL COMENTADO
+                                    //return Json(item);
                                 }
-                                catch
+                                //Não existe nenhum produto e sai da função.
+                                else if (result.eReasonCode == 22)
                                 {
-                                    result.eReasonCode = 3;
-                                    result.eMessage = "Ocorreu um erro ao verificar a disponibilidade dos produtos em armazém.";
-                                }
-
-                                if (result.eReasonCode != 1)
-                                {
-                                    //Existe pelo menos um produto que não existe
-                                    if (result.eReasonCode == 2)
-                                    {
-                                        item.eReasonCode = result.eReasonCode;
-                                        item.eMessage = result.eMessage;
-                                        //CÓDIGO ORIGINAL COMENTADO
-                                        //return Json(item);
-                                    }
-                                    //Não existe nenhum produto e sai da função.
-                                    else if (result.eReasonCode == 22)
-                                    {
-                                        item.eReasonCode = result.eReasonCode;
-                                        item.eMessage = result.eMessage;
-                                        return Json(item);
-                                    }
-                                }
-
-                                //Apenas produtos em armazens de stock
-                                List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
-                                var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
-
-                                var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
-                                var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
-
-                                bool UmRegistoOK = false;
-                                foreach (RequisitionLineViewModel line in productsInStock)
-                                {
-                                    if (!line.QuantityToProvide.HasValue || line.QuantityToProvide.Value <= 0)
-                                        continue;
-
-                                    List<NAVStockKeepingUnitViewModel> stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code);
-                                    var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
-
-                                    if (stockkeepingUnit == null)
-                                    {
-                                        prodNotStockkeepUnit += line.Description + ";";
-                                    }
-                                    else
-                                    {
-                                        decimal quantityInStock = 0;
-                                        Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
-                                        quantityinStockTask.Wait();
-                                        if (quantityinStockTask.IsCompletedSuccessfully)
-                                        {
-                                            quantityInStock = quantityinStockTask.Result.return_value;
-                                        }
-
-                                        if (quantityInStock < line.QuantityToProvide)
-                                        {
-                                            prodQuantityOverStock += line.Description + ";";
-                                        }
-                                        else
-                                        {
-                                            UmRegistoOK = true;
-
-                                            line.QuantityAvailable = (line.QuantityAvailable ?? 0) + (line.QuantityToProvide ?? 0);
-                                            line.QuantityReceivable = (line.QuantityAvailable ?? 0) - (line.QuantityReceived ?? 0);
-                                            line.QuantityToProvide = (line.QuantityRequired ?? 0) - (line.QuantityAvailable ?? 0);
-
-                                            line.UpdateUser = User.Identity.Name;
-                                            line.UpdateDateTime = DateTime.Now;
-                                        }
-                                    }
-                                }
-
-                                if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
-                                {
-                                    item.eReasonCode = 6;
-                                    item.eMessage = " Os seguintes produtos não  existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit +
-                                    ". Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
-                                }
-                                if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
-                                {
-                                    item.eReasonCode = 7;
-                                    item.eMessage = " Os seguintes produtos não existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit + ".";
-                                }
-                                if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
-                                {
-                                    item.eReasonCode = 8;
-                                    item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
-                                }
-
-                                //Codigo Original comentado
-                                //else
-                                if (UmRegistoOK == true)
-                                {
-                                    var reqToUpdate = item;
-                                    reqToUpdate.Lines = productsInStock;
-
-                                    reqToUpdate.State = RequisitionStates.Available;
-                                    reqToUpdate.UpdateUser = User.Identity.Name;
-                                    reqToUpdate.UpdateDate = DateTime.Now;
-                                    int eReasonCode = item.eReasonCode;
-                                    string eMessage = item.eMessage;
-                                    RequisitionViewModel updatedRequisition = DBRequest.Update(reqToUpdate.ParseToDB(), false, true).ParseToViewModel();
-                                    if (updatedRequisition == null)
-                                    {
-                                        item.eReasonCode = 9;
-                                        item.eMessage = "Ocorreu um erro ao alterar a requisição";
-                                    }
-                                    else
-                                    {
-                                        item = updatedRequisition;
-                                        if (string.IsNullOrEmpty(eMessage))
-                                        {
-                                            item.eReasonCode = 1;
-                                            item.eMessage = "A Requisição está disponivel";
-                                        }
-                                        else
-                                        {
-                                            item.eReasonCode = eReasonCode;
-                                            item.eMessage = eMessage;
-                                        }
-                                    }
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    return Json(item);
                                 }
                             }
-                            else
+
+                            //Apenas produtos em armazens de stock
+                            List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
+                            var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
+
+                            var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
+                            var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
+
+                            bool UmRegistoOK = false;
+                            foreach (RequisitionLineViewModel line in productsInStock)
                             {
-                                item.eReasonCode = 3;
-                                item.eMessage = "Esta requisição não está validada, recebida ou disponibilizada.";
-                            }
-                            break;
+                                if (!line.QuantityToProvide.HasValue || line.QuantityToProvide.Value <= 0)
+                                    continue;
 
-                        case "Receber":
-                            if (item.State == RequisitionStates.Available)
-                            {
-                                //Garantir que produtos existem e não estão bloqueados
-                                try
+                                List<NAVStockKeepingUnitViewModel> stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code);
+                                var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
+
+                                if (stockkeepingUnit == null)
                                 {
-                                    result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
-                                }
-                                catch
-                                {
-                                    result.eReasonCode = 3;
-                                    result.eMessage = "Ocorreu um erro ao verificar a disponibilidade dos produtos em armazém.";
-                                }
-
-                                if (result.eReasonCode != 1)
-                                {
-                                    //Existe pelo menos um produto que não existe
-                                    if (result.eReasonCode == 2)
-                                    {
-                                        item.eReasonCode = result.eReasonCode;
-                                        item.eMessage = result.eMessage;
-                                        //CÓDIGO ORIGINAL COMENTADO
-                                        //return Json(item);
-                                    }
-                                    //Não existe nenhum produto e sai da função.
-                                    else if (result.eReasonCode == 22)
-                                    {
-                                        item.eReasonCode = result.eReasonCode;
-                                        item.eMessage = result.eMessage;
-                                        return Json(item);
-                                    }
-                                }
-
-                                //Apenas produtos em armazens de stock
-                                List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
-                                var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
-
-                                var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
-                                var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
-
-                                var productsToHandle = productsInStock.Where(x => x.QuantityReceivable.HasValue && x.QuantityReceivable.Value > 0).ToList();
-
-                                foreach (RequisitionLineViewModel line in productsToHandle)//getrlines)
-                                {
-                                    if (!line.QuantityReceivable.HasValue || line.QuantityReceivable.Value <= 0)
-                                        continue;
-
-                                    //if (line.QuantityReceivable > 0)
-                                    //{
-                                    var stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code).ToList();
-                                    var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
-                                    if (stockkeepingUnits == null)
-                                    {
-                                        prodNotStockkeepUnit += line.Description + ";";
-                                    }
-                                    else
-                                    {
-                                        decimal quantityInStock = 0;
-                                        Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
-                                        quantityinStockTask.Wait();
-                                        if (quantityinStockTask.IsCompletedSuccessfully)
-                                        {
-                                            quantityInStock = quantityinStockTask.Result.return_value;
-                                        }
-
-                                        if (quantityInStock < line.QuantityReceivable)
-                                        {
-                                            prodQuantityOverStock += line.Description + ";";
-                                        }
-                                        else
-                                        {
-
-                                            //line.QuantityReceived = line.QuantityReceived + line.QuantityReceivable;
-                                            //line.QuantityPending = line.QuantityReceivable;
-                                            line.QuantityReceived = (line.QuantityReceived.HasValue ? line.QuantityReceived.Value : 0) + line.QuantityReceivable;
-                                            line.QuantityPending = (line.QuantityPending.HasValue ? line.QuantityPending.Value : 0) - line.QuantityReceivable;
-                                            line.QuantityReceivable -= line.QuantityReceivable;
-                                            line.UpdateUser = User.Identity.Name;
-                                            line.UpdateDateTime = DateTime.Now;
-                                        }
-                                    }
-                                    //}
-                                    //else
-                                    //{
-                                    //    quantityInvalid = line.Description + ";";
-                                    //}
-                                }
-                                if (quantityInvalid != "")
-                                {
-                                    item.eReasonCode = 12;
-                                    item.eMessage = item.eMessage = "Introduza a quantidade a receber nos seguintes produtos: " + quantityInvalid;
-                                }
-                                else if (productsToHandle.Count == 0)
-                                {
-                                    item.eReasonCode = 13;
-                                    item.eMessage = item.eMessage = "Não é possivel receber: Os produtos não existem em stock.";
+                                    prodNotStockkeepUnit += line.Description + ";";
                                 }
                                 else
                                 {
-                                    Guid transactionId = Guid.NewGuid();
-                                    try
+                                    decimal quantityInStock = 0;
+                                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
+                                    quantityinStockTask.Wait();
+                                    if (quantityinStockTask.IsCompletedSuccessfully)
                                     {
-                                        //Create Lines in NAV
-                                        Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLines(productsToHandle, transactionId, configws);
-                                        createNavDiaryLines.Wait();
-                                        if (createNavDiaryLines.IsCompletedSuccessfully)
+                                        quantityInStock = quantityinStockTask.Result.return_value;
+                                    }
+
+                                    if (quantityInStock < line.QuantityToProvide)
+                                    {
+                                        prodQuantityOverStock += line.Description + ";";
+                                    }
+                                    else
+                                    {
+                                        UmRegistoOK = true;
+
+                                        line.QuantityAvailable = (line.QuantityAvailable ?? 0) + (line.QuantityToProvide ?? 0);
+                                        line.QuantityReceivable = (line.QuantityAvailable ?? 0) - (line.QuantityReceived ?? 0);
+                                        line.QuantityToProvide = (line.QuantityRequired ?? 0) - (line.QuantityAvailable ?? 0);
+
+                                        line.UpdateUser = User.Identity.Name;
+                                        line.UpdateDateTime = DateTime.Now;
+                                    }
+                                }
+                            }
+
+                            if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
+                            {
+                                item.eReasonCode = 6;
+                                item.eMessage = " Os seguintes produtos não  existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit +
+                                ". Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
+                            }
+                            if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
+                            {
+                                item.eReasonCode = 7;
+                                item.eMessage = " Os seguintes produtos não existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit + ".";
+                            }
+                            if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
+                            {
+                                item.eReasonCode = 8;
+                                item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
+                            }
+
+                            //Codigo Original comentado
+                            //else
+                            if (UmRegistoOK == true)
+                            {
+                                var reqToUpdate = item;
+                                reqToUpdate.Lines = productsInStock;
+
+                                reqToUpdate.State = RequisitionStates.Available;
+                                reqToUpdate.UpdateUser = User.Identity.Name;
+                                reqToUpdate.UpdateDate = DateTime.Now;
+                                int eReasonCode = item.eReasonCode;
+                                string eMessage = item.eMessage;
+                                RequisitionViewModel updatedRequisition = DBRequest.Update(reqToUpdate.ParseToDB(), false, true).ParseToViewModel();
+                                if (updatedRequisition == null)
+                                {
+                                    item.eReasonCode = 9;
+                                    item.eMessage = "Ocorreu um erro ao alterar a requisição";
+                                }
+                                else
+                                {
+                                    item = updatedRequisition;
+                                    if (string.IsNullOrEmpty(eMessage))
+                                    {
+                                        item.eReasonCode = 1;
+                                        item.eMessage = "A Requisição está disponivel";
+                                    }
+                                    else
+                                    {
+                                        item.eReasonCode = eReasonCode;
+                                        item.eMessage = eMessage;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 3;
+                            item.eMessage = "Esta requisição não está validada, recebida ou disponibilizada.";
+                        }
+                        break;
+
+                    case "Receber":
+                        if (item.State == RequisitionStates.Available)
+                        {
+                            //Garantir que produtos existem e não estão bloqueados
+                            try
+                            {
+                                result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
+                            }
+                            catch
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao verificar a disponibilidade dos produtos em armazém.";
+                            }
+
+                            if (result.eReasonCode != 1)
+                            {
+                                //Existe pelo menos um produto que não existe
+                                if (result.eReasonCode == 2)
+                                {
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    //CÓDIGO ORIGINAL COMENTADO
+                                    //return Json(item);
+                                }
+                                //Não existe nenhum produto e sai da função.
+                                else if (result.eReasonCode == 22)
+                                {
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    return Json(item);
+                                }
+                            }
+
+                            //Apenas produtos em armazens de stock
+                            List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
+                            var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
+
+                            var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
+                            var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
+
+                            var productsToHandle = productsInStock.Where(x => x.QuantityReceivable.HasValue && x.QuantityReceivable.Value > 0).ToList();
+
+                            foreach (RequisitionLineViewModel line in productsToHandle)//getrlines)
+                            {
+                                if (!line.QuantityReceivable.HasValue || line.QuantityReceivable.Value <= 0)
+                                    continue;
+
+                                //if (line.QuantityReceivable > 0)
+                                //{
+                                var stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code).ToList();
+                                var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
+                                if (stockkeepingUnits == null)
+                                {
+                                    prodNotStockkeepUnit += line.Description + ";";
+                                }
+                                else
+                                {
+                                    decimal quantityInStock = 0;
+                                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
+                                    quantityinStockTask.Wait();
+                                    if (quantityinStockTask.IsCompletedSuccessfully)
+                                    {
+                                        quantityInStock = quantityinStockTask.Result.return_value;
+                                    }
+
+                                    if (quantityInStock < line.QuantityReceivable)
+                                    {
+                                        prodQuantityOverStock += line.Description + ";";
+                                    }
+                                    else
+                                    {
+
+                                        //line.QuantityReceived = line.QuantityReceived + line.QuantityReceivable;
+                                        //line.QuantityPending = line.QuantityReceivable;
+                                        line.QuantityReceived = (line.QuantityReceived.HasValue ? line.QuantityReceived.Value : 0) + line.QuantityReceivable;
+                                        line.QuantityPending = (line.QuantityPending.HasValue ? line.QuantityPending.Value : 0) - line.QuantityReceivable;
+                                        line.QuantityReceivable -= line.QuantityReceivable;
+                                        line.UpdateUser = User.Identity.Name;
+                                        line.UpdateDateTime = DateTime.Now;
+                                    }
+                                }
+                                //}
+                                //else
+                                //{
+                                //    quantityInvalid = line.Description + ";";
+                                //}
+                            }
+                            if (quantityInvalid != "")
+                            {
+                                item.eReasonCode = 12;
+                                item.eMessage = item.eMessage = "Introduza a quantidade a receber nos seguintes produtos: " + quantityInvalid;
+                            }
+                            else if (productsToHandle.Count == 0)
+                            {
+                                item.eReasonCode = 13;
+                                item.eMessage = item.eMessage = "Não é possivel receber: Os produtos não existem em stock.";
+                            }
+                            else
+                            {
+                                Guid transactionId = Guid.NewGuid();
+                                try
+                                {
+                                    //Create Lines in NAV
+                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLines(productsToHandle, transactionId, configws);
+                                    createNavDiaryLines.Wait();
+                                    if (createNavDiaryLines.IsCompletedSuccessfully)
+                                    {
+                                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryLines;
+                                        try
                                         {
-                                            Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryLines;
-                                            try
+                                            ////Register Lines in NAV
+                                            registerNavDiaryLines = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, configws);
+                                            registerNavDiaryLines.Wait();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            WSProjectDiaryLine.DeleteNavDiaryLines(transactionId, configws);
+                                            throw e;
+                                        }
+
+                                        if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
+                                        {
+                                            bool keepOpen = true;
+                                            //item.Lines = productsToHandle;
+
+                                            keepOpen = item.Lines.Any(x => x.QuantityReceived != x.QuantityRequired);
+                                            //item.Lines.ForEach(Linha =>
+                                            //{
+                                            //    if (Linha.QuantityReceived != Linha.QuantityRequired)
+                                            //        keepOpen = false;
+                                            //});
+
+                                            //if (keepOpen != true)
+                                            //    keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
+
+                                            if (keepOpen == false)
                                             {
-                                                ////Register Lines in NAV
-                                                registerNavDiaryLines = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, configws);
-                                                registerNavDiaryLines.Wait();
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                WSProjectDiaryLine.DeleteNavDiaryLines(transactionId, configws);
-                                                throw e;
-                                            }
-
-                                            if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
-                                            {
-                                                bool keepOpen = true;
-                                                //item.Lines = productsToHandle;
-
-                                                keepOpen = item.Lines.Any(x => x.QuantityReceived != x.QuantityRequired);
-                                                //item.Lines.ForEach(Linha =>
-                                                //{
-                                                //    if (Linha.QuantityReceived != Linha.QuantityRequired)
-                                                //        keepOpen = false;
-                                                //});
-
-                                                //if (keepOpen != true)
-                                                //    keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
-
-                                                if (keepOpen == false)
+                                                using (var ctx = new SuchDBContext())
                                                 {
-                                                    using (var ctx = new SuchDBContext())
-                                                    {
-                                                        var logEntry = new RequisicoesRegAlteracoes();
-                                                        logEntry.NºRequisição = item.RequisitionNo;
-                                                        logEntry.Estado = (int)RequisitionStates.Received;
-                                                        logEntry.ModificadoEm = DateTime.Now;
-                                                        logEntry.ModificadoPor = User.Identity.Name;
-                                                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                                        ctx.SaveChanges();
-                                                    }
+                                                    var logEntry = new RequisicoesRegAlteracoes();
+                                                    logEntry.NºRequisição = item.RequisitionNo;
+                                                    logEntry.Estado = (int)RequisitionStates.Received;
+                                                    logEntry.ModificadoEm = DateTime.Now;
+                                                    logEntry.ModificadoPor = User.Identity.Name;
+                                                    ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                                    ctx.SaveChanges();
                                                 }
+                                            }
 
-                                                item.State = keepOpen ? RequisitionStates.Received : RequisitionStates.Archived;
-                                                if (item.State == RequisitionStates.Received)
+                                            item.State = keepOpen ? RequisitionStates.Received : RequisitionStates.Archived;
+                                            if (item.State == RequisitionStates.Received)
+                                            {
+                                                item.ResponsibleReception = User.Identity.Name;
+                                                item.ReceivedDate = DateTime.Now.ToString();
+                                                item.UpdateUser = User.Identity.Name;
+                                                item.UpdateDate = DateTime.Now;
+                                                RequisitionViewModel updatedReq = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                                if (updatedReq == null)
                                                 {
-                                                    item.ResponsibleReception = User.Identity.Name;
-                                                    item.ReceivedDate = DateTime.Now.ToString();
-                                                    item.UpdateUser = User.Identity.Name;
-                                                    item.UpdateDate = DateTime.Now;
-                                                    RequisitionViewModel updatedReq = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                                                    if (updatedReq == null)
-                                                    {
-                                                        item.eReasonCode = 9;
-                                                        item.eMessage = "Ocorreu um erro ao atualizar a requisição";
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    item.State = RequisitionStates.Archived;
-                                                    item.UpdateUser = User.Identity.Name;
-                                                    item.UpdateDate = DateTime.Now;
-                                                    RequisitionViewModel reqRecebidaArquivada = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                                                    if (reqRecebidaArquivada == null)
-                                                    {
-                                                        item.eReasonCode = 14;
-                                                        item.eMessage = "Ocorreu um erro ao fechar no Receber.";
-                                                    }
-                                                    //if (string.IsNullOrEmpty(item.eMessage))
-                                                    //{
-                                                    //    if (item.eReasonCode == 1)
-                                                    //    {
-                                                    //        item.eMessage = "Requisição foi fechada no Receber.";
-                                                    //    }
-                                                    //}
-
-                                                    //bool okReceber = true;
-                                                    //RequisiçãoHist REQHistReceber = DBRequest.TransferToRequisitionHist(item);
-                                                    //if (REQHistReceber != null)
-                                                    //{
-                                                    //    REQHistReceber.Estado = (int)RequisitionStates.Archived;
-                                                    //    REQHistReceber.UtilizadorModificação = User.Identity.Name;
-                                                    //    REQHistReceber.DataHoraModificação = DateTime.Now;
-
-                                                    //    if (DBRequesitionHist.Create(REQHistReceber) != null)
-                                                    //    {
-                                                    //        List<LinhasRequisiçãoHist> REQLinhasHistReceber = DBRequest.TransferToRequisitionLinesHist(item.Lines);
-                                                    //        if (REQLinhasHistReceber.Count > 0)
-                                                    //        {
-                                                    //            REQLinhasHistReceber.ForEach(Linha =>
-                                                    //            {
-                                                    //                Linha.UtilizadorModificação = User.Identity.Name;
-                                                    //                Linha.DataHoraModificação = DateTime.Now;
-                                                    //                if (DBRequesitionLinesHist.Create(Linha) == null)
-                                                    //                {
-                                                    //                    okReceber = false;
-                                                    //                    item.eReasonCode = 14;
-                                                    //                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
-                                                    //                }
-                                                    //            });
-                                                    //        }
-
-                                                    //        if (okReceber == true)
-                                                    //        {
-                                                    //            if (item.Lines.Count > 0)
-                                                    //            {
-                                                    //                item.Lines.ForEach(Linha =>
-                                                    //                {
-                                                    //                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
-                                                    //                    {
-                                                    //                        okReceber = false;
-                                                    //                        item.eReasonCode = 15;
-                                                    //                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
-                                                    //                    }
-                                                    //                });
-                                                    //            }
-
-                                                    //            if (okReceber == true)
-                                                    //            {
-                                                    //                if (DBRequest.Delete(item.ParseToDB()) == false)
-                                                    //                {
-                                                    //                    okReceber = false;
-                                                    //                    item.eReasonCode = 16;
-                                                    //                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
-                                                    //                }
-                                                    //                else
-                                                    //                {
-                                                    //                    item.eReasonCode = 1;
-                                                    //                    item.eMessage = "Requisição foi fechada";
-                                                    //                }
-                                                    //            }
-                                                    //        }
-                                                    //    }
-                                                    //    else
-                                                    //    {
-                                                    //        item.eReasonCode = 17;
-                                                    //        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
-                                                    //    }
-                                                    //}
-                                                    //else
-                                                    //{
-                                                    //    item.eReasonCode = 18;
-                                                    //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
-                                                    //}
+                                                    item.eReasonCode = 9;
+                                                    item.eMessage = "Ocorreu um erro ao atualizar a requisição";
                                                 }
                                             }
                                             else
                                             {
-                                                throw new Exception("não foi possivel registar em diário.");
+                                                item.State = RequisitionStates.Archived;
+                                                item.UpdateUser = User.Identity.Name;
+                                                item.UpdateDate = DateTime.Now;
+                                                RequisitionViewModel reqRecebidaArquivada = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                                if (reqRecebidaArquivada == null)
+                                                {
+                                                    item.eReasonCode = 14;
+                                                    item.eMessage = "Ocorreu um erro ao fechar no Receber.";
+                                                }
+                                                //if (string.IsNullOrEmpty(item.eMessage))
+                                                //{
+                                                //    if (item.eReasonCode == 1)
+                                                //    {
+                                                //        item.eMessage = "Requisição foi fechada no Receber.";
+                                                //    }
+                                                //}
+
+                                                //bool okReceber = true;
+                                                //RequisiçãoHist REQHistReceber = DBRequest.TransferToRequisitionHist(item);
+                                                //if (REQHistReceber != null)
+                                                //{
+                                                //    REQHistReceber.Estado = (int)RequisitionStates.Archived;
+                                                //    REQHistReceber.UtilizadorModificação = User.Identity.Name;
+                                                //    REQHistReceber.DataHoraModificação = DateTime.Now;
+
+                                                //    if (DBRequesitionHist.Create(REQHistReceber) != null)
+                                                //    {
+                                                //        List<LinhasRequisiçãoHist> REQLinhasHistReceber = DBRequest.TransferToRequisitionLinesHist(item.Lines);
+                                                //        if (REQLinhasHistReceber.Count > 0)
+                                                //        {
+                                                //            REQLinhasHistReceber.ForEach(Linha =>
+                                                //            {
+                                                //                Linha.UtilizadorModificação = User.Identity.Name;
+                                                //                Linha.DataHoraModificação = DateTime.Now;
+                                                //                if (DBRequesitionLinesHist.Create(Linha) == null)
+                                                //                {
+                                                //                    okReceber = false;
+                                                //                    item.eReasonCode = 14;
+                                                //                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
+                                                //                }
+                                                //            });
+                                                //        }
+
+                                                //        if (okReceber == true)
+                                                //        {
+                                                //            if (item.Lines.Count > 0)
+                                                //            {
+                                                //                item.Lines.ForEach(Linha =>
+                                                //                {
+                                                //                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
+                                                //                    {
+                                                //                        okReceber = false;
+                                                //                        item.eReasonCode = 15;
+                                                //                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
+                                                //                    }
+                                                //                });
+                                                //            }
+
+                                                //            if (okReceber == true)
+                                                //            {
+                                                //                if (DBRequest.Delete(item.ParseToDB()) == false)
+                                                //                {
+                                                //                    okReceber = false;
+                                                //                    item.eReasonCode = 16;
+                                                //                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
+                                                //                }
+                                                //                else
+                                                //                {
+                                                //                    item.eReasonCode = 1;
+                                                //                    item.eMessage = "Requisição foi fechada";
+                                                //                }
+                                                //            }
+                                                //        }
+                                                //    }
+                                                //    else
+                                                //    {
+                                                //        item.eReasonCode = 17;
+                                                //        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
+                                                //    }
+                                                //}
+                                                //else
+                                                //{
+                                                //    item.eReasonCode = 18;
+                                                //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
+                                                //}
                                             }
                                         }
                                         else
                                         {
-                                            throw new Exception("não foi possivel criar as linhas de diário.");
+                                            throw new Exception("não foi possivel registar em diário.");
                                         }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        item.eReasonCode = 9;
-                                        item.eMessage = "Ocorreu um erro: " + ex.Message;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                item.eReasonCode = 11;
-                                item.eMessage = "A requisição não está disponível.";
-                            }
-                            if (string.IsNullOrEmpty(item.eMessage))
-                            {
-                                if (item.eReasonCode == 1)
-                                {
-                                    item.eMessage = "A Requisição foi recebida.";
-                                }
-                            }
-                            break;
-
-                        case "Anular Aprovacao":
-                            if (item.State == RequisitionStates.Approved)
-                            {
-                                item.eReasonCode = 1;
-
-                                //Pedido Carlos Rodrigues 06/12/2018
-                                //Não despultar o movimento de aprovação
-                                //ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
-                                //if (ApprovalMovResult.eReasonCode != 100)
-                                //{
-                                //    item.eReasonCode = 4;
-                                //    item.eMessage = ApprovalMovResult.eMessage;
-                                //    //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
-                                //}
-                                //else
-                                //{
-
-                                //Anular o movimento de aprovação atual
-                                int NoMovApro = 0;
-                                MovimentosDeAprovação MovApro = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 2).LastOrDefault();
-                                if (MovApro != null)
-                                {
-                                    NoMovApro = MovApro.NºMovimento;
-                                    List<UtilizadoresMovimentosDeAprovação> UserMovs = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MovApro.NºMovimento).ToList();
-
-                                    if (UserMovs.Count() > 0)
-                                    {
-                                        foreach (UtilizadoresMovimentosDeAprovação UserMov in UserMovs)
-                                        {
-                                            if (UserMov != null)
-                                                DBUserApprovalMovements.Delete(UserMov);
-                                        }
-                                    }
-                                    if (DBApprovalMovements.Delete(MovApro) != true)
-                                    {
-                                        item.eReasonCode = 7;
-                                        item.eMessage = "Não foi possível anular o Movimento de aprovação.";
-                                    }
-                                }
-
-                                //Enviar Email para o criador da RQ com o motivo da anulação
-                                if (item.eReasonCode == 1 && !string.IsNullOrEmpty(item.CreateUser) && !string.IsNullOrEmpty(item.RequisitionNo))
-                                {
-                                    EmailsAprovações EmailApproval = new EmailsAprovações();
-                                    EmailApproval.NºMovimento = NoMovApro;
-                                    EmailApproval.EmailDestinatário = item.CreateUser;
-                                    EmailApproval.NomeDestinatário = item.CreateUser;
-                                    EmailApproval.Assunto = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo;
-                                    EmailApproval.DataHoraEmail = DateTime.Now;
-                                    EmailApproval.TextoEmail = "A aprovação Nº " + NoMovApro + ", da Requisição Nº " + item.RequisitionNo + ", foi anulada pelo utilizador " + User.Identity.Name + "." + "<br />" + "<b>Motivo:</b> " + reason;
-                                    EmailApproval.Enviado = false;
-                                    SendEmailApprovals Email = new SendEmailApprovals
-                                    {
-                                        Subject = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo,
-                                        From = User.Identity.Name
-                                    };
-                                    Email.To.Add(item.CreateUser);
-                                    Email.Body = ApprovalMovementsManager.MakeEmailBodyContent(EmailApproval.TextoEmail);
-                                    Email.IsBodyHtml = true;
-                                    Email.EmailApproval = EmailApproval;
-                                    Email.SendEmail();
-                                }
-                                else
-                                {
-                                    item.eReasonCode = 6;
-                                    item.eMessage = "Não foi possível enviar o email.";
-                                }
-
-                                if (item.eReasonCode == 1)
-                                {
-                                    //Passa a Requisição para o estado Pendente
-                                    item.State = RequisitionStates.Pending;
-                                    item.ResponsibleApproval = "";
-                                    item.ApprovalDate = null;
-                                    item.UpdateUser = User.Identity.Name;
-                                    item.UpdateDate = DateTime.Now;
-                                    item.RejeicaoMotivo += reason;
-
-                                    RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                                    if (reqPend != null)
-                                    {
-                                        List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
-                                        foreach (RequisitionLineViewModel rlines in getrlines)
-                                        {
-                                            rlines.QuantityRequired = null;
-                                            rlines.UpdateUser = User.Identity.Name;
-                                            rlines.UpdateDateTime = DateTime.Now;
-                                            RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
-                                            if (rlinesValidation == null)
-                                            {
-                                                item.eReasonCode = 5;
-                                                item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
-                                            }
-                                        }
-
                                     }
                                     else
                                     {
-                                        item.eReasonCode = 4;
-                                        item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
+                                        throw new Exception("não foi possivel criar as linhas de diário.");
                                     }
                                 }
+                                catch (Exception ex)
+                                {
+                                    item.eReasonCode = 9;
+                                    item.eMessage = "Ocorreu um erro: " + ex.Message;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 11;
+                            item.eMessage = "A requisição não está disponível.";
+                        }
+                        if (string.IsNullOrEmpty(item.eMessage))
+                        {
+                            if (item.eReasonCode == 1)
+                            {
+                                item.eMessage = "A Requisição foi recebida.";
+                            }
+                        }
+                        break;
+
+                    case "Anular Aprovacao":
+                        if (item.State == RequisitionStates.Approved)
+                        {
+                            item.eReasonCode = 1;
+
+                            //Pedido Carlos Rodrigues 06/12/2018
+                            //Não despultar o movimento de aprovação
+                            //ApprovalMovResult = ApprovalMovementsManager.StartApprovalMovement(1, item.FunctionalAreaCode, item.CenterResponsibilityCode, item.RegionCode, 0, item.RequisitionNo, User.Identity.Name, reason);
+                            //if (ApprovalMovResult.eReasonCode != 100)
+                            //{
+                            //    item.eReasonCode = 4;
+                            //    item.eMessage = ApprovalMovResult.eMessage;
+                            //    //ApprovalMovResult.eMessage = "Não foi possivel iniciar o processo de aprovação para esta requisição: " + ReqNo;
+                            //}
+                            //else
+                            //{
+
+                            //Anular o movimento de aprovação atual
+                            int NoMovApro = 0;
+                            MovimentosDeAprovação MovApro = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 2).LastOrDefault();
+                            if (MovApro != null)
+                            {
+                                NoMovApro = MovApro.NºMovimento;
+                                List<UtilizadoresMovimentosDeAprovação> UserMovs = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MovApro.NºMovimento).ToList();
+
+                                if (UserMovs.Count() > 0)
+                                {
+                                    foreach (UtilizadoresMovimentosDeAprovação UserMov in UserMovs)
+                                    {
+                                        if (UserMov != null)
+                                            DBUserApprovalMovements.Delete(UserMov);
+                                    }
+                                }
+                                if (DBApprovalMovements.Delete(MovApro) != true)
+                                {
+                                    item.eReasonCode = 7;
+                                    item.eMessage = "Não foi possível anular o Movimento de aprovação.";
+                                }
+                            }
+
+                            //Enviar Email para o criador da RQ com o motivo da anulação
+                            if (item.eReasonCode == 1 && !string.IsNullOrEmpty(item.CreateUser) && !string.IsNullOrEmpty(item.RequisitionNo))
+                            {
+                                EmailsAprovações EmailApproval = new EmailsAprovações();
+                                EmailApproval.NºMovimento = NoMovApro;
+                                EmailApproval.EmailDestinatário = item.CreateUser;
+                                EmailApproval.NomeDestinatário = item.CreateUser;
+                                EmailApproval.Assunto = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo;
+                                EmailApproval.DataHoraEmail = DateTime.Now;
+                                EmailApproval.TextoEmail = "A aprovação Nº " + NoMovApro + ", da Requisição Nº " + item.RequisitionNo + ", foi anulada pelo utilizador " + User.Identity.Name + "." + "<br />" + "<b>Motivo:</b> " + reason;
+                                EmailApproval.Enviado = false;
+                                SendEmailApprovals Email = new SendEmailApprovals
+                                {
+                                    Subject = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo,
+                                    From = User.Identity.Name
+                                };
+                                Email.To.Add(item.CreateUser);
+                                Email.Body = ApprovalMovementsManager.MakeEmailBodyContent(EmailApproval.TextoEmail);
+                                Email.IsBodyHtml = true;
+                                Email.EmailApproval = EmailApproval;
+                                Email.SendEmail();
                             }
                             else
                             {
-                                item.eReasonCode = 2;
-                                item.eMessage = "A requisição não está aprovada";
+                                item.eReasonCode = 6;
+                                item.eMessage = "Não foi possível enviar o email.";
                             }
 
                             if (item.eReasonCode == 1)
                             {
-                                item.eMessage = "A Aprovação foi anulada.";
-                            }
-                            break;
-
-                        case "Anular Validacao":
-                            if (item.State == RequisitionStates.Validated)
-                            {
-                                item.State = RequisitionStates.Approved;
-                                item.ResponsibleValidation = "";
-                                item.ValidationDate = null;
+                                //Passa a Requisição para o estado Pendente
+                                item.State = RequisitionStates.Pending;
+                                item.ResponsibleApproval = "";
+                                item.ApprovalDate = null;
                                 item.UpdateUser = User.Identity.Name;
                                 item.UpdateDate = DateTime.Now;
-                                RequisitionViewModel reqAprov = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                                if (reqAprov != null)
+                                item.RejeicaoMotivo += reason;
+
+                                RequisitionViewModel reqPend = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                if (reqPend != null)
                                 {
                                     List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
                                     foreach (RequisitionLineViewModel rlines in getrlines)
                                     {
-                                        rlines.QuantityAvailable = null;
+                                        rlines.QuantityRequired = null;
                                         rlines.UpdateUser = User.Identity.Name;
                                         rlines.UpdateDateTime = DateTime.Now;
                                         RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
@@ -2003,6 +1980,7 @@ namespace Hydra.Such.Portal.Controllers
                                             item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
                                         }
                                     }
+
                                 }
                                 else
                                 {
@@ -2010,132 +1988,170 @@ namespace Hydra.Such.Portal.Controllers
                                     item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
                                 }
                             }
-                            else
-                            {
-                                item.eReasonCode = 3;
-                                item.eMessage = "Esta requisição não está validada";
-                            }
-                            if (item.eReasonCode == 1)
-                            {
-                                item.eMessage = "A Validação foi anulada";
-                            }
-                            break;
+                        }
+                        else
+                        {
+                            item.eReasonCode = 2;
+                            item.eMessage = "A requisição não está aprovada";
+                        }
 
-                        case "Fechar Requisicao":
-                            //CODIGO ORIGINAL
-                            item.State = RequisitionStates.Archived;
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "A Aprovação foi anulada.";
+                        }
+                        break;
+
+                    case "Anular Validacao":
+                        if (item.State == RequisitionStates.Validated)
+                        {
+                            item.State = RequisitionStates.Approved;
+                            item.ResponsibleValidation = "";
+                            item.ValidationDate = null;
                             item.UpdateUser = User.Identity.Name;
                             item.UpdateDate = DateTime.Now;
-                            RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
-                            if (reqArchived == null)
+                            RequisitionViewModel reqAprov = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                            if (reqAprov != null)
                             {
-                                item.eReasonCode = 14;
-                                item.eMessage = "Ocorreu Um erro ao fechar";
-                            }
-                            if (item.eReasonCode == 1)
-                            {
-                                List<MovimentosDeAprovação> MovimentosAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 1).ToList();
-                                if (MovimentosAprovacao.Count() > 0)
+                                List<RequisitionLineViewModel> getrlines = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ParseToViewModel();
+                                foreach (RequisitionLineViewModel rlines in getrlines)
                                 {
-                                    foreach (MovimentosDeAprovação movimento in MovimentosAprovacao)
+                                    rlines.QuantityAvailable = null;
+                                    rlines.UpdateUser = User.Identity.Name;
+                                    rlines.UpdateDateTime = DateTime.Now;
+                                    RequisitionLineViewModel rlinesValidation = DBRequestLine.Update(rlines.ParseToDB()).ParseToViewModel();
+                                    if (rlinesValidation == null)
                                     {
-                                        List<UtilizadoresMovimentosDeAprovação> UserMovimentos = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == movimento.NºMovimento).ToList();
-                                        if (UserMovimentos.Count() > 0)
-                                        {
-                                            foreach (UtilizadoresMovimentosDeAprovação usermovimento in UserMovimentos)
-                                            {
-                                                DBUserApprovalMovements.Delete(usermovimento);
-                                            }
-                                        }
-
-                                        DBApprovalMovements.Delete(movimento);
-                                    };
+                                        item.eReasonCode = 5;
+                                        item.eMessage = "Ocorreu um erro ao alterar as linhas de requisição";
+                                    }
                                 }
-
-                                item.eMessage = "Requisição foi fechada";
                             }
-                            //FIM
+                            else
+                            {
+                                item.eReasonCode = 4;
+                                item.eMessage = "Ocorreu um erro ao anular a aprovação da requisição";
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 3;
+                            item.eMessage = "Esta requisição não está validada";
+                        }
+                        if (item.eReasonCode == 1)
+                        {
+                            item.eMessage = "A Validação foi anulada";
+                        }
+                        break;
 
-                            //bool okFechar = true;
+                    case "Fechar Requisicao":
+                        //CODIGO ORIGINAL
+                        item.State = RequisitionStates.Archived;
+                        item.UpdateUser = User.Identity.Name;
+                        item.UpdateDate = DateTime.Now;
+                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                        if (reqArchived == null)
+                        {
+                            item.eReasonCode = 14;
+                            item.eMessage = "Ocorreu Um erro ao fechar";
+                        }
+                        if (item.eReasonCode == 1)
+                        {
+                            List<MovimentosDeAprovação> MovimentosAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 1).ToList();
+                            if (MovimentosAprovacao.Count() > 0)
+                            {
+                                foreach (MovimentosDeAprovação movimento in MovimentosAprovacao)
+                                {
+                                    List<UtilizadoresMovimentosDeAprovação> UserMovimentos = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == movimento.NºMovimento).ToList();
+                                    if (UserMovimentos.Count() > 0)
+                                    {
+                                        foreach (UtilizadoresMovimentosDeAprovação usermovimento in UserMovimentos)
+                                        {
+                                            DBUserApprovalMovements.Delete(usermovimento);
+                                        }
+                                    }
 
-                            //RequisiçãoHist REQHistFechar = DBRequest.TransferToRequisitionHist(item);
-                            //if (REQHistFechar != null)
-                            //{
-                            //    REQHistFechar.Estado = (int)RequisitionStates.Archived;
-                            //    REQHistFechar.UtilizadorModificação = User.Identity.Name;
-                            //    REQHistFechar.DataHoraModificação = DateTime.Now;
+                                    DBApprovalMovements.Delete(movimento);
+                                };
+                            }
 
-                            //    if (DBRequesitionHist.Create(REQHistFechar) != null)
-                            //    {
-                            //        List<LinhasRequisiçãoHist> REQLinhasHistFechar = DBRequest.TransferToRequisitionLinesHist(item.Lines);
-                            //        if (REQLinhasHistFechar.Count > 0)
-                            //        {
-                            //            REQLinhasHistFechar.ForEach(Linha =>
-                            //            {
-                            //                Linha.UtilizadorModificação = User.Identity.Name;
-                            //                Linha.DataHoraModificação = DateTime.Now;
-                            //                if (DBRequesitionLinesHist.Create(Linha) == null)
-                            //                {
-                            //                    okFechar = false;
-                            //                    item.eReasonCode = 14;
-                            //                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
-                            //                }
-                            //            });
-                            //        }
+                            item.eMessage = "Requisição foi fechada";
+                        }
+                        //FIM
 
-                            //        if (okFechar == true)
-                            //        {
-                            //            if (item.Lines.Count > 0)
-                            //            {
-                            //                item.Lines.ForEach(Linha =>
-                            //                {
-                            //                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
-                            //                    {
-                            //                        okFechar = false;
-                            //                        item.eReasonCode = 15;
-                            //                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
-                            //                    }
-                            //                });
-                            //            }
+                        //bool okFechar = true;
 
-                            //            if (okFechar == true)
-                            //            {
-                            //                if (DBRequest.Delete(item.ParseToDB()) == false)
-                            //                {
-                            //                    okFechar = false;
-                            //                    item.eReasonCode = 16;
-                            //                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
-                            //                }
-                            //                else
-                            //                {
-                            //                    item.eReasonCode = 1;
-                            //                    item.eMessage = "Requisição foi fechada";
-                            //                }
-                            //            }
-                            //        }
-                            //    }
-                            //    else
-                            //    {
-                            //        item.eReasonCode = 17;
-                            //        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    item.eReasonCode = 18;
-                            //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
-                            //}
-                            break;
-                        default:
-                            item.eReasonCode = 10;
-                            item.eMessage = "Ocorreu um erro: existe algum problema com esta requisição";
-                            break;
-                    }
-                }
-                else
-                {
-                    item.eReasonCode = 10;
-                    item.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
+                        //RequisiçãoHist REQHistFechar = DBRequest.TransferToRequisitionHist(item);
+                        //if (REQHistFechar != null)
+                        //{
+                        //    REQHistFechar.Estado = (int)RequisitionStates.Archived;
+                        //    REQHistFechar.UtilizadorModificação = User.Identity.Name;
+                        //    REQHistFechar.DataHoraModificação = DateTime.Now;
+
+                        //    if (DBRequesitionHist.Create(REQHistFechar) != null)
+                        //    {
+                        //        List<LinhasRequisiçãoHist> REQLinhasHistFechar = DBRequest.TransferToRequisitionLinesHist(item.Lines);
+                        //        if (REQLinhasHistFechar.Count > 0)
+                        //        {
+                        //            REQLinhasHistFechar.ForEach(Linha =>
+                        //            {
+                        //                Linha.UtilizadorModificação = User.Identity.Name;
+                        //                Linha.DataHoraModificação = DateTime.Now;
+                        //                if (DBRequesitionLinesHist.Create(Linha) == null)
+                        //                {
+                        //                    okFechar = false;
+                        //                    item.eReasonCode = 14;
+                        //                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
+                        //                }
+                        //            });
+                        //        }
+
+                        //        if (okFechar == true)
+                        //        {
+                        //            if (item.Lines.Count > 0)
+                        //            {
+                        //                item.Lines.ForEach(Linha =>
+                        //                {
+                        //                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
+                        //                    {
+                        //                        okFechar = false;
+                        //                        item.eReasonCode = 15;
+                        //                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
+                        //                    }
+                        //                });
+                        //            }
+
+                        //            if (okFechar == true)
+                        //            {
+                        //                if (DBRequest.Delete(item.ParseToDB()) == false)
+                        //                {
+                        //                    okFechar = false;
+                        //                    item.eReasonCode = 16;
+                        //                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
+                        //                }
+                        //                else
+                        //                {
+                        //                    item.eReasonCode = 1;
+                        //                    item.eMessage = "Requisição foi fechada";
+                        //                }
+                        //            }
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        item.eReasonCode = 17;
+                        //        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    item.eReasonCode = 18;
+                        //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
+                        //}
+                        break;
+                    default:
+                        item.eReasonCode = 10;
+                        item.eMessage = "Ocorreu um erro: existe algum problema com esta requisição";
+                        break;
                 }
             }
             return Json(item);
