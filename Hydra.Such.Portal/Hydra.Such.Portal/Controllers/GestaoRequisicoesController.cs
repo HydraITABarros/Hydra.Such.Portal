@@ -2307,15 +2307,15 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    if (!string.IsNullOrEmpty(item.ProjectNo))
-                    {
-                        RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
-                        item = serv.ValidateRequisition(item);
-                    }
-                    else
+                    if (item.StockReplacement == false && string.IsNullOrEmpty(item.ProjectNo))
                     {
                         item.eReasonCode = 3;
                         item.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
+                    }
+                    else
+                    {
+                        RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                        item = serv.ValidateRequisition(item);
                     }
                 }
                 catch (Exception ex)

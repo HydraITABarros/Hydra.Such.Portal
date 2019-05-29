@@ -104,6 +104,10 @@
           <DataField>Amostra</DataField>
           <rd:TypeName>System.Boolean</rd:TypeName>
         </Field>
+        <Field Name="AmostraText">
+          <DataField>AmostraText</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="Anexo">
           <DataField>Anexo</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -171,6 +175,10 @@
         <Field Name="Reclamação">
           <DataField>Reclamação</DataField>
           <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="EquipamentoText">
+          <DataField>EquipamentoText</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Nº_Requisição_Reclamada">
           <DataField>Nº_Requisição_Reclamada</DataField>
@@ -411,7 +419,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -1244,7 +1251,8 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox23</rd:DefaultName>
-              <Top>2.93739cm</Top>
+              <Top>3.361cm</Top>
+              <Left>0cm</Left>
               <Height>0.45888cm</Height>
               <Width>2.5cm</Width>
               <ZIndex>5</ZIndex>
@@ -1276,7 +1284,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox23</rd:DefaultName>
-              <Top>3.43155cm</Top>
+              <Top>3.81988cm</Top>
               <Height>0.45888cm</Height>
               <Width>2.5cm</Width>
               <ZIndex>6</ZIndex>
@@ -1352,7 +1360,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox27</rd:DefaultName>
-              <Top>2.93739cm</Top>
+              <Top>3.361cm</Top>
               <Left>2.57056cm</Left>
               <Height>0.45888cm</Height>
               <Width>4.95512cm</Width>
@@ -1384,9 +1392,9 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox27</rd:DefaultName>
-              <Top>3.43155cm</Top>
+              <Top>3.85516cm</Top>
               <Left>2.57056cm</Left>
-              <Height>2.5cm</Height>
+              <Height>2.07639cm</Height>
               <Width>16.42944cm</Width>
               <ZIndex>9</ZIndex>
               <Style>
@@ -1548,7 +1556,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox2</rd:DefaultName>
-              <Top>2.97268cm</Top>
+              <Top>3.39629cm</Top>
               <Left>7.70207cm</Left>
               <Height>0.45888cm</Height>
               <Width>2.5cm</Width>
@@ -1614,7 +1622,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox2</rd:DefaultName>
-              <Top>2.97268cm</Top>
+              <Top>3.39629cm</Top>
               <Left>10.23735cm</Left>
               <Height>0.45888cm</Height>
               <Width>8.76265cm</Width>
@@ -1755,6 +1763,137 @@
               <Height>0.45888cm</Height>
               <Width>2.05799cm</Width>
               <ZIndex>20</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox31">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Amostra</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>2.90212cm</Top>
+              <Height>0.45888cm</Height>
+              <Width>1.72059cm</Width>
+              <ZIndex>21</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox32">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!AmostraText.Value, "ReportRequisicao")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>2.90212cm</Top>
+              <Left>1.72059cm</Left>
+              <Height>0.45888cm</Height>
+              <Width>1.74049cm</Width>
+              <ZIndex>22</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox33">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Equipamento</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>2.90213cm</Top>
+              <Left>3.4296cm</Left>
+              <Height>0.45888cm</Height>
+              <Width>2.35559cm</Width>
+              <ZIndex>23</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox34">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=First(Fields!EquipamentoText.Value, "ReportRequisicao")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>2.90213cm</Top>
+              <Left>5.78519cm</Left>
+              <Height>0.45888cm</Height>
+              <Width>1.74049cm</Width>
+              <ZIndex>24</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
