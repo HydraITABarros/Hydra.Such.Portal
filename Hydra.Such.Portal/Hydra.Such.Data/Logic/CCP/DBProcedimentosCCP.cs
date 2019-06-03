@@ -3019,7 +3019,19 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 if (StateToCheck == 1)
                 {
-                    Procedimento.Estado = 15;   // JPM.Sends to Purchaseing Departement
+                    Procedimento.Estado = 15;   // JPM.Sends to Purchaseing Department
+                    // ALT_CCP_#001.y2019.b
+                    foreach(var l in Procedimento.LoteProcedimentoCcp)
+                    {
+                        l.EstadoLote = 15;
+                        l.UtilizadorModificacao = UserDetails.IdUtilizador;
+                        l.DataModificacao = DateTime.Now;
+                        if(!__UpdateBatch(l))
+                        {
+                            Trace.WriteLine("LegalSecondPhase:\nUnable to update batch " + l.NoProcedimento + "-" + l.IdLote.ToString());
+                        }
+                    }
+                    // ALT_CCP_#001.y2019.e
                     Procedimento.ComentarioEstado = "";
                 }
                 else
@@ -3779,6 +3791,19 @@ namespace Hydra.Such.Data.Logic.CCP
             if (Procedimento.Estado == 13)
             {
                 Procedimento.Estado = 15;
+                // ALT_CCP_#001.y2019.b
+                foreach (var l in Procedimento.LoteProcedimentoCcp)
+                {
+                    l.EstadoLote = 15;
+                    l.UtilizadorModificacao = UserDetails.IdUtilizador;
+                    l.DataModificacao = DateTime.Now;
+                    if (!__UpdateBatch(l))
+                    {
+                        Trace.WriteLine("MIEnvCompras method:\nUnable to update batch " + l.NoProcedimento + "-" + l.IdLote.ToString());
+                    }
+                }
+                // ALT_CCP_#001.y2019.e
+
                 Procedimento.ComentarioEstado = Procedimento.ComentarioRelatorioFinal;
 
                 if (Procedimento.TemposPaCcp.Estado13Tg - (Procedimento.TemposPaCcp.Estado13 ?? 0) != 0)
@@ -4086,6 +4111,18 @@ namespace Hydra.Such.Data.Logic.CCP
                 else if (StateToCheck == 0)
                 {
                     Procedimento.Estado = 15;    // Devolver p/ Compras
+                                                 // ALT_CCP_#001.y2019.b
+                    foreach (var l in Procedimento.LoteProcedimentoCcp)
+                    {
+                        l.EstadoLote = 15;
+                        l.UtilizadorModificacao = UserDetails.IdUtilizador;
+                        l.DataModificacao = DateTime.Now;
+                        if (!__UpdateBatch(l))
+                        {
+                            Trace.WriteLine("VAAreaConfirmar:\nUnable to update batch " + l.NoProcedimento + "-" + l.IdLote.ToString());
+                        }
+                    }
+                    // ALT_CCP_#001.y2019.e
                     Procedimento.ComentarioEstado = Procedimento.ComentarioAdjudicacao16;
                 }
 
@@ -5350,6 +5387,18 @@ namespace Hydra.Such.Data.Logic.CCP
                 else if (StateToCheck == 0)
                 {
                     Procedimento.Estado = 15;    // Devolver p/ Compras
+                    // ALT_CCP_#001.y2019.b
+                    foreach (var l in Procedimento.LoteProcedimentoCcp)
+                    {
+                        l.EstadoLote = 15;
+                        l.UtilizadorModificacao = UserDetails.IdUtilizador;
+                        l.DataModificacao = DateTime.Now;
+                        if (!__UpdateBatch(l))
+                        {
+                            Trace.WriteLine("VAAreaConfirmar_Simplificado:\nUnable to update batch " + l.NoProcedimento + "-" + l.IdLote.ToString());
+                        }
+                    }
+                    // ALT_CCP_#001.y2019.e
                     Procedimento.ComentarioEstado = Procedimento.ComentarioAdjudicacao16;
                 }
                 

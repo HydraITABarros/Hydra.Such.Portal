@@ -7692,6 +7692,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.HoraNotificacao).HasColumnType("datetime");
 
+                entity.Property(e => e.DataNaoAdjudicacao).HasColumnType("datetime");
+
+                entity.Property(e => e.HoraNaoAdjudicacao).HasColumnType("datetime");
+
                 entity.Property(e => e.UtilizadorAdjudicacao).HasMaxLength(100);
 
                 entity.Property(e => e.UtilizadorCriacao).HasMaxLength(100);
@@ -7699,6 +7703,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificacao).HasMaxLength(100);
 
                 entity.Property(e => e.UtilizadorNotificacao).HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorNaoAdjudicacao).HasMaxLength(100);
 
                 entity.Property(e => e.ValorAdjudicacao).HasColumnType("decimal(18, 2)");
 

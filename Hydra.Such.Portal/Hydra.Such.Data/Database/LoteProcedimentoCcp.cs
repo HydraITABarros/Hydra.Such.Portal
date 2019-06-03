@@ -19,6 +19,10 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorAdjudicacao { get; set; }
         public DateTime? DataAdjudicacao { get; set; }
         public DateTime? HoraAdjudicacao { get; set; }
+        public string ComentarioNaoAdjudicacao { get; set; }
+        public string UtilizadorNaoAdjudicacao { get; set; }
+        public DateTime? DataNaoAdjudicacao { get; set; }
+        public DateTime? HoraNaoAdjudicacao { get; set; }
         public string ComentarioNotificacao { get; set; }
         public int? DiasPrazoNotificacao { get; set; }
         public string UtilizadorNotificacao { get; set; }
