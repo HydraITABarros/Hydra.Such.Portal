@@ -705,28 +705,61 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
-                item.Attachment = false;
-                if (DBAttachments.GetById(item.RequisitionNo).Count() > 0)
-                    item.Attachment = true;
-
-                item.UpdateUser = User.Identity.Name;
-                var updatedItem = DBRequest.Update(item.ParseToDB());
-                if (updatedItem != null)
+                if (item.StockReplacement == true)
                 {
-                    item = updatedItem.ParseToViewModel();
-                    item.eReasonCode = 1;
-                    item.eMessage = "Registo atualizado com sucesso.";
+                    item.Attachment = false;
+                    if (DBAttachments.GetById(item.RequisitionNo).Count() > 0)
+                        item.Attachment = true;
+
+                    item.UpdateUser = User.Identity.Name;
+                    var updatedItem = DBRequest.Update(item.ParseToDB());
+                    if (updatedItem != null)
+                    {
+                        item = updatedItem.ParseToViewModel();
+                        item.eReasonCode = 1;
+                        item.eMessage = "Registo atualizado com sucesso.";
+                    }
+                    else
+                    {
+                        //item = new RequisitionViewModel();
+                        item.eReasonCode = 2;
+                        item.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                    }
                 }
                 else
                 {
-                    item = new RequisitionViewModel();
-                    item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                    if (!string.IsNullOrEmpty(item.ProjectNo))
+                    {
+                        item.Attachment = false;
+                        if (DBAttachments.GetById(item.RequisitionNo).Count() > 0)
+                            item.Attachment = true;
+
+                        item.UpdateUser = User.Identity.Name;
+                        var updatedItem = DBRequest.Update(item.ParseToDB());
+                        if (updatedItem != null)
+                        {
+                            item = updatedItem.ParseToViewModel();
+                            item.eReasonCode = 1;
+                            item.eMessage = "Registo atualizado com sucesso.";
+                        }
+                        else
+                        {
+                            //item = new RequisitionViewModel();
+                            item.eReasonCode = 2;
+                            item.eMessage = "Ocorreu um erro ao atualizar o registo.";
+                        }
+                    }
+                    else
+                    {
+                        //item = new RequisitionViewModel();
+                        item.eReasonCode = 2;
+                        item.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
+                    }
                 }
             }
             else
             {
-                item = new RequisitionViewModel();
+                //item = new RequisitionViewModel();
                 item.eReasonCode = 2;
                 item.eMessage = "Ocorreu um erro: a requisição não pode ser nula.";
             }
@@ -1421,19 +1454,20 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
+                ErrorHandler result = new ErrorHandler();
                 item.eReasonCode = 1;
                 string quantityInvalid = "";
                 string prodNotStockkeepUnit = "";
                 string prodQuantityOverStock = "";
                 string ReqLineNotCreateDP = "";
                 int ReqLinesToHistCount = 0;
+
                 switch (registType)
                 {
                     case "Disponibilizar":
                         if (item.State == RequisitionStates.Validated || item.State == RequisitionStates.Received || item.State == RequisitionStates.Available)
                         {
                             //Garantir que produtos existem e não estão bloqueados
-                            ErrorHandler result = new ErrorHandler();
                             try
                             {
                                 result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
@@ -1527,7 +1561,7 @@ namespace Hydra.Such.Portal.Controllers
                                 item.eReasonCode = 8;
                                 item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
                             }
-                            
+
                             //Codigo Original comentado
                             //else
                             if (UmRegistoOK == true)
@@ -1573,7 +1607,6 @@ namespace Hydra.Such.Portal.Controllers
                         if (item.State == RequisitionStates.Available)
                         {
                             //Garantir que produtos existem e não estão bloqueados
-                            ErrorHandler result = new ErrorHandler();
                             try
                             {
                                 result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
@@ -2164,85 +2197,93 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    if (!string.IsNullOrEmpty(item.LocalMarketRegion))
+                    if (!string.IsNullOrEmpty(item.ProjectNo))
                     {
-                        List<LinhasRequisição> LinhasRequisicao = DBRequestLine.GetByRequisitionId(item.RequisitionNo).Where(x =>
-                            x.MercadoLocal == true &&
-                            (x.ValidadoCompras == null || x.ValidadoCompras == false) &&
-                            x.QuantidadeRequerida > 0).ToList();
-
-                        if (LinhasRequisicao != null && LinhasRequisicao.Count() > 0)
+                        if (!string.IsNullOrEmpty(item.LocalMarketRegion))
                         {
-                            LinhasRequisicao.ForEach(Linha =>
+                            List<LinhasRequisição> LinhasRequisicao = DBRequestLine.GetByRequisitionId(item.RequisitionNo).Where(x =>
+                                x.MercadoLocal == true &&
+                                (x.ValidadoCompras == null || x.ValidadoCompras == false) &&
+                                x.QuantidadeRequerida > 0).ToList();
+
+                            if (LinhasRequisicao != null && LinhasRequisicao.Count() > 0)
                             {
-                                string Responsaveis = "";
-                                string Responsavel1 = "";
-                                string Responsavel2 = "";
-                                string Responsavel3 = "";
-                                string Responsavel4 = "";
-                                ConfigMercadoLocal ConfigMercadoLocal = DBConfigMercadoLocal.GetByID(item.LocalMarketRegion);
-                                if (ConfigMercadoLocal != null)
+                                LinhasRequisicao.ForEach(Linha =>
                                 {
-                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel1))
-                                        Responsavel1 = ConfigMercadoLocal.Responsavel1;
-                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel2))
-                                        Responsavel2 = ConfigMercadoLocal.Responsavel2;
-                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel3))
-                                        Responsavel3 = ConfigMercadoLocal.Responsavel3;
-                                    if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel4))
-                                        Responsavel4 = ConfigMercadoLocal.Responsavel4;
-                                    Responsaveis = "-" + Responsavel1 + "-" + Responsavel2 + "-" + Responsavel3 + "-" + Responsavel4 + "-";
-                                }
-
-                                Compras Compra = new Compras
-                                {
-                                    CodigoProduto = Linha.Código,
-                                    Descricao = Linha.Descrição,
-                                    CodigoUnidadeMedida = Linha.CódigoUnidadeMedida,
-                                    Quantidade = Linha.QuantidadeRequerida,
-                                    NoRequisicao = Linha.NºRequisição,
-                                    NoLinhaRequisicao = Linha.NºLinha,
-                                    Urgente = Linha.Urgente,
-                                    NoProjeto = Linha.NºProjeto,
-                                    RegiaoMercadoLocal = item.LocalMarketRegion,
-                                    Estado = 1, //APROVADO
-                                    DataCriacao = DateTime.Now,
-                                    UtilizadorCriacao = User.Identity.Name,
-                                    DataMercadoLocal = DateTime.Now,
-                                    Responsaveis = Responsaveis
-                                };
-
-                                Compras CompraReq = DBCompras.Create(Compra);
-                                if (CompraReq != null)
-                                {
-                                    Linha.IdCompra = CompraReq.Id;
-                                    Linha.ValidadoCompras = true;
-                                    Linha.UtilizadorModificação = User.Identity.Name;
-                                    Linha.DataHoraModificação = DateTime.Now;
-
-                                    if (DBRequestLine.Update(Linha) == null)
+                                    string Responsaveis = "";
+                                    string Responsavel1 = "";
+                                    string Responsavel2 = "";
+                                    string Responsavel3 = "";
+                                    string Responsavel4 = "";
+                                    ConfigMercadoLocal ConfigMercadoLocal = DBConfigMercadoLocal.GetByID(item.LocalMarketRegion);
+                                    if (ConfigMercadoLocal != null)
                                     {
-                                        result.eReasonCode = 7;
-                                        result.eMessage = "Ocorreu um erro ao atualizar a linha da Requisição.";
+                                        if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel1))
+                                            Responsavel1 = ConfigMercadoLocal.Responsavel1;
+                                        if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel2))
+                                            Responsavel2 = ConfigMercadoLocal.Responsavel2;
+                                        if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel3))
+                                            Responsavel3 = ConfigMercadoLocal.Responsavel3;
+                                        if (!string.IsNullOrEmpty(ConfigMercadoLocal.Responsavel4))
+                                            Responsavel4 = ConfigMercadoLocal.Responsavel4;
+                                        Responsaveis = "-" + Responsavel1 + "-" + Responsavel2 + "-" + Responsavel3 + "-" + Responsavel4 + "-";
                                     }
-                                }
-                                else
-                                {
-                                    result.eReasonCode = 6;
-                                    result.eMessage = "Ocorreu um erro ao criar a Compra.";
-                                }
-                            });
+
+                                    Compras Compra = new Compras
+                                    {
+                                        CodigoProduto = Linha.Código,
+                                        Descricao = Linha.Descrição,
+                                        CodigoUnidadeMedida = Linha.CódigoUnidadeMedida,
+                                        Quantidade = Linha.QuantidadeRequerida,
+                                        NoRequisicao = Linha.NºRequisição,
+                                        NoLinhaRequisicao = Linha.NºLinha,
+                                        Urgente = Linha.Urgente,
+                                        NoProjeto = Linha.NºProjeto,
+                                        RegiaoMercadoLocal = item.LocalMarketRegion,
+                                        Estado = 1, //APROVADO
+                                    DataCriacao = DateTime.Now,
+                                        UtilizadorCriacao = User.Identity.Name,
+                                        DataMercadoLocal = DateTime.Now,
+                                        Responsaveis = Responsaveis
+                                    };
+
+                                    Compras CompraReq = DBCompras.Create(Compra);
+                                    if (CompraReq != null)
+                                    {
+                                        Linha.IdCompra = CompraReq.Id;
+                                        Linha.ValidadoCompras = true;
+                                        Linha.UtilizadorModificação = User.Identity.Name;
+                                        Linha.DataHoraModificação = DateTime.Now;
+
+                                        if (DBRequestLine.Update(Linha) == null)
+                                        {
+                                            result.eReasonCode = 7;
+                                            result.eMessage = "Ocorreu um erro ao atualizar a linha da Requisição.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 6;
+                                        result.eMessage = "Ocorreu um erro ao criar a Compra.";
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Primeiro tem que selecionar a(s) linha(s) a enviar para o Mercado Local.";
+                            }
                         }
                         else
                         {
-                            result.eReasonCode = 5;
-                            result.eMessage = "Primeiro tem que selecionar a(s) linha(s) a enviar para o Mercado Local.";
+                            result.eReasonCode = 4;
+                            result.eMessage = "Preencha o campo Região Mercado Local no Geral.";
                         }
                     }
                     else
                     {
                         result.eReasonCode = 4;
-                        result.eMessage = "Preencha o campo Região Mercado Local no Geral.";
+                        result.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
                     }
                 }
                 catch (Exception ex)
@@ -2266,8 +2307,16 @@ namespace Hydra.Such.Portal.Controllers
             {
                 try
                 {
-                    RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
-                    item = serv.ValidateRequisition(item);
+                    if (item.StockReplacement == false && string.IsNullOrEmpty(item.ProjectNo))
+                    {
+                        item.eReasonCode = 3;
+                        item.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
+                    }
+                    else
+                    {
+                        RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
+                        item = serv.ValidateRequisition(item);
+                    }
                 }
                 catch (Exception ex)
                 {

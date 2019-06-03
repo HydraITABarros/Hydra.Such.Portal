@@ -2120,7 +2120,7 @@
                         this.$.page_validator_req_ajax.generateRequest();
                     }
                     else {
-                        if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                        if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
                             this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
                             this.$.page_validator_req_ajax.generateRequest();
                         }
@@ -2142,9 +2142,9 @@
 
                 _update: function () {
                     this.data.area = this._areaid;
-                    if (this.chkReposicaoStock == false || this.chkReposicaoStock == undefined) {
-                        if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
-                            this.data.stockReplacement = this.chkReposicaoStock == true ? true : false;
+                    if (this.chkReposicaoStock == undefined || this.chkReposicaoStock == false) {
+                        if (this.$.projectNo.value != null && this.$.projectNo.value != "") {
+                            this.data.stockReplacement = false;
 
                             this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                         }
@@ -2153,7 +2153,7 @@
                         }
                     }
                     else {
-                        this.data.stockReplacement = this.chkReposicaoStock == true ? true : false;
+                        this.data.stockReplacement = true;
 
                         this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                     }
@@ -2187,7 +2187,7 @@
                     var self = this;
                     if (data.detail.status === 200) {
                         if (this.validateResponse == "") {
-                            if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
+                            if (this.$.projectNo.value != null && this.$.projectNo.value != "") {
                                 this._executeRequest("/PreRequisicoes/CreatePreRequesition", this.data)
                             }
                             else {

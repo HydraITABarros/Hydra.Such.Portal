@@ -327,7 +327,10 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     var statusValues = status.Cast<int>().ToList();
                     
-                    return ctx.Requisição.Where(x => x.TipoReq == TipoReq && x.UtilizadorCriação == UserName && statusValues.Contains(x.Estado.Value) && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
+                    return ctx.Requisição.Where(x => x.TipoReq == TipoReq &&
+                    (x.ResponsávelCriação.ToLower() == UserName.ToLower() || x.ResponsávelAprovação.ToLower() == UserName.ToLower() ||
+                    x.ResponsávelValidação.ToLower() == UserName.ToLower() || x.ResponsávelReceção.ToLower() == UserName.ToLower()) &&
+                    statusValues.Contains(x.Estado.Value) && !x.ModeloDeRequisição.HasValue || !x.ModeloDeRequisição.Value).ToList();
                 }
             }
             catch (Exception ex)

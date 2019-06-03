@@ -12,24 +12,96 @@
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
       </DataSetParameters>
-      <CommandText>SELECT        [Linhas Requisição].[Nº Linha], [Linhas Requisição].Descrição, [Linhas Requisição].[Descrição2], [Linhas Requisição].[Quantidade a Requerer], [Linhas Requisição].[Código Localização] AS LineLocalization, [Linhas Requisição].[Nº Projeto] AS LineProjNo, 
-                         [Linhas Requisição].[Código Unidade Medida], [Linhas Requisição].Código AS LineCodProduto, Requisição.[Nº Requisição], Requisição.Área, Requisição.Estado, Requisição.[Nº Projeto], Requisição.[Código Região], Requisição.[Código Área Funcional], 
-                         Requisição.[Código Centro Responsabilidade], Requisição.[Código Localização], Requisição.[Nº Funcionário], Requisição.Viatura, Requisição.[Data Receção], Requisição.Urgente, Requisição.Amostra, CASE [Anexo] WHEN 1 THEN 'Sim' ELSE 'Não' END AS [Anexo], 
-                         Requisição.Imobilizado, Requisição.[Compra a Dinheiro], Requisição.[Código Local Recolha], Requisição.[Código Local Entrega], Requisição.Observações, Requisição.[Modelo de Requisição], Requisição.[Data/Hora Criação], 
-                         Requisição.[Utilizador Criação], Requisição.[Data/Hora Modificação], Requisição.[Utilizador Modificação], Requisição.[Cabimento Orçamental], Requisição.Exclusivo, Requisição.[Já Executado], Requisição.Equipamento, 
-                         Requisição.[Reposição de Stock], Requisição.Reclamação, Requisição.[Nº Requisição Reclamada], Requisição.[Responsável Criação], Requisição.[Responsável Aprovação], Requisição.[Responsável Validação], 
-                         Requisição.[Responsável Receção], Requisição.[Data Aprovação], Requisição.[Data Validação], Requisição.[Unidade Produtiva Alimentação], Requisição.[Requisição Nutrição], Requisição.[Requisição Detergentes], 
-                         Requisição.[Nº Procedimento CCP], Requisição.Aprovadores, Requisição.[Mercado Local], Requisição.[Região Mercado Local], Requisição.[Reparação com Garantia], Requisição.EMM, Requisição.[Data Entrega Armazém], 
-                         Requisição.[Local de Recolha], Requisição.[Morada Recolha], Requisição.[Morada 2 Recolha], Requisição.[Código Postal Recolha], Requisição.[Localidade Recolha], Requisição.[Contato Recolha], 
-                         Requisição.[Responsável Receção Recolha], Requisição.[Local Entrega], Requisição.[Morada Entrega], Requisição.[Morada 2 Entrega], Requisição.[Código Postal Entrega], Requisição.[Localidade Entrega], 
-                         Requisição.[Contato Entrega], Requisição.[Responsável Receção Receção], Requisição.[Nº Fatura], Requisição.[Data Mercado Local], Requisição.[Data Requisição], Requisição.[Nº Consulta Mercado], 
-                         Requisição.[Nº Encomenda], Requisição.Orçamento, Requisição.[Valor Estimado], CASE [PedirOrcamento] WHEN 1 THEN 'Sim' ELSE 'Não' END AS [PedirOrcamento], Proj.[Bill-to Customer No_], Util.[EmployeeNo],Util.Nome, CLI.[Name] AS [NomeCliente]
-FROM            Requisição 
-INNER JOIN [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
-INNER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Job] AS Proj ON Requisição.[Nº Projeto] COLLATE DATABASE_DEFAULT = Proj.[No_]
-INNER JOIN [Config. Utilizadores] AS UTIL ON Requisição.[Utilizador Criação] = UTIL.[Id Utilizador]
-LEFT OUTER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Vendor] AS CLI ON Proj.[Bill-to Customer No_] = CLI.[No_]
-WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
+      <CommandText>SELECT
+	[Linhas Requisição].[Nº Linha],
+	[Linhas Requisição].Descrição,
+	[Linhas Requisição].[Descrição2],
+	[Linhas Requisição].[Quantidade a Requerer],
+	[Linhas Requisição].[Código Localização] AS LineLocalization,
+	[Linhas Requisição].[Nº Projeto] AS LineProjNo,
+    [Linhas Requisição].[Código Unidade Medida],
+	[Linhas Requisição].Código AS LineCodProduto,
+	Requisição.[Nº Requisição],
+	Requisição.Área,
+	Requisição.Estado,
+	Requisição.[Nº Projeto],
+	Requisição.[Código Região],
+	Requisição.[Código Área Funcional],
+	Requisição.[Código Centro Responsabilidade],
+	Requisição.[Código Localização],
+	Requisição.[Nº Funcionário],
+	Requisição.Viatura,
+	Requisição.[Data Receção],
+	Requisição.Urgente,
+	Requisição.Amostra,
+	CASE Requisição.[Amostra] WHEN 1 THEN 'Sim' ELSE 'Não' END AS [AmostraText],
+	CASE Requisição.[Anexo] WHEN 1 THEN 'Sim' ELSE 'Não' END AS [Anexo],
+	Requisição.Imobilizado,
+	Requisição.[Compra a Dinheiro],
+	Requisição.[Código Local Recolha],
+	Requisição.[Código Local Entrega],
+	Requisição.Observações,
+	Requisição.[Modelo de Requisição],
+	Requisição.[Data/Hora Criação],
+	Requisição.[Utilizador Criação],
+	Requisição.[Data/Hora Modificação],
+	Requisição.[Utilizador Modificação],
+	Requisição.[Cabimento Orçamental],
+	Requisição.Exclusivo,
+	Requisição.[Já Executado],
+	Requisição.Equipamento,
+	CASE Requisição.[Equipamento] WHEN 1 THEN 'Sim' ELSE 'Não' END AS [EquipamentoText],
+	Requisição.[Reposição de Stock],
+	Requisição.Reclamação,
+	Requisição.[Nº Requisição Reclamada],
+	Requisição.[Responsável Criação],
+	Requisição.[Responsável Aprovação],
+	Requisição.[Responsável Validação],
+	Requisição.[Responsável Receção],
+	Requisição.[Data Aprovação],
+	Requisição.[Data Validação],
+	Requisição.[Unidade Produtiva Alimentação],
+	Requisição.[Requisição Nutrição],
+	Requisição.[Requisição Detergentes],
+	Requisição.[Nº Procedimento CCP],
+	Requisição.Aprovadores,
+	Requisição.[Mercado Local],
+	Requisição.[Região Mercado Local],
+	Requisição.[Reparação com Garantia],
+	Requisição.EMM,
+	Requisição.[Data Entrega Armazém],
+	Requisição.[Local de Recolha],
+	Requisição.[Morada Recolha],
+	Requisição.[Morada 2 Recolha],
+	Requisição.[Código Postal Recolha],
+	Requisição.[Localidade Recolha],
+	Requisição.[Contato Recolha],
+	Requisição.[Responsável Receção Recolha],
+	Requisição.[Local Entrega],
+	Requisição.[Morada Entrega],
+	Requisição.[Morada 2 Entrega],
+	Requisição.[Código Postal Entrega],
+	Requisição.[Localidade Entrega],
+	Requisição.[Contato Entrega],
+	Requisição.[Responsável Receção Receção],
+	Requisição.[Nº Fatura],
+	Requisição.[Data Mercado Local],
+	Requisição.[Data Requisição],
+	Requisição.[Nº Consulta Mercado],
+	Requisição.[Nº Encomenda],
+	Requisição.Orçamento,
+	Requisição.[Valor Estimado],
+	CASE [PedirOrcamento] WHEN 1 THEN 'Sim' ELSE 'Não' END AS [PedirOrcamento],
+	Proj.[Bill-to Customer No_],
+	Util.[EmployeeNo],
+	Util.Nome,
+	CLI.[Name] AS [NomeCliente]
+FROM Requisição 
+	INNER JOIN [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
+	INNER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Job] AS Proj ON Requisição.[Nº Projeto] COLLATE DATABASE_DEFAULT = Proj.[No_]
+	INNER JOIN [Config. Utilizadores] AS UTIL ON Requisição.[Utilizador Criação] = UTIL.[Id Utilizador]
+	LEFT OUTER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Vendor] AS CLI ON Proj.[Bill-to Customer No_] = CLI.[No_]
+WHERE (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
     </Query>
     <Fields>
@@ -117,6 +189,10 @@ WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
         <DataField>Amostra</DataField>
         <rd:TypeName>System.Boolean</rd:TypeName>
       </Field>
+      <Field Name="AmostraText">
+        <DataField>AmostraText</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
       <Field Name="Anexo">
         <DataField>Anexo</DataField>
         <rd:TypeName>System.String</rd:TypeName>
@@ -180,6 +256,10 @@ WHERE        (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       <Field Name="Reposição_de_Stock">
         <DataField>Reposição de Stock</DataField>
         <rd:TypeName>System.Boolean</rd:TypeName>
+      </Field>
+      <Field Name="EquipamentoText">
+        <DataField>EquipamentoText</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="Reclamação">
         <DataField>Reclamação</DataField>

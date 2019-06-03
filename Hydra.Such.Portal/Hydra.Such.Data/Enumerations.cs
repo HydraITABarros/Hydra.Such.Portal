@@ -183,6 +183,9 @@ namespace Hydra.Such.Data
             LinhasContratos = 67,
             [Description("Ordens de Manutenção")]
             MaintenanceOrders = 68,
+            [Description("Linhas de Contratos Internos")]
+            LinhasContratosInternos = 69,
+
 
 
             [Description("Administração Geral")]

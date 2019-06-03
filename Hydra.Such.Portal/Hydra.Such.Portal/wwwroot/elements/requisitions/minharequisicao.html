@@ -143,19 +143,12 @@
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="page_GetRegionCode_ajax" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="page_GetFunctionalAreaCode_ajax" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="page_GetResponsabilityCenterCode_ajax" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-
-
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{Projects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
-
-
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{PurchaseHeaders}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{GridPurchaseHeaders}}" id="gridpurchaseheader_ajax" on-response="_gridpurchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLines}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -2371,6 +2364,11 @@
                     }
                 },
                 _createRequisitionLine: function () {
+                    if (this.Requisition.stockReplacement == false && (this.$.CBLineProjects.value == null || this.$.CBLineProjects.value == "")) {
+                        this._openToastError("O campo Nº Ordem/Projeto é de preenchimento obrigatorio.");
+                        return
+                    }
+
                     if (this._validateUserInputForLine()) {
                         var newReqLine = {
                             requestNo: this.$.requisitionNo.value,
@@ -2551,7 +2549,7 @@
                                     }, 1000);
                             }
                             else {
-                                this._openToastError(this.data.eMessage);
+                                this._openToastError(this.Requisition.eMessage);
                             }
                             this._isCreate = !(this.Requisition.eReasonCode == "1");
                         }
@@ -2561,7 +2559,7 @@
                                 this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition";
                             }
                             else {
-                                this._openToastError(this.data.eMessage);
+                                this._openToastError(this.Requisition.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("UpdateRequisitionLines") !== -1) {
@@ -2571,7 +2569,7 @@
                                 this.$.requisition_datasource.url = "/GestaoRequisicoes/GetRequisition";
                             }
                             else {
-                                this._openToastError(this.data.eMessage);
+                                this._openToastError(this.Requisition.eMessage);
                             }
                         }
                         else if (data.detail.url.indexOf("Delete") !== -1) {

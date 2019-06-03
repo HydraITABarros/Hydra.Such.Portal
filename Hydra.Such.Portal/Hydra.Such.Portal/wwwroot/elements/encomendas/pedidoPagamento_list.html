@@ -806,7 +806,6 @@
                     }
                 },
                 _CriarTransferenciaResponse: function (e) {
-                    debugger;
                     if (this.resultCriarTransferencia.eReasonCode == "1") {
                         this._openToast(this.resultCriarTransferencia.eMessage);
                     }
@@ -823,7 +822,6 @@
                 },
 
                 _Arquivar: function () {
-                    debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         if (this.result != null || this.result != undefined || this.result.length != 0) {
                             var ajax_request = this.$.page_Arquivar_ajax;
@@ -857,7 +855,6 @@
                     }
                 },
                 _ArquivarResponse: function (e) {
-                    debugger;
                     if (this.resultArquivar.eReasonCode == "1") {
                         this._openToast(this.resultArquivar.eMessage);
                     }

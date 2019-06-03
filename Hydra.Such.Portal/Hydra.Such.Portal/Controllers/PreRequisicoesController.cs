@@ -918,29 +918,37 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     if (data.PreRequesitionsNo != null)
                     {
-                        PréRequisição pPreRequisicao = DBPreRequesition.ParseToDB(data);
-                        pPreRequisicao.UtilizadorCriação = User.Identity.Name;
-                        pPreRequisicao.DataHoraCriação = DateTime.Now;
-
-                        //Create Contract On Database
-
-                        pPreRequisicao = DBPreRequesition.Create(pPreRequisicao);
-
-                        if (pPreRequisicao == null)
+                        if (!string.IsNullOrEmpty(data.ProjectNo))
                         {
-                            data.eReasonCode = 3;
-                            data.eMessage = "Ocorreu um erro ao criar o contrato.";
+                            PréRequisição pPreRequisicao = DBPreRequesition.ParseToDB(data);
+                            pPreRequisicao.UtilizadorCriação = User.Identity.Name;
+                            pPreRequisicao.DataHoraCriação = DateTime.Now;
+
+                            //Create Contract On Database
+
+                            pPreRequisicao = DBPreRequesition.Create(pPreRequisicao);
+
+                            if (pPreRequisicao == null)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao criar a Requisição.";
+                            }
+                            else
+                            {
+                                ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                                if (configNumerations != null && autoGenId)
+                                {
+                                    configNumerations.ÚltimoNºUsado = data.PreRequesitionsNo;
+                                    configNumerations.UtilizadorModificação = User.Identity.Name;
+                                    DBNumerationConfigurations.Update(configNumerations);
+                                }
+                                data.eReasonCode = 1;
+                            }
                         }
                         else
                         {
-                            ConfiguraçãoNumerações configNumerations = DBNumerationConfigurations.GetById(entityNumerationConfId);
-                            if (configNumerations != null && autoGenId)
-                            {
-                                configNumerations.ÚltimoNºUsado = data.PreRequesitionsNo;
-                                configNumerations.UtilizadorModificação = User.Identity.Name;
-                                DBNumerationConfigurations.Update(configNumerations);
-                            }
-                            data.eReasonCode = 1;
+                            data.eReasonCode = 5;
+                            data.eMessage = "O campo Nº Ordem/Projecto é de preenchimento obrigatório.";
                         }
                     }
                     else
