@@ -3797,7 +3797,7 @@ namespace Hydra.Such.Portal.Controllers
                             SPInvoiceListViewModel Ship = new SPInvoiceListViewModel();
                             Projetos proj = DBProjects.GetById(codproject);
                             Contratos cont = DBContracts.GetByIdLastVersion(proj.NºContrato);
-                            NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, proj.NºCliente);
+                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, proj.NºCliente);
 
                             if (proj != null && !string.IsNullOrEmpty(proj.CódEndereçoEnvio))
                             {
@@ -3813,9 +3813,9 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
-                                    if (cli != null)
+                                    if (Cliente != null)
                                     {
-                                        header.InvoiceToClientNo = !string.IsNullOrEmpty(cli.No_) ? cli.No_ : "";
+                                        header.InvoiceToClientNo = !string.IsNullOrEmpty(Cliente.No_) ? Cliente.No_ : "";
                                         Ship.Ship_to_Code = "";
                                     }
                                 }
@@ -3878,6 +3878,23 @@ namespace Hydra.Such.Portal.Controllers
                             if (proj.FaturaPrecosIvaIncluido == true)
                                 header.FaturaPrecosIvaIncluido = true;
 
+                            //AMARO Clientes Internos
+                            if (Cliente != null)
+                            {
+                                if (Cliente.InternalClient == true)
+                                {
+                                    header.RegionCode = Cliente.RegionCode;
+                                    header.FunctionalAreaCode = Cliente.FunctionalAreaCode;
+                                    header.ResponsabilityCenterCode = Cliente.ResponsabilityCenterCode;
+                                }
+                                else
+                                {
+                                    if (header.Items.Count > 0 && header.Items.FirstOrDefault().RegionCode != header.RegionCode)
+                                    {
+                                        header.ResponsabilityCenterCode = "";
+                                    }
+                                }
+                            }
 
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, codproject, Ship);
                             //Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
@@ -3943,13 +3960,13 @@ namespace Hydra.Such.Portal.Controllers
 
                                     if (proj.FaturaPrecosIvaIncluido == true)
                                     {
-                                        string Cliente = string.Empty;
+                                        string NoCliente = string.Empty;
                                         string GrupoIVA = string.Empty;
                                         string GrupoCliente = string.Empty;
                                         decimal IVA = new decimal();
                                         foreach (var item in header.Items)
                                         {
-                                            Cliente = item.InvoiceToClientNo;
+                                            NoCliente = item.InvoiceToClientNo;
                                             GrupoIVA = string.Empty;
                                             GrupoCliente = string.Empty;
                                             IVA = 0;
@@ -3967,14 +3984,14 @@ namespace Hydra.Such.Portal.Controllers
                                                     return Json(result);
                                                 }
 
-                                                if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                                if (!string.IsNullOrEmpty(NoCliente) && !string.IsNullOrEmpty(GrupoIVA))
                                                 {
-                                                    NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                    NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, NoCliente);
                                                     if (cliente != null)
                                                         GrupoCliente = cliente.VATBusinessPostingGroup;
                                                     else
                                                     {
-                                                        execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                        execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + NoCliente;
                                                         result.eReasonCode = 2;
                                                         result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
                                                         return Json(result);

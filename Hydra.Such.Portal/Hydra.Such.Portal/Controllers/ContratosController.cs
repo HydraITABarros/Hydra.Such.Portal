@@ -1981,9 +1981,9 @@ namespace Hydra.Such.Portal.Controllers
                     Description = item.Descrição,
                     ClientNo = item.NºCliente,
                     ClientName = cliName,
-                    InvoiceValue = sum,
+                    InvoiceValue = Math.Round(sum, 2),
                     NumberOfInvoices = item.NºDeFaturasAEmitir,
-                    InvoiceTotal = sum,
+                    InvoiceTotal = Math.Round(((decimal)item.NºDeFaturasAEmitir * sum), 2),
                     ContractValue = item.ValorDoContrato,
                     ValueToInvoice = item.ValorPorFaturar,
                     BilledValue = item.ValorFaturado,
@@ -2054,9 +2054,9 @@ namespace Hydra.Such.Portal.Controllers
                         Description = item.Descrição,
                         ClientNo = item.NºCliente,
                         ClientName = cliName,
-                        InvoiceValue = sum,
+                        InvoiceValue = Math.Round(sum, 2),
                         NumberOfInvoices = item.NºDeFaturasAEmitir,
-                        InvoiceTotal = sum,
+                        InvoiceTotal = Math.Round(((decimal)item.NºDeFaturasAEmitir * sum), 2),
                         ContractValue = item.ValorDoContrato,
                         ValueToInvoice = item.ValorPorFaturar,
                         BilledValue = item.ValorFaturado,
@@ -2078,12 +2078,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GenerateInvoice([FromBody] List<FaturacaoContratosViewModel> data, string dateCont)
         {
+            //AMARO TESTE DELETEALL
             // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
             
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
             foreach (var item in contractList)
             {
+                //if (item.NºDeContrato == "VC0500129" || item.NºDeContrato == "VC180111" || item.NºDeContrato == "VCI190002")
+                //{
+                //    string teste = "";
+                //}
+
                 List<NAVSalesLinesViewModel> contractSalesLinesInNAV = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.NºCliente);
                 List<LinhasContratos> contractLines = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
                 contractLines.OrderBy(x => x.NºContrato).ThenBy(y => y.GrupoFatura);
@@ -2096,537 +2102,660 @@ namespace Hydra.Such.Portal.Controllers
                 Decimal lineQuantity = 1;
                 int? totalInvoiceGroups = contractLines.Where(x => x.NºContrato == item.NºDeContrato).Select(x => x.GrupoFatura).Distinct().Count();
 
-                //if (item.NºDeContrato == "VC160053")
-                //{
-                //    Problema = "";
-                //}
-
-                foreach (var contractLine in contractLines)
+                if (contractLines != null && contractLines.Count > 0)
                 {
-                    //if (contractLine.NºContrato == "VC160053")
-                    //{
-                    //    Problema = "";
-                    //}
-
-                    int? totalLinesForCurrentInvoiceGroup = contractLines.Where(x => x.NºContrato == contractLine.NºContrato && x.GrupoFatura == contractLine.GrupoFatura).Count();
-                    if (ContractNoDuplicate != contractLine.NºContrato || InvoiceGroupDuplicate != contractLine.GrupoFatura)
+                    foreach (var contractLine in contractLines)
                     {
-                        ContractNoDuplicate = contractLine.NºContrato;
-                        InvoiceGroupDuplicate = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value;
-                        Decimal contractVal = 0;
-                        if (item.TipoContrato != 1 || item.TipoContrato != 4)
+                        //if (item.NºDeContrato == "VC0500129" || item.NºDeContrato == "VC180111" || item.NºDeContrato == "VCI190002")
+                        //{
+                        //    string teste = "";
+                        //}
+
+                        int? totalLinesForCurrentInvoiceGroup = contractLines.Where(x => x.NºContrato == contractLine.NºContrato && x.GrupoFatura == contractLine.GrupoFatura).Count();
+                        if (ContractNoDuplicate != contractLine.NºContrato || InvoiceGroupDuplicate != contractLine.GrupoFatura)
                         {
-                            int NumMeses = 0;
-                            
-                            if (item.DataExpiração != null && item.DataExpiração.Value != null && item.DataExpiração.ToString() != "" && item.DataInicial != null && item.DataInicial.Value != null && item.DataInicial.ToString() != "")
+                            ContractNoDuplicate = contractLine.NºContrato;
+                            InvoiceGroupDuplicate = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value;
+                            Decimal contractVal = 0;
+                            if (item.TipoContrato != 1 || item.TipoContrato != 4)
                             {
-                                NumMeses = ((item.DataExpiração.Value.Year - item.DataInicial.Value.Year) * 12) + item.DataExpiração.Value.Month - item.DataInicial.Value.Month;
-                            }
-                            if (NumMeses == 0)
-                            {
-                                NumMeses = 1;
-                            }
-                            decimal SumPrice = 0;
-                            foreach (LinhasContratos itm in contractLines)
-                            {
-                                if (itm.PreçoUnitário != null)
+                                int NumMeses = 0;
+
+                                if (item.DataExpiração != null && item.DataExpiração.Value != null && item.DataExpiração.ToString() != "" && item.DataInicial != null && item.DataInicial.Value != null && item.DataInicial.ToString() != "")
                                 {
-                                    if (SumPrice != 0)
+                                    NumMeses = ((item.DataExpiração.Value.Year - item.DataInicial.Value.Year) * 12) + item.DataExpiração.Value.Month - item.DataInicial.Value.Month;
+                                }
+                                if (NumMeses == 0)
+                                {
+                                    NumMeses = 1;
+                                }
+                                decimal SumPrice = 0;
+                                foreach (LinhasContratos itm in contractLines)
+                                {
+                                    if (itm.PreçoUnitário != null)
                                     {
-                                        SumPrice = SumPrice + itm.PreçoUnitário.Value;
+                                        if (SumPrice != 0)
+                                        {
+                                            SumPrice = SumPrice + itm.PreçoUnitário.Value;
+                                        }
+                                        else
+                                        {
+                                            SumPrice = itm.PreçoUnitário.Value;
+                                        }
+
                                     }
-                                    else
-                                    {
-                                        SumPrice = itm.PreçoUnitário.Value;
-                                    }
-                                    
+                                }
+                                contractVal = Math.Round(NumMeses * SumPrice, 2);
+                            }
+
+                            List<NAVSalesInvoiceLinesViewModel> salesList = null;
+                            List<NAVSalesCrMemoLinesViewModel> crMemo = null;
+                            if (item.DataInicial != null && item.DataExpiração != null)
+                            {
+                                salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                                crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.DataInicial.Value, item.DataExpiração.Value);
+                            }
+
+                            DateTime nextInvoiceDate = DateTime.MinValue;// lastDay;
+                            DateTime? lastInvoiceDate = null;
+                            int invoiceNumber = 0;
+                            if (item.DataExpiração != null && current >= item.DataExpiração)
+                            {
+                                current = item.DataExpiração.Value;
+                            }
+
+                            #region Obter Data ultima fatura
+                            //Contratos com 1 única fatura - Tentar obter a data da ultima fatura a partir da Data da Ultima fatura do contrato;
+                            //if (totalInvoiceGroups.HasValue && totalInvoiceGroups.Value == 1)
+                            //{
+                            //    if (item.ÚltimaDataFatura.HasValue)
+                            //        nextInvoiceDate = item.ÚltimaDataFatura.Value;
+                            //}
+                            //else
+                            //{
+                            //    //Contratos com n Faturas - Tentar obter a data da ultima fatura a partir das requisições de cliente;
+                            //    if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 0)
+                            //    {
+                            //        lastInvoiceDate = DBContractClientRequisition.GetLatsInvoiceDateFor(item.NºDeContrato, contractLine.GrupoFatura);
+                            //        if (lastInvoiceDate.HasValue)
+                            //        {
+                            //            nextInvoiceDate = lastInvoiceDate.Value;
+                            //        }
+                            //    }
+                            //}
+
+                            //Independentemente do nº de faturas a emitir, procurar sempre a data da última fatura nas Requisições de Cliente e se não existir
+                            //então ir buscar a data da última fatura ao contrato
+                            lastInvoiceDate = DBContractClientRequisition.GetLatsInvoiceDateFor(item.NºDeContrato, contractLine.GrupoFatura);
+                            if (lastInvoiceDate.HasValue)
+                            {
+                                nextInvoiceDate = lastInvoiceDate.Value;
+                            }
+                            else
+                            {
+                                if (item.ÚltimaDataFatura.HasValue)
+                                    nextInvoiceDate = item.ÚltimaDataFatura.Value;
+                            }
+
+                            //Se ainda não houver nenhuma fatura do contrato (data ultima fatura vazia) - Tentar obter a data da ultima fatura a partir da Data Inicio do Contrato. 
+                            if (nextInvoiceDate.Equals(DateTime.MinValue))
+                                nextInvoiceDate = item.DataInicial.HasValue ? item.DataInicial.Value.AddDays(-1) : lastDay;
+
+                            //Para a data de faturação, o utilizador insere o ultimo dia do mês. Adicionar um dia para evitar contabilizar o mês selecionado.
+                            //TODO: Verificar se existe necessidade de aplicar regra mais sólida 
+                            //AMARO TESTE é necessário esta regra???
+                            //if (GetMonthDiff(nextInvoiceDate, lastDay) == 0)
+                            //    nextInvoiceDate = nextInvoiceDate.AddDays(1);
+
+                            #endregion
+
+                            if (contractLine.Quantidade != 0)
+                            {
+                                lineQuantity = contractLine.Quantidade == null ? lineQuantity : contractLine.Quantidade.Value;
+                            }
+
+                            int MonthDiff = 0;
+                            int rest = 0;
+                            int AddMonth = 0;
+                            DateTime LastInvoice = lastDay;
+                            if (item.PeríodoFatura != null || item.PeríodoFatura != 0)
+                            {
+                                switch (item.PeríodoFatura)
+                                {
+                                    case 1://Mensal
+                                        MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
+                                        if (MonthDiff >= 0)
+                                        {
+                                            invoiceNumber = MonthDiff / 1;
+                                            if (LastInvoice == item.DataExpiração)
+                                            {
+                                                nextInvoiceDate = LastInvoice;
+                                                lineQuantity = lineQuantity * 1;
+                                            }
+                                            else
+                                            {
+                                                nextInvoiceDate = nextInvoiceDate.AddMonths(1);
+                                                lineQuantity = lineQuantity * 1;
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            invoiceNumber = 0;
+                                            nextInvoiceDate = nextInvoiceDate.AddMonths(1);
+                                            lineQuantity = lineQuantity * 1;
+                                        }
+                                        break;
+                                    //MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
+                                    //if (MonthDiff >= 0)
+                                    //{
+                                    //    rest = MonthDiff % 1;
+                                    //    AddMonth = 1 - rest;
+                                    //    if (AddMonth != 1)
+                                    //    {
+                                    //        LastInvoice = current.AddMonths(AddMonth);
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        LastInvoice = current;
+                                    //        AddMonth = 0;
+                                    //    }
+                                    //    MonthDiff = MonthDiff + AddMonth;
+                                    //    if (MonthDiff == 0 && AddMonth == 0)
+                                    //    {
+                                    //        MonthDiff = 1;
+                                    //    }
+
+                                    //    invoiceNumber = MonthDiff / 1;
+                                    //    if (LastInvoice == item.DataExpiração)
+                                    //    {
+                                    //        nextInvoiceDate = LastInvoice;
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        if (AddMonth == 0)
+                                    //        {
+                                    //            nextInvoiceDate = LastInvoice.AddMonths(1);
+                                    //        }
+                                    //        else
+                                    //        {
+                                    //            nextInvoiceDate = LastInvoice;
+                                    //        }
+                                    //    }
+                                    //    //lineQuantity = lineQuantity * MonthDiff;
+                                    //    lineQuantity = lineQuantity * 1;
+                                    //}
+                                    //else
+                                    //{
+                                    //    invoiceNumber = 0;
+                                    //    nextInvoiceDate = nextInvoiceDate.AddMonths(1);
+                                    //    lineQuantity = lineQuantity * 1;
+                                    //}
+                                    //break;
+                                    case 2://Bimensal
+                                        MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
+                                        if (MonthDiff >= 0)
+                                        {
+                                            rest = MonthDiff % 2;
+                                            AddMonth = 2 - rest;
+                                            if (AddMonth != 2)
+                                            {
+                                                LastInvoice = current.AddMonths(AddMonth);
+                                            }
+                                            else
+                                            {
+                                                LastInvoice = current;
+                                                AddMonth = 0;
+                                            }
+                                            //MonthDiff = MonthDiff + AddMonth;
+                                            invoiceNumber = MonthDiff / 2;
+                                            if (LastInvoice == item.DataExpiração)
+                                            {
+                                                nextInvoiceDate = LastInvoice;
+                                            }
+                                            else
+                                            {
+                                                if (AddMonth == 0)
+                                                {
+                                                    nextInvoiceDate = LastInvoice.AddMonths(2);
+                                                }
+                                                else
+                                                {
+                                                    nextInvoiceDate = LastInvoice;
+                                                }
+
+                                            }
+                                            //lineQuantity = lineQuantity * MonthDiff;
+                                            lineQuantity = lineQuantity * 2;
+                                        }
+                                        else
+                                        {
+                                            invoiceNumber = 0;
+                                            nextInvoiceDate = nextInvoiceDate.AddMonths(2);
+                                            lineQuantity = lineQuantity * 2;
+                                        }
+                                        break;
+                                    //MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
+                                    //if (MonthDiff >= 0)
+                                    //{
+                                    //    rest = MonthDiff % 2;
+                                    //    AddMonth = 2 - rest;
+                                    //    if (AddMonth != 2)
+                                    //    {
+                                    //        LastInvoice = current.AddMonths(AddMonth);
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        LastInvoice = current;
+                                    //        AddMonth = 0;
+                                    //    }
+                                    //    //MonthDiff = MonthDiff + AddMonth;
+                                    //    invoiceNumber = MonthDiff / 2;
+                                    //    nextInvoiceDate = LastInvoice.AddMonths(2);
+                                    //    //lineQuantity = lineQuantity * MonthDiff;
+                                    //    lineQuantity = lineQuantity * 2;
+                                    //}
+                                    //else
+                                    //{
+                                    //    invoiceNumber = 0;
+                                    //    if (LastInvoice == item.DataExpiração)
+                                    //    {
+                                    //        nextInvoiceDate = LastInvoice;
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        if (AddMonth == 0)
+                                    //        {
+                                    //            nextInvoiceDate = LastInvoice.AddMonths(2);
+                                    //        }
+                                    //        else
+                                    //        {
+                                    //            nextInvoiceDate = LastInvoice;
+                                    //        }
+                                    //    }
+                                    //    lineQuantity = lineQuantity * 2;
+                                    //}
+                                    //break;
+                                    case 3://Trimestral
+                                        MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
+                                        if (MonthDiff >= 0)
+                                        {
+                                            rest = MonthDiff % 3;
+                                            AddMonth = 3 - rest;
+                                            if (AddMonth != 3)
+                                            {
+                                                LastInvoice = current.AddMonths(AddMonth);
+                                            }
+                                            else
+                                            {
+                                                LastInvoice = current;
+                                                AddMonth = 0;
+                                            }
+                                            //MonthDiff = MonthDiff + AddMonth;
+                                            invoiceNumber = MonthDiff / 3;
+                                            if (LastInvoice == item.DataExpiração)
+                                            {
+                                                nextInvoiceDate = LastInvoice;
+                                            }
+                                            else
+                                            {
+                                                if (AddMonth == 0)
+                                                {
+                                                    nextInvoiceDate = LastInvoice.AddMonths(3);
+                                                }
+                                                else
+                                                {
+                                                    nextInvoiceDate = LastInvoice;
+                                                }
+
+                                            }
+                                            //lineQuantity = lineQuantity * MonthDiff;
+                                            lineQuantity = lineQuantity * 3;
+                                        }
+                                        else
+                                        {
+                                            invoiceNumber = 0;
+                                            nextInvoiceDate = nextInvoiceDate.AddMonths(3);
+                                            lineQuantity = lineQuantity * 3;
+                                        }
+                                        break;
+                                    case 4://Semestral
+                                        MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
+                                        if (MonthDiff >= 0)
+                                        {
+                                            rest = MonthDiff % 6;
+                                            AddMonth = 6 - rest;
+                                            if (AddMonth != 6)
+                                            {
+                                                LastInvoice = current.AddMonths(AddMonth);
+                                            }
+                                            else
+                                            {
+                                                LastInvoice = current;
+                                                AddMonth = 0;
+                                            }
+                                            //MonthDiff = MonthDiff + AddMonth;
+                                            invoiceNumber = MonthDiff / 6;
+                                            if (LastInvoice == item.DataExpiração)
+                                            {
+                                                nextInvoiceDate = LastInvoice;
+                                            }
+                                            else
+                                            {
+                                                if (AddMonth == 0)
+                                                {
+                                                    nextInvoiceDate = LastInvoice.AddMonths(6);
+                                                }
+                                                else
+                                                {
+                                                    nextInvoiceDate = LastInvoice;
+                                                }
+                                            }
+                                            //lineQuantity = lineQuantity * MonthDiff;
+                                            lineQuantity = lineQuantity * 6;
+                                        }
+                                        else
+                                        {
+                                            invoiceNumber = 0;
+                                            nextInvoiceDate = nextInvoiceDate.AddMonths(6);
+                                            lineQuantity = lineQuantity * 6;
+                                        }
+                                        break;
+                                    case 5://Anual
+                                        MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
+                                        if (MonthDiff >= 0)
+                                        {
+                                            rest = MonthDiff % 12;
+                                            AddMonth = 12 - rest;
+                                            if (AddMonth != 12)
+                                            {
+                                                LastInvoice = current.AddMonths(AddMonth);
+                                            }
+                                            else
+                                            {
+                                                LastInvoice = current;
+                                                AddMonth = 0;
+                                            }
+                                            //MonthDiff = MonthDiff + AddMonth;
+                                            invoiceNumber = MonthDiff / 12;
+                                            if (LastInvoice == item.DataExpiração)
+                                            {
+                                                nextInvoiceDate = LastInvoice;
+                                            }
+                                            else
+                                            {
+                                                if (AddMonth == 0)
+                                                {
+                                                    nextInvoiceDate = LastInvoice.AddMonths(12);
+                                                }
+                                                else
+                                                {
+                                                    nextInvoiceDate = LastInvoice;
+                                                }
+                                            }
+                                            //nextInvoiceDate = LastInvoice.AddMonths(12);
+                                            //lineQuantity = lineQuantity * MonthDiff;
+                                            lineQuantity = lineQuantity * 12;
+                                        }
+                                        else
+                                        {
+                                            invoiceNumber = 0;
+                                            nextInvoiceDate = nextInvoiceDate.AddMonths(12);
+                                            lineQuantity = lineQuantity * 12;
+                                        }
+                                        break;
+                                    case 6:
+                                        //Nenhum
+                                        break;
+                                    default:
+                                        break;
                                 }
                             }
-                            contractVal = Math.Round(NumMeses * SumPrice, 2);
-                        }
 
-                        List<NAVSalesInvoiceLinesViewModel> salesList = null;
-                        List<NAVSalesCrMemoLinesViewModel> crMemo = null;
-                        if (item.DataInicial != null && item.DataExpiração != null)
-                        {
-                            salesList = DBNAV2017SalesInvoiceLine.GetSalesInvoiceLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.DataInicial.Value, item.DataExpiração.Value);
-                            crMemo = DBNAV2017SalesCrMemo.GetSalesCrMemoLines(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.DataInicial.Value, item.DataExpiração.Value);
-                        }
+                            #region  Validações para registar situações
+                            Problema = "";
+                            if (item.TipoFaturação != 1 && item.TipoFaturação != 4)
+                            {
+                                Problema += " Tipo de fatura mal definido!";
+                            }
 
-                        DateTime nextInvoiceDate = DateTime.MinValue;// lastDay;
-                        DateTime? lastInvoiceDate = null;
-                        int invoiceNumber = 0;
-                        if (item.DataExpiração != null && current >= item.DataExpiração)
-                        {
-                            current = item.DataExpiração.Value;
-                        }
+                            if (item.Estado != 4)
+                            {
+                                Problema += " Contrato Não Assinado!";
+                            }
+                            if (item.EstadoAlteração == 1)
+                            {
+                                Problema += " Contrato Aberto!";
+                            }
 
-                        #region Obter Data ultima fatura
-                        //Contratos com 1 única fatura - Tentar obter a data da ultima fatura a partir da Data da Ultima fatura do contrato;
-                        if (totalInvoiceGroups.HasValue && totalInvoiceGroups.Value == 1)
-                        {
-                            if (item.ÚltimaDataFatura.HasValue)
-                                nextInvoiceDate = item.ÚltimaDataFatura.Value;
+                            if (lastDay < item.DataInicial || lastDay > item.DataExpiração)
+                            {
+                                Problema += " Contrato Não Vigente!";
+                            }
+                            if (item.CódigoRegião == "")
+                            {
+                                Problema += " Dimensões Bloqueadas!";
+                            }
+                            if (item.CódTermosPagamento == "")
+                            {
+                                Problema += " Falta Código Termos Pagamento!";
+                            }
+                            if (item.EnvioAEndereço == "")
+                            {
+                                Problema += " Falta Morada!";
+                            }
+                            bool verifica = false;
+                            if (item.NºComprimissoObrigatório == false || item.NºComprimissoObrigatório == null)
+                            {
+                                foreach (RequisiçõesClienteContrato req in DBContractClientRequisition.GetByContract(item.NºContrato))
+                                {
+                                    if (req.GrupoFatura == contractLine.GrupoFatura && req.DataInícioCompromisso == item.DataInícioContrato && req.DataFimCompromisso == item.DataFimContrato)
+                                    {
+                                        if (req.NºCompromisso == "" || req.NºCompromisso == null)
+                                            verifica = true;
+                                    }
+                                }
+                            }
+                            if (verifica == true)
+                                Problema += " Falta Nº Compromisso!";
+
+                            if (!Problema.Contains("Fatura no Pre-Registo!"))
+                            {
+                                NAVSalesHeaderViewModel result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura);
+                                if (result != null)
+                                {
+                                    Problema += " Fatura no Pre-Registo!";
+                                }
+                            }
+
+                            if (!string.IsNullOrEmpty(item.NºCliente))
+                            {
+                                Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
+                                postNAV.Wait();
+                                if (postNAV.IsCompletedSuccessfully == true && postNAV.Result != null)
+                                {
+                                    if (postNAV.Result.Blocked == Blocked.Invoice || postNAV.Result.Blocked == Blocked.All)
+                                    {
+                                        Problema += " Cliente Bloqueado!";
+                                    }
+                                }
+                            }
+
+                            Decimal invoicePeriod = salesList != null ? salesList.Sum(x => x.Amount) : 0;
+                            Decimal creditPeriod = crMemo != null ? crMemo.Sum(x => x.Amount) : 0;
+
+                            decimal valFatura = invoicePeriod - creditPeriod;
+                            decimal ValorPorFatura = (contractVal - (invoicePeriod - creditPeriod));
+
+                            if (valFatura > ValorPorFatura)
+                            {
+                                Problema += " Valor Não Disponível!";
+                            }
+
+
+                            List<RequisiçõesClienteContrato> ListaReqClientes = new List<RequisiçõesClienteContrato>();
+                            RequisiçõesClienteContrato ReqCliente = new RequisiçõesClienteContrato();
+                            ListaReqClientes = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+                            ReqCliente = ListaReqClientes.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                                && x.DataInícioCompromisso <= nextInvoiceDate
+                                && x.DataFimCompromisso >= nextInvoiceDate);
+                            if (ReqCliente != null)
+                            {
+                                if (string.IsNullOrEmpty(ReqCliente.NºRequisiçãoCliente))
+                                {
+                                    Problema += " Falta Nota Encomenda!";
+                                }
+                            }
+                            else
+                            {
+                                if (string.IsNullOrEmpty(item.NºRequisiçãoDoCliente))
+                                {
+                                    Problema += " Falta Nota Encomenda!";
+                                }
+                            }
+                            //if (item.ÚltimaDataFatura == null)
+                            //{
+                            //    item.ÚltimaDataFatura = nextInvoiceDate;
+
+                            //    ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+
+                            //    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                            //        && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                            //        && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+
+                            //    if (Reqcontract == null && string.IsNullOrEmpty(item.NºRequisiçãoDoCliente))
+                            //    {
+                            //        Problema += " Falta Nota Encomenda!";
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
+
+                            //    Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
+                            //        && x.DataInícioCompromisso <= item.ÚltimaDataFatura
+                            //        && x.DataFimCompromisso >= item.ÚltimaDataFatura);
+
+                            //    if (Reqcontract == null && string.IsNullOrEmpty(item.NºRequisiçãoDoCliente))
+                            //    {
+                            //        Problema += " Falta Nota Encomenda!";
+                            //    }
+                            //}
+                            //}
+                            #endregion
+
+                            AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
+                            {
+                                NºContrato = item.NºDeContrato,
+                                GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value,
+                                Descrição = item.Descrição,
+                                NºCliente = item.NºCliente,
+                                CódigoRegião = item.CódigoRegião,
+                                CódigoÁreaFuncional = item.CódigoÁreaFuncional,
+                                CódigoCentroResponsabilidade = item.CódigoCentroResponsabilidade,
+                                ValorDoContrato = contractVal,
+                                ValorFaturado = valFatura,
+                                ValorPorFaturar = ValorPorFatura,
+                                NºDeFaturasAEmitir = invoiceNumber,
+                                DataPróximaFatura = nextInvoiceDate,
+                                DataDeRegisto = lastDay,
+                                Estado = item.Estado,
+                                Situação = Problema,
+                                DataHoraCriação = DateTime.Now,
+                                UtilizadorCriação = User.Identity.Name,
+
+                                NoRequisicaoDoCliente = ReqCliente != null ? ReqCliente.NºRequisiçãoCliente : item.NºRequisiçãoDoCliente,
+                                DataRececaoRequisicao = ReqCliente != null ? ReqCliente.DataRequisição : item.DataReceçãoRequisição,
+                                NoCompromisso = ReqCliente != null ? ReqCliente.NºCompromisso : item.NºCompromisso,
+                            };
+                            //AMARO TESTE TRY
+                            try
+                            {
+                                DBAuthorizeInvoiceContracts.Create(newInvoiceContract);
+                            }
+                            catch (Exception ex)
+                            {
+                                return Json(false);
+                            }
                         }
                         else
                         {
-                            //Contratos com n Faturas - Tentar obter a data da ultima fatura a partir das requisições de cliente;
-                            if (totalLinesForCurrentInvoiceGroup.HasValue && totalLinesForCurrentInvoiceGroup.Value > 0)
+                            if (contractLine.Quantidade.HasValue && item.PeríodoFatura.HasValue)
                             {
-                                lastInvoiceDate = DBContractClientRequisition.GetLatsInvoiceDateFor(item.NºDeContrato, contractLine.GrupoFatura);
-                                if (lastInvoiceDate.HasValue)
-                                {
-                                    nextInvoiceDate = lastInvoiceDate.Value;
-                                }
-                            }
-                        }
-                        //Se ainda não houver nenhuma fatura do contrato (data ultima fatura vazia) - Tentar obter a data da ultima fatura a partir da Data Inicio do Contrato. 
-                        if (nextInvoiceDate.Equals(DateTime.MinValue))
-                            nextInvoiceDate = item.DataInicial.HasValue ? item.DataInicial.Value.AddDays(-1) : lastDay;
+                                if (contractLine.Quantidade == 0)
+                                    contractLine.Quantidade = lineQuantity;
 
-                        //Para a data de faturação, o utilizador insere o ultimo dia do mês. Adicionar um dia para evitar contabilizar o mês selecionado.
-                        //TODO: Verificar se existe necessidade de aplicar regra mais sólida 
-                        if (GetMonthDiff(nextInvoiceDate, lastDay) == 0)
-                            nextInvoiceDate = nextInvoiceDate.AddDays(1);
-
-                        #endregion
-
-                        if (contractLine.Quantidade != 0)
-                        {
-                            lineQuantity = contractLine.Quantidade == null ? lineQuantity : contractLine.Quantidade.Value;
-                        }
-
-                        int MonthDiff = 0;
-                        int rest = 0;
-                        int AddMonth = 0;
-                        DateTime LastInvoice = lastDay;
-                        if (item.PeríodoFatura != null || item.PeríodoFatura != 0)
-                        {
-                            switch (item.PeríodoFatura)
-                            {
-                                case 1://Mensal
-                                    MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
-                                    if (MonthDiff >= 0)
-                                    {
-                                        rest = MonthDiff % 1;
-                                        AddMonth = 1 - rest;
-                                        if (AddMonth != 1)
-                                        {
-                                            LastInvoice = current.AddMonths(AddMonth);
-                                        }
-                                        else
-                                        {
-                                            LastInvoice = current;
-                                            AddMonth = 0;
-                                        }
-                                        MonthDiff = MonthDiff + AddMonth;
-                                        if (MonthDiff == 0 && AddMonth == 0)
-                                        {
-                                            MonthDiff = 1;
-                                        }
-                                        
-                                        invoiceNumber = MonthDiff / 1;
-                                        if (LastInvoice == item.DataExpiração)
-                                        {
-                                            nextInvoiceDate = LastInvoice;
-                                        }
-                                        else
-                                        {
-                                            if (AddMonth == 0)
-                                            {
-                                                nextInvoiceDate = LastInvoice.AddMonths(1);
-                                            }
-                                            else
-                                            {
-                                                nextInvoiceDate = LastInvoice;
-                                            }
-                                        }
-                                        //lineQuantity = lineQuantity * MonthDiff;
-                                        lineQuantity = lineQuantity * 1;
-                                    }
-                                    else
-                                    {
-                                        invoiceNumber = 0;
-                                        nextInvoiceDate = nextInvoiceDate.AddMonths(1);
-                                        lineQuantity = lineQuantity * 1;
-                                    }
-                                    break;
-                                case 2://Bimensal
-                                    MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
-                                    if (MonthDiff >= 0)
-                                    {
-                                        rest = MonthDiff % 2;
-                                        AddMonth = 2 - rest;
-                                        if (AddMonth != 2)
-                                        {
-                                            LastInvoice = current.AddMonths(AddMonth);
-                                        }
-                                        else
-                                        {
-                                            LastInvoice = current;
-                                            AddMonth = 0;
-                                        }
-                                        //MonthDiff = MonthDiff + AddMonth;
-                                        invoiceNumber = MonthDiff / 2;
-                                        nextInvoiceDate = LastInvoice.AddMonths(2);
-                                        //lineQuantity = lineQuantity * MonthDiff;
-                                        lineQuantity = lineQuantity * 2;
-                                    }
-                                    else
-                                    {
-                                        invoiceNumber = 0;
-                                        if (LastInvoice == item.DataExpiração)
-                                        {
-                                            nextInvoiceDate = LastInvoice;
-                                        }
-                                        else
-                                        {
-                                            if (AddMonth == 0)
-                                            {
-                                                nextInvoiceDate = LastInvoice.AddMonths(2);
-                                            }
-                                            else
-                                            {
-                                                nextInvoiceDate = LastInvoice;
-                                            }
-                                        }
-                                        lineQuantity = lineQuantity * 2;
-                                    }
-                                    break;
-                                case 3://Trimestral
-                                    MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
-                                    if (MonthDiff >= 0)
-                                    {
-                                        rest = MonthDiff % 3;
-                                        AddMonth = 3 - rest;
-                                        if (AddMonth != 3)
-                                        {
-                                            LastInvoice = current.AddMonths(AddMonth);
-                                        }
-                                        else
-                                        {
-                                            LastInvoice = current;
-                                            AddMonth = 0;
-                                        }
-                                        //MonthDiff = MonthDiff + AddMonth;
-                                        invoiceNumber = MonthDiff / 3;
-                                        if (LastInvoice == item.DataExpiração)
-                                        {
-                                            nextInvoiceDate = LastInvoice;
-                                        }
-                                        else
-                                        {
-                                            if (AddMonth == 0)
-                                            {
-                                                nextInvoiceDate = LastInvoice.AddMonths(3);
-                                            }
-                                            else
-                                            {
-                                                nextInvoiceDate = LastInvoice;
-                                            }
-                                            
-                                        }
-                                        //lineQuantity = lineQuantity * MonthDiff;
-                                        lineQuantity = lineQuantity * 3;
-                                    }
-                                    else
-                                    {
-                                        invoiceNumber = 0;
-                                        nextInvoiceDate = nextInvoiceDate.AddMonths(3);
-                                        lineQuantity = lineQuantity * 3;
-                                    }
-                                    break;
-                                case 4://Semestral
-                                    MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
-                                    if (MonthDiff >= 0)
-                                    {
-                                        rest = MonthDiff % 6;
-                                        AddMonth = 6 - rest;
-                                        if (AddMonth != 6)
-                                        {
-                                            LastInvoice = current.AddMonths(AddMonth);
-                                        }
-                                        else
-                                        {
-                                            LastInvoice = current;
-                                            AddMonth = 0;
-                                        }
-                                        //MonthDiff = MonthDiff + AddMonth;
-                                        invoiceNumber = MonthDiff / 6;
-                                        if (LastInvoice == item.DataExpiração)
-                                        {
-                                            nextInvoiceDate = LastInvoice;
-                                        }
-                                        else
-                                        {
-                                            if (AddMonth == 0)
-                                            {
-                                                nextInvoiceDate = LastInvoice.AddMonths(6);
-                                            }
-                                            else
-                                            {
-                                                nextInvoiceDate = LastInvoice;
-                                            }
-                                        }
-                                        //lineQuantity = lineQuantity * MonthDiff;
-                                        lineQuantity = lineQuantity * 6;
-                                    }
-                                    else
-                                    {
-                                        invoiceNumber = 0;
-                                        nextInvoiceDate = nextInvoiceDate.AddMonths(6);
-                                        lineQuantity = lineQuantity * 6;
-                                    }
-                                    break;
-                                case 5://Anual
-                                    MonthDiff = (GetMonthDiff(current, nextInvoiceDate));
-                                    if (MonthDiff >= 0)
-                                    {
-                                        rest = MonthDiff % 12;
-                                        AddMonth = 12 - rest;
-                                        if (AddMonth != 12)
-                                        {
-                                            LastInvoice = current.AddMonths(AddMonth);
-                                        }
-                                        else
-                                        {
-                                            LastInvoice = current;
-                                            AddMonth = 0;
-                                        }
-                                        //MonthDiff = MonthDiff + AddMonth;
-                                        invoiceNumber = MonthDiff / 12;
-                                        if (LastInvoice == item.DataExpiração)
-                                        {
-                                            nextInvoiceDate = LastInvoice;
-                                        }
-                                        else
-                                        {
-                                            if (AddMonth == 0)
-                                            {
-                                                nextInvoiceDate = LastInvoice.AddMonths(12);
-                                            }
-                                            else
-                                            {
-                                                nextInvoiceDate = LastInvoice;
-                                            }
-                                        }
-                                        nextInvoiceDate = LastInvoice.AddMonths(12);
-                                        //lineQuantity = lineQuantity * MonthDiff;
-                                        lineQuantity = lineQuantity * 12;
-                                    }
-                                    else
-                                    {
-                                        invoiceNumber = 0;
-                                        nextInvoiceDate = nextInvoiceDate.AddMonths(12);
-                                        lineQuantity = lineQuantity * 12;
-                                    }
-                                    break;
-                                case 6:
-                                    //Nenhum
-                                    break;
-                                default:
-                                    break;
+                                lineQuantity = Convert.ToDecimal(contractLine.Quantidade * (item.PeríodoFatura == 6 ? 0 : item.PeríodoFatura == 5 ? 12 : item.PeríodoFatura == 4 ? 6 : item.PeríodoFatura));
                             }
                         }
 
-                        #region  Validações para registar situações
-                        Problema = "";
-                        if (item.TipoFaturação != 1 && item.TipoFaturação != 4)
+                        if (lineQuantity == 0)
                         {
-                            Problema += " Tipo de fatura mal definido!";
+                            Problema = " Sem Valor!";
                         }
 
-                        if (item.Estado != 4)
+                        LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
                         {
-                            Problema += " Contrato Não Assinado!";
-                        }
-                        if (item.EstadoAlteração ==1)
-                        {
-                            Problema += " Contrato Aberto!";
-                        }
-                        
-                        if (lastDay < item.DataInicial || lastDay > item.DataExpiração)
-                        {
-                            Problema += " Contrato Não Vigente!";
-                        }
-                        if (item.CódigoRegião == "")// || item.CódigoÁreaFuncional == "" || item.CódigoCentroResponsabilidade =="")
-                        {
-                            Problema += " Dimensões Bloqueadas!";
-                        }
-                        if (item.CódTermosPagamento == "")
-                        {
-                            Problema += " Falta Código Termos Pagamento!";
-                        }
-                        if (item.EnvioAEndereço == "")
-                        {
-                            Problema += " Falta Morada!";
-                        }
-                        //if (contractSalesLinesInNAV.Count > 0 && !Problema.Contains("Fatura no Pre-Registo!"))
-                        //{
-                        //    Problema += " Fatura no Pre-Registo!";
-                        //}
-                        bool verifica = false;
-                        if (item.NºComprimissoObrigatório == false || item.NºComprimissoObrigatório== null)
-                        {
-                           foreach(RequisiçõesClienteContrato req in DBContractClientRequisition.GetByContract(item.NºContrato))
-                            {
-                                if(req.GrupoFatura==contractLine.GrupoFatura && req.DataInícioCompromisso==item.DataInícioContrato && req.DataFimCompromisso == item.DataFimContrato)
-                                {
-                                    if (req.NºCompromisso == "" || req.NºCompromisso == null)
-                                        verifica = true;                                      
-                                }
-                            }
-                        }
-                        if(verifica==true)
-                            Problema += " Falta Nº Compromisso";
-
-                        if (!Problema.Contains("Fatura no Pre-Registo!"))
-                        {
-                            NAVSalesHeaderViewModel result = DBNAV2017SalesHeader.GetSalesHeader(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, NAVBaseDocumentTypes.Fatura);
-                            if (result != null)
-                            {
-                                Problema += " Fatura no Pre-Registo!";
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(item.NºCliente))
-                        {
-                            Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
-                            postNAV.Wait();
-                            if (postNAV.IsCompletedSuccessfully == true && postNAV.Result != null)
-                            {
-                                if (postNAV.Result.Blocked == Blocked.Invoice || postNAV.Result.Blocked == Blocked.All)
-                                {
-                                    Problema += " Cliente Bloqueado";
-                                }
-                            }
-                        }
-
-                        Decimal invoicePeriod = salesList != null ? salesList.Sum(x => x.Amount) : 0;
-                        Decimal creditPeriod = crMemo != null ? crMemo.Sum(x => x.Amount) : 0;
-
-                        decimal valFatura= invoicePeriod - creditPeriod;
-                        decimal ValorPorFatura = (contractVal - (invoicePeriod - creditPeriod));
-
-                        if (valFatura > ValorPorFatura)
-                        {
-                            Problema += " Valor Não Disponível";
-                        }
-
-
-                        List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
-                        RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
-                        //if(item.NºRequisiçãoDoCliente==null || item.NºRequisiçãoDoCliente == "")
-                        //{
-                        if (item.ÚltimaDataFatura == null)
-                        {
-                            //AMARO 04/03/2019
-                            item.ÚltimaDataFatura = nextInvoiceDate;
-
-                            ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-
-                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
-                                && x.DataInícioCompromisso <= item.ÚltimaDataFatura
-                                && x.DataFimCompromisso >= item.ÚltimaDataFatura);
-
-                            if (Reqcontract == null && string.IsNullOrEmpty(item.NºRequisiçãoDoCliente))
-                            {
-                                Problema += " Falta Nota Encomenda";
-                            }
-                                
-                            //CÓDIGO ORIGINAL
-                            //Problema += " Falta Nota Encomenda";
-                        }
-                        else
-                        {
-                            ListaContratos = DBContractClientRequisition.GetByContract(item.NºDeContrato);
-
-                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == contractLine.GrupoFatura
-                                && x.DataInícioCompromisso <= item.ÚltimaDataFatura
-                                && x.DataFimCompromisso >= item.ÚltimaDataFatura);
-
-                            if (Reqcontract == null && string.IsNullOrEmpty(item.NºRequisiçãoDoCliente)) {
-                                Problema += " Falta Nota Encomenda";
-                            }
-                        }
-                        //}
-                        #endregion
-
-                        AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
-                        {
-                            NºContrato = item.NºDeContrato,
-                            GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value,
-                            Descrição = item.Descrição,
-                            NºCliente = item.NºCliente,
-                            CódigoRegião = item.CódigoRegião,
-                            CódigoÁreaFuncional = item.CódigoÁreaFuncional,
-                            CódigoCentroResponsabilidade = item.CódigoCentroResponsabilidade,
-                            ValorDoContrato = contractVal,
-                            ValorFaturado = valFatura,
-                            ValorPorFaturar = ValorPorFatura,
-                            NºDeFaturasAEmitir = invoiceNumber,
-                            DataPróximaFatura = nextInvoiceDate,
-                            DataDeRegisto = lastDay,
-                            Estado = item.Estado,
-                            Situação = Problema,
+                            NºContrato = contractLine.NºContrato,
+                            NºProjeto = contractLine.NºProjeto,
+                            GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value, //06-03-2019 Antes estava -1
+                            NºLinha = contractLine.NºLinha,
+                            Tipo = contractLine.Tipo.ToString(),
+                            Código = contractLine.Código,
+                            Descrição = contractLine.Descrição,
+                            Descricao2 = contractLine.Descricao2,
+                            Quantidade = lineQuantity,
+                            CódUnidadeMedida = contractLine.CódUnidadeMedida,
+                            PreçoUnitário = contractLine.PreçoUnitário,
+                            ValorVenda = (lineQuantity * contractLine.PreçoUnitário),
+                            CódigoRegião = contractLine.CódigoRegião,
+                            CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional,
+                            CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade,
+                            CódigoServiço = contractLine.CódServiçoCliente,
                             DataHoraCriação = DateTime.Now,
-                            UtilizadorCriação = User.Identity.Name,
-
-                            NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : item.NºRequisiçãoDoCliente,
-                            DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : item.DataReceçãoRequisição,
-                            NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : item.NºCompromisso,
+                            UtilizadorCriação = User.Identity.Name
                         };
+                        //AMARO TESTE TRY
                         try
                         {
-                            DBAuthorizeInvoiceContracts.Create(newInvoiceContract);
+                            DBInvoiceContractLines.Create(newInvoiceLine);
                         }
                         catch (Exception ex)
                         {
                             return Json(false);
                         }
                     }
-                    else
+                }
+                else
+                {
+                    AutorizarFaturaçãoContratos newInvoiceContract = new AutorizarFaturaçãoContratos
                     {
-                        if (contractLine.Quantidade.HasValue && item.PeríodoFatura.HasValue)
-                        {
-                            if (contractLine.Quantidade == 0)
-                                contractLine.Quantidade = lineQuantity;
-
-                            lineQuantity = Convert.ToDecimal(contractLine.Quantidade * (item.PeríodoFatura == 6 ? 0 : item.PeríodoFatura == 5 ? 12 : item.PeríodoFatura == 4 ? 6 : item.PeríodoFatura));
-                        }
-                    }
-
-                    if (lineQuantity == 0)
-                    {
-                        Problema = "Sem Valor!";
-                    }
-
-                    //Create Contract Lines
-                    //AMARO
-                    LinhasFaturaçãoContrato newInvoiceLine = new LinhasFaturaçãoContrato
-                    {
-                        NºContrato = contractLine.NºContrato,
-                        NºProjeto = contractLine.NºProjeto,
-                        GrupoFatura = contractLine.GrupoFatura == null ? 0 : contractLine.GrupoFatura.Value, //06-03-2019 Antes estava -1
-                        NºLinha = contractLine.NºLinha,
-                        Tipo = contractLine.Tipo.ToString(),
-                        Código = contractLine.Código,
-                        Descrição = contractLine.Descrição,
-                        Descricao2 = contractLine.Descricao2,
-                        Quantidade = lineQuantity,
-                        CódUnidadeMedida = contractLine.CódUnidadeMedida,
-                        PreçoUnitário = contractLine.PreçoUnitário,
-                        ValorVenda = (lineQuantity * contractLine.PreçoUnitário),
-                        CódigoRegião = contractLine.CódigoRegião,
-                        CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional,
-                        CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade,
-                        CódigoServiço = contractLine.CódServiçoCliente,
+                        NºContrato = item.NºDeContrato,
+                        GrupoFatura = 0,
+                        Descrição = item.Descrição,
+                        NºCliente = item.NºCliente,
+                        CódigoRegião = item.CódigoRegião,
+                        CódigoÁreaFuncional = item.CódigoÁreaFuncional,
+                        CódigoCentroResponsabilidade = item.CódigoCentroResponsabilidade,
+                        ValorDoContrato = 0,
+                        ValorFaturado = 0,
+                        ValorPorFaturar = 0,
+                        NºDeFaturasAEmitir = 0,
+                        //DataPróximaFatura = nextInvoiceDate,
+                        DataDeRegisto = lastDay,
+                        Estado = item.Estado,
+                        Situação = "O Contrato não tem linhas faturáveis",
                         DataHoraCriação = DateTime.Now,
-                        UtilizadorCriação = User.Identity.Name
+                        UtilizadorCriação = User.Identity.Name,
+
+                        NoRequisicaoDoCliente = item.NºRequisiçãoDoCliente,
+                        DataRececaoRequisicao = item.DataReceçãoRequisição,
+                        NoCompromisso = item.NºCompromisso,
                     };
+                    //AMARO TESTE TRY
                     try
                     {
-                        DBInvoiceContractLines.Create(newInvoiceLine);
+                        DBAuthorizeInvoiceContracts.Create(newInvoiceContract);
                     }
                     catch (Exception ex)
                     {
@@ -2678,85 +2807,109 @@ namespace Hydra.Such.Portal.Controllers
                     DateTime Lastdate = item.DataDeRegisto.Value;
                     DateTime DataDocumento = item.DataDeRegisto.Value;
                     Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
-                    DateTime today = DateTime.Now;
-                    DateTime StContractDate = today;
-                    if (contractLine.DataInicial != null && contractLine.DataExpiração != null && item.DataPróximaFatura == null)
-                    {
-                        //Bimensal 
-                        if (contractLine.PeríodoFatura == 2)
-                        {
-                            today = today.AddMonths(2);
-                        }
-                        //Trimestral 
-                        if (contractLine.PeríodoFatura == 3)
-                        {
-                            today = today.AddMonths(3);
-                        }
-                        //Semestral 
-                        if (contractLine.PeríodoFatura == 4)
-                        {
-                            today = today.AddMonths(6);
-                        }
-                        //Anual 
-                        if (contractLine.PeríodoFatura == 5)
-                        {
-                            today = today.AddMonths(12);
-                        }
-                        if (today < contractLine.DataInicial)
-                        {
-                            StContractDate = (DateTime)contractLine.DataInicial;
-                        }
-                        else if (today > contractLine.DataExpiração)
-                        {
-                            StContractDate = (DateTime)contractLine.DataExpiração;
-                        }
-                    }
-                    else if (item.DataPróximaFatura != null)
-                    {
-                        StContractDate = (DateTime)item.DataPróximaFatura;
-                        today = (DateTime)item.DataPróximaFatura;
-                        //Mensal 
-                        if (contractLine.PeríodoFatura == 1)
-                        {
-                            today = today.AddMonths(-1);
-                        }
-                        //Bimensal 
-                        if (contractLine.PeríodoFatura == 2)
-                        {
-                            today = today.AddMonths(-2);
-                        }
-                        //Trimestral 
-                        if (contractLine.PeríodoFatura == 3)
-                        {
-                            today = today.AddMonths(-3);
-                        }
-                        //Semestral 
-                        if (contractLine.PeríodoFatura == 4)
-                        {
-                            today = today.AddMonths(-6);
-                        }
-                        //Anual 
-                        if (contractLine.PeríodoFatura == 5)
-                        {
-                            today = today.AddMonths(-12);
-                        }
-                        if (today < contractLine.DataInicial)
-                        {
-                            StContractDate = (DateTime)contractLine.DataInicial;
-                        }
-                        else if (today > contractLine.DataExpiração)
-                        {
-                            StContractDate = (DateTime)contractLine.DataExpiração;
-                        }
-                        else
-                        {
-                            StContractDate = today;
-                        }
-                    }
+
+                    //DateTime today = new DateTime();
+                    //today = (DateTime)item.DataPróximaFatura;
+                    DateTime StContractDate = new DateTime();
+                    StContractDate = (DateTime)item.DataPróximaFatura;
+
+                    //List<RequisiçõesClienteContrato> ListaReqClientes = new List<RequisiçõesClienteContrato>();
+                    //RequisiçõesClienteContrato ReqCliente = new RequisiçõesClienteContrato();
+                    //ListaReqClientes = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+                    //if (ListaReqClientes != null && ListaReqClientes.Count > 0)
+                    //{
+                    //    ReqCliente = ListaReqClientes.OrderByDescending(x => x.DataÚltimaFatura).ToList().Find(x => x.GrupoFatura == item.GrupoFatura);
+                    //    if (ReqCliente != null && ReqCliente.DataÚltimaFatura.HasValue)
+                    //    {
+                    //        today = (DateTime)ReqCliente.DataÚltimaFatura;
+                    //    }
+                    //    else
+                    //    {
+                    //        today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
+                    //}
+                    //DateTime StContractDate = today;
+
+                    //if (contractLine.DataInicial != null && contractLine.DataExpiração != null && item.DataPróximaFatura == null)
+                    //{
+                    //    //Bimensal 
+                    //    if (contractLine.PeríodoFatura == 2)
+                    //    {
+                    //        today = today.AddMonths(2);
+                    //    }
+                    //    //Trimestral 
+                    //    if (contractLine.PeríodoFatura == 3)
+                    //    {
+                    //        today = today.AddMonths(3);
+                    //    }
+                    //    //Semestral 
+                    //    if (contractLine.PeríodoFatura == 4)
+                    //    {
+                    //        today = today.AddMonths(6);
+                    //    }
+                    //    //Anual 
+                    //    if (contractLine.PeríodoFatura == 5)
+                    //    {
+                    //        today = today.AddMonths(12);
+                    //    }
+                    //    if (today < contractLine.DataInicial)
+                    //    {
+                    //        StContractDate = (DateTime)contractLine.DataInicial;
+                    //    }
+                    //    else if (today > contractLine.DataExpiração)
+                    //    {
+                    //        StContractDate = (DateTime)contractLine.DataExpiração;
+                    //    }
+                    //}
+                    //else if (item.DataPróximaFatura != null)
+                    //{
+                    //    StContractDate = (DateTime)item.DataPróximaFatura;
+                    //    today = (DateTime)item.DataPróximaFatura;
+                    //    //Mensal 
+                    //    if (contractLine.PeríodoFatura == 1)
+                    //    {
+                    //        today = today.AddMonths(-1);
+                    //    }
+                    //    //Bimensal 
+                    //    if (contractLine.PeríodoFatura == 2)
+                    //    {
+                    //        today = today.AddMonths(-2);
+                    //    }
+                    //    //Trimestral 
+                    //    if (contractLine.PeríodoFatura == 3)
+                    //    {
+                    //        today = today.AddMonths(-3);
+                    //    }
+                    //    //Semestral 
+                    //    if (contractLine.PeríodoFatura == 4)
+                    //    {
+                    //        today = today.AddMonths(-6);
+                    //    }
+                    //    //Anual 
+                    //    if (contractLine.PeríodoFatura == 5)
+                    //    {
+                    //        today = today.AddMonths(-12);
+                    //    }
+                    //    if (today < contractLine.DataInicial)
+                    //    {
+                    //        StContractDate = (DateTime)contractLine.DataInicial;
+                    //    }
+                    //    else if (today > contractLine.DataExpiração)
+                    //    {
+                    //        StContractDate = (DateTime)contractLine.DataExpiração;
+                    //    }
+                    //    else
+                    //    {
+                    //        StContractDate = today;
+                    //    }
+                    //}
+
                     if (Lastdate != StContractDate)
-                    {
                         Lastdate = StContractDate;
-                    }
                     Month = StContractDate.ToString("MMMM").ToUpper();
                     Year = StContractDate.Year.ToString();
                     InvoiceBorrowed = Month + "/" + Year;
@@ -2767,8 +2920,8 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
                             ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
-                            GetReqClientCont.DataÚltimaFatura = Lastdate;
-                            DBContractClientRequisition.Update(GetReqClientCont);
+                            //GetReqClientCont.DataÚltimaFatura = Lastdate;
+                            //DBContractClientRequisition.Update(GetReqClientCont);
                         }
                     }
                     else
@@ -2801,7 +2954,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
                         //contractLine.ÚltimaDataFatura = Lastdate;
-                        DBContracts.Update(contractLine);
+                        //DBContracts.Update(contractLine);
                     }
 
                     if (item.Situação == "" || item.Situação == null)
@@ -2849,6 +3002,7 @@ namespace Hydra.Such.Portal.Controllers
                         obs = "";
 
                         //AMARO 04/05/219
+                        //Validação cajo existam Requisições Cliente tem que existir pelo menos uma no período da fatura, se não existir sai do processo e retorna mensagem de erro
                         List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
                         RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
 
@@ -2858,6 +3012,13 @@ namespace Hydra.Such.Portal.Controllers
                             Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
                                 && x.DataInícioCompromisso <= Lastdate
                                 && x.DataFimCompromisso >= Lastdate);
+
+                            if (Reqcontract == null)
+                            {
+                                result.eReasonCode = 99;
+                                result.eMessage = "Não foi encontrada a Requisição Cliente do Contrato Nº " + item.NºContrato + " para o grupo de fatura Nº " + item.GrupoFatura.ToString() + " para o período " + Lastdate.ToShortDateString();
+                                return Json(result);
+                            }
                         }
 
                         //if (contractLine.ÚltimaDataFatura == null)
@@ -2921,9 +3082,10 @@ namespace Hydra.Such.Portal.Controllers
                         else
                             PricesIncludingVAT = false;
 
+                        //AMARO Ship to Address = Endereços de Envio
                         string Ship_to_Code = string.Empty;
                         Contratos cont = DBContracts.GetByIdLastVersion(item.NºContrato);
-                        NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºCliente);
+                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºCliente);
 
                         if (cont != null && !string.IsNullOrEmpty(cont.CódEndereçoEnvio))
                         {
@@ -2932,11 +3094,19 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            if (cli != null)
+                            if (Cliente != null)
                             {
-                                item.NºCliente = !string.IsNullOrEmpty(cli.No_) ? cli.No_ : "";
+                                item.NºCliente = !string.IsNullOrEmpty(Cliente.No_) ? Cliente.No_ : "";
                                 Ship_to_Code = "";
                             }
+                        }
+
+                        //AMARO Clientes Internos
+                        if (Cliente != null && Cliente.InternalClient == true)
+                        {
+                            item.CódigoRegião = Cliente.RegionCode;
+                            item.CódigoÁreaFuncional = Cliente.FunctionalAreaCode;
+                            item.CódigoCentroResponsabilidade = Cliente.ResponsabilityCenterCode;
                         }
 
                         Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, PricesIncludingVAT, Ship_to_Code);
@@ -2956,13 +3126,13 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (contractLine.FaturaPrecosIvaIncluido == true)
                                 {
-                                    string Cliente = string.Empty;
+                                    string NoCliente = string.Empty;
                                     string GrupoIVA = string.Empty;
                                     string GrupoCliente = string.Empty;
                                     decimal IVA = new decimal();
                                     foreach (var linha in itemList)
                                     {
-                                        Cliente = contractLine.NºCliente;
+                                        NoCliente = contractLine.NºCliente;
                                         GrupoIVA = string.Empty;
                                         GrupoCliente = string.Empty;
                                         IVA = 0;
@@ -2980,9 +3150,9 @@ namespace Hydra.Such.Portal.Controllers
                                                 return Json(result);
                                             }
 
-                                            if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                            if (!string.IsNullOrEmpty(NoCliente) && !string.IsNullOrEmpty(GrupoIVA))
                                             {
-                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, NoCliente);
                                                 if (cliente != null)
                                                     GrupoCliente = cliente.VATBusinessPostingGroup;
                                                 else
@@ -3034,6 +3204,7 @@ namespace Hydra.Such.Portal.Controllers
                     //AMARO INICIO NOVO PROCESSO
                     if (item.NºDeFaturasAEmitir > 1)
                     {
+                        bool FirstTime = true;
                         for (int i = 1; i <= item.NºDeFaturasAEmitir; i++)
                         {
                             int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
@@ -3043,52 +3214,82 @@ namespace Hydra.Such.Portal.Controllers
                             string Year = "";
                             DateTime Lastdate = item.DataDeRegisto.Value;
                             DateTime DataDocumento = item.DataDeRegisto.Value;
+                            DateTime StContractDate = new DateTime();
                             Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
-                            DateTime today = contractLine.ÚltimaDataFatura != null ?(DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
-                            DateTime StContractDate = today;
 
-                            if (contractLine.DataInicial != null && contractLine.DataExpiração != null)// && item.DataPróximaFatura == null)
+                            DateTime today = new DateTime();
+                            if (FirstTime == true)
                             {
-                                //today = (DateTime)contractLine.ÚltimaDataFatura;
-                                today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1);
+                                StContractDate = (DateTime)item.DataPróximaFatura;
 
-                                //Mensal 
-                                if (contractLine.PeríodoFatura == 1)
+                                FirstTime = false;
+                            }
+                            else
+                            {
+                                List<RequisiçõesClienteContrato> ListaReqClientes = new List<RequisiçõesClienteContrato>();
+                                RequisiçõesClienteContrato ReqCliente = new RequisiçõesClienteContrato();
+                                ListaReqClientes = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
+                                if (ListaReqClientes != null && ListaReqClientes.Count > 0)
                                 {
-                                    today = today.AddMonths(1);
-                                }
-                                //Bimensal 
-                                if (contractLine.PeríodoFatura == 2)
-                                {
-                                    today = today.AddMonths(2);
-                                }
-                                //Trimestral 
-                                if (contractLine.PeríodoFatura == 3)
-                                {
-                                    today = today.AddMonths(3);
-                                }
-                                //Semestral 
-                                if (contractLine.PeríodoFatura == 4)
-                                {
-                                    today = today.AddMonths(6);
-                                }
-                                //Anual 
-                                if (contractLine.PeríodoFatura == 5)
-                                {
-                                    today = today.AddMonths(12);
-                                }
-
-                                if (today < contractLine.DataInicial)
-                                {
-                                    StContractDate = (DateTime)contractLine.DataInicial;
-                                }
-                                else if (today > contractLine.DataExpiração)
-                                {
-                                    StContractDate = (DateTime)contractLine.DataExpiração;
+                                    ReqCliente = ListaReqClientes.OrderByDescending(x => x.DataÚltimaFatura).ToList().Find(x => x.GrupoFatura == item.GrupoFatura);
+                                    if (ReqCliente != null && ReqCliente.DataÚltimaFatura.HasValue)
+                                    {
+                                        today = (DateTime)ReqCliente.DataÚltimaFatura;
+                                    }
+                                    else
+                                    {
+                                        today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
+                                    }
                                 }
                                 else
                                 {
-                                    StContractDate = today;
+                                    today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
+                                }
+                                StContractDate = today;
+
+                                if (contractLine.DataInicial != null && contractLine.DataExpiração != null)// && item.DataPróximaFatura == null)
+                                {
+                                    //today = (DateTime)contractLine.ÚltimaDataFatura;
+                                    today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1);
+
+                                    //Mensal 
+                                    if (contractLine.PeríodoFatura == 1)
+                                    {
+                                        today = today.AddMonths(1);
+                                    }
+                                    //Bimensal 
+                                    if (contractLine.PeríodoFatura == 2)
+                                    {
+                                        today = today.AddMonths(2);
+                                    }
+                                    //Trimestral 
+                                    if (contractLine.PeríodoFatura == 3)
+                                    {
+                                        today = today.AddMonths(3);
+                                    }
+                                    //Semestral 
+                                    if (contractLine.PeríodoFatura == 4)
+                                    {
+                                        today = today.AddMonths(6);
+                                    }
+                                    //Anual 
+                                    if (contractLine.PeríodoFatura == 5)
+                                    {
+                                        today = today.AddMonths(12);
+                                    }
+
+                                    if (today < contractLine.DataInicial)
+                                    {
+                                        StContractDate = (DateTime)contractLine.DataInicial;
+                                    }
+                                    else if (today > contractLine.DataExpiração)
+                                    {
+                                        StContractDate = (DateTime)contractLine.DataExpiração;
+                                    }
+                                    else
+                                    {
+                                        StContractDate = today;
+                                    }
                                 }
                             }
 
@@ -3107,8 +3308,8 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
                                     ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
-                                    GetReqClientCont.DataÚltimaFatura = Lastdate;
-                                    DBContractClientRequisition.Update(GetReqClientCont);
+                                    //GetReqClientCont.DataÚltimaFatura = Lastdate;
+                                    //DBContractClientRequisition.Update(GetReqClientCont);
                                 }
                             }
                             else
@@ -3116,7 +3317,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Lastdate = (new DateTime(Lastdate.Year, Lastdate.Month, 1)).AddMonths(1).AddDays(-1);
                                 ContractInvoicePeriod = Lastdate.ToString("dd/MM/yy");
                                 //contractLine.ÚltimaDataFatura = Lastdate;
-                                DBContracts.Update(contractLine);
+                                //DBContracts.Update(contractLine);
                             }
 
                             if (item.Situação == "" || item.Situação == null)
@@ -3140,6 +3341,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 item.UtilizadorCriação = User.Identity.Name;
 
+                                //AMARO TEXTO FATURA
                                 string obs = "";
                                 List<TextoFaturaContrato> ListTextoFatura = DBContractInvoiceText.GetByContractAndGrupoFatura(contractLine.NºDeContrato, item.GrupoFatura);
                                 if (ListTextoFatura != null && ListTextoFatura.Count() > 0)
@@ -3161,6 +3363,7 @@ namespace Hydra.Such.Portal.Controllers
                                 obs = "";
 
                                 //AMARO 04/05/219
+                                //Validação cajo existam Requisições Cliente tem que existir pelo menos uma no período da fatura, se não existir sai do processo e retorna mensagem de erro
                                 List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
                                 RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
 
@@ -3170,6 +3373,13 @@ namespace Hydra.Such.Portal.Controllers
                                     Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
                                         && x.DataInícioCompromisso <= Lastdate
                                         && x.DataFimCompromisso >= Lastdate);
+
+                                    if (Reqcontract == null)
+                                    {
+                                        result.eReasonCode = 99;
+                                        result.eMessage = "Não foi encontrada a Requisição Cliente do Contrato Nº " + item.NºContrato + " para o grupo de fatura Nº " + item.GrupoFatura.ToString() + " para o período " + Lastdate.ToShortDateString();
+                                        return Json(result);
+                                    }
                                 }
 
                                 //if (contractLine.ÚltimaDataFatura == null)
@@ -3206,7 +3416,6 @@ namespace Hydra.Such.Portal.Controllers
                                 item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
                                 item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
                                 item.DataRececaoRequisicao = Reqcontract != null ? Reqcontract.DataRequisição : contractLine.DataReceçãoRequisição;
-
                                 item.NºContrato = contractLine.NºDeContrato;
                                 item.CódigoRegião = contractLine.CódigoRegião;
                                 item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
@@ -3235,9 +3444,10 @@ namespace Hydra.Such.Portal.Controllers
                                 else
                                     PricesIncludingVAT = false;
 
+                                //AMARO Ship to Address = Endereços de Envio
                                 string Ship_to_Code = string.Empty;
                                 Contratos cont = DBContracts.GetByIdLastVersion(item.NºContrato);
-                                NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºCliente);
+                                NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºCliente);
 
                                 if (cont != null && !string.IsNullOrEmpty(cont.CódEndereçoEnvio))
                                 {
@@ -3246,11 +3456,19 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
-                                    if (cli != null)
+                                    if (Cliente != null)
                                     {
-                                        item.NºCliente = !string.IsNullOrEmpty(cli.No_) ? cli.No_ : "";
+                                        item.NºCliente = !string.IsNullOrEmpty(Cliente.No_) ? Cliente.No_ : "";
                                         Ship_to_Code = "";
                                     }
+                                }
+
+                                //AMARO Clientes Internos
+                                if (Cliente != null && Cliente.InternalClient == true)
+                                {
+                                    item.CódigoRegião = Cliente.RegionCode;
+                                    item.CódigoÁreaFuncional = Cliente.FunctionalAreaCode;
+                                    item.CódigoCentroResponsabilidade = Cliente.ResponsabilityCenterCode;
                                 }
 
                                 //Task<WSCreatePreInvoiceNEW.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoiceNEW(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
@@ -3266,13 +3484,13 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         if (contractLine.FaturaPrecosIvaIncluido == true)
                                         {
-                                            string Cliente = string.Empty;
+                                            string NoCliente = string.Empty;
                                             string GrupoIVA = string.Empty;
                                             string GrupoCliente = string.Empty;
                                             decimal IVA = new decimal();
                                             foreach (var linha in itemList)
                                             {
-                                                Cliente = contractLine.NºCliente;
+                                                NoCliente = contractLine.NºCliente;
                                                 GrupoIVA = string.Empty;
                                                 GrupoCliente = string.Empty;
                                                 IVA = 0;
@@ -3290,9 +3508,9 @@ namespace Hydra.Such.Portal.Controllers
                                                         return Json(result);
                                                     }
 
-                                                    if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                                    if (!string.IsNullOrEmpty(NoCliente) && !string.IsNullOrEmpty(GrupoIVA))
                                                     {
-                                                        NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                        NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, NoCliente);
                                                         if (cliente != null)
                                                             GrupoCliente = cliente.VATBusinessPostingGroup;
                                                         else
@@ -4193,13 +4411,13 @@ namespace Hydra.Such.Portal.Controllers
 
                                 if (Contract.FaturaPrecosIvaIncluido == true)
                                 {
-                                    string Cliente = string.Empty;
+                                    string NoCliente = string.Empty;
                                     string GrupoIVA = string.Empty;
                                     string GrupoCliente = string.Empty;
                                     decimal IVA = new decimal();
                                     foreach (var item in LinhasFaturacao)
                                     {
-                                        Cliente = Contract.ClientNo;
+                                        NoCliente = Contract.ClientNo;
                                         GrupoIVA = string.Empty;
                                         GrupoCliente = string.Empty;
                                         IVA = 0;
@@ -4211,20 +4429,20 @@ namespace Hydra.Such.Portal.Controllers
                                                 GrupoIVA = Resource.VATProductPostingGroup;
                                             else
                                             {
-                                                execDetails += " Erro ao criar a fatura: Não foi possível encontrar o recurso Nº: " + item.Código;
+                                                execDetails += " Erro ao contabilizar: Não foi possível encontrar o recurso Nº: " + item.Código + " para o Nº de contrato: " + NoCliente;
                                                 result.eReasonCode = 2;
                                                 result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
                                                 return Json(result);
                                             }
 
-                                            if (!string.IsNullOrEmpty(Cliente) && !string.IsNullOrEmpty(GrupoIVA))
+                                            if (!string.IsNullOrEmpty(NoCliente) && !string.IsNullOrEmpty(GrupoIVA))
                                             {
-                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente);
+                                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, NoCliente);
                                                 if (cliente != null)
                                                     GrupoCliente = cliente.VATBusinessPostingGroup;
                                                 else
                                                 {
-                                                    execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + Cliente;
+                                                    execDetails += " Erro ao criar a fatura: Não foi possível encontrar o cliente Nº: " + NoCliente;
                                                     result.eReasonCode = 2;
                                                     result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails));
                                                     return Json(result);
