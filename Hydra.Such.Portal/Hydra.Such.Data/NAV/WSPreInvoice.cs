@@ -305,6 +305,7 @@ namespace Hydra.Such.Data.NAV
                     No_Compromisso = !string.IsNullOrEmpty(CreateInvoice.NoCompromisso) ? CreateInvoice.NoCompromisso : "",
                     Data_Encomenda = CreateInvoice.DataRececaoRequisicao ?? DateTime.MinValue,
                     Data_EncomendaSpecified = true,
+
                     RegionCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoRegião) ? CreateInvoice.CódigoRegião : "",
                     FunctionAreaCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoÁreaFuncional) ? CreateInvoice.CódigoÁreaFuncional : "",
                     ResponsabilityCenterCode20 = !string.IsNullOrEmpty(CreateInvoice.CódigoCentroResponsabilidade) ? CreateInvoice.CódigoCentroResponsabilidade : "",
@@ -312,7 +313,7 @@ namespace Hydra.Such.Data.NAV
                     Prices_Including_VAT = PricesIncludingVAT,
                     Prices_Including_VATSpecified = true,
 
-                    Ship_to_Code = !string.IsNullOrEmpty(Ship_to_Code) ? Ship_to_Code : ""
+                    Ship_to_Code = !string.IsNullOrEmpty(Ship_to_Code) ? Ship_to_Code : "",
                 }
             };
 
