@@ -2436,7 +2436,7 @@
                                                         Adjudicar?
                                                     </template>
                                                     <template>
-                                                        <paper-button raised class="btn--confirm" id="authorizeBatchBtn" on-tap="_authorizeBatch"><i class="fa fa-road" aria-hidden="true"></i>&nbsp;</paper-button>
+                                                        <paper-button raised class="btn btn--confirm" id="authorizeBatchBtn" on-tap="_authorizeBatch" style="margin-top: 0px"><i class="fa fa-road" aria-hidden="true"></i></paper-button>
                                                     </template>
                                                 </vaadin-grid-column>
                                                 <vaadin-grid-column width="5%">
@@ -2447,7 +2447,7 @@
                                                         <vaadin-text-field id="idLote2" value="{{item.idLote}}" disabled="true"></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="29%">
+                                                <vaadin-grid-column width="31%">
                                                     <template class="header">
                                                         Descrição do Objecto
                                                     </template>
@@ -2455,7 +2455,7 @@
                                                         <vaadin-text-field id="descricaoObjecto2" value="{{item.descricaoObjectoLote}}" disabled></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="10%">
+                                                <vaadin-grid-column width="8%">
                                                     <template class="header">
                                                         Valor Estimado
                                                     </template>
@@ -2463,15 +2463,15 @@
                                                         <vaadin-text-field id="valorEstimado2" value="{{item.valorEstimado}}" disabled></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="10%">
+                                                <vaadin-grid-column width="8%">
                                                     <template class="header">
                                                         Valor Adjudicar
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field id="valorAdjudicar" value="{{item.valorAdjudicacao}}" required></vaadin-text-field>
+                                                        <vaadin-text-field id="valorAdjudicar" value="{{item.valorAdjudicacao}}" on-blur="_updateLote" required></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="40%">
+                                                <vaadin-grid-column width="42%">
                                                     <template class="header">
                                                                             Comentário Adjudicação
                                                     </template>
@@ -6633,10 +6633,34 @@
                         
                         _loteToUpdate.valorEstimado = this.__preciseRound(_loteValorEstimado, 2);
 
+                        // utilizado na grid de adjudicação.b
+                        if (_loteToUpdate.valorAdjudicacao != null && _loteToUpdate.valorAdjudicacao != "") {
+                            var _valorAdjudicar = parseFloat(_loteToUpdate.valorAdjudicacao);
+
+                            if (isNaN(_valorAdjudicar)) {
+                                this._showErrorMessage("Valor Adjudicar tem que ser um número!")
+                                return;
+                            }
+
+                            if (_valorAdjudicar <= 0) {
+                                this._showErrorMessage("Valor Adjudicar tem que ser maior que zero!")
+                                return;
+                            }
+
+                            _loteToUpdate.valorAdjudicacao = this.__preciseRound(_valorAdjudicar, 2);
+
+                            if (_loteToUpdate.valorAdjudicacao > _loteToUpdate.valorEstimado) {
+                                this._showErrorMessage("Valor Adjudicação nãopode ser maior que Valor Estimado");
+                                return;
+                            }
+                        }
+                        // utilizado na grid de adjudicação.e
+
                         this.$.page_update_lote_ajax.body = JSON.stringify(_loteToUpdate);
                         this.$.page_update_lote_ajax.generateRequest();
 
                         this.$.gridLotesProcedimento1.clearCache();
+                        this.$.gridLotesProcedimento2.clearCache();
                     }
                 },
 
@@ -6645,6 +6669,7 @@
                         this._showErrorMessage("Não foi possível actualizar o Lote!");
                     }
                 },
+
 
                 __preciseRound: function (num, dec) {
                     var _typeDebug = typeof num;

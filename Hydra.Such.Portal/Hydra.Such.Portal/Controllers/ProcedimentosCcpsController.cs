@@ -973,6 +973,66 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(DBProcedimentosCCP.__DeleteBatch(noProcedimento, idLote));
         }
+
+        [HttpPost]
+        public JsonResult CBVAEnviarLoteArea([FromBody] LoteProcedimentoCcp data)
+        {
+            if (data != null)
+            {
+                ProcedimentosCcp procedimento = DBProcedimentosCCP.GetProcedimentoById(data.NoProcedimento);
+                if (procedimento == null)
+                    return Json(ReturnHandlers.NoData);
+
+                bool IsElementCompras = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoCompras);
+                bool jaAdjudicado = false;
+
+                if (!string.IsNullOrEmpty(data.UtilizadorAdjudicacao) && !string.IsNullOrWhiteSpace(data.UtilizadorAdjudicacao))
+                    jaAdjudicado = true;
+
+                if (!IsElementCompras)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if (jaAdjudicado)
+                {
+                    return Json(ReturnHandlers.BatchAlreadyAwarded);
+                }
+
+                data.UtilizadorAdjudicacao = User.Identity.Name;
+                data.DataAdjudicacao = DateTime.Now;
+                data.HoraAdjudicacao = DateTime.Now;
+
+                FluxoTrabalhoListaControlo fluxo0 = new FluxoTrabalhoListaControlo();
+
+                if (procedimento.FluxoTrabalhoListaControlo != null)
+                {
+                    fluxo0 = procedimento.FluxoTrabalhoListaControlo.Where(f => f.Estado == 0).LastOrDefault();
+                }
+                else
+                {
+                    fluxo0 = DBProcedimentosCCP.GetChecklistControloProcedimento(data.NoProcedimento, 0);
+                }
+
+                ConfigUtilizadores UserDetails_TO = DBProcedimentosCCP.GetUserDetails(fluxo0.User);
+                string UserEmail_TO = "";
+
+                if (EmailAutomation.IsValidEmail(UserDetails_TO.IdUtilizador))
+                {
+                    UserEmail_TO = UserDetails_TO.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddress);
+                }
+
+                return Json(ReturnHandlers.Success);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+        }
         #endregion
 
         [HttpPost]
@@ -1291,7 +1351,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(UserEmail))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 }
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -1308,7 +1368,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!EmailAutomation.IsValidEmail(EmailList.EmailContabilidade))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         }
 
                         EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -1366,7 +1426,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (!EmailAutomation.IsValidEmail(DestinationEmails.ToAddress))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         }
 
                         EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -1424,7 +1484,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (!EmailAutomation.IsValidEmail(UserDetails.ProcedimentosEmailEnvioParaArea))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     }
 
                     EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -1506,7 +1566,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure ImobContabConfirmar.b
@@ -1558,7 +1618,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     }
 
                     if (EmailAutomation.IsValidEmail(DestinationEmails.CCAddress))
@@ -1580,7 +1640,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         }
                     }
                     else
@@ -1659,7 +1719,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -1739,7 +1799,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure ImobAreaConfirmar.b
@@ -1758,7 +1818,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -1885,7 +1945,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDComprasConfirmar.b
@@ -1904,7 +1964,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailFinanceiros))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -1992,7 +2052,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDComprasConfirmar.b
@@ -2006,12 +2066,12 @@ namespace Hydra.Such.Portal.Controllers
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
                 if (EmailList == null)
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 }
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailJurididos))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -2107,7 +2167,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -2120,7 +2180,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDComprasConfirmar.b
@@ -2231,7 +2291,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -2243,7 +2303,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDComprasConfirmar.b
@@ -2344,19 +2404,19 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 //Para substituir o email 'pdias@such.pt' que está martelado no NAV2009
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
                 if (EmailList == null)
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 }
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -2459,19 +2519,19 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 //Para substituir o email 'pdias@such.pt' que está martelado no NAV2009
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
                 if (EmailList == null)
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 }
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -2573,7 +2633,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -2585,7 +2645,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDFinancConfirmar.b
@@ -2683,7 +2743,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -2696,7 +2756,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -2786,7 +2846,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDAreaConfirmar.b
@@ -2805,7 +2865,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -2892,7 +2952,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -2904,7 +2964,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDAreaConfirmar.b
@@ -2997,7 +3057,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -3009,7 +3069,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDAreaConfirmar.b
@@ -3115,7 +3175,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -3127,7 +3187,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -3138,7 +3198,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailFinanceiros))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -3238,7 +3298,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -3250,7 +3310,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure Juridico2Fase.b
@@ -3485,7 +3545,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure MIEnvJuridicos.b
@@ -3499,12 +3559,12 @@ namespace Hydra.Such.Portal.Controllers
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
                 if (EmailList == null)
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 }
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailJurididos))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 }
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -3703,7 +3763,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -3715,7 +3775,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -3726,7 +3786,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCompras))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure VAComprasConfirmar.b
@@ -3818,7 +3878,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -3829,7 +3889,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure VAAreaConfirmar.b
@@ -3926,7 +3986,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure CAConfirmarImob.b
@@ -3961,7 +4021,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
                 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -4053,7 +4113,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -4064,7 +4124,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCompras))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -4155,7 +4215,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure CAConfirmarImob.b
@@ -4201,7 +4261,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 UserEmail_TO_Area = UserDetails_CC.ProcedimentosEmailEnvioParaArea == null ? UserEmail_TO_Area : UserDetails_CC.ProcedimentosEmailEnvioParaArea;
@@ -4282,7 +4342,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure CAConfirmarAbertura.b
@@ -4317,7 +4377,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 FluxoTrabalhoListaControlo Fluxo4 = new FluxoTrabalhoListaControlo();
@@ -4340,7 +4400,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -4423,7 +4483,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -4434,7 +4494,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCompras))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -4515,7 +4575,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 string gComent2CA = data.ComentarioCA8 == "" ? "Autorizado" : data.ComentarioCA8;
@@ -4549,7 +4609,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -4569,11 +4629,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList.Email5Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList.Email6Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList.Email5Compras;
@@ -4583,7 +4643,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList.Email3Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList.Email3Compras;
@@ -4592,7 +4652,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList.Email4Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList.Email4Compras;
@@ -4601,11 +4661,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList.Email7Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList.Email8Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList.Email7Compras;
@@ -4615,11 +4675,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList.Email7Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList.Email8Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList.Email7Compras;
@@ -4853,7 +4913,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure CAConfirmarAutorizacao.b
@@ -4888,7 +4948,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 FluxoTrabalhoListaControlo Fluxo4 = new FluxoTrabalhoListaControlo();
@@ -4911,7 +4971,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -4994,7 +5054,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -5005,7 +5065,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCompras))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -5086,7 +5146,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 string gComent2CA = data.ComentarioCA17 == "" ? "Autorizado" : data.ComentarioCA17;
@@ -5135,7 +5195,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (!EmailAutomation.IsValidEmail(EmailList.EmailCompras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     //string UserEmail_TO = "pdias@such.pt";
@@ -5202,7 +5262,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList_2 = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -5224,11 +5284,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email5Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email6Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email5Compras;
@@ -5238,7 +5298,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email3Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email3Compras;
@@ -5247,7 +5307,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email4Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email4Compras;
@@ -5256,11 +5316,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email7Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email8Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email7Compras;
@@ -5270,11 +5330,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email7Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email8Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email7Compras;
@@ -5585,7 +5645,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure ImobContabConfirmar.b
@@ -5635,11 +5695,11 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!EmailAutomation.IsValidEmail(EmailList.Email10Compras))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         };
                         if (!EmailAutomation.IsValidEmail(EmailList.Email11Compras))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         };
 
                         gEmailPara = EmailList.Email10Compras;
@@ -5649,7 +5709,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!EmailAutomation.IsValidEmail(EmailList.Email3Compras))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         };
 
                         gEmailPara = EmailList.Email3Compras;
@@ -5658,7 +5718,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!EmailAutomation.IsValidEmail(EmailList.Email4Compras))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         };
 
                         gEmailPara = EmailList.Email4Compras;
@@ -5667,11 +5727,11 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!EmailAutomation.IsValidEmail(EmailList.Email9Compras))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         };
                         if (!EmailAutomation.IsValidEmail(EmailList.Email8Compras))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         };
 
                         gEmailPara = EmailList.Email9Compras;
@@ -5681,11 +5741,11 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!EmailAutomation.IsValidEmail(EmailList.Email9Compras))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         };
                         if (!EmailAutomation.IsValidEmail(EmailList.Email8Compras))
                         {
-                            return Json(ReturnHandlers.InvalidEmailAddres);
+                            return Json(ReturnHandlers.InvalidEmailAddress);
                         };
 
                         gEmailPara = EmailList.Email9Compras;
@@ -5700,7 +5760,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                 }
 
@@ -5762,7 +5822,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure ImobAreaConfirmar.b
@@ -5781,7 +5841,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -5909,7 +5969,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDComprasConfirmar.b
@@ -5928,7 +5988,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailFinanceiros))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
@@ -6028,7 +6088,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -6041,7 +6101,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDComprasConfirmar.b
@@ -6139,7 +6199,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
@@ -6151,7 +6211,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure FDComprasConfirmar.b
@@ -6245,7 +6305,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -6258,7 +6318,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
 
@@ -6348,7 +6408,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -6359,7 +6419,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!EmailAutomation.IsValidEmail(EmailList.EmailCa))
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure VAAreaConfirmar.b
@@ -6446,7 +6506,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 string gComent2CA = data.ComentarioCA17 == "" ? "Autorizado" : data.ComentarioCA17;
@@ -6482,7 +6542,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 ConfiguracaoCcp EmailList_2 = DBProcedimentosCCP.GetConfiguracaoCCP();
@@ -6502,11 +6562,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email10Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email11Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email10Compras;
@@ -6516,7 +6576,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email3Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email3Compras;
@@ -6525,7 +6585,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email4Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email4Compras;
@@ -6534,11 +6594,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email9Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email8Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email9Compras;
@@ -6548,11 +6608,11 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email9Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
                     if (!EmailAutomation.IsValidEmail(EmailList_2.Email8Compras))
                     {
-                        return Json(ReturnHandlers.InvalidEmailAddres);
+                        return Json(ReturnHandlers.InvalidEmailAddress);
                     };
 
                     gEmailPara = EmailList_2.Email9Compras;
@@ -6655,7 +6715,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure CAConfirmarAutorizacao.b
@@ -6756,7 +6816,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 // NAV Procedure CAConfirmarAutorizacao.b
@@ -6791,7 +6851,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 FluxoTrabalhoListaControlo Fluxo4 = new FluxoTrabalhoListaControlo();
@@ -6814,7 +6874,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(ReturnHandlers.InvalidEmailAddres);
+                    return Json(ReturnHandlers.InvalidEmailAddress);
                 };
 
                 EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp

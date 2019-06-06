@@ -290,7 +290,7 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eMessage = "Ainda não foi registada a Audiência Prévia"
         };
 
-        public static ErrorHandler InvalidEmailAddres = new ErrorHandler
+        public static ErrorHandler InvalidEmailAddress = new ErrorHandler
         {
             eReasonCode = 400,
             eMessage = "Endereço de email inválido"
@@ -370,6 +370,14 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 609,
             eMessage = "Já existe este Nº de Ata!"
         };
+
+        // ALT_CCP_#001.y2019.b
+        public static ErrorHandler BatchAlreadyAwarded = new ErrorHandler
+        {
+            eReasonCode = 610,
+            eMessage = "Lote já adjudicado!"
+        };
+        // ALT_CCP_#001.y2019.e
 
         public static ErrorHandler UnknownArea = new ErrorHandler
         {
