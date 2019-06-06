@@ -999,6 +999,8 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(ReturnHandlers.BatchAlreadyAwarded);
                 }
 
+                data.EstadoLote = 15;
+
                 data.UtilizadorAdjudicacao = User.Identity.Name;
                 data.DataAdjudicacao = DateTime.Now;
                 data.HoraAdjudicacao = DateTime.Now;
@@ -1014,6 +1016,7 @@ namespace Hydra.Such.Portal.Controllers
                     fluxo0 = DBProcedimentosCCP.GetChecklistControloProcedimento(data.NoProcedimento, 0);
                 }
 
+
                 ConfigUtilizadores UserDetails_TO = DBProcedimentosCCP.GetUserDetails(fluxo0.User);
                 string UserEmail_TO = "";
 
@@ -1025,6 +1028,74 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     return Json(ReturnHandlers.InvalidEmailAddress);
                 }
+
+                ConfigUtilizadores UserDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                string UserEmail = "";
+                if (EmailAutomation.IsValidEmail(UserDetails.IdUtilizador))
+                {
+                    UserEmail = UserDetails.IdUtilizador;
+                }
+                else
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddress);
+                };
+
+                ConfiguracaoCcp EmailList = DBProcedimentosCCP.GetConfiguracaoCCP();
+                if (EmailList == null)
+                {
+                    return Json(ReturnHandlers.AddressListIsEmpty);
+                }
+
+                if (!EmailAutomation.IsValidEmail(EmailList.EmailCompras))
+                {
+                    return Json(ReturnHandlers.InvalidEmailAddress);
+                };
+
+                // process batch and change batch state
+                ErrorHandler DecisionTaken = DBProcedimentosCCP.AwardBatch(procedimento, data, UserDetails, 1);
+                if (DecisionTaken.eReasonCode != 0)
+                {
+                    return Json(DecisionTaken);
+                }
+
+
+                EmailsProcedimentosCcp ProcedimentoEmail = new EmailsProcedimentosCcp
+                {
+                    NºProcedimento = procedimento.Nº,
+                    Assunto = data.NoProcedimento + "-" + procedimento.NomeProcesso + " Lote nº " + data.IdLote +  " -  Abertura de Procedimento",
+                    UtilizadorEmail = UserEmail,
+                    EmailDestinatário = UserEmail_TO,
+                    TextoEmail = data.ComentarioAutorizacaoAdjudicacao,
+                    DataHoraEmail = DateTime.Now,
+                    UtilizadorCriação = User.Identity.Name,
+                    DataHoraCriação = DateTime.Now
+                };
+
+                if (!DBProcedimentosCCP.__CreateEmailProcedimento(ProcedimentoEmail))
+                {
+                    return Json(ReturnHandlers.UnableToCreateEmailProcedimento);
+                }
+
+                procedimento.EmailsProcedimentosCcp.Add(ProcedimentoEmail);
+
+                SendEmailsProcedimentos Email = new SendEmailsProcedimentos
+                {
+                    DisplayName = UserDetails.Nome,
+                    Subject = ProcedimentoEmail.Assunto,
+                    From = DBProcedimentosCCP._EmailSender
+                };
+
+                Email.To.Add(UserEmail_TO);
+                Email.CC.Add(EmailList.EmailCompras);
+                Email.CC.Add(EmailList.Email2Compras);
+                Email.BCC.Add(UserEmail);
+
+                Email.Body = CCPFunctions.MakeEmailBodyContent(ProcedimentoEmail.TextoEmail, UserDetails.Nome);
+                Email.IsBodyHtml = true;
+
+                Email.EmailProcedimento = ProcedimentoEmail;
+
+                Email.SendEmail();
 
                 return Json(ReturnHandlers.Success);
             }
