@@ -3989,6 +3989,79 @@ namespace Hydra.Such.Data.Logic.CCP
 
             return ReturnHandlers.Success;
         }
+        
+        #region ALT_CCP_#001.y2019
+        /// <summary>
+        ///     Procedimento awarded in batches
+        /// </summary>
+        /// <param name="procedimento"></param>
+        /// <param name="batch"></param>
+        /// <param name="userDetails"></param>
+        /// <param name="stateTocheck"></param>
+        /// <returns>
+        ///     Sucsess or Error code
+        /// </returns>
+        public static ErrorHandler AwardBatch(ProcedimentosCcp procedimento, LoteProcedimentoCcp batch, ConfigUtilizadores userDetails, int stateTocheck)
+        {
+            // /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+            // TO DO: confirmar como fazer a contagem dos tempos no caso de procedimentos em lotes
+            if (procedimento.TemposPaCcp == null)
+            {
+                TemposPaCcp TemposPA = GetTemposPaCcP(procedimento.Nº);
+            }
+            else
+            {
+
+            }
+            // /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+
+            // zpgm.In batches, there is no state 14, so there is no need to update workflow 14. The first state of a batch is 15!
+
+            FluxoTrabalhoListaControlo newFluxo15 = new FluxoTrabalhoListaControlo()
+            {
+                No = procedimento.Nº,
+                IdLote = batch.IdLote,
+                Estado = 15,
+                Data = DateTime.Now,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = batch.ComentarioAutorizacaoAdjudicacao,
+                User = userDetails.IdUtilizador,
+                TipoEstado = stateTocheck,
+                NomeUser = userDetails.Nome,
+                UtilizadorCriacao = userDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = procedimento.Imobilizado ?? false
+            };
+
+            switch (stateTocheck)
+            {
+                case 1:
+                    newFluxo15.EstadoSeguinte = 16;
+                    break;
+                case 0:
+                    newFluxo15.EstadoSeguinte = 0;
+                    newFluxo15.TipoEstado = 0;
+                    break;
+            }
+
+            if(__CreateFluxoTrabalho(newFluxo15) == null)
+            {
+                return ReturnHandlers.UnableToCreateFluxo;
+            }
+
+            batch.EstadoLote = stateTocheck == 1 ? 16 : 0;
+            
+
+            batch.UtilizadorModificacao = userDetails.IdUtilizador;
+            batch.DataModificacao = DateTime.Now;
+
+            if (!__UpdateBatch(batch))
+            {
+                return ReturnHandlers.UnableToUpdateBatch;
+            }
+            return ReturnHandlers.Success;
+        }
+        #endregion
         // The following method maps NAV2009 VAAreaConfirmar(pEstado : Integer) function
         public static ErrorHandler VAAreaConfirmar(ProcedimentoCCPView Procedimento, ConfigUtilizadores UserDetails, int StateToCheck)
         {

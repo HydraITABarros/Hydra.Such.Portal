@@ -374,8 +374,14 @@ namespace Hydra.Such.Data.ViewModel.CCP
         // ALT_CCP_#001.y2019.b
         public static ErrorHandler BatchAlreadyAwarded = new ErrorHandler
         {
-            eReasonCode = 610,
+            eReasonCode = 680,
             eMessage = "Lote já adjudicado!"
+        };
+
+        public static ErrorHandler UnableToUpdateBatch = new ErrorHandler
+        {
+            eReasonCode = 681,
+            eMessage = "Não foi possivel actualizar o Lote!"
         };
         // ALT_CCP_#001.y2019.e
 
