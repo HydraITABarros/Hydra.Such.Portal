@@ -941,6 +941,49 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public JsonResult PassarLiquidadosPedidoPagamento([FromBody] List<PedidosPagamentoViewModel> LIQUIDADOS)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (LIQUIDADOS != null)
+                {
+                    ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
+                    bool AnularPedido = Utilizador.AnulacaoPedidoPagamento.HasValue ? (bool)Utilizador.AnulacaoPedidoPagamento : false;
+                    bool ValidarPedido = Utilizador.ValidarPedidoPagamento.HasValue ? (bool)Utilizador.ValidarPedidoPagamento : false;
+
+                    LIQUIDADOS.ForEach(liquidado =>
+                    {
+                        if (liquidado.UserPedido.ToLower() == User.Identity.Name.ToLower() || AnularPedido || ValidarPedido)
+                        {
+                            liquidado.Estado = 6; //Liquidado
+                            liquidado.UtilizadorModificacao = User.Identity.Name;
+                            liquidado.DataModificacao = DateTime.Now;
+
+                            if (DBPedidoPagamento.Update(DBPedidoPagamento.ParseToDB(liquidado)) == null)
+                            {
+                                result.eMessages.Add(new TraceInformation(TraceType.Error, "Erro ao Liquidar o Pedido de Pagamento Nº " + liquidado.NoPedido));
+                            }
+                            else
+                            {
+                                result.eReasonCode = 1;
+                                result.eMessage = "O(s) Pedido(s) de Pagamento foram Liquidado(s) com sucesso.";
+                            }
+                        }
+                        else
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Não tem permissões para Liquidar o Pedido de Pagamento Nº " + liquidado.NoPedido));
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro."));
+            }
+            return Json(result);
+        }
+
         public JsonResult ArquivarPedidoPagamento([FromBody] List<PedidosPagamentoViewModel> PEDIDOS)
         {
             ErrorHandler result = new ErrorHandler();

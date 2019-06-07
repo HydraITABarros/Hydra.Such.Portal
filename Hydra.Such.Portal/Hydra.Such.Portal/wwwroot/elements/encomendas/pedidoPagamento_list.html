@@ -69,6 +69,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Encomendas/PassarLiquidadosPedidoPagamento"
+                   last-response="{{resultPassarLiquidados}}"
+                   id="page_PassarLiquidados_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_PassarLiquidadosResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Encomendas/ArquivarPedidoPagamento"
                    last-response="{{resultArquivar}}"
                    id="page_Arquivar_ajax"
@@ -88,13 +97,16 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" id="btn_showAprovados" on-tap="_showAprovados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showAprovadosMessage }}</paper-button>
-            <paper-button class="tablinks" id="btn_showValidados" on-tap="_showValidados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showValidadosMessage }}</paper-button>
-            <paper-button class="tablinks" id="btn_showDisponiveis" on-tap="_showDisponiveis"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showDisponiveisMessage }}</paper-button>
-            <paper-button class="tablinks" id="btn_showTodos" on-tap="_showTodos"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showTodosMessage }}</paper-button>
-            <paper-button class="tablinks" id="btn_showArquivados" on-tap="_showArquivados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showArquivadosMessage }}</paper-button>
+            <!--<paper-button class="tablinks" id="btn_showInicial" on-tap="_showInicial"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Inicial</paper-button>-->
+            <paper-button class="tablinks" id="btn_showEmAprovacao" on-tap="_showEmAprovacao"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Em Aprovação</paper-button>
+            <paper-button class="tablinks" id="btn_showAprovados" on-tap="_showAprovados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Aprovado</paper-button>
+            <paper-button class="tablinks" id="btn_showValidados" on-tap="_showValidados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Validado</paper-button>
+            <paper-button class="tablinks" id="btn_showDisponiveis" on-tap="_showDisponiveis"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Liquidado</paper-button>
+            <paper-button class="tablinks" id="btn_showArquivados" on-tap="_showArquivados"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Arquivado</paper-button>
+            <paper-button class="tablinks" id="btn_showTodos" on-tap="_showTodos"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Todos</paper-button>
 
             <paper-button class="tablinks" id="btn_CriarTransferencia" on-tap="_CriarTransferencia"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Transferência</paper-button>
+            <paper-button class="tablinks" id="btn_PassarLiquidados" on-tap="_PassarLiquidados"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Passar Liquidados</paper-button>
             <paper-button class="tablinks" id="btn_Arquivar" on-tap="_Arquivar"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
 
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
@@ -515,26 +527,6 @@
                         notify: true,
                         value: 0
                     },
-                    _showAprovadosMessage: {
-                        type: String,
-                        value: "Aprovados"
-                    },
-                    _showValidadosMessage: {
-                        type: String,
-                        value: "Validados"
-                    },
-                    _showDisponiveisMessage: {
-                        type: String,
-                        value: "Disponíveis"
-                    },
-                    _showTodosMessage: {
-                        type: String,
-                        value: "Todos"
-                    },
-                    _showArquivadosMessage: {
-                        type: String,
-                        value: "Arquivados"
-                    },
                     selectedItems: {
                         type: Array,
                     },
@@ -630,6 +622,36 @@
                     this.resultArquivar.eMessages = [];
                 },
 
+                //_showInicial: function () {
+                //    if (this._Aprovados == 0) {
+                //        this._Aprovados = 0;
+                //        this._Validados = 0;
+                //        this._Disponiveis = 0;
+                //        this._Todos = 0;
+                //        this._Arquivados = 0;
+
+                //        this.$.grid_databound_ajax.params = { "estado": 1 };
+                //        this.$.grid_databound_ajax.generateRequest();
+
+                //    }
+
+                //    this._setButtonTexts();
+                //},
+
+                _showEmAprovacao: function () {
+                    if (this._Aprovados == 0) {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 0;
+                        this._Arquivados = 0;
+                    }
+                    this.$.grid_databound_ajax.params = { "estado": 2 };
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    this._setButtonTexts();
+                },
+
                 _showAprovados: function () {
                     if (this._Aprovados == 0) {
                         this._Aprovados = 1;
@@ -637,20 +659,9 @@
                         this._Disponiveis = 0;
                         this._Todos = 0;
                         this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 3 };
-                        this.$.grid_databound_ajax.generateRequest();
-
-                    } else {
-                        this._Aprovados = 0;
-                        this._Validados = 0;
-                        this._Disponiveis = 0;
-                        this._Todos = 0;
-                        this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 2 };
-                        this.$.grid_databound_ajax.generateRequest();
                     }
+                    this.$.grid_databound_ajax.params = { "estado": 3 };
+                    this.$.grid_databound_ajax.generateRequest();
 
                     this._setButtonTexts();
                 },
@@ -663,19 +674,9 @@
                         this._Disponiveis = 0;
                         this._Todos = 0;
                         this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 4 };
-                        this.$.grid_databound_ajax.generateRequest();
-                    } else {
-                        this._Aprovados = 0;
-                        this._Validados = 0;
-                        this._Disponiveis = 0;
-                        this._Todos = 0;
-                        this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 2 };
-                        this.$.grid_databound_ajax.generateRequest();
                     }
+                    this.$.grid_databound_ajax.params = { "estado": 4 };
+                    this.$.grid_databound_ajax.generateRequest();
 
                     this._setButtonTexts();
                 },
@@ -687,43 +688,9 @@
                         this._Disponiveis = 1;
                         this._Todos = 0;
                         this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 6 };
-                        this.$.grid_databound_ajax.generateRequest();
-                    } else {
-                        this._Aprovados = 0;
-                        this._Validados = 0;
-                        this._Disponiveis = 0;
-                        this._Todos = 0;
-                        this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 2 };
-                        this.$.grid_databound_ajax.generateRequest();
                     }
-
-                    this._setButtonTexts();
-                },
-
-                _showTodos: function () {
-                    if (this._Todos == 0) {
-                        this._Aprovados = 0;
-                        this._Validados = 0;
-                        this._Disponiveis = 0;
-                        this._Todos = 1;
-                        this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 99 };
-                        this.$.grid_databound_ajax.generateRequest();
-                    } else {
-                        this._Aprovados = 0;
-                        this._Validados = 0;
-                        this._Disponiveis = 0;
-                        this._Todos = 0;
-                        this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 2 };
-                        this.$.grid_databound_ajax.generateRequest();
-                    }
+                    this.$.grid_databound_ajax.params = { "estado": 6 };
+                    this.$.grid_databound_ajax.generateRequest();
 
                     this._setButtonTexts();
                 },
@@ -735,59 +702,44 @@
                         this._Disponiveis = 0;
                         this._Todos = 0;
                         this._Arquivados = 1;
-
-                        this.$.grid_databound_ajax.params = { "estado": 7 };
-                        this.$.grid_databound_ajax.generateRequest();
-                    } else {
-                        this._Aprovados = 0;
-                        this._Validados = 0;
-                        this._Disponiveis = 0;
-                        this._Todos = 0;
-                        this._Arquivados = 0;
-
-                        this.$.grid_databound_ajax.params = { "estado": 2 };
-                        this.$.grid_databound_ajax.generateRequest();
                     }
+                    this.$.grid_databound_ajax.params = { "estado": 7 };
+                    this.$.grid_databound_ajax.generateRequest();
 
                     this._setButtonTexts();
                 },
+
+                _showTodos: function () {
+                    if (this._Todos == 0) {
+                        this._Aprovados = 0;
+                        this._Validados = 0;
+                        this._Disponiveis = 0;
+                        this._Todos = 1;
+                        this._Arquivados = 0;
+                    }
+                    this.$.grid_databound_ajax.params = { "estado": 99 };
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    this._setButtonTexts();
+                },
+
 
                 _setButtonTexts: function () {
                     var _self = this;
                     _self.selectedItems = [];
                     $(_self.$.btn_CriarTransferencia).addClass('hidden');
+                    $(_self.$.btn_PassarLiquidados).addClass('hidden');
                     $(_self.$.btn_Arquivar).addClass('hidden');
 
-                    if (this._Aprovados == 0) {
-                        this._showAprovadosMessage = "Aprovados";
-                    } else {
-                        this._showAprovadosMessage = "Em Aprovação";
-                    }
-
                     if (this._Validados == 0) {
-                        this._showValidadosMessage = "Validados";
                     } else {
                         $(_self.$.btn_CriarTransferencia).removeClass('hidden');
-                        this._showValidadosMessage = "Em Aprovação";
+                        $(_self.$.btn_PassarLiquidados).removeClass('hidden');
                     }
 
                     if (this._Disponiveis == 0) {
-                        this._showDisponiveisMessage = "Disponíveis";
                     } else {
                         $(_self.$.btn_Arquivar).removeClass('hidden');
-                        this._showDisponiveisMessage = "Em Aprovação";
-                    }
-
-                    if (this._Todos == 0) {
-                        this._showTodosMessage = "Todos";
-                    } else {
-                        this._showTodosMessage = "Em Aprovação";
-                    }
-
-                    if (this._Arquivados == 0) {
-                        this._showArquivadosMessage = "Arquivados";
-                    } else {
-                        this._showArquivadosMessage = "Em Aprovação";
                     }
                 },
 
@@ -798,7 +750,7 @@
                             this.$.page_CriarTransferencia_ajax.generateRequest();
                         }
                         else {
-                            this._openToastError("Não existem Pedidos de Pagamento disponíveis para Criar Transferência.");
+                            this._openToastError("Não existem Pedidos de Pagamento Liquidados para Criar Transferência.");
                         }
                     }
                     else {
@@ -814,6 +766,36 @@
                             this._toggleToastMultiple();
                         else
                             this._openToastError(this.resultCriarTransferencia.eMessage);
+                    }
+
+                    this.selectedItems = [];
+                    this.$.grid_databound_ajax.params = { "estado": 2 };
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
+                _PassarLiquidados: function () {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        if (this.result != null || this.result != undefined || this.result.length != 0) {
+                            this.$.page_PassarLiquidados_ajax.body = JSON.stringify(this.selectedItems);
+                            this.$.page_PassarLiquidados_ajax.generateRequest();
+                        }
+                        else {
+                            this._openToastError("Não existem Pedidos de Pagamento Liquidados para Criar Transferência.");
+                        }
+                    }
+                    else {
+                        this._openToastError("As linhas não foram selecionadas.");
+                    }
+                },
+                _PassarLiquidadosResponse: function (e) {
+                    if (this.resultPassarLiquidados.eReasonCode == "1") {
+                        this._openToast(this.resultPassarLiquidados.eMessage);
+                    }
+                    else {
+                        if (this.resultPassarLiquidados.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else
+                            this._openToastError(this.resultPassarLiquidados.eMessage);
                     }
 
                     this.selectedItems = [];
@@ -847,7 +829,7 @@
                             });
                         }
                         else {
-                            this._openToastError("Não existem Pedidos de Pagamento disponíveis para Criar Transferência.");
+                            this._openToastError("Não existem Pedidos de Pagamento liquidados para Criar Transferência.");
                         }
                     }
                     else {

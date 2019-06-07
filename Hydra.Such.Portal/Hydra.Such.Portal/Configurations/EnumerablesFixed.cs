@@ -2639,7 +2639,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 6,
-                Value = "Disponível"
+                Value = "Liquidado" //ANTES "Disponível"
             },
             new EnumData()
             {
