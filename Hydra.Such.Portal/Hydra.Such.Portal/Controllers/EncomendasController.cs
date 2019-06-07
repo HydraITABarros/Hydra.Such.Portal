@@ -23,6 +23,7 @@ using Hydra.Such.Data.ViewModel.Encomendas;
 using Newtonsoft.Json;
 using Hydra.Such.Data.Logic.Encomendas;
 using Hydra.Such.Data.Logic.Approvals;
+using System.Data.SqlClient;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -873,68 +874,87 @@ namespace Hydra.Such.Portal.Controllers
             string execDetails = string.Empty;
             string errorMessage = string.Empty;
             bool hasErrors = false;
+            int Number_SEPA = 99;
             ErrorHandler result = new ErrorHandler();
 
             if (data != null && data.Count() > 0)
             {
-                List<PedidosPagamentoViewModel> GroupFornecedor = data.GroupBy(x =>
-                x.CodigoFornecedor,
-                x => x,
-                (key, items) => new PedidosPagamentoViewModel
+                using (var ctx = new SuchDBContextExtention())
                 {
-                    CodigoFornecedor = key,
-                    NoPedido = data.Where(f => f.CodigoFornecedor == key).FirstOrDefault().NoPedido,
-                    Fornecedor = data.Where(f => f.CodigoFornecedor == key).FirstOrDefault().Fornecedor,
-                    Valor = data.Where(f => f.CodigoFornecedor == key).Sum(y => y.Valor),
-
-                }).ToList();
-
-                if (GroupFornecedor != null && GroupFornecedor.Count() > 0)
-                {
-                    int lineNo = 10000;
-                    try
+                    var parameters = new[]
                     {
-                        GroupFornecedor.ForEach(pedido =>
+                        new SqlParameter("@DBName", _config.NAVDatabaseName),
+                        new SqlParameter("@CompanyName", _config.NAVCompanyName),
+                    };
+                    Number_SEPA = ctx.execStoredProcedurePedidoPagamento("exec NAV2017VerificarPedPagSEPA @DBName, @CompanyName", parameters);
+                }
+
+                if (Number_SEPA == 0)
+                {
+                    List<PedidosPagamentoViewModel> GroupFornecedor = data.GroupBy(x =>
+                    x.CodigoFornecedor,
+                    x => x,
+                    (key, items) => new PedidosPagamentoViewModel
+                    {
+                        CodigoFornecedor = key,
+                        NoPedido = data.Where(f => f.CodigoFornecedor == key).FirstOrDefault().NoPedido,
+                        Fornecedor = data.Where(f => f.CodigoFornecedor == key).FirstOrDefault().Fornecedor,
+                        Valor = data.Where(f => f.CodigoFornecedor == key).Sum(y => y.Valor),
+
+                    }).ToList();
+
+                    if (GroupFornecedor != null && GroupFornecedor.Count() > 0)
+                    {
+                        int lineNo = 10000;
+                        try
                         {
-                            WSPaymentJournalNAV.WSPaymentJournal PaymentJournal = new WSPaymentJournalNAV.WSPaymentJournal()
+                            GroupFornecedor.ForEach(pedido =>
                             {
-                                Journal_Template_Name = "PAGAMENTOS",
-                                Journal_Batch_Name = "SEPA-ADIAN",
-                                Line_No = lineNo,
-                                Account_Type = WSPaymentJournalNAV.Account_Type.Vendor,
-                                Account_No = pedido.CodigoFornecedor,
-                                Description = pedido.Fornecedor,
-                                Posting_Date = DateTime.Now,
-                                Document_Type = WSPaymentJournalNAV.Document_Type.Payment,
-                                Amount = (decimal)pedido.Valor
-                            };
+                                WSPaymentJournalNAV.WSPaymentJournal PaymentJournal = new WSPaymentJournalNAV.WSPaymentJournal()
+                                {
+                                    Journal_Template_Name = "PAGAMENTOS",
+                                    Journal_Batch_Name = "SEPA-ADIAN",
+                                    Line_No = lineNo,
+                                    Account_Type = WSPaymentJournalNAV.Account_Type.Vendor,
+                                    Account_No = pedido.CodigoFornecedor,
+                                    Description = pedido.Fornecedor,
+                                    Posting_Date = DateTime.Now,
+                                    Document_Type = WSPaymentJournalNAV.Document_Type.Payment,
+                                    Amount = (decimal)pedido.Valor
+                                };
 
-                            Task<WSPaymentJournalNAV.Create_Result> createPaymentJournal = WSPaymentJournal.CreatePaymentJournalNAV(PaymentJournal, _configws);
-                            createPaymentJournal.Wait();
+                                Task<WSPaymentJournalNAV.Create_Result> createPaymentJournal = WSPaymentJournal.CreatePaymentJournalNAV(PaymentJournal, _configws);
+                                createPaymentJournal.Wait();
 
-                            if (createPaymentJournal.IsCompletedSuccessfully && createPaymentJournal.Result.WSPaymentJournal == null)
-                            {
-                                result.eReasonCode = 1;
-                                result.eMessage = " Transferência criada com sucesso.";
-                            }
-                            else
-                            {
-                                result.eReasonCode = 2;
-                                result.eMessage = " Erro ao criar a Transferência.";
-                            }
+                                if (createPaymentJournal.IsCompletedSuccessfully && createPaymentJournal.Result.WSPaymentJournal == null)
+                                {
+                                    result.eReasonCode = 1;
+                                    result.eMessage = " Transferência criada com sucesso.";
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = " Erro ao criar a Transferência.";
+                                }
 
-                            lineNo = lineNo + 10000;
-                        });
+                                lineNo = lineNo + 10000;
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!hasErrors)
+                                hasErrors = true;
+
+                            result.eReasonCode = 2;
+                            result.eMessage = " Erro ao criar a Transferência:" + ex.Message;
+                            return Json(result);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        if (!hasErrors)
-                            hasErrors = true;
-
-                        result.eReasonCode = 2;
-                        result.eMessage = " Erro ao criar a Transferência:" + ex.Message;
-                        return Json(result);
-                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = " Não é possivel Criar Transferência pois existem registos no Diário de Pagamento, secão SEPA-ADIAN.";
                 }
             }
 

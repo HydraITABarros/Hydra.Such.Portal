@@ -95,7 +95,8 @@
 FROM Requisição 
 	INNER JOIN [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição]
 	INNER JOIN [Config. Utilizadores] AS UTIL ON Requisição.[Utilizador Criação] = UTIL.[Id Utilizador]
-WHERE (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
+WHERE (Requisição.[Nº Requisição] = @NoRequisicao)
+AND [Linhas Requisição].[SemEfeito] &lt;&gt; 1</CommandText>
       <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
     </Query>
     <Fields>
