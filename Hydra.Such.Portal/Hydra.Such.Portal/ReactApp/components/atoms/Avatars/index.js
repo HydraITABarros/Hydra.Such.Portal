@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css, theme } from 'styled-components';
-import _theme from '../../themes/default';
+import _theme from '../../../themes/default';
 import Color from 'color';
 // import { Text, Button } from 'components';
 import Text from '../Text';

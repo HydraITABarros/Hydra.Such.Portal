@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { css, theme, injectGlobal } from 'styled-components'
-import _theme from '../../themes/default'
+import _theme from '../../../themes/default'
 import MuiButton from '@material-ui/core/Button';
 
 const assetsPath = process.env.ASSETS_PATH || '';

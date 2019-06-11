@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css, theme, injectGlobal } from 'styled-components';
-import _theme from '../../themes/default';
+import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
 
 const assetsPath = process.env.ASSETS_PATH || '';
 
@@ -157,7 +156,7 @@ const IconFont = styled.span`
 // ['add','approved','archive','arrow-down','arrow-left','arrow-right','arrow-up','attach','calendar','comments','curativa','decline','download','equipamentos','eye','folder','happy','lock','material','meter','no-wifi','observation','open','preventiva','print','remove','report-menu','report','row-menu','sad','search','share','signature','tecnico','tool','validation','warning']
 
 const Icon = ({ type, ...props }) => {
-    return <IconFont {...props} className={"icon-" + Object.keys(props)[0] + " " + props.className} />
+        return <IconFont {...props} className={"icon-" + Object.keys(props)[0] + " " + props.className} />
 }
 
 export default Icon;
