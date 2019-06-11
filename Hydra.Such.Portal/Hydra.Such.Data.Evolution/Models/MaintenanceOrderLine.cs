@@ -1,12 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hydra.Such.Data.Evolution.Database
 {
     [ModelMetadataType(typeof(IMaintenanceOrderLine))]
     public partial class MaintenanceOrderLine
     {
+        [NotMapped]
+        public bool IsToExecute
+        {
+            get { return !(this.FinishingDate > new DateTime(1753, 1, 1)); }
+        }
+
+        [NotMapped]
+        public List<Equipamento> Equipment;
+
     }
 
     public interface IMaintenanceOrderLine
