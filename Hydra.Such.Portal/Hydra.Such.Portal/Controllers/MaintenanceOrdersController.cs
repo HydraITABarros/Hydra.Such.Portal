@@ -33,7 +33,6 @@ namespace Hydra.Such.Portal.Controllers
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
-
         protected MaintnenceOrdersRepository maintnenceOrdersRepository;
         protected EvolutionWEBContext evolutionWEBContext;
         private readonly ISession session;
@@ -45,8 +44,8 @@ namespace Hydra.Such.Portal.Controllers
             this.evolutionWEBContext = evolutionWEBContext;
         }
 
-        [Route(""), HttpGet, AcceptHeader("text/html")]
-        [Route("{orderId}")]
+        [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"), Route("arquivo"),
+        Route(""), HttpGet, AcceptHeader("text/html")]
         public IActionResult Index(string orderId)
         {
 
@@ -61,13 +60,13 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [Route(""), HttpGet, AcceptHeader("application/json")]
-        public ActionResult GetAll (ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to, int idCliente)
+        public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to, int idCliente)
         {
-            if(from== null || to == null) {  return NotFound(); }
-            
+            if (from == null || to == null) { return NotFound(); }
+
             var pageSize = 30;
 
-            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1)) ).OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1))).OrderByDescending(o => o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
@@ -75,8 +74,9 @@ namespace Hydra.Such.Portal.Controllers
             List<MaintenanceOrder> newList;
             try
             {
-             newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrder>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
-            } catch
+                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrder>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
+            }
+            catch
             {
                 newList = new List<MaintenanceOrder>();
             }
@@ -84,41 +84,44 @@ namespace Hydra.Such.Portal.Controllers
             newList.ForEach((item) =>
             {
                 var technicals = GetTechnicals(null, item.No, null);
-                if(technicals != null)
+                if (technicals != null)
                 {
                     item.Technicals = technicals.ToList();
                 }
             });
 
-            var result = new PageResult<dynamic>(newList, nextLink, total);  
+            var result = new PageResult<dynamic>(newList, nextLink, total);
 
             var query = maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to)
-                .Select(m => new {m.IsToExecute, m.IsPreventive, m.OrderType, m.FinishingDate }).ToList();
+                .Select(m => new { m.IsToExecute, m.IsPreventive, m.OrderType, m.FinishingDate }).ToList();
 
-            var ordersCounts = new {
+            var ordersCounts = new
+            {
                 preventive = query.Where(o => o.IsPreventive && !o.IsToExecute).Count(),
                 preventiveToExecute = query.Where(o => o.IsPreventive && o.IsToExecute).Count(),
                 curative = query.Where(o => !o.IsPreventive && !o.IsToExecute).Count(),
                 curativeToExecute = query.Where(o => !o.IsPreventive && o.IsToExecute).Count(),
             };
-          
-            return Json(new {
+
+            return Json(new
+            {
                 result,
                 ordersCounts,
-                range = new { from,to}
-            }); 
+                range = new { from, to }
+            });
         }
 
-        
+
         [Route("technicals"), HttpGet]
         public ActionResult HttpGetTecnicalls(string local, string orderId, string technicalid)
         {
             if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return NotFound(); }
-            return Json(new { technicals = GetTechnicals( local, orderId, technicalid).OrderBy(o=>o.Nome) });
+            return Json(new { technicals = GetTechnicals(local, orderId, technicalid).OrderBy(o => o.Nome) });
         }
 
 
-        private IQueryable<Utilizador> GetTechnicals(string local, string orderId, string technicalid) {
+        private IQueryable<Utilizador> GetTechnicals(string local, string orderId, string technicalid)
+        {
             if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return null; }
 
             IQueryable<Utilizador> technicals;
@@ -150,7 +153,7 @@ namespace Hydra.Such.Portal.Controllers
             technicals = evolutionWEBContext.Utilizador.Where(a => a.Code1 == local);
             return technicals;
         }
-        
+
 
 
         [Route("technicals"), HttpPut]
@@ -179,8 +182,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return Json(0);
             }
-            
-            
+
+
             return Json(orderToUpdate);
         }
 
