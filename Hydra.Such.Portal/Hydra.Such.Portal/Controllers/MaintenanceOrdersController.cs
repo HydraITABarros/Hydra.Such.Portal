@@ -25,6 +25,7 @@ using Manatee.Json.Schema;
 using System.Text.RegularExpressions;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data;
+using Hydra.Such.Portal.Filters;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -44,8 +45,9 @@ namespace Hydra.Such.Portal.Controllers
             this.evolutionWEBContext = evolutionWEBContext;
         }
 
-        [Route("")]
-        public IActionResult Index()
+        [Route(""), HttpGet, AcceptHeader("text/html")]
+        [Route("{orderId}")]
+        public IActionResult Index(string orderId)
         {
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
@@ -57,8 +59,8 @@ namespace Hydra.Such.Portal.Controllers
             return RedirectToAction("AccessDenied", "Error");
         }
 
-        
-        [Route("all"), HttpGet]
+
+        [Route(""), HttpGet, AcceptHeader("application/json")]
         public ActionResult GetAll (ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to, int idCliente)
         {
             if(from== null || to == null) {  return NotFound(); }
@@ -187,6 +189,58 @@ namespace Hydra.Such.Portal.Controllers
         {
             public string orderId;
             public string[] technicalsId;
+        }
+
+
+
+        //[AllowAnonymous]
+        [Route("{orderId}"), HttpGet]
+        public ActionResult GetEquipment(ODataQueryOptions<MaintenanceOrderLine> queryOptions, string orderId)
+        {
+            if (orderId == null) { return NotFound(); }
+
+            var pageSize = 30;
+
+            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.No == orderId), new ODataQuerySettings { PageSize = pageSize });
+            var list = results.Cast<dynamic>().AsEnumerable();
+            var total = Request.ODataFeature().TotalCount;
+            var nextLink = Request.GetNextPageLink(pageSize);
+
+            List<MaintenanceOrderLine> newList;
+            try
+            {
+                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrderLine>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
+            }
+            catch
+            {
+                newList = new List<MaintenanceOrderLine>();
+            }
+
+            newList.ForEach((item) =>
+            {
+                var equipment = GetEquipment(null, item.MoNo);
+                if (equipment != null)
+                {
+                    item.MoNo = equipment.ToString();
+                }
+            });
+
+            var resultLines = new PageResult<dynamic>(newList, nextLink, total);
+
+            var query = evolutionWEBContext.MaintenanceOrderLine.Where(o => o.MoNo == orderId)
+                .Select(m => new { m.IsToExecute, m.FinishingDate }).ToList();
+
+            var ordersCountsLines = new
+            {
+                ToExecute = query.Where(o => o.IsToExecute).Count(),
+                Executed = query.Where(o => !o.IsToExecute).Count(),
+            };
+
+            return Json(new
+            {
+                resultLines,
+                ordersCountsLines,
+            });
         }
 
 
