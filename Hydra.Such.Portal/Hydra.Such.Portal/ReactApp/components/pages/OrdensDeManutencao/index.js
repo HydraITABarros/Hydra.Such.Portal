@@ -31,6 +31,9 @@ import MuiInput from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { renderToString } from 'react-dom/server';
 
+axios.defaults.headers.post['Accept'] = 'application/json';
+axios.defaults.headers.get['Accept'] = 'application/json';
+
 const { DialogTitle, DialogContent, DialogActions } = Modal;
 
 const muiTheme = createMuiTheme();
@@ -418,7 +421,7 @@ class OrdensDeManutencao extends Component {
         if (search && search != '') {
             filter = "contains(description,'" + search + "') or contains(customerName,'" + search + "') or contains(no,'" + search + "')"
         }
-        axios.get('/ordens-de-manutencao/all', {
+        axios.get('/ordens-de-manutencao', {
             params: {
                 from: from.format('YYYY-MM-DD'),
                 to: to.format('YYYY-MM-DD'),

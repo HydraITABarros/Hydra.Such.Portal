@@ -2,7 +2,7 @@ import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { injectGlobal, ThemeProvider } from 'styled-components'
 
-import { HomePage, SamplePage, NotFoundPage, Template, OrdensDeManutencao } from 'components'
+import { HomePage, SamplePage, NotFoundPage, Template, OrdensDeManutencao, OrdensDeManutencaoDetails } from 'components'
 
 // https://github.com/diegohaz/arc/wiki/Styling
 import theme from './themes/default'
@@ -36,7 +36,8 @@ const App = () => {
                 <Switch>
                     {/* <Route path="/" component={HomePage} exact /> */}
                     {/* <Route component={Template} /> */}
-                    <Route path="/ordens-de-manutencao" component={OrdensDeManutencao} />
+                    <Route path="/ordens-de-manutencao" component={OrdensDeManutencao} exact />
+                    <Route path="/ordens-de-manutencao/:orderid" component={OrdensDeManutencaoDetails} />
                     {/* <Route component={NotFoundPage} /> */}
                 </Switch>
             </MuiThemeProvider>
