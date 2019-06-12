@@ -59,7 +59,7 @@ namespace Hydra.Such.Portal.Controllers
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             if (UPerm != null && UPerm.Read.Value)
             {
-                return View();
+                return View("Index");
             }
             return RedirectToAction("AccessDenied", "Error");
         }
