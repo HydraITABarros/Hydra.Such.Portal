@@ -50,7 +50,7 @@ namespace Hydra.Such.Portal.Controllers
             this.evolutionWEBContext = evolutionWEBContext;
         }
 
-        [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"), Route("arquivo"),
+        [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"),
         Route(""), HttpGet, AcceptHeader("text/html")]
         public IActionResult Index(string orderId)
         {
