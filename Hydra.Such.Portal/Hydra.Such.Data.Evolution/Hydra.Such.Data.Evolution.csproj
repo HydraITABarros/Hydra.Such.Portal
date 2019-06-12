@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\" />
+    <Folder Include="DatabaseReference\" />
     <Folder Include="Attributes\" />
   </ItemGroup>
 

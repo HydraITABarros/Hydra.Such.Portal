@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace Hydra.Such.Data.Evolution.Database
+namespace Hydra.Such.Data.Evolution.DatabaseReference
 {
     [ModelMetadataType(typeof(IMaintenanceOrder))]
     public partial class MaintenanceOrder

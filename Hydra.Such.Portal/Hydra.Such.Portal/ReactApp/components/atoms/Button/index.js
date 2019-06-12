@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css, theme } from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
-import _theme from '../../themes/default';
+import _theme from '../../../themes/default';
 import Text from '../Text';
 import Color from 'color';
 import PropTypes from 'prop-types';

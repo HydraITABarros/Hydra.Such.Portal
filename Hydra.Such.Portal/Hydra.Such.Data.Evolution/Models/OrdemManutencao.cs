@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace Hydra.Such.Data.Evolution.Database
+namespace Hydra.Such.Data.Evolution.DatabaseReference
 {
     //[JsonSchemaProcessor(typeof(ReactSchemaProcessor))]
     [ModelMetadataType(typeof(IOrdemManutencao))]
