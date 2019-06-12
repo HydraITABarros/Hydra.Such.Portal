@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http.Features;
 using Hydra.Such.Portal.Filters;
 using SharpRepository.Ioc.Microsoft.DependencyInjection;
-using Hydra.Such.Data.Evolution.Database;
+using Hydra.Such.Data.Evolution.DatabaseReference;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.OData.Edm;
