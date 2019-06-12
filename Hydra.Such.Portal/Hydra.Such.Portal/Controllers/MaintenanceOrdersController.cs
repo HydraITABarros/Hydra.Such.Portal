@@ -50,7 +50,7 @@ namespace Hydra.Such.Portal.Controllers
             this.evolutionWEBContext = evolutionWEBContext;
         }
 
-        [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"), Route("arquivo"),
+        [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"),
         Route(""), HttpGet, AcceptHeader("text/html")]
         public IActionResult Index(string orderId)
         {
@@ -64,6 +64,11 @@ namespace Hydra.Such.Portal.Controllers
             return RedirectToAction("AccessDenied", "Error");
         }
 
+        [Route("arquivo"), HttpGet, AcceptHeader("text/html")]
+        public IActionResult Arquivo()
+        {
+            return Index("");
+        }
 
         [Route(""), HttpGet, AcceptHeader("application/json")]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to)
