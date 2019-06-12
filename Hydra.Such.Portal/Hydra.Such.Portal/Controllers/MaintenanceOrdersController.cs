@@ -132,6 +132,8 @@ namespace Hydra.Such.Portal.Controllers
 
             if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return null; }
 
+            var orderGroup = evolutionWEBContext.MaintenanceOrder.Select(m => m.ShortcutDimension3Code);
+
             IQueryable<Utilizador> technicals;
             if (technicalid != null && technicalid != "")
             {
@@ -142,12 +144,16 @@ namespace Hydra.Such.Portal.Controllers
             if (orderId != null && orderId != "")
             {
                 var order = MaintenanceOrdersRepository.AsQueryable().Where(m => m.No == orderId).FirstOrDefault();
+                var userGroup = evolutionWEBContext.Utilizador.Select(u => u.Code3 == orderGroup.ToString());
+                //var userGroup = evolutionWEBContext.Utilizador.AsQueryable().Where(u => u.Code3 == orderGroup.ToString());
                 var technicalsId = new List<int>();
 
                 for (int i = 1; i <= 5; i++)
                 {
+                    var group = userGroup.GetType().GetProperty("UserGroup" + i.ToString());
                     var prop = order.GetType().GetProperty("IdTecnico" + i.ToString());
                     int? name = (int?)(prop.GetValue(order, null));
+                    group.GetValue(userGroup, null);
                     if (name != null)
                     {
                         technicalsId.Add((int)name);
