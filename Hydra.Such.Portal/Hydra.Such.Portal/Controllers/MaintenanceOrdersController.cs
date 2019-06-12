@@ -34,14 +34,22 @@ namespace Hydra.Such.Portal.Controllers
     public class MaintenanceOrdersController : Controller
     {
 
-        protected MaintnenceOrdersRepository maintnenceOrdersRepository;
+        protected MaintenanceOrdersRepository MaintenanceOrdersRepository;
+        protected MaintenanceOrdersLineRepository MaintenanceOrdersLineRepository;
         protected EvolutionWEBContext evolutionWEBContext;
         private readonly ISession session;
 
-        public MaintenanceOrdersController(MaintnenceOrdersRepository repository, EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs, IHttpContextAccessor httpContextAccessor)
+
+
+        public MaintenanceOrdersController(
+            MaintenanceOrdersRepository MaintenanceOrdersRepository, 
+            MaintenanceOrdersLineRepository MaintenanceOrdersLineRepository, 
+            EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs, 
+            IHttpContextAccessor httpContextAccessor)
         {
             session = httpContextAccessor.HttpContext.Session;
-            this.maintnenceOrdersRepository = repository;
+            this.MaintenanceOrdersRepository = MaintenanceOrdersRepository;
+            this.MaintenanceOrdersLineRepository = MaintenanceOrdersLineRepository;
             this.evolutionWEBContext = evolutionWEBContext;
         }
 
@@ -61,13 +69,13 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [Route(""), HttpGet, AcceptHeader("application/json")]
-        public ActionResult GetAll (ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to, int idCliente)
+        public ActionResult GetAll (ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to, int idCliente, string group)
         {
             if(from== null || to == null) {  return NotFound(); }
             
             var pageSize = 30;
 
-            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1)) ).OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1)) ).OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
@@ -83,7 +91,7 @@ namespace Hydra.Such.Portal.Controllers
 
             newList.ForEach((item) =>
             {
-                var technicals = GetTechnicals(null, item.No, null);
+                var technicals = GetTechnicals(null, item.No, null, null);
                 if(technicals != null)
                 {
                     item.Technicals = technicals.ToList();
@@ -92,7 +100,7 @@ namespace Hydra.Such.Portal.Controllers
 
             var result = new PageResult<dynamic>(newList, nextLink, total);  
 
-            var query = maintnenceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to)
+            var query = MaintenanceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to)
                 .Select(m => new {m.IsToExecute, m.IsPreventive, m.OrderType, m.FinishingDate }).ToList();
 
             var ordersCounts = new {
@@ -111,15 +119,15 @@ namespace Hydra.Such.Portal.Controllers
 
         
         [Route("technicals"), HttpGet]
-        public ActionResult HttpGetTecnicalls(string local, string orderId, string technicalid)
+        public ActionResult HttpGetTecnicalls(string local, string orderId, string technicalid, string group)
         {
-            if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return NotFound(); }
-            return Json(new { technicals = GetTechnicals( local, orderId, technicalid).OrderBy(o=>o.Nome) });
+            if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "") && (group == null || group == "")) { return NotFound(); }
+            return Json(new { technicals = GetTechnicals( local, orderId, technicalid, group).OrderBy(o=>o.Nome) });
         }
 
 
-        private IQueryable<Utilizador> GetTechnicals(string local, string orderId, string technicalid) {
-            if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return null; }
+        private IQueryable<Utilizador> GetTechnicals(string local, string orderId, string technicalid, string group) {
+            if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "") && (group == null || group == "")) { return null; }
 
             IQueryable<Utilizador> technicals;
             if (technicalid != null && technicalid != "")
@@ -130,7 +138,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (orderId != null && orderId != "")
             {
-                var order = maintnenceOrdersRepository.AsQueryable().Where(m => m.No == orderId).FirstOrDefault();
+                var order = MaintenanceOrdersRepository.AsQueryable().Where(m => m.No == orderId).FirstOrDefault();
                 var technicalsId = new List<int>();
 
                 for (int i = 1; i <= 5; i++)
@@ -147,7 +155,7 @@ namespace Hydra.Such.Portal.Controllers
                 return technicals;
             }
 
-            technicals = evolutionWEBContext.Utilizador.Where(a => a.Code1 == local);
+            technicals = evolutionWEBContext.Utilizador.Where(a => a.Code1 == local && a.Code3 == group);
             return technicals;
         }
         
@@ -158,7 +166,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (data.orderId == null || data.orderId == "" || data.technicalsId == null) { return NotFound(); }
 
-            var orderToUpdate = maintnenceOrdersRepository.AsQueryable().Where(m => m.No == data.orderId).FirstOrDefault();
+            var orderToUpdate = MaintenanceOrdersRepository.AsQueryable().Where(m => m.No == data.orderId).FirstOrDefault();
 
             if (orderToUpdate == null) { return NotFound(); }
 
@@ -195,13 +203,14 @@ namespace Hydra.Such.Portal.Controllers
 
         //[AllowAnonymous]
         [Route("{orderId}"), HttpGet]
-        public ActionResult GetEquipment(ODataQueryOptions<MaintenanceOrderLine> queryOptions, string orderId)
+        public ActionResult GetDetails(string orderId, ODataQueryOptions<MaintenanceOrderLine> queryOptions)
         {
             if (orderId == null) { return NotFound(); }
 
             var pageSize = 30;
-
-            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable().Where(o => o.No == orderId), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results;
+            results = queryOptions.ApplyTo(evolutionWEBContext.MaintenanceOrderLine.Where(o => o.MoNo == orderId), new ODataQuerySettings { PageSize = pageSize });
+            
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
@@ -216,24 +225,16 @@ namespace Hydra.Such.Portal.Controllers
                 newList = new List<MaintenanceOrderLine>();
             }
 
-            newList.ForEach((item) =>
-            {
-                var equipment = GetEquipment(null, item.MoNo);
-                if (equipment != null)
-                {
-                    item.MoNo = equipment.ToString();
-                }
-            });
 
             var resultLines = new PageResult<dynamic>(newList, nextLink, total);
 
             var query = evolutionWEBContext.MaintenanceOrderLine.Where(o => o.MoNo == orderId)
-                .Select(m => new { m.IsToExecute, m.FinishingDate }).ToList();
+                .Select(m => new { m.ToExecute, m.FinishingDate }).ToList();
 
             var ordersCountsLines = new
             {
-                ToExecute = query.Where(o => o.IsToExecute).Count(),
-                Executed = query.Where(o => !o.IsToExecute).Count(),
+                toExecute = query.Where(o => o.ToExecute).Count(),
+                executed = query.Where(o => !o.ToExecute).Count(),
             };
 
             return Json(new
@@ -251,7 +252,7 @@ namespace Hydra.Such.Portal.Controllers
         public PageResult<dynamic> GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
         {
             var pageSize = 100;
-            IQueryable results = queryOptions.ApplyTo(maintnenceOrdersRepository.AsQueryable(), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable(), new ODataQuerySettings { PageSize = pageSize });
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
