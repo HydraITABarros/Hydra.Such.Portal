@@ -977,6 +977,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (liquidado.UserPedido.ToLower() == User.Identity.Name.ToLower() || AnularPedido || ValidarPedido)
                         {
                             liquidado.Estado = 6; //Liquidado
+                            liquidado.UserLiquidado = User.Identity.Name;
+                            liquidado.DataLiquidado = DateTime.Now;
                             liquidado.UtilizadorModificacao = User.Identity.Name;
                             liquidado.DataModificacao = DateTime.Now;
 

@@ -30,6 +30,8 @@ namespace Hydra.Such.Data.Database
         public bool? BloqueadoFaltaPagamento { get; set; }
         public string Aprovadores { get; set; }
         public decimal? ValorEncomenda { get; set; }
+        public string UserLiquidado { get; set; }
+        public DateTime? DataLiquidado { get; set; }
         public bool? Arquivado { get; set; }
         public string UserArquivo { get; set; }
         public DateTime? DataArquivo { get; set; }

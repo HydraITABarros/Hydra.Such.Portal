@@ -60,6 +60,7 @@
   <ItemGroup>
     <Report Include="ConsultaMercado.rdl" />
     <Report Include="ConsultaMercadoLinhas.rdl" />
+    <Report Include="ContasReceberACSS.rdl" />
     <Report Include="EncomendasDetails.rdl" />
     <Report Include="ExtratoCliente.rdl" />
     <Report Include="FH_AjudasCustoIntegradasRH.rdl" />

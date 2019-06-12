@@ -10887,6 +10887,14 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Aprovadores")
                     .HasMaxLength(150);
 
+                entity.Property(e => e.UserLiquidado)
+                    .HasColumnName("UserLiquidado")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataLiquidado)
+                    .HasColumnName("DataLiquidado")
+                    .HasColumnType("datetime");
+
                 entity.Property(e => e.UserArquivo)
                     .HasColumnName("UserArquivo")
                     .HasMaxLength(50);
