@@ -52,10 +52,12 @@ namespace Hydra.Such.Portal.Controllers
 
         [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"),
         Route(""), HttpGet, AcceptHeader("text/html")]
+        [ResponseCache(Duration = 60000)]
         public IActionResult Index(string orderId)
         {
+            
 
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
+               UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -71,6 +73,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [Route(""), HttpGet, AcceptHeader("application/json")]
+        [ResponseCache(Duration = 60000)]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to)
         {
             if (from == null || to == null) { return NotFound(); }
