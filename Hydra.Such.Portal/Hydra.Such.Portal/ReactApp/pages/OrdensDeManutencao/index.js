@@ -438,16 +438,6 @@ class OrdensDeManutencao extends Component {
                                 var nextPageLink = data.result.nextPageLink;
                                 this.setState({ ordersCounts: data.ordersCounts, maintenenceOrders: list, maintenenceOrdersNext: nextPageLink }, () => {
                                         return;
-                                        setTimeout(() => {
-                                                list.map(item => {
-                                                        this.fetchTechnicals({ orderId: item.no }, (err, result) => {
-                                                                if (err) return;
-                                                                item.technicals = result.data.technicals;
-                                                                this.setState({ maintenenceOrders: list });
-                                                        });
-                                                        return item;
-                                                });
-                                        }, 1200);
                                 });
                         }
                 }).catch(function (error) {
@@ -522,7 +512,7 @@ class OrdensDeManutencao extends Component {
                 Tooltip.Hidden.rebuild();
                 if (this.state.technicalsOpen == false) {
                         this.setState({ technicalsOpen: true, technicalsSelectedOrder: item, technicalsSelectedOrderOld: _.cloneDeep(item) });
-                        this.fetchTechnicals({ local: item.shortcutDimension1Code });
+                        this.fetchTechnicals({ orderId: item.no });
                 }
         }
 
