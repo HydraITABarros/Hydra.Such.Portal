@@ -26,10 +26,11 @@ using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data;
 using Hydra.Such.Portal.Filters;
 using Hydra.Such.Data.Evolution.DatabaseReference;
+using StackExchange.Redis;
 
 namespace Hydra.Such.Portal.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
@@ -95,7 +96,7 @@ namespace Hydra.Such.Portal.Controllers
 
             newList.ForEach((item) =>
             {
-                var technicals = GetTechnicals(null, item.No, null);
+                var technicals = GetTechnicals(item, null, null);
                 if (technicals != null)
                 {
                     item.Technicals = technicals.ToList();
@@ -126,18 +127,16 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [Route("technicals"), HttpGet]
-        public ActionResult HttpGetTecnicalls(string local, string orderId, string technicalid)
+        public ActionResult HttpGetTecnicalls(string orderId, string technicalid)
         {
-            if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "") ) { return NotFound(); }
-            return Json(new { technicals = GetTechnicals( local, orderId, technicalid).OrderBy(o=>o.Nome) });
+            if ((orderId == null || orderId == "") && (technicalid == null || technicalid == "") ) { return NotFound(); }
+            return Json(new { technicals = GetTechnicals( null, orderId, technicalid).OrderBy(o=>o.Nome) });
         }
 
 
-        private IQueryable<Utilizador> GetTechnicals(string local, string orderId, string technicalid) {
+        private IQueryable<Utilizador> GetTechnicals(MaintenanceOrder order, string orderId, string technicalid) {
 
-            if ((local == null || local == "") && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return null; }
-
-            var orderGroup = evolutionWEBContext.MaintenanceOrder.Select(m => m.ShortcutDimension3Code);
+            if ((order== null ) && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return (new List<Utilizador>()).AsQueryable(); }
 
             IQueryable<Utilizador> technicals;
             if (technicalid != null && technicalid != "")
@@ -146,19 +145,14 @@ namespace Hydra.Such.Portal.Controllers
                 return technicals;
             }
 
-            if (orderId != null && orderId != "")
+            if (order != null)
             {
-                var order = MaintenanceOrdersRepository.AsQueryable().Where(m => m.No == orderId).FirstOrDefault();
-                var userGroup = evolutionWEBContext.Utilizador.Select(u => u.Code3 == orderGroup.ToString());
-                //var userGroup = evolutionWEBContext.Utilizador.AsQueryable().Where(u => u.Code3 == orderGroup.ToString());
                 var technicalsId = new List<int>();
 
                 for (int i = 1; i <= 5; i++)
                 {
-                    var group = userGroup.GetType().GetProperty("UserGroup" + i.ToString());
                     var prop = order.GetType().GetProperty("IdTecnico" + i.ToString());
                     int? name = (int?)(prop.GetValue(order, null));
-                    group.GetValue(userGroup, null);
                     if (name != null)
                     {
                         technicalsId.Add((int)name);
@@ -169,7 +163,16 @@ namespace Hydra.Such.Portal.Controllers
                 return technicals;
             }
 
-            technicals = evolutionWEBContext.Utilizador.Where(a => a.Code1 == local);
+            if (orderId != null && orderId!= "")
+            {
+                var _order = evolutionWEBContext.MaintenanceOrder.FirstOrDefault(o => o.No == orderId);
+                if(_order!= null)
+                {
+                    technicals = evolutionWEBContext.Utilizador.Where(u => u.Code3 == _order.ShortcutDimension3Code);
+                    return technicals;
+                }
+            }
+            technicals = (new List<Utilizador>()).AsQueryable();
             return technicals;
         }
 
@@ -222,6 +225,28 @@ namespace Hydra.Such.Portal.Controllers
             if (orderId == null) { return NotFound(); }
 
             var pageSize = 30;
+            var order = evolutionWEBContext.MaintenanceOrder.AsQueryable().Where(o => o.No == orderId).Select(o => new OmHeaderViewModel() {
+                Description = o.Description,
+                IdClienteEvolution = o.IdClienteEvolution,
+                IdInstituicaoEvolution = o.IdInstituicaoEvolution,
+                CustomerName = o.CustomerName,
+                NomeInstituicao = ""
+            } ).ToList();
+
+            order.ForEach((item)=> {
+                var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i=>i.IdInstituicao == item.IdInstituicaoEvolution);
+                var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i=>i.IdCliente == item.IdClienteEvolution);
+                if(cliente != null)
+                {
+                    item.CustomerName = cliente.Nome;
+                }
+
+                if (cliente != null)
+                {
+                    item.NomeInstituicao = instituicao.Nome;
+                }
+            });
+
             IQueryable results;
             results = queryOptions.ApplyTo(evolutionWEBContext.MaintenanceOrderLine.Where(o => o.MoNo == orderId), new ODataQuerySettings { PageSize = pageSize });
             
@@ -239,7 +264,6 @@ namespace Hydra.Such.Portal.Controllers
                 newList = new List<MaintenanceOrderLine>();
             }
 
-
             var resultLines = new PageResult<dynamic>(newList, nextLink, total);
 
             var query = evolutionWEBContext.MaintenanceOrderLine.Where(o => o.MoNo == orderId)
@@ -253,12 +277,19 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(new
             {
+                order,
                 resultLines,
                 ordersCountsLines,
             });
         }
 
-
+        public class OmHeaderViewModel  {
+            public string Description;
+            public int? IdClienteEvolution;
+            public int? IdInstituicaoEvolution;
+            public string CustomerName;
+            public string NomeInstituicao;
+        }
 
         //[Authorize]
         // Todo adds custom authorize filter (eSuchAuthorizationFilter)  (info: Authentication -> Authorization)
@@ -292,39 +323,40 @@ namespace Hydra.Such.Portal.Controllers
             return json.Replace(",\"format\":\"decimal\"", string.Empty).Replace(",\"format\":\"byte\"", string.Empty).Replace(",\"format\":\"int32\"", string.Empty).Replace(",\"format\":\"time-span\"", string.Empty);
         }
 
-    }
+        
 
-    [Route("api/[controller]")]
-    public class SampleDataController : Controller
-    {
-        private static string[] Summaries = new[]
-       {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        [HttpGet("[action]")]
-        public IEnumerable<WeatherForecast> WeatherForecasts()
+        [Route("api/[controller]")]
+        public class SampleDataController : Controller
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            });
-        }
+            private static string[] Summaries = new[]
+           {
+                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+            };
 
-        public class WeatherForecast
-        {
-            public string DateFormatted { get; set; }
-            public int TemperatureC { get; set; }
-            public string Summary { get; set; }
-
-            public int TemperatureF
+            [HttpGet("[action]")]
+            public IEnumerable<WeatherForecast> WeatherForecasts()
             {
-                get
+                var rng = new Random();
+                return Enumerable.Range(1, 5).Select(index => new WeatherForecast
                 {
-                    return 32 + (int)(TemperatureC / 0.5556);
+                    DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
+                    TemperatureC = rng.Next(-20, 55),
+                    Summary = Summaries[rng.Next(Summaries.Length)]
+                });
+            }
+
+            public class WeatherForecast
+            {
+                public string DateFormatted { get; set; }
+                public int TemperatureC { get; set; }
+                public string Summary { get; set; }
+
+                public int TemperatureF
+                {
+                    get
+                    {
+                        return 32 + (int)(TemperatureC / 0.5556);
+                    }
                 }
             }
         }
