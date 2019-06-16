@@ -81,7 +81,10 @@ namespace Hydra.Such.Portal.Controllers
 
             var pageSize = 30;
 
-            IQueryable results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1)) ).OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
+            IQueryable results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable()
+                .Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1)) &&
+                (o.OrderType == "DMNALMP" || o.OrderType == "DMNCATE" || o.OrderType == "DMNLVMP" || o.OrderType == "DMNPRVE" || o.OrderType == "DMNCREE" || o.OrderType == "DMNDBI" || o.OrderType == "DMNORCE"))
+                .OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
 
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
@@ -96,7 +99,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 newList = new List<MaintenanceOrder>();
             }
-
+            newList = newList.Where(l => l.IsPreventive != null).ToList();
             newList.ForEach((item) =>
             {
                 var technicals = GetTechnicals(item, null, null);
@@ -108,16 +111,16 @@ namespace Hydra.Such.Portal.Controllers
 
             var result = new PageResult<dynamic>(newList, nextLink, total);
 
-
-            var query = MaintenanceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to)
+            var query = MaintenanceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to
+            && (o.OrderType == "DMNALMP" || o.OrderType == "DMNCATE" || o.OrderType == "DMNLVMP" || o.OrderType == "DMNPRVE" || o.OrderType == "DMNCREE" || o.OrderType == "DMNDBI" || o.OrderType == "DMNORCE"))
                 .Select(m => new { m.IsToExecute, m.IsPreventive, m.OrderType, m.FinishingDate }).ToList();
 
             var ordersCounts = new
             {
-                preventive = query.Where(o => o.IsPreventive && !o.IsToExecute).Count(),
-                preventiveToExecute = query.Where(o => o.IsPreventive && o.IsToExecute).Count(),
-                curative = query.Where(o => !o.IsPreventive && !o.IsToExecute).Count(),
-                curativeToExecute = query.Where(o => !o.IsPreventive && o.IsToExecute).Count(),
+                preventive = query.Where(o => o.IsPreventive == true && !o.IsToExecute).Count(),
+                preventiveToExecute = query.Where(o => o.IsPreventive == true && o.IsToExecute).Count(),
+                curative = query.Where(o => o.IsPreventive == false && !o.IsToExecute).Count(),
+                curativeToExecute = query.Where(o => o.IsPreventive == false && o.IsToExecute).Count(),
             };
 
             return Json(new
@@ -223,7 +226,8 @@ namespace Hydra.Such.Portal.Controllers
 
         //[AllowAnonymous]
         [Route("{orderId}"), HttpGet]
-        public ActionResult GetDetails(string orderId, ODataQueryOptions<MaintenanceOrderLine> queryOptions)
+        [ResponseCache(Duration = 60000)]
+        public ActionResult GetDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
         {
             if (orderId == null) { return NotFound(); }
 
@@ -234,48 +238,50 @@ namespace Hydra.Such.Portal.Controllers
                 IdInstituicaoEvolution = o.IdInstituicaoEvolution,
                 CustomerName = o.CustomerName,
                 NomeInstituicao = ""
-            } ).ToList();
+            } ).FirstOrDefault();
 
-            order.ForEach((item)=> {
-                var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i=>i.IdInstituicao == item.IdInstituicaoEvolution);
-                var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i=>i.IdCliente == item.IdClienteEvolution);
-                if(cliente != null)
-                {
-                    item.CustomerName = cliente.Nome;
-                }
+            if (order == null) { return NotFound(); }
 
-                if (cliente != null)
-                {
-                    item.NomeInstituicao = instituicao.Nome;
-                }
-            });
+            var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i=>i.IdInstituicao == order.IdInstituicaoEvolution);
+            var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i=>i.IdCliente == order.IdClienteEvolution);
+            if(cliente != null)
+            {
+                order.CustomerName = cliente.Nome;
+            }
+
+            if (instituicao != null)
+            {
+                order.NomeInstituicao = instituicao.Nome;
+            }
 
             IQueryable results;
-            results = queryOptions.ApplyTo(evolutionWEBContext.MaintenanceOrderLine.Where(o => o.MoNo == orderId), new ODataQuerySettings { PageSize = pageSize });
-            
+            results = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.Select(e => new Equipamento() {
+                Nome = e.Nome, Marca = e.Marca, IdEquipamento = e.IdEquipamento,
+                Categoria = e.Categoria, NumSerie = e.NumSerie, NumInventario = e.NumInventario, NumEquipamento = e.NumEquipamento
+            }), new ODataQuerySettings { PageSize = pageSize });
+
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
 
-            List<MaintenanceOrderLine> newList;
+            List<Equipamento> newList;
             try
             {
-                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrderLine>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
+                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Equipamento>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
             }
             catch
             {
-                newList = new List<MaintenanceOrderLine>();
+                newList = new List<Equipamento>();
             }
 
             var resultLines = new PageResult<dynamic>(newList, nextLink, total);
 
-            var query = evolutionWEBContext.MaintenanceOrderLine.Where(o => o.MoNo == orderId)
-                .Select(m => new { m.IsToExecute, m.FinishingDate }).ToList();
 
             var ordersCountsLines = new
             {
-                toExecute = query.Where(o => o.IsToExecute).Count(),
-                executed = query.Where(o => !o.IsToExecute).Count(),
+                toExecute = evolutionWEBContext.Equipamento.Count(),
+                toSigning = 0,
+                executed = 0
             };
 
             return Json(new
