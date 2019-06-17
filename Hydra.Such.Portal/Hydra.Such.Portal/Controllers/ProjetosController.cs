@@ -571,162 +571,128 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateProject([FromBody] ProjectDetailsViewModel data)
         {
-
-            if (data != null)
+            try
             {
-                try
+                if (data != null)
                 {
-                    //Projetos cProject = new Projetos();
-
-                    //cProject.NºProjeto = data.ProjectNo;
-                    //cProject.Área = data.Area;
-                    //cProject.Descrição = data.Description;
-                    //cProject.NºCliente = data.ClientNo;
-                    //cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
-                    //cProject.Estado = data.Status;
-                    //cProject.CódigoRegião = data.RegionCode;
-                    //cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
-                    //cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
-                    //cProject.Faturável = data.Billable;
-                    //cProject.NºContrato = data.ContractNo;
-                    //cProject.CódEndereçoEnvio = data.ShippingAddressCode;
-                    //cProject.EnvioANome = data.ShippingName;
-                    //cProject.EnvioAEndereço = data.ShippingAddress;
-                    //cProject.EnvioACódPostal = data.ShippingPostalCode;
-                    //cProject.EnvioALocalidade = data.ShippingLocality;
-                    //cProject.EnvioAContato = data.ShippingContact;
-                    //cProject.CódTipoProjeto = data.ProjectTypeCode;
-                    //cProject.NossaProposta = data.OurProposal;
-                    //cProject.CódObjetoServiço = data.ServiceObjectCode;
-                    //cProject.NºCompromisso = data.CommitmentCode;
-                    //cProject.GrupoContabObra = "PROJETO";
-                    //cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
-                    //cProject.PedidoDoCliente = data.ClientRequest;
-                    //cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
-                    //cProject.ValidadeDoPedido = data.RequestValidity;
-                    //cProject.DescriçãoDetalhada = data.DetailedDescription;
-                    //cProject.CategoriaProjeto = data.ProjectCategory;
-                    //cProject.NºContratoOrçamento = data.BudgetContractNo;
-                    //cProject.ProjetoInterno = data.InternalProject;
-                    //cProject.ChefeProjeto = data.ProjectLeader;
-                    //cProject.ResponsávelProjeto = data.ProjectResponsible;
-                    //cProject.UtilizadorModificação = User.Identity.Name;
-                    //cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
-
-                    //DBProjects.Update(cProject);
-
-                    //data.eReasonCode = 1;
-
-
-                    //Read NAV Project Key
-                    Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
-                    try
+                    if (data.Status == (EstadoProjecto)1) //ENCOMENDA
                     {
-                        TReadNavProj.Wait();
-                    }
-                    catch (Exception ex)
-                    {
-                        data.eReasonCode = 3;
-                        data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
-                    }
-
-                    if (TReadNavProj.IsCompletedSuccessfully)
-                    {
-                        if (TReadNavProj.Result.WSJob == null)
+                        //Read NAV Project Key
+                        Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
+                        try
+                        {
+                            TReadNavProj.Wait();
+                        }
+                        catch (Exception ex)
                         {
                             data.eReasonCode = 3;
-                            data.eMessage = "Erro ao atualizar: O projeto não existe no NAV";
+                            data.eMessage = "Erro ao atualizar: Não foi possivel obter o Pronjeto a partir do NAV.";
+                            return Json(data);
                         }
-                        else
+
+                        if (TReadNavProj.IsCompletedSuccessfully)
                         {
-                            //Update Project on NAV
-                            Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
-                            bool statusL = true;
-                            try
-                            {
-                                TUpdateNavProj.Wait();
-                            }
-                            catch (Exception ex)
+                            if (TReadNavProj.Result.WSJob == null)
                             {
                                 data.eReasonCode = 3;
-                                data.eMessage = ex.InnerException.Message;
-                                statusL = false;
-                            }
-
-                            if (!TUpdateNavProj.IsCompletedSuccessfully || statusL == false)
-                            {
-                                Projetos OLD_Proj = DBProjects.GetById(data.ProjectNo);
-
-                                if (OLD_Proj != null && OLD_Proj.NºCliente != data.ClientNo)
-                                {
-                                    data.eReasonCode = 3;
-                                    data.eMessage = "Não é possível alterar o cliente deste projeto.";
-                                }
-                                else
-                                {
-                                    data.eReasonCode = 3;
-                                    data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
-                                }
+                                data.eMessage = "Erro ao atualizar: O projeto não existe no NAV";
+                                return Json(data);
                             }
                             else
                             {
-                                Projetos cProject = new Projetos();
+                                //Update Project on NAV
+                                Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                                bool statusL = true;
+                                try
+                                {
+                                    TUpdateNavProj.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = ex.InnerException.Message;
+                                    statusL = false;
+                                    return Json(data);
+                                }
 
-                                cProject.NºProjeto = data.ProjectNo;
-                                cProject.Área = data.Area;
-                                cProject.Descrição = data.Description;
-                                cProject.NºCliente = data.ClientNo;
-                                cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
-                                cProject.Estado = data.Status;
-                                cProject.CódigoRegião = data.RegionCode;
-                                cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
-                                cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
-                                cProject.Faturável = data.Billable;
-                                cProject.NºContrato = data.ContractNo;
-                                cProject.CódEndereçoEnvio = data.ShippingAddressCode;
-                                cProject.EnvioANome = data.ShippingName;
-                                cProject.EnvioAEndereço = data.ShippingAddress;
-                                cProject.EnvioACódPostal = data.ShippingPostalCode;
-                                cProject.EnvioALocalidade = data.ShippingLocality;
-                                cProject.EnvioAContato = data.ShippingContact;
-                                cProject.CódTipoProjeto = data.ProjectTypeCode;
-                                cProject.NossaProposta = data.OurProposal;
-                                cProject.CódObjetoServiço = data.ServiceObjectCode;
-                                cProject.NºCompromisso = data.CommitmentCode;
-                                cProject.GrupoContabObra = "PROJETO";
-                                cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
-                                cProject.PedidoDoCliente = data.ClientRequest;
-                                cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
-                                cProject.ValidadeDoPedido = data.RequestValidity;
-                                cProject.DescriçãoDetalhada = data.DetailedDescription;
-                                cProject.CategoriaProjeto = data.ProjectCategory;
-                                cProject.NºContratoOrçamento = data.BudgetContractNo;
-                                cProject.ProjetoInterno = data.InternalProject;
-                                cProject.ChefeProjeto = data.ProjectLeader;
-                                cProject.ResponsávelProjeto = data.ProjectResponsible;
-                                cProject.UtilizadorModificação = User.Identity.Name;
-                                cProject.FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido;
+                                if (!TUpdateNavProj.IsCompletedSuccessfully || statusL == false)
+                                {
+                                    Projetos OLD_Proj = DBProjects.GetById(data.ProjectNo);
 
-                                DBProjects.Update(cProject);
+                                    if (OLD_Proj != null && OLD_Proj.NºCliente != data.ClientNo)
+                                    {
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "Não é possível alterar o cliente deste projeto.";
+                                        return Json(data);
+                                    }
+                                    else
+                                    {
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                                        return Json(data);
+                                    }
+                                }
+                                else
+                                {
+                                    Projetos cProject = DBProjects.ParseToDB(data);
+                                    cProject.UtilizadorModificação = User.Identity.Name;
+                                    cProject.DataHoraModificação = DateTime.Now;
 
-                                data.eReasonCode = 1;
+                                    if (DBProjects.Update(cProject) != null)
+                                    {
+                                        data.eReasonCode = 1;
+                                    }
+                                    else
+                                    {
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "Ocorreu um erro ao atualizar o projeto no eSUCH.";
+                                        return Json(data);
+                                    }
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        if (data.Status == (EstadoProjecto)0) //PENDENTE
+                        {
+                            Projetos cProject = DBProjects.ParseToDB(data);
+                            cProject.UtilizadorModificação = User.Identity.Name;
+                            cProject.DataHoraModificação = DateTime.Now;
+
+                            if (DBProjects.Update(cProject) != null)
+                            {
+                                data.eReasonCode = 1;
+                            }
+                            else
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao atualizar o projeto no eSUCH.";
+                                return Json(data);
+                            }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Não é possivel atualizar o projeto pois o mesmo está terminado.";
+                            return Json(data);
+                        }
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    data.eReasonCode = 2;
-                    data.eMessage = "Ocorreu um erro ao atualizar o projeto.";
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro: Não foi possivel obter os dados.";
+                    return Json(data);
                 }
-
-
-                return Json(data);
             }
-            return Json(false);
+            catch (Exception ex)
+            {
+                data.eReasonCode = 4;
+                data.eMessage = "Ocorreu um erro ao atualizar o projeto";
+            }
+            return Json(data);
         }
-
-
 
         [HttpPost]
         public JsonResult DeleteProject([FromBody] ProjectDetailsViewModel data)

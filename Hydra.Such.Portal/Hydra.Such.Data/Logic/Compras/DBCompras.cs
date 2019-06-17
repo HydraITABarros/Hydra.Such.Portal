@@ -182,7 +182,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                         Responsaveis = Compras.Responsaveis,
                         NoProjeto = Compras.NoProjeto,
 
-                        NoProjetoTexto = Compras.NoProjeto == null ? "" : DBProjects.GetById(Compras.NoProjeto) != null ? DBProjects.GetById(Compras.NoProjeto).Descrição : "",
+                        //NoProjetoTexto = Compras.NoProjeto == null ? "" : DBProjects.GetById(Compras.NoProjeto) != null ? DBProjects.GetById(Compras.NoProjeto).Descrição : "",
 
                         NoFornecedor = Compras.NoFornecedor,
                         NoEncomenda = Compras.NoEncomenda,

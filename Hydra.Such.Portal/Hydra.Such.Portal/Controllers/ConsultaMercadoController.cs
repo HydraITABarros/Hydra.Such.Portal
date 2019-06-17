@@ -1140,6 +1140,121 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult ObterTotalFornecedor([FromBody] ConsultaMercadoView data)
+        {
+            List<RegistoDePropostasView> registoDePropostas = new List<RegistoDePropostasView>();
+            string TextoComTotais = "";
+            decimal TotalForn1 = 0;
+            decimal TotalForn2 = 0;
+            decimal TotalForn3 = 0;
+            decimal TotalForn4 = 0;
+            decimal TotalForn5 = 0;
+            decimal TotalForn6 = 0;
+
+            try
+            {
+                for (int i = 1; i <= 6; i++)
+                {
+                    if (i == 1)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor1Select.HasValue && x.Fornecedor1Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                if (registoDePropostasView.Fornecedor1Preco != null)
+                                    TotalForn1 = TotalForn1 + (decimal)registoDePropostasView.Fornecedor1Preco;
+                            }
+                            TextoComTotais = TextoComTotais + "Total de: " + registoDePropostas.FirstOrDefault().Fornecedor1Nome + " = " + TotalForn1.ToString() + " €" + Environment.NewLine;
+                        }
+                    }
+
+                    if (i == 2)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor2Select.HasValue && x.Fornecedor2Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                if (registoDePropostasView.Fornecedor2Preco != null)
+                                    TotalForn2 = TotalForn2 + (decimal)registoDePropostasView.Fornecedor2Preco;
+                            }
+                            TextoComTotais = TextoComTotais + "Total de: " + registoDePropostas.FirstOrDefault().Fornecedor2Nome + " = " + TotalForn2.ToString() + " €" + Environment.NewLine;
+                        }
+                    }
+
+                    if (i == 3)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor3Select.HasValue && x.Fornecedor3Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                if (registoDePropostasView.Fornecedor3Preco != null)
+                                    TotalForn3 = TotalForn3 + (decimal)registoDePropostasView.Fornecedor3Preco;
+                            }
+                            TextoComTotais = TextoComTotais + "Total de: " + registoDePropostas.FirstOrDefault().Fornecedor3Nome + " = " + TotalForn3.ToString() + " €" + Environment.NewLine;
+                        }
+                    }
+
+                    if (i == 4)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor4Select.HasValue && x.Fornecedor4Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                if (registoDePropostasView.Fornecedor4Preco != null)
+                                    TotalForn4 = TotalForn4 + (decimal)registoDePropostasView.Fornecedor4Preco;
+                            }
+                            TextoComTotais = TextoComTotais + "Total de: " + registoDePropostas.FirstOrDefault().Fornecedor4Nome + " = " + TotalForn4.ToString() + " €" + Environment.NewLine;
+                        }
+                    }
+
+                    if (i == 5)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor5Select.HasValue && x.Fornecedor5Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                if (registoDePropostasView.Fornecedor5Preco != null)
+                                    TotalForn5 = TotalForn5 + (decimal)registoDePropostasView.Fornecedor5Preco;
+                            }
+                            TextoComTotais = TextoComTotais + "Total de: " + registoDePropostas.FirstOrDefault().Fornecedor5Nome + " = " + TotalForn5.ToString() + " €" + Environment.NewLine;
+                        }
+                    }
+
+                    if (i == 6)
+                    {
+                        registoDePropostas = data.RegistoDePropostas.Where(x => x.Fornecedor6Select.HasValue && x.Fornecedor6Select.Value == true).ToList();
+
+                        if (registoDePropostas.Count() > 0)
+                        {
+                            foreach (RegistoDePropostasView registoDePropostasView in registoDePropostas)
+                            {
+                                if (registoDePropostasView.Fornecedor6Preco != null)
+                                    TotalForn6 = TotalForn6 + (decimal)registoDePropostasView.Fornecedor6Preco;
+                            }
+                            TextoComTotais = TextoComTotais + "Total de: " + registoDePropostas.FirstOrDefault().Fornecedor6Nome + " = " + TotalForn6.ToString() + " €" + Environment.NewLine;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                throw new Exception("Ocorreu um erro ao obter os totais.");
+            }
+
+            return Json(TextoComTotais);
+        }
+
+        [HttpPost]
         public async Task<JsonResult> EnviarEmailATodos([FromBody] ConsultaMercadoView data)
         {
             data.eReasonCode = 0;

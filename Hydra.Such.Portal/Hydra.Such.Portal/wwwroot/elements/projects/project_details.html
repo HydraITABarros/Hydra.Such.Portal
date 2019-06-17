@@ -61,7 +61,7 @@
         <!--<iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes" last-response="{{LProjectCountabGroupTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectContractsByClient" last-response="{{LProjectContracts}}" id="projects_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetGroupContProject" last-response="{{LProjectGroupContab}}" auto method="post" handle-as="json" content-type="application/json" id="groupcontab_ajax"></iron-ajax>
@@ -69,6 +69,13 @@
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{LProjectClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{LAreas}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVShippingAddressesByClientNoAsVM" last-response="{{ClientShippingAddresses}}" method="post" handle-as="json" content-type="application/json" id="shippinhAddress_ajax"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetAllResponsabilityCenterCodeFilterByAreaCode"
+                   last-response="{{LProjectResponsabilityCenterCodes}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax"
+                   content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes"
                    last-response="{{LProjectCountabGroupTypes}}"
@@ -898,6 +905,9 @@
                 _getGroupContabProjectType: function () {
                     this.$.page_getGroupContabProjectType_ajax.body = JSON.stringify(this.$.FunctionalAreaCode.value);
                     this.$.page_getGroupContabProjectType_ajax.generateRequest();
+
+                    this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.body = JSON.stringify(this.$.FunctionalAreaCode.value);
+                    this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.generateRequest();
                 },
             });
         });

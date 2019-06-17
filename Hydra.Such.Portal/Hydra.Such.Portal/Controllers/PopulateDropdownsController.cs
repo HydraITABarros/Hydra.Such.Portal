@@ -950,7 +950,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllResponsabilityCenterCodeFilterByAreaCode([FromBody] string areaCode)
         {
-            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.Contains(areaCode)).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.StartsWith(areaCode)).Select(x => new DDMessageString()
             {
                 id = x.Code,
                 value = x.Name
