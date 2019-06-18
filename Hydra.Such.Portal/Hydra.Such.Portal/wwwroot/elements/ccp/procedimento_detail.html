@@ -277,6 +277,7 @@
                 cursor: not-allowed;
             }
 
+            
             paper-button.disabled {
                 cursor: not-allowed;
                 pointer-events: none;
@@ -1194,7 +1195,8 @@
                                         <h2 class="separator" style="border-bottom:1px dotted; padding:0;">Lotes do Procedimento</h2>
                                         <div class="table inlineForm">
                                             <div class="col-sm-7">
-                                                <vaadin-text-field id="descricaoObjectoLote" name="descricaoObjectoLote" label="Descrição Objecto" value="{{_descricaoObjectoLote}}" required></vaadin-text-field>
+                                                <!--<vaadin-text-field id="descricaoObjectoLote" name="descricaoObjectoLote" label="Descrição Objecto" value="{{_descricaoObjectoLote}}" required></vaadin-text-field>-->
+                                                <such-textarea id="descricaoObjectoLote" name="descricaoObjectoLote" label="Descrição Objecto" rows="3" value="{{_descricaoObjectoLote}}" required></such-textarea>
                                             </div>
                                             <div class="col-sm-2">
                                                 <vaadin-text-field id="valorEstimadoLote" name="valorEstimadoLote" label="Valor Estimado Lote" value="{{_valorEstimadoLote}}" prevent-invalid-input pattern="[0-9.]*" required error-message="Campo obrigatório"></vaadin-text-field>
@@ -1219,7 +1221,7 @@
                                                             Lote Nº
                                                         </template>
                                                         <template>
-                                                            <vaadin-text-field id="idLote1" value="{{item.idLote}}" disabled="true"></vaadin-text-field>
+                                                            <vaadin-text-field id="idLote1" value="{{item.idLote}}" disabled></vaadin-text-field>
                                                         </template>
                                                     </vaadin-grid-column>
                                                     <vaadin-grid-column width="80%">
@@ -1227,7 +1229,8 @@
                                                             Descrição do Objecto
                                                         </template>
                                                         <template>
-                                                            <vaadin-text-field id="descricaoObjecto1" value="{{item.descricaoObjectoLote}}" on-blur="_updateLote" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                            <!--<vaadin-text-field id="descricaoObjecto1" value="{{item.descricaoObjectoLote}}" on-blur="_updateLote" required error-message="Campo obrigatório"></vaadin-text-field>-->
+                                                            <such-textarea id="descricaoObjecto1" rows="3" value="{{item.descricaoObjectoLote}}" on-blur="_updateLote" required error-message="Campo obrigatório"></such-textarea>
                                                         </template>
                                                     </vaadin-grid-column>
                                                     <vaadin-grid-column width="10%">
@@ -2430,29 +2433,30 @@
                                     <h2>Lotes Procedimento</h2>
                                     <div class="row break_clear">
                                         <div class="col-sm-12">
-                                            <vaadin-grid id="gridLotesProcedimento2" aria-label="gridLotesProcedimento2" items="{{data.loteProcedimentoCcp}}" class="grid" style="height:250px;" active-item="{{_SelectedLine}}">
-                                                <vaadin-grid-column width="6%">
-                                                    <template class="header">
-                                                        Adjudicar?
-                                                    </template>
-                                                    <template>
-                                                        <paper-button raised class="btn btn--confirm" id="authorizeBatchBtn" on-tap="_authorizeBatch" style="margin-top: 0px"><i class="fa fa-road" aria-hidden="true"></i></paper-button>
-                                                    </template>
-                                                </vaadin-grid-column>
+                                            <vaadin-grid id="gridLotesProcedimento15" aria-label="gridLotesProcedimento15" items="{{data.lotesProcedimentoEstado15}}" class="grid" style="height:250px;" active-item="{{_SelectedBatchToAward}}">
                                                 <vaadin-grid-column width="5%">
                                                     <template class="header">
                                                         Lote Nº
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field id="idLote2" value="{{item.idLote}}" readonly></vaadin-text-field>
+                                                        <vaadin-text-field id="idLote15" value="{{item.idLote}}" disabled></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="31%">
+                                                <vaadin-grid-column width="37%">
                                                     <template class="header">
                                                         Descrição do Objecto
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field id="descricaoObjecto2" value="{{item.descricaoObjectoLote}}" readonly></vaadin-text-field>
+                                                        <!--<vaadin-text-field id="descricaoObjecto15" value="{{item.descricaoObjectoLote}}" readonly></vaadin-text-field>-->
+                                                        <such-textarea id="descricaoObjecto15" name="descricaoObjecto15" rows="3" value="{{item.descricaoObjectoLote}}" disabled></such-textarea>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="5%">
+                                                    <template class="header">
+                                                        Estado
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="estadoLote" value="{{item.estadoLote}}" disabled></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
                                                 <vaadin-grid-column width="8%">
@@ -2460,7 +2464,7 @@
                                                         Valor Estimado
                                                     </template>
                                                     <template>
-                                                        <vaadin-text-field id="valorEstimado2" value="{{item.valorEstimado}}" readonly></vaadin-text-field>
+                                                        <vaadin-text-field id="valorEstimado15" value="{{item.valorEstimado}}" disabled></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
                                                 <vaadin-grid-column width="8%">
@@ -2468,25 +2472,16 @@
                                                         Valor Adjudicar
                                                     </template>
                                                     <template>
-                                                        <template is="dom-if" if="{{ item.selected }}">
-                                                            <vaadin-text-field id="valorAdjudicar" value="{{item.valorAdjudicacao}}" on-blur="_updateLote" required></vaadin-text-field>
-                                                        </template>
-                                                        <template is="dom-if" if="{{ !item.selected }}">
-                                                            <vaadin-text-field id="valorAdjudicar" value="{{item.valorAdjudicacao}}" disabled></vaadin-text-field>
-                                                        </template>
+                                                        <vaadin-text-field id="valorAdjudicar" value="{{item.valorAdjudicacao}}" disabled></vaadin-text-field>
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="42%">
+                                                <vaadin-grid-column width="37%">
                                                     <template class="header">
                                                         Comentário Adjudicação
                                                     </template>
                                                     <template>
-                                                        <template is="dom-if" if="{{ item.selected }}">
-                                                            <vaadin-text-field id="comentarioAutorizacaoAdjudicacao" value="{{item.comentarioAutorizacaoAdjudicacao}}" on-blur="_updateLote" required></vaadin-text-field>
-                                                        </template>
-                                                        <template is="dom-if" if="{{ !item.selected }}">
-                                                            <vaadin-text-field id="comentarioAutorizacaoAdjudicacao" value="{{item.comentarioAutorizacaoAdjudicacao}}" disabled></vaadin-text-field>
-                                                        </template>
+                                                        <!--<vaadin-text-field id="comentarioAutorizacaoAdjudicacao" value="{{item.comentarioAutorizacaoAdjudicacao}}" disabled></vaadin-text-field>-->
+                                                        <such-textarea id="comentarioAutorizacaoAdjudicacao" name="comentarioAutorizacaoAdjudicacao" rows="3" value="{{item.comentarioAutorizacaoAdjudicacao}}" disabled></such-textarea>
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
@@ -2496,7 +2491,7 @@
                                 <!-- ALT_CCP_#001.y2019.e -->
                             </paper-collapse-item>
                             <paper-collapse-item header="A Preencher pela Área - Pedido de Adjudicação (16)">
-                                <div class="col-xs-12">
+                                <div id="submitRegularSection" class="col-xs-12">
                                     <div class="row break_clear">
                                         <div class="col-sm-6">
                                             <such-textarea rows="5" value="{{data.comentarioAdjudicacao16}}" id="comentarioAdjudicacao16" name="comentarioAdjudicacao16" label="Proposta de decisão"> </such-textarea>
@@ -2537,7 +2532,74 @@
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
-                                <div class="mb-15"></div>
+                                <!--<div class="mb-15"></div>-->
+                                <!-- ALT_CCP_#001.y2019.b -->
+                                <div id="submitBatchesSection" class="col-xs-12">
+                                    <h2>Lotes Procedimento</h2>
+                                    <div class="row break_clear">
+                                        <div class="col-sm-12">
+                                            <vaadin-grid id="gridLotesProcedimento16" aria-label="gridLotesProcedimento16" items="{{data.lotesProcedimentoEstado16 }}" class="grid" style="height:250px;" active-item="{{_SelectedBatchToSubmit}}">
+                                                <vaadin-grid-column width="6%">
+                                                    <template class="header">
+                                                        Submeter?
+                                                    </template>
+                                                    <template>
+                                                        <paper-button raised class="btn btn--confirm" id="submitBatchBtn" on-tap="_submitBatch" style="margin-top: 0px"><i class="fa fa-external-link-square" aria-hidden="true"></i></paper-button>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="5%">
+                                                    <template class="header">
+                                                        Lote Nº
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="idLote16" value="{{item.idLote}}" readonly></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="26%">
+                                                    <template class="header">
+                                                        Descrição do Objecto
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="descricaoObjecto16" value="{{item.descricaoObjectoLote}}" readonly></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="5%">
+                                                    <template class="header">
+                                                        Estado
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="estadoLote16" value="{{item.estadoLote}}" readonly></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="8%">
+                                                    <template class="header">
+                                                        Valor Estimado
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="valorEstimado16" value="{{item.valorEstimado}}" readonly></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="8%">
+                                                    <template class="header">
+                                                        Valor Adjudicar
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="valorAdjudicar16" value="{{item.valorAdjudicacao}}" readonly></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="42%">
+                                                    <template class="header">
+                                                        Comentário Adjudicação
+                                                    </template>
+                                                    <template>
+                                                        <vaadin-text-field id="comentarioAutorizacaoAdjudicacao16" value="{{item.comentarioAutorizacaoAdjudicacao}}" readonly></vaadin-text-field>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ALT_CCP_#001.y2019-->
                             </paper-collapse-item>
                         </paper-collapse-group>
                     </div>
@@ -3824,6 +3886,42 @@
             </div>
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
+        <!-- ALT_CCP_#001.y2019.b -->
+        <paper-dialog id="batchStatus15Detail" class="dialgoBox">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <div class="row break_clear">
+                            <div class="col-md-2">
+                                <vaadin-text-field id="idLoteInPaperDlg15" name="idLoteInPaperDlg15" label="Cód. Lote" value="{{batchObject15.idLote}}" readonly></vaadin-text-field>
+                            </div>
+                            <div class="col-md-7">
+                                <such-textarea id="descricaoObjectoLoteInPaperDlg15" name="descricaoObjectoLoteInPaperDlg15" label="Descrição Objecto" rows="3" value="{{batchObject15.descricaoObjectoLote}}" readonly></such-textarea>
+                            </div>
+                            <div class="col-md-1">
+                                <vaadin-text-field id="estadoLoteInPaperDlg15" name="estadoLoteInPaperDlg15" label="Estado" value="{{batchObject15.estadoLote}}" readonly></vaadin-text-field>
+                            </div>
+                            <div class="col-md-2">
+                                <vaadin-text-field id="valorEstimadoLoteInPaperDlg15" name="valorEstimadoLoteInPaperDlg15" label="Valor Estimado" value="{{batchObject15.valorEstimado}}" readonly></vaadin-text-field>
+                            </div>
+                        </div>
+                        <div class="row break_clear">
+                            <div class="col-md-2">
+                                <vaadin-text-field id="valorAdjudicarInPaperDlg15" name="valorAdjudicarInPaperDlg15" label="Valor Adjudicar" value="{{batchObject15.valorAdjudicacao}}" on-blur="_updateLotePaperDialog15" prevent-invalid-input pattern="[0-9.]*" required></vaadin-text-field>
+                            </div>
+                            <div class="col-md-10">
+                                <such-textarea id="comentarioAdjudicacaoInPaperDlg15" name="comentarioAdjudicacaoInPaperDlg15" label="Comentário Adjudicação" rows="3" value="{{batchObject15.comentarioAutorizacaoAdjudicacao}}" on-blur="_updateLotePaperDialog15" required></such-textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeDetailStatus15" dialog-dismiss>Fechar</paper-button>
+                <paper-button class="btnSave" dialog-confirm>Adjudicar</paper-button>
+            </div>
+        </paper-dialog>
+        <!-- ALT_CCP_#001.y2019.b -->
     </template>
 
     <script>
@@ -4016,8 +4114,12 @@
                         type: Boolean,
                         value: true
                     },
-                    _SelectedLine: {
-                        observer:'_activeBatchStatus'
+                    _SelectedBatchToAward: {
+                        observer:'_batchToAuthorizeDetails'
+                    },
+                    batchObject15: {
+                        type: Object,
+                        value: null
                     }
                     
                 },
@@ -4029,6 +4131,7 @@
                     var _self = this;
                     $(_self.$.batchesSection).addClass('hidden');
                     $(_self.$.authorizeBatchesSection).addClass('hidden');
+                    $(_self.$.submitBatchesSection).addClass('hidden');
                     // ALT_CCP_#001.y2019.e
 
                     this.$.ajax_userpermissions.body = this.data;
@@ -4300,9 +4403,39 @@
                             if (self.data.procedimentoEmLotes) {
                                 $(self.$.batchesSection).removeClass('hidden');
                                 $(self.$.authorizeBatchesSection).removeClass('hidden');
+                                $(self.$.submitBatchesSection).removeClass('hidden');
 
                                 $(self.$.authorizeRegularSection).addClass('hidden');
+                                $(self.$.submitRegularSection).addClass('hidden');
+
+                                debugger;;
+
+
+                                //// https://cdn.vaadin.com/vaadin-grid/3.0.0/demo/sorting-filtering.html#filtering-with-data-provider
+                                //// verificar este link!!!!
+                                //var _lotesEstado15 = this.$.gridLotesProcedimento15.items;
                                 
+                                //for (let b of _lotesEstado15) {
+                                //    if (b.estadoLote != 15) {
+                                //        _lotesEstado15.splice(_lotesEstado15.indexOf(b), 1);
+                                //    }
+                                //}
+
+                                
+                                                                
+                                
+
+                                //var _lotesEstado16 = this.$.gridLotesProcedimento16.items;
+                                //for(let b of _lotesEstado16) {
+                                //    if (b.estadoLote != 16) {
+                                //        _lotesEstado15.splice(_lotesEstado16.indexOf(b), 1);
+                                //    }
+                                //}
+                              
+
+                                //this.$.gridLotesProcedimento15.clearCache();
+                                //this.$.gridLotesProcedimento16.clearCache();
+
                             }
                             // zpgm.ALT_CCP_#001.y2019.e
                             if (self.data.temposPaCcp != null) {
@@ -6620,6 +6753,53 @@
                     }
                 },
 
+
+                _verificaLote: function (lote) {
+                    debugger;;
+                    var _valorEstimado = parseFloat(lote.valorEstimado);
+
+                    if (isNaN(_valorEstimado)) {
+                        this._showErrorMessage("Valor do lote tem que ser um número!");
+                        return false;
+                    }
+
+                    if (_valorEstimado <= 0) {
+                        this._showErrorMessage("Valor do lote tem que ser maior que zero!");
+                        return false;
+                    }
+
+                    if (lote.descricaoObjectoLote == "" || lote.descricaoObjectoLote == null) {
+                        this._showErrorMessage("Descrição do Objecto do lote tem que estar preenchido!");
+                        return false;
+                    }
+
+                    lote.valorEstimado = this.__preciseRound(_valorEstimado, 2);
+
+                    // utilizado na grid de adjudicação - 15.b
+                    if (lote.valorAdjudicacao != null && lote.valorAdjudicacao != "") {
+                        var _valorAdjudicar = parseFloat(lote.valorAdjudicacao);
+
+                        if (isNaN(_valorAdjudicar)) {
+                            this._showErrorMessage("Valor Adjudicar tem que ser um número!")
+                            return false;
+                        }
+
+                        if (_valorAdjudicar <= 0) {
+                            this._showErrorMessage("Valor Adjudicar tem que ser maior que zero!")
+                            return false;
+                        }
+
+                        lote.valorAdjudicacao = this.__preciseRound(_valorAdjudicar, 2);
+
+                        if (parseFloat(lote.valorAdjudicacao) > parseFloat(lote.valorEstimado)) {
+                            this._showErrorMessage("Valor Adjudicação não pode ser maior que Valor Estimado");
+                            return false;
+                        }
+                    }
+                    // utilizado na grid de adjudicação - 15.e
+
+                    return true;
+                },
                 _updateLote: function (e) {
                     debugger;
                     if (this.data != undefined) {
@@ -6627,53 +6807,15 @@
                         var index = _lotes.indexOf(e.model.item);
 
                         var _loteToUpdate = _lotes[index];
-                        var _loteValorEstimado = parseFloat(_loteToUpdate.valorEstimado);
+                       
+                        if (this._verificaLote(_loteToUpdate)) {
+                            this.$.page_update_lote_ajax.body = JSON.stringify(_loteToUpdate);
+                            this.$.page_update_lote_ajax.generateRequest();
 
-                        if (isNaN(_loteValorEstimado)) {
-                            this._showErrorMessage("Valor do lote tem que ser um número!");
-                            return;
-                        }
-
-                        if (_loteValorEstimado <= 0) {
-                            this._showErrorMessage("Valor do lote tem que ser maior que zero!");
-                            return;
-                        }
-
-                        if (_loteToUpdate.descricaoObjectoLote == "" || _loteToUpdate.descricaoObjectoLote == null) {
-                            this._showErrorMessage("Descrição do Objecto do lote tem que estar preenchido!");
-                            return;
+                            this.$.gridLotesProcedimento1.clearCache();
+                            this.$.gridLotesProcedimento15.clearCache();
                         }
                         
-                        _loteToUpdate.valorEstimado = this.__preciseRound(_loteValorEstimado, 2);
-
-                        // utilizado na grid de adjudicação.b
-                        if (_loteToUpdate.valorAdjudicacao != null && _loteToUpdate.valorAdjudicacao != "") {
-                            var _valorAdjudicar = parseFloat(_loteToUpdate.valorAdjudicacao);
-
-                            if (isNaN(_valorAdjudicar)) {
-                                this._showErrorMessage("Valor Adjudicar tem que ser um número!")
-                                return;
-                            }
-
-                            if (_valorAdjudicar <= 0) {
-                                this._showErrorMessage("Valor Adjudicar tem que ser maior que zero!")
-                                return;
-                            }
-
-                            _loteToUpdate.valorAdjudicacao = this.__preciseRound(_valorAdjudicar, 2);
-
-                            if (_loteToUpdate.valorAdjudicacao > _loteToUpdate.valorEstimado) {
-                                this._showErrorMessage("Valor Adjudicação nãopode ser maior que Valor Estimado");
-                                return;
-                            }
-                        }
-                        // utilizado na grid de adjudicação.e
-
-                        this.$.page_update_lote_ajax.body = JSON.stringify(_loteToUpdate);
-                        this.$.page_update_lote_ajax.generateRequest();
-
-                        this.$.gridLotesProcedimento1.clearCache();
-                        this.$.gridLotesProcedimento2.clearCache();
                     }
                 },
 
@@ -6683,40 +6825,121 @@
                     }
                 },
 
-                _activeBatchStatus: function (item) {
+                _updateLotePaperDialog15: function (e) {
+                    debugger;
+                    if (this._verificaLote(this.batchObject15)) {
+                        this.$.page_update_lote_ajax.body = JSON.stringify(this.batchObject15);
+                        this.$.page_update_lote_ajax.generateRequest();
+
+                        this.$.gridLotesProcedimento1.clearCache();
+                        this.$.gridLotesProcedimento15.clearCache();
+                    }
+                },
+
+                //_activeBatchStatus: function (item) {
+                //    debugger;;
+                //    if (item != null) {
+                //        var batchesList = this.data.loteProcedimentoCcp;
+                //        var oSel = batchesList.find(x => x.selected);
+
+                //        if (oSel != undefined) {
+                //            batchesList.find(x => x == oSel).selected = false;
+                //        }
+
+                //        var sel = batchesList.find(x => x == item);
+                //        if (sel != undefined) {
+                //            batchesList.find(x => x == item).selected = true;
+                //            if (sel.estadoLote != 15) {
+                //                batchesList.find(x => x == item).selected = false;
+                //                this._openToast("Lote " + sel.idLote + " não pode ser adjudicado!");
+                //            }
+
+                //            this.$.gridLotesProcedimento15.clearCache();
+                //        }
+                //    }      
+
+                //},
+
+                _batchToAuthorizeDetails: function (item) {
                     debugger;;
-                    if (item != null) {
-                        var batchesList = this.data.loteProcedimentoCcp;
-                        var oSel = batchesList.find(x => x.selected);
+                    if (item !== null && item !== undefined) {
+                        this.batchObject15 = item;
+                        this.$.batchStatus15Detail.open();
 
-                        if (oSel != undefined) {
-                            batchesList.find(x => x == oSel).selected = false;
-                        }
+                        debugger;;
+                    }
+                    
+                },
 
-                        var sel = batchesList.find(x => x == item);
-                        if (sel != undefined) {
-                            batchesList.find(x => x == item).selected = true;
-                            if (sel.estadoLote != 15) {
-                                batchesList.find(x => x == item).selected = false;
-                                this._openToast("Lote " + sel.idLote + " não pode ser adjudicado!");
-                            }
 
-                            this.$.gridLotesProcedimento2.clearCache();
+                _closeDetailStatus15: function (e) {
+                    debugger;;
+                    /*
+                     *                     
+                     var projects = [
+                        {
+                            value: "jquery",
+                            label: "jQuery",
+                            desc: "the write less"
+                        },
+                        {
+                            value: "jquery-ui",
+                            label: "jQuery UI",
+                            desc: "the official user UI"
+                        }];
+
+                        //find the index of object from array that you want to update
+                        var objIndex = projects.findIndex(obj => obj.value === 'jquery-ui');
+
+                        // make new object of updated object.
+                        const updatedObj = { ...projects[objIndex], label: 'new label', desc: 'updated desc value'};
+                        console.log(updatedObj);
+
+                        projects.fill(updatedObj, objIndex, objIndex+1);
+                        //console.log("original data=", projects);
+                        console.log("updated data=", projects);
+                     * 
+                     */
+
+
+                    var lotes = this.data.loteProcedimentoCcp;
+
+                    if ((this.batchObject15.valorAdjudicacao !== null && this.batchObject15.valorAdjudicacao !== undefined) ||
+                        (this.batchObject15.comentarioAutorizacaoAdjudicacao !== null && this.batchObject15.comentarioAutorizacaoAdjudicacao !== undefined)
+                    ) {
+                        if (lotes.valorAdjudicacao !== this.batchObject15.valorAdjudicacao || lotes.comentarioAutorizacaoAdjudicacao !== this.batchObject15.comentarioAutorizacaoAdjudicacao) {
+                            var index = lotes.findIndex(b => b.noProcedimento === this.batchObject15.noProcedimento && b.idLote === this.batchObject15.idLote);
+                            
+                            lotes[index].valorAdjudicacao =
+                                (this.batchObject15.valorAdjudicacao !== null && this.batchObject15.valorAdjudicacao !== undefined) ?
+                                    this.batchObject15.valorAdjudicacao :
+                                    lotes[index].valorAdjudicacao;
+                            lotes[index].comentarioAutorizacaoAdjudicacao =
+                                (this.batchObject15.comentarioAutorizacaoAdjudicacao !== null && this.batchObject15.comentarioAutorizacaoAdjudicacao !== undefined) ?
+                                    this.batchObject15.comentarioAutorizacaoAdjudicacao :
+                                    lotes[index].comentarioAutorizacaoAdjudicacao;
                         }
                     }
                     
-
+                    
+                    debugger;;
+                    this.batchObject15 = null;
                 },
-
                 __preciseRound: function (num, dec) {
-                    var _typeDebug = typeof num;
-
                     if ((typeof num !== 'number') || (typeof dec !== 'number'))
                         return 0;
 
                     var num_sign = num >= 0 ? 1 : -1;
 
                     return (Math.round((num * Math.pow(10, dec)) + (num_sign * 0.0001)) / Math.pow(10, dec)).toFixed(dec);
+                },
+                __removeBatchFromListBasedOnStatus: function (batchesList, status) {
+                    debugger;;
+                    for (let b of batchesList) {
+                        if (b.estadoLote != status) {
+                            batchesList.splice(batchesList.indexOf(b), 1);
+                        }
+                    }
                 },
                 // zpgm.ALT_CCP_#001.y2019.e
 
@@ -6737,7 +6960,8 @@
 
                         // zpgm.ALT_CCP_#001.y2019
                         $(_self.$.gridLotesProcedimento1).addClass('disabled');
-                        $(_self.$.gridLotesProcedimento2).addClass('disabled');
+                        $(_self.$.gridLotesProcedimento15).addClass('disabled');
+                        $(_self.$.gridLotesProcedimento16).addClass('disabled');
                         //div
                         $(_self.$.botoes_accao).addClass('hidden');
 
@@ -6793,6 +7017,7 @@
                             // zpgm.ALT_CCP_#001.y2019
                             $(_self.$.gridLotesProcedimento1).addClass('disabled');
                             $(_self.$.buttonAddLote).addClass('disabled');
+                            
                             
                         }
 
@@ -6984,7 +7209,11 @@
                         // ALT_CCP_#001.y2019.b
                         if (data.procedimentoEmLotes) {
                             if (data.estado != 15) {
-                                $(_self.$.gridLotesProcedimento2).addClass('disabled');
+                                $(_self.$.gridLotesProcedimento15).addClass('disabled');
+                            }
+
+                            if (data.estado != 16) {
+                                $(_self.$.gridLotesProcedimento16).addClass('disabled');
                             }
                         }
                         // ALT_CCP_#001.y2019.e

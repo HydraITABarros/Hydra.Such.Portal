@@ -282,10 +282,14 @@ namespace Hydra.Such.Data.ViewModel.CCP
             }
 
             //Procedimento.TipoNavigation = ProcedimentoView.TipoNavigation;
+            // ALT_CCP_#001.y2019.b
             //Procedimento.FundamentoLegalTipoProcedimentoCcp = ProcedimentoView.FundamentoLegalTipoProcedimentoCcp;
-            if(ProcedimentoView.LoteProcedimentoCcp != null && ProcedimentoView.LoteProcedimentoCcp.Count > 0)
+            if (ProcedimentoView.LoteProcedimentoCcp != null && ProcedimentoView.LoteProcedimentoCcp.Count > 0)
+            {
+               
                 Procedimento.LoteProcedimentoCcp = ProcedimentoView.LoteProcedimentoCcp;
-
+            }
+            // ALT_CCP_#001.y2019.e
             return Procedimento;
 
         }
@@ -528,10 +532,19 @@ namespace Hydra.Such.Data.ViewModel.CCP
             // FIM Lista de Requisições
 
             ProcedimentoView.TipoNavigation = Procedimento.TipoNavigation;
+            // ALT_CCP_#001.y2019.b
             ProcedimentoView.FundamentoLegalTipoProcedimentoCcp = Procedimento.FundamentoLegalTipoProcedimentoCcp;
-            if(Procedimento.LoteProcedimentoCcp!=null && Procedimento.LoteProcedimentoCcp.Count > 0)
+            if (Procedimento.LoteProcedimentoCcp != null && Procedimento.LoteProcedimentoCcp.Count > 0)
+            {
                 ProcedimentoView.LoteProcedimentoCcp = Procedimento.LoteProcedimentoCcp;
-
+                ProcedimentoView.LotesProcedimentoEstado15 = Procedimento.LoteProcedimentoCcp.Where(p => p.EstadoLote == 15).ToList();
+                ProcedimentoView.LotesProcedimentoEstado16 = Procedimento.LoteProcedimentoCcp.Where(p => p.EstadoLote == 16).ToList();
+                ProcedimentoView.LotesProcedimentoEstado17 = Procedimento.LoteProcedimentoCcp.Where(p => p.EstadoLote == 17).ToList();
+                ProcedimentoView.LotesProcedimentoEstado18 = Procedimento.LoteProcedimentoCcp.Where(p => p.EstadoLote == 18).ToList();
+                ProcedimentoView.LotesProcedimentoEstado19 = Procedimento.LoteProcedimentoCcp.Where(p => p.EstadoLote == 19).ToList();
+                ProcedimentoView.LotesProcediemtnoEstado20 = Procedimento.LoteProcedimentoCcp.Where(p => p.EstadoLote == 20).ToList();
+            }                                                                                                                         
+            // ALT_CCP_#001.y2019.e
             return ProcedimentoView;
         }
 
