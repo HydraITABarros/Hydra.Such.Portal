@@ -272,6 +272,7 @@ namespace Hydra.Such.Data.NAV
         {
             DateTime now = DateTime.Now;
             ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
+            WSCreatePreInvoice.Create_Result result = new WSCreatePreInvoice.Create_Result();
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
@@ -325,7 +326,7 @@ namespace Hydra.Such.Data.NAV
 
             try
             {
-                WSCreatePreInvoice.Create_Result result = await WS_Client.CreateAsync(NAVCreate);
+                result = await WS_Client.CreateAsync(NAVCreate);
                 return result;
             }
             catch (Exception ex)

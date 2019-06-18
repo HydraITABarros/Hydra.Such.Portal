@@ -41,6 +41,9 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public string BloqueadoFaltaPagamentoText { get; set; }
         public string Aprovadores { get; set; }
         public decimal? ValorEncomenda { get; set; }
+        public string UserLiquidado { get; set; }
+        public DateTime? DataLiquidado { get; set; }
+        public string DataLiquidadoText { get; set; }
         public bool? Arquivado { get; set; }
         public string ArquivadoText { get; set; }
         public string UserArquivo { get; set; }

@@ -69,16 +69,24 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result != null)
                 {
+                    List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                    List<LinhasRequisição> AllLines = DBRequestLine.GetAll();
+                    List<NAVSupplierViewModels> AllSupliers = DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
                     result.ForEach(Compras =>
                     {
                         Compras.RegiaoMercadoLocalTexto = Compras.RegiaoMercadoLocal == null ? "" : EnumerablesFixed.LocalMarketRegions.Where(y => y.Id == Compras.RegiaoMercadoLocal).FirstOrDefault().Value;
                         Compras.CodigoProdutoTexto = Compras.CodigoProduto == null ? "" : Compras.CodigoProduto;
                         Compras.EstadoTexto = Compras.Estado == null ? "" : EnumerablesFixed.ComprasEstado.Where(y => y.Id == Compras.Estado).FirstOrDefault().Value;
-                        Compras.NoFornecedorTexto = Compras.NoFornecedor == null ? "" : Compras.NoFornecedor + " - " + DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoFornecedor).FirstOrDefault().Name;
+
+                        if (!string.IsNullOrEmpty(Compras.NoFornecedor))
+                            Compras.NoFornecedorTexto = Compras.NoFornecedor == null ? "" : Compras.NoFornecedor + " - " + AllSupliers.Where(x => x.No_ == Compras.NoFornecedor).FirstOrDefault() != null ? AllSupliers.Where(x => x.No_ == Compras.NoFornecedor).FirstOrDefault().Name : "";
+
                         if (!string.IsNullOrEmpty(Compras.NoRequisicao) && Compras.NoLinhaRequisicao != null)
-                            Compras.RecusadoComprasTexto = DBRequestLine.GetByRequisicaoNoAndLineNo(Compras.NoRequisicao, (int)Compras.NoLinhaRequisicao) == null ? "" : DBRequestLine.GetByRequisicaoNoAndLineNo(Compras.NoRequisicao, (int)Compras.NoLinhaRequisicao).RecusadoCompras == false ? "Não" : "Sim";
-                        if (!string.IsNullOrEmpty(Compras.NoProjetoTexto) && !string.IsNullOrEmpty(Compras.NoProjeto))
-                            Compras.NoProjetoTexto = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, Compras.NoProjeto).FirstOrDefault().Description;
+                            Compras.RecusadoComprasTexto = AllLines.Where(x => x.NºRequisição == Compras.NoRequisicao && x.NºLinha == Compras.NoLinhaRequisicao).FirstOrDefault() != null ? AllLines.Where(x => x.NºRequisição == Compras.NoRequisicao && x.NºLinha == Compras.NoLinhaRequisicao).FirstOrDefault().RecusadoCompras == true ? "Sim" : "Não" : "";
+
+                        if (!string.IsNullOrEmpty(Compras.NoProjeto))
+                            Compras.NoProjetoTexto = AllProjects.Where(x => x.No == Compras.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(x => x.No == Compras.NoProjeto).FirstOrDefault().Description : "";
                     });
                 }
 

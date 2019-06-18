@@ -3116,7 +3116,7 @@ namespace Hydra.Such.Portal.Controllers
                                 var parameters = new[]
                                 {
                                     new SqlParameter("@NoFH", data.FolhaDeHorasNo),
-                            };
+                                };
                                 resultApprovalMovement.eReasonCode = ctx.execStoredProcedureFH("exec FH_Validar_Terminar @NoFH", parameters);
 
                                 if (resultApprovalMovement.eReasonCode == 1)

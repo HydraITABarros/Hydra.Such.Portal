@@ -1,0 +1,12 @@
+﻿@{
+    ViewData["Title"] = "Mapa Contas a Receber – ACSS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/contabilidade/ContasReceberACSS.html">
+
+<x-contasreceberacss
+    _areaid="1"
+    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+    _reportserverurl='@ViewBag.reportServerURL'>
+</x-contasreceberacss>

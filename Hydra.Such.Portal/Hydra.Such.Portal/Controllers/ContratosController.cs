@@ -1472,6 +1472,7 @@ namespace Hydra.Such.Portal.Controllers
                                         x.NºContrato = NewContract.NºDeContrato;
                                         x.NºVersão = NewContract.NºVersão;
                                         x.DataHoraCriação = DateTime.Now;
+                                        x.GrupoFatura = x.GrupoFatura == null ? 0 : x.GrupoFatura;
                                         DBContractLines.Create(x);
                                     }
                                 }
@@ -1481,6 +1482,7 @@ namespace Hydra.Such.Portal.Controllers
                                     x.NºContrato = NewContract.NºDeContrato;
                                     x.NºVersão = NewContract.NºVersão;
                                     x.DataHoraCriação = DateTime.Now;
+                                    x.GrupoFatura = x.GrupoFatura == null ? 0 : x.GrupoFatura;
                                     DBContractLines.Create(x);
                                 }
                             });
@@ -2085,7 +2087,7 @@ namespace Hydra.Such.Portal.Controllers
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
             foreach (var item in contractList)
             {
-                //if (item.NºDeContrato == "VC0500129" || item.NºDeContrato == "VC180111" || item.NºDeContrato == "VCI190002")
+                //if (item.NºDeContrato == "VC190074")
                 //{
                 //    string teste = "";
                 //}
@@ -2567,7 +2569,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Problema += " Fatura no Pre-Registo!";
                                 }
                             }
-
+                            
                             if (!string.IsNullOrEmpty(item.NºCliente))
                             {
                                 Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
@@ -2577,6 +2579,15 @@ namespace Hydra.Such.Portal.Controllers
                                     if (postNAV.Result.Blocked == Blocked.Invoice || postNAV.Result.Blocked == Blocked.All)
                                     {
                                         Problema += " Cliente Bloqueado!";
+                                    }
+                                }
+
+                                NAVClientsViewModel cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºCliente);
+                                if (cliente != null)
+                                {
+                                    if (string.IsNullOrEmpty(cliente.VATRegistrationNo_))
+                                    {
+                                        Problema += " Cliente falta Nº Contribuinte!";
                                     }
                                 }
                             }
@@ -3005,6 +3016,7 @@ namespace Hydra.Such.Portal.Controllers
                         //Validação cajo existam Requisições Cliente tem que existir pelo menos uma no período da fatura, se não existir sai do processo e retorna mensagem de erro
                         List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
                         RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                        Reqcontract = null;
 
                         ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
                         if (ListaContratos != null && ListaContratos.Count > 0)
@@ -3039,16 +3051,6 @@ namespace Hydra.Such.Portal.Controllers
                         //        && x.DataInícioCompromisso <= contractLine.ÚltimaDataFatura
                         //        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
                         //}
-                        if (Reqcontract != null)
-                        {
-                            Reqcontract.DataÚltimaFatura = Lastdate;
-                            DBContractClientRequisition.Update(Reqcontract);
-                        }
-                        else
-                        {
-                            contractLine.ÚltimaDataFatura = Lastdate;
-                            DBContracts.Update(contractLine);
-                        }
 
                         item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
                         item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
@@ -3057,7 +3059,6 @@ namespace Hydra.Such.Portal.Controllers
                         item.CódigoRegião = contractLine.CódigoRegião;
                         item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
                         item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
-
 
                         //AMARO DUEDATE = DataExpiração
                         item.DataDeExpiração = DataDocumento;
@@ -3114,6 +3115,17 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
                         {
+                            if (Reqcontract != null)
+                            {
+                                Reqcontract.DataÚltimaFatura = Lastdate;
+                                DBContractClientRequisition.Update(Reqcontract);
+                            }
+                            else
+                            {
+                                contractLine.ÚltimaDataFatura = Lastdate;
+                                DBContracts.Update(contractLine);
+                            }
+
                             //Estado Pendente
                             //11-12-2018 ARomao@such.pt
                             //A pedido do Marco Marcelo o contrato nunca pode mudar de estado
@@ -3366,6 +3378,7 @@ namespace Hydra.Such.Portal.Controllers
                                 //Validação cajo existam Requisições Cliente tem que existir pelo menos uma no período da fatura, se não existir sai do processo e retorna mensagem de erro
                                 List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
                                 RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                                Reqcontract = null;
 
                                 ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
                                 if (ListaContratos != null && ListaContratos.Count > 0)
@@ -3401,17 +3414,6 @@ namespace Hydra.Such.Portal.Controllers
                                 //        && x.DataFimCompromisso >= contractLine.ÚltimaDataFatura);
 
                                 //}
-                                if (Reqcontract != null)
-                                {
-                                    Reqcontract.DataÚltimaFatura = Lastdate;
-                                    DBContractClientRequisition.Update(Reqcontract);
-                                }
-                                else
-                                {
-                                    contractLine.ÚltimaDataFatura = Lastdate;
-                                    DBContracts.Update(contractLine);
-                                }
-
 
                                 item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
                                 item.NoCompromisso = Reqcontract != null ? Reqcontract.NºCompromisso : contractLine.NºCompromisso;
@@ -3477,6 +3479,17 @@ namespace Hydra.Such.Portal.Controllers
 
                                 if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader != null && InvoiceHeader.Result != null)
                                 {
+                                    if (Reqcontract != null)
+                                    {
+                                        Reqcontract.DataÚltimaFatura = Lastdate;
+                                        DBContractClientRequisition.Update(Reqcontract);
+                                    }
+                                    else
+                                    {
+                                        contractLine.ÚltimaDataFatura = Lastdate;
+                                        DBContracts.Update(contractLine);
+                                    }
+
                                     String InvoiceHeaderNo = InvoiceHeader.Result.WSPreInvoice.No;
                                     List<LinhasFaturaçãoContrato> itemList = lineList.Where(x => x.NºContrato == item.NºContrato && x.GrupoFatura == item.GrupoFatura).ToList();
 
@@ -3539,7 +3552,6 @@ namespace Hydra.Such.Portal.Controllers
                                             Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
                                             InvoiceLines.Wait();
                                         }
-
                                         catch (Exception ex)
                                         {
                                             if (!hasErrors)
@@ -4637,6 +4649,7 @@ namespace Hydra.Such.Portal.Controllers
                                         newline.NºContrato = newNumeration;
                                         newline.NºVersão = int.Parse(versionNo);
                                         newline.NºLinha = 0;
+                                        newline.GrupoFatura = newline.GrupoFatura == null ? 0 : newline.GrupoFatura;
                                         DBContractLines.Create(newline);
                                     }
                                     if (string.IsNullOrEmpty(thisHeader.NºCliente) && !string.IsNullOrEmpty(thisHeader.NºContato))
@@ -4698,6 +4711,7 @@ namespace Hydra.Such.Portal.Controllers
                                         newline.TipoContrato = contractType;
                                         newline.NºContrato = newNumeration;
                                         newline.NºVersão = int.Parse(versionNo);
+                                        newline.GrupoFatura = newline.GrupoFatura == null ? 0 : newline.GrupoFatura;
                                         DBContractLines.Create(newline);
                                     }
                                 }

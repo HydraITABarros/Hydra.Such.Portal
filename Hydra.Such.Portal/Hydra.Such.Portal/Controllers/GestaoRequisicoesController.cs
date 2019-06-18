@@ -1947,6 +1947,8 @@ namespace Hydra.Such.Portal.Controllers
                                 Email.IsBodyHtml = true;
                                 Email.EmailApproval = EmailApproval;
                                 Email.SendEmail();
+
+                                DBApprovalEmails.Create(EmailApproval);
                             }
                             else
                             {

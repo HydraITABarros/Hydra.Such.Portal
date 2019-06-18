@@ -108,7 +108,7 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador == userId).Select(x => x.NºMovimentoNavigation).Where(x => x.Estado == status).ToList();
+                    return ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador.ToLower() == userId.ToLower()).Select(x => x.NºMovimentoNavigation).Where(x => x.Estado == status).ToList();
                 }
             }
             catch (Exception ex)
@@ -124,7 +124,7 @@ namespace Hydra.Such.Data.Logic.Approvals
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador == userId).Select(x => x.NºMovimentoNavigation).Where(x => x.Estado == status && x.Tipo == 1).ToList();
+                    return ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador.ToLower() == userId.ToLower()).Select(x => x.NºMovimentoNavigation).Where(x => x.Estado == status && x.Tipo == 1).ToList();
                 }
             }
             catch (Exception ex)

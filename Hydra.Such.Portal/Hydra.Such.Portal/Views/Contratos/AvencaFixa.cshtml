@@ -505,7 +505,13 @@
                             });
                             window.setGridFilter('contratos-avencafixa', filters || {});
 
-                            window.location.href = "/Contratos/DetalhesContrato/" + contractNo;// + "?version=" + item.versionNo + "&" + "isHistoric=false";
+                            if (contractNo.includes("VCI")) {
+                                window.location.href = "/Contratos/DetalhesContratoInternos/" + contractNo;// + "?version=" + item.versionNo + "&" + "isHistoric=false";
+                            }
+                            else {
+                                window.location.href = "/Contratos/DetalhesContrato/" + contractNo;// + "?version=" + item.versionNo + "&" + "isHistoric=false";
+                            }
+
                         }
                     }
                 },

@@ -133,6 +133,47 @@ namespace Hydra.Such.Data.Database
             return result;
         }
 
+        public virtual int execStoredProcedurePedidoPagamento(String cmdText, SqlParameter[] parameters)
+        {
+            int result = 0;
+            try
+            {
+                using (var connection = new SqlConnection(ConnectionString))
+                {
+                    connection.Open();
+
+                    using (var command = new SqlCommand(cmdText, connection))
+                    {
+                        foreach (SqlParameter item in parameters)
+                        {
+                            command.Parameters.Add(item.ParameterName, System.Data.SqlDbType.NVarChar);
+                            command.Parameters[item.ParameterName].Value = item.Value == null ? "" : item.Value;
+                        }
+
+                        var dataReader = command.ExecuteReader();
+
+                        if (dataReader.HasRows)
+                        {
+                            while (dataReader.Read())
+                            {
+                                result = dataReader.GetInt32(0);
+                            }
+                        }
+                        else
+                        {
+                            result = 99;
+                        }
+                        dataReader.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return 99;
+            }
+            return result;
+        }
+
         /// <summary>
         /// 
         /// *************************************************************************************************
