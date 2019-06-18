@@ -158,6 +158,13 @@ namespace Hydra.Such.Data.ViewModel.CCP
         public TipoProcedimentoCcp TipoNavigation { get; set; }
         public FundamentoLegalTipoProcedimentoCcp FundamentoLegalTipoProcedimentoCcp { get; set; }
         public ICollection<LoteProcedimentoCcp> LoteProcedimentoCcp { get; set; }
+
+        public ICollection<LoteProcedimentoCcp> LotesProcedimentoEstado15 { get; set; }
+        public ICollection<LoteProcedimentoCcp> LotesProcedimentoEstado16 { get; set; }
+        public ICollection<LoteProcedimentoCcp> LotesProcedimentoEstado17 { get; set; }
+        public ICollection<LoteProcedimentoCcp> LotesProcedimentoEstado18 { get; set; }
+        public ICollection<LoteProcedimentoCcp> LotesProcedimentoEstado19 { get; set; }
+        public ICollection<LoteProcedimentoCcp> LotesProcediemtnoEstado20 { get; set; }
         #endregion
 
         #region used to map flow control checklist

@@ -221,7 +221,10 @@ This program is available under Apache License Version 2.0, available at https:/
             }
 
             :host([disabled]) {
-                pointer-events: none;
+                /*
+                    zpgm.Commented to allow scrolling in the disabled state, when the content exceeds the number of rows
+                */
+                /*pointer-events: none;*/
             }
 
                 :host([disabled]) [part="value"] {

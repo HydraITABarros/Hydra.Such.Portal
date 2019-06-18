@@ -951,6 +951,8 @@ namespace Hydra.Such.Portal.Controllers
 
             //return Json(null);
         }
+
+        
         [HttpPost]
         public JsonResult DeleteLote([FromBody]JObject requestParam)
         {
