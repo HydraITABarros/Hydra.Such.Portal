@@ -2887,7 +2887,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 90;
-            result.eMessage = "Não existem Despesas válidas para calcular as Ajudas de Custo.";
+            result.eMessage = "Não existe Horário válido para calcular as Ajudas de Custo.";
             try
             {
                 decimal NoDias = 0;

@@ -10,6 +10,22 @@ namespace Hydra.Such.Data.Logic
     public static class DBConfigLinhasEncFornecedor
     {
         #region CRUD
+        public static List<ConfigLinhasEncFornecedor> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ConfigLinhasEncFornecedor.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static ConfigLinhasEncFornecedor GetByVendorNoAndLineNo(string VendorNo, int LineNo)
         {
             try
@@ -39,6 +55,27 @@ namespace Hydra.Such.Data.Logic
             {
 
                 return null;
+            }
+        }
+
+        public static int GetMaxLineNoByVendorNo(string VendorNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ConfigLinhasEncFornecedor LastVendor = new ConfigLinhasEncFornecedor();
+                    LastVendor = ctx.ConfigLinhasEncFornecedor.Where(x => x.VendorNo == VendorNo).ToList().LastOrDefault();
+                    if (LastVendor != null)
+                        return LastVendor.LineNo;
+                    else
+                        return 0;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return -1;
             }
         }
 
@@ -82,6 +119,23 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static bool Delete(ConfigLinhasEncFornecedor ObjectToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    ctx.ConfigLinhasEncFornecedor.Remove(ObjectToDelete);
+                    ctx.SaveChanges();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         #endregion
 
