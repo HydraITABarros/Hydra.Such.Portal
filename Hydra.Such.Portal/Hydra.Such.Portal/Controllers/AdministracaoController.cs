@@ -7448,8 +7448,8 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(3).SetCellValue("Nº");
                 row.CreateCell(4).SetCellValue("Descrição");
                 row.CreateCell(5).SetCellValue("Descrição 2");
-                row.CreateCell(6).SetCellValue("Quantidade");
-                row.CreateCell(7).SetCellValue("Unidade de Medida");
+                row.CreateCell(6).SetCellValue("Unidade de Medida");
+                row.CreateCell(7).SetCellValue("Quantidade");
                 row.CreateCell(8).SetCellValue("Valor");
 
                 if (dp != null)
@@ -7465,8 +7465,8 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(3).SetCellValue(item.No);
                         row.CreateCell(4).SetCellValue(item.Description);
                         row.CreateCell(5).SetCellValue(item.Description2);
-                        row.CreateCell(6).SetCellValue(item.Quantity.HasValue ? item.Quantity.ToString() : "");
-                        row.CreateCell(7).SetCellValue(item.UnitOfMeasure);
+                        row.CreateCell(6).SetCellValue(item.UnitOfMeasure);
+                        row.CreateCell(7).SetCellValue(item.Quantity.HasValue ? item.Quantity.ToString() : "");
                         row.CreateCell(8).SetCellValue(item.Valor.HasValue ? item.Valor.ToString() : "");
 
                         count++;

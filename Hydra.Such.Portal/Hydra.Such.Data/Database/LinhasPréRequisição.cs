@@ -43,6 +43,8 @@ namespace Hydra.Such.Data.Database
         public int? NºLinhaEncomendaAberto { get; set; }
         public string LocalCompraDireta { get; set; }
         public string GrupoRegistoIVAProduto { get; set; }
+        public decimal? TaxaIVA { get; set; }
+
 
         public Projetos NºProjetoNavigation { get; set; }
         public PréRequisição NºPréRequisiçãoNavigation { get; set; }

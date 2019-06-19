@@ -4814,6 +4814,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Viatura).HasMaxLength(20);
 
+                entity.Property(e => e.TaxaIVA).HasColumnName("TaxaIVA");
+
                 entity.HasOne(d => d.NºProjetoNavigation)
                     .WithMany(p => p.LinhasPréRequisição)
                     .HasForeignKey(d => d.NºProjeto)

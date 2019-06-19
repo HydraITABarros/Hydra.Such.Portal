@@ -85,6 +85,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/UpdateListLinhasEncFornecedor"
+                   last-response="{{result}}"
+                   id="ajax_autoupdate"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Administracao/DeleteLinhasEncFornecedor"
                    last-response="{{LinhasEncFornecedorDeleted}}"
                    method="post"
@@ -167,8 +175,8 @@
         <template is="dom-if" if="{{ _permissions.update }}">
             <div class="subMenu">
                 <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-                <paper-button id="btnAddNew" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                <paper-button id="btnCancel" class="tablinks" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>
+                @*<paper-button id="btnAddNew" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>*@
+                @*<paper-button id="btnCancel" class="tablinks" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>*@
                 <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
                 <!--start ColumnToggle-->
@@ -191,7 +199,7 @@
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
                     <div class="row break_clear">
-                        <div class="col-sm-3">
+                        <div class="col-sm-3" style="padding-top:10px">
                             <such-selectbox id="ddVendorNo" value="{{_CBVendorNo}}" label="Fornecedor"
                                             items="[[CBVendor]]"
                                             text-path="name"
@@ -215,7 +223,7 @@
                             </vaadin-combo-box>
                         </div>
 
-                        <div class="col-sm-3">
+                        <div class="col-sm-3" style="padding-top:10px">
                             <such-selectbox id="ddNo" label="Cód. Produto"
                                             items="[[Products]]"
                                             text-path="code"
@@ -235,11 +243,7 @@
                             <vaadin-text-field id="ddDescription2" label="Descrição 2" maxlength="50"></vaadin-text-field>
                         </div>
 
-                        <div class="col-sm-3">
-                            <vaadin-text-field id="ddQuantity" label="Quantidade" type="number" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;"></vaadin-text-field>
-                        </div>
-
-                        <div class="col-sm-3">
+                        <div class="col-sm-3" style="padding-top:10px">
                             <such-selectbox id="ddUnitOfMeasure" value="{{_CBUnitOfMeasure}}" label="Unidade de Medida"
                                             items="[[CBUnitOfMeasure]]"
                                             text-path="id"
@@ -247,6 +251,10 @@
                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
                                             disabled="{{ !_permissions.update }}">
                             </such-selectbox>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddQuantity" label="Quantidade" type="number" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
@@ -296,7 +304,7 @@
                     <vaadin-grid-filter path="type" value="[[filter.type]]" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[CBType]]" item-value-path="id" item-label-path="value" value="{{item.type}}">
+                    <vaadin-combo-box items="[[CBType]]" item-value-path="id" item-label-path="value" value="{{item.type}}" on-change="_AutoUpdate">
                         <template>
                             <table width="180px">
                                 <tr>
@@ -341,17 +349,7 @@
                     <vaadin-grid-filter path="description2" value="[[filter.description2]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.description2}}" maxlength="50"></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column resizable width="75px" hidden$="{{ _columns.quantity.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="quantity" value="[[filter.quantity]]" />
-                </template>
-                <template>
-                    <vaadin-text-field type="number" value="{{item.quantity}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.description2}}" maxlength="50" on-blur="_AutoUpdate"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -365,8 +363,19 @@
                                     items="[[CBAllUnitOfMeasure]]"
                                     text-path="id"
                                     value-path="id"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'>
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
+                                    on-change="_AutoUpdate">
                     </such-selectbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="75px" hidden$="{{ _columns.quantity.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantity" value="[[filter.quantity]]" />
+                </template>
+                <template>
+                    <vaadin-text-field type="number" value="{{item.quantity}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;" on-blur="_AutoUpdate"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -376,7 +385,7 @@
                     <vaadin-grid-filter path="valor" value="[[filter.valor]]" />
                 </template>
                 <template>
-                    <vaadin-text-field type="number" value="{{item.valor}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;"></vaadin-text-field>
+                    <vaadin-text-field type="number" value="{{item.valor}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;" on-blur="_AutoUpdate"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -513,6 +522,14 @@
                     this.$.grid.clearCache();
                 },
 
+                _AutoUpdate: function () {
+                    this.$.ajax_autoupdate.body = JSON.stringify(this.result);
+                    this.$.ajax_autoupdate.generateRequest();
+
+                    this.$.grid.clearCache();
+                },
+
+
                 _delete: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     var VendorNo = e.model.item.vendorNo;
@@ -608,8 +625,8 @@
                         "no": { hidden: false, label: "Nº" },
                         "description": { hidden: false, label: "Descrição" },
                         "description2": { hidden: false, label: "Descrição 2" },
-                        "quantity": { hidden: false, label: "Quantidade" },
                         "unitOfMeasure": { hidden: false, label: "Unidade de Medida" },
+                        "quantity": { hidden: false, label: "Quantidade" },
                         "valor": { hidden: false, label: "Valor" }
                     };
 
@@ -687,6 +704,7 @@
                         this.result[this._LineIndex].valor = "";
 
                         this.$.grid.clearCache();
+                        this._AutoUpdate();
                     }
                 },
                 _GetLineProductLocationResponse: function (e) {
@@ -697,6 +715,7 @@
                         this.result[this._LineIndex].valor = this.productInfo.unitCost;
 
                         this.$.grid.clearCache();
+                        this._AutoUpdate();
                     }
                 },
 
