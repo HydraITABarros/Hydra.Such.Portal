@@ -104,6 +104,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Administracao/GetProductInfoLinhasEncFornecedor"
+                   last-response="{{productInfo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetLineProductLocation_ajax"
+                   on-response="_GetLineProductLocationResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid"
                    last-response="{{CBVendor}}"
                    auto
@@ -302,7 +311,7 @@
 
             <vaadin-grid-column resizable width="75px" hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="no">Cód. Produto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" value="[[filter.no]]" />
                 </template>
                 <template>
@@ -310,7 +319,8 @@
                                     items="[[Products]]"
                                     text-path="code"
                                     value-path="code"
-                                    fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'>
+                                    fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                    on-value-changed="_onLineProductChanged">
                     </such-selectbox>
                 </template>
             </vaadin-grid-column>
@@ -400,6 +410,21 @@
                     },
                     _SelectedLine: {
                         observer: '_lineSelected'
+                    },
+                    _LineIndex: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _LineVendorNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _LineLineNo: {
+                        type: Number,
+                        notify: true,
+                        value: 0
                     },
                     _columns: {
                         type: Object,
@@ -618,7 +643,6 @@
                 },
 
                 _onProductChanged: function (e) {
-                    debugger;
                     if (this.$.ddNo.value != "") {
                         this.$.measuresunit_ajax.params = { "produto": this.$.ddNo.value };
                         this.$.measuresunit_ajax.generateRequest();
@@ -645,6 +669,36 @@
                     }
                 },
 
+                _onLineProductChanged: function (e) {
+                    var productNo = "";
+                    this._LineIndex = this.result.indexOf(e.model.item);
+                    if (e.target.__data.activeItem != null)
+                        productNo = e.target.__data.activeItem.code;
+
+                    if (productNo != "") {
+                        this.$.page_GetLineProductLocation_ajax.body = JSON.stringify({ no: productNo });
+                        this.$.page_GetLineProductLocation_ajax.generateRequest();
+                    }
+                    else {
+                        this.result[this._LineIndex].no = "";
+                        this.result[this._LineIndex].description = "";
+                        this.result[this._LineIndex].description2 = "";
+                        this.result[this._LineIndex].unitOfMeasure = "";
+                        this.result[this._LineIndex].valor = "";
+
+                        this.$.grid.clearCache();
+                    }
+                },
+                _GetLineProductLocationResponse: function (e) {
+                    if (this.productInfo != null) {
+                        this.result[this._LineIndex].description = this.productInfo.name;
+                        this.result[this._LineIndex].description2 = this.productInfo.name2;
+                        this.result[this._LineIndex].unitOfMeasure = this.productInfo.measureUnit;
+                        this.result[this._LineIndex].valor = this.productInfo.unitCost;
+
+                        this.$.grid.clearCache();
+                    }
+                },
 
 
 
