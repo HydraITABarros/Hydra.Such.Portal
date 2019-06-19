@@ -30,7 +30,7 @@ using StackExchange.Redis;
 
 namespace Hydra.Such.Portal.Controllers
 {
-   // [Authorize]
+    [AllowAnonymous]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
@@ -55,10 +55,8 @@ namespace Hydra.Such.Portal.Controllers
         Route(""), HttpGet, AcceptHeader("text/html")]
         [ResponseCache(Duration = 60000)]
         public IActionResult Index(string orderId)
-        {
-            
-
-               UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
+        {            
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             if (UPerm != null && UPerm.Read.Value)
             {
@@ -273,6 +271,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 newList = new List<Equipamento>();
             }
+
+            newList.ForEach((item) => {
+                var categoria = evolutionWEBContext.EquipCategoria.FirstOrDefault(m => m.IdCategoria == item.Categoria);
+                var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == item.Marca);
+                item.CategoriaText = categoria != null ? categoria.Nome : "";
+                item.MarcaText = marca != null ? marca.Nome : "";
+            });
 
             var resultLines = new PageResult<dynamic>(newList, nextLink, total);
 

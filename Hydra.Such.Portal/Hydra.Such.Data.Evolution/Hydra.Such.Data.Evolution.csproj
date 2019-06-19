@@ -19,6 +19,7 @@
     <PackageReference Include="SharpRepository.EfCoreRepository" Version="2.0.2.2" />
     <PackageReference Include="SharpRepository.Ioc.Microsoft.DependencyInjection" Version="2.0.2.2" />
     <PackageReference Include="NJsonSchema" Version="9.13.28" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.1.0" />
   </ItemGroup>
 
   <ItemGroup>

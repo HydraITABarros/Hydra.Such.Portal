@@ -6,7 +6,7 @@ import { Icon } from 'components';
 const styles = css`&& {
     padding: 8px;
     &[class*="MuiCheckbox-checked"]{
-        color: ${({ theme }) => theme.palette.alert.good};
+        color: ${(props) => props.theme.palette.alert.good};
         }
     }
 `

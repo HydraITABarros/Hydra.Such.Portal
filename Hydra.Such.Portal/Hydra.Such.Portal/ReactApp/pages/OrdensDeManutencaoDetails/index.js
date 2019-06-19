@@ -6,18 +6,17 @@ import { PageTemplate } from 'components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import styled, { css, theme, injectGlobal } from 'styled-components';
+import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
 import MuiGrid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import _theme from '../../themes/default';
-import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, Modal, Tooltip } from 'components';
+import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, Modal, Tooltip, Spacer, Breadcrumb } from 'components';
 import MuiDeleteIcon from '@material-ui/icons/Delete';
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
 import Hidden from '@material-ui/core/Hidden';
 import { createMuiTheme } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import MuiTableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -31,6 +30,23 @@ import MuiInput from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { renderToString } from 'react-dom/server';
 import { string } from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import {
+        Column,
+        FilteringState, GroupingState,
+        IntegratedFiltering, IntegratedGrouping, IntegratedPaging, IntegratedSelection, IntegratedSorting,
+        PagingState, SelectionState, SortingState, DataTypeProvider, DataTypeProviderProps, CustomGrouping,
+        TreeDataState, CustomTreeData, RowDetailState
+} from '@devexpress/dx-react-grid';
+
+import {
+        DragDropProvider,
+        Grid as TGrid, PagingPanel,
+        Table, TableFilterRow, TableGroupRow,
+        TableHeaderRow, TableSelection, Toolbar, GroupingPanel, VirtualTable,
+        TableColumnReordering, ColumnChooser, TableColumnVisibility, TableColumnResizing
+} from '@devexpress/dx-react-grid-material-ui';
+import { isAbsolute } from 'upath';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -126,9 +142,10 @@ const CircleOm = {
     `,
         icon: styled.div`
         font-size: 33px;
+        line-height: 35px;
         display: inline-block;
         vertical-align: middle;
-        padding: 6px;
+        padding: 17px;
         > [class*="icon"] {
             text-align: center;
             width: 57px;
@@ -138,7 +155,19 @@ const CircleOm = {
             color:  ${props => props.color};
             border-radius: 50%;
             line-height: 56px;
-            font-size: 33px;
+            font-size: 70px;
+            position: relative;
+            &:before {
+                position: absolute;
+                left: -7px;
+                right: -7px;
+                top: -7px;
+                bottom: -7px;
+                margin: auto;
+                text-align: center;
+                line-height: 70px;
+                font-size: ${props => props.fontSize ? props.fontSize : '33px'};
+            }
         }
     `,
         chart: styled.div`
@@ -194,6 +223,11 @@ const ListContainer = styled.div`
     z-index: 0;
     overflow: auto;
     padding: 0;
+    [class*="RootBase-root"]{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+    }
 `
 const Hr = styled.hr`
     margin-bottom: 0;
@@ -224,24 +258,6 @@ const ListGridItemTextOverflow = styled(ListGridItem)`
         text-overflow: ellipsis;
     }
 `
-
-//const TechnicalsListItem = styled(ListItem)` && {
-//    padding-left: 0;
-//    padding-right: 0;
-//}
-//`
-
-//const TchnicalsCheckBox = styled(CheckBox)` && {
-//    position: relative;
-//    left: -5px;
-//    font-size: 1.8em;
-//}`
-//const { AvatarGroup } = Avatars;
-//const TechnicalsAvatars = styled(Avatars.Avatars)` && {
-//    margin-left: 5px;
-//    margin-right: 15px;
-//    pointer-events: none;
-//}`
 
 const TextDiv = styled(Text)``.withComponent('div');
 
@@ -327,31 +343,28 @@ var timer = 0;
 
 class OrdensDeManutencaoLine extends Component {
         state = {
+                orderId: "",
                 isLoading: true,
-                client: {
-                        "id": null,
-                        "name": null
-                },
                 ordersCountsLines: {
-                        ToExecute: null,
-                        Executed: null
+                        toSigning: null,
+                        toExecute: null,
+                        executed: null
                 },
+                group: [{ columnName: 'categoriaText' }],
+                defaultExpandedGroups: [],
+                groupingStateColumnExtensions: [
+                        { columnName: 'categoriaText', groupingEnabled: false }
+                ],
                 tooltipReady: false,
-                maintenenceOrdersLines: [],
+                maintenenceOrdersLines: [{}],
                 maintenenceOrdersLinesFiltered: [],
-                maintenenceOrdersLinesIsLoading: true,
+                maintenenceOrdersLinesIsLoading: false,
                 maintenenceOrdersLinesSearchValue: "",
                 maintenenceOrdersLinesNext: "",
                 equiment: [],
                 equimentFiltered: [],
-                equimentIsLoading: true,
+                equimentIsLoading: false,
                 equimentSearchValue: "",
-                equimentOpen: false,
-                equimentSelectedOrder: { equiment: [] },
-                equimentSelectedOrderOld: { equiment: [] },
-                selectedOrder: "",
-                datePickerOpen: false,
-                datePickerMarginTop: 0,
                 listContainerStyle: {},
                 avatarColors: [
                         "#990000",
@@ -365,72 +378,25 @@ class OrdensDeManutencaoLine extends Component {
         constructor(props) {
                 super(props);
                 moment.locale("pt");
-
                 this.handleResize = this.handleResize.bind(this);
                 this.getInitials = this.getInitials.bind(this);
                 this.handleGridScroll = this.handleGridScroll.bind(this);
-
                 this.filterListByKeysValue = this.filterListByKeysValue.bind(this);
-
-
-                console.log('IMP', props.theme);
+                this.state.orderId = this.props.match.params.orderid;
+                this.fetchMaintenenceOrdersLines({ orderId: this.state.orderId }, () => {
+                        this.state.defaultExpandedGroups = getDefaultExpandedGroups(this.state.maintenenceOrdersLines, this.state.group);
+                });
         }
-
-        fetchEquipment = ({ MoNo, ObjectNo, Nome, Sala, NumSerie, NumInventario, IdEquipEstado }, cb) => {
-                cb = cb || function () { };
-                axios.get('/ordens-de-manutencao/equipment', {
-                        params: { MoNo, ObjectNo, Nome, Sala, NumSerie, NumInventario, IdEquipEstado }
-                })
-                        .then(function (data) {
-                                cb(null, data);
-                        }).catch(function (error) {
-                                cb(error);
-                        });
-        }
-
-
-        //fetchTechnicals({ orderId, technicalId, local }, cb) {
-        //    this.setState({ technicalsIsLoading: true }, () => {
-        //        axios.get('/ordens-de-manutencao/technicals', {
-        //            params: { orderId, technicalId, local }
-        //        }).then((data) => {
-        //            if (data.data && data.data.technicals) {
-        //                this.setState({
-        //                    technicals: data.data.technicals,
-        //                    technicalsFiltered: this.filterListByKeysValue({ list: data.data.technicals, keys: ['nome'], value: this.state.technicalsSearchValue })
-        //                });
-        //            }
-
-        //        }).catch((error) => {
-        //            cb ? cb(error) : console.log(error);
-        //        }).then((data) => {
-        //            this.setState({ technicalsIsLoading: false });
-        //        });
-        //    });
-        //}
-
-        //updateTechnicals({ orderId, technicalsId }, cb) {
-        //    this.setState({ technicalsIsLoading: true }, () => {
-        //        cb = cb || function () { };
-        //        axios.put('/ordens-de-manutencao/technicals', { orderId: orderId, technicalsId: technicalsId })
-        //            .then(function (data) {
-        //                cb(null, data);
-        //            }).catch(function (error) {
-        //                this.setState({ technicalsIsLoading: false });
-        //                cb(error);
-        //            });
-        //    });
-        //}
 
         fetchMaintenenceOrdersLines({ orderId, search }, cb) {
+                cb = cb || (() => { });
                 var filter = null;
                 if (search && search != '') {
-                        filter = "contains(description,'" + search + "') or contains(MoNo,'" + search + "')"
+                        filter = "contains(nome,'" + search + "') or contains(numinventario,'" + search + "') or contains(numequipamento,'" + search + "') or contains(idservico,'" + search + "')"
                 }
-                axios.get('/ordens-de-manutencao/equipment', {
+                axios.get(`/ordens-de-manutencao/${orderId}`, {
                         params: {
-                                orderId: string,
-                                $select: 'MoNo',
+                                $select: 'Idequipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca',
                                 $filter: filter
                         }
                 }).then((resultLines) => {
@@ -440,17 +406,7 @@ class OrdensDeManutencaoLine extends Component {
                                 var list = data.resultLines.items;
                                 var nextPageLink = data.resultLines.nextPageLink;
                                 this.setState({ ordersCountsLines: data.ordersCountsLines, maintenenceOrdersLines: list, maintenenceOrdersLinesNext: nextPageLink }, () => {
-                                        return;
-                                        setTimeout(() => {
-                                                list.map(item => {
-                                                        this.fetchEquiment({ orderId: item.no }, (err, resultLines) => {
-                                                                if (err) return;
-                                                                item.equiment = resultLines.data.equiment;
-                                                                this.setState({ maintenenceOrdersLines: list });
-                                                        });
-                                                        return item;
-                                                });
-                                        }, 1200);
+                                        cb(null, data);
                                 });
                         }
                 }).catch(function (error) {
@@ -488,7 +444,7 @@ class OrdensDeManutencaoLine extends Component {
                                                 axios.get(this.state.maintenenceOrdersLinesNext).then((result) => {
                                                         Tooltip.Hidden.hide();
                                                         Tooltip.Hidden.rebuild();
-                                                        var data = resultLines.data;
+                                                        var data = result.data;
                                                         this.setTableMarginTop();
                                                         if (data.ordersCountsLines && data.resultLines && data.resultLines.items) {
                                                                 var list = data.resultLines.items;
@@ -510,30 +466,6 @@ class OrdensDeManutencaoLine extends Component {
                 })();
         }
 
-        //handleDateChange(e) {
-        //    if (this.state.calendar.from != this.state.calendar.olderFrom && this.state.calendar.to != this.state.calendar.olderTo) {
-        //        this.setState({
-        //            datePickerOpen: false, isLoading: true, maintenenceOrdersIsLoading: false,
-        //            calendar: { from: this.state.calendar.from, to: this.state.calendar.to, olderFrom: this.state.calendar.from, olderTo: this.state.calendar.to }
-        //        }, () => {
-        //            this.fetchMaintenenceOrders({ ...this.state.calendar });
-        //        }
-        //        );
-        //    }
-        //}
-        handlequimentOpen(item) {
-                Tooltip.Hidden.hide();
-                Tooltip.Hidden.rebuild();
-                if (this.state.equimentOpen == false) {
-                        this.setState({ equimentOpen: true, equimentSelectedOrder: item, equimentSelectedOrderOld: _.cloneDeep(item) });
-                        this.fetchequiment({ local: item.shortcutDimension1Code });
-                }
-        }
-        handleequimentClose() {
-                this.setState({ equimentSearchValue: "", equimentOpen: false, equiment: [], equimentFiltered: [], equimentSelectedOrder: { equiment: [] }, equimentSelectedOrderOld: { equiment: [] } }, () => {
-                        Tooltip.Hidden.rebuild();
-                });
-        }
         setTableMarginTop() {
                 (() => {
                         setTimeout(() => {
@@ -586,37 +518,65 @@ class OrdensDeManutencaoLine extends Component {
                 });
                 return filteredList;
         }
+        getChildRows = (row, rootRows) => {
+                const childRows = rootRows.filter(r => r.parentId === (row ? row.id : null));
+                return childRows.length ? childRows : null;
+        };
 
         render() {
                 const { isLoading, ordersCountsLines, maintenenceOrdersLines, maintenenceOrdersLinesIsLoading } = this.state;
 
+                var columns = [
+                        { columnName: 'categoriaText', name: 'categoriaText', title: 'Equipamentos' },
+                        { columnName: 'nome', name: 'nome', title: 'Nome' },
+                        { columnName: 'numSerie', name: 'numSerie', title: 'Nº Série' },
+                        { columnName: 'numInventario', name: 'numInventario', title: 'Nº Inventário' },
+                        { columnName: 'numEquipamento', name: 'numEquipamento', title: 'Nº Equipamento' },
+                        { columnName: 'marcaText', name: 'marcaText', title: 'Marca' }
+                ];
                 return (
                         <PageTemplate >
                                 <Wrapper padding={'0 0 20px'} width="100%">
+                                        <Wrapper padding={'20px'} width="100%" >
+                                                <Button linklight onClick={() => { this.props.history.push(`/ordens-de-manutencao`) }} style={{ verticalAlign: 'middle' }}>OMs</Button>
+                                                <Icon arrow-right style={{ verticalAlign: 'middle' }} />
+                                        </Wrapper>
                                         <Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} ref={el => this.highlightWrapper = el} padding={"200px"}>
                                                 <Grid item xs>
-                                                        <Wrapper padding={'25px 25px 0'}>
+                                                        <Wrapper padding={'0 25px 0'}>
                                                                 <TextHeader h2>Ordens de Manutenção Linha <br /> <b>Por executar</b></TextHeader>
-                                                                <PullRight>
-                                                                        <Hidden mdUp xsDown><Button icon={<Icon archive />}>Arquivo</Button></Hidden>
-                                                                </PullRight>
                                                         </Wrapper>
                                                 </Grid>
                                                 <Grid container item md={6} xs={12}>
-                                                        <CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
-                                                                <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.primary.light} color={this.state.isLoading ? 'white' : _theme.palette.primary.default}>
-                                                                        <Icon preventiva data-tip="Preventiva" />
+                                                        <CircleOmWrapper className={''}>
+                                                                <CircleOm.icon background={_theme.palette.primary.dark} color={_theme.palette.primary.keylines} fontSize="71px" >
+                                                                        <Spacer height="15px" />
+                                                                        <Icon sad />
+                                                                        <Wrapper textAlign="center">
+                                                                                <Text dataSmall>300</Text>
+                                                                        </Wrapper>
                                                                 </CircleOm.icon>
                                                                 <CircleOm.chart>
-                                                                        <Circle loading={this.state.isLoading} label="Executadas" strokeValue={this.state.isLoading ? 0 : ordersCountsLines.Executed} trailValue={ordersCountsLines.ToExecute} width={191} />
+                                                                        <Circle loading={false} label="Equipamentos" strokeValue={241} trailValue={300} strokeIcon={<Icon happy />} trailIcon={<Icon sad />} width={191} />
                                                                 </CircleOm.chart>
-                                                                <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.secondary.default} color={'white'}>
+                                                                <CircleOm.icon background={'white'} color={_theme.palette.secondary.default} fontSize="71px" >
+                                                                        <Spacer height="20px" />
+                                                                        <Icon happy />
+                                                                        <Wrapper textAlign="center">
+                                                                                <Text dataSmall color={_theme.palette.secondary.default}>241</Text>
+                                                                        </Wrapper>
                                                                 </CircleOm.icon>
                                                         </CircleOmWrapper>
                                                 </Grid>
                                                 <Grid item xs>
-                                                        <Wrapper padding={'25px'} textAlign="right" smTextAlign="center">
-                                                                <Hidden only="sm" ><Button icon={<Icon archive />}>Arquivo</Button></Hidden>
+                                                        <Wrapper textAlign="center" inline>
+                                                                <Spacer height="25px" />
+                                                                <Text dataBig>
+                                                                        20
+                                                                </Text>
+                                                                <Text p>
+                                                                        Relatórios por assinar
+                                                                </Text>
                                                         </Wrapper>
                                                 </Grid>
                                         </Grid>
@@ -650,155 +610,149 @@ class OrdensDeManutencaoLine extends Component {
                                 <Hr />
                                 <OmDatePicker.backdrop open={this.state.datePickerOpen} />
 
-
-                                {this.state.listContainerStyle.marginTop ?
+                                {this.state.listContainerStyle.marginTop && !maintenenceOrdersLinesIsLoading ?
                                         <ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} >
                                                 <div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading || maintenenceOrdersLinesIsLoading ? "" : "hidden"}>
                                                         <CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} />
                                                 </div>
-                                                <AutoSizer className={!isLoading ? "" : "hidden"} >
-                                                        {({ height, width }) => {
-                                                                return (
-                                                                        <ListWindow ref={el => this.listWrapper = el} onScroll={this.handleGridScroll} className="List" height={height} itemCount={this.state.maintenenceOrdersLines.length} itemSize={75} width={width} >
-                                                                                {({ index, style }) => {
-                                                                                        var item = this.state.maintenenceOrdersLines[index];
-                                                                                        setTimeout(() => {
-                                                                                                Tooltip.Hidden.hide();
-                                                                                                Tooltip.Hidden.rebuild();
-                                                                                        });
-                                                                                        return (
-                                                                                                <ListGridRow container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} style={{ ...style }}>
-                                                                                                        <Grid item lg={2} md={1} xs={12}></Grid>
-                                                                                                        <Grid container item lg={9} md={10} xs={12}>
-                                                                                                                <ListGridItemTextOverflow item xs={3}>
-                                                                                                                        <Wrapper inline padding="0 25px 0 15px" margin="-10px 0 -10px">
-                                                                                                                                {item.isPreventive ?
-                                                                                                                                        <Icon preventiva style={{ fontSize: '29px', top: "8px", position: "relative" }} data-tip={'Preventiva'} /> :
-                                                                                                                                        <Icon curativa style={{ fontSize: '29px', top: "8px", position: "relative", color: _theme.palette.secondary.default }} data-tip={'Curativa'} />}
-                                                                                                                        </Wrapper>
-                                                                                                                        <Text b data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersLinesSearchValue.split(" ")} autoEscape={true} textToHighlight={item.MoNo}></Highlighter>)} ><Highlighter searchWords={this.state.maintenenceOrdersLinesSearchValue.split(" ")} autoEscape={true} textToHighlight={item.no}></Highlighter></Text>
-                                                                                                                </ListGridItemTextOverflow>
-                                                                                                                <ListGridItemTextOverflow item xs={3}>
-                                                                                                                        <Text b data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersLinesSearchValue.split(" ")} autoEscape={true} textToHighlight={item.ObjectNo}></Highlighter>)} ><Highlighter searchWords={this.state.maintenenceOrdersLinesSearchValue.split(" ")} autoEscape={true} textToHighlight={item.description}></Highlighter></Text>
-                                                                                                                </ListGridItemTextOverflow>
-                                                                                                                <ListGridItemTextOverflow item xs={3}>
-                                                                                                                        <Text p data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersLinesSearchValue.split(" ")} autoEscape={true} textToHighlight={item.orderId}></Highlighter>)} >
-                                                                                                                                <Highlighter searchWords={this.state.maintenenceOrdersLinesSearchValue.split(" ")} autoEscape={true} textToHighlight={item.orderId}></Highlighter>
-                                                                                                                        </Text>
-                                                                                                                </ListGridItemTextOverflow>
-                                                                                                                <ListGridItem item xs={3}>
-                                                                                                                        {item.equiment.length > 0 ?
-                                                                                                                                <AvatarGroup style={{ top: "-10px", position: "relative" }} onClick={(e) => this.handleequimentOpen(item)}>
-                                                                                                                                        {item.equiment.map((_item, i) => (<Avatars.Avatars key={i} letter color={this.state.avatarColors[i]} data-tip={_item.nome} >{this.getInitials(_item.nome)}</Avatars.Avatars>))}
-                                                                                                                                </AvatarGroup>
-                                                                                                                                :
-                                                                                                                                <Button round style={{ top: "-10px" }} onClick={(e) => this.handleequipmentOpen(item)} data-tip="Editar Equipamentos"><MuiAddIcon /></Button>}
-                                                                                                                </ListGridItem>
-                                                                                                        </Grid>
-                                                                                                        <Grid item lg={1} md={12} xs={12}></Grid>
-                                                                                                </ListGridRow>
-                                                                                        )
-                                                                                }}
-                                                                        </ListWindow>
-                                                                )
+
+                                                <TGrid
+                                                        rows={this.state.maintenenceOrdersLines}
+                                                        columns={columns}
+                                                >
+                                                        <SortingState />
+                                                        <SelectionState />
+                                                        <GroupingState expandedGroups={this.state.defaultExpandedGroups} grouping={this.state.group} onGroupingChange={(args) => {
+                                                                this.setState({ group: args, defaultExpandedGroups: getDefaultExpandedGroups(this.state.maintenenceOrdersLines, args) });
                                                         }}
-                                                </AutoSizer>
+                                                                columnExtensions={this.state.groupingStateColumnExtensions}
+                                                        />
+                                                        <IntegratedFiltering />
+                                                        <IntegratedSorting />
+                                                        <IntegratedSelection />
+                                                        <IntegratedGrouping />
+                                                        <DragDropProvider />
+                                                        <VirtualTable
+                                                                headComponent={(props) => <VirtualTable.TableHead {...props} style={{ background: this.props.theme.palette.bg.grey }} />}
+                                                                cellComponent={(props) => {
+                                                                        return (<MuiTableCell {..._.omit(props, ['tableRow', 'tableColumn'])}
+                                                                                style={{
+                                                                                        paddingLeft: '8px', paddingRight: '8px',
+                                                                                        paddingTop: '16px', paddingBottom: '15px',
+                                                                                        borderColor: this.props.theme.palette.primary.keylines,
+                                                                                        borderWidth: '1px',
+                                                                                        color: this.props.theme.palette.primary.default
+                                                                                }}
+                                                                        ><Text p style={{
+                                                                                color: this.props.theme.palette.primary.default
+                                                                        }}>{props.value}</Text></MuiTableCell>)
+                                                                }}
+                                                        />
+                                                        <TableHeaderRow
+                                                                titleComponent={(props) => <Text label {...props} style={{ fontWeight: 500, marginTop: '6px' }} />}
+                                                                rowComponent={(props) => {
+                                                                        return (<TableRow {..._.omit(props, ['tableRow'])} />)
+                                                                }}
+                                                                cellComponent={(props) => {
+                                                                        return (<TableHeaderRow.Cell {...props}
+                                                                                style={{
+                                                                                        paddingLeft: '32px'
+                                                                                }} />)
+                                                                }}
+
+                                                                groupButtonComponent={(props) => {
+                                                                        return (<DragIndicatorIcon onClick={props.onGroup} style={{ position: 'absolute', left: 0, paddingLeft: '2px', fontSize: '18px' }} />)
+                                                                }}
+                                                                showGroupingControls showSortingControls
+                                                        />
+
+                                                        <TableGroupRow indentColumnWidth={1} showColumnsWhenGrouped={false} rowComponent={(props) => {
+                                                                var lastGroup = this.state.group[this.state.group.length - 1];
+                                                                if (lastGroup.columnName != props.row.groupedBy) { return (<div></div>); }
+                                                                var values = props.row.compoundKey.split('|');
+                                                                props.row.value = props.row.value;
+                                                                return (<TableRow {..._.omit(props, ['tableRow'])} key={props.row.compoundKey} style={{
+                                                                        background: this.props.theme.palette.primary.default,
+                                                                        paddingLeft: '8px', paddingRight: '8px',
+                                                                        paddingTop: '16px', paddingBottom: '15px'
+                                                                }}>
+                                                                        <MuiTableCell colSpan={props.children.length} key={props.row.compoundKey}
+                                                                                style={{
+                                                                                        paddingLeft: '8px', paddingRight: '8px',
+                                                                                        paddingTop: '16px', paddingBottom: '15px',
+                                                                                        color: 'white'
+                                                                                }}
+                                                                        >{values.map((value, index) => {
+                                                                                return (<span >{index > 0 ? <Icon arrow-right style={{ color: 'white', verticalAlign: 'middle' }} /> : ''}<Text span key={index} style={{ color: 'white', verticalAlign: 'middle' }}>{value}</Text></span>);
+                                                                        })}</MuiTableCell>
+                                                                </TableRow>)
+                                                        }} />
+                                                        <CustomGrouping children={(e) => { return e; }} />
+                                                        <Toolbar />
+                                                        <GroupingPanel showSortingControls={false} showGroupingControls itemComponent={(props) => {
+
+                                                                return <div {...props} key={props.item.column.name} style={{
+                                                                        background: this.props.theme.palette.primary.default,
+                                                                        borderRadius: '7px',
+                                                                        padding: '4px 9px',
+                                                                        color: 'white',
+                                                                        fontFamily: 'Inter,Helvetica,sans-serif',
+                                                                        fontStyle: 'normal',
+                                                                        fontWeight: '400',
+                                                                        fontSize: '12px',
+                                                                        lineHeight: '16px',
+                                                                        textTransform: 'uppercase',
+                                                                        margin: '0 5px'
+                                                                }}>{props.item.column.title} <Icon decline style={{
+                                                                        position: 'relative',
+                                                                        bottom: '-2px',
+                                                                        left: '2px',
+                                                                        cursor: 'pointer'
+                                                                }} onClick={props.onGroup} /></div>
+                                                        }} />
+                                                        <TableColumnVisibility />
+                                                        <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
+                                                        <ColumnChooser />
+                                                        <RowDetailState defaultExpandedRowIds={true} />
+                                                </TGrid>
                                                 <Tooltip.Hidden id={'oms-tooltip'} />
                                         </ListContainer>
                                         : <div></div>
                                 }
-
-                                <Modal open={this.state.EquipmentOpen}
-                                        onClose={this.handleequipmentClose}
-                                        action={<div className="hidden"></div>} >
-                                        <div>
-                                                <DialogTitle>
-                                                        <Text h2><Icon equiment />{"\u00a0"} Editar Equipamentos</Text>
-                                                        <SearchWrapper>
-                                                                <TextField
-                                                                        inputProps={{ autoComplete: "off" }}
-                                                                        id="equipment-search"
-                                                                        onChange={(e) => {
-                                                                                let search = e.target.value.toLowerCase();
-                                                                                this.setState({
-                                                                                        EquipmentSearchValue: search,
-                                                                                        EquipmentFiltered: this.filterListByKeysValue({ list: this.state.equipment, keys: ['nome'], value: search })
-                                                                                })
-                                                                        }}
-                                                                        type="search"
-                                                                        margin="none"
-                                                                        endAdornment={
-                                                                                <InputAdornment position="end" onClick={() => { document.getElementById("equipment-search").focus() }}><SearchButton round boxShadow={"none"} ><Icon search /></SearchButton></InputAdornment>
-                                                                        }
-                                                                />
-                                                        </SearchWrapper>
-                                                </DialogTitle>
-                                                <hr />
-                                                <DialogContent style={{ padding: '0' }}>
-                                                        <div style={{ width: '100vw', height: '100vh', maxWidth: '100%', maxHeight: '100%' }}>
-                                                                {this.state.EquipmentIsLoading ? <ListContainer ref={el => this.EquipmentLoadingWrapper = el} style={{ textAlign: 'center', 'zIndex': 10 }} onScroll={this.handleGridScroll}><CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} /></ListContainer> : ''}
-                                                                <AutoSizer>
-                                                                        {({ height, width }) => {
-                                                                                return (
-                                                                                        <ListWindow
-                                                                                                ref={el => this.EquipmentListWrapper = el}
-                                                                                                className="List"
-                                                                                                height={height}
-                                                                                                itemCount={this.state.EquipmentFiltered.length}
-                                                                                                itemSize={57}
-                                                                                                width={width}
-                                                                                        >
-                                                                                                {({ index, style }) => {
-                                                                                                        var _item = this.state.EquipmentFiltered[index];
-                                                                                                        var orderEquipment = this.state.EquipmentSelectedOrder.equipment;
-                                                                                                        var checked = _.find(orderequiment, ['numMec', _item.numMec]);
-
-                                                                                                        return (
-                                                                                                                <TechnicalsListItem key={index} style={{ padding: '16px 30px 0 30px', ...style }}>
-
-                                                                                                                        <TchnicalsCheckBox disabled={this.state.EquipmentSelectedOrder.equiment.length >= 5 && !checked} value={index + ""} checked={checked ? true : false} onChange={(e) => {
-                                                                                                                                var __item = this.state.EquipmentFiltered[e.target.value];
-                                                                                                                                var __orderEquipment = this.state.EquipmentSelectedOrder.equiment;
-                                                                                                                                var __numMec = __item.numMec;
-                                                                                                                                if (e.target.checked) {
-                                                                                                                                        if (!_.find(__orderEquipment, ['numMec', __numMec])) {
-                                                                                                                                                __orderEquipment.push(__item);
-                                                                                                                                        }
-                                                                                                                                } else {
-                                                                                                                                        _.remove(__orderEquipment, ['numMec', __numMec]);
-                                                                                                                                }
-                                                                                                                                this.setState({ EquipmentSelectedOrder: { equipment: __orderEquipment, ...this.state.EquipmentSelectedOrder } }, () => {
-
-                                                                                                                                })
-                                                                                                                        }} />
-
-                                                                                                                        <TechnicalsAvatars letter color={this.state.avatarColors[Math.floor(index) % 5]} >{this.getInitials(_item.nome)}</TechnicalsAvatars>
-                                                                                                                        <Text p><Highlighter searchWords={this.state.EquipmentSearchValue.split(" ")} autoEscape={true} textToHighlight={_item.nome}></Highlighter></Text>
-                                                                                                                </TechnicalsListItem>
-                                                                                                        )
-                                                                                                }}
-
-                                                                                        </ListWindow>
-                                                                                )
-                                                                        }}
-                                                                </AutoSizer>
-                                                        </div>
-                                                </DialogContent>
-                                                <hr />
-                                                <DialogActions>
-                                                        <Button primary onClick={(e) => {
-                                                                if (!_.isEqual(this.state.EquipmentSelectedOrder, this.state.EquipmentSelectedOrderOld)) {
-                                                                        this.updateEquipment({ orderId: this.state.EquipmentSelectedOrder.no, EquipmentId: this.state.EquipmentSelectedOrder.technicals.map((t) => t.numMec) }, (err, result) => {
-                                                                                this.handleequipmentClose();
-                                                                        });
-                                                                }
-                                                        }}>Guardar</Button>
-                                                </DialogActions>
-                                        </div>
-                                </Modal>
                         </PageTemplate>
                 )
         }
 }
 
-export default OrdensDeManutencaoLine;
+function multiGroupBy(array, group) {
+        if (!group) {
+                return array;
+        }
+        var currGrouping = _.groupBy(array, group);
+        var restGroups = Array.prototype.slice.call(arguments);
+        restGroups.splice(0, 2);
+        if (!restGroups.length) {
+                return currGrouping;
+        }
+        return _.transform(currGrouping, function (result, value, key) {
+                result[key] = multiGroupBy.apply(null, [value].concat(restGroups));
+        }, {});
+}
+
+var getDefaultExpandedGroups = (maintenenceOrdersLines, groups) => {
+        var defaultExpandedGroups = [];
+        var groupedList = multiGroupBy(maintenenceOrdersLines, ...groups.map((item) => { return item.columnName }));
+        (function formatRecursively(list, referenceList, prefix) {
+                if (prefix) { prefix = prefix + '|'; } else { prefix = ""; }
+                var keys = _.keys(list);
+                keys.map((item) => {
+                        var listItem = list[item];
+                        if (_.isObject(listItem) && !_.isArray(listItem)) { formatRecursively(listItem, referenceList, `${prefix}${item}`); }
+                        item = `${prefix}${item}`;
+                        referenceList.push(item);
+                });
+        })(groupedList, defaultExpandedGroups);
+        return defaultExpandedGroups;
+}
+
+export default withTheme(withRouter(OrdensDeManutencaoLine));

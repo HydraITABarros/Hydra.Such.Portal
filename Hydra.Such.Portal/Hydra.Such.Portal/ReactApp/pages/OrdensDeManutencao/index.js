@@ -382,7 +382,6 @@ class OrdensDeManutencao extends Component {
                 this.handleDateChange = this.handleDateChange.bind(this);
                 this.filterListByKeysValue = this.filterListByKeysValue.bind(this);
                 this.handleTechnicalsClose = this.handleTechnicalsClose.bind(this);
-                console.log('IMP', props.theme);
         }
 
         fetchTechnicals({ orderId, technicalId, local }, cb) {
