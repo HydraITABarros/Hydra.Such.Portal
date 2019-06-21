@@ -7,85 +7,85 @@ import Styled from 'rsg-components/Styled';
 const xsmall = '@media (max-width: 600px)';
 
 const styles = ({ font, base, light, link, baseBackground, mq, space, fontFamily }) => ({
-    root: {
-        color: base,
-        backgroundColor: baseBackground,
-    },
-    header: {
-        color: '#fff',
-        backgroundColor: link,
-    },
-    bar: {
-        display: 'flex',
-        alignItems: 'center',
-        [xsmall]: {
-            flexDirection: 'column',
-            alignItems: 'center',
+        root: {
+                color: base,
+                backgroundColor: baseBackground,
         },
-    },
-    nav: {
-        marginLeft: 'auto',
-        marginRight: '-0.5em',
-        [xsmall]: {
-            margin: [[10, 0, 0]],
+        header: {
+                color: '#fff',
+                backgroundColor: link,
         },
-    },
-    headerLink: {
-        '&, &:link, &:visited': {
-            marginLeft: '0.5em',
-            marginRight: '0.5em',
-            fontFamily: font,
-            color: '#efefef',
+        bar: {
+                display: 'flex',
+                alignItems: 'center',
+                [xsmall]: {
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                },
         },
-        '&:hover, &:active': {
-            color: '#fff',
-            cursor: 'pointer',
+        nav: {
+                marginLeft: 'auto',
+                marginRight: '-0.5em',
+                [xsmall]: {
+                        margin: [[10, 0, 0]],
+                },
         },
-    },
-    content: {
-        maxWidth: 1000,
-        padding: [[15, 30]],
-        margin: [[0, 'auto']],
-        [mq.small]: {
-            padding: 15,
+        headerLink: {
+                '&, &:link, &:visited': {
+                        marginLeft: '0.5em',
+                        marginRight: '0.5em',
+                        fontFamily: font,
+                        color: '#efefef',
+                },
+                '&:hover, &:active': {
+                        color: '#fff',
+                        cursor: 'pointer',
+                },
         },
-        display: 'block',
-    },
-    components: {
-        overflow: 'auto', // To prevent the pane from growing out of the screen
-    },
-    footer: {
-        display: 'block',
-        color: light,
-        fontFamily: font,
-        fontSize: 12,
-    },
-    descriptionText: {
-        marginTop: space[0],
-        fontFamily: fontFamily.base,
-    },
+        content: {
+                maxWidth: 1000,
+                padding: [[15, 30]],
+                margin: [[0, 'auto']],
+                [mq.small]: {
+                        padding: 15,
+                },
+                display: 'block',
+        },
+        components: {
+                overflow: 'auto', // To prevent the pane from growing out of the screen
+        },
+        footer: {
+                display: 'block',
+                color: light,
+                fontFamily: font,
+                fontSize: 12,
+        },
+        descriptionText: {
+                marginTop: space[0],
+                fontFamily: fontFamily.base,
+        },
 });
 
 export function StyleGuideRenderer({ classes, title, homepageUrl, children }) {
-    console.log(children);
-    return (
-        <div className={classes.root}>
-            <main className={classes.content}>
-                <Markdown text={"\u00a0" + title} />
-                {children}
-                <footer className={classes.footer}>
-                    <Markdown text={`Created with [React Styleguidist](${homepageUrl}) ❤️`} />
-                </footer>
-            </main>
-        </div>
-    );
+
+        return (
+                <div className={classes.root}>
+                        <main className={classes.content}>
+                                <Markdown text={"\u00a0" + title} />
+                                {children}
+                                <footer className={classes.footer}>
+                                        <Markdown text={`Created with [React Styleguidist](${homepageUrl}) ❤️`} />
+                                </footer>
+                        </main>
+                </div>
+        );
 }
 
 StyleGuideRenderer.propTypes = {
-    classes: PropTypes.object.isRequired,
-    title: PropTypes.string.isRequired,
-    homepageUrl: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
+        classes: PropTypes.object.isRequired,
+        title: PropTypes.string.isRequired,
+        homepageUrl: PropTypes.string.isRequired,
+        children: PropTypes.node.isRequired,
 };
 
 export default Styled(styles)(StyleGuideRenderer);

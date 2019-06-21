@@ -21,6 +21,11 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
     [Select("Foto", SelectType = SelectExpandType.Disabled)]
     public partial class Equipamento
     {
+        [NotMapped]
+        public string CategoriaText { get; set; }
+
+        [NotMapped]
+        public string MarcaText { get; set; }
     }
 
     
@@ -36,6 +41,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         int Modelo { get; set; }
 
         int Categoria { get; set; }
+
 
         string NumSerie { get; set; }
 

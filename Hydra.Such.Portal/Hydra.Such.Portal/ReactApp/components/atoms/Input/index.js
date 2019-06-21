@@ -12,7 +12,7 @@ const styles = css`&& {
             font-size: 14px;
         }
         fieldset {
-            border-radius: ${({ theme }) => theme.radius.primary};
+            border-radius: ${props => { console.log('imp', props.theme); return props.theme.radius.primary }};
         }
         [role="button"] {
             padding: 11px 35px 11px 15px;
@@ -23,7 +23,7 @@ const styles = css`&& {
                 background-color: transparent;
             }
             fieldset {
-                border-color: ${({ theme }) => theme.palette.secondary.default};
+                border-color: ${props => props.theme.palette.secondary.default};
             }
         }
     }

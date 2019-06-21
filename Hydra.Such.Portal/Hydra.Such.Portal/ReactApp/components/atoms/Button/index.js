@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 const buttonTextPadding = {
-    padding: '8px 24px',
+        padding: '8px 24px',
 }
 
 const sharedStyles = css`&& {
@@ -128,100 +128,107 @@ const ButtonOutline = styled(MuiButton)`${buttonOutline}`;
 const Picker = styled(MuiButton)`${picker}`;
 
 const removePropertyFromObject = (obj, propertyName) => {
-    let rest = {};
-    Object.keys(obj).forEach((key, index) => {
-        if (!(key == propertyName)) {
-            rest[key] = obj[key];
-        }
-    });
-    return rest;
+        let rest = {};
+        Object.keys(obj).forEach((key, index) => {
+                if (!(key == propertyName)) {
+                        rest[key] = obj[key];
+                }
+        });
+        return rest;
 }
 
 
 const removeDefaultPropertiesFromComponentProps = (props, component) => {
-    let rest = {};
-    Object.keys(props).forEach((key, index) => {
-        if (!(key in component.defaultProps)) {
-            rest[key] = props[key];
-        }
-    });
-    return rest;
+        let rest = {};
+        Object.keys(props).forEach((key, index) => {
+                if (!(key in component.defaultProps)) {
+                        rest[key] = props[key];
+                }
+        });
+        return rest;
 }
 
 const Button = ({ ...props }) => {
-    if (props.primary) {
-        return (
-            <ButtonPrimary
-                variant="contained"
-                //color="primary"
-                {..._.omit(props, ['primary', 'color'])}
-            ><Text b>{props.children}</Text>
-            </ButtonPrimary>
-        )
-    } else if (props.default) {
-        return (
-            <ButtonDefault
-                variant="contained"
-                {..._.omit(props, ['default', 'color'])}
-            ><Text b>{props.children}</Text>
-            </ButtonDefault>
-        )
-    } else if (props.picker) {
-        return (
-            <Picker
-                {..._.omit(props, ['picker', 'color'])}
-            >{props.icon}{"\u00a0"}<Text p>{props.children}</Text>
-            </Picker>
-        )
-    } else if (props.icon) {
-        return (
-            <ButtonIcon
-                variant="contained"
-                {..._.omit(props, ['icon', 'color'])}
-            >{props.icon}{"\u00a0"}<Text b>{props.children}</Text>
-            </ButtonIcon>
-        )
-    } else if (props.link) {
-        return (
-            <Link src="javascript:void(0)"
-                {..._.omit(props, ['link', 'color'])}
-            ><Text b>{props.children}</Text>
-            </Link>
-        )
-    } else if (props.round) {
-        return (
-            <ButtonRound
-                {..._.omit(props, ['round', 'color'])}
-            />
-        )
-    } else if (props.iconSolo) {
-        return (
-            <ButtonSolo
-                {..._.omit(props, ['iconSolo', 'color'])}
-            >
-            </ButtonSolo>
-        )
-    } else if (props.outline) {
-        return (
-            <ButtonOutline
-                variant="contained"
-                {..._.omit(props, ['outline', 'color'])}
-            ><Text b>{props.children}</Text>
-            </ButtonOutline>
-        )
-    }
-    return <ButtonPrimary {..._.omit(props, ['color'])} />
+        if (props.primary) {
+                return (
+                        <ButtonPrimary
+                                variant="contained"
+                                //color="primary"
+                                {..._.omit(props, ['primary', 'color'])}
+                        ><Text b>{props.children}</Text>
+                        </ButtonPrimary>
+                )
+        } else if (props.default) {
+                return (
+                        <ButtonDefault
+                                variant="contained"
+                                {..._.omit(props, ['default', 'color'])}
+                        ><Text b>{props.children}</Text>
+                        </ButtonDefault>
+                )
+        } else if (props.picker) {
+                return (
+                        <Picker
+                                {..._.omit(props, ['picker', 'color'])}
+                        >{props.icon}{"\u00a0"}<Text p>{props.children}</Text>
+                        </Picker>
+                )
+        } else if (props.icon) {
+                return (
+                        <ButtonIcon
+                                variant="contained"
+                                {..._.omit(props, ['icon', 'color'])}
+                        >{props.icon}{"\u00a0"}<Text b>{props.children}</Text>
+                        </ButtonIcon>
+                )
+        } else if (props.link) {
+                return (
+                        <Link src="javascript:void(0)"
+                                {..._.omit(props, ['link', 'color'])}
+                        ><Text b>{props.children}</Text>
+                        </Link>
+                )
+        } else if (props.linklight) {
+                return (
+                        <Link src="javascript:void(0)"
+                                {..._.omit(props, ['link', 'color'])}
+                        ><Text span>{props.children}</Text>
+                        </Link>
+                )
+        } else if (props.round) {
+                return (
+                        <ButtonRound
+                                {..._.omit(props, ['round', 'color'])}
+                        />
+                )
+        } else if (props.iconSolo) {
+                return (
+                        <ButtonSolo
+                                {..._.omit(props, ['iconSolo', 'color'])}
+                        >
+                        </ButtonSolo>
+                )
+        } else if (props.outline) {
+                return (
+                        <ButtonOutline
+                                variant="contained"
+                                {..._.omit(props, ['outline', 'color'])}
+                        ><Text b>{props.children}</Text>
+                        </ButtonOutline>
+                )
+        }
+        return <ButtonPrimary {..._.omit(props, ['color'])} />
 }
 
 Button.propTypes = {
-    primary: PropTypes.bool,
-    default: PropTypes.bool,
-    picker: PropTypes.bool,
-    icon: PropTypes.object,
-    link: PropTypes.bool,
-    round: PropTypes.bool,
-    iconSolo: PropTypes.bool,
-    outline: PropTypes.bool
+        primary: PropTypes.bool,
+        default: PropTypes.bool,
+        picker: PropTypes.bool,
+        icon: PropTypes.object,
+        link: PropTypes.bool,
+        round: PropTypes.bool,
+        iconSolo: PropTypes.bool,
+        outline: PropTypes.bool
 };
 
 export default Button;
