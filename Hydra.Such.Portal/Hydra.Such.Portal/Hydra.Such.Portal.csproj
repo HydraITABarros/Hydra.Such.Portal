@@ -35,6 +35,7 @@
     <Content Remove="Views\Shared\_LayoutReact.cshtml" />
     <None Remove="yarn.lock" />
     <Content Remove="wwwroot\css\site.css" />
+    <None Remove="ReactApp\pages\OrdensDeManutencaoDetails\index.js" />
   </ItemGroup>
 
   <ItemGroup>

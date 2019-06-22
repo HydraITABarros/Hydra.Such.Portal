@@ -1,8 +1,8 @@
-import React from 'react'
+﻿import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { injectGlobal, ThemeProvider } from 'styled-components'
 
-import { HomePage, SamplePage, NotFoundPage, Template, OrdensDeManutencao, OrdensDeManutencaoDetails } from 'pages'
+import { HomePage, SamplePage, NotFoundPage, Template, OrdensDeManutencao } from 'pages'
 
 // https://github.com/diegohaz/arc/wiki/Styling
 import theme from './themes/default'
@@ -39,7 +39,7 @@ const App = () => {
                                                 {/* <Route component={Template} /> */}
                                                 <Route path="/ordens-de-manutencao" component={OrdensDeManutencao} exact />
                                                 <Route path="/ordens-de-manutencao/arquivo" render={() => <div>Arquivo</div>} exact />
-                                                <Route path="/ordens-de-manutencao/:orderid" component={OrdensDeManutencaoDetails} exact />
+                                                <Route path="/ordens-de-manutencao/:orderid" component={OrdensDeManutencao} exact />
                                                 <Route path="/ordens-de-manutencao/:orderid/ficha-de-manutencao" render={() => <div>Ficha de Manutenção</div>} />
                                                 {/* <Route component={NotFoundPage} /> */}
                                         </Switch>
