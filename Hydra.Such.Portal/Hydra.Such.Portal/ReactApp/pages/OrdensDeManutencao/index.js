@@ -30,7 +30,8 @@ import MuiTextField from '@material-ui/core/TextField';
 import MuiInput from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { renderToString } from 'react-dom/server';
-import { withRouter } from 'react-router'
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -373,9 +374,28 @@ class OrdensDeManutencao extends Component {
         constructor(props) {
                 super(props);
                 moment.locale("pt");
-                this.state.calendar.from = moment().subtract(1, 'month').startOf('month');
-                this.state.calendar.to = moment().subtract(1, 'month').endOf('month');
-                this.fetchMaintenenceOrders({ ...this.state.calendar });
+                if (props.state.calendar.from) {
+                        this.state.calendar.from = this.props.state.calendar.from;
+                } else {
+                        this.state.calendar.from = moment().subtract(1, 'month').startOf('month');
+                }
+
+                if (props.state.calendar.to) {
+                        this.state.calendar.to = this.props.state.calendar.to;
+                } else {
+                        this.state.calendar.to = moment().subtract(1, 'month').endOf('month');
+                }
+                if (props.state.maintenenceOrders.length > 0) {
+                        this.state.maintenenceOrders = props.state.maintenenceOrders;
+                        this.state.ordersCounts = props.state.ordersCounts;
+                        this.state.maintenenceOrders = props.state.maintenenceOrders;
+                        this.state.maintenenceOrdersNext = props.state.maintenenceOrdersNext;
+                        this.state.isLoading = false;
+                        this.state.maintenenceOrdersIsLoading = false;
+                } else {
+                        this.fetchMaintenenceOrders({ ...this.state.calendar });
+                }
+
                 this.handleResize = this.handleResize.bind(this);
                 this.getInitials = this.getInitials.bind(this);
                 this.handleGridScroll = this.handleGridScroll.bind(this);
@@ -436,7 +456,7 @@ class OrdensDeManutencao extends Component {
                                 var list = data.result.items;
                                 var nextPageLink = data.result.nextPageLink;
                                 this.setState({ ordersCounts: data.ordersCounts, maintenenceOrders: list, maintenenceOrdersNext: nextPageLink }, () => {
-                                        return;
+                                        this.props.dispatchState(this.state);
                                 });
                         }
                 }).catch(function (error) {
@@ -483,6 +503,7 @@ class OrdensDeManutencao extends Component {
                                                                 this.setState({ ordersCounts: data.ordersCounts, maintenenceOrders: this.state.maintenenceOrders.concat(list), maintenenceOrdersNext: nextPageLink }, () => {
                                                                         Tooltip.Hidden.hide();
                                                                         Tooltip.Hidden.rebuild();
+                                                                        this.props.dispatchState(this.state);
                                                                 });
                                                         }
                                                 }).catch().then(() => {
@@ -642,7 +663,7 @@ class OrdensDeManutencao extends Component {
                                                                 timer = setTimeout(() => {
                                                                         this.setState({ maintenenceOrdersIsLoading: true });
                                                                         this.fetchMaintenenceOrders({ from: this.state.calendar.from, to: this.state.calendar.to, search: this.state.maintenenceOrdersSearchValue })
-                                                                }, 1500);
+                                                                }, 500);
 
                                                         }}
                                                         type="search"
@@ -807,4 +828,15 @@ class OrdensDeManutencao extends Component {
         }
 }
 
-export default withRouter(withTheme(OrdensDeManutencao));
+const mapStateToProps = state => ({
+        state: state
+})
+
+const mapDispatchToProps = dispatch => ({
+        dispatchState: (payload) => dispatch({
+                type: "SET_STATE",
+                payload: payload
+        })
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withTheme(OrdensDeManutencao)));

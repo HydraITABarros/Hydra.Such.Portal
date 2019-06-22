@@ -15,10 +15,10 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
     //[JsonSchemaProcessor(typeof(ReactSchemaProcessor))]
  
     [ModelMetadataType(typeof(IEquipamento))]
-    [Select(SelectType = SelectExpandType.Automatic)]
-    [Select("CodigoBarras", SelectType = SelectExpandType.Disabled)]
-    [Select("CodigoBarrasCliente", SelectType = SelectExpandType.Disabled)]
-    [Select("Foto", SelectType = SelectExpandType.Disabled)]
+    //[Select(SelectType = SelectExpandType.Automatic)]
+    //[Select("CodigoBarras", SelectType = SelectExpandType.Disabled)]
+    //[Select("CodigoBarrasCliente", SelectType = SelectExpandType.Disabled)]
+    //[Select("Foto", SelectType = SelectExpandType.Disabled)]
     public partial class Equipamento
     {
         [NotMapped]
@@ -26,6 +26,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
         [NotMapped]
         public string MarcaText { get; set; }
+
+        [NotMapped]
+        public string ServicoText { get; set; }
     }
 
     
@@ -69,10 +72,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
         string IdContrato { get; set; }
 
-        [IgnoreDataMember]
         byte[] CodigoBarras { get; set; }
 
-        [IgnoreDataMember]
         byte[] CodigoBarrasCliente { get; set; }
 
         decimal? PrecoAquisicao { get; set; }
@@ -88,7 +89,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         DateTime? DataSaidaContrato { get; set; }
         string DesignacaoComplementar { get; set; }
 
-        [IgnoreDataMember]
         byte[] Foto { get; set; }
 
         int? AlteradoPor { get; set; }
@@ -125,6 +125,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         ICollection<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
         ICollection<OrdemManutencaoLinha> OrdemManutencaoLinha { get; set; }
         ICollection<SolicitacoesLinha> SolicitacoesLinha { get; set; }
+
     }
 
 }

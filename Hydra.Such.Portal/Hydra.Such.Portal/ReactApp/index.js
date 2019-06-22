@@ -8,17 +8,17 @@ import { basename } from 'config'
 import App from 'App'
 
 const renderApp = () => (
-    <BrowserRouter basename={basename}>
-        <App />
-    </BrowserRouter>
+        <BrowserRouter basename={basename}>
+                <App />
+        </BrowserRouter>
 )
 
 const root = document.getElementById('basicreactcomponent')
 render(renderApp(), root)
 
 if (module.hot) {
-    module.hot.accept('App', () => {
-        require('App')
-        render(renderApp(), root)
-    })
+        module.hot.accept('App', () => {
+                require('App')
+                render(renderApp(), root)
+        })
 }

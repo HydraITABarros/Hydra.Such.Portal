@@ -47,6 +47,7 @@ import {
         TableColumnReordering, ColumnChooser, TableColumnVisibility, TableColumnResizing
 } from '@devexpress/dx-react-grid-material-ui';
 import { isAbsolute } from 'upath';
+import { hidden } from 'ansi-colors';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -90,6 +91,97 @@ injectGlobal`
         background-color: ${_theme.palette.search} ;
         padding: 0;
     }
+        [class*="MuiTableRow"] {
+                .first-cell {
+                        [class*="icon"] {
+                                left: 24px !important;
+                        }
+                }
+        }
+        [class*="GroupPanelContainer"] {
+                [class*="MuiChip-root"] {
+                        position: relative;
+                        background: ${_theme.palette.primary.default};
+                        border-radius: 7px;
+                        padding: 0;
+                        color: white;
+                        font-family: Inter,Helvetica,sans-serif;
+                        font-style: normal;
+                        font-weight: 400;
+                        font-size: 12px;
+                        line-height: 16px;
+                        text-transform: uppercase;
+                        margin: 0 5px;
+                        height: 24px;
+                        &:hover, &:active, &:focus {
+                                background: ${_theme.palette.primary.default};
+                                border-radius: 7px;
+                                color: white;
+                                font-family: Inter,Helvetica,sans-serif;
+                                font-style: normal;
+                                font-weight: 400;
+                                font-size: 12px;
+                                line-height: 16px;
+                                text-transform: uppercase;
+                                margin: 0 5px;
+                        }
+                        [class*="MuiButtonBase-root"] {
+                                color: white;
+                        }
+                        [class*="MuiChip-label"] {
+                                padding-left: 8px;
+                                padding-right: 0px;
+                        }
+                        [class*="MuiChip-deleteIcon"] {
+                                color: ${_theme.palette.primary.default};
+                        }
+                        &[class*="MuiChip-deletable"] {
+                                &:before {
+                                        font-family: 'eSuch' !important;
+                                        content: '\\e90b';
+                                        color: white;
+                                        position: absolute;
+                                        top: 4px;                                                                
+                                        right: 4px;
+                                        pointer-events: none;
+                                }
+                        }
+                }
+        }
+        [class*="MuiPopover-paper"] {
+                [class*="DragDrop-container"] {
+                        [role="button"] {
+                                background: ${_theme.palette.primary.default};
+                                border-radius: 7px;
+                                padding: 0;
+                                color: white;
+                                font-family: Inter,Helvetica,sans-serif;
+                                font-style: normal;
+                                font-weight: 400;
+                                font-size: 12px;
+                                line-height: 16px;
+                                text-transform: uppercase;
+                                margin: 0 5px;
+                                height: 24px;
+                                opacity: .3;
+                        }
+                }
+                [class*="MuiSvgIcon-root"] {
+                        &[focusable] {
+                                color: ${_theme.palette.primary.default}
+                        }
+                }
+                [class*="MuiTypography-root"] {
+                        font-family: Inter,Helvetica,sans-serif;
+                        font-style: normal;
+                        font-weight: 400;
+                        font-size: 14px;
+                        line-height: 24px;
+                        margin: 0;
+                        color: #323F4B;
+                }
+        }
+        
 `
 
 const Grid = styled(MuiGrid)`
@@ -341,6 +433,13 @@ const SearchWrapper = styled.div`
 
 var timer = 0;
 
+const BoldFormatter = ({ value }) => <Text b >{value}werwerwerwe</Text>;
+const BoldTypeProvider = props => (
+        <DataTypeProvider
+                formatterComponent={BoldFormatter}
+                {...props}
+        />
+);
 class OrdensDeManutencaoLine extends Component {
         state = {
                 orderId: "",
@@ -351,20 +450,22 @@ class OrdensDeManutencaoLine extends Component {
                         executed: null
                 },
                 group: [{ columnName: 'categoriaText' }],
+                hiddenColumns: [],
                 defaultExpandedGroups: [],
                 groupingStateColumnExtensions: [
-                        { columnName: 'categoriaText', groupingEnabled: false }
+                        { columnName: 'categoriaText', groupingEnabled: false },
+                        { columnName: 'nome', groupingEnabled: false },
+                        { columnName: 'numSerie', groupingEnabled: false },
+                        { columnName: 'numInventario', groupingEnabled: false },
+                        { columnName: 'numEquipamento', groupingEnabled: false }
                 ],
                 tooltipReady: false,
-                maintenenceOrdersLines: [{}],
-                maintenenceOrdersLinesFiltered: [],
-                maintenenceOrdersLinesIsLoading: false,
-                maintenenceOrdersLinesSearchValue: "",
-                maintenenceOrdersLinesNext: "",
-                equiment: [],
-                equimentFiltered: [],
-                equimentIsLoading: false,
-                equimentSearchValue: "",
+                maintenanceOrder: {},
+                maintenanceOrdersLines: [{}],
+                maintenanceOrdersLinesFiltered: [{}],
+                maintenanceOrdersLinesIsLoading: false,
+                searchValue: "",
+                maintenanceOrdersLinesNext: "",
                 listContainerStyle: {},
                 avatarColors: [
                         "#990000",
@@ -383,12 +484,17 @@ class OrdensDeManutencaoLine extends Component {
                 this.handleGridScroll = this.handleGridScroll.bind(this);
                 this.filterListByKeysValue = this.filterListByKeysValue.bind(this);
                 this.state.orderId = this.props.match.params.orderid;
-                this.fetchMaintenenceOrdersLines({ orderId: this.state.orderId }, () => {
-                        this.state.defaultExpandedGroups = getDefaultExpandedGroups(this.state.maintenenceOrdersLines, this.state.group);
+                this.fetchmaintenanceOrdersLines({ orderId: this.state.orderId }, () => {
+                        this.setState({
+                                "defaultExpandedGroups": getDefaultExpandedGroups(this.state.maintenanceOrdersLines, this.state.group),
+                                maintenanceOrdersLinesFiltered: this.filterListByKeysValue({ list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: this.state.search })
+                        }, () => {
+                        });
                 });
         }
 
-        fetchMaintenenceOrdersLines({ orderId, search }, cb) {
+        fetchmaintenanceOrdersLines({ orderId, search }, cb) {
+                this.setState({ maintenanceOrdersLinesIsLoading: true });
                 cb = cb || (() => { });
                 var filter = null;
                 if (search && search != '') {
@@ -396,7 +502,7 @@ class OrdensDeManutencaoLine extends Component {
                 }
                 axios.get(`/ordens-de-manutencao/${orderId}`, {
                         params: {
-                                $select: 'Idequipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca',
+                                $select: 'Idequipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca,idServico,idRegiao',
                                 $filter: filter
                         }
                 }).then((resultLines) => {
@@ -405,18 +511,22 @@ class OrdensDeManutencaoLine extends Component {
                         if (data.ordersCountsLines && data.resultLines && data.resultLines.items) {
                                 var list = data.resultLines.items;
                                 var nextPageLink = data.resultLines.nextPageLink;
-                                this.setState({ ordersCountsLines: data.ordersCountsLines, maintenenceOrdersLines: list, maintenenceOrdersLinesNext: nextPageLink }, () => {
+                                this.setState({ maintenanceOrder: data.order, ordersCountsLines: data.ordersCountsLines, maintenanceOrdersLines: list, maintenanceOrdersLinesNext: nextPageLink }, () => {
                                         cb(null, data);
                                 });
                         }
                 }).catch(function (error) {
                 }).then(() => {
-                        this.setState({ isLoading: false, maintenenceOrdersLinesIsLoading: false });
+                        this.setState({ isLoading: false, maintenanceOrdersLinesIsLoading: false });
+                        setTimeout(() => {
+                                this.setState({ tooltipReady: true });
+                                Tooltip.Hidden.hide();
+                                Tooltip.Hidden.rebuild();
+                        }, 1200);
                 });
         }
 
         componentDidMount() {
-                this.setState({ tooltipReady: true });
                 window.addEventListener("resize", this.handleResize);
                 this.setDatePickerMarginTop();
                 this.setTableMarginTop();
@@ -432,38 +542,10 @@ class OrdensDeManutencaoLine extends Component {
         }
 
         handleGridScroll(e) {
-                (() => {
-                        setTimeout(() => {
-                                Tooltip.Hidden.hide();
-                                Tooltip.Hidden.rebuild();
-                                var listWrapper = ReactDOM.findDOMNode(this.listWrapper);
-                                var scrollTop = listWrapper.scrollTop;
-                                var containerHeight = listWrapper.clientHeight;
-                                if (scrollTop > containerHeight && !this.state.maintenenceOrdersLinesIsLoading) {
-                                        this.setState({ maintenenceOrdersLinesIsLoading: true }, () => {
-                                                axios.get(this.state.maintenenceOrdersLinesNext).then((result) => {
-                                                        Tooltip.Hidden.hide();
-                                                        Tooltip.Hidden.rebuild();
-                                                        var data = result.data;
-                                                        this.setTableMarginTop();
-                                                        if (data.ordersCountsLines && data.resultLines && data.resultLines.items) {
-                                                                var list = data.resultLines.items;
-                                                                var nextPageLink = data.resultLines.nextPageLink;
-                                                                this.setState({ ordersCountsLines: data.ordersCountsLines, maintenenceOrdersLines: this.state.maintenenceOrdersLines.concat(list), maintenenceOrdersLinesNext: nextPageLink }, () => {
-                                                                        Tooltip.Hidden.hide();
-                                                                        Tooltip.Hidden.rebuild();
-                                                                });
-                                                        }
-                                                }).catch().then(() => {
-                                                        this.setState({ maintenenceOrdersLinesIsLoading: false }, () => {
-                                                                Tooltip.Hidden.hide();
-                                                                Tooltip.Hidden.rebuild();
-                                                        });
-                                                });;
-                                        });
-                                }
-                        }, 0)
-                })();
+                setTimeout(() => {
+                        Tooltip.Hidden.hide();
+                        Tooltip.Hidden.rebuild();
+                });
         }
 
         setTableMarginTop() {
@@ -510,7 +592,7 @@ class OrdensDeManutencaoLine extends Component {
                 let filteredList = list.filter((item) => {
                         var find = false;
                         keys.map((k) => {
-                                if (item[k].toLowerCase().search(value) != -1) {
+                                if (item[k] && item[k].toString().toLowerCase().search(value) != -1) {
                                         find = true;
                                 }
                         });
@@ -524,28 +606,46 @@ class OrdensDeManutencaoLine extends Component {
         };
 
         render() {
-                const { isLoading, ordersCountsLines, maintenenceOrdersLines, maintenenceOrdersLinesIsLoading } = this.state;
+                const { isLoading, ordersCountsLines, maintenanceOrdersLines, maintenanceOrdersLinesIsLoading } = this.state;
 
                 var columns = [
                         { columnName: 'categoriaText', name: 'categoriaText', title: 'Equipamentos' },
-                        { columnName: 'nome', name: 'nome', title: 'Nome' },
+                        { columnName: 'nome', name: 'nome', title: 'Nome', dataType: 'bold' },
+                        { columnName: 'marcaText', name: 'marcaText', title: 'Marca' },
+                        { columnName: 'servicoText', name: 'servicoText', title: 'Serviço' },
                         { columnName: 'numSerie', name: 'numSerie', title: 'Nº Série' },
                         { columnName: 'numInventario', name: 'numInventario', title: 'Nº Inventário' },
-                        { columnName: 'numEquipamento', name: 'numEquipamento', title: 'Nº Equipamento' },
-                        { columnName: 'marcaText', name: 'marcaText', title: 'Marca' }
+                        { columnName: 'numEquipamento', name: 'numEquipamento', title: 'Nº Equipamento' }
                 ];
+                var headColumns = _.differenceBy(columns, this.state.group, 'columnName');
+                headColumns = headColumns.filter((val) => {
+                        return this.state.hiddenColumns.indexOf(val.columnName) < 0;
+                });
+                var firstColumn = headColumns[0];
+
+
                 return (
                         <PageTemplate >
                                 <Wrapper padding={'0 0 20px'} width="100%">
                                         <Wrapper padding={'20px'} width="100%" >
-                                                <Button linklight onClick={() => { this.props.history.push(`/ordens-de-manutencao`) }} style={{ verticalAlign: 'middle' }}>OMs</Button>
-                                                <Icon arrow-right style={{ verticalAlign: 'middle' }} />
+                                                <Text b onClick={() => { this.props.history.push(`/ordens-de-manutencao`) }} style={{ verticalAlign: 'middle', textDecoration: 'underline', cursor: 'pointer' }}>OMs</Text>
+                                                <Icon arrow-right style={{ verticalAlign: 'middle' }} />&nbsp;
+                                                <Text b style={{ verticalAlign: 'middle', position: 'relative', top: '1px' }} >{toTitleCase(this.state.maintenanceOrder.description)}</Text>
                                         </Wrapper>
                                         <Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} ref={el => this.highlightWrapper = el} padding={"200px"}>
                                                 <Grid item xs>
-                                                        <Wrapper padding={'0 25px 0'}>
-                                                                <TextHeader h2>Ordens de Manutenção Linha <br /> <b>Por executar</b></TextHeader>
-                                                        </Wrapper>
+
+                                                        {!this.state.isLoading ?
+                                                                <Wrapper padding={'0 25px 0'}>
+                                                                        <TextHeader h2><b> {toTitleCase(this.state.maintenanceOrder.nomeInstituicao)}</b></TextHeader> <br />
+                                                                        {this.state.orderId ?
+                                                                                <div><Text b>OM</Text> {this.state.orderId} </div>
+                                                                                : ''}
+                                                                        {this.state.maintenanceOrder.contrato ?
+                                                                                <div><Text b>Contrato</Text> {this.state.maintenanceOrder.contrato} </div>
+                                                                                : ''}
+                                                                </Wrapper>
+                                                                : ''}
                                                 </Grid>
                                                 <Grid container item md={6} xs={12}>
                                                         <CircleOmWrapper className={''}>
@@ -585,18 +685,17 @@ class OrdensDeManutencaoLine extends Component {
                                                         inputProps={{ autoComplete: "off" }}
                                                         id="oms-search"
                                                         onChange={(e) => {
-                                                                this.state.maintenenceOrdersLinesSearchValue;
+                                                                this.state.maintenanceOrdersLinesSearchValue;
                                                                 let search = e.target.value.toLowerCase();
                                                                 this.setState({
-                                                                        maintenenceOrdersLinesSearchValue: search,
-                                                                        maintenenceOrdersLinesFiltered: this.filterListByKeysValue({ list: this.state.maintenenceOrdersLines, keys: ['ObjectDescription', 'ObjectNo', 'MoNo'], value: search })
+                                                                        searchValue: search,
+                                                                        maintenanceOrdersLinesFiltered: this.filterListByKeysValue({ list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: search })
                                                                 }, () => { });
 
                                                                 clearTimeout(timer);
                                                                 timer = setTimeout(() => {
-                                                                        this.setState({ maintenenceOrdersLinesIsLoading: true });
-                                                                        this.fetchMaintenenceOrdersLines({ search: this.state.maintenenceOrdersLinesSearchValue })
-                                                                }, 1500);
+                                                                        this.fetchmaintenanceOrdersLines({ search: this.state.searchValue, orderId: this.state.orderId })
+                                                                }, 400);
 
                                                         }}
                                                         type="search"
@@ -610,20 +709,21 @@ class OrdensDeManutencaoLine extends Component {
                                 <Hr />
                                 <OmDatePicker.backdrop open={this.state.datePickerOpen} />
 
-                                {this.state.listContainerStyle.marginTop && !maintenenceOrdersLinesIsLoading ?
-                                        <ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} >
-                                                <div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading || maintenenceOrdersLinesIsLoading ? "" : "hidden"}>
+                                {this.state.listContainerStyle.marginTop && !isLoading ?
+                                        <ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} onScroll={this.handleGridScroll} >
+                                                <div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading || maintenanceOrdersLinesIsLoading ? "" : "hidden"}>
                                                         <CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} />
                                                 </div>
 
                                                 <TGrid
-                                                        rows={this.state.maintenenceOrdersLines}
+                                                        rows={this.state.maintenanceOrdersLinesFiltered}
                                                         columns={columns}
                                                 >
-                                                        <SortingState />
+                                                        <BoldTypeProvider for={['nome']} />
+                                                        <SortingState onSortingChange={this.handleGridScroll} />
                                                         <SelectionState />
                                                         <GroupingState expandedGroups={this.state.defaultExpandedGroups} grouping={this.state.group} onGroupingChange={(args) => {
-                                                                this.setState({ group: args, defaultExpandedGroups: getDefaultExpandedGroups(this.state.maintenenceOrdersLines, args) });
+                                                                this.setState({ group: args, defaultExpandedGroups: getDefaultExpandedGroups(this.state.maintenanceOrdersLines, args) });
                                                         }}
                                                                 columnExtensions={this.state.groupingStateColumnExtensions}
                                                         />
@@ -633,44 +733,75 @@ class OrdensDeManutencaoLine extends Component {
                                                         <IntegratedGrouping />
                                                         <DragDropProvider />
                                                         <VirtualTable
+
                                                                 headComponent={(props) => <VirtualTable.TableHead {...props} style={{ background: this.props.theme.palette.bg.grey }} />}
                                                                 cellComponent={(props) => {
                                                                         return (<MuiTableCell {..._.omit(props, ['tableRow', 'tableColumn'])}
                                                                                 style={{
-                                                                                        paddingLeft: '8px', paddingRight: '8px',
+                                                                                        paddingLeft: (props.column.columnName == firstColumn.columnName ? '30px' : '8px'),
+                                                                                        paddingRight: '8px',
                                                                                         paddingTop: '16px', paddingBottom: '15px',
                                                                                         borderColor: this.props.theme.palette.primary.keylines,
                                                                                         borderWidth: '1px',
-                                                                                        color: this.props.theme.palette.primary.default
+                                                                                        color: this.props.theme.palette.primary.default,
+                                                                                        whiteSpace: "nowrap",
+                                                                                        overflow: 'hidden',
+                                                                                        textOverflow: 'ellipsis'
                                                                                 }}
-                                                                        ><Text p style={{
-                                                                                color: this.props.theme.palette.primary.default
-                                                                        }}>{props.value}</Text></MuiTableCell>)
+                                                                        >{props.column.dataType == "bold" ?
+                                                                                <Text b style={{ color: this.props.theme.palette.primary.default }}
+                                                                                        data-html={true} data-tip={renderToString(
+                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value}></Highlighter>
+                                                                                        )}
+                                                                                >
+                                                                                        <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value}></Highlighter>
+                                                                                </Text>
+                                                                                :
+                                                                                <Text p style={{ color: this.props.theme.palette.primary.default }}
+                                                                                        data-html={true} data-tip={renderToString(
+                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value}></Highlighter>
+                                                                                        )}
+                                                                                >
+                                                                                        <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value}></Highlighter>
+                                                                                </Text>
+                                                                                }
+                                                                        </MuiTableCell>)
                                                                 }}
                                                         />
                                                         <TableHeaderRow
-                                                                titleComponent={(props) => <Text label {...props} style={{ fontWeight: 500, marginTop: '6px' }} />}
+                                                                titleComponent={(props) => {
+                                                                        return <Text label {...props} style={{ fontWeight: 500, marginTop: '6px' }} title="" data-tip={props.children} >{props.children}</Text>
+                                                                }}
+                                                                sortLabelComponent={(props) => {
+                                                                        return <TableHeaderRow.SortLabel  {...props} getMessage={() => ""} />
+                                                                }}
                                                                 rowComponent={(props) => {
-                                                                        return (<TableRow {..._.omit(props, ['tableRow'])} />)
+                                                                        return (<TableRow {..._.omit(props, ['tableRow'])} onMouseOver={() => ""} style={{ background: this.props.theme.palette.bg.grey }} />)
                                                                 }}
                                                                 cellComponent={(props) => {
                                                                         return (<TableHeaderRow.Cell {...props}
                                                                                 style={{
-                                                                                        paddingLeft: '32px'
-                                                                                }} />)
+                                                                                        paddingLeft: (props.column.columnName == firstColumn.columnName ? '48px' : '24px'),
+                                                                                        position: 'relative',
+                                                                                }} className={(props.column.columnName == firstColumn.columnName ? 'first-cell' : '')} />)
+                                                                }}
+                                                                groupButtonComponent={(props) => {
+                                                                        if (props.disabled)
+                                                                                return '';
+                                                                        return (<Icon observation onClick={props.onGroup}
+                                                                                style={{ position: 'absolute', left: 0, paddingLeft: '0', paddingBottom: '2px', fontSize: '22px' }} />)
                                                                 }}
 
-                                                                groupButtonComponent={(props) => {
-                                                                        return (<DragIndicatorIcon onClick={props.onGroup} style={{ position: 'absolute', left: 0, paddingLeft: '2px', fontSize: '18px' }} />)
-                                                                }}
                                                                 showGroupingControls showSortingControls
                                                         />
-
                                                         <TableGroupRow indentColumnWidth={1} showColumnsWhenGrouped={false} rowComponent={(props) => {
                                                                 var lastGroup = this.state.group[this.state.group.length - 1];
                                                                 if (lastGroup.columnName != props.row.groupedBy) { return (<div></div>); }
                                                                 var values = props.row.compoundKey.split('|');
                                                                 props.row.value = props.row.value;
+                                                                if (values.length == 1 && values[0] == "undefined") {
+                                                                        values[0] = " ";
+                                                                }
                                                                 return (<TableRow {..._.omit(props, ['tableRow'])} key={props.row.compoundKey} style={{
                                                                         background: this.props.theme.palette.primary.default,
                                                                         paddingLeft: '8px', paddingRight: '8px',
@@ -678,44 +809,44 @@ class OrdensDeManutencaoLine extends Component {
                                                                 }}>
                                                                         <MuiTableCell colSpan={props.children.length} key={props.row.compoundKey}
                                                                                 style={{
-                                                                                        paddingLeft: '8px', paddingRight: '8px',
+                                                                                        paddingLeft: '30px', paddingRight: '8px',
                                                                                         paddingTop: '16px', paddingBottom: '15px',
                                                                                         color: 'white'
                                                                                 }}
                                                                         >{values.map((value, index) => {
-                                                                                return (<span >{index > 0 ? <Icon arrow-right style={{ color: 'white', verticalAlign: 'middle' }} /> : ''}<Text span key={index} style={{ color: 'white', verticalAlign: 'middle' }}>{value}</Text></span>);
+                                                                                return (<span >{index > 0 ? <Icon arrow-right style={{ color: 'white', verticalAlign: 'middle', margin: '0 6px' }} /> : ''}
+
+                                                                                        <Text b key={index} style={{ color: 'white', verticalAlign: 'middle' }}
+                                                                                                data-html={true} data-tip={renderToString(
+                                                                                                        <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={value}></Highlighter>
+                                                                                                )}
+                                                                                        >
+                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={value}></Highlighter>
+                                                                                        </Text></span>);
                                                                         })}</MuiTableCell>
                                                                 </TableRow>)
                                                         }} />
                                                         <CustomGrouping children={(e) => { return e; }} />
                                                         <Toolbar />
-                                                        <GroupingPanel showSortingControls={false} showGroupingControls itemComponent={(props) => {
-
-                                                                return <div {...props} key={props.item.column.name} style={{
-                                                                        background: this.props.theme.palette.primary.default,
-                                                                        borderRadius: '7px',
-                                                                        padding: '4px 9px',
-                                                                        color: 'white',
-                                                                        fontFamily: 'Inter,Helvetica,sans-serif',
-                                                                        fontStyle: 'normal',
-                                                                        fontWeight: '400',
-                                                                        fontSize: '12px',
-                                                                        lineHeight: '16px',
-                                                                        textTransform: 'uppercase',
-                                                                        margin: '0 5px'
-                                                                }}>{props.item.column.title} <Icon decline style={{
-                                                                        position: 'relative',
-                                                                        bottom: '-2px',
-                                                                        left: '2px',
-                                                                        cursor: 'pointer'
-                                                                }} onClick={props.onGroup} /></div>
+                                                        <GroupingPanel showSortingControls showGroupingControls />
+                                                        <TableColumnVisibility hiddenColumnNames={this.state.hiddenColumns} onHiddenColumnNamesChange={(value) => {
+                                                                this.setState({ hiddenColumns: value });
                                                         }} />
-                                                        <TableColumnVisibility />
                                                         <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
-                                                        <ColumnChooser />
+                                                        <ColumnChooser toggleButtonComponent={(props) => {
+                                                                return (<Button round style={{
+                                                                        top: '60px',
+                                                                        'zIndex': 1000,
+                                                                        background: 'transparent',
+                                                                        boxShadow: 'none',
+                                                                        right: '-7px'
+                                                                }} {...props} onClick={props.onToggle}><Icon row-menu /></Button>);
+                                                        }} />
                                                         <RowDetailState defaultExpandedRowIds={true} />
                                                 </TGrid>
+                                                {}
                                                 <Tooltip.Hidden id={'oms-tooltip'} />
+
                                         </ListContainer>
                                         : <div></div>
                                 }
@@ -739,9 +870,9 @@ function multiGroupBy(array, group) {
         }, {});
 }
 
-var getDefaultExpandedGroups = (maintenenceOrdersLines, groups) => {
+var getDefaultExpandedGroups = (maintenanceOrdersLines, groups) => {
         var defaultExpandedGroups = [];
-        var groupedList = multiGroupBy(maintenenceOrdersLines, ...groups.map((item) => { return item.columnName }));
+        var groupedList = multiGroupBy(maintenanceOrdersLines, ...groups.map((item) => { return item.columnName }));
         (function formatRecursively(list, referenceList, prefix) {
                 if (prefix) { prefix = prefix + '|'; } else { prefix = ""; }
                 var keys = _.keys(list);
@@ -754,5 +885,24 @@ var getDefaultExpandedGroups = (maintenenceOrdersLines, groups) => {
         })(groupedList, defaultExpandedGroups);
         return defaultExpandedGroups;
 }
-
+function toTitleCase(str) {
+        if (!str) {
+                return str;
+        }
+        return str.replace(
+                /\w\S*/g,
+                function (txt) {
+                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                }
+        );
+}
+const mapStateToProps = state => ({
+        ...state
+})
+const mapDispatchToProps = dispatch => ({
+        dispatchState: (payload) => dispatch({
+                type: "SET_STATE",
+                payload: payload
+        })
+})
 export default withTheme(withRouter(OrdensDeManutencaoLine));

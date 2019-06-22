@@ -235,7 +235,10 @@ namespace Hydra.Such.Portal.Controllers
                 IdClienteEvolution = o.IdClienteEvolution,
                 IdInstituicaoEvolution = o.IdInstituicaoEvolution,
                 CustomerName = o.CustomerName,
-                NomeInstituicao = ""
+                NomeInstituicao = "",
+                ShortcutDimension1Code = o.ShortcutDimension1Code,
+                IdRegiao = 0,
+                Contrato = o.ContractNo
             } ).FirstOrDefault();
 
             if (order == null) { return NotFound(); }
@@ -251,12 +254,21 @@ namespace Hydra.Such.Portal.Controllers
             {
                 order.NomeInstituicao = instituicao.Nome;
             }
+            int.TryParse(order.ShortcutDimension1Code, out order.IdRegiao);
 
             IQueryable results;
-            results = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.Select(e => new Equipamento() {
-                Nome = e.Nome, Marca = e.Marca, IdEquipamento = e.IdEquipamento,
-                Categoria = e.Categoria, NumSerie = e.NumSerie, NumInventario = e.NumInventario, NumEquipamento = e.NumEquipamento
-            }), new ODataQuerySettings { PageSize = pageSize });
+            results = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.OrderByDescending(o=>o.IdEquipamento).Select(e => new Equipamento
+            {
+                Nome = e.Nome,
+                Marca = e.Marca,
+                IdEquipamento = e.IdEquipamento,
+                Categoria = e.Categoria,
+                NumSerie = e.NumSerie,
+                NumInventario = e.NumInventario,
+                IdServico = e.IdServico,
+                NumEquipamento = e.NumEquipamento,
+                IdRegiao = e.IdRegiao
+            }).Where(e=> true/*e.IdServico == 7231*/), new ODataQuerySettings { PageSize = pageSize });
 
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
@@ -275,8 +287,10 @@ namespace Hydra.Such.Portal.Controllers
             newList.ForEach((item) => {
                 var categoria = evolutionWEBContext.EquipCategoria.FirstOrDefault(m => m.IdCategoria == item.Categoria);
                 var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == item.Marca);
+                var servico = evolutionWEBContext.Servico.FirstOrDefault(m => m.IdServico == item.IdServico);
                 item.CategoriaText = categoria != null ? categoria.Nome : "";
                 item.MarcaText = marca != null ? marca.Nome : "";
+                item.ServicoText = servico != null ? servico.Nome : "";
             });
 
             var resultLines = new PageResult<dynamic>(newList, nextLink, total);
@@ -301,8 +315,11 @@ namespace Hydra.Such.Portal.Controllers
             public string Description;
             public int? IdClienteEvolution;
             public int? IdInstituicaoEvolution;
+            public int IdRegiao;
+            public string ShortcutDimension1Code;
             public string CustomerName;
             public string NomeInstituicao;
+            public string Contrato;
         }
 
         //[Authorize]
@@ -337,7 +354,7 @@ namespace Hydra.Such.Portal.Controllers
             return json.Replace(",\"format\":\"decimal\"", string.Empty).Replace(",\"format\":\"byte\"", string.Empty).Replace(",\"format\":\"int32\"", string.Empty).Replace(",\"format\":\"time-span\"", string.Empty);
         }
 
-        
+
 
         [Route("api/[controller]")]
         public class SampleDataController : Controller
