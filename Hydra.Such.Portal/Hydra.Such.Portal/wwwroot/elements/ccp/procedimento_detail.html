@@ -6836,30 +6836,6 @@
                     }
                 },
 
-                //_activeBatchStatus: function (item) {
-                //    debugger;;
-                //    if (item != null) {
-                //        var batchesList = this.data.loteProcedimentoCcp;
-                //        var oSel = batchesList.find(x => x.selected);
-
-                //        if (oSel != undefined) {
-                //            batchesList.find(x => x == oSel).selected = false;
-                //        }
-
-                //        var sel = batchesList.find(x => x == item);
-                //        if (sel != undefined) {
-                //            batchesList.find(x => x == item).selected = true;
-                //            if (sel.estadoLote != 15) {
-                //                batchesList.find(x => x == item).selected = false;
-                //                this._openToast("Lote " + sel.idLote + " não pode ser adjudicado!");
-                //            }
-
-                //            this.$.gridLotesProcedimento15.clearCache();
-                //        }
-                //    }      
-
-                //},
-
                 _batchToAuthorizeDetails: function (item) {
                     debugger;;
                     if (item !== null && item !== undefined) {
@@ -6896,7 +6872,6 @@
                         console.log(updatedObj);
 
                         projects.fill(updatedObj, objIndex, objIndex+1);
-                        //console.log("original data=", projects);
                         console.log("updated data=", projects);
                      * 
                      */
@@ -6905,8 +6880,7 @@
                     var lotes = this.data.loteProcedimentoCcp;
 
                     if ((this.batchObject15.valorAdjudicacao !== null && this.batchObject15.valorAdjudicacao !== undefined) ||
-                        (this.batchObject15.comentarioAutorizacaoAdjudicacao !== null && this.batchObject15.comentarioAutorizacaoAdjudicacao !== undefined)
-                    ) {
+                        (this.batchObject15.comentarioAutorizacaoAdjudicacao !== null && this.batchObject15.comentarioAutorizacaoAdjudicacao !== undefined)) {
                         if (lotes.valorAdjudicacao !== this.batchObject15.valorAdjudicacao || lotes.comentarioAutorizacaoAdjudicacao !== this.batchObject15.comentarioAutorizacaoAdjudicacao) {
                             var index = lotes.findIndex(b => b.noProcedimento === this.batchObject15.noProcedimento && b.idLote === this.batchObject15.idLote);
                             

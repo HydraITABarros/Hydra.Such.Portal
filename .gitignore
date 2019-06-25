@@ -309,3 +309,6 @@ __pycache__/
 /Hydra.Such.Portal/Hydra.Such.Portal/wwwroot/dist/bundle.js
 *.DS_Store
 yarn.lock
+
+#JPM ignore
+/Hydra.Such.Portal/Hydra.Such.Portal/_JPM_dev_notes
