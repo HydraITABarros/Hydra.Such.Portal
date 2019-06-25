@@ -533,6 +533,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.NºFornecedor = x.SupplierNo;
                             CLine.CódigoProdutoFornecedor = x.SupplierProductCode;
                             CLine.GrupoRegistoIVAProduto = x.GrupoRegistoIVAProduto;
+                            CLine.TaxaIVA = x.TaxaIVA;
 
                             //CLine.LocalCompraDireta = x.ArmazemCDireta;
                             CLine.LocalCompraDireta = x.LocalCode;
@@ -617,7 +618,8 @@ namespace Hydra.Such.Portal.Controllers
                         NºLinhaEncomendaAberto = LinhaOriginal.NºLinhaEncomendaAberto,
                         LocalCompraDireta = LinhaOriginal.LocalCompraDireta,
                         CustoUnitarioComIVA = LinhaOriginal.CustoUnitarioComIVA,
-                        GrupoRegistoIVAProduto = LinhaOriginal.GrupoRegistoIVAProduto
+                        GrupoRegistoIVAProduto = LinhaOriginal.GrupoRegistoIVAProduto,
+                        TaxaIVA = LinhaOriginal.TaxaIVA
                     };
 
                     if (DBPreRequesitionLines.Create(LinhaDuplicada) != null)

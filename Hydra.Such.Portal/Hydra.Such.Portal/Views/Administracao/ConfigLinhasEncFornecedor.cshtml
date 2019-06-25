@@ -1,0 +1,730 @@
+﻿
+@{
+    ViewData["Title"] = "Configuração Linhas Encomenda Fornecedor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html" />
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html" />
+
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html" />
+
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html">
+
+<link rel="import" href="~/lib/iron-form/iron-form.html" />
+<link rel="import" href="~/lib/paper-button/paper-button.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="~/lib/select2-wrapper/select2-wrapper.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+
+
+<x-configlinhasencfornecedor></x-configlinhasencfornecedor>
+<dom-module id="x-configlinhasencfornecedor">
+    <template>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+
+        <style>
+            input[readonly] {
+                border: 2px solid transparent;
+            }
+
+            input {
+                font: inherit;
+            }
+
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                        padding: 0 0;
+                    };
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+                    };
+            }
+        </style>
+
+        <iron-ajax url="/Administracao/GetListLinhasEncFornecedor"
+                   last-response="{{result}}"
+                   id="ajax_update"
+                   method="post"
+                   on-response="_updateResponse"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/UpdateListLinhasEncFornecedor"
+                   last-response="{{result}}"
+                   id="ajax_autoupdate"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/DeleteLinhasEncFornecedor"
+                   last-response="{{LinhasEncFornecedorDeleted}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_deleteLinhasEncFornecedor_ajax"
+                   on-response="_deleteLinhasEncFornecedorResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        @*CRUD NEW PROFILEMODEL*@
+        <iron-ajax url="/Administracao/GetProductInfoLinhasEncFornecedor"
+                   last-response="{{productInfo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetProductLocation_ajax"
+                   on-response="_GetProductLocationResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/GetProductInfoLinhasEncFornecedor"
+                   last-response="{{productInfo}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetLineProductLocation_ajax"
+                   on-response="_GetLineProductLocationResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid"
+                   last-response="{{CBVendor}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetTypeconfiglinhasencfornecedor"
+                   last-response="{{CBType}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByProduct"
+                   last-response="{{CBUnitOfMeasure}}"
+                   auto
+                   id="measuresunit_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode"
+                   last-response="{{CBAllUnitOfMeasure}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetProducts"
+                   last-response="{{Products}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/ExportToExcel_LinhasEncFornecedor"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+        <template is="dom-if" if="{{ _permissions.update }}">
+            <div class="subMenu">
+                <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
+                @*<paper-button id="btnAddNew" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>*@
+                @*<paper-button id="btnCancel" class="tablinks" on-tap="_cancel"><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Cancelar</paper-button>*@
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                <!--start ColumnToggle-->
+                <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                    <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                    <div class="list-group" slot="dropdown-content">
+                        <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                            <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                                {{ item.value.label }}
+                            </a>
+                            <hr />
+                        </template>
+                    </div>
+                </paper-menu-button>
+                <!--end ColumnToggle-->
+            </div>
+        </template>
+
+        <paper-collapse-group>
+            <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3" style="padding-top:10px">
+                            <such-selectbox id="ddVendorNo" value="{{_CBVendorNo}}" label="Fornecedor"
+                                            items="[[CBVendor]]"
+                                            text-path="name"
+                                            value-path="no_"
+                                            fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                            disabled="{{ !_permissions.create }}"
+                                            required error-message="Este campo é obrigatório">
+                            </such-selectbox>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[CBType]]" id="ddType" item-value-path="id" item-label-path="value" value="{{_CBType}}" label="Tipo">
+                                <template>
+                                    <table width="180px">
+                                        <tr>
+                                            <td width="40%">[[item.id]]</td>
+                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-3" style="padding-top:10px">
+                            <such-selectbox id="ddNo" label="Cód. Produto"
+                                            items="[[Products]]"
+                                            text-path="code"
+                                            value-path="code"
+                                            fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                            on-value-changed="_onProductChanged">
+                            </such-selectbox>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddDescription" label="Descrição" maxlength="50" disabled></vaadin-text-field>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddDescription2" label="Descrição 2" maxlength="50"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3" style="padding-top:10px">
+                            <such-selectbox id="ddUnitOfMeasure" value="{{_CBUnitOfMeasure}}" label="Unidade de Medida"
+                                            items="[[CBUnitOfMeasure]]"
+                                            text-path="id"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
+                                            disabled="{{ !_permissions.update }}">
+                            </such-selectbox>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddQuantity" label="Quantidade" type="number" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="ddValor" label="Valor" type="number" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;"></vaadin-text-field>
+                        </div>
+                    </div>
+
+                    <div class="row break_clear">
+                        <div class="col-sm-3 alignPoga">
+                            <paper-button class="btnSave" raised on-tap="_add">Criar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </paper-collapse-item>
+        </paper-collapse-group>
+
+        <vaadin-grid id="grid" items="[[result]]" class="editGrid" multi-sort="true" active-item="{{_SelectedLine}}" column-reordering-allowed>
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.vendorNo.hidden }}" disabled>
+                <template class="header">
+                    <vaadin-grid-sorter path="vendorNo">Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="vendorNo" value="[[filter.vendorNo]]" />
+                </template>
+                <template>
+                    <such-selectbox value="{{item.vendorNo}}"
+                                    items="[[CBVendor]]"
+                                    text-path="name"
+                                    value-path="no_"
+                                    fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                    disabled>
+                    </such-selectbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="60px" hidden$="{{ _columns.lineNo.hidden }}" disabled>
+                <template class="header">
+                    <vaadin-grid-sorter path="lineNo">Nº Linha</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="lineNo" value="[[filter.lineNo]]" />
+                </template>
+                <template>
+                    {{item.lineNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="90px" hidden$="{{ _columns.type.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="type" value="[[filter.type]]" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[CBType]]" item-value-path="id" item-label-path="value" value="{{item.type}}" on-change="_AutoUpdate">
+                        <template>
+                            <table width="180px">
+                                <tr>
+                                    <td width="40%">[[item.id]]</td>
+                                    <td width="60%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="75px" hidden$="{{ _columns.no.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="no">Cód. Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="no" value="[[filter.no]]" />
+                </template>
+                <template>
+                    <such-selectbox value="{{item.no}}"
+                                    items="[[Products]]"
+                                    text-path="code"
+                                    value-path="code"
+                                    fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
+                                    on-value-changed="_onLineProductChanged">
+                    </such-selectbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="250px" hidden$="{{ _columns.description.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" value="[[filter.description]]" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="250px" hidden$="{{ _columns.description2.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description2" value="[[filter.description2]]" />
+                </template>
+                <template>
+                    <vaadin-text-field value="{{item.description2}}" maxlength="50" on-blur="_AutoUpdate"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="75px" hidden$="{{ _columns.unitOfMeasure.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="unitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unitOfMeasure" value="[[filter.unitOfMeasure]]" />
+                </template>
+                <template>
+                    <such-selectbox value="{{item.unitOfMeasure}}"
+                                    items="[[CBAllUnitOfMeasure]]"
+                                    text-path="id"
+                                    value-path="id"
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Unidade Medida"}]'
+                                    on-change="_AutoUpdate">
+                    </such-selectbox>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="75px" hidden$="{{ _columns.quantity.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantity" value="[[filter.quantity]]" />
+                </template>
+                <template>
+                    <vaadin-text-field type="number" value="{{item.quantity}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;" on-blur="_AutoUpdate"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="75px" hidden$="{{ _columns.valor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valor" value="[[filter.valor]]" />
+                </template>
+                <template>
+                    <vaadin-text-field type="number" value="{{item.valor}}" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;" on-blur="_AutoUpdate"></vaadin-text-field>
+                </template>
+            </vaadin-grid-column>
+
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column resizable width="50px">
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_delete" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-configlinhasencfornecedor',
+                properties: {
+                    _permissions: {
+	                    type: Array,
+	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
+                    },
+                    _LineIndex: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _LineVendorNo: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _LineLineNo: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+
+                ready: function () {
+                    var _this = this;
+                    this.$.ajax_update.generateRequest();
+
+                    window.menu = this;
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'configlinhasencfornecedor-configlinhasencfornecedor');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop - 50;
+                    $(this.$.grid).height(height);
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _add() {
+                    if (this.$.ddVendorNo.value != "" &&
+                        (this.$.ddQuantity.validate() && isNaN(this.$.ddQuantity.value) == false) &&
+                        (this.$.ddValor.validate() && isNaN(this.$.ddValor.value) == false)
+                    ) {
+                        this.result.unshift({
+                            vendorNo: this.$.ddVendorNo.value,
+                            lineNo: 0,
+                            type: this.$.ddType.value,
+                            no: this.$.ddNo.value,
+                            description: this.$.ddDescription.value,
+                            description2: this.$.ddDescription2.value,
+                            quantity: this.$.ddQuantity.value,
+                            unitOfMeasure: this.$.ddUnitOfMeasure.value,
+                            valor: this.$.ddValor.value
+                        });
+
+                        this.$.ajax_update.url = "/Administracao/UpdateListLinhasEncFornecedor";
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+
+                        this.$.grid.clearCache();
+                    }
+                    else {
+                        this.openToastError("Verifique se todos os campos estão preenchidos corretamente.")
+                    }
+
+                },
+
+                _update: function () {
+                    this.$.ajax_update.url = "/Administracao/UpdateListLinhasEncFornecedor";
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+
+                    this.$.grid.clearCache();
+                },
+
+                _AutoUpdate: function () {
+                    this.$.ajax_autoupdate.body = JSON.stringify(this.result);
+                    this.$.ajax_autoupdate.generateRequest();
+
+                    this.$.grid.clearCache();
+                },
+
+
+                _delete: function (e) {
+                    var index = this.result.indexOf(e.model.item);
+                    var VendorNo = e.model.item.vendorNo;
+                    var LineNo = e.model.item.lineNo;
+                    var ajax_request = this.$.page_deleteLinhasEncFornecedor_ajax;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende eliminar a Linha?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteLinha) {
+                            if (deleteLinha) {
+                                ajax_request.body = JSON.stringify({
+                                    vendorNo: VendorNo,
+                                    lineNo: LineNo
+                                });
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _deleteLinhasEncFornecedorResponse: function (e) {
+                    if (this.LinhasEncFornecedorDeleted.eReasonCode == 0) {
+                        this.openToast(this.LinhasEncFornecedorDeleted.eMessage);
+                        this.$.ajax_update.url = "/Administracao/GetListLinhasEncFornecedor";
+                        this.$.ajax_update.generateRequest();
+                        this.$.grid.clearCache();
+                    }
+                    else {
+                        this.openToastError(this.LinhasEncFornecedorDeleted.eMessage);
+                    }
+                },
+
+
+                _cancel: function () {
+                    this.$.ajax_update.url = "/Administracao/GetListLinhasEncFornecedor";
+                    this.$.ajax_update.generateRequest();
+
+                    this.$.grid.clearCache();
+                },
+
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (this.$.ajax_update.url != "/Administracao/GetListLinhasEncFornecedor") {
+                        if (e.detail.status === 200) {
+                            this.openToast("Tabela atualizada.");
+
+                            this.$.ddVendorNo._clearSelection();
+                            this.$.ddType.value = "";
+                            this.$.ddNo._clearSelection();
+                            this.$.ddDescription.value = "";
+                            this.$.ddDescription2.value = "";
+                            this.$.ddQuantity.value = "";
+                            this.$.ddUnitOfMeasure._clearSelection();
+                            this.$.ddValor.value = "";
+                        }
+                        else {
+                            this.openToastError("Occorreu um erro ao atualizar a tabela.");
+                        }
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+                _exportEXCEL: function () {
+                    var result = this.$.grid._filter(this.result);
+                    result[0].Colunas = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../Administracao/ExportToExcelDownload_LinhasEncFornecedor?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "vendorNo": { hidden: false, label: "Fornecedor" },
+                        "lineNo": { hidden: false, label: "Nº Linha" },
+                        "type": { hidden: false, label: "Tipo" },
+                        "no": { hidden: false, label: "Nº" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "description2": { hidden: false, label: "Descrição 2" },
+                        "unitOfMeasure": { hidden: false, label: "Unidade de Medida" },
+                        "quantity": { hidden: false, label: "Quantidade" },
+                        "valor": { hidden: false, label: "Valor" }
+                    };
+
+                    if (localStorage["configlinhasencfornecedor.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["configlinhasencfornecedor.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["configlinhasencfornecedor.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+
+                _onProductChanged: function (e) {
+                    if (this.$.ddNo.value != "") {
+                        this.$.measuresunit_ajax.params = { "produto": this.$.ddNo.value };
+                        this.$.measuresunit_ajax.generateRequest();
+
+                        this.$.page_GetProductLocation_ajax.body = JSON.stringify({ no: this.$.ddNo.value });
+                        this.$.page_GetProductLocation_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.measuresunit_ajax.params = { "produto": this.$.ddNo.value };
+                        this.$.measuresunit_ajax.generateRequest();
+
+                        this.$.ddDescription.value = "";
+                        this.$.ddDescription2.value = "";
+                        this.$.ddUnitOfMeasure._clearSelection();
+                        this.$.ddValor.value = "";
+                    }
+                },
+                _GetProductLocationResponse: function (e) {
+                    if (this.productInfo != null) {
+                        this.$.ddDescription.value = this.productInfo.name;
+                        this.$.ddDescription2.value = this.productInfo.name2;
+                        this.$.ddUnitOfMeasure.value = this.productInfo.measureUnit;
+                        this.$.ddValor.value = this.productInfo.unitCost;
+                    }
+                },
+
+                _onLineProductChanged: function (e) {
+                    var productNo = "";
+                    this._LineIndex = this.result.indexOf(e.model.item);
+                    if (e.target.__data.activeItem != null)
+                        productNo = e.target.__data.activeItem.code;
+
+                    if (productNo != "") {
+                        this.$.page_GetLineProductLocation_ajax.body = JSON.stringify({ no: productNo });
+                        this.$.page_GetLineProductLocation_ajax.generateRequest();
+                    }
+                    else {
+                        this.result[this._LineIndex].no = "";
+                        this.result[this._LineIndex].description = "";
+                        this.result[this._LineIndex].description2 = "";
+                        this.result[this._LineIndex].unitOfMeasure = "";
+                        this.result[this._LineIndex].valor = "";
+
+                        this.$.grid.clearCache();
+                        this._AutoUpdate();
+                    }
+                },
+                _GetLineProductLocationResponse: function (e) {
+                    if (this.productInfo != null) {
+                        this.result[this._LineIndex].description = this.productInfo.name;
+                        this.result[this._LineIndex].description2 = this.productInfo.name2;
+                        this.result[this._LineIndex].unitOfMeasure = this.productInfo.measureUnit;
+                        this.result[this._LineIndex].valor = this.productInfo.unitCost;
+
+                        this.$.grid.clearCache();
+                        this._AutoUpdate();
+                    }
+                },
+
+
+
+
+
+
+            });
+        });
+    </script>
+</dom-module>

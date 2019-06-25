@@ -46,6 +46,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? TotalCostWithIVA { get; set; }
         public string ArmazemCDireta { get; set; }
         public string GrupoRegistoIVAProduto { get; set; }
+        public decimal? TaxaIVA { get; set; }
+
 
 
         //EXTRAS

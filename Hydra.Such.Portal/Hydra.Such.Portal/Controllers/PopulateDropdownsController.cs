@@ -2744,6 +2744,25 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetTypeconfiglinhasencfornecedor()
+        {
+            var result = new List<EnumData>();
+            result.Add(new EnumData()
+            {
+                Id = 1,
+                Value = "Recurso",
+            });
+            result.Add(new EnumData()
+            {
+                Id = 2,
+                Value = "Produto",
+            });
+
+            return Json(result);
+        }
+
+
         //PEDIDOS DE DESENVOLVIMENTO
         [HttpPost]
         public JsonResult Get_DEV_Estados()

@@ -7297,6 +7297,197 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region Config Linhas Enc Fornecedor
+
+        public IActionResult ConfigLinhasEncFornecedor()
+        {
+            UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminConfigLinhasEncFornecedor);
+            if (userPerm != null && userPerm.Read.Value)
+            {
+                ViewBag.UPermissions = userPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult GetListLinhasEncFornecedor()
+        {
+            List<ConfigLinhasEncFornecedor> result = DBConfigLinhasEncFornecedor.GetAll();
+            return Json(result.OrderBy(x => x.VendorNo).ThenBy(x => x.LineNo));
+        }
+
+        [HttpPost]
+        public JsonResult UpdateListLinhasEncFornecedor([FromBody] List<ConfigLinhasEncFornecedor> data)
+        {
+            //Get All
+            List<ConfigLinhasEncFornecedor> previousList = DBConfigLinhasEncFornecedor.GetAll();
+
+            foreach (ConfigLinhasEncFornecedor line in previousList)
+            {
+                if (!data.Any(x => x.VendorNo == line.VendorNo && x.LineNo == line.LineNo))
+                {
+                    DBConfigLinhasEncFornecedor.Delete(line);
+                }
+            }
+
+            data.ForEach(x =>
+            {
+                if (!string.IsNullOrEmpty(x.VendorNo) && x.LineNo > 0)
+                {
+                    x.UtilizadorModificacao = User.Identity.Name;
+                    x.DataHoraModificacao = DateTime.Now;
+                    DBConfigLinhasEncFornecedor.Update(x);
+                }
+                else
+                {
+                    x.LineNo = DBConfigLinhasEncFornecedor.GetMaxLineNoByVendorNo(x.VendorNo) + 1;
+                    x.UtilizadorCriacao = User.Identity.Name;
+                    x.DataHoraCriacao = DateTime.Now;
+                    DBConfigLinhasEncFornecedor.Create(x);
+                }
+            });
+
+            return Json(data);
+        }
+
+        [HttpPost]
+        //Verifica se já existe alguma Folha de Horas no mesmo períoda para o mesmo Empregado
+        public JsonResult DeleteLinhasEncFornecedor([FromBody] ConfigLinhasEncFornecedor data)
+        {
+            ConfigLinhasEncFornecedorViewModel result = new ConfigLinhasEncFornecedorViewModel();
+            result.eReasonCode = 99;
+            result.eMessage = "Ocorreu um erro.";
+            if (data != null)
+            {
+                ConfigLinhasEncFornecedor Linha = DBConfigLinhasEncFornecedor.GetByVendorNoAndLineNo(data.VendorNo, data.LineNo);
+                if (Linha != null)
+                {
+                    if (DBConfigLinhasEncFornecedor.Delete(Linha) == true)
+                    {
+                        result.eReasonCode = 0;
+                        result.eMessage = "Linha eliminada com sucesso.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 99;
+                        result.eMessage = "Ocorreu um erro ao elinar a linha.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 99;
+                    result.eMessage = "Não foi possivel obter a informação da linha.";
+                }
+            }
+            else
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Não foi possivel obter a informação da linha.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductInfoLinhasEncFornecedor([FromBody] ConfigLinhasEncFornecedor linha)
+        {
+            NAVProductsViewModel product = new NAVProductsViewModel();
+
+            try
+            {
+                if (!string.IsNullOrEmpty(linha.No))
+                {
+                    product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, linha.No).FirstOrDefault();
+                    product.OpenOrderLines = false;
+
+                    if (product.InventoryValueZero == 1)
+                    {
+                        product.LocationCode = DBConfigurations.GetById(1).ArmazemCompraDireta;
+                    }
+                    else
+                    {
+                        NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_config.NAVDatabaseName, _config.NAVCompanyName, linha.No).FirstOrDefault();
+                        product.UnitCost = localizacao.UnitCost;
+                        product.LocationCode = localizacao.LocationCode;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+
+            return Json(product);
+        }
+
+        //1
+        [HttpPost]
+        public async Task<JsonResult> ExportToExcel_LinhasEncFornecedor([FromBody] List<ConfigLinhasEncFornecedor> dp)
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Linhas Encomenda Fornecedor");
+                IRow row = excelSheet.CreateRow(0);
+
+                row.CreateCell(0).SetCellValue("Nº Fornecedor");
+                row.CreateCell(1).SetCellValue("Nº Linha");
+                row.CreateCell(2).SetCellValue("Tipo");
+                row.CreateCell(3).SetCellValue("Nº");
+                row.CreateCell(4).SetCellValue("Descrição");
+                row.CreateCell(5).SetCellValue("Descrição 2");
+                row.CreateCell(6).SetCellValue("Unidade de Medida");
+                row.CreateCell(7).SetCellValue("Quantidade");
+                row.CreateCell(8).SetCellValue("Valor");
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ConfigLinhasEncFornecedor item in dp)
+                    {
+                        row = excelSheet.CreateRow(count);
+
+                        row.CreateCell(0).SetCellValue(item.VendorNo);
+                        row.CreateCell(1).SetCellValue(item.LineNo);
+                        row.CreateCell(2).SetCellValue(item.Type.HasValue ? item.Type == 1 ? "Recurso" : "Produto" : "");
+                        row.CreateCell(3).SetCellValue(item.No);
+                        row.CreateCell(4).SetCellValue(item.Description);
+                        row.CreateCell(5).SetCellValue(item.Description2);
+                        row.CreateCell(6).SetCellValue(item.UnitOfMeasure);
+                        row.CreateCell(7).SetCellValue(item.Quantity.HasValue ? item.Quantity.ToString() : "");
+                        row.CreateCell(8).SetCellValue(item.Valor.HasValue ? item.Valor.ToString() : "");
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_LinhasEncFornecedor(string sFileName)
+        {
+            sFileName = @"/Upload/temp/" + sFileName;
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas Encomenda Fornecedor.xlsx");
+        }
+        #endregion
 
 
 
