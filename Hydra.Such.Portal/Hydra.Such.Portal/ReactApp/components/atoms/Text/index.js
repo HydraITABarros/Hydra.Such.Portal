@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { css, theme, injectGlobal } from 'styled-components'
-import _theme from '../../themes/default'
+import _theme from '../../../themes/default'
 import MuiButton from '@material-ui/core/Button';
 
 const assetsPath = process.env.ASSETS_PATH || '';
@@ -69,7 +69,7 @@ const Label = styled.label`
 `
 const Default = styled.span`
     font-family: ${_theme.fonts.primary};
-    font-weight: 200;
+    font-weight: 400;
     font-size: 14px;
     line-height: 24px;
     color: ${props => props.color || _theme.palette.primary.default};     
@@ -95,24 +95,24 @@ const DataSmall = styled.span`
 
 const Text = ({ ...props }) => {
 
-    if (props.h1) {
-        return <Title {..._.omit(props, ['h1'])} />
-    } else if (props.h2) {
-        return <Header {..._.omit(props, ['h2'])} />
-    } else if (props.h3) {
-        return <SubHeader {..._.omit(props, ['h3'])} />
-    } else if (props.p) {
-        return <Paragraph {..._.omit(props, ['p'])} />
-    } else if (props.b) {
-        return <Bold {..._.omit(props, ['b'])} />
-    } else if (props.label) {
-        return <Label {..._.omit(props, ['label'])} />
-    } else if (props.dataBig) {
-        return <DataBig {..._.omit(props, ['dataBig'])} />
-    } else if (props.dataSmall) {
-        return <DataSmall {..._.omit(props, ['dataSmall'])} />
-    }
-    return <Default {..._.omit(props, ['span'])} />
+        if (props.h1) {
+                return <Title {..._.omit(props, ['h1'])} />
+        } else if (props.h2) {
+                return <Header {..._.omit(props, ['h2'])} />
+        } else if (props.h3) {
+                return <SubHeader {..._.omit(props, ['h3'])} />
+        } else if (props.p) {
+                return <Paragraph {..._.omit(props, ['p'])} />
+        } else if (props.b) {
+                return <Bold {..._.omit(props, ['b'])} />
+        } else if (props.label) {
+                return <Label {..._.omit(props, ['label'])} />
+        } else if (props.dataBig) {
+                return <DataBig {..._.omit(props, ['dataBig'])} />
+        } else if (props.dataSmall) {
+                return <DataSmall {..._.omit(props, ['dataSmall'])} />
+        }
+        return <Default {..._.omit(props, ['span'])} />
 }
 
 export default Text;

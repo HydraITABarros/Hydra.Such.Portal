@@ -5,15 +5,21 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace Hydra.Such.Data.Evolution.Database
+namespace Hydra.Such.Data.Evolution.DatabaseReference
 {
     [ModelMetadataType(typeof(IMaintenanceOrder))]
     public partial class MaintenanceOrder
     {
         [NotMapped]
-        public bool IsPreventive
+        public bool? IsPreventive
         {
-            get { return this.OrderType == "DMNCATE" || this.OrderType == "DMNANU" || this.OrderType == "DMNDBI" || this.OrderType == "DMNCREE" || this.OrderType == "CTTCAT"; }
+            get { if (this.OrderType == "DMNALMP" || this.OrderType == "DMNCATE" || this.OrderType == "DMNLVMP" || this.OrderType == "DMNPRVE") {
+                    return true;
+                } if (this.OrderType == "DMNCREE" || this.OrderType == "DMNDBI" || this.OrderType == "DMNORCE") {
+                    return false;
+                }
+                return null;
+            }
         }
         
         [NotMapped]

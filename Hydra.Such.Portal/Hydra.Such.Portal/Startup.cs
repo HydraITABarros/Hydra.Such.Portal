@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http.Features;
 using Hydra.Such.Portal.Filters;
 using SharpRepository.Ioc.Microsoft.DependencyInjection;
-using Hydra.Such.Data.Evolution.Database;
+using Hydra.Such.Data.Evolution.DatabaseReference;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.OData.Edm;
@@ -103,7 +103,11 @@ namespace Hydra.Such.Portal
             /*sharpRepository for evolution database - IoC*/
             services.AddDbContext<EvolutionWEBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EvolutionConnection")), ServiceLifetime.Transient);
 
-            services.AddTransient<MaintnenceOrdersRepository>(r => new MaintnenceOrdersRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository"))));
+            services.AddTransient<MaintenanceOrdersRepository>(r =>
+            {
+                return new MaintenanceOrdersRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository")));
+            });
+            services.AddTransient<MaintenanceOrdersLineRepository>(r => new MaintenanceOrdersLineRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository"))));
 
             return services.UseSharpRepository(Configuration.GetSection("sharpRepository"));
         }

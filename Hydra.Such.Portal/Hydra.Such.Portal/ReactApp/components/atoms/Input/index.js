@@ -1,6 +1,5 @@
 import React from 'react'
-import styled, { css, theme } from 'styled-components'
-import _theme from '../../themes/default';
+import styled, { css, theme, withTheme } from 'styled-components';
 import MuiOutlinedInput from '@material-ui/core/OutlinedInput';
 
 const styles = css`&& {
@@ -13,7 +12,7 @@ const styles = css`&& {
             font-size: 14px;
         }
         fieldset {
-            border-radius: ${_theme.radius.primary};
+            border-radius: ${props => { console.log('imp', props.theme); return props.theme.radius.primary }};
         }
         [role="button"] {
             padding: 11px 35px 11px 15px;
@@ -24,7 +23,7 @@ const styles = css`&& {
                 background-color: transparent;
             }
             fieldset {
-                border-color: ${_theme.palette.secondary.default};
+                border-color: ${props => props.theme.palette.secondary.default};
             }
         }
     }
@@ -33,7 +32,7 @@ const styles = css`&& {
 const DefaultOutlinedInput = styled(MuiOutlinedInput)`${styles}`;
 
 const Input = ({ ...props }) => {
-    return <DefaultOutlinedInput fullWidth={props.fullWidth || true} labelWidth={props.labelWidth || 0} {...props} />
+        return <DefaultOutlinedInput fullWidth={props.fullWidth || true} labelWidth={props.labelWidth || 0} {...props} />
 }
 
-export default Input;
+export default withTheme(Input);

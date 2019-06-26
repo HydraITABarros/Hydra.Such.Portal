@@ -1,4 +1,4 @@
-﻿using Hydra.Such.Data.Evolution.Database;
+﻿using Hydra.Such.Data.Evolution.DatabaseReference;
 using SharpRepository.Repository;
 using SharpRepository.Repository.Configuration;
 using System;

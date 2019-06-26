@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css, theme } from 'styled-components';
-import _theme from '../../themes/default';
 import ReactTooltip from 'react-tooltip';
 
 const tooltip = css`&& {
@@ -8,13 +7,13 @@ const tooltip = css`&& {
     opacity: 1;
     padding: 1px;
     background: white;
-    border: 1px solid ${_theme.palette.primary.light};
+    border: 1px solid ${props => props.theme.palette.primary.light};
     border-radius: 5px;
     padding: 7px 16px 7px 41px;
     padding-left: ${props => props.icon ? /*'41px'*/ '16px' : '16px'};
     color: black;
     &&:after {
-        border-top-color: ${_theme.palette.primary.light};
+        border-top-color: ${props => props.theme.palette.primary.light};
         opacity: 0;
     }
 }
@@ -36,6 +35,6 @@ const Icon = styled.span`&& {
 const Hidden = styled(ReactTooltip)`${tooltip}`;
 
 export {
-    Hidden,
-    Icon
+        Hidden,
+        Icon
 };
