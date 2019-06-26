@@ -29,6 +29,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
         [NotMapped]
         public string ServicoText { get; set; }
+
+        [NotMapped]
+        public string Estado { get; set; }
     }
 
     

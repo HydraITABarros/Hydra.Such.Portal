@@ -127,14 +127,24 @@ class Circle extends React.Component {
                                         {this.state.ready ? <div id={this.state.id} ></div> : ''}
 
                                         {this.props.loading ? '' :
-                                                <CircleTotal>
-                                                        <Text dataBig>
-                                                                {this.props.trailValue + this.props.strokeValue}
-                                                        </Text>
-                                                        <Text p>
-                                                                {this.props.label}
-                                                        </Text>
-                                                </CircleTotal>
+                                                (this.props.full ?
+                                                        <CircleTotal>
+                                                                <Text dataBig style={{ fontSize: '90px', lineHeight: '70px', top: '8px', color: this.props.strokeColor }}>
+                                                                        {this.props.strokeValue}<span style={{ fontSize: '48px', opacity: 0.4 }}>/{this.props.trailValue + this.props.strokeValue}</span>
+                                                                </Text>
+                                                                <Text p style={{ color: this.props.strokeColor }}>
+                                                                        {this.props.label}
+                                                                </Text>
+                                                        </CircleTotal> :
+                                                        <CircleTotal>
+                                                                <Text dataBig>
+                                                                        {this.props.trailValue + this.props.strokeValue}
+                                                                </Text>
+                                                                <Text p>
+                                                                        {this.props.label}
+                                                                </Text>
+                                                        </CircleTotal>
+                                                )
                                         }
 
                                 </CircleWrapper>

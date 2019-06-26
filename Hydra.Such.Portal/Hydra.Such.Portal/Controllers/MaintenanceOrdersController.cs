@@ -30,7 +30,8 @@ using StackExchange.Redis;
 
 namespace Hydra.Such.Portal.Controllers
 {
-    [AllowAnonymous]
+    //[AllowAnonymous]
+    [Authorize]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
@@ -53,7 +54,7 @@ namespace Hydra.Such.Portal.Controllers
 
         [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"),
         Route(""), HttpGet, AcceptHeader("text/html")]
-        [ResponseCache(Duration = 60000)]
+        //[ResponseCache(Duration = 60000)]
         public IActionResult Index(string orderId)
         {            
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
@@ -72,7 +73,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [Route(""), HttpGet, AcceptHeader("application/json")]
-        [ResponseCache(Duration = 60000)]
+        //[ResponseCache(Duration = 60000)]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to)
         {
             if (from == null || to == null) { return NotFound(); }
@@ -221,10 +222,9 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-
         //[AllowAnonymous]
         [Route("{orderId}"), HttpGet]
-        [ResponseCache(Duration = 60000)]
+        //[ResponseCache(Duration = 60000)]
         public ActionResult GetDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
         {
             if (orderId == null) { return NotFound(); }
@@ -268,7 +268,8 @@ namespace Hydra.Such.Portal.Controllers
                 IdServico = e.IdServico,
                 NumEquipamento = e.NumEquipamento,
                 IdRegiao = e.IdRegiao
-            }).Where(e=> true/*e.IdServico == 7231*/), new ODataQuerySettings { PageSize = pageSize });
+            }).Where(e=> true/*e.IdServico == 7231*//*&& e.NumEquipamento == "ni1102821"*/), new ODataQuerySettings { PageSize = pageSize });
+
 
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
@@ -284,17 +285,25 @@ namespace Hydra.Such.Portal.Controllers
                 newList = new List<Equipamento>();
             }
 
+            var marcas = evolutionWEBContext.EquipMarca.Where(m => m.Activo == true).Select(m=> new {
+                m.IdMarca,
+                m.Nome
+            }).ToList();
+            var servicos = evolutionWEBContext.Servico.Where(s => s.Activo == true).Select(s => new {
+                s.IdServico,
+                s.Nome
+            }).ToList();
+
             newList.ForEach((item) => {
                 var categoria = evolutionWEBContext.EquipCategoria.FirstOrDefault(m => m.IdCategoria == item.Categoria);
-                var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == item.Marca);
-                var servico = evolutionWEBContext.Servico.FirstOrDefault(m => m.IdServico == item.IdServico);
+                var marca = marcas.FirstOrDefault(m => m.IdMarca == item.Marca);
+                var servico = servicos.FirstOrDefault(m => m.IdServico == item.IdServico);
                 item.CategoriaText = categoria != null ? categoria.Nome : "";
                 item.MarcaText = marca != null ? marca.Nome : "";
                 item.ServicoText = servico != null ? servico.Nome : "";
             });
 
             var resultLines = new PageResult<dynamic>(newList, nextLink, total);
-
 
             var ordersCountsLines = new
             {
@@ -308,12 +317,14 @@ namespace Hydra.Such.Portal.Controllers
                 order,
                 resultLines,
                 ordersCountsLines,
+                marcas,
+                servicos
             });
         }
 
 
                 
-        [Route("{equipmentId}"), HttpGet]
+        //[Route("{equipmentId}"), HttpGet]
         [ResponseCache(Duration = 60000)]
         public ActionResult GetEquipDetails(List<int> equipmentId, int? categoryId)
         {

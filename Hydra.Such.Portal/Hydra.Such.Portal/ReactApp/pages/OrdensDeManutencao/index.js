@@ -111,7 +111,7 @@ const fetchTechnicals = ({ orderId, technicalId, local }, cb) => {
 
 const PickerButton = styled(Button)` && {
         position: relative;
-        z-index: 10;
+        z-index: 100;
         padding-left: 25px;
         padding-right: 25px;
     }
@@ -320,7 +320,7 @@ const SearchWrapper = styled.div`
     width: ${props => props.width || '50%'};
     bottom: 0;
     right: 0;
-    z-index: 2;
+    z-index: 1;
     padding: 0 25px 0;
 `;
 
@@ -601,7 +601,7 @@ class OrdensDeManutencao extends Component {
                                                         <Wrapper padding={'25px 25px 0'}>
                                                                 <TextHeader h2>Ordens de Manutenção <br /> <b>Por executar</b></TextHeader>
                                                                 <PullRight>
-                                                                        <Hidden mdUp xsDown><Button icon={<Icon archive />} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }}>Arquivo</Button></Hidden>
+                                                                        <Hidden mdUp xsDown><Button style={{ boxShadow: 'none' }} icon={<Icon archive />} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }}>Arquivo</Button></Hidden>
                                                                 </PullRight>
                                                         </Wrapper>
                                                 </Grid>
@@ -621,10 +621,29 @@ class OrdensDeManutencao extends Component {
                                                                         <Icon preventiva data-tip="Preventiva" />
                                                                 </CircleOm.icon>
                                                                 <CircleOm.chart>
-                                                                        <Circle loading={this.state.isLoading} label="Executadas" strokeValue={this.state.isLoading ? 0 : ordersCounts.curative} trailValue={ordersCounts.preventive} strokeIcon={<Icon curativa />} trailIcon={<Icon preventiva />} width={191} />
+                                                                        <Circle loading={this.state.isLoading}
+                                                                                label="Preventivas"
+                                                                                strokeValue={this.state.isLoading ? 0 : ordersCounts.preventive}
+                                                                                trailValue={ordersCounts.preventiveToExecute}
+                                                                                strokeIcon={<Icon curativa />}
+                                                                                trailIcon={<Icon preventiva />}
+                                                                                width={191}
+                                                                                strokeColor={_theme.palette.primary.medium}
+                                                                                trailColor={_theme.palette.primary.medium}
+                                                                                full
+                                                                        />
                                                                 </CircleOm.chart>
                                                                 <CircleOm.chart>
-                                                                        <Circle loading={this.state.isLoading} label="Por executar" strokeValue={this.state.isLoading ? 0 : ordersCounts.curativeToExecute} trailValue={ordersCounts.preventiveToExecute} strokeIcon={<Icon curativa />} trailIcon={<Icon preventiva />} width={191} />
+                                                                        <Circle loading={this.state.isLoading} label="Curativas"
+                                                                                strokeValue={this.state.isLoading ? 0 : ordersCounts.curative}
+                                                                                trailValue={ordersCounts.curativeToExecute}
+                                                                                strokeIcon={<Icon curativa />}
+                                                                                trailIcon={<Icon curativa />}
+                                                                                width={191}
+                                                                                strokeColor={_theme.palette.secondary.default}
+                                                                                trailColor={_theme.palette.secondary.default}
+                                                                                full
+                                                                        />
                                                                 </CircleOm.chart>
                                                                 <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.secondary.default} color={'white'}>
                                                                         <Icon curativa data-tip="Curativa" />
@@ -633,7 +652,7 @@ class OrdensDeManutencao extends Component {
                                                 </Grid>
                                                 <Grid item xs>
                                                         <Wrapper padding={'25px'} textAlign="right" smTextAlign="center">
-                                                                <Hidden only="sm" ><Button icon={<Icon archive />} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }} >Arquivo</Button></Hidden>
+                                                                <Hidden only="sm" ><Button icon={<Icon archive />} style={{ boxShadow: 'none' }} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }} >Arquivo</Button></Hidden>
                                                         </Wrapper>
                                                 </Grid>
 

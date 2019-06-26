@@ -178,8 +178,8 @@ class DatePickerInput extends React.Component {
 
                         <Drawer variant="persistent" margintop={this.props.margintop} ModalProps={{ disableBackdropClick: true }} anchor="top" open={this.state.open} className={this.state.open ? 'open' : ''} >
                                 <div ref={this.wrapperElement} tabIndex={0} role="button" onKeyDown={this.props.onCloseClick || null} >
-                                        <Spacer height={"35px"} />
                                         <Wrapper padding="22px" textAlign="center" mdPadding="0" >
+                                                <Spacer height={"35px"} />
                                                 <CloseIcon iconSolo onClick={this.props.onCloseClick || null} ><Icon decline /></CloseIcon>
                                                 {select}
                                                 <Wrapper maxWidth="950" padding="0" inline>

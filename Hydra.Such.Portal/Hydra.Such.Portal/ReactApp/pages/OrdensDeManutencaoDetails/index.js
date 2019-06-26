@@ -36,7 +36,7 @@ import {
         FilteringState, GroupingState,
         IntegratedFiltering, IntegratedGrouping, IntegratedPaging, IntegratedSelection, IntegratedSorting,
         PagingState, SelectionState, SortingState, DataTypeProvider, DataTypeProviderProps, CustomGrouping,
-        TreeDataState, CustomTreeData, RowDetailState
+        TreeDataState, CustomTreeData, RowDetailState, VirtualTableState, SearchState
 } from '@devexpress/dx-react-grid';
 
 import {
@@ -44,10 +44,12 @@ import {
         Grid as TGrid, PagingPanel,
         Table, TableFilterRow, TableGroupRow,
         TableHeaderRow, TableSelection, Toolbar, GroupingPanel, VirtualTable,
-        TableColumnReordering, ColumnChooser, TableColumnVisibility, TableColumnResizing
+        TableColumnReordering, ColumnChooser, TableColumnVisibility, TableColumnResizing,
+        SearchPanel, VirtualTableView
 } from '@devexpress/dx-react-grid-material-ui';
 import { isAbsolute } from 'upath';
 import { hidden } from 'ansi-colors';
+import { throws } from 'assert';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -179,6 +181,12 @@ injectGlobal`
                         line-height: 24px;
                         margin: 0;
                         color: #323F4B;
+                }
+        }
+        .table--row--hoverable {
+                cursor: pointer;
+                &:hover {
+                        background: ${_theme.palette.bg.grey};
                 }
         }
         
@@ -440,31 +448,40 @@ const BoldTypeProvider = props => (
                 {...props}
         />
 );
+const getRowId = row => row.idEquipamento || 0;
+
 class OrdensDeManutencaoLine extends Component {
         state = {
                 orderId: "",
-                isLoading: true,
+                isLoading: false,
                 ordersCountsLines: {
                         toSigning: null,
                         toExecute: null,
                         executed: null
                 },
+                marcas: [],
+                servicos: [],
                 group: [{ columnName: 'categoriaText' }],
                 hiddenColumns: [],
                 defaultExpandedGroups: [],
                 groupingStateColumnExtensions: [
+                        { columnName: 'estado', groupingEnabled: false },
                         { columnName: 'categoriaText', groupingEnabled: false },
                         { columnName: 'nome', groupingEnabled: false },
                         { columnName: 'numSerie', groupingEnabled: false },
                         { columnName: 'numInventario', groupingEnabled: false },
-                        { columnName: 'numEquipamento', groupingEnabled: false }
+                        { columnName: 'numEquipamento', groupingEnabled: false },
+                        { columnName: 'action', groupingEnabled: false }
                 ],
                 tooltipReady: false,
                 maintenanceOrder: {},
-                maintenanceOrdersLines: [{}],
-                maintenanceOrdersLinesFiltered: [{}],
-                maintenanceOrdersLinesIsLoading: false,
+                maintenanceOrdersLines: [],
+                maintenanceOrdersTotal: 0,
+                maintenanceOrdersLinesFiltered: [],
+                maintenanceOrdersLinesIsLoading: true,
+                skip: 0,
                 searchValue: "",
+                isSearching: false,
                 maintenanceOrdersLinesNext: "",
                 listContainerStyle: {},
                 avatarColors: [
@@ -486,24 +503,34 @@ class OrdensDeManutencaoLine extends Component {
                 this.state.orderId = this.props.match.params.orderid;
                 this.fetchmaintenanceOrdersLines({ orderId: this.state.orderId }, () => {
                         this.setState({
-                                "defaultExpandedGroups": getDefaultExpandedGroups(this.state.maintenanceOrdersLines, this.state.group),
-                                maintenanceOrdersLinesFiltered: this.filterListByKeysValue({ list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: this.state.search })
+                                defaultExpandedGroups: getDefaultExpandedGroups(this.state.maintenanceOrdersLines, this.state.group),
+                                maintenanceOrdersLinesFiltered: this.filterListByKeysValue({
+                                        list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: this.state.search
+                                })
                         }, () => {
                         });
                 });
         }
 
         fetchmaintenanceOrdersLines({ orderId, search }, cb) {
-                this.setState({ maintenanceOrdersLinesIsLoading: true });
+                this.setState({
+                        isLoading: true
+                });
+
                 cb = cb || (() => { });
                 var filter = null;
                 if (search && search != '') {
-                        filter = "contains(nome,'" + search + "') or contains(numinventario,'" + search + "') or contains(numequipamento,'" + search + "') or contains(idservico,'" + search + "')"
+                        filter = "contains(nome,'" + search + "') or contains(numInventario,'" + search + "') or contains(numEquipamento,'" + search + "') or contains(numSerie,'" + search + "')";
+                        var _marcas = this.state.marcas.filter((item) => { return item.nome.toLowerCase().indexOf(this.state.searchValue.toLowerCase()) > -1; }).map(item => item.idMarca).join(',');
+                        if (_marcas.length > 0) {
+                                filter += " or marca in (" + _marcas + ")"
+                        }
                 }
                 axios.get(`/ordens-de-manutencao/${orderId}`, {
                         params: {
                                 $select: 'Idequipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca,idServico,idRegiao',
-                                $filter: filter
+                                $filter: filter,
+                                $count: true
                         }
                 }).then((resultLines) => {
                         var data = resultLines.data;
@@ -511,19 +538,94 @@ class OrdensDeManutencaoLine extends Component {
                         if (data.ordersCountsLines && data.resultLines && data.resultLines.items) {
                                 var list = data.resultLines.items;
                                 var nextPageLink = data.resultLines.nextPageLink;
-                                this.setState({ maintenanceOrder: data.order, ordersCountsLines: data.ordersCountsLines, maintenanceOrdersLines: list, maintenanceOrdersLinesNext: nextPageLink }, () => {
-                                        cb(null, data);
+                                // var params = nextPageLink.split('$');
+                                // var skip = 0;
+                                // if (params.length > 0) {
+                                //         var skipSplit = params[params.length - 1].split('=');
+                                //         skip = skipSplit[1];
+                                //         skip = skip - 30;
+                                // }
+
+
+                                this.setState({
+                                        maintenanceOrder: data.order,
+                                        ordersCountsLines: data.ordersCountsLines,
+                                        maintenanceOrdersLines: list,
+                                        maintenanceOrdersTotal: data.resultLines.count,
+                                        maintenanceOrdersLinesNext: nextPageLink,
+                                        marcas: data.marcas,
+                                        skip: 0,
+                                }, () => {
+                                        this.setState({
+                                                defaultExpandedGroups: getDefaultExpandedGroups(this.state.maintenanceOrdersLines, this.state.group)
+                                        }, () => {
+                                                cb(null, data);
+                                        });
                                 });
                         }
                 }).catch(function (error) {
                 }).then(() => {
-                        this.setState({ isLoading: false, maintenanceOrdersLinesIsLoading: false });
+                        this.setState({ isLoading: false, maintenanceOrdersLinesIsLoading: false, isSearching: false });
                         setTimeout(() => {
                                 this.setState({ tooltipReady: true });
                                 Tooltip.Hidden.hide();
                                 Tooltip.Hidden.rebuild();
                         }, 1200);
                 });
+        }
+
+        fetchNext = (skip, take) => {
+                // return;
+                // console.log('TEWTTE', skip);
+                // if (skip == 0) {
+                //         console.log(this.state.maintenanceOrdersLines);
+                //         this.setState({
+                //                 maintenanceOrdersLinesTeste: this.state.maintenanceOrdersLines
+                //         }, () => {
+                //         });
+                // } else {
+                if (this.state.maintenanceOrdersLinesNext && !this.state.maintenanceOrdersLinesIsLoading && !this.state.isLoading && this.state.maintenanceOrdersTotal > this.state.maintenanceOrdersLines.length) {
+                        this.setState({ maintenanceOrdersLinesIsLoading: true }, () => {
+                                axios.get(this.state.maintenanceOrdersLinesNext).then((resultLines) => {
+                                        var data = resultLines.data;
+                                        if (data.ordersCountsLines && data.resultLines && data.resultLines.items) {
+                                                var list = data.resultLines.items;
+                                                var nextPageLink = data.resultLines.nextPageLink;
+                                                var maintenanceOrdersLines;
+                                                if (list.length > 0) {
+                                                        maintenanceOrdersLines = this.state.maintenanceOrdersLines.concat(list);
+                                                } else {
+                                                        maintenanceOrdersLines = this.state.maintenanceOrdersLines;
+                                                }
+                                                // maintenanceOrdersLines = _.uniqBy(maintenanceOrdersLines, 'Idequipamento');
+                                                this.setState({
+                                                        ordersCountsLines: data.ordersCountsLines,
+                                                        maintenanceOrdersLines: maintenanceOrdersLines,
+                                                        maintenanceOrdersLinesNext: nextPageLink,
+                                                        //maintenanceOrdersTotal: data.resultLines.count,
+                                                        skip: skip,
+                                                }, () => {
+                                                        //cb(null, data);
+                                                        this.setState({
+                                                                maintenanceOrdersLinesFiltered: this.filterListByKeysValue({
+                                                                        list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: this.state.search
+                                                                }),
+                                                                defaultExpandedGroups: getDefaultExpandedGroups(this.state.maintenanceOrdersLines, this.state.group),
+                                                        }, () => {
+                                                        });
+                                                });
+                                        }
+                                }).catch().then(() => {
+                                        this.setState({ maintenanceOrdersLinesIsLoading: false });
+                                        setTimeout(() => {
+                                                this.setState({ tooltipReady: true });
+                                                Tooltip.Hidden.hide();
+                                                Tooltip.Hidden.rebuild();
+                                        }, 1200);
+                                });;
+                        });
+                }
+                // }
         }
 
         componentDidMount() {
@@ -606,32 +708,48 @@ class OrdensDeManutencaoLine extends Component {
         };
 
         render() {
-                const { isLoading, ordersCountsLines, maintenanceOrdersLines, maintenanceOrdersLinesIsLoading } = this.state;
+                const { isLoading, ordersCountsLines, maintenanceOrdersLines, maintenanceOrdersLinesIsLoading, isSearching } = this.state;
 
                 var columns = [
-                        { columnName: 'categoriaText', name: 'categoriaText', title: 'Equipamentos' },
-                        { columnName: 'nome', name: 'nome', title: 'Nome', dataType: 'bold' },
-                        { columnName: 'marcaText', name: 'marcaText', title: 'Marca' },
-                        { columnName: 'servicoText', name: 'servicoText', title: 'Serviço' },
-                        { columnName: 'numSerie', name: 'numSerie', title: 'Nº Série' },
-                        { columnName: 'numInventario', name: 'numInventario', title: 'Nº Inventário' },
-                        { columnName: 'numEquipamento', name: 'numEquipamento', title: 'Nº Equipamento' }
+                        { columnName: 'estado', name: 'estado', title: ' ', getCellValue: row => row.estado, sortingEnabled: false, selectionEnabled: false },
+                        { columnName: 'categoriaText', name: 'categoriaText', title: 'Equipamentos', getCellValue: row => row.categoriaText },
+                        { columnName: 'nome', name: 'nome', title: 'Nome', dataType: 'bold', getCellValue: row => row.nome },
+                        { columnName: 'marcaText', name: 'marcaText', title: 'Marca', getCellValue: row => row.marcaText },
+                        { columnName: 'servicoText', name: 'servicoText', title: 'Serviço', getCellValue: row => row.servicoText },
+                        { columnName: 'numSerie', name: 'numSerie', title: 'Nº Série', getCellValue: row => row.numSerie },
+                        { columnName: 'numInventario', name: 'numInventario', title: 'Nº Inventário', getCellValue: row => row.numInventario },
+                        { columnName: 'numEquipamento', name: 'numEquipamento', title: 'Nº Equipamento', getCellValue: row => row.numEquipamento },
+                        { columnName: 'action', name: 'action', title: ' ', sortingEnabled: false, selectionEnabled: false },
                 ];
+                var tableColumnExtensions = [
+                        { columnName: 'estado', width: 60 },
+                        { columnName: 'categoriaText' },
+                        { columnName: 'nome' },
+                        { columnName: 'marcaText' },
+                        { columnName: 'servicoText' },
+                        { columnName: 'numSerie' },
+                        { columnName: 'numInventario' },
+                        { columnName: 'numEquipamento' },
+                        { columnName: 'action', width: 60 },
+                ];
+
                 var headColumns = _.differenceBy(columns, this.state.group, 'columnName');
                 headColumns = headColumns.filter((val) => {
                         return this.state.hiddenColumns.indexOf(val.columnName) < 0;
                 });
                 var firstColumn = headColumns[0];
 
-
                 return (
                         <PageTemplate >
                                 <Wrapper padding={'0 0 20px'} width="100%">
-                                        <Wrapper padding={'20px'} width="100%" >
-                                                <Text b onClick={() => { this.props.history.push(`/ordens-de-manutencao`) }} style={{ verticalAlign: 'middle', textDecoration: 'underline', cursor: 'pointer' }}>OMs</Text>
-                                                <Icon arrow-right style={{ verticalAlign: 'middle' }} />&nbsp;
-                                                <Text b style={{ verticalAlign: 'middle', position: 'relative', top: '1px' }} >{toTitleCase(this.state.maintenanceOrder.description)}</Text>
+                                        <Wrapper padding={' 20px 25px'} width="100%" >
+                                                {!this.state.isLoading ? (<span>
+                                                        <Text b onClick={() => { this.props.history.push(`/ordens-de-manutencao`) }} style={{ verticalAlign: 'middle', textDecoration: 'underline', cursor: 'pointer' }}>OMs</Text>
+                                                        <Icon arrow-right style={{ verticalAlign: 'middle' }} />&nbsp;
+                                                        <Text b style={{ verticalAlign: 'middle', position: 'relative', top: '1px' }} >{toTitleCase(this.state.maintenanceOrder.description)}</Text>
+                                                </span>) : ''}
                                         </Wrapper>
+
                                         <Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} ref={el => this.highlightWrapper = el} padding={"200px"}>
                                                 <Grid item xs>
 
@@ -669,15 +787,19 @@ class OrdensDeManutencaoLine extends Component {
                                                         </CircleOmWrapper>
                                                 </Grid>
                                                 <Grid item xs>
-                                                        <Wrapper textAlign="center" inline>
-                                                                <Spacer height="25px" />
-                                                                <Text dataBig>
-                                                                        20
+
+                                                        <Hidden mdDown>
+                                                                <Wrapper textAlign="center" inline>
+                                                                        <Spacer height="25px" />
+                                                                        <Text dataBig>
+                                                                                20
                                                                 </Text>
-                                                                <Text p>
-                                                                        Relatórios por assinar
+                                                                        <Text p>
+                                                                                Relatórios por assinar
                                                                 </Text>
-                                                        </Wrapper>
+                                                                </Wrapper>
+                                                        </Hidden>
+
                                                 </Grid>
                                         </Grid>
                                         <SearchWrapper width={"25%"}>
@@ -685,16 +807,22 @@ class OrdensDeManutencaoLine extends Component {
                                                         inputProps={{ autoComplete: "off" }}
                                                         id="oms-search"
                                                         onChange={(e) => {
-                                                                this.state.maintenanceOrdersLinesSearchValue;
+
                                                                 let search = e.target.value.toLowerCase();
                                                                 this.setState({
                                                                         searchValue: search,
+                                                                        maintenanceOrdersLinesNext: "",
+                                                                        maintenanceOrdersTotal: 0,
+                                                                        skip: 0,
+                                                                        maintenanceOrdersLines: [],
+                                                                        defaultExpandedGroups: [],
                                                                         maintenanceOrdersLinesFiltered: this.filterListByKeysValue({ list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: search })
-                                                                }, () => { });
+                                                                }, () => {
+                                                                });
 
                                                                 clearTimeout(timer);
                                                                 timer = setTimeout(() => {
-                                                                        this.fetchmaintenanceOrdersLines({ search: this.state.searchValue, orderId: this.state.orderId })
+                                                                        this.fetchmaintenanceOrdersLines({ search: search, orderId: this.state.orderId });
                                                                 }, 400);
 
                                                         }}
@@ -709,15 +837,16 @@ class OrdensDeManutencaoLine extends Component {
                                 <Hr />
                                 <OmDatePicker.backdrop open={this.state.datePickerOpen} />
 
-                                {this.state.listContainerStyle.marginTop && !isLoading ?
+                                {this.state.listContainerStyle.marginTop && !isLoading /*&& !isSearching*/ ?
                                         <ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} onScroll={this.handleGridScroll} >
                                                 <div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading || maintenanceOrdersLinesIsLoading ? "" : "hidden"}>
                                                         <CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} />
                                                 </div>
 
                                                 <TGrid
-                                                        rows={this.state.maintenanceOrdersLinesFiltered}
+                                                        rows={this.state.maintenanceOrdersLines}
                                                         columns={columns}
+                                                        getRowId={getRowId}
                                                 >
                                                         <BoldTypeProvider for={['nome']} />
                                                         <SortingState onSortingChange={this.handleGridScroll} />
@@ -727,14 +856,35 @@ class OrdensDeManutencaoLine extends Component {
                                                         }}
                                                                 columnExtensions={this.state.groupingStateColumnExtensions}
                                                         />
+                                                        <SearchState
+                                                        // value={this.state.searchValue}
+                                                        // defaultValue={this.state.searchValue}
+                                                        />
+
                                                         <IntegratedFiltering />
                                                         <IntegratedSorting />
                                                         <IntegratedSelection />
                                                         <IntegratedGrouping />
                                                         <DragDropProvider />
-                                                        <VirtualTable
 
-                                                                headComponent={(props) => <VirtualTable.TableHead {...props} style={{ background: this.props.theme.palette.bg.grey }} />}
+                                                        {/* {urlParams.get('skip') != null && */}
+                                                        <VirtualTableState
+                                                                infiniteScrolling
+                                                                loading={this.state.maintenanceOrdersLinesIsLoading}
+                                                                totalRowCount={this.state.maintenanceOrdersTotal}
+                                                                pageSize={this.state.maintenanceOrdersLines.length}
+                                                                skip={this.state.skip}
+                                                                getRows={this.fetchNext}
+                                                        />
+                                                        {/* } */}
+
+                                                        <VirtualTable
+                                                                estimatedRowHeight={56}
+                                                                height="auto"
+                                                                columnExtensions={tableColumnExtensions}
+                                                                rowComponent={(props) => {
+                                                                        return <VirtualTable.Row {...props} className="table--row--hoverable" />
+                                                                }}
                                                                 cellComponent={(props) => {
                                                                         return (<MuiTableCell {..._.omit(props, ['tableRow', 'tableColumn'])}
                                                                                 style={{
@@ -768,22 +918,29 @@ class OrdensDeManutencaoLine extends Component {
                                                                         </MuiTableCell>)
                                                                 }}
                                                         />
+
                                                         <TableHeaderRow
                                                                 titleComponent={(props) => {
                                                                         return <Text label {...props} style={{ fontWeight: 500, marginTop: '6px' }} title="" data-tip={props.children} >{props.children}</Text>
                                                                 }}
                                                                 sortLabelComponent={(props) => {
+                                                                        if (props.column.sortingEnabled == false) {
+                                                                                return '';
+                                                                        }
                                                                         return <TableHeaderRow.SortLabel  {...props} getMessage={() => ""} />
                                                                 }}
                                                                 rowComponent={(props) => {
-                                                                        return (<TableRow {..._.omit(props, ['tableRow'])} onMouseOver={() => ""} style={{ background: this.props.theme.palette.bg.grey }} />)
+
+                                                                        return (<TableRow {..._.omit(props, ['tableRow'])} key={props.tableRow.key} onMouseOver={() => ""} style={{ background: this.props.theme.palette.bg.grey }} />)
                                                                 }}
                                                                 cellComponent={(props) => {
+
                                                                         return (<TableHeaderRow.Cell {...props}
                                                                                 style={{
-                                                                                        paddingLeft: (props.column.columnName == firstColumn.columnName ? '48px' : '24px'),
+                                                                                        paddingLeft: props.groupingEnabled ? (props.column.columnName == firstColumn.columnName ? '48px' : '24px') : (props.column.columnName == firstColumn.columnName ? '28px' : '8px'),
                                                                                         position: 'relative',
-                                                                                }} className={(props.column.columnName == firstColumn.columnName ? 'first-cell' : '')} />)
+                                                                                }} className={(props.column.columnName == firstColumn.columnName ? 'first-cell' : '') +
+                                                                                        (props.groupingEnabled ? 'grouping-enabled' : '')} />)
                                                                 }}
                                                                 groupButtonComponent={(props) => {
                                                                         if (props.disabled)
@@ -796,7 +953,7 @@ class OrdensDeManutencaoLine extends Component {
                                                         />
                                                         <TableGroupRow indentColumnWidth={1} showColumnsWhenGrouped={false} rowComponent={(props) => {
                                                                 var lastGroup = this.state.group[this.state.group.length - 1];
-                                                                if (lastGroup.columnName != props.row.groupedBy) { return (<div></div>); }
+                                                                if (lastGroup.columnName != props.row.groupedBy) { return (<tr></tr>); }
                                                                 var values = props.row.compoundKey.split('|');
                                                                 props.row.value = props.row.value;
                                                                 if (values.length == 1 && values[0] == "undefined") {
@@ -813,25 +970,31 @@ class OrdensDeManutencaoLine extends Component {
                                                                                         paddingTop: '16px', paddingBottom: '15px',
                                                                                         color: 'white'
                                                                                 }}
-                                                                        >{values.map((value, index) => {
-                                                                                return (<span >{index > 0 ? <Icon arrow-right style={{ color: 'white', verticalAlign: 'middle', margin: '0 6px' }} /> : ''}
+                                                                        >
+                                                                                <Wrapper inline style={{ verticalAlign: 'middle', opacity: 0.5 }} padding="0 15px 0 0"><Icon equipamentos /></Wrapper>
+                                                                                {values.map((value, index) => {
+                                                                                        return (<span >{index > 0 ? <Icon arrow-right style={{ color: 'white', verticalAlign: 'middle', margin: '0 6px' }} /> : ''}
 
-                                                                                        <Text b key={index} style={{ color: 'white', verticalAlign: 'middle' }}
-                                                                                                data-html={true} data-tip={renderToString(
+                                                                                                <Text b key={index} style={{ color: 'white', verticalAlign: 'middle' }}
+                                                                                                        data-html={true} data-tip={renderToString(
+                                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={value}></Highlighter>
+                                                                                                        )}
+                                                                                                >
                                                                                                         <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={value}></Highlighter>
-                                                                                                )}
-                                                                                        >
-                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={value}></Highlighter>
-                                                                                        </Text></span>);
-                                                                        })}</MuiTableCell>
+                                                                                                </Text></span>);
+                                                                                })}
+                                                                                <Wrapper inline style={{ verticalAlign: 'middle', float: 'right', width: '60px', textAlign: 'center', cursor: 'pointer' }} ><Icon open /></Wrapper>
+                                                                        </MuiTableCell>
                                                                 </TableRow>)
                                                         }} />
-                                                        <CustomGrouping children={(e) => { return e; }} />
+                                                        {/* <CustomGrouping children={(e) => { return e; }} /> */}
                                                         <Toolbar />
                                                         <GroupingPanel showSortingControls showGroupingControls />
                                                         <TableColumnVisibility hiddenColumnNames={this.state.hiddenColumns} onHiddenColumnNamesChange={(value) => {
                                                                 this.setState({ hiddenColumns: value });
-                                                        }} />
+                                                        }}
+
+                                                        />
                                                         <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
                                                         <ColumnChooser toggleButtonComponent={(props) => {
                                                                 return (<Button round style={{
@@ -840,9 +1003,17 @@ class OrdensDeManutencaoLine extends Component {
                                                                         background: 'transparent',
                                                                         boxShadow: 'none',
                                                                         right: '-7px'
-                                                                }} {...props} onClick={props.onToggle}><Icon row-menu /></Button>);
-                                                        }} />
-                                                        <RowDetailState defaultExpandedRowIds={true} />
+                                                                }} {..._.omit(props, ['getMessage', 'active'])} onClick={props.onToggle}><Icon row-menu /></Button>);
+                                                        }}
+                                                                itemComponent={(props) => {
+                                                                        if (props.item.column.selectionEnabled == false) {
+                                                                                return '';
+                                                                        };
+                                                                        return <ColumnChooser.Item {...props} />
+                                                                }}
+                                                        />
+                                                        {/* <RowDetailState defaultExpandedRowIds={true} /> */}
+                                                        {/* <SearchPanel /> */}
                                                 </TGrid>
                                                 {}
                                                 <Tooltip.Hidden id={'oms-tooltip'} />
@@ -873,6 +1044,7 @@ function multiGroupBy(array, group) {
 var getDefaultExpandedGroups = (maintenanceOrdersLines, groups) => {
         var defaultExpandedGroups = [];
         var groupedList = multiGroupBy(maintenanceOrdersLines, ...groups.map((item) => { return item.columnName }));
+
         (function formatRecursively(list, referenceList, prefix) {
                 if (prefix) { prefix = prefix + '|'; } else { prefix = ""; }
                 var keys = _.keys(list);
@@ -883,6 +1055,7 @@ var getDefaultExpandedGroups = (maintenanceOrdersLines, groups) => {
                         referenceList.push(item);
                 });
         })(groupedList, defaultExpandedGroups);
+
         return defaultExpandedGroups;
 }
 function toTitleCase(str) {
