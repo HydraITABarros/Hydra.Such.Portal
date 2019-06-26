@@ -504,9 +504,9 @@ class OrdensDeManutencaoLine extends Component {
                 this.fetchmaintenanceOrdersLines({ orderId: this.state.orderId }, () => {
                         this.setState({
                                 defaultExpandedGroups: getDefaultExpandedGroups(this.state.maintenanceOrdersLines, this.state.group),
-                                maintenanceOrdersLinesFiltered: this.filterListByKeysValue({
-                                        list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: this.state.search
-                                })
+                                // maintenanceOrdersLinesFiltered: this.filterListByKeysValue({
+                                //         list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: this.state.search
+                                // })
                         }, () => {
                         });
                 });
@@ -603,13 +603,13 @@ class OrdensDeManutencaoLine extends Component {
                                                         maintenanceOrdersLines: maintenanceOrdersLines,
                                                         maintenanceOrdersLinesNext: nextPageLink,
                                                         //maintenanceOrdersTotal: data.resultLines.count,
-                                                        skip: skip,
+                                                        // skip: skip,
                                                 }, () => {
                                                         //cb(null, data);
                                                         this.setState({
-                                                                maintenanceOrdersLinesFiltered: this.filterListByKeysValue({
-                                                                        list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: this.state.search
-                                                                }),
+                                                                // maintenanceOrdersLinesFiltered: this.filterListByKeysValue({
+                                                                //         list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: this.state.search
+                                                                // }),
                                                                 defaultExpandedGroups: getDefaultExpandedGroups(this.state.maintenanceOrdersLines, this.state.group),
                                                         }, () => {
                                                         });
@@ -793,10 +793,10 @@ class OrdensDeManutencaoLine extends Component {
                                                                         <Spacer height="25px" />
                                                                         <Text dataBig>
                                                                                 20
-                                                                </Text>
+                                                                        </Text>
                                                                         <Text p>
                                                                                 Relatórios por assinar
-                                                                </Text>
+                                                                        </Text>
                                                                 </Wrapper>
                                                         </Hidden>
 
@@ -807,24 +807,16 @@ class OrdensDeManutencaoLine extends Component {
                                                         inputProps={{ autoComplete: "off" }}
                                                         id="oms-search"
                                                         onChange={(e) => {
-
                                                                 let search = e.target.value.toLowerCase();
                                                                 this.setState({
-                                                                        searchValue: search,
-                                                                        maintenanceOrdersLinesNext: "",
-                                                                        maintenanceOrdersTotal: 0,
-                                                                        skip: 0,
-                                                                        maintenanceOrdersLines: [],
-                                                                        defaultExpandedGroups: [],
+                                                                        searchValue: search, maintenanceOrdersLinesNext: "", maintenanceOrdersTotal: 0, skip: 0, maintenanceOrdersLines: [], defaultExpandedGroups: [],
                                                                         maintenanceOrdersLinesFiltered: this.filterListByKeysValue({ list: this.state.maintenanceOrdersLines, keys: ['Idequipamento', 'nome', 'categoriaText', 'numSerie', 'numInventario', 'numEquipamento', 'marcaText', 'servicoText', 'idRegiao'], value: search })
                                                                 }, () => {
                                                                 });
-
                                                                 clearTimeout(timer);
                                                                 timer = setTimeout(() => {
                                                                         this.fetchmaintenanceOrdersLines({ search: search, orderId: this.state.orderId });
                                                                 }, 400);
-
                                                         }}
                                                         type="search"
                                                         margin="none"
@@ -842,11 +834,11 @@ class OrdensDeManutencaoLine extends Component {
                                                 <div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading || maintenanceOrdersLinesIsLoading ? "" : "hidden"}>
                                                         <CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} />
                                                 </div>
-
+                                                {/* {console.log(this.state.maintenanceOrdersLines)} */}
                                                 <TGrid
                                                         rows={this.state.maintenanceOrdersLines}
                                                         columns={columns}
-                                                        getRowId={getRowId}
+                                                //  getRowId={getRowId}
                                                 >
                                                         <BoldTypeProvider for={['nome']} />
                                                         <SortingState onSortingChange={this.handleGridScroll} />
@@ -875,12 +867,20 @@ class OrdensDeManutencaoLine extends Component {
                                                                 pageSize={this.state.maintenanceOrdersLines.length}
                                                                 skip={this.state.skip}
                                                                 getRows={this.fetchNext}
+
                                                         />
                                                         {/* } */}
 
                                                         <VirtualTable
+
+                                                                tableComponent={props => {
+                                                                        return (<VirtualTable.Table {...props} />);
+                                                                }}
                                                                 estimatedRowHeight={56}
-                                                                height="auto"
+                                                                stubRowComponent={(props) => {
+                                                                        return (<VirtualTable.StubRow {...props} />);
+                                                                }}
+                                                                //height="auto"
                                                                 columnExtensions={tableColumnExtensions}
                                                                 rowComponent={(props) => {
                                                                         return <VirtualTable.Row {...props} className="table--row--hoverable" />
@@ -901,18 +901,18 @@ class OrdensDeManutencaoLine extends Component {
                                                                         >{props.column.dataType == "bold" ?
                                                                                 <Text b style={{ color: this.props.theme.palette.primary.default }}
                                                                                         data-html={true} data-tip={renderToString(
-                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value}></Highlighter>
+                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
                                                                                         )}
                                                                                 >
-                                                                                        <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value}></Highlighter>
+                                                                                        <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
                                                                                 </Text>
                                                                                 :
                                                                                 <Text p style={{ color: this.props.theme.palette.primary.default }}
                                                                                         data-html={true} data-tip={renderToString(
-                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value}></Highlighter>
+                                                                                                <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
                                                                                         )}
                                                                                 >
-                                                                                        <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value}></Highlighter>
+                                                                                        <Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
                                                                                 </Text>
                                                                                 }
                                                                         </MuiTableCell>)
@@ -959,12 +959,13 @@ class OrdensDeManutencaoLine extends Component {
                                                                 if (values.length == 1 && values[0] == "undefined") {
                                                                         values[0] = " ";
                                                                 }
-                                                                return (<TableRow {..._.omit(props, ['tableRow'])} key={props.row.compoundKey} style={{
+                                                                // console.log('IMPIMP', props);
+                                                                return (<TableRow {..._.omit(props, ['tableRow'])} _key={props.row.compoundKey} style={{
                                                                         background: this.props.theme.palette.primary.default,
                                                                         paddingLeft: '8px', paddingRight: '8px',
                                                                         paddingTop: '16px', paddingBottom: '15px'
                                                                 }}>
-                                                                        <MuiTableCell colSpan={props.children.length} key={props.row.compoundKey}
+                                                                        <MuiTableCell colSpan={props.children.length} _key={props.row.compoundKey}
                                                                                 style={{
                                                                                         paddingLeft: '30px', paddingRight: '8px',
                                                                                         paddingTop: '16px', paddingBottom: '15px',
@@ -1012,7 +1013,7 @@ class OrdensDeManutencaoLine extends Component {
                                                                         return <ColumnChooser.Item {...props} />
                                                                 }}
                                                         />
-                                                        {/* <RowDetailState defaultExpandedRowIds={true} /> */}
+                                                        <RowDetailState defaultExpandedRowIds={true} />
                                                         {/* <SearchPanel /> */}
                                                 </TGrid>
                                                 {}
