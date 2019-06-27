@@ -1553,8 +1553,8 @@
 
                                 <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="codeServiceCliente">Cód. Serviço Cliente</vaadin-grid-sorter>
-                                        <vaadin-grid-filter path="codeServiceCliente" />
+                                        <vaadin-grid-sorter path="serviceClientNo">Cód. Serviço Cliente</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="serviceClientNo" />
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1569,7 +1569,8 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            [[ _clFormatServiceClient(item.serviceClientNo) ]]
+                                            <!--[[ _clFormatServiceClient(item.serviceClientNo) ]]-->
+                                            {{item.serviceClientNo}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
