@@ -22,6 +22,8 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 <dom-module id="x-requisitiondetails">
     <template>
@@ -1055,7 +1057,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                    </vaadin-grid-filter>-->
+                                        </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1066,6 +1068,7 @@
                                             <!--{{item.createMarketSearchStringValue}}-->
                                         </template>
                                     </template>
+                                    pl
                                 </vaadin-grid-column>
 
                                 <vaadin-grid-column width="160px" resizable>
@@ -1088,6 +1091,7 @@
                                         <!--<vaadin-grid-filter path="localMarketStringValue">-->
                                         <!--value="[[_localMarketFilterActive]]"><vaadin-checkbox checked="{{_localMarketFilterActive}}"></vaadin-checkbox>-->
                                         <!--</vaadin-grid-filter>-->
+                                        mp
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1098,6 +1102,8 @@
                                             <!--{{item.localMarketStringValue}}-->
                                         </template>
                                     </template>
+                                    
+
                                 </vaadin-grid-column>
 
                                 <vaadin-grid-column width="160px" resizable>
@@ -1106,6 +1112,7 @@
                                         <!--<vaadin-grid-filter path="submitPrePurchaseStringValue">-->
                                         <!--value="[[_submitPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_submitPrePurchaseFilterActive}}"></vaadin-checkbox>-->
                                         <!--</vaadin-grid-filter>-->
+                                        mp
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1116,6 +1123,7 @@
                                             <!--{{item.submitPrePurchaseStringValue}}-->
                                         </template>
                                     </template>
+                                    la
                                 </vaadin-grid-column>
 
                                 <vaadin-grid-column width="160px" resizable>
@@ -1124,6 +1132,7 @@
                                         <!--<vaadin-grid-filter path="sendPrePurchaseStringValue">-->
                                         <!-- value="[[_sendPrePurchaseFilterActive]]"><vaadin-checkbox checked="{{_sendPrePurchaseFilterActive}}"></vaadin-checkbox>-->
                                         <!--</vaadin-grid-filter>-->
+                                        mp
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1134,6 +1143,7 @@
                                             <!--{{item.sendPrePurchaseStringValue}}-->
                                         </template>
                                     </template>
+                                    te
                                 </vaadin-grid-column>
 
                                 <vaadin-grid-column width="200px" resizable>
@@ -1197,14 +1207,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.name]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.name]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1433,6 +1443,7 @@
                                             <!--hidden="{{_isArchived}}"-->
                                             <template class="header">
                                             </template>
+                                            /t
                                             <template>
                                                 <paper-button id="btnEliminarLinha" class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                             </template>
@@ -1447,10 +1458,10 @@
                         </div>
 
                         <!--<div class="marginSpace">
-                        <template is="dom-if" if="{{ _permissions.update }}">
-                            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLinesNew"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        </template>
-                    </div>-->
+                            <template is="dom-if" if="{{ _permissions.update }}">
+                                <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLinesNew"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            </template>
+                        </div>-->
                     </div>
                 </iron-form>
             </div>
