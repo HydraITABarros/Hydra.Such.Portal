@@ -3262,7 +3262,7 @@ namespace Hydra.Such.Portal.Controllers
                                 if (contractLine.DataInicial != null && contractLine.DataExpiração != null)// && item.DataPróximaFatura == null)
                                 {
                                     //today = (DateTime)contractLine.ÚltimaDataFatura;
-                                    today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1);
+                                    //today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1);
 
                                     //Mensal 
                                     if (contractLine.PeríodoFatura == 1)
