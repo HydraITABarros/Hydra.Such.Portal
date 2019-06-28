@@ -3009,7 +3009,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         [Route("PreRequisicoes/FileUpload")]
         [Route("PreRequisicoes/FileUpload/{id}")]
-        public JsonResult FileUpload(string id, int linha)
+        public JsonResult FileUpload(string id)
         {
             try
             {

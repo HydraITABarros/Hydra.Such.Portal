@@ -177,11 +177,13 @@
                    last-response="{{Requisition}}"
                    method="post" handle-as="json" content-type="application/json"
                    on-response="_reqDataSourceResponse"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/DeleteRequisitionLine"
                    id="deleteReqLine_ajax"
                    last-response="{{DelReqLineResponse}}"
                    on-response="_deleteReqLineResponse"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/CreateRequisitionLine"
                    id="createReqLine_ajax"
                    last-response="{{AddReqLineResponse}}"
@@ -202,6 +204,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/ValidateRequisition"
                    last-response="{{Requisition}}"
                    id="validaterequisition_datasource"
@@ -209,6 +212,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/AprovarRequisition_CD"
                    last-response="{{Requisition}}"
                    id="aprovarRequisition_datasource"
@@ -216,6 +220,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/RegistByType"
                    last-response="{{regist}}"
                    id="regist_datasource"
@@ -231,6 +236,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/CreatePurchaseOrder"
                    last-response="{{Requisition}}"
                    id="createPurchOrder_ajax"
@@ -238,6 +244,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/SendPrePurchase"
                    last-response="{{Requisition}}"
                    id="sendPrePurchase_ajax"
@@ -245,6 +252,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/CreateTransferShipment"
                    last-response="{{TransferShipmentResponse}}"
                    id="createTransferShipment_ajax"
@@ -252,6 +260,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/SubmitForApproval"
                    last-response="{{SubmitForApprovalResponse}}"
                    id="submitForApproval_ajax"
@@ -259,12 +268,14 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/GetStateDescription"
                    last-response="{{stateDescription}}"
                    id="stateDescription_ajax"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/GetPlaces"
                    last-response="{{PlaceDataCollection}}"
                    method="post"
@@ -280,7 +291,8 @@
                    id="ajax_getPlacesToDeliver"
                    on-response="localDeliveryResponse"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PreRequisicoes/LoadAttachments"
+
+        <iron-ajax url="/GestaoRequisicoes/LoadAttachments"
                    last-response="{{uploads}}"
                    method="post"
                    handle-as="json"
@@ -317,6 +329,22 @@
                    handle-as="json"
                    id="ajax_TodasLinhasNotaEncomenda"
                    on-response="_TodasLinhasNotaEncomendaResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/DeleteAttachments"
+                   last-response="{{deleted_files}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_files_ajax"
+                   on-response="_deletedAttachResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_LoadAttachments_ajax"
+                   on-response="_loadAttachResponse"
                    content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
@@ -463,20 +491,20 @@
                                     <div class="row break_clear">
                                         <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                                         <vaadin-upload id="UploadRequest"
-                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       target="/PreRequisicoes/FileUpload/{{_requisitionid}}"
                                                        method="POST"
                                                        headers="{'Accept': 'application/json'}"
                                                        hidden="{{ !_permissions.update }}"
                                                        timeout=15000>
                                         </vaadin-upload>
                                         <!--<vaadin-upload id="UploadRequest"
-                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
-                                                       accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
-                                                       method="POST"
-                                                       headers="{'Accept': 'application/json'}"
-                                                       hidden="{{ !_permissions.update }}"
-                                                       timeout=15000>
-                                        </vaadin-upload>-->
+                                                   target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                   accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                   method="POST"
+                                                   headers="{'Accept': 'application/json'}"
+                                                   hidden="{{ !_permissions.update }}"
+                                                   timeout=15000>
+                                    </vaadin-upload>-->
                                         <!--</template>-->
                                     </div>
                                     <div class="row break_clear">
@@ -573,15 +601,15 @@
                                 <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <!--<vaadin-combo-box items="[[UnitsOfMmeasure]]" id="CBUnitsOfMmeasure" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
-                                            <template>
-                                                <table width="250px">
-                                                    <tr>
-                                                        <td width="30%">[[item.id]]</td>
-                                                        <td width="70%"><b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                        <template>
+                                            <table width="250px">
+                                                <tr>
+                                                    <td width="30%">[[item.id]]</td>
+                                                    <td width="70%"><b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>-->
                                         <such-selectbox id="CBUnitsOfMmeasure" value="" label="Código Unidade Medida"
                                                         items="[[UnitsOfMmeasure]]"
                                                         text-path="id"
@@ -848,15 +876,15 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                                <template>
-                                                    <table width="200px">
-                                                        <tr>
-                                                            <td width="40%">[[item.id]]</td>
-                                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                                        </tr>
-                                                    </table>
-                                                </template>
-                                            </vaadin-combo-box>-->
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
                                                             items="[[UnitsOfMmeasure]]"
                                                             text-path="id"
@@ -1057,7 +1085,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-                                        </vaadin-grid-filter>-->
+                                    </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1102,7 +1130,7 @@
                                             <!--{{item.localMarketStringValue}}-->
                                         </template>
                                     </template>
-                                    
+
 
                                 </vaadin-grid-column>
 
@@ -1207,14 +1235,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.name]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>-->
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.name]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1458,10 +1486,10 @@
                         </div>
 
                         <!--<div class="marginSpace">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLinesNew"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                            </template>
-                        </div>-->
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLinesNew"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </template>
+                    </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -2857,6 +2885,27 @@
                         }
                     }
                 },
+
+                _deleteFiles: function (e) {
+                    debugger;
+                    var index = this.uploads.indexOf(e.model.item);
+                    this.uploads.splice(index, 1);
+
+                    this.$.delete_files_ajax.body = JSON.stringify(e.model.item);
+                    this.$.delete_files_ajax.generateRequest();
+                },
+                _deletedAttachResponse: function (e) {
+                    if (this.deleted_files.eReasonCode === 1) {
+                        this._openToast("Anexo eliminado com sucesso.");
+
+                        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._requisitionid });
+                        this.$.page_LoadAttachments_ajax.generateRequest();
+
+                    } else if (this.deleted_files.eReasonCode === 2) {
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
+                    }
+                },
+
 
             });
         });

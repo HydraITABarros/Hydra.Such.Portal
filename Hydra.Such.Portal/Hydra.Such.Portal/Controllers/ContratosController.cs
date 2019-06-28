@@ -2085,9 +2085,13 @@ namespace Hydra.Such.Portal.Controllers
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
             
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
+
+            //AMARO COMENTAR
+            //contractList.RemoveAll(x => x.NºDeContrato != "VC180097");
+
             foreach (var item in contractList)
             {
-                //if (item.NºDeContrato == "VC190074")
+                //if (item.NºDeContrato == "VC180054" || item.NºDeContrato == "VC180097")
                 //{
                 //    string teste = "";
                 //}
@@ -2319,7 +2323,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 if (AddMonth == 0)
                                                 {
-                                                    nextInvoiceDate = LastInvoice.AddMonths(2);
+                                                    //nextInvoiceDate = LastInvoice.AddMonths(2);
+                                                    nextInvoiceDate = nextInvoiceDate.AddMonths(2);
                                                 }
                                                 else
                                                 {
@@ -2403,7 +2408,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 if (AddMonth == 0)
                                                 {
-                                                    nextInvoiceDate = LastInvoice.AddMonths(3);
+                                                    //nextInvoiceDate = LastInvoice.AddMonths(3);
+                                                    nextInvoiceDate = nextInvoiceDate.AddMonths(3);
                                                 }
                                                 else
                                                 {
@@ -2446,7 +2452,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 if (AddMonth == 0)
                                                 {
-                                                    nextInvoiceDate = LastInvoice.AddMonths(6);
+                                                    //nextInvoiceDate = LastInvoice.AddMonths(6);
+                                                    nextInvoiceDate = nextInvoiceDate.AddMonths(6);
                                                 }
                                                 else
                                                 {
@@ -2488,7 +2495,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 if (AddMonth == 0)
                                                 {
-                                                    nextInvoiceDate = LastInvoice.AddMonths(12);
+                                                    //nextInvoiceDate = LastInvoice.AddMonths(12);
+                                                    nextInvoiceDate = nextInvoiceDate.AddMonths(12);
                                                 }
                                                 else
                                                 {
@@ -2533,6 +2541,10 @@ namespace Hydra.Such.Portal.Controllers
                             if (lastDay < item.DataInicial || lastDay > item.DataExpiração)
                             {
                                 Problema += " Contrato Não Vigente!";
+                            }
+                            if (nextInvoiceDate < item.DataInicial || nextInvoiceDate > item.DataExpiração)
+                            {
+                                Problema += " Data da próxima fatura superior á data de Expiração!";
                             }
                             if (item.CódigoRegião == "")
                             {
