@@ -129,8 +129,8 @@ class Circle extends React.Component {
                                         {this.props.loading ? '' :
                                                 (this.props.full ?
                                                         <CircleTotal>
-                                                                <Text dataBig style={{ fontSize: '90px', lineHeight: '70px', top: '8px', color: this.props.strokeColor }}>
-                                                                        {this.props.strokeValue}<span style={{ fontSize: '48px', opacity: 0.4 }}>/{this.props.trailValue + this.props.strokeValue}</span>
+                                                                <Text dataBig style={{ fontSize: '80px', lineHeight: '70px', color: this.props.trailColor }}>
+                                                                        {this.props.strokeValue}<span style={{ fontSize: '80px', color: this.props.strokeColor}}>/{this.props.trailValue}</span>
                                                                 </Text>
                                                                 <Text p style={{ color: this.props.strokeColor }}>
                                                                         {this.props.label}
