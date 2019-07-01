@@ -1683,18 +1683,44 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetHistoryReq()
         {
-            List<Requisição> requisition = null;
-            List<RequisitionStates> states = new List<RequisitionStates>()
-            {
-                RequisitionStates.Archived,
-            };
-            requisition = DBRequest.GetReqByUserAreaStatus((int)RequisitionTypes.Normal, User.Identity.Name, states);
+            List<RequisitionViewModel> result = null;
+            result = DBRequest.GetAllHistoric((int)RequisitionTypes.Normal).ParseToViewModel();
 
-            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+            //requisition.RemoveAll(x => x.RequisiçãoNutrição == true);
 
-            requisition.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            //requisition.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
+
+
+
+            //CODIGO ORIGINAL 2
+            //List<Requisição> requisition = null;
+            //List<RequisitionStates> states = new List<RequisitionStates>()
+            //{
+            //    RequisitionStates.Archived,
+            //};
+            //requisition = DBRequest.GetReqByUserAreaStatus((int)RequisitionTypes.Normal, User.Identity.Name, states);
+
+            //List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+
+            //requisition.ForEach(x => result.Add(DBRequest.ParseToViewModel(x)));
+
+            //return Json(result.OrderByDescending(x => x.RequisitionNo));
+
+
 
             //CODIGO ORIGINAL
             //List<RequisiçãoHist> requisition = null;
