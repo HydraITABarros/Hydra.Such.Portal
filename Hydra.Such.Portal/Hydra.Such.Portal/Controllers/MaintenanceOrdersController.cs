@@ -46,10 +46,10 @@ namespace Hydra.Such.Portal.Controllers
 
 
         public MaintenanceOrdersController(
-            MaintenanceOrdersRepository MaintenanceOrdersRepository, 
+            MaintenanceOrdersRepository MaintenanceOrdersRepository,
             MaintenanceOrdersLineRepository MaintenanceOrdersLineRepository,
             SuchDBContext suchDBContext,
-            EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs, 
+            EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs,
             IHttpContextAccessor httpContextAccessor)
         {
             session = httpContextAccessor.HttpContext.Session;
@@ -63,7 +63,7 @@ namespace Hydra.Such.Portal.Controllers
         Route(""), HttpGet, AcceptHeader("text/html")]
         //[ResponseCache(Duration = 60000)]
         public IActionResult Index(string orderId)
-        {            
+        {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             if (UPerm != null && UPerm.Read.Value)
@@ -80,22 +80,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        
-       
+
 
         [Route(""), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
-        public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to)
+        public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
         {
-
-            if (from == null || to == null) { return NotFound(); }
-
             var pageSize = 30;
 
+            var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
+            var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
+
             IQueryable results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable()
-                .Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1)) &&
-                (o.OrderType == "DMNALMP" || o.OrderType == "DMNCATE" || o.OrderType == "DMNLVMP" || o.OrderType == "DMNPRVE" || o.OrderType == "DMNCREE" || o.OrderType == "DMNDBI" || o.OrderType == "DMNORCE"))
-                .OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
+                .Where( o => (preventiveCodes.Contains(o.OrderType) || (curativeCodes.Contains(o.OrderType)) && o.Status == 0)),
+                new ODataQuerySettings { PageSize = pageSize });
 
             var list = results.Cast<dynamic>().AsEnumerable();
             long? total = Request.ODataFeature().TotalCount;
@@ -104,43 +102,46 @@ namespace Hydra.Such.Portal.Controllers
             List<MaintenanceOrder> newList;
             try
             {
-                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrder>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
+               newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrder>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
             }
             catch
             {
-                newList = new List<MaintenanceOrder>();
+               newList = new List<MaintenanceOrder>();
             }
-            newList = newList.Where(l => l.IsPreventive != null).ToList();
+                        
+            //newList = evolutionWEBContext.MaintenanceOrder.Where(u => preventiveCodes.Contains(u.OrderType)).ToList();
             newList.ForEach((item) =>
             {
-                var technicals = GetTechnicals(item, null, null);
-                if (technicals != null)
-                {
-                    item.Technicals = technicals.ToList();
-                }
+               var technicals = GetTechnicals(item, null, null);
+            if (technicals != null)
+            {
+               item.Technicals = technicals.ToList();
+            }
             });
-
+         
             var result = new PageResult<dynamic>(newList, nextLink, total);
 
-            var query = MaintenanceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to
-            && (o.OrderType == "DMNALMP" || o.OrderType == "DMNCATE" || o.OrderType == "DMNLVMP" || o.OrderType == "DMNPRVE" || o.OrderType == "DMNCREE" || o.OrderType == "DMNDBI" || o.OrderType == "DMNORCE"))
-                .Select(m => new { m.IsToExecute, m.IsPreventive, m.OrderType, m.FinishingDate }).ToList();
+            var preventives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
+                   preventiveCodes.Contains(o.OrderType) && o.Status == 0);
+
+            var curatives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
+                   curativeCodes.Contains(o.OrderType) && o.Status == 0);
+
 
             var ordersCounts = new
             {
-                preventive = query.Where(o => o.IsPreventive == true && !o.IsToExecute).Count(),
-                preventiveToExecute = query.Where(o => o.IsPreventive == true && o.IsToExecute).Count(),
-                curative = query.Where(o => o.IsPreventive == false && !o.IsToExecute).Count(),
-                curativeToExecute = query.Where(o => o.IsPreventive == false && o.IsToExecute).Count(),
+                preventive = preventives.Count(),
+                curative = curatives.Count()
             };
 
             return Json(new
             {
                 result,
-                ordersCounts,
-                range = new { from, to }
+                ordersCounts
             });
-        }
+        } 
+
+
 
 
         [Route("technicals"), HttpGet]
@@ -235,82 +236,83 @@ namespace Hydra.Such.Portal.Controllers
 
 
 
-        [Route("{orderId}/technical"), HttpPost]
-        public ActionResult AddTechnicalToOrder(string orderId)
-        {
-            if (orderId == null) { return NotFound(); }
+        //[Route("{orderId}/technical"), HttpPost]
+        //public ActionResult AddTechnicalToOrder(string orderId)
+        //{
+        //    if (orderId == null) { return NotFound(); }
 
-            var order = evolutionWEBContext.MaintenanceOrder.FirstOrDefault(o => o.No == orderId);
+        //    var order = evolutionWEBContext.MaintenanceOrder.FirstOrDefault(o => o.No == orderId);
 
-            if (order == null) { return NotFound(); }
+        //    if (order == null) { return NotFound(); }
 
-            var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+        //    var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
-            if (loggedUser == null) { return NotFound(); }
+        //    if (loggedUser == null) { return NotFound(); }
 
-            var loggedUserCresps = suchDBContext.AcessosDimensões.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).ToList();
-                       
-            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
+        //    var loggedUserCresps = suchDBContext.AcessosDimensões.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).ToList();
 
-            if (evolutionLoggedUser == null) { return NotFound(); }
+        //    var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
 
-            if (evolutionLoggedUser.NivelAcesso == 1 || evolutionLoggedUser.NivelAcesso == 2 ||
-                evolutionLoggedUser.NivelAcesso == 3 || evolutionLoggedUser.NivelAcesso == 4 ||
-                evolutionLoggedUser.NivelAcesso == 8)
-            {
-                return Json(true);
-            }
+        //    if (evolutionLoggedUser == null) { return NotFound(); }
 
-            if (loggedUserCresps.FirstOrDefault(c => c.ValorDimensão == order.ShortcutDimension3Code) != null)
-            {
-                return Unauthorized();
-            }
-            
-                       
-            if (order.IdTecnico1 == evolutionLoggedUser.Id || order.IdTecnico2 == evolutionLoggedUser.Id || 
-                order.IdTecnico3 == evolutionLoggedUser.Id || order.IdTecnico4 == evolutionLoggedUser.Id || 
-                order.IdTecnico5 == evolutionLoggedUser.Id)
-            {
-                return Json(true);
-            }
+        //    if (evolutionLoggedUser.NivelAcesso == 1 || evolutionLoggedUser.NivelAcesso == 2 ||
+        //        evolutionLoggedUser.NivelAcesso == 3 || evolutionLoggedUser.NivelAcesso == 4 ||
+        //        evolutionLoggedUser.NivelAcesso == 8 ||
+        //        evolutionLoggedUser.NivelAcesso == 5 || evolutionLoggedUser.NivelAcesso == 6 || evolutionLoggedUser.NivelAcesso == 7)
+        //    {
+        //        return Json(true);
+        //    }
 
-            if (order.IdTecnico1 == null)
-            {
-                order.IdTecnico1 = evolutionLoggedUser.Id;
-            }
+        //    if (loggedUserCresps.FirstOrDefault(c => c.ValorDimensão == order.ShortcutDimension3Code) != null)
+        //    {
+        //        return Unauthorized();
+        //    }
 
-            else if (order.IdTecnico2 == null)
-            {
-                order.IdTecnico2 = evolutionLoggedUser.Id;
-            }
 
-            else if (order.IdTecnico3 == null)
-            {
-                order.IdTecnico3 = evolutionLoggedUser.Id;
-            }
+        //    if (order.IdTecnico1 == evolutionLoggedUser.Id || order.IdTecnico2 == evolutionLoggedUser.Id || 
+        //        order.IdTecnico3 == evolutionLoggedUser.Id || order.IdTecnico4 == evolutionLoggedUser.Id || 
+        //        order.IdTecnico5 == evolutionLoggedUser.Id)
+        //    {
+        //        return Json(true);
+        //    }
 
-            else if (order.IdTecnico4 == null)
-            {
-                order.IdTecnico4 = evolutionLoggedUser.Id;
-            }
+        //    if (order.IdTecnico1 == null)
+        //    {
+        //        order.IdTecnico1 = evolutionLoggedUser.Id;
+        //    }
 
-            else 
-            {
-                order.IdTecnico5 = evolutionLoggedUser.Id;
-            }
+        //    else if (order.IdTecnico2 == null)
+        //    {
+        //        order.IdTecnico2 = evolutionLoggedUser.Id;
+        //    }
 
-            try
-            {
-                evolutionWEBContext.Update(order);
-                evolutionWEBContext.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return Json(false);
-            }
+        //    else if (order.IdTecnico3 == null)
+        //    {
+        //        order.IdTecnico3 = evolutionLoggedUser.Id;
+        //    }
 
-            return Json(true);
-        }
+        //    else if (order.IdTecnico4 == null)
+        //    {
+        //        order.IdTecnico4 = evolutionLoggedUser.Id;
+        //    }
+
+        //    else 
+        //    {
+        //        order.IdTecnico5 = evolutionLoggedUser.Id;
+        //    }
+
+        //    try
+        //    {
+        //        evolutionWEBContext.Update(order);
+        //        evolutionWEBContext.SaveChanges();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return Json(false);
+        //    }
+
+        //    return Json(true);
+        //}
 
 
 
@@ -498,74 +500,6 @@ namespace Hydra.Such.Portal.Controllers
             public string Contrato;
         }
 
-        //[Authorize]
-        // Todo adds custom authorize filter (eSuchAuthorizationFilter)  (info: Authentication -> Authorization)
-        [Route("getAll")]
-        public PageResult<dynamic> GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
-        {
-            var pageSize = 100;
-            IQueryable results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable(), new ODataQuerySettings { PageSize = pageSize });
-            var list = results.Cast<dynamic>().AsEnumerable();
-            var total = Request.ODataFeature().TotalCount;
-            var nextLink = Request.GetNextPageLink(pageSize);
-
-            return new PageResult<dynamic>(list, nextLink, total);
-        }
-
-        [Route("getSchema")]
-        [ResponseCache(Duration = 600)]
-        public async Task<string> GetSchema()
-        {
-            var _schema = await JsonSchema4.FromTypeAsync<OrdemManutencao>();
-
-            var settings = new JsonSchemaGeneratorSettings();
-            //settings.GenerateKnownTypes = false;
-            //settings.SchemaType = SchemaType.OpenApi3;
-
-            var generator = new JsonSchemaGenerator(settings);
-            var schema = await generator.GenerateAsync(typeof(IOrdemManutencao));
-
-            var json = Regex.Replace(schema.ToJson(), @"\s+", string.Empty);
-
-            return json.Replace(",\"format\":\"decimal\"", string.Empty).Replace(",\"format\":\"byte\"", string.Empty).Replace(",\"format\":\"int32\"", string.Empty).Replace(",\"format\":\"time-span\"", string.Empty);
-        }
-
-
-
-        [Route("api/[controller]")]
-        public class SampleDataController : Controller
-        {
-            private static string[] Summaries = new[]
-           {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
-
-            [HttpGet("[action]")]
-            public IEnumerable<WeatherForecast> WeatherForecasts()
-            {
-                var rng = new Random();
-                return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-                {
-                    DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
-                    TemperatureC = rng.Next(-20, 55),
-                    Summary = Summaries[rng.Next(Summaries.Length)]
-                });
-            }
-
-            public class WeatherForecast
-            {
-                public string DateFormatted { get; set; }
-                public int TemperatureC { get; set; }
-                public string Summary { get; set; }
-
-                public int TemperatureF
-                {
-                    get
-                    {
-                        return 32 + (int)(TemperatureC / 0.5556);
-                    }
-                }
-            }
-        }
+ 
     }
 }
