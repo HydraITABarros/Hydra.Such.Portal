@@ -892,6 +892,48 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult TodasLinhasConsultaMercado([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                if (!string.IsNullOrEmpty(item.RequisitionNo))
+                {
+                    List<LinhasRequisição> TodasLinhasConsultaMercado = DBRequestLine.GetByRequisitionId(item.RequisitionNo).Where(x => x.CriarConsultaMercado != true).ToList();
+                    if (TodasLinhasConsultaMercado.Count() > 0)
+                    {
+                        foreach (LinhasRequisição Linha in TodasLinhasConsultaMercado)
+                        {
+                            Linha.CriarConsultaMercado = true;
+                            Linha.UtilizadorModificação = User.Identity.Name;
+                            if (DBRequestLine.Update(Linha) != null)
+                            {
+                                item.eReasonCode = 1;
+                                item.eMessage = "Todas as linhas foram alteradas com sucesso.";
+                            }
+                            else
+                            {
+                                item.eReasonCode = 2;
+                                item.eMessage = "Ocorreu um erro ao alterar as linhas o registo.";
+                                return Json(item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        item.eReasonCode = 3;
+                        item.eMessage = "Não existem linhas para alterar.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 4;
+                    item.eMessage = "Falta o número da Requisição.";
+                }
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
         public JsonResult TodasEncomendasPorRequisicao([FromBody] RequisitionViewModel item)
         {
             List<EncomendasViewModel> result = new List<EncomendasViewModel>();

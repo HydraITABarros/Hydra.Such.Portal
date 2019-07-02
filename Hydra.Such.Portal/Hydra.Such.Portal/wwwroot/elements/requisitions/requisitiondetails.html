@@ -329,6 +329,14 @@
                    on-response="_TodasLinhasNotaEncomendaResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/TodasLinhasConsultaMercado"
+                   last-response="{{resultTodasLinhasConsultaMercado}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_TodasLinhasConsultaMercado"
+                   on-response="_TodasLinhasConsultaMercadoResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/TodasEncomendasPorRequisicao"
                    last-response="{{Encomendas}}"
                    method="post"
@@ -783,6 +791,7 @@
                                 </template>
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_TodasLinhasConsultaMercado" title="Marcar todas as Linhas para Consulta de Mercado"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. C.Merc.</paper-button>
                                 </template>
                             </div>
                         </div>
@@ -1002,6 +1011,7 @@
                                                 <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                             </template>
                                             <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
+                                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_TodasLinhasConsultaMercado" title="Marcar todas as Linhas para Consulta de Mercado"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. C.Merc.</paper-button>
                                         </template>
                                     </div>
                                 </div>
@@ -2651,6 +2661,25 @@
                         this._openDlgMessageError(this.resultTodasLinhasNotaEncomenda.eMessage);
                     }
                 },
+                
+                _TodasLinhasConsultaMercado: function () {
+                    debugger;
+                    this.$.ajax_TodasLinhasConsultaMercado.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
+                    this.$.ajax_TodasLinhasConsultaMercado.generateRequest();
+                },
+                _TodasLinhasConsultaMercadoResponseProcessor: function (e) {
+                    debugger;
+                    if (this.resultTodasLinhasConsultaMercado.eReasonCode == "1") {
+                        this._openToast(this.resultTodasLinhasConsultaMercado.eMessage);
+
+                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                        this.$.requisition_datasource.generateRequest();
+                        this.$.grdRequisitionLines.clearCache();
+                    }
+                    else {
+                        this._openDlgMessageError(this.resultTodasLinhasConsultaMercado.eMessage);
+                    }
+                },
 
                 _deleteRequisitionLine: function (e) {
                     var ajax_request = this.$.deleteReqLine_ajax;
@@ -3317,7 +3346,6 @@
                 },
 
                 _deleteFiles: function (e) {
-                    debugger;
                     var index = this.uploads.indexOf(e.model.item);
                     this.uploads.splice(index, 1);
 
