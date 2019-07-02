@@ -607,7 +607,7 @@ class OrdensDeManutencao extends Component {
                                                 </Grid>
                                                 <Grid container item md={6} xs={12}>
 
-                                                        <Wrapper padding={'32px'} textAlign="center" width="100%">
+                                                        <Wrapper padding={'24px'} textAlign="center" width="100%">
                                                         </Wrapper>
 
                                                         <CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
@@ -623,7 +623,7 @@ class OrdensDeManutencao extends Component {
                                                                                 trailIcon={<Icon preventiva />}
                                                                                 width={191}
                                                                                 strokeColor={_theme.palette.secondary.default}
-                                                                                trailColor={_theme.palette.primary.default}
+                                                                                trailColor={_theme.palette.primary.dark}
                                                                                 full
                                                                         />
                                                                 </CircleOm.chart>
