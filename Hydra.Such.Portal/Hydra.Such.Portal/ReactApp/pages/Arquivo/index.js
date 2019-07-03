@@ -7,12 +7,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import _theme from '../../themes/default';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import MuiTabs from '@material-ui/core/Tabs';
+import MuiTab from '@material-ui/core/Tab';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
 import MuiGrid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, Modal, Tooltip } from 'components';
+import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, ModalLarge, Tooltip } from 'components';
 import MuiDeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
@@ -37,8 +37,29 @@ import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 
 
-const {DialogTitle,DialogContent,DialogActions} = Modal;
+const {DialogTitle,DialogContent,DialogActions} = ModalLarge;
 
+const Tabs = styled(MuiTabs)`
+    [class*="MuiTabs-scroller"]>span{
+      background-color: ${_theme.palette.secondary.default};
+      height: 5px;
+      border-radius: 2.5px;
+      z-index: 2;
+      }
+`;
+const Tab = styled(MuiTab)`&&{
+  text-transform: capitalize;
+  }
+`;
+const Bar = styled(AppBar)`&&{
+    background-color: ${_theme.palette.white};
+    box-shadow: none;
+    margin-bottom: 0px;
+    padding-left: 0;
+    padding-right: 0;
+    hr{position: relative; margin-top: -3px; z-index: 1;}
+  }
+`;
 
 class Arquivo extends Component {
     state = {
@@ -60,66 +81,37 @@ class Arquivo extends Component {
       render() {
         return (
           <div>
-              <Modal action={<Button primary >Open Modal</Button>} children={
+              <ModalLarge action={<Button primary >Open Modal</Button>} children={
                 <div>
                   <DialogTitle>
-                  <AppBar position="static" color="default">
+                  <Bar position="static" color="default">
                     <Tabs
                       value={this.state.tab}
                       onChange={this.handleChange}
                       indicatorColor="primary"
                       textColor="primary"
-                      variant="scrollable"
-                      scrollButtons="auto"
+                      variant="standard"
+                      scrollButtons="off"
                     >
-                      <Tab label="Item One" />
-                      <Tab label="Item Two" />
-                      <Tab label="Item Three" />
-                      <Tab label="Item Four" />
-                      <Tab label="Item Five" />
-                      <Tab label="Item Six" />
-                      <Tab label="Item Seven" />
+                      <Tab label={<Text b>EMMs</Text>}/>
+                      <Tab label={<Text b>Mat. Aplicado</Text>} />
+                      <Tab label={<Text b>Fotografias</Text>} />
+                      <Tab label={<Text b>Documentos</Text>} />
+                      <Tab label={<Text b>Upload</Text>} />
                     </Tabs>
-                  </AppBar>
+
+                    <hr/>  
+                  </Bar>
                   </DialogTitle>
-                  <hr/>  
+                  
                   <DialogContent>
 
+                      {this.state.tab === 0 && <div>Item One</div>}
+                      {this.state.tab === 1 && <div>Item Two</div>}
+                      {this.state.tab === 2 && <div>Item Three</div>}
+                      {this.state.tab === 3 && <div>Item Four</div>}
+                      {this.state.tab === 4 && <div>Item Five</div>}
 
-                  {this.state.tab === 0 && <div>Item One</div>}
-                  {this.state.tab === 1 && <div>Item Two</div>}
-                  {this.state.tab === 2 && <div>Item Three</div>}
-                  {this.state.tab === 3 && <div>Item Four</div>}
-                  {this.state.tab === 4 && <div>Item Five</div>}
-                  {this.state.tab === 5 && <div>Item Six</div>}
-                  {this.state.tab === 6 && <div>Item Seven</div>}
-
-                      <Text p>
-                          Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac
-                          facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum
-                          at eros.
-                      </Text>
-                      <Text p>
-                          Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                          lacus vel augue laoreet rutrum faucibus dolor auctor.
-                      </Text>
-                      <Text p>
-                          Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                          scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                          auctor fringilla.
-                          Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac
-                          facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum
-                          at eros.
-                      </Text>
-                      <Text p>
-                          Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis
-                          lacus vel augue laoreet rutrum faucibus dolor auctor.
-                      </Text>
-                      <Text p>
-                          Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                          scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                          auctor fringilla.
-                      </Text>
                   </DialogContent>
                   <hr/>  
                   <DialogActions>
