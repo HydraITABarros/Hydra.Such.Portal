@@ -46,6 +46,7 @@
             <paper-button class="tablinks" id="btnConfirm" on-tap="_openDlg"><i class="fa fa-check-square" aria-hidden="true"></i> Autorizar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             <paper-button class="tablinks" id="btnToggleBillable" on-tap="_toggleBillable">Não Faturáveis</paper-button>
+
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations>
                 <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
@@ -1094,6 +1095,13 @@
                             this.$.btnConfirm.disabled = true;
                         }
                         this.$.btnToggleBillable.textContent = this._billable ? "Não Faturáveis" : "Faturáveis";
+
+                        if (this._billable == true) {
+                            this.$.btnConfirm.hidden = false;
+                        }
+                        else {
+                            this.$.btnConfirm.hidden = true;
+                        }
                     }
                     else {
                         this.openToastError("Não foi possivel obter os movimentos.");

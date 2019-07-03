@@ -14,7 +14,7 @@ namespace Hydra.Such.Data.Extensions
             item.ProjectNo = projectNo;
             item.Code = x.Código;
             item.Description = x.Descrição;
-            item.Quantity = 0;
+            item.Quantity = x.Quantidade; //A pedido Marco Marcelo 03/07/2019 = 0;
             item.MeasurementUnitCode = x.CódUnidadeMedida;
             item.RegionCode = x.CódigoRegião;
             item.FunctionalAreaCode = x.CódigoÁreaFuncional;
