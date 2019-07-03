@@ -112,7 +112,7 @@ const DialogTitle = styled(MuiDialogContent)`&&&& {
 `;
 const DialogContent = styled(MuiDialogContent)`&& {
         height: 344px;
-        padding: 8px 35px 0 35px;
+        padding: 32px 35px 0 35px;
         margin: 0;
     }`;
 const DialogActions = styled(MuiDialogActions)`${styles}`;
