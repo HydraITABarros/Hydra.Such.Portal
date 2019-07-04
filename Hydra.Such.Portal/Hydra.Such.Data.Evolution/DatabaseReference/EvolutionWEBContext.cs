@@ -168,9 +168,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
         // Unable to generate entity type for table 'dbo.Z_Execucao_Job'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo._View_Requisicoes'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo._CARREGAMENTO_SERVICO'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo._View_Linhas_Requisicoes'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo._View_ConsultasMercado'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._CARREGAMENTO_SERVICO'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo._View_Linhas_ConsultasMercado'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo._View_Linhas_Encomendas'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo._NORMALIZACAO_CLIENTES_20190415_INSTITUICAO'. Please see the warning messages.
@@ -205,11 +205,22 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         // Unable to generate entity type for table 'dbo.Ficha_Manutencao_Relatorio_Testes_Quantitativos'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Meus_Menus'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.EMM_TEMP_Gama'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._Equipamentos_CHLO_equipamentos_contrato_2019_VF2'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.EMM_TEMP_Gama2'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._Equipamentos_CHLO_equipamentos_contrato_2019_VF2_2'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.EMM_TEMP_Gama_V1'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Job Ledger Entry_BACKUP_20190607'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Ficha_Manutencao_Relatorio_Relatorio'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Ficha_Manutencao_Relatorio_Assinatura'. Please see the warning messages.
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=10.101.1.10\\sqlnav;initial catalog=EvolutionWEB;user id=such_portal_user;password=SuchPW.2K17;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -1230,7 +1241,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.Property(e => e.NumVersao).HasColumnName("Num_Versao");
 
                 entity.Property(e => e.Observacoes)
-                    .HasMaxLength(250)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PercentagemMc)
@@ -2647,6 +2658,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => e.Activo)
                     .HasName("_dta_index_Equip_Modelo_6_377768403__K6");
+
+                entity.HasIndex(e => e.IdCategoria);
 
                 entity.HasIndex(e => e.IdMarca)
                     .HasName("_dta_index_Equip_Modelo_6_377768403__K4_f1")
@@ -7524,8 +7537,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.HasIndex(e => new { e.Description, e.OrderType, e.ContractNo, e.Status, e.CustomerNo, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.FinishingDate, e.ShortcutDimension3Code, e.DataFecho, e.NoDocumentoContactoInicial, e.No })
                     .HasName("_dta_index_Maintenance Order_6_859918185__K3_4_9_13_15_19_38_39_72_100_102_175");
 
-                entity.HasIndex(e => new { e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.DataChefeProjecto, e.DataResponsavel, e.DataFacturação, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.ReferenciaEncomenda, e.Timestamp, e.DocumentType, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.TécnicoExecutante, e.No, e.UserResponsavel, e.UserChefeProjecto, e.IdInstituicaoEvolution, e.IdServicoEvolution })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K173_K3_K170_K168_K180_K181_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_2_9910");
+                entity.HasIndex(e => new { e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.DataChefeProjecto, e.DataResponsavel, e.DataFacturação, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.ReferenciaEncomenda, e.Timestamp, e.DocumentType, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.TécnicoExecutante, e.No, e.UserResponsavel, e.UserChefeProjecto, e.IdInstituicaoEvolution, e.IdServicoEvolution })
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K173_K3_K170_K168_K180_K181_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_2_8337");
 
                 entity.HasIndex(e => new { e.Timestamp, e.DocumentType, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.DataChefeProjecto, e.DataResponsavel, e.DataFacturação, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.ReferenciaEncomenda, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.TécnicoExecutante, e.No, e.UserChefeProjecto, e.UserResponsavel })
                     .HasName("_dta_index_Maintenance Order_6_859918185__K180_K181_K173_K3_K168_K170_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_");
@@ -12126,6 +12139,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.ToTable("Ordem_Manutencao_Linha_Materiais");
 
+                entity.HasIndex(e => e.No);
+
                 entity.Property(e => e.IdOmLinhaMateriais).HasColumnName("ID_OM_Linha_Materiais");
 
                 entity.Property(e => e.DataCriacao).HasColumnType("datetime");
@@ -13947,6 +13962,10 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => new { e.Nome, e.NumMec })
                     .HasName("_dta_index_Utilizador_6_1602872827__K2_K14_8809");
+
+                entity.HasIndex(e => new { e.ResponsavelProjecto, e.UserRespProjecto });
+
+                entity.HasIndex(e => new { e.Username, e.Activo });
 
                 entity.HasIndex(e => new { e.Username, e.NumMec })
                     .HasName("_dta_index_Utilizador_6_1602872827__K14_3");
