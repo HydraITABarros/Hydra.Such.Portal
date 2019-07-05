@@ -93,6 +93,7 @@
                 "@progress/kendo-drawing": "^1.5.11",
                 "@progress/kendo-react-gauges": "^2.10.0",
                 "@progress/kendo-react-intl": "^2.10.0",
+                "@react-simply/state": "^1.0.2",
                 "any-resize-event": "^1.0.0",
                 "axios": "^0.18.0",
                 "circular-dependency-plugin": "^5.0.2",
