@@ -57,10 +57,9 @@ namespace Hydra.Such.Portal.Controllers
             this.suchDBContext = suchDBContext;
         }
 
-        [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"),
-        Route(""), HttpGet, AcceptHeader("text/html")]
+        [Route(""), HttpGet, AcceptHeader("text/html")]
         //[ResponseCache(Duration = 60000)]
-        public IActionResult Index(string orderId)
+        public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
@@ -71,10 +70,16 @@ namespace Hydra.Such.Portal.Controllers
             return RedirectToAction("AccessDenied", "Error");
         }
 
+        [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"), HttpGet, AcceptHeader("text/html")]
+        public IActionResult FichaDeManutencao(string orderId)
+        {
+            return Index();
+        }
+
         [Route("arquivo"), HttpGet, AcceptHeader("text/html")]
         public IActionResult Arquivo()
         {
-            return Index("");
+            return Index();
         }
 
 
