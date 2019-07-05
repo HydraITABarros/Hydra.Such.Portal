@@ -27,7 +27,7 @@ using Hydra.Such.Data;
 using Hydra.Such.Portal.Filters;
 using Hydra.Such.Data.Evolution.DatabaseReference;
 using StackExchange.Redis;
-
+using Hydra.Such.Portal.ViewModels;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -43,13 +43,11 @@ namespace Hydra.Such.Portal.Controllers
         protected SuchDBContext suchDBContext;
         private readonly ISession session;
 
-
-
         public MaintenanceOrdersController(
-            MaintenanceOrdersRepository MaintenanceOrdersRepository, 
+            MaintenanceOrdersRepository MaintenanceOrdersRepository,
             MaintenanceOrdersLineRepository MaintenanceOrdersLineRepository,
             SuchDBContext suchDBContext,
-            EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs, 
+            EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs,
             IHttpContextAccessor httpContextAccessor)
         {
             session = httpContextAccessor.HttpContext.Session;
@@ -63,7 +61,7 @@ namespace Hydra.Such.Portal.Controllers
         Route(""), HttpGet, AcceptHeader("text/html")]
         //[ResponseCache(Duration = 60000)]
         public IActionResult Index(string orderId)
-        {            
+        {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.MaintenanceOrders);
             UserConfigurationsViewModel userConfig = DBUserConfigurations.GetById(User.Identity.Name).ParseToViewModel();
             if (UPerm != null && UPerm.Read.Value)
@@ -80,37 +78,47 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        
-       
-
         [Route(""), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
-        public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions, DateTime? from, DateTime? to)
+        public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
         {
-
-            if (from == null || to == null) { return NotFound(); }
-
             var pageSize = 30;
 
+            var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
+            var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
+
             IQueryable results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable()
-                .Where(o => o.OrderDate >= from && o.OrderDate <= to && !(o.DataFecho > new DateTime(1753, 1, 1)) &&
-                (o.OrderType == "DMNALMP" || o.OrderType == "DMNCATE" || o.OrderType == "DMNLVMP" || o.OrderType == "DMNPRVE" || o.OrderType == "DMNCREE" || o.OrderType == "DMNDBI" || o.OrderType == "DMNORCE"))
-                .OrderByDescending(o=>o.OrderDate), new ODataQuerySettings { PageSize = pageSize });
+                .Where(o => (preventiveCodes.Contains(o.OrderType) || (curativeCodes.Contains(o.OrderType))
+               && o.IsToExecute && (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null))).Select(o => new MaintenanceOrder
+               {
+                   No = o.No,
+                   Description = o.Description,
+                   IdClienteEvolution = o.IdClienteEvolution,
+                   IdInstituicaoEvolution = o.IdInstituicaoEvolution,
+                   IdServicoEvolution = o.IdServicoEvolution,
+                   OrderDate = o.OrderDate,
+                   ClientName = o.ClientName,
+                   InstitutionName = o.InstitutionName,
+                   ServiceName = o.ServiceName,
+                   OrderType = o.OrderType
+
+               }), new ODataQuerySettings { PageSize = pageSize });
 
             var list = results.Cast<dynamic>().AsEnumerable();
             long? total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
 
-            List<MaintenanceOrder> newList;
+            List<MaintenanceOrderViewModel> newList;
             try
             {
-                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrder>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
+                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MaintenanceOrderViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
             }
             catch
             {
-                newList = new List<MaintenanceOrder>();
+                newList = new List<MaintenanceOrderViewModel>();
             }
-            newList = newList.Where(l => l.IsPreventive != null).ToList();
+
+
             newList.ForEach((item) =>
             {
                 var technicals = GetTechnicals(item, null, null);
@@ -118,42 +126,67 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     item.Technicals = technicals.ToList();
                 }
+
+                var client = evolutionWEBContext.Cliente.FirstOrDefault(c => c.IdCliente == item.IdClienteEvolution);
+                if (client != null)
+                {
+
+                    item.ClientName = client.Nome;
+                }
+
+                var institution = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == item.IdInstituicaoEvolution);
+                if (institution != null)
+                {
+                    item.InstitutionName = institution.DescricaoTreePath;
+                }
+
+                var service = evolutionWEBContext.Servico.FirstOrDefault(s => s.IdServico == item.IdServicoEvolution);
+                if (service != null)
+                {
+                    item.ServiceName = service.Nome;
+                }
+
+                var date = item.OrderDate;
+                
+                item.isPreventive = preventiveCodes.Contains(item.OrderType);
             });
+
 
             var result = new PageResult<dynamic>(newList, nextLink, total);
 
-            var query = MaintenanceOrdersRepository.AsQueryable().Where(o => o.OrderDate >= from && o.OrderDate <= to
-            && (o.OrderType == "DMNALMP" || o.OrderType == "DMNCATE" || o.OrderType == "DMNLVMP" || o.OrderType == "DMNPRVE" || o.OrderType == "DMNCREE" || o.OrderType == "DMNDBI" || o.OrderType == "DMNORCE"))
-                .Select(m => new { m.IsToExecute, m.IsPreventive, m.OrderType, m.FinishingDate }).ToList();
+            var preventives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
+                   preventiveCodes.Contains(o.OrderType) && o.IsToExecute);
+
+            var curatives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
+                   curativeCodes.Contains(o.OrderType) && o.IsToExecute);
+
 
             var ordersCounts = new
             {
-                preventive = query.Where(o => o.IsPreventive == true && !o.IsToExecute).Count(),
-                preventiveToExecute = query.Where(o => o.IsPreventive == true && o.IsToExecute).Count(),
-                curative = query.Where(o => o.IsPreventive == false && !o.IsToExecute).Count(),
-                curativeToExecute = query.Where(o => o.IsPreventive == false && o.IsToExecute).Count(),
+                preventive = preventives.Count(),
+                curative = curatives.Count()
             };
 
             return Json(new
             {
                 result,
-                ordersCounts,
-                range = new { from, to }
+                ordersCounts
             });
         }
 
 
-        [Route("technicals"), HttpGet]
-        public ActionResult HttpGetTecnicalls(string orderId, string technicalid)
+        //[Route("technicals"), HttpGet]
+        //public ActionResult HttpGetTecnicalls(string orderId, string technicalid)
+        //{
+        //    if ((orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return NotFound(); }
+        //    return Json(new { technicals = GetTechnicals(null, orderId, technicalid).OrderBy(o => o.Nome) });
+        //}
+
+
+        private IQueryable<Utilizador> GetTechnicals(MaintenanceOrderViewModel order, string orderId, string technicalid)
         {
-            if ((orderId == null || orderId == "") && (technicalid == null || technicalid == "") ) { return NotFound(); }
-            return Json(new { technicals = GetTechnicals( null, orderId, technicalid).OrderBy(o=>o.Nome) });
-        }
 
-
-        private IQueryable<Utilizador> GetTechnicals(MaintenanceOrder order, string orderId, string technicalid) {
-
-            if ((order== null ) && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return (new List<Utilizador>()).AsQueryable(); }
+            if ((order == null) && (orderId == null || orderId == "") && (technicalid == null || technicalid == "")) { return (new List<Utilizador>()).AsQueryable(); }
 
             IQueryable<Utilizador> technicals;
             if (technicalid != null && technicalid != "")
@@ -180,10 +213,10 @@ namespace Hydra.Such.Portal.Controllers
                 return technicals;
             }
 
-            if (orderId != null && orderId!= "")
+            if (orderId != null && orderId != "")
             {
                 var _order = evolutionWEBContext.MaintenanceOrder.FirstOrDefault(o => o.No == orderId);
-                if(_order!= null)
+                if (_order != null)
                 {
                     technicals = evolutionWEBContext.Utilizador.Where(u => u.Code3 == _order.ShortcutDimension3Code);
                     return technicals;
@@ -195,43 +228,43 @@ namespace Hydra.Such.Portal.Controllers
 
 
 
-        [Route("technicals"), HttpPut]
-        public ActionResult TecnicallsPut([FromBody] UpdateTechnicalsModel data)
-        {
-            if (data.orderId == null || data.orderId == "" || data.technicalsId == null) { return NotFound(); }
+        //[Route("technicals"), HttpPut]
+        //public ActionResult TecnicallsPut([FromBody] UpdateTechnicalsModel data)
+        //{
+        //    if (data.orderId == null || data.orderId == "" || data.technicalsId == null) { return NotFound(); }
 
-            var orderToUpdate = MaintenanceOrdersRepository.AsQueryable().Where(m => m.No == data.orderId).FirstOrDefault();
+        //    var orderToUpdate = MaintenanceOrdersRepository.AsQueryable().Where(m => m.No == data.orderId).FirstOrDefault();
 
-            if (orderToUpdate == null) { return NotFound(); }
+        //    if (orderToUpdate == null) { return NotFound(); }
 
-            var technicalsToUpdate = evolutionWEBContext.Utilizador.Where(u => data.technicalsId.Contains(u.NumMec)).ToArray();
+        //    var technicalsToUpdate = evolutionWEBContext.Utilizador.Where(u => data.technicalsId.Contains(u.NumMec)).ToArray();
 
-            orderToUpdate.IdTecnico1 = technicalsToUpdate.Count() > 0 ? (int?)technicalsToUpdate[0].Id : null;
-            orderToUpdate.IdTecnico2 = technicalsToUpdate.Count() > 1 ? (int?)technicalsToUpdate[1].Id : null;
-            orderToUpdate.IdTecnico3 = technicalsToUpdate.Count() > 2 ? (int?)technicalsToUpdate[2].Id : null;
-            orderToUpdate.IdTecnico4 = technicalsToUpdate.Count() > 3 ? (int?)technicalsToUpdate[3].Id : null;
-            orderToUpdate.IdTecnico5 = technicalsToUpdate.Count() > 4 ? (int?)technicalsToUpdate[4].Id : null;
+        //    orderToUpdate.IdTecnico1 = technicalsToUpdate.Count() > 0 ? (int?)technicalsToUpdate[0].Id : null;
+        //    orderToUpdate.IdTecnico2 = technicalsToUpdate.Count() > 1 ? (int?)technicalsToUpdate[1].Id : null;
+        //    orderToUpdate.IdTecnico3 = technicalsToUpdate.Count() > 2 ? (int?)technicalsToUpdate[2].Id : null;
+        //    orderToUpdate.IdTecnico4 = technicalsToUpdate.Count() > 3 ? (int?)technicalsToUpdate[3].Id : null;
+        //    orderToUpdate.IdTecnico5 = technicalsToUpdate.Count() > 4 ? (int?)technicalsToUpdate[4].Id : null;
 
-            try
-            {
-                evolutionWEBContext.Update(orderToUpdate);
-                evolutionWEBContext.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return Json(0);
-            }
+        //    try
+        //    {
+        //        evolutionWEBContext.Update(orderToUpdate);
+        //        evolutionWEBContext.SaveChanges();
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return Json(0);
+        //    }
 
 
-            return Json(orderToUpdate);
-        }
-        
+        //    return Json(orderToUpdate);
+        //}
 
-        public class UpdateTechnicalsModel
-        {
-            public string orderId;
-            public string[] technicalsId;
-        }
+
+        //public class UpdateTechnicalsModel
+        //{
+        //    public string orderId;
+        //    public string[] technicalsId;
+        //}
 
 
 
@@ -249,14 +282,15 @@ namespace Hydra.Such.Portal.Controllers
             if (loggedUser == null) { return NotFound(); }
 
             var loggedUserCresps = suchDBContext.AcessosDimensões.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).ToList();
-                       
+
             var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
 
             if (evolutionLoggedUser == null) { return NotFound(); }
 
             if (evolutionLoggedUser.NivelAcesso == 1 || evolutionLoggedUser.NivelAcesso == 2 ||
                 evolutionLoggedUser.NivelAcesso == 3 || evolutionLoggedUser.NivelAcesso == 4 ||
-                evolutionLoggedUser.NivelAcesso == 8)
+                evolutionLoggedUser.NivelAcesso == 8
+                )
             {
                 return Json(true);
             }
@@ -265,10 +299,10 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return Unauthorized();
             }
-            
-                       
-            if (order.IdTecnico1 == evolutionLoggedUser.Id || order.IdTecnico2 == evolutionLoggedUser.Id || 
-                order.IdTecnico3 == evolutionLoggedUser.Id || order.IdTecnico4 == evolutionLoggedUser.Id || 
+
+
+            if (order.IdTecnico1 == evolutionLoggedUser.Id || order.IdTecnico2 == evolutionLoggedUser.Id ||
+                order.IdTecnico3 == evolutionLoggedUser.Id || order.IdTecnico4 == evolutionLoggedUser.Id ||
                 order.IdTecnico5 == evolutionLoggedUser.Id)
             {
                 return Json(true);
@@ -294,7 +328,7 @@ namespace Hydra.Such.Portal.Controllers
                 order.IdTecnico4 = evolutionLoggedUser.Id;
             }
 
-            else 
+            else
             {
                 order.IdTecnico5 = evolutionLoggedUser.Id;
             }
@@ -322,7 +356,8 @@ namespace Hydra.Such.Portal.Controllers
             if (orderId == null) { return NotFound(); }
 
             var pageSize = 30;
-            var order = evolutionWEBContext.MaintenanceOrder.AsQueryable().Where(o => o.No == orderId).Select(o => new OmHeaderViewModel() {
+            var order = evolutionWEBContext.MaintenanceOrder.AsQueryable().Where(o => o.No == orderId).Select(o => new OmHeaderViewModel()
+            {
                 Description = o.Description,
                 IdClienteEvolution = o.IdClienteEvolution,
                 IdInstituicaoEvolution = o.IdInstituicaoEvolution,
@@ -331,13 +366,13 @@ namespace Hydra.Such.Portal.Controllers
                 ShortcutDimension1Code = o.ShortcutDimension1Code,
                 IdRegiao = 0,
                 Contrato = o.ContractNo
-            } ).FirstOrDefault();
+            }).FirstOrDefault();
 
             if (order == null) { return NotFound(); }
 
-            var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i=>i.IdInstituicao == order.IdInstituicaoEvolution);
-            var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i=>i.IdCliente == order.IdClienteEvolution);
-            if(cliente != null)
+            var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == order.IdInstituicaoEvolution);
+            var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i => i.IdCliente == order.IdClienteEvolution);
+            if (cliente != null)
             {
                 order.CustomerName = cliente.Nome;
             }
@@ -349,7 +384,7 @@ namespace Hydra.Such.Portal.Controllers
             int.TryParse(order.ShortcutDimension1Code, out order.IdRegiao);
 
             IQueryable results;
-            results = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.OrderByDescending(o=>o.IdEquipamento).Select(e => new Equipamento
+            results = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.OrderByDescending(o => o.IdEquipamento).Select(e => new Equipamento
             {
                 Nome = e.Nome,
                 Marca = e.Marca,
@@ -360,7 +395,7 @@ namespace Hydra.Such.Portal.Controllers
                 IdServico = e.IdServico,
                 NumEquipamento = e.NumEquipamento,
                 IdRegiao = e.IdRegiao
-            }).Where(e=> true/*e.IdServico == 7231*//*&& e.NumEquipamento == "ni1102821"*/), new ODataQuerySettings { PageSize = pageSize });
+            }).Where(e => true/*e.IdServico == 7231*//*&& e.NumEquipamento == "ni1102821"*/), new ODataQuerySettings { PageSize = pageSize });
 
 
             var list = results.Cast<dynamic>().AsEnumerable();
@@ -377,16 +412,19 @@ namespace Hydra.Such.Portal.Controllers
                 newList = new List<Equipamento>();
             }
 
-            var marcas = evolutionWEBContext.EquipMarca.Where(m => m.Activo == true).Select(m=> new {
+            var marcas = evolutionWEBContext.EquipMarca.Where(m => m.Activo == true).Select(m => new
+            {
                 m.IdMarca,
                 m.Nome
             }).ToList();
-            var servicos = evolutionWEBContext.Servico.Where(s => s.Activo == true).Select(s => new {
+            var servicos = evolutionWEBContext.Servico.Where(s => s.Activo == true).Select(s => new
+            {
                 s.IdServico,
                 s.Nome
             }).ToList();
 
-            newList.ForEach((item) => {
+            newList.ForEach((item) =>
+            {
                 var categoria = evolutionWEBContext.EquipCategoria.FirstOrDefault(m => m.IdCategoria == item.Categoria);
                 var marca = marcas.FirstOrDefault(m => m.IdMarca == item.Marca);
                 var servico = servicos.FirstOrDefault(m => m.IdServico == item.IdServico);
@@ -415,7 +453,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-                
+
         //[Route("{equipmentId}"), HttpGet]
         [ResponseCache(Duration = 60000)]
         public ActionResult GetEquipDetails(List<int> equipmentId, int? categoryId)
@@ -487,7 +525,8 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        public class OmHeaderViewModel  {
+        public class OmHeaderViewModel
+        {
             public string Description;
             public int? IdClienteEvolution;
             public int? IdInstituicaoEvolution;
@@ -498,74 +537,6 @@ namespace Hydra.Such.Portal.Controllers
             public string Contrato;
         }
 
-        //[Authorize]
-        // Todo adds custom authorize filter (eSuchAuthorizationFilter)  (info: Authentication -> Authorization)
-        [Route("getAll")]
-        public PageResult<dynamic> GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
-        {
-            var pageSize = 100;
-            IQueryable results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable(), new ODataQuerySettings { PageSize = pageSize });
-            var list = results.Cast<dynamic>().AsEnumerable();
-            var total = Request.ODataFeature().TotalCount;
-            var nextLink = Request.GetNextPageLink(pageSize);
 
-            return new PageResult<dynamic>(list, nextLink, total);
-        }
-
-        [Route("getSchema")]
-        [ResponseCache(Duration = 600)]
-        public async Task<string> GetSchema()
-        {
-            var _schema = await JsonSchema4.FromTypeAsync<OrdemManutencao>();
-
-            var settings = new JsonSchemaGeneratorSettings();
-            //settings.GenerateKnownTypes = false;
-            //settings.SchemaType = SchemaType.OpenApi3;
-
-            var generator = new JsonSchemaGenerator(settings);
-            var schema = await generator.GenerateAsync(typeof(IOrdemManutencao));
-
-            var json = Regex.Replace(schema.ToJson(), @"\s+", string.Empty);
-
-            return json.Replace(",\"format\":\"decimal\"", string.Empty).Replace(",\"format\":\"byte\"", string.Empty).Replace(",\"format\":\"int32\"", string.Empty).Replace(",\"format\":\"time-span\"", string.Empty);
-        }
-
-
-
-        [Route("api/[controller]")]
-        public class SampleDataController : Controller
-        {
-            private static string[] Summaries = new[]
-           {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
-
-            [HttpGet("[action]")]
-            public IEnumerable<WeatherForecast> WeatherForecasts()
-            {
-                var rng = new Random();
-                return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-                {
-                    DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
-                    TemperatureC = rng.Next(-20, 55),
-                    Summary = Summaries[rng.Next(Summaries.Length)]
-                });
-            }
-
-            public class WeatherForecast
-            {
-                public string DateFormatted { get; set; }
-                public int TemperatureC { get; set; }
-                public string Summary { get; set; }
-
-                public int TemperatureF
-                {
-                    get
-                    {
-                        return 32 + (int)(TemperatureC / 0.5556);
-                    }
-                }
-            }
-        }
     }
 }

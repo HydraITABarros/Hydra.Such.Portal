@@ -9,27 +9,28 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 {
     [ModelMetadataType(typeof(IMaintenanceOrder))]
     public partial class MaintenanceOrder
-    {
-        [NotMapped]
-        public bool? IsPreventive
-        {
-            get { if (this.OrderType == "DMNALMP" || this.OrderType == "DMNCATE" || this.OrderType == "DMNLVMP" || this.OrderType == "DMNPRVE") {
-                    return true;
-                } if (this.OrderType == "DMNCREE" || this.OrderType == "DMNDBI" || this.OrderType == "DMNORCE") {
-                    return false;
-                }
-                return null;
-            }
-        }
-        
+    {       
         [NotMapped]
         public bool IsToExecute
         {
-            get { return !(this.DataFecho > new DateTime (1753,1,1)); }
+            get { return (this.Status == 0); }
         }
 
         [NotMapped]
+        public bool isPreventive;
+
+        [NotMapped]
         public List<Utilizador> Technicals;
+
+        [NotMapped]
+        public string ClientName { get; set; }
+
+        [NotMapped]
+        public  string InstitutionName { get; set; }
+
+        [NotMapped]
+        public string ServiceName { get; set; }
+
     }
 
 
@@ -226,5 +227,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         int? GeradaAuto { get; set; }
         string ReferenciaEncomenda { get; set; }
         DateTime? DataEncomenda { get; set; }
+
     }
 }

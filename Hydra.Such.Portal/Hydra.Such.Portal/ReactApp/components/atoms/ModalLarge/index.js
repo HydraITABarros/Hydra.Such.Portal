@@ -44,7 +44,7 @@ const Action = ({ ...props }) => {
         return <ActionDiv {...props}>{props.children}</ActionDiv>
 }
 
-class Modal extends React.Component {
+class ModalLarge extends React.Component {
         state = {
                 open: false,
         }
@@ -75,7 +75,11 @@ class Modal extends React.Component {
                                 <Action onClick={this.handleClickOpen} >
                                         {this.props.action}
                                 </Action>
-                                <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.props.open || this.state.open} >
+                                <Dialog onClose={this.handleClose} 
+                                        aria-labelledby="customized-dialog-title" 
+                                        open={this.props.open || this.state.open}
+                                        fullWidth={true}
+                                        maxWidth = {'lg'}>
                                         <CloseIcon iconSolo onClick={this.handleClose}><Icon decline /></CloseIcon>
                                         {this.props.children}
                                 </Dialog>
@@ -102,7 +106,7 @@ const styles = css`&& {
 `
 const DialogTitle = styled(MuiDialogContent)`&&&& {
         position:relative;
-        padding: 52px 35px 10px 35px;
+        padding: 52px 0px 10px 0px;
         margin: 0;
         overflow: hidden;
     }   
@@ -111,14 +115,14 @@ const DialogTitle = styled(MuiDialogContent)`&&&& {
     }
 `;
 const DialogContent = styled(MuiDialogContent)`&& {
-        height: 344px;
+        height: 440px;
         padding: 32px 35px 0 35px;
         margin: 0;
     }`;
 const DialogActions = styled(MuiDialogActions)`${styles}`;
 
-Modal.DialogTitle = DialogTitle;
-Modal.DialogContent = DialogContent;
-Modal.DialogActions = DialogActions;
+ModalLarge.DialogTitle = DialogTitle;
+ModalLarge.DialogContent = DialogContent;
+ModalLarge.DialogActions = DialogActions;
 
-export default Modal;
+export default ModalLarge;

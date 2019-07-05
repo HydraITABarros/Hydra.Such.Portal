@@ -607,33 +607,27 @@ class OrdensDeManutencao extends Component {
                                                 </Grid>
                                                 <Grid container item md={6} xs={12}>
 
-                                                        <Wrapper padding={'15px'} textAlign="center" width="100%">
-                                                                <PickerButton ref={el => this.pickerButton = el} picker icon={<Icon calendar />} onClick={(e) => {
-                                                                        this.setState({ datePickerOpen: !this.state.datePickerOpen }, () => {
-                                                                                if (!this.state.datePickerOpen) this.handleDateChange(e);
-                                                                        });
-                                                                }}>
-                                                                        {calendar.from ? calendar.from.format('DD MMM YYYY') : ''} - {calendar.to ? calendar.to.format('DD MMM YYYY') : ''}
-                                                                </PickerButton>
+                                                        <Wrapper padding={'24px'} textAlign="center" width="100%">
                                                         </Wrapper>
+
                                                         <CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
                                                                 <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.primary.light} color={this.state.isLoading ? 'white' : _theme.palette.primary.default}>
                                                                         <Icon preventiva data-tip="Preventiva" />
                                                                 </CircleOm.icon>
                                                                 <CircleOm.chart>
                                                                         <Circle loading={this.state.isLoading}
-                                                                                label="Preventivas"
+                                                                                label=""
                                                                                 strokeValue={this.state.isLoading ? 0 : ordersCounts.preventive}
-                                                                                trailValue={ordersCounts.preventiveToExecute}
+                                                                                trailValue={ordersCounts.curative}
                                                                                 strokeIcon={<Icon curativa />}
                                                                                 trailIcon={<Icon preventiva />}
                                                                                 width={191}
-                                                                                strokeColor={_theme.palette.primary.medium}
-                                                                                trailColor={_theme.palette.primary.medium}
+                                                                                strokeColor={_theme.palette.secondary.default}
+                                                                                trailColor={_theme.palette.primary.dark}
                                                                                 full
                                                                         />
                                                                 </CircleOm.chart>
-                                                                <CircleOm.chart>
+                                                                {/* <CircleOm.chart>
                                                                         <Circle loading={this.state.isLoading} label="Curativas"
                                                                                 strokeValue={this.state.isLoading ? 0 : ordersCounts.curative}
                                                                                 trailValue={ordersCounts.curativeToExecute}
@@ -644,7 +638,7 @@ class OrdensDeManutencao extends Component {
                                                                                 trailColor={_theme.palette.secondary.default}
                                                                                 full
                                                                         />
-                                                                </CircleOm.chart>
+                                                                </CircleOm.chart> */}
                                                                 <CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.secondary.default} color={'white'}>
                                                                         <Icon curativa data-tip="Curativa" />
                                                                 </CircleOm.icon>

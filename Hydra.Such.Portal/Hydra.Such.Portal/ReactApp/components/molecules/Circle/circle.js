@@ -40,8 +40,8 @@ export default ({ el, width, trailValue, strokeValue, trailColor, strokeColor, t
 
         meter.append('path')
                 .attr('class', 'background')
-                .attr('fill', Color(trailColor).alpha(0.4).rgb() || '#ccc')
-                .attr('fill-opacity', 0.5)
+                .attr('fill', Color(trailColor).alpha(0.2).rgb() || '#ccc')
+                .attr('fill-opacity', 1)
                 .attr('data-html', true)
                 .attr('data-tip', trailTooltipHtml)
                 .attr('d', arc.endAngle(twoPi));
