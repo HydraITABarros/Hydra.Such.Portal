@@ -332,7 +332,7 @@ const SearchWrapper = styled.div`
     padding: 0 25px 0;
 `;
 
-var timer = 0;
+var sortTimer = 0;
 
 const BoldFormatter = ({ value }) => <Text b >{value}</Text>;
 const BoldTypeProvider = props => (
@@ -390,6 +390,7 @@ class eTable extends Component {
 	}
 
 	handleGridScroll(e) {
+		s
 		setTimeout(() => {
 			Tooltip.Hidden.hide();
 			Tooltip.Hidden.rebuild();
@@ -450,9 +451,15 @@ class eTable extends Component {
 						onChange={(e) => {
 							let search = e.target.value.toLowerCase();
 							this.setState({ searchValue: search }, () => {
-								clearTimeout(timer);
-								timer = setTimeout(() => {
-									this.fetchNew({ search: search, sort: this.state.sort });
+								Tooltip.Hidden.hide();
+								Tooltip.Hidden.rebuild();
+								clearTimeout(sortTimer);
+								sortTimer = setTimeout(() => {
+									this.fetchNew({ search: this.state.searchValue, sort: this.state.sort });
+									clearTimeout(sortTimer);
+									sortTimer = setTimeout(() => {
+										this.fetchNew({ search: this.state.searchValue, sort: this.state.sort });
+									}, 50);
 								}, 400);
 							});
 						}} type="search" margin="none"
@@ -467,13 +474,18 @@ class eTable extends Component {
 				<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
 					<BoldTypeProvider for={['nome']} />
 					<SortingState onSortingChange={(e) => {
-						this.setState({ sort: e[0] });
-						Tooltip.Hidden.hide();
-						Tooltip.Hidden.rebuild();
-						clearTimeout(timer);
-						timer = setTimeout(() => {
+						this.setState({ sort: e[0] }, () => {
+							Tooltip.Hidden.hide();
+							Tooltip.Hidden.rebuild();
 							this.fetchNew({ sort: e[0], search: this.state.searchValue });
-						}, 400);
+							setTimeout(() => {
+								this.setState({ sort: e[0] }, () => {
+									Tooltip.Hidden.hide();
+									Tooltip.Hidden.rebuild();
+									this.fetchNew({ sort: e[0], search: this.state.searchValue });
+								});
+							}, 100);
+						});
 					}} columnExtensions={columns} />
 					<SelectionState />
 					<GroupingState expandedGroups={defaultExpandedGroups} grouping={this.state.group}
@@ -606,7 +618,10 @@ class eTable extends Component {
 							</TableRow>)
 						}} />
 					<Toolbar />
-					<GroupingPanel showSortingControls showGroupingControls />
+					<GroupingPanel
+						showSortingControls showGroupingControls
+						emptyMessageComponent={(props) => <GroupingPanel.EmptyMessage getMessage={() => "Arraste um cabeçalho de coluna para agrupar."} />}
+					/>
 					<TableColumnVisibility hiddenColumnNames={this.state.hiddenColumns} onHiddenColumnNamesChange={(value) => {
 						this.setState({ hiddenColumns: value });
 					}} />
