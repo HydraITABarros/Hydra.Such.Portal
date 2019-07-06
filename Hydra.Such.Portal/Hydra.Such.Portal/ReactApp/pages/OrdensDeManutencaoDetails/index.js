@@ -242,9 +242,7 @@ class OrdensDeManutencaoLine extends Component {
 
 	fetchMaintenanceOrders({ search, sort, page }, cb) {
 		cb = cb || (() => { });
-		console.log(search, sort, page);
-		var request;
-		var isNext = page > 0;
+		var isNext = page > 1;
 		this.setState({ maintenanceOrdersLinesIsLoading: true }, () => {
 			if (isNext && this.state.maintenanceOrdersLinesNext != "") {
 				call = axios.CancelToken.source();
@@ -267,8 +265,8 @@ class OrdensDeManutencaoLine extends Component {
 						$filter: filter,
 						$count: true
 					}
-					if (typeof sort != 'undefined' && typeof sort.columnName != 'undefined' && typeof sort.direction != 'undefined') {
-						params['$orderby'] = sort.columnName + " " + sort.direction;
+					if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
+						params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
 					}
 					this.handleFetchMaintenanceOrdersRequest(axios.get(`/ordens-de-manutencao/${orderId}`, { params }), isNext);
 				});
@@ -285,7 +283,7 @@ class OrdensDeManutencaoLine extends Component {
 				var list = data.resultLines.items;
 				var nextPageLink = data.resultLines.nextPageLink;
 
-				console.log(list, this.state);
+				console.log(list, this.state, isNext);
 
 				this.setState({
 					maintenanceOrder: data.order,

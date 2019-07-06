@@ -332,7 +332,7 @@ const SearchWrapper = styled.div`
     padding: 0 25px 0;
 `;
 
-var sortTimer = 0;
+var timer = 0;
 
 const BoldFormatter = ({ value }) => <Text b >{value}</Text>;
 const BoldTypeProvider = props => (
@@ -350,7 +350,7 @@ class eTable extends Component {
 		tooltipReady: false,
 		lines: [],
 		skip: 0,
-		sort: {},
+		sort: [],
 		searchValue: "",
 		isLoading: false,
 		rows: [],
@@ -373,14 +373,13 @@ class eTable extends Component {
 	}
 
 	fetchNew({ search, sort }) {
-		this.setState({ searchValue: search, sort, page: 0 }, () => {
+		this.setState({ searchValue: search, sort, page: 0, isLoading: true, rows: [], total: 0 }, () => {
 			this.props.getRows({ search, sort, page: 0 });
 		});
 	}
 
 	fetchNext() {
-		this.setState({ page: this.state.page + 1 }, () => {
-			console.log('bababbabaabb', this.state.page);
+		this.setState({ page: this.state.page + 1, isLoading: true }, () => {
 			this.props.getRows({ search: this.state.searchValue, sort: this.state.sort, page: this.state.page });
 		});
 	}
@@ -390,7 +389,6 @@ class eTable extends Component {
 	}
 
 	handleGridScroll(e) {
-		s
 		setTimeout(() => {
 			Tooltip.Hidden.hide();
 			Tooltip.Hidden.rebuild();
@@ -423,7 +421,7 @@ class eTable extends Component {
 	}
 
 	render() {
-		const { isLoading, rows, total } = this.state;
+		const { isLoading, rows } = this.state;
 		var columns = this.props.columns;
 		var headColumns = _.differenceBy(columns, this.state.group, 'columnName');
 		headColumns = headColumns.filter((val) => {
@@ -453,11 +451,11 @@ class eTable extends Component {
 							this.setState({ searchValue: search }, () => {
 								Tooltip.Hidden.hide();
 								Tooltip.Hidden.rebuild();
-								clearTimeout(sortTimer);
-								sortTimer = setTimeout(() => {
+								clearTimeout(timer);
+								timer = setTimeout(() => {
 									this.fetchNew({ search: this.state.searchValue, sort: this.state.sort });
-									clearTimeout(sortTimer);
-									sortTimer = setTimeout(() => {
+									clearTimeout(timer);
+									timer = setTimeout(() => {
 										this.fetchNew({ search: this.state.searchValue, sort: this.state.sort });
 									}, 50);
 								}, 400);
@@ -473,19 +471,10 @@ class eTable extends Component {
 
 				<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
 					<BoldTypeProvider for={['nome']} />
-					<SortingState onSortingChange={(e) => {
-						this.setState({ sort: e[0] }, () => {
-							Tooltip.Hidden.hide();
-							Tooltip.Hidden.rebuild();
-							this.fetchNew({ sort: e[0], search: this.state.searchValue });
-							setTimeout(() => {
-								this.setState({ sort: e[0] }, () => {
-									Tooltip.Hidden.hide();
-									Tooltip.Hidden.rebuild();
-									this.fetchNew({ sort: e[0], search: this.state.searchValue });
-								});
-							}, 100);
-						});
+					<SortingState sorting={this.state.sort} onSortingChange={(sort) => {
+						Tooltip.Hidden.hide();
+						Tooltip.Hidden.rebuild();
+						this.setState({ sort, page: 0, isLoading: true, rows: [], total: 0 });
 					}} columnExtensions={columns} />
 					<SelectionState />
 					<GroupingState expandedGroups={defaultExpandedGroups} grouping={this.state.group}
@@ -555,10 +544,6 @@ class eTable extends Component {
 						sortLabelComponent={(props) => {
 							if (props.column.sortingEnabled == false) { return <TableHeaderRow.SortLabel {...props} onSort={() => { }} getMessage={() => ""} />; }
 							return <TableHeaderRow.SortLabel  {...props} getMessage={() => ""} onSort={(e) => {
-								console.log(e, props.onSort);
-								this.setState({
-
-								});
 								props.onSort(e);
 							}} />
 						}}
