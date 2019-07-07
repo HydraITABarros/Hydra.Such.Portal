@@ -31,6 +31,9 @@ namespace Hydra.Such.Portal.ViewModels
         [NotMapped]
         public string ServiceName { get; set; }
 
+        [NotMapped]
+        public string havePreventive { get; set; }
+
 
 
         [Key]
