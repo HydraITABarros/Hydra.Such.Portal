@@ -35,6 +35,7 @@ import { renderToString } from 'react-dom/server';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
+import EMM from '../../pages/FichaDeManutencao/EMM';
 
 
 const {DialogTitle,DialogContent,DialogActions} = ModalLarge;
@@ -45,20 +46,36 @@ const Tabs = styled(MuiTabs)`
       height: 5px;
       border-radius: 2.5px;
       z-index: 2;
-      }
+    }
+    [class*="MuiTabs-fixed"]>span{
+      margin-left: 0px;
+    }
+    [class*="icon"] {
+            color: ${props=>props.theme.palette.primary.medium};
+          }
+    [aria-selected="true"]  {
+          [class*="icon"] {
+            color: ${props=>props.theme.palette.secondary.default};
+          }
+    }
 `;
 const Tab = styled(MuiTab)`&&{
-  text-transform: capitalize;
-  }
+      text-transform: capitalize;
+      text-align: left;
+      min-width: 0;
+    }
+    [class*="MuiTab-labelContainer"] {
+          padding: 6px 12px;
+    }
 `;
 const Bar = styled(AppBar)`&&{
-    background-color: ${_theme.palette.white};
-    box-shadow: none;
-    margin-bottom: 0px;
-    padding-left: 0;
-    padding-right: 0;
-    hr{position: relative; margin-top: -3px; z-index: 1;}
-  }
+      background-color: ${_theme.palette.white};
+      box-shadow: none;
+      margin-bottom: 0px;
+      padding-left: 0;
+      padding-right: 0;
+      hr{position: relative; margin-top: -3px; margin-left: -40px; z-index: 1;}
+    }
 `;
 
 class Arquivo extends Component {
@@ -66,7 +83,6 @@ class Arquivo extends Component {
       open: false,
       tab: 0,
     }
-
       constructor(props) {
         super(props);
         this.handleChange=this.handleChange.bind(this);
@@ -93,11 +109,11 @@ class Arquivo extends Component {
                       variant="standard"
                       scrollButtons="off"
                     >
-                      <Tab label={<Text b>EMMs</Text>}/>
-                      <Tab label={<Text b>Mat. Aplicado</Text>} />
-                      <Tab label={<Text b>Fotografias</Text>} />
-                      <Tab label={<Text b>Documentos</Text>} />
-                      <Tab label={<Text b>Upload</Text>} />
+                      <Tab label={<Text b><Icon meter/>EMMs</Text>}/>
+                      <Tab label={<Text b><Icon material/>Mat. Aplicado</Text>} />
+                      <Tab label={<Text b><Icon meter/>Fotografias</Text>} />
+                      <Tab label={<Text b><Icon folder/>Documentos</Text>} />
+                      <Tab label={<Text b><Icon download/>Upload</Text>} />
                     </Tabs>
 
                     <hr/>  
@@ -106,7 +122,7 @@ class Arquivo extends Component {
                   
                   <DialogContent>
 
-                      {this.state.tab === 0 && <div>Item One</div>}
+                      {this.state.tab === 0 && <EMM />}
                       {this.state.tab === 1 && <div>Item Two</div>}
                       {this.state.tab === 2 && <div>Item Three</div>}
                       {this.state.tab === 3 && <div>Item Four</div>}
