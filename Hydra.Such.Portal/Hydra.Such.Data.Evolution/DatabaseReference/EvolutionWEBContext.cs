@@ -213,15 +213,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         // Unable to generate entity type for table 'dbo.Ficha_Manutencao_Relatorio_Relatorio'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Ficha_Manutencao_Relatorio_Assinatura'. Please see the warning messages.
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=10.101.1.10\\sqlnav;initial catalog=EvolutionWEB;user id=such_portal_user;password=SuchPW.2K17;");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.3-servicing-35854");
