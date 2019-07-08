@@ -263,7 +263,8 @@ class OrdensDeManutencaoLine extends Component {
 					var params = {
 						$select: 'Idequipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca,idServico,idRegiao',
 						$filter: filter,
-						$count: true
+						$count: true,
+						cancelToken: call.token
 					}
 					if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
 						params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
@@ -282,8 +283,6 @@ class OrdensDeManutencaoLine extends Component {
 			if (data.ordersCountsLines && data.resultLines && data.resultLines.items) {
 				var list = data.resultLines.items;
 				var nextPageLink = data.resultLines.nextPageLink;
-
-				console.log(list, this.state, isNext);
 
 				this.setState({
 					maintenanceOrder: data.order,

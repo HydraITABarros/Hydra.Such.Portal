@@ -369,7 +369,6 @@ class eTable extends Component {
 		this.state.group = props.columns.filter((item) => !!item.defaultExpandedGroup).map((item) => { return { columnName: item.name } });
 		this.state.isLoading = props.isLoading;
 		this.state.rows = props.rows;
-		console.log(this.state.group);
 	}
 
 	fetchNew({ search, sort }) {
@@ -438,6 +437,7 @@ class eTable extends Component {
 		if (isLoading && rows.length == 0) {
 			totalRowCount = 100;
 		}
+
 		return (
 			<div>
 				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading ? "" : "hidden"}>
@@ -448,17 +448,13 @@ class eTable extends Component {
 					<TextField inputProps={{ autoComplete: "off" }} id="oms-search"
 						onChange={(e) => {
 							let search = e.target.value.toLowerCase();
-							this.setState({ searchValue: search }, () => {
-								Tooltip.Hidden.hide();
-								Tooltip.Hidden.rebuild();
+							Tooltip.Hidden.hide();
+							Tooltip.Hidden.rebuild();
+							this.setState({ sort: this.state.sort, searchValue: search, page: 0, isLoading: true, rows: [], total: 0 }, () => {
 								clearTimeout(timer);
 								timer = setTimeout(() => {
-									this.fetchNew({ search: this.state.searchValue, sort: this.state.sort });
-									clearTimeout(timer);
-									timer = setTimeout(() => {
-										this.fetchNew({ search: this.state.searchValue, sort: this.state.sort });
-									}, 50);
-								}, 400);
+									this.fetchNext();
+								}, 450);
 							});
 						}} type="search" margin="none"
 						endAdornment={
