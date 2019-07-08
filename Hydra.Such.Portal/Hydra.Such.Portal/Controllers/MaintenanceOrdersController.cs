@@ -32,8 +32,8 @@ using System.Reflection;
 
 namespace Hydra.Such.Portal.Controllers
 {
-    [AllowAnonymous]
-    //[Authorize]
+    //[AllowAnonymous]
+    [Authorize]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
@@ -70,7 +70,13 @@ namespace Hydra.Such.Portal.Controllers
             return RedirectToAction("AccessDenied", "Error");
         }
 
-        [Route("{orderId}"), Route("{orderId}/ficha-de-manutencao"), HttpGet, AcceptHeader("text/html")]
+        [Route("{orderId}"), HttpGet, AcceptHeader("text/html")]
+        public IActionResult OrdemDeManutencao(string orderId)
+        {
+            return Index();
+        }
+
+        [Route("{orderId}/ficha-de-manutencao"), HttpGet, AcceptHeader("text/html")]
         public IActionResult FichaDeManutencao(string orderId)
         {
             return Index();
@@ -98,67 +104,62 @@ namespace Hydra.Such.Portal.Controllers
 
             if (evolutionLoggedUser == null) { return NotFound(); }
 
+            var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+
             IQueryable results;
 
-            if (evolutionLoggedUser.NivelAcesso == 3 || evolutionLoggedUser.NivelAcesso == 4)
+            IQueryable<MaintenanceOrder> query = MaintenanceOrdersRepository.AsQueryable()
+                .Where(o =>
+                (preventiveCodes.Contains(o.OrderType) || curativeCodes.Contains(o.OrderType)) &&
+                o.Status == 0 && (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+
+            var preventives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
+                   preventiveCodes.Contains(o.OrderType) && o.Status == 0 &&
+                (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+
+            var curatives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
+                   curativeCodes.Contains(o.OrderType) && o.Status == 0 &&
+                (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+
+            /*
+             * filter MaintenanceOrder query based on user permissions
+             * 1, 2, 8 = Podem vertudo
+             * 3, 4 = Filtrado por regiao
+             * 5, 6, 7 = Filtrado por Cresp
+             */
+            switch (nivelAcesso)
             {
-                results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable()
-                    .Where(o => (preventiveCodes.Contains(o.OrderType) || (curativeCodes.Contains(o.OrderType))
-                   && o.IsToExecute && (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null) && evolutionLoggedUser.Code1 == o.ShortcutDimension1Code
-                   )).Select(o => new MaintenanceOrder
-                   {
-                       No = o.No,
-                       Description = o.Description,
-                       IdClienteEvolution = o.IdClienteEvolution,
-                       IdInstituicaoEvolution = o.IdInstituicaoEvolution,
-                       IdServicoEvolution = o.IdServicoEvolution,
-                       OrderDate = o.OrderDate,
-                       ClientName = o.ClientName,
-                       InstitutionName = o.InstitutionName,
-                       ServiceName = o.ServiceName,
-                       OrderType = o.OrderType
-                   }), new ODataQuerySettings { PageSize = pageSize });
+                case 3:
+                case 4:
+                    preventives.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
+                    curatives.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
+                    query.Where(q=> q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
+                    break;
+                case 5:
+                case 6:
+                case 7:
+                    preventives.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
+                    curatives.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
+                    query.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
+                    break;
+                default:
+                    break;
             }
 
-            if (evolutionLoggedUser.NivelAcesso == 5 || evolutionLoggedUser.NivelAcesso == 6 || evolutionLoggedUser.NivelAcesso == 7)
-            {
-                results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable()
-                    .Where(o => (preventiveCodes.Contains(o.OrderType) || (curativeCodes.Contains(o.OrderType))
-                   && o.IsToExecute && (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null) && evolutionLoggedUser.Code3 == o.ShortcutDimension3Code
-                   )).Select(o => new MaintenanceOrder
-                   {
-                       No = o.No,
-                       Description = o.Description,
-                       IdClienteEvolution = o.IdClienteEvolution,
-                       IdInstituicaoEvolution = o.IdInstituicaoEvolution,
-                       IdServicoEvolution = o.IdServicoEvolution,
-                       OrderDate = o.OrderDate,
-                       ClientName = o.ClientName,
-                       InstitutionName = o.InstitutionName,
-                       ServiceName = o.ServiceName,
-                       OrderType = o.OrderType
-                   }), new ODataQuerySettings { PageSize = pageSize });
-            }
-            else
-            {
-                results = queryOptions.ApplyTo(MaintenanceOrdersRepository.AsQueryable()
-                    .Where(o => (preventiveCodes.Contains(o.OrderType) || (curativeCodes.Contains(o.OrderType))
-                   && o.IsToExecute && (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null)
-                   )).Select(o => new MaintenanceOrder
-                   {
-                       No = o.No,
-                       Description = o.Description,
-                       IdClienteEvolution = o.IdClienteEvolution,
-                       IdInstituicaoEvolution = o.IdInstituicaoEvolution,
-                       IdServicoEvolution = o.IdServicoEvolution,
-                       OrderDate = o.OrderDate,
-                       ClientName = o.ClientName,
-                       InstitutionName = o.InstitutionName,
-                       ServiceName = o.ServiceName,
-                       OrderType = o.OrderType
-                   }), new ODataQuerySettings { PageSize = pageSize });
-            }
-
+            results = queryOptions.ApplyTo(query.Select(o => new MaintenanceOrder
+                {
+                    No = o.No,
+                    Description = o.Description,
+                    IdClienteEvolution = o.IdClienteEvolution,
+                    IdInstituicaoEvolution = o.IdInstituicaoEvolution,
+                    IdServicoEvolution = o.IdServicoEvolution,
+                    OrderDate = o.OrderDate,
+                    ClientName = o.ClientName,
+                    InstitutionName = o.InstitutionName,
+                    ServiceName = o.ServiceName,
+                    OrderType = o.OrderType
+                }), new ODataQuerySettings { PageSize = pageSize });
+            
             var list = results.Cast<dynamic>().AsEnumerable();
             long? total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
@@ -200,23 +201,11 @@ namespace Hydra.Such.Portal.Controllers
             });
 
             var result = new PageResult<dynamic>(newList, nextLink, total);
-
-            var preventives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
-                   preventiveCodes.Contains(o.OrderType) && o.IsToExecute);
-
-            var curatives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
-                   curativeCodes.Contains(o.OrderType) && o.IsToExecute);
-
-            var ordersCounts = new
-            {
-                preventive = preventives.Count(),
-                curative = curatives.Count()
-            };
-
+                        
             return Json(new
             {
                 result,
-                ordersCounts
+                ordersCounts = new { preventive = preventives.Count(), curative = curatives.Count() }
             });
         }
 
@@ -264,7 +253,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         //[AllowAnonymous]
-        [Route("{orderId}"), HttpGet]
+        [Route("{orderId}"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
         {
