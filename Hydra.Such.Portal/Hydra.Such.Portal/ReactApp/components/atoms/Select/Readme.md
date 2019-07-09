@@ -2,7 +2,7 @@
 import MenuItem from '@material-ui/core/MenuItem';
 
 <div>
-    <Select >
+    <Select>
         <MenuItem value="">
             <em>None</em>
         </MenuItem>
