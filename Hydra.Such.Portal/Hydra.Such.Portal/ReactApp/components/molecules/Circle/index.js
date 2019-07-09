@@ -72,86 +72,93 @@ const Tooltip = styled(ReactTooltip)`${tooltip}`;
 
 class Circle extends React.Component {
 
-        state = {
-                tooltipReady: false,
-                id: "_" + UUID.v4(),
-        }
+	state = {
+		tooltipReady: false,
+		id: "_" + UUID.v4(),
+		ready: true,
+		loading: true
+	}
 
-        constructor(props) {
-                super(props);
-        }
+	constructor(props) {
+		super(props);
+	}
 
-        componentDidMount() {
-                //this.refreshCircle();
-        }
+	componentDidMount() {
+		//this.refreshCircle();
+	}
 
-        componentWillReceiveProps(props) {
+	componentWillReceiveProps(props) {
 
-                if (this.state.trailValue != props.trailValue || this.state.strokeValue != props.strokeValue) {
-                        this.refreshCircle();
-                }
-        }
+		if (this.state.loading != props.loading) {
+			this.setState({ loading: props.loading });
+		}
 
-        refreshCircle() {
-                let count = 0;
-                this.setState({
-                        ready: false, tooltipReady: false,
-                        trailValue: this.props.trailValue,
-                        strokeValue: this.props.strokeValue,
-                }, () => {
-                        count++;
-                        if (count > 1) return;
-                        this.setState({ ready: true }, () => {
+		if (this.state.trailValue != props.trailValue || this.state.strokeValue != props.strokeValue) {
+			this.refreshCircle();
+		}
 
-                                d3Circle({
-                                        el: "#" + this.state.id,
-                                        width: this.props.width,
-                                        trailValue: this.props.trailValue,
-                                        strokeValue: this.props.loading ? 0 : this.props.strokeValue,
-                                        trailColor: this.props.trailColor,
-                                        strokeColor: this.props.strokeColor,
-                                        trailTooltipHtml: renderToString(<span><TooltipIcon color={this.props.trailColor}>{this.props.trailIcon}</TooltipIcon> <Text b>{this.props.trailValue}</Text></span>),
-                                        strokeTooltipHtml: renderToString(<span><TooltipIcon color={this.props.strokeColor}>{this.props.strokeIcon}</TooltipIcon> <Text b>{this.props.strokeValue}</Text></span>)
-                                });
-                                this.setState({ tooltipReady: true }, () => {
-                                        count = 0;
-                                });
-                        })
-                });
-        }
+	}
 
-        render() {
-                return (
-                        <div>
-                                <CircleWrapper>
-                                        {this.state.ready ? <div id={this.state.id} ></div> : ''}
+	refreshCircle() {
+		let count = 0;
+		this.setState({
+			ready: false, tooltipReady: false,
+			trailValue: this.props.trailValue,
+			strokeValue: this.props.strokeValue,
+		}, () => {
+			count++;
+			if (count > 1) return;
+			this.setState({ ready: true }, () => {
 
-                                        {this.props.loading ? '' :
-                                                (this.props.full ?
-                                                        <CircleTotal>
-                                                                <Text dataBig style={{ fontSize: '80px', lineHeight: '70px', color: this.props.trailColor }}>
-                                                                        {this.props.strokeValue}<span style={{ fontSize: '80px', color: this.props.strokeColor}}>/{this.props.trailValue}</span>
-                                                                </Text>
-                                                                <Text p style={{ color: this.props.strokeColor }}>
-                                                                        {this.props.label}
-                                                                </Text>
-                                                        </CircleTotal> :
-                                                        <CircleTotal>
-                                                                <Text dataBig>
-                                                                        {this.props.trailValue + this.props.strokeValue}
-                                                                </Text>
-                                                                <Text p>
-                                                                        {this.props.label}
-                                                                </Text>
-                                                        </CircleTotal>
-                                                )
-                                        }
+				d3Circle({
+					el: "#" + this.state.id,
+					width: this.props.width,
+					trailValue: this.props.trailValue,
+					strokeValue: this.props.loading ? 0 : this.props.strokeValue,
+					trailColor: this.props.trailColor,
+					strokeColor: this.props.strokeColor,
+					trailTooltipHtml: renderToString(<span><TooltipIcon color={this.props.trailColor}>{this.props.trailIcon}</TooltipIcon> <Text b>{this.props.trailValue}</Text></span>),
+					strokeTooltipHtml: renderToString(<span><TooltipIcon color={this.props.strokeColor}>{this.props.strokeIcon}</TooltipIcon> <Text b>{this.props.strokeValue}</Text></span>)
+				});
+				this.setState({ tooltipReady: true }, () => {
+					count = 0;
+				});
+			})
+		});
+	}
 
-                                </CircleWrapper>
-                                {this.state.tooltipReady && !this.props.loading ? <Tooltip /> : ''}
-                        </div>
-                )
-        }
+	render() {
+		return (
+			<div>
+				<CircleWrapper>
+					{this.state.ready && <div id={this.state.id} ></div>}
+
+					{!this.state.loading &&
+						(this.props.full ?
+							<CircleTotal>
+								<Text dataBig style={{ fontSize: '80px', lineHeight: '70px', color: this.props.trailColor }}>
+									{this.props.strokeValue}<span style={{ fontSize: '80px', color: this.props.strokeColor }}>/{this.props.trailValue}</span>
+								</Text>
+								<Text p style={{ color: this.props.strokeColor }}>
+									{this.props.label}
+								</Text>
+							</CircleTotal> :
+							<CircleTotal>
+								<Text dataBig>
+									{this.props.trailValue + this.props.strokeValue}
+								</Text>
+								<Text p>
+									{this.props.label}
+								</Text>
+							</CircleTotal>
+						)
+					}
+
+				</CircleWrapper>
+				{this.state.tooltipReady && !this.state.loading ? <Tooltip /> : ''}
+			</div>
+		)
+	}
 }
 
 Circle.propTypes = propTypes;

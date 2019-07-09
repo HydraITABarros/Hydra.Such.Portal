@@ -167,11 +167,12 @@ const Hr = styled.hr`
 
 var cancelToken = axios.CancelToken;
 var call;
+var headerHeightTimer;
 
 class OrdensDeManutencaoLine extends Component {
 	state = {
 		orderId: "",
-		isLoading: false,
+		isLoading: true,
 		ordersCountsLines: {
 			toSigning: null,
 			toExecute: null,
@@ -205,11 +206,10 @@ class OrdensDeManutencaoLine extends Component {
 	}
 
 	handleResize() {
-		(() => {
-			setTimeout(() => {
-				this.setTableMarginTop();
-			}, 0)
-		})();
+		// setTimeout(() => {
+		// 	this.setTableMarginTop();
+		// }, 0)
+
 	}
 
 	handleGridScroll(e) {
@@ -220,24 +220,26 @@ class OrdensDeManutencaoLine extends Component {
 	}
 
 	setTableMarginTop() {
-		(() => {
-			setTimeout(() => {
-				if (typeof $ == 'undefined') {
-					return setTimeout(() => {
-						this.setTableMarginTop();
-					}, 600);
-				}
-				var highlightWrapper = ReactDOM.findDOMNode(this.highlightWrapper);
-				var listContainer = ReactDOM.findDOMNode(this.listContainer);
-				var hr = 0;
-				var top = (highlightWrapper.offsetHeight * 1) + hr;
-				var appNavbarCollapse = document.getElementById("app-navbar-collapse");
-				if (appNavbarCollapse) {
-					var height = window.innerHeight - top - (document.getElementById("app-navbar-collapse").offsetHeight * 1);
-					this.setState({ listContainerStyle: { "height": height, marginTop: top } })
-				}
-			}, 0)
-		})();
+
+		clearTimeout(headerHeightTimer);
+		headerHeightTimer = setTimeout(() => {
+			if (typeof $ == 'undefined') {
+				return setTimeout(() => {
+					this.setTableMarginTop();
+				}, 600);
+			}
+			var highlightWrapper = ReactDOM.findDOMNode(this.highlightWrapper);
+			var listContainer = ReactDOM.findDOMNode(this.listContainer);
+			var hr = 0;
+			var top = (highlightWrapper.offsetHeight * 1) + hr;
+			var appNavbarCollapse = document.getElementById("app-navbar-collapse");
+			if (appNavbarCollapse) {
+				var height = window.innerHeight - top - (document.getElementById("app-navbar-collapse").offsetHeight * 1);
+				this.setState({ listContainerStyle: { "height": height, marginTop: top } }, () => {
+					console.log(this.state.listContainerStyle.height, this.state.listContainerStyle.marginTop);
+				})
+			}
+		}, 100);
 	}
 
 	fetchMaintenanceOrders({ search, sort, page }, cb) {
@@ -315,14 +317,10 @@ class OrdensDeManutencaoLine extends Component {
 
 		return (
 			<PageTemplate >
-				<Wrapper padding={'0 0 20px'} width="100%">
-
-					<Header ref={el => this.highlightWrapper = el}
-						isLoading={this.state.isLoading}
+				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.highlightWrapper = el}>
+					<Header isLoading={this.state.isLoading}
 						maintenanceOrder={this.state.maintenanceOrder}
-						orderId={this.state.orderId}
-					/>
-
+						orderId={this.state.orderId} />
 				</Wrapper>
 
 				{this.state.listContainerStyle.marginTop &&

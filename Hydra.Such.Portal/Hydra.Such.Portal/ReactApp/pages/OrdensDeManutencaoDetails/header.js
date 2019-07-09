@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { Text, Icon, Circle, Wrapper, Spacer } from 'components';
+import ReactDOM from 'react-dom';
+import { Text, Icon, Circle, Wrapper, Spacer, Button } from 'components';
 import Functions from './functions';
 import MuiGrid from '@material-ui/core/Grid';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
 import { createMuiTheme } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
-
+injectGlobal`
+	.transparent {
+		opacity: 0
+	}
+`
 const muiTheme = createMuiTheme();
 const breakpoints = muiTheme.breakpoints.values;
 
@@ -86,58 +91,98 @@ const CircleOmWrapper = styled(CircleOm.wrapper)`
     }
 `;
 
-export default withTheme(function (props) {
-	return (
-		<div>
-			<Wrapper padding={' 20px 25px'} width="100%" >
-				{!props.isLoading && (<span>
-					<Text b onClick={() => { this.props.history.push(`/ordens-de-manutencao`) }} style={{ verticalAlign: 'middle', textDecoration: 'underline', cursor: 'pointer' }}>OMs</Text>
-					<Icon arrow-right style={{ verticalAlign: 'middle' }} />
-					&nbsp;<Text b style={{ verticalAlign: 'middle', position: 'relative', top: '1px' }} >{Functions.toTitleCase(props.maintenanceOrder.description)}</Text>
-				</span>)}
-			</Wrapper>
+class Header extends Component {
+	state = {
+		isLoading: true
+	}
 
-			<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} padding={"200px"}>
-				<Grid item xs>
-					{!props.isLoading &&
-						<Wrapper padding={'0 25px 0'}>
-							<TextHeader h2><b> {Functions.toTitleCase(props.maintenanceOrder.nomeInstituicao)}</b></TextHeader> <br />
-							{props.orderId && <div><Text b>OM</Text> {props.orderId} </div>}
-							{props.maintenanceOrder.contrato && <div><Text b>Contrato</Text> {props.maintenanceOrder.contrato} </div>}
-						</Wrapper>
-					}
-				</Grid>
-				<Grid container item md={6} xs={12}>
-					<CircleOmWrapper className={''}>
-						<CircleOm.icon background={props.theme.palette.primary.dark} color={props.theme.palette.primary.keylines} fontSize="71px" >
-							<Spacer height="15px" />
-							<Icon sad />
-							<Wrapper textAlign="center">
-								<Text dataSmall>300</Text>
+	constructor(props) {
+		super(props);
+	}
+
+	componentDidUpdate(prevProps) {
+
+		if (prevProps.isLoading !== this.state.isLoading) {
+			this.setState({ isLoading: prevProps.isLoading });
+		}
+	}
+
+	render() {
+		return (
+			<div>
+				<Wrapper padding={' 20px 25px'} width="100%" className={this.state.isLoading ? 'transparent' : ''}>
+					<span>
+						<Text b onClick={() => { this.props.history.push(`/ordens-de-manutencao`) }}
+							style={{ verticalAlign: 'middle', textDecoration: 'underline', cursor: 'pointer' }}>OMs</Text>
+						<Icon arrow-right style={{ verticalAlign: 'middle' }} />
+						&nbsp;<Text b style={{ verticalAlign: 'middle', position: 'relative', top: '1px' }} >
+							{this.props.orderId}
+						</Text>
+					</span>
+				</Wrapper>
+
+				<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} padding={"200px"}>
+					<Grid item xs>
+						{!this.state.isLoading &&
+							<Wrapper padding={'0 25px 0'}>
+								<br />
+								<TextHeader h2><b> {this.props.maintenanceOrder.nomeInstituicao}</b></TextHeader> <br /><br />
+								{this.props.orderId && <Text b>{this.props.maintenanceOrder.description}</Text>}
+								{this.props.maintenanceOrder.customerName && <Text p> {this.props.maintenanceOrder.customerName}</Text>}
+								{this.props.maintenanceOrder.nomeInstituicao && <Text p> {this.props.maintenanceOrder.nomeInstituicao}</Text>}
+								{this.props.maintenanceOrder.contrato && <Text p><i>Contrato {this.props.maintenanceOrder.contrato}</i></Text>}
 							</Wrapper>
-						</CircleOm.icon>
-						<CircleOm.chart>
-							<Circle loading={false} label="Equipamentos" strokeValue={241} trailValue={300} strokeIcon={<Icon happy />} trailIcon={<Icon sad />} width={191} />
-						</CircleOm.chart>
-						<CircleOm.icon background={'white'} color={props.theme.palette.secondary.default} fontSize="71px" >
-							<Spacer height="20px" />
-							<Icon happy />
-							<Wrapper textAlign="center">
-								<Text dataSmall color={props.theme.palette.secondary.default}>241</Text>
-							</Wrapper>
-						</CircleOm.icon>
-					</CircleOmWrapper>
-				</Grid>
-				<Grid item xs>
-					<Hidden mdDown>
-						<Wrapper textAlign="center" inline>
-							<Spacer height="25px" />
-							<Text dataBig> 20 </Text>
-							<Text p> Relatórios por assinar </Text>
+						}
+					</Grid>
+					<Grid container item md={6} xs={12}>
+						<Wrapper padding={'1px'} textAlign="center" width="100%">
 						</Wrapper>
-					</Hidden>
+
+						<CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
+							<CircleOm.icon background={this.state.isLoading ? this.props.theme.palette.primary.keylines : this.props.theme.palette.primary.dark} color={this.props.theme.palette.primary.keylines} fontSize="71px" >
+								<Spacer height="15px" />
+								<Icon sad />
+								<Wrapper textAlign="center">
+									{!this.state.isLoading && <Text dataSmall>300</Text>}
+								</Wrapper>
+							</CircleOm.icon>
+							<CircleOm.chart>
+								<Circle
+									loading={this.state.isLoading}
+									label="Equipamentos"
+									strokeValue={this.state.isLoading ? 0 : 241}
+									trailValue={this.state.isLoading ? 0 : 300}
+									strokeIcon={<Icon happy />}
+									trailIcon={<Icon sad />}
+									width={191}
+								/>
+							</CircleOm.chart>
+							<CircleOm.icon
+								background={this.state.isLoading ? this.props.theme.palette.primary.keylines : 'white'}
+								color={this.state.isLoading ? this.props.theme.palette.primary.keylines : this.props.theme.palette.secondary.default} fontSize="71px" >
+								<Spacer height="20px" />
+								<Icon happy />
+								<Wrapper textAlign="center">
+									{!this.state.isLoading && <Text dataSmall color={this.props.theme.palette.secondary.default}>241</Text>}
+								</Wrapper>
+							</CircleOm.icon>
+						</CircleOmWrapper>
+					</Grid>
+					<Grid item xs>
+						<Hidden mdDown>
+							{!this.state.isLoading &&
+								<Wrapper textAlign="center" inline>
+									<Spacer height="25px" />
+									<Text dataBig> 20 </Text>
+									<Text p> Relatórios por <Button style={{ padding: 0 }} link href={"javascript:void(0)"}>assinar</Button> </Text>
+								</Wrapper>
+							}
+						</Hidden>
+					</Grid>
 				</Grid>
-			</Grid>
-		</div>
-	);
-});
+			</div>
+		)
+	}
+};
+
+export default withTheme(Header);
