@@ -34,6 +34,7 @@ import {
 	TableColumnReordering, ColumnChooser, TableColumnVisibility, TableColumnResizing,
 	SearchPanel, VirtualTableView
 } from '@devexpress/dx-react-grid-material-ui';
+import MenuItem from '@material-ui/core/MenuItem';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -175,7 +176,7 @@ injectGlobal`
 `
 const GridRoot = styled(TGrid.Root)`&& {	
 	[class*="MuiToolbar"] {
-		min-height: auto !important;	
+		min-height: 48px !important;	
 	}
 	[class*="GroupPanelContainer-panel"] {
 		margin-top: 0;
@@ -259,7 +260,7 @@ const SearchWrapper = styled.div`
     right: 0;
     z-index: 2;
     padding: 0 25px 0;
-    top: -3px;
+    top: 4px;
 `;
 
 var timer = 0;
@@ -367,6 +368,7 @@ class eTable extends Component {
 		if (isLoading && rows.length == 0) {
 			totalRowCount = 100;
 		}
+		var hiddenColumns = this.state.hiddenColumns;
 
 		return (
 			<div>
@@ -540,17 +542,15 @@ class eTable extends Component {
 						showSortingControls showGroupingControls
 						emptyMessageComponent={(props) => <GroupingPanel.EmptyMessage getMessage={() => "Arraste um cabeçalho de coluna para agrupar."} />}
 					/>
-					<TableColumnVisibility hiddenColumnNames={this.state.hiddenColumns} onHiddenColumnNamesChange={(value) => {
-						this.setState({ hiddenColumns: value });
+					<TableColumnVisibility defaultHiddenColumnNames={hiddenColumns} onHiddenColumnNamesChange={(value) => {
+						hiddenColumns = value;
 					}} />
 					<TableColumnReordering defaultOrder={columns.map(column => column.name)} />
 					<ColumnChooser
 						toggleButtonComponent={(props) => {
-							console.log(props);
 							return (
-
 								<div ref={el => this.columnToggleRef = el}
-									style={{ position: 'absolute', top: '33px', 'zIndex': 1000, background: 'transparent', boxShadow: 'none', right: '30px' }}>
+									style={{ position: 'absolute', top: '56px', 'zIndex': 1000, background: 'transparent', boxShadow: 'none', right: '30px' }}>
 
 									<Button
 										style={{ position: 'realtive', 'zIndex': 1000, background: 'transparent', boxShadow: 'none' }}
@@ -566,24 +566,27 @@ class eTable extends Component {
 						}}
 						itemComponent={(props) => {
 							if (props.item.column.selectionEnabled == false) { return ''; };
-							return <ColumnChooser.Item {...props} />
+							return <MenuItem style={{ paddingLeft: '5px' }} onClick={props.onToggle} value={props.item.column.name}><CheckBox checked={!(hiddenColumns.indexOf(props.item.column.name) >= 0)} /> &nbsp; {props.item.column.title}</MenuItem>;
 						}}
+
 						overlayComponent={(props) => {
-							console.log(76234826347826, props);
-							return <ColumnChooser.Overlay {...props} />
+							return <ColumnChooser.Overlay {...props} onHide={(e) => {
+								this.setState({ hiddenColumns });
+								props.onHide(e);
+							}} />
 						}}
 						containerComponent={(props) => {
 							var InnerCard = (InnerCardProps) => <div ref={el => this.teste = el} {...InnerCardProps}><ColumnChooser.Container {...props} /></div>;
 							var Card = ReactDOM.findDOMNode(this.teste) ? ReactDOM.findDOMNode(this.teste).parentNode : null;
 							if (Card) {
-								var position = ReactDOM.findDOMNode(this.columnToggleRef).getBoundingClientRect();
-								Card.style.left = (position.right - Card.getBoundingClientRect().width + 17) + 'px';
-								Card.style.top = position.top + 'px';
-								Card.style.opacity = 1;
+								// var position = ReactDOM.findDOMNode(this.columnToggleRef).getBoundingClientRect();
+								// Card.style.left = (position.right - Card.getBoundingClientRect().width + 17) + 'px';
+								// Card.style.top = position.top + 'px';
+								// Card.style.opacity = 1;
 							} else {
-								return <InnerCard />;
+								return <InnerCard  {...props} />;
 							}
-							return <InnerCard />;
+							return <InnerCard {...props} />;
 						}}
 
 					/>

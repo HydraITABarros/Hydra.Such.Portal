@@ -206,9 +206,9 @@ class OrdensDeManutencaoLine extends Component {
 	}
 
 	handleResize() {
-		// setTimeout(() => {
-		// 	this.setTableMarginTop();
-		// }, 0)
+		setTimeout(() => {
+			this.setTableMarginTop();
+		}, 0)
 
 	}
 
