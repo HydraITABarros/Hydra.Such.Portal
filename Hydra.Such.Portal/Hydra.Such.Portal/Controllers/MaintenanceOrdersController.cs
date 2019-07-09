@@ -32,7 +32,7 @@ using System.Reflection;
 
 namespace Hydra.Such.Portal.Controllers
 {
-    
+
     [Authorize]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
@@ -69,26 +69,26 @@ namespace Hydra.Such.Portal.Controllers
             }
             return RedirectToAction("AccessDenied", "Error");
         }
-      
+
         [Route("{orderId}"), HttpGet, AcceptHeader("text/html")]
         public IActionResult OrdemDeManutencao(string orderId)
         {
             return Index();
         }
-   
+
         [Route("{orderId}/ficha-de-manutencao"), HttpGet, AcceptHeader("text/html")]
         public IActionResult FichaDeManutencao(string orderId)
         {
             return Index();
         }
-       
+
         [Route("arquivo"), HttpGet, AcceptHeader("text/html")]
         public IActionResult Arquivo()
         {
             return Index();
         }
 
-       
+
         [Route(""), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
@@ -148,19 +148,19 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             results = queryOptions.ApplyTo(query.Select(o => new MaintenanceOrder
-                {
-                    No = o.No,
-                    Description = o.Description,
-                    IdClienteEvolution = o.IdClienteEvolution,
-                    IdInstituicaoEvolution = o.IdInstituicaoEvolution,
-                    IdServicoEvolution = o.IdServicoEvolution,
-                    OrderDate = o.OrderDate,
-                    ClientName = o.ClientName,
-                    InstitutionName = o.InstitutionName,
-                    ServiceName = o.ServiceName,
-                    OrderType = o.OrderType
-                }), new ODataQuerySettings { PageSize = pageSize });
-            
+            {
+                No = o.No,
+                Description = o.Description,
+                IdClienteEvolution = o.IdClienteEvolution,
+                IdInstituicaoEvolution = o.IdInstituicaoEvolution,
+                IdServicoEvolution = o.IdServicoEvolution,
+                OrderDate = o.OrderDate,
+                ClientName = o.ClientName,
+                InstitutionName = o.InstitutionName,
+                ServiceName = o.ServiceName,
+                OrderType = o.OrderType
+            }), new ODataQuerySettings { PageSize = pageSize });
+
             var list = results.Cast<dynamic>().AsEnumerable();
             long? total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
@@ -174,7 +174,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 newList = new List<MaintenanceOrderViewModel>();
             }
-           
+
             newList.ForEach((item) =>
             {
                 var technicals = GetTechnicals(item, null, null);
@@ -199,14 +199,13 @@ namespace Hydra.Such.Portal.Controllers
                 if (orderCurative)
                 {
                     item.havePreventive = evolutionWEBContext.MaintenanceOrder.Where(p => preventiveCodes.Contains(p.OrderType)
-                    && item.IdServicoEvolution == p.IdServicoEvolution).Select(p => p.No).FirstOrDefault();
-                    Console.WriteLine(item.havePreventive);
+                    && item.IdServicoEvolution == p.IdServicoEvolution && p.Status == 0).Select(p => p.No).FirstOrDefault();
                 }
-           
+
             });
 
             var result = new PageResult<dynamic>(newList, nextLink, total);
-                        
+
             return Json(new
             {
                 result,
@@ -215,7 +214,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        
+
         [Route("technicals"), HttpGet]
         private IQueryable<Utilizador> GetTechnicals(MaintenanceOrderViewModel order, string orderId, string technicalid)
         {
@@ -260,7 +259,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-        
+
         [Route("{orderId}/technical"), HttpPost]
         public ActionResult AddTechnicalToOrder(string orderId)
         {
@@ -310,7 +309,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
-             
+
         [Route("{orderId}"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
@@ -374,14 +373,14 @@ namespace Hydra.Such.Portal.Controllers
             var total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
 
-            List<Equipamento> newList;
+            List<EquipamentoViewModel> newList;
             try
             {
-                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Equipamento>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
+                newList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EquipamentoViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(list));
             }
             catch
             {
-                newList = new List<Equipamento>();
+                newList = new List<EquipamentoViewModel>();
             }
 
             var marcas = evolutionWEBContext.EquipMarca.Where(m => m.Activo == true).Select(m => new
@@ -395,6 +394,7 @@ namespace Hydra.Such.Portal.Controllers
                 s.Nome
             }).ToList();
 
+
             newList.ForEach((item) =>
             {
                 var categoria = evolutionWEBContext.EquipCategoria.FirstOrDefault(m => m.IdCategoria == item.Categoria);
@@ -403,6 +403,7 @@ namespace Hydra.Such.Portal.Controllers
                 item.CategoriaText = categoria != null ? categoria.Nome : "";
                 item.MarcaText = marca != null ? marca.Nome : "";
                 item.ServicoText = servico != null ? servico.Nome : "";
+                item.haveCurative = evolutionWEBContext.MaintenanceOrder.Where(c => c.IdServicoEvolution == item.IdServico).Select(c => c.No).FirstOrDefault();
             });
 
             var resultLines = new PageResult<dynamic>(newList, nextLink, total);
@@ -423,16 +424,6 @@ namespace Hydra.Such.Portal.Controllers
                 servicos
             });
         }
-
-
-
-
-        //[Route("maintenanceSheet"), HttpGet]
-        ////[ResponseCache(Duration = 60000)]
-        //public ActionResult GetMaintenanceSheet(string orderId, ODataQueryOptions<Equipamento> queryOptions)
-        //{
-        //}
-
 
 
 
