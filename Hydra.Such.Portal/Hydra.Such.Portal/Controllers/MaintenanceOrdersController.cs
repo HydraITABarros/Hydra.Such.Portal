@@ -330,29 +330,24 @@ namespace Hydra.Such.Portal.Controllers
             var pageSize = 30;
             var order = evolutionWEBContext.MaintenanceOrder.AsQueryable().Where(o => o.No == orderId).Select(o => new OmHeaderViewModel()
             {
+                No = o.No,
                 Description = o.Description,
                 IdClienteEvolution = o.IdClienteEvolution,
                 IdInstituicaoEvolution = o.IdInstituicaoEvolution,
-                CustomerName = o.CustomerName,
-                NomeInstituicao = "",
+                ContractNo = o.ContractNo,
+                ClientName = o.CustomerName,
+                InstitutionDescription = "",
                 ShortcutDimension1Code = o.ShortcutDimension1Code,
                 IdRegiao = 0,
-                Contrato = o.ContractNo
+
             }).FirstOrDefault();
 
             if (order == null) { return NotFound(); }
-
-            var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == order.IdInstituicaoEvolution);
             var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i => i.IdCliente == order.IdClienteEvolution);
-            if (cliente != null)
-            {
-                order.CustomerName = cliente.Nome;
-            }
-
-            if (instituicao != null)
-            {
-                order.NomeInstituicao = instituicao.Nome;
-            }
+            order.ClientName = cliente.Nome;
+            var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == order.IdInstituicaoEvolution);
+            order.InstitutionDescription = instituicao.DescricaoTreePath;
+            
             int.TryParse(order.ShortcutDimension1Code, out order.IdRegiao);
 
             IQueryable results;
@@ -429,14 +424,16 @@ namespace Hydra.Such.Portal.Controllers
 
         public class OmHeaderViewModel
         {
+            public string ContractNo;
+            public string No;
+            public string NomeCliente;
             public string Description;
             public int? IdClienteEvolution;
             public int? IdInstituicaoEvolution;
             public int IdRegiao;
             public string ShortcutDimension1Code;
-            public string CustomerName;
-            public string NomeInstituicao;
-            public string Contrato;
+            public string ClientName;
+            public string InstitutionDescription;
         }
 
 
