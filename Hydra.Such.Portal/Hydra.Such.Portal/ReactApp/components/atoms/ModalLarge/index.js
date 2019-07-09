@@ -99,24 +99,25 @@ const styles = css`&& {
     }
     
     &[class*="MuiDialogActions-root"]{
-        padding: 16px 35px 35px 35px;
+        padding: 16px 35px 40px 35px;
         margin: 0;
     }
 }
 `
 const DialogTitle = styled(MuiDialogContent)`&&&& {
         position:relative;
-        padding: 52px 0px 10px 0px;
+        padding: 52px 0px 10px 40px;
         margin: 0;
         overflow: hidden;
     }   
     [class*="icon-"] {
-        padding: 0;
+        padding: 0px 8px 0px 0px;
+        vertical-align: middle;
     }
 `;
 const DialogContent = styled(MuiDialogContent)`&& {
         height: 440px;
-        padding: 32px 35px 0 35px;
+        padding: 32px 40px 0 40px;
         margin: 0;
     }`;
 const DialogActions = styled(MuiDialogActions)`${styles}`;
