@@ -36,6 +36,8 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import EMM from '../../pages/FichaDeManutencao/EMM';
+import Material from '../../pages/FichaDeManutencao/Material';
+import Upload from '../../pages/FichaDeManutencao/Upload';
 
 
 const {DialogTitle,DialogContent,DialogActions} = ModalLarge;
@@ -115,26 +117,23 @@ class Arquivo extends Component {
                       <Tab label={<Text b><Icon folder/>Documentos</Text>} />
                       <Tab label={<Text b><Icon download/>Upload</Text>} />
                     </Tabs>
-
                     <hr/>  
                   </Bar>
                   </DialogTitle>
                   
                   <DialogContent>
-
-                      {this.state.tab === 0 && <EMM />}
-                      {this.state.tab === 1 && <div>Item Two</div>}
+                      {this.state.tab === 0 && <EMM/>}
+                      {this.state.tab === 1 && <Material/>}
                       {this.state.tab === 2 && <div>Item Three</div>}
                       {this.state.tab === 3 && <div>Item Four</div>}
-                      {this.state.tab === 4 && <div>Item Five</div>}
-
+                      {this.state.tab === 4 && <Upload/>}
                   </DialogContent>
                   <hr/>  
                   <DialogActions>
                       <Button primary color="primary">Save changes</Button>
-                  </DialogActions> 
+                  </DialogActions>
               </div>
-              } />
+              }/>
           </div>
           )
       }
