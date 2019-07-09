@@ -39,7 +39,7 @@ const ModalContent = (
             <hr/>  
             <DialogActions>
                 <Button primary color="primary">Save changes</Button>
-            </DialogActions> 
+            </DialogActions>
     </div>
 );
 

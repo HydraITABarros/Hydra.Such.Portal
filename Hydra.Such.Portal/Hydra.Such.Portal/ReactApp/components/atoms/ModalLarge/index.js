@@ -99,7 +99,7 @@ const styles = css`&& {
     }
     
     &[class*="MuiDialogActions-root"]{
-        padding: 16px 35px 35px 35px;
+        padding: 16px 35px 40px 35px;
         margin: 0;
     }
 }
