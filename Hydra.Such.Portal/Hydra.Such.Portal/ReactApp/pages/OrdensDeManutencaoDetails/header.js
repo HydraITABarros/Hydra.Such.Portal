@@ -6,6 +6,7 @@ import MuiGrid from '@material-ui/core/Grid';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
 import { createMuiTheme } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
+import { withRouter } from 'react-router-dom';
 injectGlobal`
 	.transparent {
 		opacity: 0
@@ -126,11 +127,10 @@ class Header extends Component {
 						{!this.state.isLoading &&
 							<Wrapper padding={'0 25px 0'}>
 								<br />
-								<TextHeader h2><b> {this.props.maintenanceOrder.nomeInstituicao}</b></TextHeader> <br /><br />
-								{this.props.orderId && <Text b>{this.props.maintenanceOrder.description}</Text>}
-								{this.props.maintenanceOrder.customerName && <Text p> {this.props.maintenanceOrder.customerName}</Text>}
-								{this.props.maintenanceOrder.nomeInstituicao && <Text p> {this.props.maintenanceOrder.nomeInstituicao}</Text>}
-								{this.props.maintenanceOrder.contrato && <Text p><i>Contrato {this.props.maintenanceOrder.contrato}</i></Text>}
+								<TextHeader h2><b> {this.props.maintenanceOrder.description}</b></TextHeader> <br /><br />
+								{this.props.maintenanceOrder.clientName && <Text p> {this.props.maintenanceOrder.clientName}</Text>}
+								{this.props.maintenanceOrder.institutionDescription && <Text p> {this.props.maintenanceOrder.institutionDescription}</Text>}
+								{this.props.maintenanceOrder.contractNo && <Text p><i>Contrato {this.props.maintenanceOrder.contractNo}</i></Text>}
 							</Wrapper>
 						}
 					</Grid>
@@ -185,4 +185,4 @@ class Header extends Component {
 	}
 };
 
-export default withTheme(Header);
+export default withRouter(withTheme(Header));
