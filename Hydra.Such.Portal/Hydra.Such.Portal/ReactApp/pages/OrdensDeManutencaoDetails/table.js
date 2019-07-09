@@ -17,6 +17,7 @@ import MuiInput from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { renderToString } from 'react-dom/server';
 import MuiGrid from '@material-ui/core/Grid';
+import Inbox from '@material-ui/icons/Inbox';
 import {
 	Column,
 	FilteringState, GroupingState,
@@ -169,91 +170,19 @@ injectGlobal`
                 &:hover {
                         background: ${_theme.palette.bg.grey};
                 }
-        }
+        }	
         
 `
-const Grid = styled(MuiGrid)`
-    position: relative;
+const GridRoot = styled(TGrid.Root)`&& {	
+	[class*="MuiToolbar"] {
+		min-height: auto !important;	
+	}
+	[class*="GroupPanelContainer-panel"] {
+		margin-top: 0;
+	}
+}
+
 `
-
-const TableCell = styled(MuiTableCell)` && { 
-        padding: 15px 24px 15px 24px;
-        font-size: inherit;
-        color: ${_theme.palette.primary.default};
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        border: none;
-        max-width: 12vw;
-        overflow: hidden;
-        p {
-            margin: 0;
-        }
-    }
-`;
-
-const PickerButton = styled(Button)` && {
-        position: relative;
-        z-index: 10;
-        padding-left: 25px;
-        padding-right: 25px;
-    }
-`;
-
-const PullRight = styled.span`
-    float: right;
-`
-
-const TbleIcon = styled(Icon)`
-    font-size: 24px;
-`
-
-const ListContainer = styled.div`
-    position: absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom: 0;
-    z-index: 0;
-    overflow: auto;
-    padding: 0;
-    [class*="RootBase-root"]{
-            position: absolute;
-            top: 0;
-            bottom: 0;
-    }
-`
-const Hr = styled.hr`
-    margin-bottom: 0;
-    margin-top: 0;
-`;
-//updateTechnicals({ orderId: "OM1901562", technicalsId: ["42664", "105590", "106624"] });
-
-const ListGridRow = styled(Grid)`  
-    padding: 16px 0px;
-    cursor: pointer;
-    &:hover {
-        background-color: ${Color(_theme.palette.primary.keylines).rgb().fade(0.5).toString()};
-    }
-`
-
-const ListGridItem = styled(Grid)`  
-    padding: 10px 25px;
-`
-
-const ListGridItemTextOverflow = styled(ListGridItem)`
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    p {
-        margin:0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-`
-
-const TextDiv = styled(Text)``.withComponent('div');
-
 const TextField = styled(MuiInput)` && {
         margin: 0;
         display: block;
@@ -330,6 +259,7 @@ const SearchWrapper = styled.div`
     right: 0;
     z-index: 2;
     padding: 0 25px 0;
+    top: -3px;
 `;
 
 var timer = 0;
@@ -440,6 +370,7 @@ class eTable extends Component {
 
 		return (
 			<div>
+
 				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading ? "" : "hidden"}>
 					<CircularProgress style={{ position: 'relative', top: '55%', color: this.props.theme.palette.secondary.default }} />
 				</div>
@@ -465,7 +396,11 @@ class eTable extends Component {
 					/>
 				</SearchWrapper>
 
-				<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
+				<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]}
+					rootComponent={(props) => {
+						return <GridRoot {...props} />
+					}}
+				>
 					<BoldTypeProvider for={['nome']} />
 					<SortingState sorting={this.state.sort} onSortingChange={(sort) => {
 						Tooltip.Hidden.hide();
@@ -497,7 +432,9 @@ class eTable extends Component {
 							return <VirtualTable.NoDataCell {...props} style={{
 								position: "absolute", textAlign: "center", top: "50%",
 								width: "100%", border: "none", padding: "0"
-							}} getMessage={() => "Sem Dados"} />
+							}} getMessage={() => <Text p style={{ color: this.props.theme.palette.primary.light, lineHeight: '1.4em' }}>
+								<Inbox style={{ fontSize: '48px' }} /><br />Sem Dados</Text>
+							} />
 						}}
 						columnExtensions={columns.map((item) => { return { columnName: item.name, width: item.width } })}
 						rowComponent={(props) => { return <VirtualTable.Row {...props} className="table--row--hoverable" /> }}
@@ -609,12 +546,46 @@ class eTable extends Component {
 					<TableColumnReordering defaultOrder={columns.map(column => column.name)} />
 					<ColumnChooser
 						toggleButtonComponent={(props) => {
-							return (<Button round style={{ top: '60px', 'zIndex': 1000, background: 'transparent', boxShadow: 'none', right: '-7px' }} {..._.omit(props, ['getMessage', 'active'])} onClick={props.onToggle}><Icon row-menu /></Button>);
+							console.log(props);
+							return (
+
+								<div ref={el => this.columnToggleRef = el}
+									style={{ position: 'absolute', top: '33px', 'zIndex': 1000, background: 'transparent', boxShadow: 'none', right: '30px' }}>
+
+									<Button
+										style={{ position: 'realtive', 'zIndex': 1000, background: 'transparent', boxShadow: 'none' }}
+										round
+										{..._.omit(props, ['getMessage', 'active'])}
+										onClick={() => {
+											props.onToggle()
+										}} >
+										<Icon row-menu />
+									</Button>
+								</div>
+							);
 						}}
 						itemComponent={(props) => {
 							if (props.item.column.selectionEnabled == false) { return ''; };
 							return <ColumnChooser.Item {...props} />
 						}}
+						overlayComponent={(props) => {
+							console.log(76234826347826, props);
+							return <ColumnChooser.Overlay {...props} />
+						}}
+						containerComponent={(props) => {
+							var InnerCard = (InnerCardProps) => <div ref={el => this.teste = el} {...InnerCardProps}><ColumnChooser.Container {...props} /></div>;
+							var Card = ReactDOM.findDOMNode(this.teste) ? ReactDOM.findDOMNode(this.teste).parentNode : null;
+							if (Card) {
+								var position = ReactDOM.findDOMNode(this.columnToggleRef).getBoundingClientRect();
+								Card.style.left = (position.right - Card.getBoundingClientRect().width + 17) + 'px';
+								Card.style.top = position.top + 'px';
+								Card.style.opacity = 1;
+							} else {
+								return <InnerCard />;
+							}
+							return <InnerCard />;
+						}}
+
 					/>
 					<RowDetailState defaultExpandedRowIds={true} />
 				</TGrid>
