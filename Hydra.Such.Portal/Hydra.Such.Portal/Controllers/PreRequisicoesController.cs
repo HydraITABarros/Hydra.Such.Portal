@@ -3169,6 +3169,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_RequisicoesArquivadas([FromBody] List<RequisitionViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -3299,6 +3300,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_RequisicoesLinhasArquivadas([FromBody] List<RequisitionLineHistViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;

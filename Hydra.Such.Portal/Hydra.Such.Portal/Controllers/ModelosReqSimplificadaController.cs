@@ -381,6 +381,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_ModelosRequisicaoSimplificada([FromBody] List<SimplifiedReqTemplateViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;

@@ -3150,6 +3150,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_RequisicoesValidar([FromBody] List<RequisitionViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -3230,6 +3231,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_GestaoRequisicoes([FromBody] List<RequisitionViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -3333,6 +3335,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_GestaoRequisicoes_CD([FromBody] List<RequisitionViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -3543,6 +3546,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_PontosSituacaoRequisicoes([FromBody] List<StateOfPlayViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;

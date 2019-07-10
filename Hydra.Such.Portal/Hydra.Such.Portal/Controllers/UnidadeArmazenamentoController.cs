@@ -211,6 +211,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_UnidadesArmazenamento([FromBody] List<StockkeepingUnitViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -401,6 +402,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_MovimentosProdutos([FromBody] List<ProductMovementViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;

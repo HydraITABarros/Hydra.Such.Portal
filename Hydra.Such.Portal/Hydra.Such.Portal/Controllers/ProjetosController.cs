@@ -5880,6 +5880,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_Projetos([FromBody] List<ProjectListItemViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -6050,6 +6051,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_AutorizacaoFaturacao([FromBody] List<ProjectMovementViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -6336,6 +6338,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_FaturacaoProjetos([FromBody] List<AuthorizedProjectViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -6426,6 +6429,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_DetalhesAutorizacao([FromBody] List<ProjectMovementViewModel> Lista)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -6535,6 +6539,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_MovimentosProjetos([FromBody] List<ProjectDiaryViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -7198,6 +7203,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_PreMovimentosProjetos([FromBody] List<ProjectDiaryViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;

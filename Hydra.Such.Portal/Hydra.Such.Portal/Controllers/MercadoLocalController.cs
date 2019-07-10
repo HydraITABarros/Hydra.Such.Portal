@@ -472,6 +472,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_MercadoLocal([FromBody] List<ComprasViewModel> Compras)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";

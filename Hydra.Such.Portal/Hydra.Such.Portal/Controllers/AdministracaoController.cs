@@ -2328,6 +2328,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_PrecosVendaRecursosCliente([FromBody] List<PrecoVendaRecursoFHViewModel> dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -2561,6 +2562,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_AcordoPrecos([FromBody] AcordoPrecosModelView dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -2913,6 +2915,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_EmpregadoRecursos([FromBody] List<RHRecursosViewModel> dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -6047,6 +6050,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_LinhasAcordosPrecos([FromBody] List<LinhasAcordoPrecosViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -7425,6 +7429,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_LinhasEncFornecedor([FromBody] List<ConfigLinhasEncFornecedor> dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";

@@ -386,6 +386,7 @@ namespace Hydra.Such.Portal.Controllers
         #region EXCEL
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_Produtos([FromBody] List<FichaProdutoViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;

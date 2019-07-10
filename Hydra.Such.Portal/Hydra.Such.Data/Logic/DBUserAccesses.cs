@@ -202,7 +202,7 @@ namespace Hydra.Such.Data.Logic
                     }
                     else
                     {
-                        var userAccessess = ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).Where(x => features.Contains(x.Funcionalidade)).ToList();
+                        var userAccessess = ctx.AcessosUtilizador.Where(x => x.IdUtilizador.ToLower() == UserId.ToLower()).Where(x => features.Contains(x.Funcionalidade)).ToList();
                         if (userAccessess.Count > 0)
                         {
                             userAccess = ParseToViewModel(userAccessess.FirstOrDefault());
