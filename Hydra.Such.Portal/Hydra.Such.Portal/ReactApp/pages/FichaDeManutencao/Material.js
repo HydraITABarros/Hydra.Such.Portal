@@ -100,7 +100,7 @@ const Material = (props) => {
             </Select>
           </Grid>
           <Grid item xs={1} md={1}>
-            <ButtonNew round><Icon remove/></ButtonNew>
+            <ButtonNew round><Icon add/></ButtonNew>
           </Grid>
         </Grid>
       </Wrapper>
