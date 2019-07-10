@@ -464,6 +464,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> InvoiceDetailsExportToExcel([FromBody] List<NAVClientesInvoicesDetailsViewModel> list)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -545,6 +546,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> InvoiceListExportToExcel([FromBody] dynamic Lista)
         {
 
@@ -664,6 +666,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> BalancesExportToExcel([FromBody] dynamic form)
         {
             JObject dp = (JObject)form.GetValue("columns");

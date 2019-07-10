@@ -5721,6 +5721,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         #region Export Excel
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel([FromBody] List<PriceServiceClientViewModel> dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
