@@ -4014,6 +4014,8 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
+                                    //A Pedido do Carlos Rodrigues quando o WebService devolve uma mensagem com o texto "maximum message size quota"
+                                    //assume-se que o mesmo foi executado com sucesso.
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
 
                                     if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))

@@ -3205,15 +3205,26 @@ namespace Hydra.Such.Portal.Controllers
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
                                     InvoiceLines.Wait();
                                 }
-
                                 catch (Exception ex)
                                 {
-                                    if (!hasErrors)
-                                        hasErrors = true;
-
-                                    execDetails += " Erro ao criar as linhas: ";
+                                    //09/07/02019
+                                    //A Pedido do Marco Marcelo quando o WebService devolve uma mensagem com o texto "maximum message size quota"
+                                    //assume-se que o mesmo foi executado com sucesso.
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+
+                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    {
+                                        return Json(true);
+                                    }
+                                    else
+                                    {
+                                        if (!hasErrors)
+                                            hasErrors = true;
+
+                                        execDetails += " Erro ao criar as linhas: ";
+                                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    }
                                 }
                             }
                         }
@@ -3566,15 +3577,25 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         catch (Exception ex)
                                         {
-                                            if (!hasErrors)
-                                                hasErrors = true;
-
-                                            execDetails += " Erro ao criar as linhas: ";
+                                            //09/07/02019
+                                            //A Pedido do Marco Marcelo quando o WebService devolve uma mensagem com o texto "maximum message size quota"
+                                            //assume-se que o mesmo foi executado com sucesso.
                                             errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
 
+                                            if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                            {
+                                                return Json(true);
+                                            }
+                                            else
+                                            {
+                                                if (!hasErrors)
+                                                    hasErrors = true;
+
+                                                execDetails += " Erro ao criar as linhas: ";
+                                                errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                            }
                                         }
-
                                     }
                                 }
                                 else
