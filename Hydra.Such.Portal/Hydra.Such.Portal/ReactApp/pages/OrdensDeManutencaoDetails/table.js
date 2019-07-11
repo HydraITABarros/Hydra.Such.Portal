@@ -173,14 +173,16 @@ injectGlobal`
                 }
         }	
         [sortable="false"] {
-		svg {
+		 svg {
 			width: 0px;
 		}
 		&[class*="deletable"] {
 			svg {
-				width: 9px;
-			}	
-		}
+				width: 8px;
+				z-index:10;
+				opacity: 0;
+			}
+		} 
 	}
 `
 const GridRoot = styled(TGrid.Root)`&& {	
