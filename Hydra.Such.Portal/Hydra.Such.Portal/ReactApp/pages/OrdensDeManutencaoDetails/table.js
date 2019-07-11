@@ -382,12 +382,14 @@ class eTable extends Component {
 							let search = e.target.value.toLowerCase();
 							Tooltip.Hidden.hide();
 							Tooltip.Hidden.rebuild();
-							clearTimeout(timer);
-							timer = setTimeout(() => {
-								this.setState({ sort: this.state.sort, searchValue: search, page: 0, isLoading: true, rows: [], total: 0, clear: true }, () => {
-									this.setState({ clear: false }, () => {
-										//this.fetchNext();
-									}, 450);
+							this.setState({ searchValue: search }, () => {
+								clearTimeout(timer);
+								timer = setTimeout(() => {
+									this.setState({ sort: this.state.sort, page: 0, isLoading: true, rows: [], total: 0, clear: true }, () => {
+										this.setState({ clear: false }, () => {
+											//this.fetchNext();
+										}, 450);
+									});
 								});
 							});
 						}} type="search" margin="none"
