@@ -48,6 +48,16 @@ const buttonIcon = css`&& {
     }
 }
 `
+const buttonIconPrimary = css`&& {
+        height: 40px;
+        line-height: 14px;
+        background-color: ${_theme.palette.secondary.default};
+        color: ${_theme.palette.white};
+        b {
+            color: ${_theme.palette.white};
+        }
+    }
+    `
 const Link = styled.a`
     color: ${_theme.palette.primary.default};
     box-shadow: none;
@@ -122,6 +132,7 @@ const picker = css`&& {
 const ButtonPrimary = styled(MuiButton)`${sharedStyles}${buttonPrimary}`;
 const ButtonDefault = styled(MuiButton)`${sharedStyles}${buttonDefault}`;
 const ButtonIcon = styled(MuiButton)`${sharedStyles}${buttonIcon}`;
+const ButtonIconPrimary = styled(MuiButton)`${sharedStyles}${buttonIconPrimary}`;
 const ButtonRound = styled((props) => <MuiButton {..._.omit(props, ['boxShadow'])} />)`${buttonRound}`;
 const ButtonSolo = styled(MuiButton)`${buttonSolo}`;
 const ButtonOutline = styled(MuiButton)`${buttonOutline}`;
@@ -181,6 +192,14 @@ const Button = ({ ...props }) => {
                         >{props.icon}{"\u00a0"}<Text b>{props.children}</Text>
                         </ButtonIcon>
                 )
+        } else if (props.iconPrimary) {
+                return (
+                        <ButtonIconPrimary
+                                variant="contained"
+                                {..._.omit(props, ['iconPrimary', 'color'])}
+                        >{props.iconPrimary}{"\u00a0"}<Text b>{props.children}</Text>
+                        </ButtonIconPrimary>
+                )
         } else if (props.link) {
                 return (
                         <Link src="javascript:void(0)"
@@ -225,6 +244,7 @@ Button.propTypes = {
         default: PropTypes.bool,
         picker: PropTypes.bool,
         icon: PropTypes.object,
+        iconPrimary: PropTypes.object,
         link: PropTypes.bool,
         round: PropTypes.bool,
         iconSolo: PropTypes.bool,

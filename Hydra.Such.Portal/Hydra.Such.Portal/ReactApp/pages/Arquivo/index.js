@@ -38,6 +38,7 @@ import AppBar from '@material-ui/core/AppBar';
 import EMM from '../../pages/FichaDeManutencao/EMM';
 import Material from '../../pages/FichaDeManutencao/Material';
 import Upload from '../../pages/FichaDeManutencao/Upload';
+import Documentos from '../../pages/FichaDeManutencao/Documentos';
 
 
 const {DialogTitle,DialogContent,DialogActions} = ModalLarge;
@@ -125,7 +126,7 @@ class Arquivo extends Component {
                       {this.state.tab === 0 && <EMM/>}
                       {this.state.tab === 1 && <Material/>}
                       {this.state.tab === 2 && <div>Item Three</div>}
-                      {this.state.tab === 3 && <div>Item Four</div>}
+                      {this.state.tab === 3 && <Documentos/>}
                       {this.state.tab === 4 && <Upload/>}
                   </DialogContent>
                   <hr/>  
