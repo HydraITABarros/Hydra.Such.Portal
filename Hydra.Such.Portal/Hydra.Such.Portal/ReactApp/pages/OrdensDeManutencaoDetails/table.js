@@ -172,7 +172,16 @@ injectGlobal`
                         background: ${_theme.palette.bg.grey};
                 }
         }	
-        
+        [sortable="false"] {
+		svg {
+			width: 0px;
+		}
+		&[class*="deletable"] {
+			svg {
+				width: 9px;
+			}	
+		}
+	}
 `
 const GridRoot = styled(TGrid.Root)`&& {	
 	[class*="MuiToolbar"] {
@@ -489,9 +498,7 @@ class eTable extends Component {
 										(props.groupingEnabled ? 'grouping-enabled' : '')} />)
 							}}
 							groupButtonComponent={(props) => {
-								if (props.disabled) {
-									return '';
-								}
+								if (props.disabled) { return ''; }
 								return (<Icon observation onClick={props.onGroup}
 									style={{ position: 'absolute', left: 0, paddingLeft: '0', paddingBottom: '2px', fontSize: '22px' }} />)
 							}}
@@ -537,6 +544,13 @@ class eTable extends Component {
 						<GroupingPanel
 							showSortingControls showGroupingControls
 							emptyMessageComponent={(props) => <GroupingPanel.EmptyMessage getMessage={() => "Arraste um cabeçalho de coluna para agrupar."} />}
+							itemComponent={(props) => {
+								if (!props.item.column.sortingEnabled) {
+									return <GroupingPanel.Item {...props} onSort={(e) => { }} sortable={"false"} />
+								}
+								console.log(props);
+								return <GroupingPanel.Item {...props} />
+							}}
 						/>
 						<TableColumnVisibility defaultHiddenColumnNames={hiddenColumns} onHiddenColumnNamesChange={(value) => {
 							hiddenColumns = value;
