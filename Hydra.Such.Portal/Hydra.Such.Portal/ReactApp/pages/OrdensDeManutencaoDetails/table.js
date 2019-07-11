@@ -260,7 +260,7 @@ const SearchWrapper = styled.div`
     right: 0;
     z-index: 2;
     padding: 0 25px 0;
-    top: 4px;
+    top: 20px;
 `;
 
 var timer = 0;
@@ -286,7 +286,8 @@ class eTable extends Component {
 		isLoading: false,
 		rows: [],
 		total: 0,
-		page: 0
+		page: 0,
+		clear: false
 	}
 
 	constructor(props) {
@@ -372,22 +373,22 @@ class eTable extends Component {
 
 		return (
 			<div>
-
 				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading ? "" : "hidden"}>
 					<CircularProgress style={{ position: 'relative', top: '55%', color: this.props.theme.palette.secondary.default }} />
 				</div>
-
 				<SearchWrapper width={"25%"}>
 					<TextField inputProps={{ autoComplete: "off" }} id="oms-search"
 						onChange={(e) => {
 							let search = e.target.value.toLowerCase();
 							Tooltip.Hidden.hide();
 							Tooltip.Hidden.rebuild();
-							this.setState({ sort: this.state.sort, searchValue: search, page: 0, isLoading: true, rows: [], total: 0 }, () => {
-								clearTimeout(timer);
-								timer = setTimeout(() => {
-									this.fetchNext();
-								}, 450);
+							clearTimeout(timer);
+							timer = setTimeout(() => {
+								this.setState({ sort: this.state.sort, searchValue: search, page: 0, isLoading: true, rows: [], total: 0, clear: true }, () => {
+									this.setState({ clear: false }, () => {
+										//this.fetchNext();
+									}, 450);
+								});
 							});
 						}} type="search" margin="none"
 						endAdornment={
@@ -397,201 +398,192 @@ class eTable extends Component {
 						}
 					/>
 				</SearchWrapper>
-
-				<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]}
-					rootComponent={(props) => {
-						return <GridRoot {...props} />
-					}}
-				>
-					<BoldTypeProvider for={['nome']} />
-					<SortingState sorting={this.state.sort} onSortingChange={(sort) => {
-						Tooltip.Hidden.hide();
-						Tooltip.Hidden.rebuild();
-						this.setState({ sort, page: 0, isLoading: true, rows: [], total: 0 });
-					}} columnExtensions={columns} />
-					<SelectionState />
-					<GroupingState expandedGroups={defaultExpandedGroups} grouping={this.state.group}
-						columnExtensions={columns.map((item) => { return { columnName: item.name, groupingEnabled: item.groupingEnabled } })}
-						onGroupingChange={(group) => {
-							this.setState({ group: group });
-						}}
-					/>
-					<SearchState />
-					<IntegratedFiltering /><IntegratedSorting /><IntegratedSelection /><IntegratedGrouping /><DragDropProvider />
-					<VirtualTableState
-						infiniteScrolling={false}
-						loading={this.state.isLoading}
-						totalRowCount={totalRowCount}
-						pageSize={this.props.pageSize}
-						skip={this.state.skip}
-						getRows={this.fetchNext} />
-					{/*  */}
-
-					<VirtualTable
-						estimatedRowHeight={56}
-						height="auto"
-						noDataCellComponent={(props) => {
-							return <VirtualTable.NoDataCell {...props} style={{
-								position: "absolute", textAlign: "center", top: "50%",
-								width: "100%", border: "none", padding: "0"
-							}} getMessage={() => <Text p style={{ color: this.props.theme.palette.primary.light, lineHeight: '1.4em' }}>
-								<Inbox style={{ fontSize: '48px' }} /><br />Sem Dados</Text>
-							} />
-						}}
-						columnExtensions={columns.map((item) => { return { columnName: item.name, width: item.width } })}
-						rowComponent={(props) => { return <VirtualTable.Row {...props} className="table--row--hoverable" /> }}
-						cellComponent={(props) => {
-							return (<MuiTableCell {..._.omit(props, ['tableRow', 'tableColumn'])}
-								style={{
-									paddingLeft: (props.column.columnName == firstColumn.name ? '30px' : '8px'),
-									paddingRight: '8px',
-									paddingTop: '16px', paddingBottom: '15px',
-									borderColor: this.props.theme.palette.primary.keylines,
-									borderWidth: '1px',
-									color: this.props.theme.palette.primary.default,
-									whiteSpace: "nowrap",
-									overflow: 'hidden',
-									textOverflow: 'ellipsis'
-								}}
-							>{props.column.dataType == "bold" ?
-								<Text b style={{ color: this.props.theme.palette.primary.default }}
-									data-html={true} data-tip={renderToString(
-										<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
-									)}
-								>
-									<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
-								</Text>
-								:
-								<Text p style={{ color: this.props.theme.palette.primary.default }}
-									data-html={true} data-tip={renderToString(
-										<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
-									)}
-								>
-									<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
-								</Text>
-								}
-							</MuiTableCell>)
-						}}
-					/>
-
-					<TableHeaderRow
-						titleComponent={(props) => { return <Text label {...props} style={{ fontWeight: 500, marginTop: '6px' }} title="" data-tip={props.children} >{props.children}</Text> }}
-						sortLabelComponent={(props) => {
-							if (props.column.sortingEnabled == false) { return <TableHeaderRow.SortLabel {...props} onSort={() => { }} getMessage={() => ""} />; }
-							return <TableHeaderRow.SortLabel  {...props} getMessage={() => ""} onSort={(e) => {
-								props.onSort(e);
-							}} />
-						}}
-						rowComponent={(props) => { return (<TableRow {..._.omit(props, ['tableRow'])} onMouseOver={() => ""} style={{ background: this.props.theme.palette.bg.grey }} />) }}
-						cellComponent={(props) => {
-							return (<TableHeaderRow.Cell {...props}
-
-								style={{
-									paddingLeft: props.groupingEnabled ? (props.column.columnName == firstColumn.name ? '48px' : '24px') : (props.column.columnName == firstColumn.name ? '28px' : '8px'),
-									position: 'relative',
-								}} className={(props.column.columnName == firstColumn.name ? 'first-cell' : '') +
-									(props.groupingEnabled ? 'grouping-enabled' : '')} />)
-						}}
-						groupButtonComponent={(props) => {
-							if (props.disabled) {
-								return '';
-							}
-							return (<Icon observation onClick={props.onGroup}
-								style={{ position: 'absolute', left: 0, paddingLeft: '0', paddingBottom: '2px', fontSize: '22px' }} />)
-						}}
-						showGroupingControls showSortingControls
-					/>
-					<TableGroupRow indentColumnWidth={1} showColumnsWhenGrouped={false}
-						rowComponent={(props) => {
-							var lastGroup = this.state.group[this.state.group.length - 1];
-							if (lastGroup.columnName != props.row.groupedBy) { return (<tr></tr>); }
-							var values = props.row.compoundKey.split('|');
-							props.row.value = props.row.value;
-							if (values.length == 1 && values[0] == "undefined") {
-								values[0] = " ";
-							}
-							return (<TableRow {..._.omit(props, ['tableRow'])} style={{
-								background: this.props.theme.palette.primary.default,
-								paddingLeft: '8px', paddingRight: '8px',
-								paddingTop: '16px', paddingBottom: '15px'
-							}}>
-								<MuiTableCell colSpan={props.children.length} key={props.tableRow.key.trim()}
+				{!this.state.clear &&
+					<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
+						<BoldTypeProvider for={['nome']} />
+						<SortingState sorting={this.state.sort} onSortingChange={(sort) => {
+							Tooltip.Hidden.hide();
+							Tooltip.Hidden.rebuild();
+							this.setState({ sort, page: 0, isLoading: true, rows: [], total: 0 });
+						}} columnExtensions={columns} />
+						<SelectionState />
+						<GroupingState expandedGroups={defaultExpandedGroups} grouping={this.state.group}
+							columnExtensions={columns.map((item) => { return { columnName: item.name, groupingEnabled: item.groupingEnabled } })}
+							onGroupingChange={(group) => {
+								this.setState({ group: group });
+							}}
+						/>
+						<SearchState />
+						<IntegratedFiltering /><IntegratedSorting /><IntegratedSelection /><IntegratedGrouping /><DragDropProvider />
+						<VirtualTableState
+							infiniteScrolling={false}
+							loading={this.state.isLoading}
+							totalRowCount={totalRowCount}
+							pageSize={this.props.pageSize}
+							skip={this.state.skip}
+							getRows={this.fetchNext} />
+						{/*  */}
+						<VirtualTable
+							estimatedRowHeight={56}
+							height="auto"
+							noDataCellComponent={(props) => {
+								return <VirtualTable.NoDataCell {...props} style={{
+									position: "absolute", textAlign: "center", top: "50%",
+									width: "100%", border: "none", padding: "0"
+								}} getMessage={() => <Text p style={{ color: this.props.theme.palette.primary.light, lineHeight: '1.4em' }}>
+									<Inbox style={{ fontSize: '48px' }} /><br />Sem Dados</Text>
+								} />
+							}}
+							columnExtensions={columns.map((item) => { return { columnName: item.name, width: item.width } })}
+							rowComponent={(props) => { return <VirtualTable.Row {...props} className="table--row--hoverable" /> }}
+							cellComponent={(props) => {
+								return (<MuiTableCell {..._.omit(props, ['tableRow', 'tableColumn'])}
 									style={{
-										paddingLeft: '30px', paddingRight: '8px',
+										paddingLeft: (props.column.columnName == firstColumn.name ? '30px' : '8px'),
+										paddingRight: '8px',
 										paddingTop: '16px', paddingBottom: '15px',
-										color: 'white'
+										borderColor: this.props.theme.palette.primary.keylines,
+										borderWidth: '1px',
+										color: this.props.theme.palette.primary.default,
+										whiteSpace: "nowrap",
+										overflow: 'hidden',
+										textOverflow: 'ellipsis'
 									}}
-								>
-									<Wrapper inline style={{ verticalAlign: 'middle', opacity: 0.5 }} padding="0 15px 0 0"><Icon equipamentos /></Wrapper>
-									{values.map((value, index) => {
-										return (<span key={index + props.tableRow.key.trim()} >{index > 0 ? <Icon arrow-right style={{ color: 'white', verticalAlign: 'middle', margin: '0 6px' }} /> : ''}
-											<Text b key={index} style={{ color: 'white', verticalAlign: 'middle' }}
-												data-html={true} data-tip={renderToString(
+								>{props.column.dataType == "bold" ?
+									<Text b style={{ color: this.props.theme.palette.primary.default }}
+										data-html={true} data-tip={renderToString(
+											<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
+										)}
+									>
+										<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
+									</Text>
+									:
+									<Text p style={{ color: this.props.theme.palette.primary.default }}
+										data-html={true} data-tip={renderToString(
+											<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
+										)}
+									>
+										<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={props.value || ""}></Highlighter>
+									</Text>
+									}
+								</MuiTableCell>)
+							}}
+						/>
+						<TableHeaderRow
+							titleComponent={(props) => { return <Text label {...props} style={{ fontWeight: 500, marginTop: '6px' }} title="" data-tip={props.children} >{props.children}</Text> }}
+							sortLabelComponent={(props) => {
+								if (props.column.sortingEnabled == false) { return <TableHeaderRow.SortLabel {...props} onSort={() => { }} getMessage={() => ""} />; }
+								return <TableHeaderRow.SortLabel  {...props} getMessage={() => ""} onSort={(e) => {
+									props.onSort(e);
+								}} />
+							}}
+							rowComponent={(props) => { return (<TableRow {..._.omit(props, ['tableRow'])} onMouseOver={() => ""} style={{ background: this.props.theme.palette.bg.grey }} />) }}
+							cellComponent={(props) => {
+								return (<TableHeaderRow.Cell {...props}
+									style={{
+										paddingLeft: props.groupingEnabled ? (props.column.columnName == firstColumn.name ? '48px' : '24px') : (props.column.columnName == firstColumn.name ? '28px' : '8px'),
+										position: 'relative',
+									}} className={(props.column.columnName == firstColumn.name ? 'first-cell' : '') +
+										(props.groupingEnabled ? 'grouping-enabled' : '')} />)
+							}}
+							groupButtonComponent={(props) => {
+								if (props.disabled) {
+									return '';
+								}
+								return (<Icon observation onClick={props.onGroup}
+									style={{ position: 'absolute', left: 0, paddingLeft: '0', paddingBottom: '2px', fontSize: '22px' }} />)
+							}}
+							showGroupingControls showSortingControls
+						/>
+						<TableGroupRow indentColumnWidth={1} showColumnsWhenGrouped={false}
+							rowComponent={(props) => {
+								var lastGroup = this.state.group[this.state.group.length - 1];
+								if (lastGroup.columnName != props.row.groupedBy) { return (<tr></tr>); }
+								var values = props.row.compoundKey.split('|');
+								props.row.value = props.row.value;
+								if (values.length == 1 && values[0] == "undefined") {
+									values[0] = " ";
+								}
+								return (<TableRow {..._.omit(props, ['tableRow'])} style={{
+									background: this.props.theme.palette.primary.default,
+									paddingLeft: '8px', paddingRight: '8px',
+									paddingTop: '16px', paddingBottom: '15px'
+								}}>
+									<MuiTableCell colSpan={props.children.length} key={props.tableRow.key.trim()}
+										style={{
+											paddingLeft: '30px', paddingRight: '8px',
+											paddingTop: '16px', paddingBottom: '15px',
+											color: 'white'
+										}}
+									>
+										<Wrapper inline style={{ verticalAlign: 'middle', opacity: 0.5 }} padding="0 15px 0 0"><Icon equipamentos /></Wrapper>
+										{values.map((value, index) => {
+											return (<span key={index + props.tableRow.key.trim()} >{index > 0 ? <Icon arrow-right style={{ color: 'white', verticalAlign: 'middle', margin: '0 6px' }} /> : ''}
+												<Text b key={index} style={{ color: 'white', verticalAlign: 'middle' }}
+													data-html={true} data-tip={renderToString(
+														<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={value}></Highlighter>
+													)}
+												>
 													<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={value}></Highlighter>
-												)}
-											>
-												<Highlighter searchWords={this.state.searchValue.split(" ")} autoEscape={true} textToHighlight={value}></Highlighter>
-											</Text></span>);
-									})}
-									<Wrapper inline style={{ verticalAlign: 'middle', float: 'right', width: '60px', textAlign: 'center', cursor: 'pointer' }} ><Icon open /></Wrapper>
-								</MuiTableCell>
-							</TableRow>)
-						}} />
-					<Toolbar />
-					<GroupingPanel
-						showSortingControls showGroupingControls
-						emptyMessageComponent={(props) => <GroupingPanel.EmptyMessage getMessage={() => "Arraste um cabeçalho de coluna para agrupar."} />}
-					/>
-					<TableColumnVisibility defaultHiddenColumnNames={hiddenColumns} onHiddenColumnNamesChange={(value) => {
-						hiddenColumns = value;
-					}} />
-					<TableColumnReordering defaultOrder={columns.map(column => column.name)} />
-					<ColumnChooser
-						toggleButtonComponent={(props) => {
-							return (
-								<div ref={el => this.columnToggleRef = el}
-									style={{ position: 'absolute', top: '56px', 'zIndex': 1000, background: 'transparent', boxShadow: 'none', right: '30px' }}>
-
-									<Button
-										style={{ position: 'realtive', 'zIndex': 1000, background: 'transparent', boxShadow: 'none' }}
-										round
-										{..._.omit(props, ['getMessage', 'active'])}
-										onClick={() => {
-											props.onToggle()
-										}} >
-										<Icon row-menu />
-									</Button>
-								</div>
-							);
-						}}
-						itemComponent={(props) => {
-							if (props.item.column.selectionEnabled == false) { return ''; };
-							return <MenuItem style={{ paddingLeft: '5px' }} onClick={props.onToggle} value={props.item.column.name}><CheckBox checked={!(hiddenColumns.indexOf(props.item.column.name) >= 0)} /> &nbsp; {props.item.column.title}</MenuItem>;
-						}}
-
-						overlayComponent={(props) => {
-							return <ColumnChooser.Overlay {...props} onHide={(e) => {
-								this.setState({ hiddenColumns });
-								props.onHide(e);
+												</Text></span>);
+										})}
+										<Wrapper inline style={{ verticalAlign: 'middle', float: 'right', width: '60px', textAlign: 'center', cursor: 'pointer' }} ><Icon open /></Wrapper>
+									</MuiTableCell>
+								</TableRow>)
 							}} />
-						}}
-						containerComponent={(props) => {
-							var InnerCard = (InnerCardProps) => <div ref={el => this.teste = el} {...InnerCardProps}><ColumnChooser.Container {...props} /></div>;
-							var Card = ReactDOM.findDOMNode(this.teste) ? ReactDOM.findDOMNode(this.teste).parentNode : null;
-							if (Card) {
-								// var position = ReactDOM.findDOMNode(this.columnToggleRef).getBoundingClientRect();
-								// Card.style.left = (position.right - Card.getBoundingClientRect().width + 17) + 'px';
-								// Card.style.top = position.top + 'px';
-								// Card.style.opacity = 1;
-							} else {
-								return <InnerCard  {...props} />;
-							}
-							return <InnerCard {...props} />;
-						}}
-
-					/>
-					<RowDetailState defaultExpandedRowIds={true} />
-				</TGrid>
+						<Toolbar />
+						<GroupingPanel
+							showSortingControls showGroupingControls
+							emptyMessageComponent={(props) => <GroupingPanel.EmptyMessage getMessage={() => "Arraste um cabeçalho de coluna para agrupar."} />}
+						/>
+						<TableColumnVisibility defaultHiddenColumnNames={hiddenColumns} onHiddenColumnNamesChange={(value) => {
+							hiddenColumns = value;
+						}} />
+						<TableColumnReordering defaultOrder={columns.map(column => column.name)} />
+						<ColumnChooser
+							toggleButtonComponent={(props) => {
+								return (
+									<div ref={el => this.columnToggleRef = el}
+										style={{ position: 'absolute', top: '72px', 'zIndex': 1000, background: 'transparent', boxShadow: 'none', right: '30px' }}>
+										<Button
+											style={{ position: 'realtive', 'zIndex': 1000, background: 'transparent', boxShadow: 'none' }}
+											round
+											{..._.omit(props, ['getMessage', 'active'])}
+											onClick={() => {
+												props.onToggle()
+											}} >
+											<Icon row-menu />
+										</Button>
+									</div>
+								);
+							}}
+							itemComponent={(props) => {
+								if (props.item.column.selectionEnabled == false) { return ''; };
+								return <MenuItem style={{ paddingLeft: '5px' }} onClick={props.onToggle} value={props.item.column.name}><CheckBox checked={!(hiddenColumns.indexOf(props.item.column.name) >= 0)} /> &nbsp; {props.item.column.title}</MenuItem>;
+							}}
+							overlayComponent={(props) => {
+								return <ColumnChooser.Overlay {...props} onHide={(e) => {
+									this.setState({ hiddenColumns });
+									props.onHide(e);
+								}} />
+							}}
+							containerComponent={(props) => {
+								var InnerCard = (InnerCardProps) => <div ref={el => this.teste = el} {...InnerCardProps}><ColumnChooser.Container {...props} /></div>;
+								var Card = ReactDOM.findDOMNode(this.teste) ? ReactDOM.findDOMNode(this.teste).parentNode : null;
+								if (Card) {
+									// var position = ReactDOM.findDOMNode(this.columnToggleRef).getBoundingClientRect();
+									// Card.style.left = (position.right - Card.getBoundingClientRect().width + 17) + 'px';
+									// Card.style.top = position.top + 'px';
+									// Card.style.opacity = 1;
+								} else {
+									return <InnerCard  {...props} />;
+								}
+								return <InnerCard {...props} />;
+							}}
+						/>
+						<RowDetailState defaultExpandedRowIds={true} />
+					</TGrid>
+				}
 				<Tooltip.Hidden id={'oms-tooltip'} />
 			</div>
 		)
