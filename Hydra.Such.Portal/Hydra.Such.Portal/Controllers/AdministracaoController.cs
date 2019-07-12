@@ -638,11 +638,12 @@ namespace Hydra.Such.Portal.Controllers
         {
             ErrorHandler result = new ErrorHandler();
             int AcessosCopiados = 0;
+            int AcessosDimensoesCopiados = 0;
             int LocalizacoesCopiados = 0;
             string IdUtilizadorOriginal = data.CreateUser; // "nunorato@such.pt";
             string IdUtilizadorDestino = data.UpdateUser; // "ARomao@such.pt";
 
-            //COPIAR ACESSOS
+            //COPIAR Acessos Utilizador
             List<AcessosUtilizador> ListaAcessosOriginal = DBUserAccesses.GetByUserId(IdUtilizadorOriginal);
             List<AcessosUtilizador> ListaAcessosDestino = DBUserAccesses.GetByUserId(IdUtilizadorDestino);
 
@@ -668,7 +669,29 @@ namespace Hydra.Such.Portal.Controllers
                 }
             });
 
-            //COPIAR LOCALIZAÇÕES
+            //COPIAR Acessos Dimensões
+            List<AcessosDimensões> ListaAcessosDimensoesOriginal = DBUserDimensions.GetByUserId(IdUtilizadorOriginal);
+            List<AcessosDimensões> ListaAcessosDimensoesDestino = DBUserDimensions.GetByUserId(IdUtilizadorDestino);
+
+            ListaAcessosDimensoesOriginal.ForEach(AcessoDimensao =>
+            {
+                if (ListaAcessosDimensoesDestino.Where(x => x.Dimensão == AcessoDimensao.Dimensão && x.ValorDimensão == AcessoDimensao.ValorDimensão).Count() == 0)
+                {
+                    AcessosDimensões CopiarAcessoDimensao = new AcessosDimensões();
+                    CopiarAcessoDimensao.IdUtilizador = IdUtilizadorDestino;
+                    CopiarAcessoDimensao.Dimensão = AcessoDimensao.Dimensão;
+                    CopiarAcessoDimensao.ValorDimensão = AcessoDimensao.ValorDimensão;
+                    CopiarAcessoDimensao.DataHoraCriação = DateTime.Now;
+                    CopiarAcessoDimensao.UtilizadorCriação = User.Identity.Name;
+                    CopiarAcessoDimensao.DataHoraModificação = (DateTime?)null;
+                    CopiarAcessoDimensao.UtilizadorModificação = null;
+
+                    if (DBUserDimensions.Create(CopiarAcessoDimensao) != null)
+                        AcessosDimensoesCopiados = AcessosDimensoesCopiados + 1;
+                }
+            });
+
+            //COPIAR Acessos Localizações
             List<AcessosLocalizacoes> ListaLocalizacoesOriginal = DBAcessosLocalizacoes.GetByUserId(IdUtilizadorOriginal);
             List<AcessosLocalizacoes> ListaLocalizacoesDestino = DBAcessosLocalizacoes.GetByUserId(IdUtilizadorDestino);
 
@@ -690,7 +713,7 @@ namespace Hydra.Such.Portal.Controllers
             });
 
             result.eReasonCode = 1;
-            result.eMessage = "Foram copiados com sucesso " + AcessosCopiados.ToString() + " acessos e " + LocalizacoesCopiados.ToString() + " localizações.";
+            result.eMessage = "Foram copiados com sucesso " + AcessosCopiados.ToString() + " Acessos Utilizador, " + AcessosDimensoesCopiados.ToString() + " Acessos Dimensõess e " + LocalizacoesCopiados.ToString() + " Acessos Localizações.";
 
             return Json(result);
         }
