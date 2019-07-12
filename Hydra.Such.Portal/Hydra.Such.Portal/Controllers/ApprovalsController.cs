@@ -96,6 +96,13 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (x.Type == 3)
                 {
+                    FolhasDeHoras FH = DBFolhasDeHoras.GetById(x.Number);
+                    if (FH != null)
+                    {
+                        x.FHDatePartida = FH.DataHoraPartida.HasValue ? Convert.ToDateTime(FH.DataHoraPartida).ToShortDateString() : "";
+                        x.FHDateChegada = FH.DataHoraChegada.HasValue ? Convert.ToDateTime(FH.DataHoraChegada).ToShortDateString() : "";
+                    }
+
                     switch (x.Level)
                     {
                         case 1:
@@ -1444,6 +1451,16 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Associado");
                     Col = Col + 1;
                 }
+                if (dp["fhDatePartida"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("FH Dia da Partida");
+                    Col = Col + 1;
+                }
+                if (dp["fhDateChegada"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("FH Dia da Chegada");
+                    Col = Col + 1;
+                }
                 if (dp["requisicaoAcordosPrecos"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Req Acordos Preços");
@@ -1556,6 +1573,16 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["number"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Number);
+                            Col = Col + 1;
+                        }
+                        if (dp["fhDatePartida"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.FHDatePartida);
+                            Col = Col + 1;
+                        }
+                        if (dp["fhDateChegada"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.FHDateChegada);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoAcordosPrecos"]["hidden"].ToString() == "False")
