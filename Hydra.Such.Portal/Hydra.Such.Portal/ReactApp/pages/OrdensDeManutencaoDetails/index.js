@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 
 import Header from './header';
+import HeaderSelection from './headerSelection';
 import Table from './table';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
@@ -186,7 +187,9 @@ class OrdensDeManutencaoLine extends Component {
 		maintenanceOrdersTotal: 0,
 		maintenanceOrdersLinesIsLoading: false,
 		maintenanceOrdersLinesNext: "",
-		listContainerStyle: {}
+		listContainerStyle: {},
+		selectionMode: false,
+		selectedRows: []
 
 	}
 
@@ -198,11 +201,13 @@ class OrdensDeManutencaoLine extends Component {
 		this.fetchMaintenanceOrders = this.fetchMaintenanceOrders.bind(this);
 		this.handleFetchMaintenanceOrdersRequest = this.handleFetchMaintenanceOrdersRequest.bind(this);
 		this.state.orderId = this.props.match.params.orderid;
+		this.addTechnical = this.addTechnical.bind(this);
 	}
 
 	componentDidMount() {
 		window.addEventListener("resize", this.handleResize);
 		this.setTableMarginTop();
+		this.addTechnical();
 	}
 
 	handleResize() {
@@ -245,6 +250,7 @@ class OrdensDeManutencaoLine extends Component {
 	fetchMaintenanceOrders({ search, sort, page }, cb) {
 		cb = cb || (() => { });
 		var isNext = page > 1;
+
 		this.setState({ maintenanceOrdersLinesIsLoading: true }, () => {
 			if (isNext && this.state.maintenanceOrdersLinesNext != "") {
 				call = axios.CancelToken.source();
@@ -254,17 +260,31 @@ class OrdensDeManutencaoLine extends Component {
 				call = axios.CancelToken.source();
 				this.setState({ maintenanceOrdersLinesIsLoading: true, maintenanceOrdersLinesNext: "", maintenanceOrders: [], maintenanceOrdersTotal: 0 }, () => {
 					var orderId = this.state.orderId;
-					var filter = null;
-					if (search && search != '') {
-						filter = "contains(nome,'" + search + "') or contains(numInventario,'" + search + "') or contains(numEquipamento,'" + search + "') or contains(numSerie,'" + search + "')";
-						var _marcas = this.state.marcas.filter((item) => { return item.nome.toLowerCase().indexOf(search.toLowerCase()) > -1; }).map(item => item.idMarca).join(',');
-						if (_marcas.length > 0) {
-							filter += " or marca in (" + _marcas + ")"
-						}
+					var filter = "";
+
+					if (search && search.length > 0) {
+
+						search.map((value, index) => {
+							if (index > 0) {
+								filter += " and "
+							}
+							filter += "(contains(nome,'" + value + "') or contains(numInventario,'" + value + "') or contains(numEquipamento,'" + value + "') or contains(numSerie,'" + value + "')";
+							var _marcas = this.state.marcas.filter((item) => { return item.nome.toLowerCase().indexOf(value.toLowerCase()) > -1; }).map(item => item.idMarca).join(',');
+							if (_marcas.length > 0) {
+								filter += " or marca in (" + _marcas + ")"
+							}
+							var _servico = this.state.servicos.filter((item) => { return item.nome.toLowerCase().indexOf(value.toLowerCase()) > -1; }).map(item => item.idServico).join(',');
+							if (_servico.length > 0) {
+								filter += " or idServico in (" + _servico + ")"
+							}
+							filter += ")";
+						});
+
 					}
+
 					var params = {
 						$select: 'Idequipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca,idServico,idRegiao',
-						$filter: filter,
+						$filter: filter != "" ? filter : null,
 						$count: true,
 						cancelToken: call.token
 					}
@@ -312,20 +332,42 @@ class OrdensDeManutencaoLine extends Component {
 		});
 	}
 
+	addTechnical() {
+		axios.post(`/ordens-de-manutencao/${this.state.orderId}/technical`).then((result) => {
+			console.log('added technical', result);
+		}).catch(function (error) {
+			console.log(error);
+		});
+	}
+
 	render() {
 		const { isLoading } = this.state;
 
 		return (
 			<PageTemplate >
 				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.highlightWrapper = el}>
-					<Header isLoading={this.state.isLoading}
-						maintenanceOrder={this.state.maintenanceOrder}
-						orderId={this.state.orderId} />
+					{this.state.selectionMode ?
+						<HeaderSelection count={this.state.selectedRows.length} openEnabled={
+							this.state.selectedRows.filter((item, i) => {
+								return item.categoriaText == this.state.selectedRows[i == 0 ? 0 : i - 1].categoriaText;
+							}).length == this.state.selectedRows.length} onClickOpen={(e) => { }}
+							onBackClick={() => {
+								this.table.resetSelection();
+							}}
+							onOpenClick={(rows) => {
+								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao`);
+							}}
+						/> :
+						<Header isLoading={this.state.isLoading}
+							maintenanceOrder={this.state.maintenanceOrder}
+							orderId={this.state.orderId} />
+					}
 				</Wrapper>
 
 				{this.state.listContainerStyle.marginTop &&
 					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} onScroll={this.handleGridScroll} >
 						<Table
+							onRef={el => this.table = el}
 							isLoading={this.state.maintenanceOrdersLinesIsLoading}
 							rows={this.state.maintenanceOrders}
 							pageSize={30}
@@ -343,6 +385,14 @@ class OrdensDeManutencaoLine extends Component {
 								{ name: 'action', title: ' ', sortingEnabled: false, selectionEnabled: false, width: 60, groupingEnabled: false, sortingEnabled: false },
 							]}
 							getRows={this.fetchMaintenanceOrders}
+							onRowSelectionChange={(e) => {
+								this.setState({ selectionMode: e.selectionMode, selectedRows: e.selectedRows, maintenanceOrdersLinesIsLoading: true }, () => {
+									this.setState({ maintenanceOrdersLinesIsLoading: false })
+								});
+							}}
+							onRowClick={(row) => {
+								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao`);
+							}}
 						/>
 					</ListContainer>
 				}
