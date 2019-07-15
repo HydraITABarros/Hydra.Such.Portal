@@ -46,7 +46,13 @@
     <Icon tool className="padding--10"/>
     <Icon validation className="padding--10"/>
     <Icon warning className="padding--10"/>
-    <Icon circle className="padding--10"/>
-    <Icon obsv className="padding--10"/>
+    <Icon circle-on className="padding--10"/>
+    <Icon circle-off className="padding--10"/>
+    <Icon options className="padding--10"/>
+    <Icon upload className="padding--10"/>
+    <Icon fotografias className="padding--10"/>
+    <Icon observacoes className="padding--10"/>
+    <Icon voltar className="padding--10"/>
+    <Icon no-data className="padding--10"/>
 </div>
 ```
