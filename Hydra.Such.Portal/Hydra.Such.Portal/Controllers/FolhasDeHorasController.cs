@@ -384,11 +384,11 @@ namespace Hydra.Such.Portal.Controllers
                     FH.UtilizadorModificação = "";
                     FH.DataHoraModificação = null;
                     FH.Eliminada = false;
-                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor + " EMPREGADO: " + FH.NºEmpregado + " VALIDADORES: " + FH.Validadores + " INTEGRADORESEMRH: " + FH.IntegradoresEmRh + " INTEGRADORESEMRHKM: " + FH.IntegradoresEmRhkm;
+                    FH.Intervenientes = " CRIADOPOR: " + User.Identity.Name + " EMPREGADO: " + FH.NºEmpregado + " VALIDADORES: " + FH.Validadores + " INTEGRADORESEMRH: " + FH.IntegradoresEmRh + " INTEGRADORESEMRHKM: " + FH.IntegradoresEmRhkm;
 
                     DBFolhasDeHoras.Create(FH);
 
-                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor;
+                    FH.Intervenientes = " CRIADOPOR: " + User.Identity.Name;
                     ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(FH.NºEmpregado);
                     if (ConfigUser != null)
                         FH.Intervenientes = FH.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
@@ -721,7 +721,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!string.IsNullOrEmpty(folhaDeHorasNo))
                 {
-                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor;
+                    FH.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
                     ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(idEmployee);
                     if (ConfigUser != null)
                         FH.Intervenientes = FH.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
