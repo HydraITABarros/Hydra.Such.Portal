@@ -158,7 +158,12 @@ namespace Hydra.Such.Portal.Controllers
                 ClientName = o.ClientName,
                 InstitutionName = o.InstitutionName,
                 ServiceName = o.ServiceName,
-                OrderType = o.OrderType
+                OrderType = o.OrderType,
+                IdTecnico1 = o.IdTecnico1,
+                IdTecnico2 = o.IdTecnico2,
+                IdTecnico3 = o.IdTecnico3,
+                IdTecnico4 = o.IdTecnico4,
+                IdTecnico5 = o.IdTecnico5,
             }), new ODataQuerySettings { PageSize = pageSize });
 
             var list = results.Cast<dynamic>().AsEnumerable();
