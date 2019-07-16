@@ -33,12 +33,14 @@ using System.Reflection;
 namespace Hydra.Such.Portal.Controllers
 {
 
-    [Authorize]
+    //[Authorize]
+    [AllowAnonymous]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
         protected MaintenanceOrdersRepository MaintenanceOrdersRepository;
         protected MaintenanceOrdersLineRepository MaintenanceOrdersLineRepository;
+        protected EquipamentoRepository EquipamentoRepository;
         protected EvolutionWEBContext evolutionWEBContext;
         protected SuchDBContext suchDBContext;
         private readonly ISession session;
@@ -46,6 +48,7 @@ namespace Hydra.Such.Portal.Controllers
         public MaintenanceOrdersController(
             MaintenanceOrdersRepository MaintenanceOrdersRepository,
             MaintenanceOrdersLineRepository MaintenanceOrdersLineRepository,
+            EquipamentoRepository EquipamentoRepository,
             SuchDBContext suchDBContext,
             EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs,
             IHttpContextAccessor httpContextAccessor)
@@ -53,10 +56,12 @@ namespace Hydra.Such.Portal.Controllers
             session = httpContextAccessor.HttpContext.Session;
             this.MaintenanceOrdersRepository = MaintenanceOrdersRepository;
             this.MaintenanceOrdersLineRepository = MaintenanceOrdersLineRepository;
+            this.EquipamentoRepository = EquipamentoRepository;
             this.evolutionWEBContext = evolutionWEBContext;
             this.suchDBContext = suchDBContext;
         }
 
+        [AllowAnonymous]
         [Route(""), HttpGet, AcceptHeader("text/html")]
         //[ResponseCache(Duration = 60000)]
         public IActionResult Index()
@@ -88,7 +93,7 @@ namespace Hydra.Such.Portal.Controllers
             return Index();
         }
 
-
+        [AllowAnonymous]
         [Route(""), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
@@ -99,28 +104,28 @@ namespace Hydra.Such.Portal.Controllers
             var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
             var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
-            if (loggedUser == null) { return NotFound(); }
+            //if (loggedUser == null) { return NotFound(); }
 
-            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
+            //var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
 
-            if (evolutionLoggedUser == null) { return NotFound(); }
+            //if (evolutionLoggedUser == null) { return NotFound(); }
 
-            var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+            //var nivelAcesso = evolutionLoggedUser.NivelAcesso;
 
             IQueryable results;
 
             IQueryable<MaintenanceOrder> query = MaintenanceOrdersRepository.AsQueryable()
                 .Where(o =>
                 (preventiveCodes.Contains(o.OrderType) || curativeCodes.Contains(o.OrderType)) &&
-                o.Status == 0 && (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+                o.Status == 0 && (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
 
             var preventives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
                    preventiveCodes.Contains(o.OrderType) && o.Status == 0 &&
-                (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+                (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
 
             var curatives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
                    curativeCodes.Contains(o.OrderType) && o.Status == 0 &&
-                (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+                (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
 
             /*
              * filter MaintenanceOrder query based on user permissions
@@ -128,24 +133,24 @@ namespace Hydra.Such.Portal.Controllers
              * 3, 4 = Filtrado por regiao
              * 5, 6, 7 = Filtrado por Cresp
              */
-            switch (nivelAcesso)
-            {
-                case 3:
-                case 4:
-                    preventives = preventives.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
-                    curatives = curatives.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
-                    query = query.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
-                    break;
-                case 5:
-                case 6:
-                case 7:
-                    preventives = preventives.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
-                    curatives = curatives.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
-                    query = query.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
-                    break;
-                default:
-                    break;
-            }
+            //switch (nivelAcesso)
+            //{
+            //    case 3:
+            //    case 4:
+            //        preventives = preventives.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
+            //        curatives = curatives.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
+            //        query = query.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
+            //        break;
+            //    case 5:
+            //    case 6:
+            //    case 7:
+            //        preventives = preventives.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
+            //        curatives = curatives.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
+            //        query = query.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
+            //        break;
+            //    default:
+            //        break;
+            //}
 
             results = queryOptions.ApplyTo(query.Select(o => new MaintenanceOrder
             {
@@ -214,6 +219,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [AllowAnonymous]
 
         [Route("technicals"), HttpGet]
         private IQueryable<Utilizador> GetTechnicals(MaintenanceOrderViewModel order, string orderId, string technicalid)
@@ -259,6 +265,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [AllowAnonymous]
 
         [Route("{orderId}/technical"), HttpPost]
         public ActionResult AddTechnicalToOrder(string orderId)
@@ -309,10 +316,11 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+        [AllowAnonymous]
 
         [Route("{orderId}"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
-        public ActionResult GetDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
+        public ActionResult GetOrderDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
         {
             var orderType = evolutionWEBContext.MaintenanceOrder.Where(o => o.No == orderId).FirstOrDefault();
             var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
@@ -347,7 +355,7 @@ namespace Hydra.Such.Portal.Controllers
             order.ClientName = cliente.Nome;
             var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == order.IdInstituicaoEvolution);
             order.InstitutionDescription = instituicao.DescricaoTreePath;
-            
+
             int.TryParse(order.ShortcutDimension1Code, out order.IdRegiao);
 
             IQueryable results;
@@ -420,8 +428,6 @@ namespace Hydra.Such.Portal.Controllers
             });
         }
 
-
-
         public class OmHeaderViewModel
         {
             public string ContractNo;
@@ -436,6 +442,264 @@ namespace Hydra.Such.Portal.Controllers
             public string InstitutionDescription;
         }
 
+
+
+
+
+
+
+
+
+
+        [AllowAnonymous]
+        [Route("{maintenanceSheet}"), HttpGet, AcceptHeader("application/json")]
+        //[ResponseCache(Duration = 60000)]
+        public ActionResult GetEquipmentDetails(List<int?> equipmentId, ODataQueryOptions<Equipamento> queryOptions, int? categoryId)
+        {
+            if (equipmentId == null) { return NotFound(); }
+            if (categoryId == null) { return NotFound(); }
+
+            var pageSize = 30;
+            var maintenanceSheetCategories = evolutionWEBContext.FichaManutencao.Where(f => f.IdCategoria == categoryId).Select(c => c.IdCategoria).ToList();
+            var maintenanceSheetCodigo = evolutionWEBContext.FichaManutencao.Where(f => f.IdCategoria == categoryId).Select(c => c.Codigo).FirstOrDefault();
+            var headerTaskmaintenance = evolutionWEBContext.FichaManutencao.Where(f => maintenanceSheetCategories.Contains(f.IdCategoria)).Select(c => c.Codigo).FirstOrDefault();
+            var headerTaskquantity = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(q => q.Codigo == maintenanceSheetCodigo).Select(q => q.Codigo).FirstOrDefault();
+            var headerTaskquality = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(q => q.Codigo == maintenanceSheetCodigo).Select(q => q.Codigo).FirstOrDefault();
+            bool taskMaintenance;
+            bool taskQuality;
+            bool taskQuantity;
+            if (headerTaskmaintenance != null) { taskMaintenance = true; }
+            if (headerTaskquantity != null) { taskQuantity = true; }
+            if (headerTaskquality != null) { taskQuality = true; }
+
+            var equipmentHeader = evolutionWEBContext.Equipamento.AsQueryable().Where(e => equipmentId.Contains(e.IdEquipamento)).Select(e => new EquipmentHeaderViewModel()
+            {
+                IdEquipamento = e.IdEquipamento,
+                Sala = e.Sala,
+                IdServico = e.IdServico,
+                IdCliente = e.IdCliente,
+                Categoria = e.Categoria,
+                Marca = e.Marca,
+                Modelo = e.Modelo,
+                NumSerie = e.NumSerie,
+                NumInventario = e.NumInventario,
+            }).FirstOrDefault();
+            if (equipmentHeader == null) { return NotFound(); }
+
+
+            IQueryable headerResults;
+            headerResults = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.Where(o => equipmentId.Contains(o.IdEquipamento)).Select(e => new Equipamento
+            {
+                IdEquipamento = e.IdEquipamento,
+                Nome = e.Nome,
+                Marca = e.Marca,
+                NumSerie = e.NumSerie,
+                NumInventario = e.NumInventario,
+            }).Where(e => true), new ODataQuerySettings { PageSize = pageSize });
+            var headerList = headerResults.Cast<dynamic>().AsEnumerable();
+            var headerTotal = Request.ODataFeature().TotalCount;
+            var headerNextLink = Request.GetNextPageLink(pageSize);
+
+            List<EquipamentoViewModel> headerDataList;
+            try
+            {
+                headerDataList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EquipamentoViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(headerList));
+            }
+            catch
+            {
+                headerDataList = new List<EquipamentoViewModel>();
+            }
+
+            headerDataList.ForEach((item) =>
+            {
+                var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == item.Marca);
+                if (marca != null) { item.MarcaText = marca.Nome; }
+                var modelo = evolutionWEBContext.Equipamento.Where(e => e.IdEquipamento == item.IdEquipamento).Select(m => m.Modelo).FirstOrDefault();
+                var modeloType = evolutionWEBContext.EquipModelo.Where(m => m.IdModelo == modelo).Select(m => m.IdModelos).FirstOrDefault();
+                var modeloNome = evolutionWEBContext.Modelos.Where(m => m.IdModelos == modeloType).Select(n => n.Nome).FirstOrDefault();
+                if (modeloType != null)
+                {
+                    item.ModeloText = modeloNome;
+                }
+
+                item.NumSerie = evolutionWEBContext.Equipamento.Where(e => e.IdEquipamento == item.IdEquipamento).Select(m => m.NumSerie).FirstOrDefault();
+                item.NumInventario = evolutionWEBContext.Equipamento.Where(e => e.IdEquipamento == item.IdEquipamento).Select(m => m.NumInventario).FirstOrDefault();
+            });
+
+            var headerResultLines = new PageResult<dynamic>(headerDataList, headerNextLink, headerTotal);
+
+            var sheetCategories = evolutionWEBContext.FichaManutencao.Where(f => f.IdCategoria == equipmentHeader.Categoria).Select(c => c.IdCategoria).FirstOrDefault();
+            var maintenanceCode = evolutionWEBContext.FichaManutencao.Where(o => o.IdCategoria == sheetCategories).Select(c => c.Codigo).FirstOrDefault();
+            IQueryable maintenanceResults;
+            maintenanceResults = evolutionWEBContext.FichaManutencaoManutencao.Where(o => o.Codigo == maintenanceCode).Select(f => new FichaManutencaoManutencao
+            {
+                IdManutencao = f.IdManutencao,
+                Codigo = f.Codigo,
+                Descricao = f.Descricao,
+                Rotinas = f.Rotinas,
+            }).Where(f => true);
+            var maintenanceList = maintenanceResults.Cast<dynamic>().AsEnumerable();
+            var maintenanceTotal = Request.ODataFeature().TotalCount;
+            var maintenanceNextLink = Request.GetNextPageLink(pageSize);
+
+            List<FichaManutencaoManutencaoViewModel> maintenanceDataList;
+            try
+            {
+                maintenanceDataList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FichaManutencaoManutencaoViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(maintenanceList));
+            }
+            catch
+            {
+                maintenanceDataList = new List<FichaManutencaoManutencaoViewModel>();
+            }
+
+            if (headerTaskmaintenance != null)
+            {
+                maintenanceDataList.ForEach((item) =>
+                {
+                    var description = evolutionWEBContext.FichaManutencaoManutencao.Where(d => d.Codigo == item.Codigo).Select(d => d.Descricao).FirstOrDefault();
+                    if (description != null) { item.Descricao = description; }
+                });
+            }
+
+            IQueryable quantityResults;
+            quantityResults = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(o => o.Codigo == maintenanceCode).Select(f => new FichaManutencaoTestesQuantitativos
+            {
+                IdTestesQuantitativos = f.IdTestesQuantitativos,
+                Codigo = f.Codigo,
+                Descricao = f.Descricao,
+                Rotinas = f.Rotinas,
+                Versao = f.Versao,
+                TipoCampo1 = f.TipoCampo1,
+                UnidadeCampo1 = f.UnidadeCampo1,
+            }).Where(f => true);
+            var quantityList = quantityResults.Cast<dynamic>().AsEnumerable();
+            var quantityTotal = Request.ODataFeature().TotalCount;
+            var quantityNextLink = Request.GetNextPageLink(pageSize);
+
+            List<FichaManutencaoTestesQuantitativosViewModel> quantityDataList;
+            try
+            {
+                quantityDataList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FichaManutencaoTestesQuantitativosViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(quantityList));
+            }
+            catch
+            {
+                quantityDataList = new List<FichaManutencaoTestesQuantitativosViewModel>();
+            }
+            if (headerTaskquantity != null)
+            {
+                quantityDataList.ForEach((item) =>
+                {
+                    var description = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(d => d.Codigo == item.Codigo).Select(d => d.Descricao).FirstOrDefault();
+                    if (description != null) { item.Descricao = description; }
+                });
+            }
+
+            IQueryable qualityResults;
+            qualityResults = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(o => o.Codigo == maintenanceCode).Select(f => new FichaManutencaoTestesQualitativos
+            {
+                IdTesteQualitativos = f.IdTesteQualitativos,
+                Codigo = f.Codigo,
+                Descricao = f.Descricao,
+                Rotinas = f.Rotinas,
+                Versao = f.Versao,
+            }).Where(f => true);
+            var qualityList = qualityResults.Cast<dynamic>().AsEnumerable();
+            var qualityTotal = Request.ODataFeature().TotalCount;
+            var qualityNextLink = Request.GetNextPageLink(pageSize);
+
+            List<FichaManutencaoTestesQualitativosViewModel> qualityDataList;
+            try
+            {
+                qualityDataList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FichaManutencaoTestesQualitativosViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(qualityList));
+            }
+            catch
+            {
+                qualityDataList = new List<FichaManutencaoTestesQualitativosViewModel>();
+            }
+            if (headerTaskquality != null)
+            {
+                qualityDataList.ForEach((item) =>
+                {
+                    var description = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(d => d.Codigo == item.Codigo).Select(d => d.Descricao).FirstOrDefault();
+                    if (description != null) { item.Descricao = description; }
+                });
+            }
+
+            return Json(new
+            {
+                headerTaskmaintenance,
+                headerTaskquantity,
+                headerTaskquality,
+                equipmentHeader,
+                headerResultLines,
+                maintenanceResults,
+                qualityDataList,
+                quantityDataList,
+            });
+        }
+
+        public class EquipmentHeaderViewModel
+        {
+            public int? IdEquipamento;
+            public string Sala;
+            public int? IdServico;
+            public int? IdCliente;
+            public int? Categoria;
+            public int? Marca;
+            public int? Modelo;
+            public string NumSerie;
+            public string NumInventario;
+            public bool taskMaintenance;
+            public bool taskQuality;
+            public bool taskQuantity;
+        }
+
+        public class IconsTasksHeaderViewModel
+        {
+            public bool iconTaskMaintenance;
+            public bool iconTaskQuality;
+            public bool iconTaskQuantity;
+            public List<int?> iconTaskEMM;
+        }
+
+
+
+        [Route("room"), HttpPut]
+        public ActionResult RoomsPut(int? equipmentId, string room)
+        {
+            if (equipmentId == null || equipmentId == 0 || room == null || room == "") { return NotFound(); }
+            if (room == null || room == "") { return NotFound(); }
+
+            var equipmentToUpdate = EquipamentoRepository.AsQueryable().Where(m => m.IdEquipamento == equipmentId).FirstOrDefault();
+            if (equipmentToUpdate == null) { return NotFound(); }
+
+            var roomToUpdate = evolutionWEBContext.Equipamento.Where(u => u.IdEquipamento == equipmentId).Select(r => r.Sala).FirstOrDefault();
+            equipmentToUpdate.Sala = room;
+
+            try
+            {
+                evolutionWEBContext.Update(equipmentToUpdate);
+                evolutionWEBContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return Json(0);
+            }
+
+            return Json(equipmentToUpdate);
+        }
+
+        public class UpdateTechnicalsModel
+        {
+            public string orderId;
+            public string[] technicalsId;
+        }
+
+        public class UpdateRoomsModel
+        {
+            public int? equipmentId;
+            public string room;
+        }
 
     }
 }
