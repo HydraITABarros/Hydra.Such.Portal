@@ -111,6 +111,8 @@ namespace Hydra.Such.Portal
             {
                 return new MaintenanceOrdersRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository")));
             });
+            services.AddTransient<EquipamentoRepository>(r => new EquipamentoRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository"))));
+
             services.AddTransient<MaintenanceOrdersLineRepository>(r => new MaintenanceOrdersLineRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository"))));
 
             return services.UseSharpRepository(Configuration.GetSection("sharpRepository"));
