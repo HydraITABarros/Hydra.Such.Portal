@@ -26,7 +26,7 @@ const Material = (props) => {
           <Grid item xs={10} md={3}>
           <GSelect           
             placeholder=
-              {"#"}
+              {"Associar a equipamento"}
             options={[
               {value:10, title: "#1	3215"}, 
               {value:20, title: "#2	3041"},
@@ -60,7 +60,7 @@ const Material = (props) => {
           <Grid item xs={10} md={3}>
           <GSelect           
             placeholder=
-              {"#"}
+              {"Associar a equipamento"}
             options={[
               {value:10, title: "#1	3215"}, 
               {value:20, title: "#2	3041"},
@@ -94,7 +94,7 @@ const Material = (props) => {
           <Grid item xs={10} md={3}>
           <GSelect           
             placeholder=
-              {"#"}
+              {"Associar a equipamento"}
             options={[
               {value:10, title: "#1	3215"}, 
               {value:20, title: "#2	3041"},
