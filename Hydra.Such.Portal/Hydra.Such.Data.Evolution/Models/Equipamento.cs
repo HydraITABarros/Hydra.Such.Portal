@@ -32,6 +32,10 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
         [NotMapped]
         public string Estado { get; set; }
+
+
+        [NotMapped]
+        public List<EquipMarca> Marcas;
     }
 
     
