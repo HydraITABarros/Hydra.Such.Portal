@@ -10,7 +10,7 @@ import _theme from '../../themes/default';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
 import MuiGrid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, Modal, Tooltip } from 'components';
+import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, Modal, Tooltip, PivotTable } from 'components';
 import MuiDeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
@@ -143,7 +143,7 @@ const CircleOm = {
         }
     `,
 	chart: styled.div`
-        padding: 6px;
+        padding: 6px 6px 0 6px;;
         display: inline-block;
         vertical-align: middle;
         text-align: center;
@@ -152,26 +152,11 @@ const CircleOm = {
 
 const CircleOmWrapper = styled(CircleOm.wrapper)`
     @media (max-width: ${breakpoints["sm"] + "px"}) {
-        transform: scale(0.8) translateX(-50%);
-        transform-origin: 0;
-        left: 50%;
+        transform: scale(0.8);	
+        transform-origin: center;
         position: relative;
     }
-    @media (max-width:  455px ) {
-        transform: scale(0.7) translateX(-50%);
-        margin-top: -20px;
-        margin-bottom: -20px;
-    }
-    @media (max-width:  400px ) {
-        transform: scale(0.6) translateX(-50%);
-        margin-top: -30px;
-        margin-bottom: -30px;
-    }
-    @media (max-width:  350px ) {
-        transform: scale(0.5) translateX(-50%);
-        margin-top: -40px;
-        margin-bottom: -40px;
-    }
+  
 `;
 
 const PullRight = styled.span`
@@ -187,7 +172,7 @@ const TbleIcon = styled(Icon)`
 `
 
 const ListContainer = styled.div`
-    position: absolute;
+   position: absolute;
     top:0;
     left:0;
     right:0;
@@ -195,6 +180,11 @@ const ListContainer = styled.div`
     z-index: 0;
     overflow: auto;
     padding: 0;
+    [class*="RootBase-root"]{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+    }
 `
 const Hr = styled.hr`
     margin-bottom: 0;
@@ -237,7 +227,7 @@ const TchnicalsCheckBox = styled(CheckBox)` && {
     left: -5px;
     font-size: 1.8em;
 }`
-const { AvatarGroup } = Avatars;
+
 const TechnicalsAvatars = styled(Avatars.Avatars)` && {
     margin-left: 5px;
     margin-right: 15px;
@@ -374,6 +364,7 @@ class OrdensDeManutencao extends Component {
 	constructor(props) {
 		super(props);
 		moment.locale("pt");
+		this.fetchMaintenenceOrders = this.fetchMaintenenceOrders.bind(this);
 		if (props.state.calendar.from) {
 			this.state.calendar.from = this.props.state.calendar.from;
 		} else {
@@ -397,7 +388,6 @@ class OrdensDeManutencao extends Component {
 		}
 
 		this.handleResize = this.handleResize.bind(this);
-		this.getInitials = this.getInitials.bind(this);
 		this.handleGridScroll = this.handleGridScroll.bind(this);
 		this.handleDateChange = this.handleDateChange.bind(this);
 		this.filterListByKeysValue = this.filterListByKeysValue.bind(this);
@@ -444,9 +434,7 @@ class OrdensDeManutencao extends Component {
 		}
 		axios.get('/ordens-de-manutencao', {
 			params: {
-				from: from.format('YYYY-MM-DD'),
-				to: to.format('YYYY-MM-DD'),
-				$select: 'no, description, customerName, orderType, idTecnico1, idTecnico2, idTecnico3, idTecnico4, idTecnico5, orderDate, shortcutDimension1Code',
+				$select: 'no, description, customerName, orderType, idTecnico1, idTecnico2, idTecnico3, idTecnico4, idTecnico5, orderDate, shortcutDimension1Code, idClienteEvolution, idInstituicaoEvolution, idServicoEvolution',
 				$filter: filter
 			}
 		}).then((result) => {
@@ -549,20 +537,16 @@ class OrdensDeManutencao extends Component {
 			}
 			var highlightWrapper = ReactDOM.findDOMNode(this.highlightWrapper);
 			var listContainer = ReactDOM.findDOMNode(this.listContainer);
-			var hr = 20;
-			var top = (/*(document.getElementById("app-navbar-collapse").offsetHeight * 1) +*/ (highlightWrapper.offsetHeight * 1)) + hr;
+			var hr = 0;
+			var top = (highlightWrapper.offsetHeight * 1) + hr;
 			var appNavbarCollapse = document.getElementById("app-navbar-collapse");
 			if (appNavbarCollapse) {
 				var height = window.innerHeight - top - (document.getElementById("app-navbar-collapse").offsetHeight * 1);
-				this.setState({ listContainerStyle: { "height": height, marginTop: top } })
+				this.setState({ listContainerStyle: { "height": height, marginTop: top } }, () => {
+					console.log(this.state.listContainerStyle.height, this.state.listContainerStyle.marginTop);
+				})
 			}
-		}, 0))();
-	}
-
-	getInitials(name) {
-		var initials = name.match(/\b\w/g) || [];
-		initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
-		return initials;
+		}, 100))();
 	}
 
 	setDatePickerMarginTop() {
@@ -600,15 +584,22 @@ class OrdensDeManutencao extends Component {
 						<Grid item xs>
 							<Wrapper padding={'25px 25px 0'}>
 								<TextHeader h2>Ordens de Manutenção <br /> <b>Por executar</b></TextHeader>
+
+								<Hidden smUp >
+									<br /> <br />
+									<Button icon={<Icon archive />} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }} >Arquivo</Button>
+								</Hidden>
+
 								<PullRight>
 									<Hidden mdUp xsDown><Button style={{ boxShadow: 'none' }} icon={<Icon archive />} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }}>Arquivo</Button></Hidden>
 								</PullRight>
 							</Wrapper>
 						</Grid>
 						<Grid container item md={6} xs={12}>
-
-							<Wrapper padding={'24px'} textAlign="center" width="100%">
-							</Wrapper>
+							<Hidden smDown >
+								<Wrapper padding={'24px'} textAlign="center" width="100%">
+								</Wrapper>
+							</Hidden>
 
 							<CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
 								<CircleOm.icon background={this.state.isLoading ? _theme.palette.primary.keylines : _theme.palette.primary.light} color={this.state.isLoading ? 'white' : _theme.palette.primary.default}>
@@ -635,108 +626,53 @@ class OrdensDeManutencao extends Component {
 							</CircleOmWrapper>
 						</Grid>
 						<Grid item xs>
-							<Wrapper padding={'25px'} textAlign="right" smTextAlign="center">
-								<Hidden only="sm" ><Button icon={<Icon archive />} style={{ boxShadow: 'none' }} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }} >Arquivo</Button></Hidden>
-							</Wrapper>
+							<Hidden smDown >
+								<Wrapper padding={'25px'} textAlign="right" smTextAlign="center"></Wrapper>
+							</Hidden>
 						</Grid>
 
-						<OmDatePicker
-							ref={el => this.datePicker = el}
-							open={this.state.datePickerOpen}
-							from={calendar.from}
-							to={calendar.to}
-							onChange={(e) => this.setState({ calendar: { ...this.datePicker.value() } })}
-							onCloseClick={this.handleDateChange}
-							margintop={this.state.datePickerMarginTop}>
-						</OmDatePicker>
 					</Grid>
-					<SearchWrapper width={"25%"}>
-						<TextField
-							inputProps={{ autoComplete: "off" }}
-							id="oms-search"
-							onChange={(e) => {
-								this.state.maintenenceOrdersSearchValue;
-								let search = e.target.value.toLowerCase();
-								this.setState({
-									maintenenceOrdersSearchValue: search,
-									maintenenceOrdersFiltered: this.filterListByKeysValue({ list: this.state.maintenenceOrders, keys: ['description', 'no', 'customerName'], value: search })
-								}, () => { });
 
-								clearTimeout(timer);
-								timer = setTimeout(() => {
-									this.setState({ maintenenceOrdersIsLoading: true });
-									this.fetchMaintenenceOrders({ from: this.state.calendar.from, to: this.state.calendar.to, search: this.state.maintenenceOrdersSearchValue })
-								}, 500);
-
-							}}
-							type="search"
-							margin="none"
-							endAdornment={
-								<InputAdornment position="end" onClick={() => { document.getElementById("oms-search").focus() }}><SearchButton round boxShadow={"none"} ><Icon search /></SearchButton></InputAdornment>
-							}
-						/>
-					</SearchWrapper>
 				</Wrapper>
-				<Hr />
-				<OmDatePicker.backdrop open={this.state.datePickerOpen} />
 
 
-				{this.state.listContainerStyle.marginTop ?
+				{this.state.listContainerStyle.marginTop &&
 					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} >
-						<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading || maintenenceOrdersIsLoading ? "" : "hidden"}>
-							<CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} />
-						</div>
-						<AutoSizer className={!isLoading ? "" : "hidden"} >
-							{({ height, width }) => {
-								return (
-									<ListWindow ref={el => this.listWrapper = el} onScroll={this.handleGridScroll} className="List" height={height} itemCount={this.state.maintenenceOrders.length} itemSize={75} width={width} >
-										{({ index, style }) => {
-											var item = this.state.maintenenceOrders[index];
-											setTimeout(() => {
-												Tooltip.Hidden.hide();
-												Tooltip.Hidden.rebuild();
-											});
-											return (
-												<ListGridRow container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} style={{ ...style }} onClick={() => { this.props.history.push(`/ordens-de-manutencao/${item.no}`) }}>
-													<Grid item lg={2} md={1} xs={12}></Grid>
-													<Grid container item lg={9} md={10} xs={12}>
-														<ListGridItemTextOverflow item xs={3}>
-															<Wrapper inline padding="0 25px 0 15px" margin="-10px 0 -10px">
-																{item.isPreventive ?
-																	<Icon preventiva style={{ fontSize: '29px', top: "8px", position: "relative" }} data-tip={'Preventiva'} /> :
-																	<Icon curativa style={{ fontSize: '29px', top: "8px", position: "relative", color: _theme.palette.secondary.default }} data-tip={'Curativa'} />}
-															</Wrapper>
-															<Text b data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.no}></Highlighter>)} ><Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.no}></Highlighter></Text>
-														</ListGridItemTextOverflow>
-														<ListGridItemTextOverflow item xs={3}>
-															<Text b data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.description}></Highlighter>)} ><Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.description}></Highlighter></Text>
-														</ListGridItemTextOverflow>
-														<ListGridItemTextOverflow item xs={3}>
-															<Text p data-html={true} data-tip={renderToString(<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.customerName}></Highlighter>)} >
-																<Highlighter searchWords={this.state.maintenenceOrdersSearchValue.split(" ")} autoEscape={true} textToHighlight={item.customerName}></Highlighter>
-															</Text>
-														</ListGridItemTextOverflow>
-														<ListGridItem item xs={3}>
-															{item.technicals.length > 0 ?
-																<AvatarGroup style={{ top: "-10px", position: "relative" }} onClick={(e) => { e.stopPropagation(); this.handleTechnicalsOpen(item); }}>
-																	{item.technicals.map((_item, i) => (<Avatars.Avatars key={i} letter color={this.state.avatarColors[i]} data-tip={_item.nome} >{this.getInitials(_item.nome)}</Avatars.Avatars>))}
-																</AvatarGroup>
-																:
-																<Button round style={{ top: "-10px" }} onClick={(e) => { e.stopPropagation(); this.handleTechnicalsOpen(item) }} data-tip="Editar Técnicos"><MuiAddIcon /></Button>}
-														</ListGridItem>
-													</Grid>
-													<Grid item lg={1} md={12} xs={12}></Grid>
-												</ListGridRow>
-											)
-										}}
-									</ListWindow>
-								)
+						<PivotTable
+							onRef={el => this.table = el}
+							isLoading={this.state.maintenenceOrdersIsLoading}
+							rows={this.state.maintenenceOrders}
+							pageSize={30}
+							total={this.state.maintenanceOrdersTotal}
+							rowId={'no'}
+							columns={[
+								{ name: 'isPreventive', title: 'Tipo', width: 100, dataType: 'isPreventive', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'description', title: 'Descrição', dataType: 'bold', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'no', title: 'Nº OM ', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'orderDate', title: 'Data', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'clientName', title: 'Cliente', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'institutionName', title: 'Instituição', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'technicals', title: 'Técnicos', sortingEnabled: true, dataType: 'avatars', selectionEnabled: true, groupingEnabled: false },
+							]}
+							getRows={this.fetchMaintenenceOrders}
+							onRowSelectionChange={(e) => {
+								this.setState({ selectionMode: e.selectionMode, selectedRows: e.selectedRows, maintenanceOrdersLinesIsLoading: true }, () => {
+									this.setState({ maintenanceOrdersLinesIsLoading: false })
+								});
 							}}
-						</AutoSizer>
+							onRowClick={(row) => {
+								if (row.isPreventive) {
+									this.props.history.push(`/ordens-de-manutencao/${row.no}`);
+								} else {
+
+								}
+							}}
+							groupingEnabled={false}
+							allowMultiple={false}
+						/>
+
 						<Tooltip.Hidden id={'oms-tooltip'} />
-					</ListContainer>
-					: <div></div>
-				}
+					</ListContainer>}
 
 				<Modal open={this.state.technicalsOpen}
 					onClose={this.handleTechnicalsClose}
@@ -782,10 +718,8 @@ class OrdensDeManutencao extends Component {
 													var _item = this.state.technicalsFiltered[index];
 													var orderTechnicals = this.state.technicalsSelectedOrder.technicals;
 													var checked = _.find(orderTechnicals, ['numMec', _item.numMec]);
-
 													return (
 														<TechnicalsListItem key={index} style={{ padding: '16px 30px 0 30px', ...style }}>
-
 															<TchnicalsCheckBox disabled={this.state.technicalsSelectedOrder.technicals.length >= 5 && !checked} value={index + ""} checked={checked ? true : false} onChange={(e) => {
 																var __item = this.state.technicalsFiltered[e.target.value];
 																var __orderTechnicals = this.state.technicalsSelectedOrder.technicals;
@@ -801,7 +735,6 @@ class OrdensDeManutencao extends Component {
 
 																})
 															}} />
-
 															<TechnicalsAvatars letter color={this.state.avatarColors[Math.floor(index) % 5]} >{this.getInitials(_item.nome)}</TechnicalsAvatars>
 															<Text p><Highlighter searchWords={this.state.technicalsSearchValue.split(" ")} autoEscape={true} textToHighlight={_item.nome}></Highlighter></Text>
 														</TechnicalsListItem>
