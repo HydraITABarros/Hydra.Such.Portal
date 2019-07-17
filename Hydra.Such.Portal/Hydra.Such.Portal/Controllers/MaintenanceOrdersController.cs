@@ -112,15 +112,15 @@ namespace Hydra.Such.Portal.Controllers
             IQueryable<MaintenanceOrder> query = MaintenanceOrdersRepository.AsQueryable()
                 .Where(o =>
                 (preventiveCodes.Contains(o.OrderType) || curativeCodes.Contains(o.OrderType)) &&
-                o.Status == 0 && (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+                o.Status == 0 && (o.IdClienteEvolution != null && o.IdClienteEvolution != 0 && o.IdInstituicaoEvolution != null && o.IdInstituicaoEvolution != 0));
 
             var preventives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
                    preventiveCodes.Contains(o.OrderType) && o.Status == 0 &&
-                (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+                (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
 
             var curatives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
                    curativeCodes.Contains(o.OrderType) && o.Status == 0 &&
-                (o.IdClienteEvolution != null || o.IdInstituicaoEvolution != null));
+                (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
 
             /*
              * filter MaintenanceOrder query based on user permissions
@@ -319,16 +319,7 @@ namespace Hydra.Such.Portal.Controllers
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
         {
-            var orderType = evolutionWEBContext.MaintenanceOrder.Where(o => o.No == orderId).FirstOrDefault();
-            var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
-            var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
-            var orderPreventive = preventiveCodes.Contains(orderType.OrderType);
-            var orderCurative = curativeCodes.Contains(orderType.OrderType);
-
-            if (orderCurative)
-            {
-                return Json(false);
-            }
+            var orderType = evolutionWEBContext.MaintenanceOrder.Where(o => o.No == orderId).FirstOrDefault();           
 
             if (orderId == null) { return NotFound(); }
 
@@ -344,10 +335,22 @@ namespace Hydra.Such.Portal.Controllers
                 InstitutionDescription = "",
                 ShortcutDimension1Code = o.ShortcutDimension1Code,
                 IdRegiao = 0,
+                OrderType = o.OrderType
 
             }).FirstOrDefault();
 
             if (order == null) { return NotFound(); }
+
+            var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
+            var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
+            var orderPreventive = preventiveCodes.Contains(order.OrderType);
+            var orderCurative = curativeCodes.Contains(order.OrderType);
+
+            if (orderCurative)
+            {
+                return Json(false);
+            }
+
             var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i => i.IdCliente == order.IdClienteEvolution);
             order.ClientName = cliente.Nome;
             var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == order.IdInstituicaoEvolution);
@@ -439,6 +442,7 @@ namespace Hydra.Such.Portal.Controllers
             public string ShortcutDimension1Code;
             public string ClientName;
             public string InstitutionDescription;
+            public string OrderType;
         }
 
 
