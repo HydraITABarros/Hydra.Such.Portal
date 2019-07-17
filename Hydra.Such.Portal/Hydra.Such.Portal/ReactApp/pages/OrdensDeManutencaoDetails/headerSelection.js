@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Text, Icon, Circle, Wrapper, Spacer, Button } from 'components';
-import Functions from './functions';
+import Functions from '../../helpers/functions';
 import MuiGrid from '@material-ui/core/Grid';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
 import { createMuiTheme } from '@material-ui/core/styles';
