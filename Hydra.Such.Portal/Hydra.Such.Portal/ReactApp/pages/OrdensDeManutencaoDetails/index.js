@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { PageTemplate } from 'components';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, OmDatePicker, Tooltip } from 'components';
+import { Wrapper, OmDatePicker, Tooltip, PivotTable } from 'components';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 
 import Header from './header';
 import HeaderSelection from './headerSelection';
-import Table from './table';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -366,7 +365,7 @@ class OrdensDeManutencaoLine extends Component {
 
 				{this.state.listContainerStyle.marginTop &&
 					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} onScroll={this.handleGridScroll} >
-						<Table
+						<PivotTable
 							onRef={el => this.table = el}
 							isLoading={this.state.maintenanceOrdersLinesIsLoading}
 							rows={this.state.maintenanceOrders}
@@ -393,6 +392,8 @@ class OrdensDeManutencaoLine extends Component {
 							onRowClick={(row) => {
 								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao`);
 							}}
+							groupingEnabled={true}
+							allowMultiple={true}
 						/>
 					</ListContainer>
 				}
