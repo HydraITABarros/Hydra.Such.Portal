@@ -277,7 +277,7 @@
                 cursor: not-allowed;
             }
 
-            
+
             paper-button.disabled {
                 cursor: not-allowed;
                 pointer-events: none;
@@ -924,6 +924,14 @@
                    handle-as="json"
                    id="page_delete_lote_ajax"
                    on-response="_deleteLoteResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/ProcedimentosCcps/CBVAEnviarLoteArea"
+                   last-response="{{ enviarLoteArea15 }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_adjudicarLote_ajax"
+                   on-response="_adjudicarLoteResponse"
                    content-type="application/json">
         </iron-ajax>
         <!-- zpgm.ALT_CCP_#001.y2019.e -->
@@ -3918,7 +3926,7 @@
             </div>
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeDetailStatus15" dialog-dismiss>Fechar</paper-button>
-                <paper-button class="btnSave" dialog-confirm>Adjudicar</paper-button>
+                <paper-button class="btnSave" on-tap="_adjudicarLote" data-args="foo, bar, -1" dialog-confirm>Adjudicar</paper-button>
             </div>
         </paper-dialog>
         <!-- ALT_CCP_#001.y2019.b -->
@@ -6752,8 +6760,7 @@
                         this._showErrorMessage("Não foi possível eliminar o(s) Lote(s)!");
                     }
                 },
-
-
+                
                 _verificaLote: function (lote) {
                     debugger;;
                     var _valorEstimado = parseFloat(lote.valorEstimado);
@@ -6846,8 +6853,7 @@
                     }
                     
                 },
-
-
+                
                 _closeDetailStatus15: function (e) {
                     debugger;;
 
@@ -6873,6 +6879,23 @@
                     debugger;;
                     this.batchObject15 = null;
                 },
+
+                _adjudicarLote: function (e) {
+                    debugger;;
+
+                    if (this.batchObject15 == null || this.batchObject15 == undefined) {
+
+                    }
+                    
+                    if (!this.__isElementCompras) {
+                        this._showErrorMessage("Não está autorizado a utilizar esta opção!");
+                        return;
+                    }
+                },
+
+                _adjudicarLoteResponse: function (e) {
+                },
+
                 __preciseRound: function (num, dec) {
                     if ((typeof num !== 'number') || (typeof dec !== 'number'))
                         return 0;
@@ -6880,15 +6903,7 @@
                     var num_sign = num >= 0 ? 1 : -1;
 
                     return (Math.round((num * Math.pow(10, dec)) + (num_sign * 0.0001)) / Math.pow(10, dec)).toFixed(dec);
-                },
-                __removeBatchFromListBasedOnStatus: function (batchesList, status) {
-                    debugger;;
-                    for (let b of batchesList) {
-                        if (b.estadoLote != status) {
-                            batchesList.splice(batchesList.indexOf(b), 1);
-                        }
-                    }
-                },
+                },   
                 // zpgm.ALT_CCP_#001.y2019.e
 
                 _setFieldsEditability(data) {
