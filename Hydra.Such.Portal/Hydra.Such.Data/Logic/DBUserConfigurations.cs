@@ -143,7 +143,8 @@ namespace Hydra.Such.Data.Logic
                     AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento,
                     ValidarPedidoPagamento = item.ValidarPedidoPagamento,
                     CriarProjetoSemAprovacao = item.CriarProjetoSemAprovacao,
-                    CMHistoricoToActivo = item.CMHistoricoToActivo
+                    CMHistoricoToActivo = item.CMHistoricoToActivo,
+                    ArquivarREQPendentes = item.ArquivarREQPendentes
                 };
             }
             return null;
@@ -197,7 +198,8 @@ namespace Hydra.Such.Data.Logic
                     AnulacaoPedidoPagamento = item.AnulacaoPedidoPagamento,
                     ValidarPedidoPagamento = item.ValidarPedidoPagamento,
                     CriarProjetoSemAprovacao = item.CriarProjetoSemAprovacao,
-                    CMHistoricoToActivo = item.CMHistoricoToActivo
+                    CMHistoricoToActivo = item.CMHistoricoToActivo,
+                    ArquivarREQPendentes = item.ArquivarREQPendentes
                 };
             }
             return null;

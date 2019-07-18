@@ -1360,6 +1360,16 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (linha.QuantityToRequire > 0)
                         {
+                            if (!string.IsNullOrEmpty(linha.ProjectNo))
+                            {
+                                NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(config.NAVDatabaseName, config.NAVCompanyName, linha.ProjectNo).FirstOrDefault();
+                                if (PROJ != null)
+                                {
+                                    linha.RegionCode = !string.IsNullOrEmpty(PROJ.RegionCode) ? PROJ.RegionCode : "";
+                                    linha.FunctionalAreaCode = !string.IsNullOrEmpty(PROJ.AreaCode) ? PROJ.AreaCode : "";
+                                    linha.CenterResponsibilityCode = !string.IsNullOrEmpty(PROJ.CenterResponsibilityCode) ? PROJ.CenterResponsibilityCode : "";
+                                }
+                            }
                             linha.UpdateUser = User.Identity.Name;
                             if (DBRequestLine.Update(DBRequestLine.ParseToDB(linha)) != null)
                             {

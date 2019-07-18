@@ -41,6 +41,7 @@ namespace Hydra.Such.Data.ViewModel
         public bool? ValidarPedidoPagamento { get; set; }
         public bool? CriarProjetoSemAprovacao { get; set; }
         public bool? CMHistoricoToActivo { get; set; }
+        public bool? ArquivarREQPendentes { get; set; }
 
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
