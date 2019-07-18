@@ -1264,6 +1264,17 @@ namespace Hydra.Such.Portal.Controllers
             if (item.State != RequisitionStates.Archived)
                 item.ShowPontoSituacao = true;
 
+            item.ShowBtnArquivarReqPendente = false;
+            if (item.State == RequisitionStates.Pending)
+            {
+                ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                if (CU != null)
+                {
+                    if (CU.ArquivarREQPendentes.HasValue && CU.ArquivarREQPendentes == true)
+                        item.ShowBtnArquivarReqPendente = true;
+                }
+            }
+
             return Json(item);
         }
 
@@ -1410,6 +1421,76 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult ArquivarReq([FromBody] RequisitionViewModel item)
+        {
+            item.eReasonCode = 99;
+            item.eMessage = "Ocorreu um erro.";
+
+            if (item != null)
+            {
+                if (item.State == RequisitionStates.Pending)
+                {
+                    if (!string.IsNullOrEmpty(item.RejeicaoMotivo))
+                    {
+                        ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                        if (CU != null && CU.ArquivarREQPendentes.HasValue && CU.ArquivarREQPendentes == true)
+                        {
+                            item.State = RequisitionStates.Archived;
+                            item.UpdateUser = User.Identity.Name;
+                            item.UpdateDate = DateTime.Now;
+                            if (DBRequest.Update(item.ParseToDB()) != null)
+                            {
+                                //Se Arquivada com sucesso a Requisição é adicionado uma linha ao Workflow
+                                using (var ctx = new SuchDBContext())
+                                {
+                                    var logEntry = new RequisicoesRegAlteracoes
+                                    {
+                                        NºRequisição = item.RequisitionNo,
+                                        Estado = (int)RequisitionStates.Archived,
+                                        ModificadoEm = DateTime.Now,
+                                        ModificadoPor = User.Identity.Name
+                                    };
+                                    ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                    ctx.SaveChanges();
+                                }
+
+                                item.eReasonCode = 1;
+                                item.eMessage = "A Requisição foi Arquivada com sucesso";
+                            }
+                            else
+                            {
+                                item.eReasonCode = 2;
+                                item.eMessage = "Ocorreu um erro: Não foi possivel Arquivar a Requisição.";
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 2;
+                            item.eMessage = "Ocorreu um erro: Não tem permissões para Arquivar a Requisição.";
+                        }
+                    }
+                    else
+                    {
+                        item.eReasonCode = 2;
+                        item.eMessage = "Ocorreu um erro: O motivo de Arquivo tem que estar preenchido.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro: A Requisição têm que estar no Estado Pendente.";
+                }
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: A Requisição não pode ser nula.";
+            }
+
+            return Json(item);
         }
 
         [HttpPost]
