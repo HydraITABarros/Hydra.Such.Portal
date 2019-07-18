@@ -198,7 +198,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcessosDimensões.Where(x => x.IdUtilizador == userId)
+                    return ctx.AcessosDimensões.Where(x => x.IdUtilizador.ToLower() == userId.ToLower())
                         .ToList();
                 }
             }

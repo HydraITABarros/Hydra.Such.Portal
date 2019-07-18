@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Hydra.Such.Data.Evolution.Database
+namespace Hydra.Such.Data.Evolution.DatabaseReference
 {
     [ModelMetadataType(typeof(IOrdemManutencaoEquipamentos))]
     public partial class OrdemManutencaoEquipamentos

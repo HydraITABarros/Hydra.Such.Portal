@@ -592,7 +592,7 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                     ConfigUtilizadores ConfigUser = DBUserConfigurations.GetById(user);
                     if (ConfigUser != null && ConfigUser.Administrador != true)
                     {
-                        AllFH.RemoveAll(x => !x.Intervenientes.ToLower().Contains(user.ToLower()));
+                        AllFH.RemoveAll(x => !(x.Intervenientes.ToLower().Contains(user.ToLower()) || x.CriadoPor.ToLower().Contains(user.ToLower())));
                     }
                     return AllFH;
                 }

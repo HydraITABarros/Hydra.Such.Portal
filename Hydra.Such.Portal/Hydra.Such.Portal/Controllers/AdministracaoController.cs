@@ -638,11 +638,12 @@ namespace Hydra.Such.Portal.Controllers
         {
             ErrorHandler result = new ErrorHandler();
             int AcessosCopiados = 0;
+            int AcessosDimensoesCopiados = 0;
             int LocalizacoesCopiados = 0;
             string IdUtilizadorOriginal = data.CreateUser; // "nunorato@such.pt";
             string IdUtilizadorDestino = data.UpdateUser; // "ARomao@such.pt";
 
-            //COPIAR ACESSOS
+            //COPIAR Acessos Utilizador
             List<AcessosUtilizador> ListaAcessosOriginal = DBUserAccesses.GetByUserId(IdUtilizadorOriginal);
             List<AcessosUtilizador> ListaAcessosDestino = DBUserAccesses.GetByUserId(IdUtilizadorDestino);
 
@@ -668,7 +669,29 @@ namespace Hydra.Such.Portal.Controllers
                 }
             });
 
-            //COPIAR LOCALIZAÇÕES
+            //COPIAR Acessos Dimensões
+            List<AcessosDimensões> ListaAcessosDimensoesOriginal = DBUserDimensions.GetByUserId(IdUtilizadorOriginal);
+            List<AcessosDimensões> ListaAcessosDimensoesDestino = DBUserDimensions.GetByUserId(IdUtilizadorDestino);
+
+            ListaAcessosDimensoesOriginal.ForEach(AcessoDimensao =>
+            {
+                if (ListaAcessosDimensoesDestino.Where(x => x.Dimensão == AcessoDimensao.Dimensão && x.ValorDimensão == AcessoDimensao.ValorDimensão).Count() == 0)
+                {
+                    AcessosDimensões CopiarAcessoDimensao = new AcessosDimensões();
+                    CopiarAcessoDimensao.IdUtilizador = IdUtilizadorDestino;
+                    CopiarAcessoDimensao.Dimensão = AcessoDimensao.Dimensão;
+                    CopiarAcessoDimensao.ValorDimensão = AcessoDimensao.ValorDimensão;
+                    CopiarAcessoDimensao.DataHoraCriação = DateTime.Now;
+                    CopiarAcessoDimensao.UtilizadorCriação = User.Identity.Name;
+                    CopiarAcessoDimensao.DataHoraModificação = (DateTime?)null;
+                    CopiarAcessoDimensao.UtilizadorModificação = null;
+
+                    if (DBUserDimensions.Create(CopiarAcessoDimensao) != null)
+                        AcessosDimensoesCopiados = AcessosDimensoesCopiados + 1;
+                }
+            });
+
+            //COPIAR Acessos Localizações
             List<AcessosLocalizacoes> ListaLocalizacoesOriginal = DBAcessosLocalizacoes.GetByUserId(IdUtilizadorOriginal);
             List<AcessosLocalizacoes> ListaLocalizacoesDestino = DBAcessosLocalizacoes.GetByUserId(IdUtilizadorDestino);
 
@@ -690,7 +713,7 @@ namespace Hydra.Such.Portal.Controllers
             });
 
             result.eReasonCode = 1;
-            result.eMessage = "Foram copiados com sucesso " + AcessosCopiados.ToString() + " acessos e " + LocalizacoesCopiados.ToString() + " localizações.";
+            result.eMessage = "Foram copiados com sucesso " + AcessosCopiados.ToString() + " Acessos Utilizador, " + AcessosDimensoesCopiados.ToString() + " Acessos Dimensõess e " + LocalizacoesCopiados.ToString() + " Acessos Localizações.";
 
             return Json(result);
         }
@@ -2328,6 +2351,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_PrecosVendaRecursosCliente([FromBody] List<PrecoVendaRecursoFHViewModel> dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -2561,6 +2585,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_AcordoPrecos([FromBody] AcordoPrecosModelView dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -2913,6 +2938,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_EmpregadoRecursos([FromBody] List<RHRecursosViewModel> dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
@@ -6047,6 +6073,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_LinhasAcordosPrecos([FromBody] List<LinhasAcordoPrecosViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -7425,6 +7452,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_LinhasEncFornecedor([FromBody] List<ConfigLinhasEncFornecedor> dp)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";

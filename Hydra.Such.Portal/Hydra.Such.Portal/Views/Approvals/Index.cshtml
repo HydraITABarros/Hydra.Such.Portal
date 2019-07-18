@@ -98,6 +98,7 @@
                     {{item.movementNo}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.typeText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="typeText">Tipo</vaadin-grid-sorter>
@@ -107,6 +108,7 @@
                     {{item.typeText}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.number.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="number">Associado</vaadin-grid-sorter>
@@ -114,6 +116,26 @@
                 </template>
                 <template>
                     {{item.number}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fhDatePartida.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fhDatePartida">FH Dia da Partida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fhDatePartida" />
+                </template>
+                <template>
+                    {{item.fhDatePartida}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fhDateChegada.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fhDateChegada">FH Dia da Chegada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fhDateChegada" />
+                </template>
+                <template>
+                    {{item.fhDateChegada}}
                 </template>
             </vaadin-grid-column>
 
@@ -421,6 +443,8 @@
                         "movementNo": { hidden: false, label: "Nº" },
                         "typeText": { hidden: false, label: "Tipo" },
                         "number": { hidden: false, label: "Associado" },
+                        "fhDatePartida": { hidden: false, label: "FH Dia da Partida" },
+                        "fhDateChegada": { hidden: false, label: "FH Dia da Chegada" },
                         "requisicaoAcordosPrecos": { hidden: false, label: "Req Acordos Preços" },
                         "requisicaoUrgente": { hidden: false, label: "Req Urgente" },
                         "requisicaoOrcamentoEmAnexo": { hidden: false, label: "Req Oçamento Em Anexo" },

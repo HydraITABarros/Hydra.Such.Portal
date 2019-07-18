@@ -2085,9 +2085,13 @@ namespace Hydra.Such.Portal.Controllers
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
             
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
+
+            //AMARO COMENTAR
+            //contractList.RemoveAll(x => x.NºDeContrato != "VC180097");
+
             foreach (var item in contractList)
             {
-                //if (item.NºDeContrato == "VC190074")
+                //if (item.NºDeContrato == "VC180054" || item.NºDeContrato == "VC180097")
                 //{
                 //    string teste = "";
                 //}
@@ -2319,7 +2323,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 if (AddMonth == 0)
                                                 {
-                                                    nextInvoiceDate = LastInvoice.AddMonths(2);
+                                                    //nextInvoiceDate = LastInvoice.AddMonths(2);
+                                                    nextInvoiceDate = nextInvoiceDate.AddMonths(2);
                                                 }
                                                 else
                                                 {
@@ -2403,7 +2408,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 if (AddMonth == 0)
                                                 {
-                                                    nextInvoiceDate = LastInvoice.AddMonths(3);
+                                                    //nextInvoiceDate = LastInvoice.AddMonths(3);
+                                                    nextInvoiceDate = nextInvoiceDate.AddMonths(3);
                                                 }
                                                 else
                                                 {
@@ -2446,7 +2452,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 if (AddMonth == 0)
                                                 {
-                                                    nextInvoiceDate = LastInvoice.AddMonths(6);
+                                                    //nextInvoiceDate = LastInvoice.AddMonths(6);
+                                                    nextInvoiceDate = nextInvoiceDate.AddMonths(6);
                                                 }
                                                 else
                                                 {
@@ -2488,7 +2495,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 if (AddMonth == 0)
                                                 {
-                                                    nextInvoiceDate = LastInvoice.AddMonths(12);
+                                                    //nextInvoiceDate = LastInvoice.AddMonths(12);
+                                                    nextInvoiceDate = nextInvoiceDate.AddMonths(12);
                                                 }
                                                 else
                                                 {
@@ -2533,6 +2541,10 @@ namespace Hydra.Such.Portal.Controllers
                             if (lastDay < item.DataInicial || lastDay > item.DataExpiração)
                             {
                                 Problema += " Contrato Não Vigente!";
+                            }
+                            if (nextInvoiceDate < item.DataInicial || nextInvoiceDate > item.DataExpiração)
+                            {
+                                Problema += " Data da próxima fatura superior á data de Expiração!";
                             }
                             if (item.CódigoRegião == "")
                             {
@@ -3193,15 +3205,26 @@ namespace Hydra.Such.Portal.Controllers
                                     Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
                                     InvoiceLines.Wait();
                                 }
-
                                 catch (Exception ex)
                                 {
-                                    if (!hasErrors)
-                                        hasErrors = true;
-
-                                    execDetails += " Erro ao criar as linhas: ";
+                                    //09/07/02019
+                                    //A Pedido do Marco Marcelo quando o WebService devolve uma mensagem com o texto "maximum message size quota"
+                                    //assume-se que o mesmo foi executado com sucesso.
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+
+                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    {
+                                        return Json(true);
+                                    }
+                                    else
+                                    {
+                                        if (!hasErrors)
+                                            hasErrors = true;
+
+                                        execDetails += " Erro ao criar as linhas: ";
+                                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    }
                                 }
                             }
                         }
@@ -3262,7 +3285,7 @@ namespace Hydra.Such.Portal.Controllers
                                 if (contractLine.DataInicial != null && contractLine.DataExpiração != null)// && item.DataPróximaFatura == null)
                                 {
                                     //today = (DateTime)contractLine.ÚltimaDataFatura;
-                                    today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1);
+                                    //today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1);
 
                                     //Mensal 
                                     if (contractLine.PeríodoFatura == 1)
@@ -3554,15 +3577,25 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                         catch (Exception ex)
                                         {
-                                            if (!hasErrors)
-                                                hasErrors = true;
-
-                                            execDetails += " Erro ao criar as linhas: ";
+                                            //09/07/02019
+                                            //A Pedido do Marco Marcelo quando o WebService devolve uma mensagem com o texto "maximum message size quota"
+                                            //assume-se que o mesmo foi executado com sucesso.
                                             errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                            result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
 
+                                            if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                            {
+                                                return Json(true);
+                                            }
+                                            else
+                                            {
+                                                if (!hasErrors)
+                                                    hasErrors = true;
+
+                                                execDetails += " Erro ao criar as linhas: ";
+                                                errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                                result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                            }
                                         }
-
                                     }
                                 }
                                 else
@@ -4865,6 +4898,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_Oportunidades([FromBody] List<ContractViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -5195,6 +5229,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_Propostas([FromBody] List<ContractViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -5286,6 +5321,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_Contratos([FromBody] List<ContractViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -5456,6 +5492,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_ContratosLinhas([FromBody] List<ContractLineViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -5559,6 +5596,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_ContratosInternosLinhas([FromBody] List<ContractLineViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -5662,6 +5700,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_ContratosQuotas([FromBody] List<ContractViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -5832,6 +5871,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_ContratosInternos([FromBody] List<ContractViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -6002,6 +6042,7 @@ namespace Hydra.Such.Portal.Controllers
         
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_AvencaFixa([FromBody] List<FaturacaoContratosViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;

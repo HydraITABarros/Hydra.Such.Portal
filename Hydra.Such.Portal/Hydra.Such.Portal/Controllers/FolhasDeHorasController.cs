@@ -169,8 +169,8 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             result.ForEach(FH =>
                             {
-                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
+                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
+                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
                                 FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -194,8 +194,8 @@ namespace Hydra.Such.Portal.Controllers
                                     else
                                         FH.Estadotexto = "Não está Terminada";
 
-                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
+                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
+                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
                                     FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -214,8 +214,8 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     result.ForEach(FH =>
                                     {
-                                        FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
+                                        FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
+                                        FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
                                         FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                         FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                         FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -234,8 +234,8 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         result.ForEach(FH =>
                                         {
-                                            FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                            FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
+                                            FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
+                                            FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
                                             FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                             FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                             FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -254,8 +254,8 @@ namespace Hydra.Such.Portal.Controllers
                                         {
                                             result.ForEach(FH =>
                                             {
-                                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
+                                                FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
+                                                FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
                                                 FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                                 FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                                 FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -274,8 +274,8 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 result.ForEach(FH =>
                                                 {
-                                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value;
-                                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao;
+                                                    FH.TipoDeslocacaoTexto = FH.TipoDeslocacao == null ? "" : EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault() != null ? EnumerablesFixed.FolhaDeHoraTypeDeslocation.Where(y => y.Id == FH.TipoDeslocacao).FirstOrDefault().Value : "";
+                                                    FH.CodigoTipoKms = FH.CodigoTipoKms == null ? "" : AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault() != null ? AllRecursos.Where(x => x.Tipo == "1" && x.CodRecurso == FH.CodigoTipoKms).FirstOrDefault().Descricao : "";
                                                     FH.DeslocacaoForaConcelho = FH.DeslocacaoForaConcelho == null ? false : FH.DeslocacaoForaConcelho;
                                                     FH.DeslocacaoForaConcelhoTexto = FH.DeslocacaoForaConcelho == null ? "" : FH.DeslocacaoForaConcelho == false ? "Não" : "Sim";
                                                     FH.Terminada = FH.Terminada == null ? false : FH.Terminada;
@@ -384,11 +384,11 @@ namespace Hydra.Such.Portal.Controllers
                     FH.UtilizadorModificação = "";
                     FH.DataHoraModificação = null;
                     FH.Eliminada = false;
-                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor + " EMPREGADO: " + FH.NºEmpregado + " VALIDADORES: " + FH.Validadores + " INTEGRADORESEMRH: " + FH.IntegradoresEmRh + " INTEGRADORESEMRHKM: " + FH.IntegradoresEmRhkm;
+                    FH.Intervenientes = " CRIADOPOR: " + User.Identity.Name + " EMPREGADO: " + FH.NºEmpregado + " VALIDADORES: " + FH.Validadores + " INTEGRADORESEMRH: " + FH.IntegradoresEmRh + " INTEGRADORESEMRHKM: " + FH.IntegradoresEmRhkm;
 
                     DBFolhasDeHoras.Create(FH);
 
-                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor;
+                    FH.Intervenientes = " CRIADOPOR: " + User.Identity.Name;
                     ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(FH.NºEmpregado);
                     if (ConfigUser != null)
                         FH.Intervenientes = FH.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
@@ -721,7 +721,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!string.IsNullOrEmpty(folhaDeHorasNo))
                 {
-                    FH.Intervenientes = " CRIADOPOR: " + FH.CriadoPor;
+                    FH.Intervenientes = " CRIADOPOR: " + data.CriadoPor;
                     ConfigUtilizadores ConfigUser = DBUserConfigurations.GetByEmployeeNo(idEmployee);
                     if (ConfigUser != null)
                         FH.Intervenientes = FH.Intervenientes + " EMPREGADO: " + ConfigUser.IdUtilizador;
@@ -4385,6 +4385,7 @@ namespace Hydra.Such.Portal.Controllers
 
         //1
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_FolhasHoras([FromBody] List<FolhaDeHorasViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].Colunas;

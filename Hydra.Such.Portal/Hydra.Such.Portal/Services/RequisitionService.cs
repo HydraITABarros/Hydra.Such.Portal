@@ -13,6 +13,7 @@ using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
+using Hydra.Such.Data.Logic.Nutrition;
 
 namespace Hydra.Such.Portal.Services
 {
@@ -328,6 +329,68 @@ namespace Hydra.Such.Portal.Services
                                     .FirstOrDefault()
                                     ?.SupplierProductId
                             );
+
+                            //Novo código que adiciona + linhas mas só para requisições do tipo nutrição
+                            if (requisition.RequestNutrition == true)
+                            {
+                                string codFornecedor = purchOrder.SupplierId;
+                                List<ConfigLinhasEncFornecedor> LinhasEncFornecedor = DBConfigLinhasEncFornecedor.GetAll().Where(x => x.VendorNo == codFornecedor).ToList();
+
+                                if (LinhasEncFornecedor != null && LinhasEncFornecedor.Count > 0)
+                                {
+                                    foreach (ConfigLinhasEncFornecedor linha in LinhasEncFornecedor)
+                                    {
+                                        string ProjectNo = string.Empty;
+                                        string RegionCode = string.Empty;
+                                        string FunctionalAreaCode = string.Empty;
+                                        string CenterResponsibilityCode = string.Empty;
+                                        string ArmazemCompraDireta = string.Empty;
+
+                                        Configuração Config = DBConfigurations.GetById(1);
+                                        if (Config != null)
+                                            ArmazemCompraDireta = Config.ArmazemCompraDireta;
+
+                                        UnidadesProdutivas UnidProd = DBProductivityUnits.GetAll().Where(x => x.NºCliente == codFornecedor).FirstOrDefault();
+                                        if (UnidProd != null)
+                                            ProjectNo = UnidProd.ProjetoMatSubsidiárias;
+
+                                        if (!string.IsNullOrEmpty(ProjectNo))
+                                        {
+                                            NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, ProjectNo).FirstOrDefault();
+                                            if (Project != null)
+                                            {
+                                                RegionCode = Project.RegionCode;
+                                                FunctionalAreaCode = Project.AreaCode;
+                                                CenterResponsibilityCode = Project.CenterResponsibilityCode;
+                                            }
+                                        }
+
+                                        PurchOrderLineDTO purchOrderLine = new PurchOrderLineDTO()
+                                        {
+                                            LineId = null,
+                                            Type = 2, //PRODUTO
+                                            Code = linha.No,
+                                            Description = linha.Description,
+                                            Description2 = linha.Description2,
+                                            ProjectNo = ProjectNo,
+                                            QuantityRequired = linha.Quantity,
+                                            UnitCost = linha.Valor,
+                                            LocationCode = ArmazemCompraDireta,
+                                            OpenOrderNo = "", //line.OpenOrderNo,
+                                            OpenOrderLineNo = null, //line.OpenOrderLineNo,
+                                            CenterResponsibilityCode = CenterResponsibilityCode,
+                                            FunctionalAreaCode = FunctionalAreaCode,
+                                            RegionCode = RegionCode,
+                                            UnitMeasureCode = linha.UnitOfMeasure,
+                                            VATBusinessPostingGroup = "", //line.VATBusinessPostingGroup,
+                                            VATProductPostingGroup = "", //line.VATProductPostingGroup,
+                                            DiscountPercentage = 0 //line.DiscountPercentage.HasValue ? line.DiscountPercentage.Value : 0,
+                                        };
+                                        purchOrder.Lines.Add(purchOrderLine);
+                                    }
+                                }
+                            }
+                            
                             //var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate), requisition.Comments);
                             var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate));
                             if (result.CompletedSuccessfully)

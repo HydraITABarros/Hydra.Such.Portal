@@ -63,6 +63,25 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static List<Requisição> GetAllHistoric(int TipoReq)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição
+                        //.Include("LinhasRequisição")
+                        //.Include(x => x.RequisicoesRegAlteracoes)
+                        .Where(x => x.Estado == (int)RequisitionStates.Archived && x.TipoReq == TipoReq)
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<Requisição> GetByState(List<RequisitionStates> states, List<AcessosDimensões> userDims, string NAVDatabaseName, string NAVCompanyName)
         {
             try

@@ -254,11 +254,11 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddQuantity" label="Quantidade" type="number" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;"></vaadin-text-field>
+                            <vaadin-text-field id="ddQuantity" label="Quantidade" maxlength="18" on-value-changed="_ConvertDecimals" style="text-align:right;"></vaadin-text-field>
                         </div>
 
                         <div class="col-sm-3">
-                            <vaadin-text-field id="ddValor" label="Valor" type="number" maxlength="18" pattern="^[1-9]\d*(\.\d+)?$" style="text-align:right;"></vaadin-text-field>
+                            <vaadin-text-field id="ddValor" label="Valor" maxlength="18" on-value-changed="_ConvertDecimals"  style="text-align:right;"></vaadin-text-field>
                         </div>
                     </div>
 
@@ -719,6 +719,10 @@
                     }
                 },
 
+                //Troca o caracter , por .
+                _ConvertDecimals: function (e) {
+                    e.target.value = e.target.value.replace(",", ".");
+                },
 
 
 

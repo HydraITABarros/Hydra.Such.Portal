@@ -170,7 +170,7 @@
                                             <vaadin-date-picker label="Data Fim Exploração" id="endDateExploration" name="endDateExploration" value="{{data.endDateExploration}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="warehouse" value="{{data.warehouse}}" label="Armazén" disabled="{{ !_permissions.update }}"
+                                            <such-selectbox id="warehouse" value="{{data.warehouse}}" label="Armazém" disabled="{{ !_permissions.update }}"
                                                             items="[[CBWarehouses]]"
                                                             text-path="value"
                                                             value-path="id"
@@ -188,7 +188,7 @@
                                             </vaadin-combo-box>*@
                                         </div>
                                         <div class="col-md-3 ">
-                                            <such-selectbox id="warehouseSupplier" value="{{data.warehouseSupplier}}" label="Armazén Fornecedor" disabled="{{ !_permissions.update }}"
+                                            <such-selectbox id="warehouseSupplier" value="{{data.warehouseSupplier}}" label="Armazém Fornecedor" disabled="{{ !_permissions.update }}"
                                                             items="[[CBWarehouses]]"
                                                             text-path="value"
                                                             value-path="id"

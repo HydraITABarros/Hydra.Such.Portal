@@ -537,7 +537,6 @@
                     }
                 },
                 _count: function () {
-                    debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         if (this.result != null || this.result != undefined || this.result.length != 0) {
                             this.$.ajax_count.body = JSON.stringify(this.selectedItems);
@@ -572,7 +571,11 @@
                         this.invoiceCount.eMessages = [];
                     }
                     else {
-                        this.openToastError("Ocorreu um erro ao tentar contabilizar faturas.");
+                        if (this.invoiceCount.eMessage == null || this.invoiceCount.eMessage == "") {
+                            this.openToastError("Ocorreu um erro ao tentar contabilizar faturas.");
+                        }
+                        else
+                            this.openToastError(this.invoiceCount.eMessage);
                     }
                 },
 

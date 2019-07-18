@@ -5,20 +5,20 @@ import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 
 import { basename } from 'config'
-import App from 'components/App'
+import App from 'App'
 
 const renderApp = () => (
-    <BrowserRouter basename={basename}>
-        <App />
-    </BrowserRouter>
+        <BrowserRouter basename={basename}>
+                <App />
+        </BrowserRouter>
 )
 
 const root = document.getElementById('basicreactcomponent')
 render(renderApp(), root)
 
 if (module.hot) {
-    module.hot.accept('components/App', () => {
-        require('components/App')
-        render(renderApp(), root)
-    })
+        module.hot.accept('App', () => {
+                require('App')
+                render(renderApp(), root)
+        })
 }

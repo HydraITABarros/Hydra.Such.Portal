@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Hydra.Such.Data.Evolution.Database
+namespace Hydra.Such.Data.Evolution.DatabaseReference
 {
     public partial class EvolutionWEBContext : DbContext
     {

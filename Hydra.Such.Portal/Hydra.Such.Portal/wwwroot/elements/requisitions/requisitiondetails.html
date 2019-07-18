@@ -22,6 +22,8 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 <dom-module id="x-requisitiondetails">
     <template>
@@ -287,7 +289,8 @@
                    id="ajax_getPlacesToDeliver"
                    on-response="localDeliveryResponse"
                    content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PreRequisicoes/LoadAttachments"
+
+        <iron-ajax url="/GestaoRequisicoes/LoadAttachments"
                    last-response="{{uploads}}"
                    method="post"
                    handle-as="json"
@@ -326,12 +329,37 @@
                    on-response="_TodasLinhasNotaEncomendaResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/TodasLinhasConsultaMercado"
+                   last-response="{{resultTodasLinhasConsultaMercado}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_TodasLinhasConsultaMercado"
+                   on-response="_TodasLinhasConsultaMercadoResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/TodasEncomendasPorRequisicao"
                    last-response="{{Encomendas}}"
                    method="post"
                    handle-as="json"
                    id="ajax_TodasEncomendasPorProduto"
                    content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/DeleteAttachments"
+                   last-response="{{deleted_files}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_files_ajax"
+                   on-response="_deletedAttachResponse"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_LoadAttachments_ajax"
+                   on-response="_loadAttachResponse"
+                   content-type="application/json"></iron-ajax>
+
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -692,23 +720,21 @@
                                 <!--Anexos-->
                                 <div>
                                     <div class="row break_clear">
-                                        <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                                         <vaadin-upload id="UploadRequest"
-                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                       target="/PreRequisicoes/FileUpload/{{_requisitionid}}"
                                                        method="POST"
                                                        headers="{'Accept': 'application/json'}"
                                                        hidden="{{ !_permissions.update }}"
                                                        timeout=15000>
                                         </vaadin-upload>
                                         <!--<vaadin-upload id="UploadRequest"
-                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
-                                                       accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
-                                                       method="POST"
-                                                       headers="{'Accept': 'application/json'}"
-                                                       hidden="{{ !_permissions.update }}"
-                                                       timeout=15000>
-                                        </vaadin-upload>-->
-                                        <!--</template>-->
+                                                   target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                   accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                   method="POST"
+                                                   headers="{'Accept': 'application/json'}"
+                                                   hidden="{{ !_permissions.update }}"
+                                                   timeout=15000>
+                                    </vaadin-upload>-->
                                     </div>
                                     <div class="row break_clear">
                                         <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
@@ -765,6 +791,7 @@
                                 </template>
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_TodasLinhasConsultaMercado" title="Marcar todas as Linhas para Consulta de Mercado"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. C.Merc.</paper-button>
                                 </template>
                             </div>
                         </div>
@@ -804,15 +831,15 @@
                                 <div class="row break_clear" hidden="{{_isArchived}}">
                                     <div class="col-lg-3">
                                         <!--<vaadin-combo-box items="[[UnitsOfMmeasure]]" id="CBUnitsOfMmeasure" item-value-path="id" item-label-path="value" value="" label="Código Unidade Medida">
-                                            <template>
-                                                <table width="250px">
-                                                    <tr>
-                                                        <td width="30%">[[item.id]]</td>
-                                                        <td width="70%"><b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                        <template>
+                                            <table width="250px">
+                                                <tr>
+                                                    <td width="30%">[[item.id]]</td>
+                                                    <td width="70%"><b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>-->
                                         <such-selectbox id="CBUnitsOfMmeasure" value="" label="Código Unidade Medida"
                                                         items="[[UnitsOfMmeasure]]"
                                                         text-path="id"
@@ -984,6 +1011,7 @@
                                                 <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                             </template>
                                             <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
+                                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_TodasLinhasConsultaMercado" title="Marcar todas as Linhas para Consulta de Mercado"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. C.Merc.</paper-button>
                                         </template>
                                     </div>
                                 </div>
@@ -1078,15 +1106,15 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="40%">[[item.id]]</td>
-                                <td width="60%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>-->
+                                            <template>
+                                                <table width="200px">
+                                                    <tr>
+                                                        <td width="40%">[[item.id]]</td>
+                                                        <td width="60%"> <b>[[item.value]]</b></td>
+                                                    </tr>
+                                                </table>
+                                            </template>
+                                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
                                                             items="[[UnitsOfMmeasure]]"
                                                             text-path="id"
@@ -1271,7 +1299,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-            </vaadin-grid-filter>-->
+                                    </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1413,14 +1441,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.name]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.name]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1452,14 +1480,14 @@
                                                             fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
                                             </such-selectbox>
                                             <!--<vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.no]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.no]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.projectNo}}
@@ -1986,7 +2014,7 @@
                             //if (this.Requisition.orderNo)
                             //    this._openDlgMessageError("Já foi criada uma encomenda para esta requisição.");
                             //else
-                                //this._createPurchaseOrder();
+                            //this._createPurchaseOrder();
 
                             this._createPurchaseOrder();
                             break;
@@ -2225,94 +2253,94 @@
                         }
                     }
 
-                        //if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
-                        if (e.model.item.code != "" & e.model.item.code != null) {
-                            if (e.model.item.localCode != "" & e.model.item.localCode != null) {
-                                if (e.model.item.quantityToRequire > 0) {
-                                    this.$.Lines_UpdateLinhaRequisicao_ajax.body = JSON.stringify({
-                                        requestNo: e.model.item.requestNo,
-                                        lineNo: e.model.item.lineNo,
-                                        type: e.model.item.type,
-                                        code: e.model.item.code,
-                                        description: e.model.item.description,
-                                        description2: e.model.item.description2,
-                                        unitMeasureCode: e.model.item.unitMeasureCode,
-                                        localCode: e.model.item.localCode,
-                                        localMarket: e.model.item.localMarket,
-                                        quantityToRequire: e.model.item.quantityToRequire,
-                                        quantityRequired: e.model.item.quantityRequired,
-                                        quantityToProvide: e.model.item.quantityToProvide,
-                                        quantityAvailable: e.model.item.quantityAvailable,
-                                        quantityReceivable: e.model.item.quantityReceivable,
-                                        quantityReceived: e.model.item.quantityReceived,
-                                        quantityPending: e.model.item.quantityPending,
-                                        quantidadeInicial: e.model.item.quantidadeInicial,
-                                        unitCost: e.model.item.unitCost,
-                                        unitCostWithIVA: e.model.item.unitCostWithIVA,
-                                        expectedReceivingDate: e.model.item.expectedReceivingDate,
-                                        billable: e.model.item.billable,
-                                        projectNo: e.model.item.projectNo,
-                                        regionCode: e.model.item.regionCode,
-                                        functionalAreaCode: e.model.item.functionalAreaCode,
-                                        centerResponsibilityCode: e.model.item.centerResponsibilityCode,
-                                        functionalNo: e.model.item.functionalNo,
-                                        vehicle: e.model.item.vehicle,
-                                        createDateTime: e.model.item.createDateTime,
-                                        createUser: e.model.item.createUser,
-                                        updateDateTime: e.model.item.updateDateTime,
-                                        updateUser: e.model.item.updateUser,
-                                        qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
-                                        unitCostsould: e.model.item.unitCostsould,
-                                        budgetValue: e.model.item.budgetValue,
-                                        maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
-                                        criarNotaEncomenda: e.model.item.criarNotaEncomenda,
-                                        createMarketSearch: e.model.item.createMarketSearch,
-                                        submitPrePurchase: e.model.item.submitPrePurchase,
-                                        sendPrePurchase: e.model.item.sendPrePurchase,
-                                        localMarketDate: e.model.item.localMarketDate,
-                                        localMarketUser: e.model.item.localMarketUser,
-                                        sendForPurchase: e.model.item.sendForPurchase,
-                                        sendForPurchaseDate: e.model.item.sendForPurchaseDate,
-                                        purchaseValidated: e.model.item.purchaseValidated,
-                                        purchaseRefused: e.model.item.purchaseRefused,
-                                        reasonToRejectionLocalMarket: e.model.item.reasonToRejectionLocalMarket,
-                                        rejectionLocalMarketDate: e.model.item.rejectionLocalMarketDate,
-                                        purchaseId: e.model.item.purchaseId,
-                                        supplierNo: e.model.item.supplierNo,
-                                        openOrderNo: e.model.item.openOrderNo,
-                                        openOrderLineNo: e.model.item.openOrderLineNo,
-                                        queryCreatedMarketNo: e.model.item.queryCreatedMarketNo,
-                                        createdOrderNo: e.model.item.createdOrderNo,
-                                        supplierProductCode: e.model.item.supplierProductCode,
-                                        unitNutritionProduction: e.model.item.unitNutritionProduction,
-                                        marketLocalRegion: e.model.item.marketLocalRegion,
-                                        customerNo: e.model.item.customerNo,
-                                        approvers: e.model.item.approvers,
-                                        urgent: e.model.item.urgent,
-                                        vatBusinessPostingGroup: e.model.item.vatBusinessPostingGroup,
-                                        vatProductPostingGroup: e.model.item.vatProductPostingGroup,
-                                        discountPercentage: e.model.item.discountPercentage,
-                                        selected: e.model.item.selected,
-                                        semEfeito: e.model.item.semEfeito,
-                                    });
-                                    this.$.Lines_UpdateLinhaRequisicao_ajax.generateRequest();
-                                    this.$.grdRequisitionLines.clearCache();
-                                }
-                                else {
-                                    this._openDlgMessageError('Na linha o campo Qt. a Requerer tem que ser superior a zero.');
-                                }
+                    //if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
+                    if (e.model.item.code != "" & e.model.item.code != null) {
+                        if (e.model.item.localCode != "" & e.model.item.localCode != null) {
+                            if (e.model.item.quantityToRequire > 0) {
+                                this.$.Lines_UpdateLinhaRequisicao_ajax.body = JSON.stringify({
+                                    requestNo: e.model.item.requestNo,
+                                    lineNo: e.model.item.lineNo,
+                                    type: e.model.item.type,
+                                    code: e.model.item.code,
+                                    description: e.model.item.description,
+                                    description2: e.model.item.description2,
+                                    unitMeasureCode: e.model.item.unitMeasureCode,
+                                    localCode: e.model.item.localCode,
+                                    localMarket: e.model.item.localMarket,
+                                    quantityToRequire: e.model.item.quantityToRequire,
+                                    quantityRequired: e.model.item.quantityRequired,
+                                    quantityToProvide: e.model.item.quantityToProvide,
+                                    quantityAvailable: e.model.item.quantityAvailable,
+                                    quantityReceivable: e.model.item.quantityReceivable,
+                                    quantityReceived: e.model.item.quantityReceived,
+                                    quantityPending: e.model.item.quantityPending,
+                                    quantidadeInicial: e.model.item.quantidadeInicial,
+                                    unitCost: e.model.item.unitCost,
+                                    unitCostWithIVA: e.model.item.unitCostWithIVA,
+                                    expectedReceivingDate: e.model.item.expectedReceivingDate,
+                                    billable: e.model.item.billable,
+                                    projectNo: e.model.item.projectNo,
+                                    regionCode: e.model.item.regionCode,
+                                    functionalAreaCode: e.model.item.functionalAreaCode,
+                                    centerResponsibilityCode: e.model.item.centerResponsibilityCode,
+                                    functionalNo: e.model.item.functionalNo,
+                                    vehicle: e.model.item.vehicle,
+                                    createDateTime: e.model.item.createDateTime,
+                                    createUser: e.model.item.createUser,
+                                    updateDateTime: e.model.item.updateDateTime,
+                                    updateUser: e.model.item.updateUser,
+                                    qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
+                                    unitCostsould: e.model.item.unitCostsould,
+                                    budgetValue: e.model.item.budgetValue,
+                                    maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
+                                    criarNotaEncomenda: e.model.item.criarNotaEncomenda,
+                                    createMarketSearch: e.model.item.createMarketSearch,
+                                    submitPrePurchase: e.model.item.submitPrePurchase,
+                                    sendPrePurchase: e.model.item.sendPrePurchase,
+                                    localMarketDate: e.model.item.localMarketDate,
+                                    localMarketUser: e.model.item.localMarketUser,
+                                    sendForPurchase: e.model.item.sendForPurchase,
+                                    sendForPurchaseDate: e.model.item.sendForPurchaseDate,
+                                    purchaseValidated: e.model.item.purchaseValidated,
+                                    purchaseRefused: e.model.item.purchaseRefused,
+                                    reasonToRejectionLocalMarket: e.model.item.reasonToRejectionLocalMarket,
+                                    rejectionLocalMarketDate: e.model.item.rejectionLocalMarketDate,
+                                    purchaseId: e.model.item.purchaseId,
+                                    supplierNo: e.model.item.supplierNo,
+                                    openOrderNo: e.model.item.openOrderNo,
+                                    openOrderLineNo: e.model.item.openOrderLineNo,
+                                    queryCreatedMarketNo: e.model.item.queryCreatedMarketNo,
+                                    createdOrderNo: e.model.item.createdOrderNo,
+                                    supplierProductCode: e.model.item.supplierProductCode,
+                                    unitNutritionProduction: e.model.item.unitNutritionProduction,
+                                    marketLocalRegion: e.model.item.marketLocalRegion,
+                                    customerNo: e.model.item.customerNo,
+                                    approvers: e.model.item.approvers,
+                                    urgent: e.model.item.urgent,
+                                    vatBusinessPostingGroup: e.model.item.vatBusinessPostingGroup,
+                                    vatProductPostingGroup: e.model.item.vatProductPostingGroup,
+                                    discountPercentage: e.model.item.discountPercentage,
+                                    selected: e.model.item.selected,
+                                    semEfeito: e.model.item.semEfeito,
+                                });
+                                this.$.Lines_UpdateLinhaRequisicao_ajax.generateRequest();
+                                this.$.grdRequisitionLines.clearCache();
                             }
                             else {
-                                this._openDlgMessageError('Na linha o campo Código Localização é de preenchimento obrigatório.');
+                                this._openDlgMessageError('Na linha o campo Qt. a Requerer tem que ser superior a zero.');
                             }
                         }
                         else {
-                            this._openDlgMessageError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
+                            this._openDlgMessageError('Na linha o campo Código Localização é de preenchimento obrigatório.');
                         }
-                        //}
-                        //else {
-                        //    this._openDlgMessageError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
-                        //}
+                    }
+                    else {
+                        this._openDlgMessageError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
+                    }
+                    //}
+                    //else {
+                    //    this._openDlgMessageError('Na linha o campo Cód. Produto é de preenchimento obrigatório.');
+                    //}
                 },
                 _UpdateLinhaRequisicao_ResponseProcessor: function (e) {
                     if (this.updateLinhaRequisicaoResponse.eReasonCode == 1) {
@@ -2631,6 +2659,25 @@
                     }
                     else {
                         this._openDlgMessageError(this.resultTodasLinhasNotaEncomenda.eMessage);
+                    }
+                },
+                
+                _TodasLinhasConsultaMercado: function () {
+                    debugger;
+                    this.$.ajax_TodasLinhasConsultaMercado.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
+                    this.$.ajax_TodasLinhasConsultaMercado.generateRequest();
+                },
+                _TodasLinhasConsultaMercadoResponseProcessor: function (e) {
+                    debugger;
+                    if (this.resultTodasLinhasConsultaMercado.eReasonCode == "1") {
+                        this._openToast(this.resultTodasLinhasConsultaMercado.eMessage);
+
+                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                        this.$.requisition_datasource.generateRequest();
+                        this.$.grdRequisitionLines.clearCache();
+                    }
+                    else {
+                        this._openDlgMessageError(this.resultTodasLinhasConsultaMercado.eMessage);
                     }
                 },
 
@@ -3297,6 +3344,26 @@
                     this.$.dlgMessageError.close();
                     location.reload();
                 },
+
+                _deleteFiles: function (e) {
+                    var index = this.uploads.indexOf(e.model.item);
+                    this.uploads.splice(index, 1);
+
+                    this.$.delete_files_ajax.body = JSON.stringify(e.model.item);
+                    this.$.delete_files_ajax.generateRequest();
+                },
+                _deletedAttachResponse: function (e) {
+                    if (this.deleted_files.eReasonCode === 1) {
+                        this._openToast("Anexo eliminado com sucesso.");
+
+                        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._requisitionid });
+                        this.$.page_LoadAttachments_ajax.generateRequest();
+
+                    } else if (this.deleted_files.eReasonCode === 2) {
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
+                    }
+                },
+
 
             });
         });
