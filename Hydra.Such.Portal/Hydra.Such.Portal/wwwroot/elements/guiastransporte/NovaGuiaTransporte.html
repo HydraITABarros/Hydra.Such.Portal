@@ -309,7 +309,7 @@
         </iron-ajax>
 
         <iron-ajax url="/GuiasTransporteNav/Register"
-                   last-response="{{ noGuiaTransporteHistoric }}"
+                   last-response="{{ registerReturnCode }}"
                    method="post"
                    handle-as="json"
                    id="register_guia_ajax"
@@ -2453,85 +2453,88 @@
                 },
 
                 _registerResponse: function (e) {
-                    var errorMsg = "(" + this.noGuiaTransporteHistoric + ") Não foi possível Registar a guia. Tente novamente!\n";
+                    var errorMsg = "(" + this.registerReturnCode + ") Não foi possível Registar a guia. Tente novamente!\n";
 
-                    if (this.noGuiaTransporteHistoric == null) {
+                    if (this.registerReturnCode == null) {
                         this._openToastError(errorMsg + "Em caso de falha persistente contacte o Suporte!");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -1) {
+                    if (this.registerReturnCode === -1) {
                         this._openToastError(errorMsg + "No de Guia desconhecido!");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -10) {
+                    if (this.registerReturnCode === -10) {
                         this._openToastError(errorMsg + "No de Guia desconhecido!");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -20) {
+                    if (this.registerReturnCode === -20) {
                         this._openToastError(errorMsg + "Local de descarga ou Código Postal Descarga não preenchido!");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -30) {
+                    if (this.registerReturnCode === -30) {
                         this._openToastError(errorMsg + "Código(s) Postal(is) (Carga ou Descarga) inválido(s)!");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -40) {
+                    if (this.registerReturnCode === -40) {
                         this._openToastError(errorMsg + "Código(s) Postal(is) (Carga ou Descarga) inválido(s)!");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -50) {
+                    if (this.registerReturnCode === -50) {
                         this._openToastError(errorMsg + "Nif não preenchido!");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -60) {
+                    if (this.registerReturnCode === -60) {
                         this._openToastError(errorMsg + "Data Descarga inválida");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -70) {
+                    if (this.registerReturnCode === -70) {
                         this._openToastError(errorMsg + "Guia sem linhas");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -80) {
+                    if (this.registerReturnCode === -80) {
                         this._openToastError(errorMsg + "Guia sem linhas com quantidade válida");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -90) {
+                    if (this.registerReturnCode === -90) {
                         this._openToastError(errorMsg + "Existem linhas com Unidade de Medida inválida");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -100) {
+                    if (this.registerReturnCode === -100) {
                         this._openToastError(errorMsg + "Região e/ou Área Funcional inválidos");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -110) {
+                    if (this.registerReturnCode === -110) {
                         this._openToastError(errorMsg + "Não existe configuração de número de série para o registo de Guias de Transporte no NAV2017");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -120) {
+                    if (this.registerReturnCode === -120) {
                         this._openToastError(errorMsg + "Erro desconhecido!");
                         return;
                     }
 
-                    if (this.noGuiaTransporteHistoric === -999) {
+                    if (this.registerReturnCode === -999) {
                         this._openToastError(errorMsg + "Erro desconhecido!");
                         window.location.href = "/GuiasTransporteNav";
                         return;
                     }
                     // SUCCESS
-                    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + noGuiaTransporteHistoric + "?isHistoric=" + true;
+                    if (this.registerReturnCode === "OK") {
+                        this._openToast("Foi agendado o registo da Guia de Transporte. Receberá um email com o registo. Poderá consultar a Guia Registada no Histórico")
+                    }
+                    //window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + noGuiaTransporteHistoric + "?isHistoric=" + true;
                 },
 
                 // **** Auxiliary functions ********

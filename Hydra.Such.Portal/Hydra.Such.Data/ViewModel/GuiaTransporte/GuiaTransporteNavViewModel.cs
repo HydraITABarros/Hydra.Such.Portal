@@ -90,6 +90,11 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
 
         public string Viatura { get; set; }
 
+        // zpgm.18072019.b
+        public bool ReadyToRegister { get; set; }
+        public string UserEmail { get; set; }
+        // zpgm.18072019.e
+
         public List<LinhaGuiaTransporteNavViewModel> LinhasGuiaTransporte { get; set; }
         public FiscalAuthorityCommunicationLog FiscalCommunicationLog { get; set; }
         #endregion

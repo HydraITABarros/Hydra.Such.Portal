@@ -75,5 +75,10 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string VATRegistrationNo { get; set; }
 
         public string Viatura { get; set; }
+
+        // zpgm.18072019
+        //public bool ReadyToRegister { get; set; }
+        //public string UserEmail { get; set; }
+        // zpgm.18072019.e
     }
 }

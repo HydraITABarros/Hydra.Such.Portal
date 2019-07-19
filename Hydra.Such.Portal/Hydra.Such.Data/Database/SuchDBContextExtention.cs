@@ -212,9 +212,11 @@ namespace Hydra.Such.Data.Database
             //// execute sp sql
             string sql = String.Format("EXEC {0} {1};", procedureName, paramName);
 
+
             //// execute sql
             try
             {
+                // /!\/!\ zpgm.18072019 ****** SQL injection vulnerability! *******
                 context.Database.ExecuteSqlCommand(sql, parameter);
                 return true;
             }
