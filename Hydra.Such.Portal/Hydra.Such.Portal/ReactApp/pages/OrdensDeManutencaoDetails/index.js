@@ -182,10 +182,10 @@ class OrdensDeManutencaoLine extends Component {
 		servicos: [],
 		tooltipReady: false,
 		maintenanceOrder: {},
-		maintenanceOrders: [],
-		maintenanceOrdersTotal: 0,
-		maintenanceOrdersLinesIsLoading: false,
-		maintenanceOrdersLinesNext: "",
+		equipments: [],
+		equipmentsTotal: 0,
+		equipmentsIsLoading: false,
+		equipmentsLinesNext: "",
 		listContainerStyle: {},
 		selectionMode: false,
 		selectedRows: []
@@ -197,8 +197,8 @@ class OrdensDeManutencaoLine extends Component {
 		moment.locale("pt");
 		this.handleResize = this.handleResize.bind(this);
 		this.handleGridScroll = this.handleGridScroll.bind(this);
-		this.fetchMaintenanceOrders = this.fetchMaintenanceOrders.bind(this);
-		this.handleFetchMaintenanceOrdersRequest = this.handleFetchMaintenanceOrdersRequest.bind(this);
+		this.fetchEquipements = this.fetchEquipements.bind(this);
+		this.handleFetchEquipementsRequest = this.handleFetchEquipementsRequest.bind(this);
 		this.state.orderId = this.props.match.params.orderid;
 		this.addTechnical = this.addTechnical.bind(this);
 	}
@@ -224,7 +224,6 @@ class OrdensDeManutencaoLine extends Component {
 	}
 
 	setTableMarginTop() {
-
 		clearTimeout(headerHeightTimer);
 		headerHeightTimer = setTimeout(() => {
 			if (typeof $ == 'undefined') {
@@ -246,23 +245,21 @@ class OrdensDeManutencaoLine extends Component {
 		}, 100);
 	}
 
-	fetchMaintenanceOrders({ search, sort, page }, cb) {
+	fetchEquipements({ search, sort, page }, cb) {
 		cb = cb || (() => { });
 		var isNext = page > 1;
 
-		this.setState({ maintenanceOrdersLinesIsLoading: true }, () => {
-			if (isNext && this.state.maintenanceOrdersLinesNext != "") {
+		this.setState({ equipmentsIsLoading: true }, () => {
+			if (isNext && this.state.equipmentsLinesNext != "") {
 				call = axios.CancelToken.source();
-				this.handleFetchMaintenanceOrdersRequest(axios.get(this.state.maintenanceOrdersLinesNext, { cancelToken: call.token }), isNext);
+				this.handleFetchEquipementsRequest(axios.get(this.state.equipmentsLinesNext, { cancelToken: call.token }), isNext);
 			} else {
 				if (call) { call.cancel(); }
 				call = axios.CancelToken.source();
-				this.setState({ maintenanceOrdersLinesIsLoading: true, maintenanceOrdersLinesNext: "", maintenanceOrders: [], maintenanceOrdersTotal: 0 }, () => {
+				this.setState({ equipmentsIsLoading: true, equipmentsLinesNext: "", equipments: [], equipmentsTotal: 0 }, () => {
 					var orderId = this.state.orderId;
 					var filter = "";
-
 					if (search && search.length > 0) {
-
 						search.map((value, index) => {
 							if (index > 0) {
 								filter += " and "
@@ -278,7 +275,6 @@ class OrdensDeManutencaoLine extends Component {
 							}
 							filter += ")";
 						});
-
 					}
 
 					var params = {
@@ -290,29 +286,28 @@ class OrdensDeManutencaoLine extends Component {
 					if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
 						params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
 					}
-					this.handleFetchMaintenanceOrdersRequest(axios.get(`/ordens-de-manutencao/${orderId}`, { params }), isNext);
+					this.handleFetchEquipementsRequest(axios.get(`/ordens-de-manutencao/${orderId}`, { params }), isNext);
 				});
 			}
 		});
 
 	}
 
-	handleFetchMaintenanceOrdersRequest(request, isNext) {
+	handleFetchEquipementsRequest(request, isNext) {
 		request.then((result) => {
 			var data = result.data;
 			this.setTableMarginTop();
 			if (data.ordersCountsLines && data.resultLines && data.resultLines.items) {
 				var list = data.resultLines.items;
 				var nextPageLink = data.resultLines.nextPageLink;
-
 				this.setState({
 					maintenanceOrder: data.order,
 					marcas: data.marcas,
 					servicos: data.servicos,
-					maintenanceOrders: isNext ? this.state.maintenanceOrders.concat(list) : list,
-					maintenanceOrdersTotal: data.resultLines.count,
+					equipments: isNext ? this.state.equipments.concat(list) : list,
+					equipmentsTotal: data.resultLines.count,
 					ordersCountsLines: data.ordersCountsLines,
-					maintenanceOrdersLinesNext: nextPageLink,
+					equipmentsLinesNext: nextPageLink,
 				});
 			}
 		}).catch(function (error) {
@@ -322,7 +317,7 @@ class OrdensDeManutencaoLine extends Component {
 				console.log(error);
 			}
 		}).then(() => {
-			this.setState({ isLoading: false, maintenanceOrdersLinesIsLoading: false });
+			this.setState({ isLoading: false, equipmentsIsLoading: false });
 			setTimeout(() => {
 				this.setState({ tooltipReady: true });
 				Tooltip.Hidden.hide();
@@ -367,10 +362,10 @@ class OrdensDeManutencaoLine extends Component {
 					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} onScroll={this.handleGridScroll} >
 						<PivotTable
 							onRef={el => this.table = el}
-							isLoading={this.state.maintenanceOrdersLinesIsLoading}
-							rows={this.state.maintenanceOrders}
+							isLoading={this.state.equipmentsIsLoading}
+							rows={this.state.equipments}
 							pageSize={30}
-							total={this.state.maintenanceOrdersTotal}
+							total={this.state.equipmentsTotal}
 							rowId={'numEquipamento'}
 							columns={[
 								{ name: 'estado', title: ' ', sortingEnabled: false, selectionEnabled: false, width: 60, groupingEnabled: false, sortingEnabled: false },
@@ -383,10 +378,10 @@ class OrdensDeManutencaoLine extends Component {
 								{ name: 'numEquipamento', title: 'Nº Equipamento', groupingEnabled: false, sortingEnabled: true },
 								{ name: 'action', title: ' ', sortingEnabled: false, selectionEnabled: false, width: 60, groupingEnabled: false, sortingEnabled: false },
 							]}
-							getRows={this.fetchMaintenanceOrders}
+							getRows={this.fetchEquipements}
 							onRowSelectionChange={(e) => {
-								this.setState({ selectionMode: e.selectionMode, selectedRows: e.selectedRows, maintenanceOrdersLinesIsLoading: true }, () => {
-									this.setState({ maintenanceOrdersLinesIsLoading: false })
+								this.setState({ selectionMode: e.selectionMode, selectedRows: e.selectedRows, equipmentsIsLoading: true }, () => {
+									this.setState({ equipmentsIsLoading: false })
 								});
 							}}
 							onRowClick={(row) => {
