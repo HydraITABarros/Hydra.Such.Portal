@@ -32,6 +32,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { renderToString } from 'react-dom/server';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+import async from 'async';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -316,6 +318,9 @@ const SearchWrapper = styled.div`
 
 var timer = 0;
 
+var cancelToken = axios.CancelToken;
+var call;
+
 class OrdensDeManutencao extends Component {
 	state = {
 		isLoading: true,
@@ -341,6 +346,7 @@ class OrdensDeManutencao extends Component {
 		maintenenceOrdersIsLoading: true,
 		maintenenceOrdersSearchValue: "",
 		maintenenceOrdersNext: "",
+		maintenanceOrdersTotal: 0,
 		technicals: [],
 		technicalsFiltered: [],
 		technicalsIsLoading: true,
@@ -348,6 +354,8 @@ class OrdensDeManutencao extends Component {
 		technicalsOpen: false,
 		technicalsSelectedOrder: { technicals: [] },
 		technicalsSelectedOrderOld: { technicals: [] },
+		clients: null,
+		institutions: null,
 		selectedOrder: "",
 		datePickerOpen: false,
 		datePickerMarginTop: 0,
@@ -365,17 +373,7 @@ class OrdensDeManutencao extends Component {
 		super(props);
 		moment.locale("pt");
 		this.fetchMaintenenceOrders = this.fetchMaintenenceOrders.bind(this);
-		if (props.state.calendar.from) {
-			this.state.calendar.from = this.props.state.calendar.from;
-		} else {
-			this.state.calendar.from = moment().subtract(1, 'month').startOf('month');
-		}
 
-		if (props.state.calendar.to) {
-			this.state.calendar.to = this.props.state.calendar.to;
-		} else {
-			this.state.calendar.to = moment().subtract(1, 'month').endOf('month');
-		}
 		if (props.state.maintenenceOrders.length > 0) {
 			this.state.maintenenceOrders = props.state.maintenenceOrders;
 			this.state.ordersCounts = props.state.ordersCounts;
@@ -384,14 +382,14 @@ class OrdensDeManutencao extends Component {
 			this.state.isLoading = false;
 			this.state.maintenenceOrdersIsLoading = false;
 		} else {
-			this.fetchMaintenenceOrders({ ...this.state.calendar });
+			//this.fetchMaintenenceOrders();
 		}
 
 		this.handleResize = this.handleResize.bind(this);
-		this.handleGridScroll = this.handleGridScroll.bind(this);
 		this.handleDateChange = this.handleDateChange.bind(this);
 		this.filterListByKeysValue = this.filterListByKeysValue.bind(this);
 		this.handleTechnicalsClose = this.handleTechnicalsClose.bind(this);
+		this.handleFetchMaintenanceRequest = this.handleFetchMaintenanceRequest.bind(this);
 	}
 
 	fetchTechnicals({ orderId, technicalId, local }, cb) {
@@ -427,30 +425,108 @@ class OrdensDeManutencao extends Component {
 		});
 	}
 
-	fetchMaintenenceOrders({ from, to, search }, cb) {
-		var filter = null;
-		if (search && search != '') {
-			filter = "contains(description,'" + search + "') or contains(customerName,'" + search + "') or contains(no,'" + search + "')"
-		}
-		axios.get('/ordens-de-manutencao', {
-			params: {
-				$select: 'no, description, customerName, orderType, idTecnico1, idTecnico2, idTecnico3, idTecnico4, idTecnico5, orderDate, shortcutDimension1Code, idClienteEvolution, idInstituicaoEvolution, idServicoEvolution',
-				$filter: filter
-			}
-		}).then((result) => {
+
+	fetchMaintenenceOrders({ search, sort, page }, cb) {
+		cb = cb || (() => { });
+		var isNext = page > 1;
+		this.setState({ maintenenceOrdersIsLoading: true }, () => {
+
+			if (isNext && this.state.maintenenceOrdersNext != "") {
+				call = axios.CancelToken.source();
+				this.handleFetchMaintenanceRequest(axios.get(this.state.maintenenceOrdersNext, { cancelToken: call.token }), isNext);
+			} else {
+				if (call) { call.cancel(); }
+				call = axios.CancelToken.source();
+				this.setState({ maintenenceOrdersIsLoading: true, maintenenceOrdersNext: "", maintenanceOrders: [], maintenanceOrdersTotal: 0 }, () => {
+					async.parallel([
+						(cb) => {
+							if (this.state.institutions == null) {
+								axios.get('/ordens-de-manutencao/institutions').then((result) => {
+									this.setState({ institutions: result.data }, () => { cb(null, 1); });
+								}).catch(function (error) { cb(null, 1); });
+							} else {
+								cb(null, 1);
+							}
+						}, (cb) => {
+							if (this.state.clients == null) {
+								axios.get('/ordens-de-manutencao/clients').then((result) => {
+									this.setState({ clients: result.data }, () => { cb(null, 2); });
+								}).catch(function (error) {
+									cb(null, 2);
+								});
+							} else {
+								cb(null, 2);
+							}
+						}, (cb) => {
+							var filter = "";
+							if (search && search.length > 0) {
+								search.map((value, index) => {
+									if (index > 0) { filter += " and "; };
+									filter += "(contains(description,'" + value + "') or contains(no,'" + value + "') " + getOdataDateFilterExpression(true, 'orderDate', value, "or");
+									//filter += "(contains(description,'" + value + "') or contains(no,'" + value + "') or " + getOdataDateFilterExpression('orderDate', value) + " or date(orderDate) eq " + moment(value).format('YYYY-MM-DD') + "";
+									var _institutions = this.state.institutions.filter((item) => { return item.name.toLowerCase().indexOf(value.toLowerCase()) > -1; }).map(item => item.id).join(',');
+									if (_institutions.length > 0) {
+										filter += " or idInstituicaoEvolution in (" + _institutions + ")";
+									}
+									var _clients = this.state.clients.filter((item) => { return item.name.toLowerCase().indexOf(value.toLowerCase()) > -1; }).map(item => item.id).join(',');
+									if (_clients.length > 0) {
+										filter += " or idClienteEvolution in (" + _clients + ")";
+									}
+									filter += ")";
+								});
+							}
+							var params = {
+								$select: 'no,description,customerName,orderType,idTecnico1,idTecnico2,idTecnico3,idTecnico4,idTecnico5,orderDate,shortcutDimension1Code,idClienteEvolution,idInstituicaoEvolution,idServicoEvolution',
+								$filter: filter == "" ? null : filter,
+								$count: true,
+								cancelToken: call.token
+							}
+
+							if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
+								params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
+							}
+
+							var request = axios.get('/ordens-de-manutencao', { params });
+
+							cb(null, request);
+						}
+					], (err, results) => {
+						this.handleFetchMaintenanceRequest(results[2]);
+					});
+
+				});
+			};
+
+
+		});
+	}
+
+	handleFetchMaintenanceRequest(request, isNext) {
+		request.then((result) => {
 			var data = result.data;
 			this.setTableMarginTop();
 			if (data.ordersCounts && data.result && data.result.items) {
 				var list = data.result.items;
 				var nextPageLink = data.result.nextPageLink;
-				this.setState({ ordersCounts: data.ordersCounts, maintenenceOrders: list, maintenenceOrdersNext: nextPageLink }, () => {
+				console.log(data.result.count, isNext);
+				this.setState({
+					ordersCounts: data.ordersCounts,
+					maintenenceOrders: isNext ? this.state.maintenenceOrders.concat(list) : list,
+					maintenanceOrdersTotal: data.result.count,
+					maintenenceOrdersNext: nextPageLink,
+				}, () => {
 					this.props.dispatchState(this.state);
 				});
 			}
 		}).catch(function (error) {
 		}).then(() => {
 			this.setState({ isLoading: false, maintenenceOrdersIsLoading: false });
-		});
+			setTimeout(() => {
+				this.setState({ tooltipReady: true });
+				Tooltip.Hidden.hide();
+				Tooltip.Hidden.rebuild();
+			}, 1200);
+		})
 	}
 
 	componentDidMount() {
@@ -466,42 +542,6 @@ class OrdensDeManutencao extends Component {
 			setTimeout(() => {
 				this.setDatePickerMarginTop();
 				this.setTableMarginTop();
-			}, 0)
-		})();
-	}
-
-	handleGridScroll(e) {
-		(() => {
-			setTimeout(() => {
-				Tooltip.Hidden.hide();
-				Tooltip.Hidden.rebuild();
-				var listWrapper = ReactDOM.findDOMNode(this.listWrapper);
-				var scrollTop = listWrapper.scrollTop;
-				var containerHeight = listWrapper.clientHeight;
-				if (scrollTop > containerHeight && !this.state.maintenenceOrdersIsLoading) {
-					this.setState({ maintenenceOrdersIsLoading: true }, () => {
-						axios.get(this.state.maintenenceOrdersNext).then((result) => {
-							Tooltip.Hidden.hide();
-							Tooltip.Hidden.rebuild();
-							var data = result.data;
-							this.setTableMarginTop();
-							if (data.ordersCounts && data.result && data.result.items) {
-								var list = data.result.items;
-								var nextPageLink = data.result.nextPageLink;
-								this.setState({ ordersCounts: data.ordersCounts, maintenenceOrders: this.state.maintenenceOrders.concat(list), maintenenceOrdersNext: nextPageLink }, () => {
-									Tooltip.Hidden.hide();
-									Tooltip.Hidden.rebuild();
-									this.props.dispatchState(this.state);
-								});
-							}
-						}).catch().then(() => {
-							this.setState({ maintenenceOrdersIsLoading: false }, () => {
-								Tooltip.Hidden.hide();
-								Tooltip.Hidden.rebuild();
-							});
-						});;
-					});
-				}
 			}, 0)
 		})();
 	}
@@ -543,7 +583,6 @@ class OrdensDeManutencao extends Component {
 			if (appNavbarCollapse) {
 				var height = window.innerHeight - top - (document.getElementById("app-navbar-collapse").offsetHeight * 1);
 				this.setState({ listContainerStyle: { "height": height, marginTop: top } }, () => {
-					console.log(this.state.listContainerStyle.height, this.state.listContainerStyle.marginTop);
 				})
 			}
 		}, 100))();
@@ -585,14 +624,11 @@ class OrdensDeManutencao extends Component {
 							<Wrapper padding={'25px 25px 0'}>
 								<TextHeader h2>Ordens de Manutenção <br /> <b>Por executar</b></TextHeader>
 
-								<Hidden smUp >
+								<Hidden mdUp >
 									<br /> <br />
 									<Button icon={<Icon archive />} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }} >Arquivo</Button>
 								</Hidden>
 
-								<PullRight>
-									<Hidden mdUp xsDown><Button style={{ boxShadow: 'none' }} icon={<Icon archive />} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }}>Arquivo</Button></Hidden>
-								</PullRight>
 							</Wrapper>
 						</Grid>
 						<Grid container item md={6} xs={12}>
@@ -626,8 +662,16 @@ class OrdensDeManutencao extends Component {
 							</CircleOmWrapper>
 						</Grid>
 						<Grid item xs>
-							<Hidden smDown >
-								<Wrapper padding={'25px'} textAlign="right" smTextAlign="center"></Wrapper>
+							<Hidden smDown>
+								<Wrapper padding={'25px'} textAlign="right" smTextAlign="center">
+									<PullRight>
+										<Button style={{ boxShadow: 'none' }}
+											icon={<Icon archive />}
+											onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }}>
+											Arquivo
+										</Button>
+									</PullRight>
+								</Wrapper>
 							</Hidden>
 						</Grid>
 
@@ -649,10 +693,10 @@ class OrdensDeManutencao extends Component {
 								{ name: 'isPreventive', title: 'Tipo', width: 100, dataType: 'isPreventive', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
 								{ name: 'description', title: 'Descrição', dataType: 'bold', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
 								{ name: 'no', title: 'Nº OM ', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
-								{ name: 'orderDate', title: 'Data', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
-								{ name: 'clientName', title: 'Cliente', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
-								{ name: 'institutionName', title: 'Instituição', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
-								{ name: 'technicals', title: 'Técnicos', sortingEnabled: true, dataType: 'avatars', selectionEnabled: true, groupingEnabled: false },
+								{ name: 'orderDate', title: 'Data', dataType: 'date', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'clientName', title: 'Cliente', sortingEnabled: false, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'institutionName', title: 'Instituição', sortingEnabled: false, selectionEnabled: true, groupingEnabled: false },
+								{ name: 'technicals', title: 'Técnicos', sortingEnabled: false, dataType: 'avatars', selectionEnabled: true, groupingEnabled: false },
 							]}
 							getRows={this.fetchMaintenenceOrders}
 							onRowSelectionChange={(e) => {
@@ -668,6 +712,7 @@ class OrdensDeManutencao extends Component {
 								}
 							}}
 							groupingEnabled={false}
+							searchEnabled={true}
 							allowMultiple={false}
 						/>
 
@@ -774,5 +819,49 @@ const mapDispatchToProps = dispatch => ({
 		payload: payload
 	})
 })
+
+const getOdataDateFilterExpression = (monthString = true, field, value, prefix) => {
+	if (!value) {
+		return "";
+	}
+	var retval = "";
+	value.split(" ").map((val, i) => {
+
+		if (monthString) {
+			var months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+			var matchedMonth;
+			months.map((item, index) => {
+				if (item.substring(0, val.length).toLowerCase() == val.toLowerCase()) {
+					matchedMonth = index + 1;
+				}
+			});
+
+			if (matchedMonth) {
+				if (i > 0) {
+					retval += " and ";
+				}
+				retval += " month(" + field + ") eq " + matchedMonth + " ";
+				return;
+			}
+		}
+		if (!isNaN(val) && val.length == 2) {
+			if (i > 0) {
+				retval += " and ";
+			}
+			retval += " day(" + field + ") eq " + val + " " + (!monthString ? " and month(" + field + ") eq " + val + " " : "");
+			return;
+		}
+
+		if (!isNaN(val) && val.length == 4) {
+			if (i > 0) {
+				retval += " and ";
+			}
+			retval += " year(" + field + ") eq " + val + " ";
+			return;
+		}
+	});
+
+	return retval != "" ? prefix + retval : retval;
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withTheme(OrdensDeManutencao)));
