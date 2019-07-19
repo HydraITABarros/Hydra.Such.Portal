@@ -1438,25 +1438,44 @@ namespace Hydra.Such.Portal.Controllers
                         ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
                         if (CU != null && CU.ArquivarREQPendentes.HasValue && CU.ArquivarREQPendentes == true)
                         {
+                            //Apagar o movimento de aprovação atual
+                            int NoMovApro = 0;
+                            MovimentosDeAprovação MovApro = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 1).LastOrDefault();
+                            if (MovApro != null)
+                            {
+                                NoMovApro = MovApro.NºMovimento;
+                                List<UtilizadoresMovimentosDeAprovação> UserMovs = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MovApro.NºMovimento).ToList();
+
+                                if (UserMovs != null && UserMovs.Count() > 0)
+                                {
+                                    foreach (UtilizadoresMovimentosDeAprovação UserMov in UserMovs)
+                                    {
+                                        if (UserMov != null)
+                                        {
+                                            if (DBUserApprovalMovements.Delete(UserMov) != true)
+                                            {
+                                                item.eReasonCode = 2;
+                                                item.eMessage = "Ocorreu um erro: Ao eliminar o utilizador de aprovação.";
+                                                return Json(item);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (DBApprovalMovements.Delete(MovApro) != true)
+                                {
+                                    item.eReasonCode = 2;
+                                    item.eMessage = "Ocorreu um erro: Ao eliminar o movimento de aprovação.";
+                                    return Json(item);
+                                }
+                            }
+
+                            //Passa a Requisição para o estado Arquivado
                             item.State = RequisitionStates.Archived;
                             item.UpdateUser = User.Identity.Name;
                             item.UpdateDate = DateTime.Now;
-                            if (DBRequest.Update(item.ParseToDB()) != null)
+                            if (DBRequest.Update(item.ParseToDB(), false, true) != null)
                             {
-                                //Se Arquivada com sucesso a Requisição é adicionado uma linha ao Workflow
-                                using (var ctx = new SuchDBContext())
-                                {
-                                    var logEntry = new RequisicoesRegAlteracoes
-                                    {
-                                        NºRequisição = item.RequisitionNo,
-                                        Estado = (int)RequisitionStates.Archived,
-                                        ModificadoEm = DateTime.Now,
-                                        ModificadoPor = User.Identity.Name
-                                    };
-                                    ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                    ctx.SaveChanges();
-                                }
-
                                 item.eReasonCode = 1;
                                 item.eMessage = "A Requisição foi Arquivada com sucesso";
                             }

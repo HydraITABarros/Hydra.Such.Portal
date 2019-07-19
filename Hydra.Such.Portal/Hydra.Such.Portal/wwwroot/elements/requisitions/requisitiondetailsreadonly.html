@@ -332,7 +332,7 @@
 
             <button type="button" class="tablinks" id="btnShowEncomendas" on-tap="_showEncomendas"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Encomendas</button>
 
-            <paper-button class="tablinks" id="btnArquivarReq" on-tap="_arquivarReq" hidden="{{ !Requisition.showBtnArquivarReqPendente }}"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
+            <paper-button class="tablinks" id="btnArquivarReq" on-tap="_arquivarReq" hidden><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -2354,6 +2354,10 @@
 
                         //excepto para o botão imprimir
                         this.$.menuImprimir.hidden = false;
+                    }
+
+                    if (this.Requisition.showBtnArquivarReqPendente == true) {
+                        this.$.btnArquivarReq.hidden = false;
                     }
                 },
                 _reqDataSourceResponse: function (data) {
