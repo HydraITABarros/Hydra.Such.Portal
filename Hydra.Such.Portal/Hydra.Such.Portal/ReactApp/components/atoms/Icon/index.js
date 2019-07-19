@@ -33,124 +33,141 @@ const IconFont = styled.span`
     -moz-osx-font-smoothing: grayscale;
  
 
-    &.icon-add:before {
-    content: "\\e900";
-    }
-    &.icon-approved:before {
-    content: "\\e901";
-    }
-    &.icon-archive:before {
-    content: "\\e902";
-    }
-    &.icon-arrow-down:before {
-    content: "\\e903";
-    }
-    &.icon-arrow-left:before {
-    content: "\\e904";
-    }
-    &.icon-arrow-right:before {
-    content: "\\e905";
-    }
-    &.icon-arrow-up:before {
-    content: "\\e906";
-    }
-    &.icon-attach:before {
-    content: "\\e907";
-    }
-    &.icon-calendar:before {
-    content: "\\e908";
-    }
-    &.icon-comments:before {
-    content: "\\e909";
-    }
-    &.icon-curativa:before {
-    content: "\\e90a";
-    }
-    &.icon-decline:before {
-    content: "\\e90b";
-    }
-    &.icon-download:before {
-    content: "\\e90c";
-    }
-    &.icon-equipamentos:before {
-    content: "\\e90d";
-    }
-    &.icon-eye:before {
-    content: "\\e90e";
-    }
-    &.icon-folder:before {
-    content: "\\e90f";
-    }
-    &.icon-happy:before {
-    content: "\\e910";
-    }
-    &.icon-lock:before {
-    content: "\\e911";
-    }
-    &.icon-material:before {
-    content: "\\e912";
-    }
-    &.icon-meter:before {
-    content: "\\e913";
-    }
-    &.icon-no-wifi:before {
-    content: "\\e914";
-    }
-    &.icon-observation:before {
-    content: "\\e915";
-    }
-    &.icon-open:before {
-    content: "\\e916";
-    }
-    &.icon-preventiva:before {
-    content: "\\e917";
-    }
-    &.icon-print:before {
-    content: "\\e918";
-    }
-    &.icon-remove:before {
-    content: "\\e919";
-    }
-    &.icon-report-menu:before {
-    content: "\\e91a";
-    }
-    &.icon-report:before {
-    content: "\\e91b";
-    }
-    &.icon-row-menu:before {
-    content: "\\e91c";
-    }
-    &.icon-sad:before {
-    content: "\\e91d";
-    }
-    &.icon-search:before {
-    content: "\\e91e";
-    }
-    &.icon-share:before {
-    content: "\\e91f";
-    }
-    &.icon-signature:before {
-    content: "\\e920";
-    }
-    &.icon-tecnico:before {
-    content: "\\e921";
-    }
-    &.icon-tool:before {
-    content: "\\e922";
-    }
-    &.icon-validation:before {
-    content: "\\e923";
-    }
-    &.icon-warning:before {
-    content: "\\e925";
-    }
-    &.icon-obsv:before {
-    content: "\\e926";
-    }
-    &.icon-circle:before {
-    content: "\\e924";
-    }
-
+&.icon-no-data:before {
+  content: "\\e900";
+}
+&.icon-voltar:before {
+  content: "\\e901";
+}
+&.icon-observacoes:before {
+  content: "\\e902";
+}
+&.icon-fotografias:before {
+  content: "\\e903";
+}
+&.icon-upload:before {
+  content: "\\e904";
+}
+&.icon-options:before {
+  content: "\\e905";
+}
+&.icon-circle-on:before {
+  content: "\\e906";
+}
+&.icon-circle-off:before {
+  content: "\\e907";
+}
+&.icon-validation:before {
+  content: "\\e908";
+}
+&.icon-remove:before {
+  content: "\\e909";
+}
+&.icon-add:before {
+  content: "\\e90a";
+}
+&.icon-arrow-left:before {
+  content: "\\e90b";
+}
+&.icon-arrow-right:before {
+  content: "\\e90c";
+}
+&.icon-arrow-up:before {
+  content: "\\e90d";
+}
+&.icon-arrow-down:before {
+  content: "\\e90e";
+}
+&.icon-decline:before {
+  content: "\\e90f";
+}
+&.icon-comments:before {
+  content: "\\e910";
+}
+&.icon-approved:before {
+  content: "\\e911";
+}
+&.icon-row-menu:before {
+  content: "\\e912";
+}
+&.icon-report-menu:before {
+  content: "\\e913";
+}
+&.icon-observation:before {
+  content: "\\e914";
+}
+&.icon-warning:before {
+  content: "\\e915";
+}
+&.icon-print:before {
+  content: "\\e916";
+}
+&.icon-no-wifi:before {
+  content: "\\e917";
+}
+&.icon-attach:before {
+  content: "\\e918";
+}
+&.icon-signature:before {
+  content: "\\e919";
+}
+&.icon-lock:before {
+  content: "\\e91a";
+}
+&.icon-open:before {
+  content: "\\e91b";
+}
+&.icon-equipamentos:before {
+  content: "\\e91c";
+}
+&.icon-share:before {
+  content: "\\e91d";
+}
+&.icon-tecnico:before {
+  content: "\\e91e";
+}
+&.icon-folder:before {
+  content: "\\e91f";
+}
+&.icon-material:before {
+  content: "\\e920";
+}
+&.icon-meter:before {
+  content: "\\e921";
+}
+&.icon-tool:before {
+  content: "\\e922";
+}
+&.icon-eye:before {
+  content: "\\e923";
+}
+&.icon-report:before {
+  content: "\\e924";
+}
+&.icon-download:before {
+  content: "\\e925";
+}
+&.icon-archive:before {
+  content: "\\e926";
+}
+&.icon-search:before {
+  content: "\\e927";
+}
+&.icon-calendar:before {
+  content: "\\e928";
+}
+&.icon-happy:before {
+  content: "\\e929";
+}
+&.icon-sad:before {
+  content: "\\e92a";
+}
+&.icon-curativa:before {
+  content: "\\e92b";
+}
+&.icon-preventiva:before {
+  content: "\\e92c";
+}
 `
 
 // ['add','approved','archive','arrow-down','arrow-left','arrow-right','arrow-up','attach','calendar','comments','curativa','decline','download','equipamentos','eye','folder','happy','lock','material','meter','no-wifi','observation','open','preventiva','print','remove','report-menu','report','row-menu','sad','search','share','signature','tecnico','tool','validation','warning']

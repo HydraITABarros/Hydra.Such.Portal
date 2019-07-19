@@ -114,9 +114,9 @@ class Arquivo extends Component {
                     >
                       <Tab label={<Text b><Icon meter/>EMMs</Text>}/>
                       <Tab label={<Text b><Icon material/>Mat. Aplicado</Text>} />
-                      <Tab label={<Text b><Icon meter/>Fotografias</Text>} />
+                      <Tab label={<Text b><Icon fotografias/>Fotografias</Text>} />
                       <Tab label={<Text b><Icon folder/>Documentos</Text>} />
-                      <Tab label={<Text b><Icon download/>Upload</Text>} />
+                      <Tab label={<Text b><Icon upload/>Upload</Text>} />
                     </Tabs>
                     <hr/>  
                   </Bar>
