@@ -123,14 +123,42 @@ class Header extends Component {
 				</Wrapper>
 
 				<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} padding={"200px"}>
-					<Grid item xs>
+					<Grid item md={3} xs={12} >
 						{!this.state.isLoading &&
 							<Wrapper padding={'0 25px 0'}>
 								<br />
-								<TextHeader h2><b> {this.props.maintenanceOrder.description}</b></TextHeader> <br /><br />
-								{this.props.maintenanceOrder.clientName && <Text p> {this.props.maintenanceOrder.clientName}</Text>}
-								{this.props.maintenanceOrder.institutionDescription && <Text p> {this.props.maintenanceOrder.institutionDescription}</Text>}
-								{this.props.maintenanceOrder.contractNo && <Text p><i>Contrato {this.props.maintenanceOrder.contractNo}</i></Text>}
+								<TextHeader h2 style={{
+									whiteSpace: 'nowrap',
+									textOverflow: 'ellipsis',
+									overflow: 'hidden',
+									width: '100%'
+								}}
+									data-tip={this.props.maintenanceOrder.description}
+								><b> {this.props.maintenanceOrder.description}</b></TextHeader> <br /><br />
+								{this.props.maintenanceOrder.clientName && <Text p style={{
+									whiteSpace: 'nowrap',
+									textOverflow: 'ellipsis',
+									overflow: 'hidden',
+									width: '100%'
+								}}
+									data-tip={this.props.maintenanceOrder.clientName}
+								> {this.props.maintenanceOrder.clientName}</Text>}
+								{this.props.maintenanceOrder.institutionDescription && <Text p style={{
+									whiteSpace: 'nowrap',
+									textOverflow: 'ellipsis',
+									overflow: 'hidden',
+									width: '100%'
+								}}
+									data-tip={this.props.maintenanceOrder.institutionDescription}
+								> {this.props.maintenanceOrder.institutionDescription}</Text>}
+								{this.props.maintenanceOrder.contractNo && <Text p style={{
+									whiteSpace: 'nowrap',
+									textOverflow: 'ellipsis',
+									overflow: 'hidden',
+									width: '100%'
+								}}
+									data-tip={this.props.maintenanceOrder.contractNo}
+								><i>Contrato {this.props.maintenanceOrder.contractNo}</i></Text>}
 							</Wrapper>
 						}
 					</Grid>
@@ -168,7 +196,7 @@ class Header extends Component {
 							</CircleOm.icon>
 						</CircleOmWrapper>
 					</Grid>
-					<Grid item xs>
+					<Grid item md={3} xs={12}>
 						<Hidden mdDown>
 							{!this.state.isLoading &&
 								<Wrapper textAlign="center" inline>
