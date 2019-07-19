@@ -101,7 +101,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (loggedUser == null) { return NotFound(); }
 
-            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
+            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
 
             if (evolutionLoggedUser == null) { return NotFound(); }
 
@@ -109,7 +109,7 @@ namespace Hydra.Such.Portal.Controllers
 
             IQueryable results;
 
-            IQueryable<MaintenanceOrder> query = MaintenanceOrdersRepository.AsQueryable()
+            var query = MaintenanceOrdersRepository.AsQueryable()
                 .Where(o =>
                 (preventiveCodes.Contains(o.OrderType) || curativeCodes.Contains(o.OrderType)) &&
                 o.Status == 0 && (o.IdClienteEvolution != null && o.IdClienteEvolution != 0 && o.IdInstituicaoEvolution != null && o.IdInstituicaoEvolution != 0));
@@ -128,6 +128,7 @@ namespace Hydra.Such.Portal.Controllers
              * 3, 4 = Filtrado por regiao
              * 5, 6, 7 = Filtrado por Cresp
              */
+             /**/
             switch (nivelAcesso)
             {
                 case 3:
@@ -146,6 +147,7 @@ namespace Hydra.Such.Portal.Controllers
                 default:
                     break;
             }
+            /**/
 
             results = queryOptions.ApplyTo(query.Select(o => new MaintenanceOrder
             {
@@ -163,9 +165,10 @@ namespace Hydra.Such.Portal.Controllers
                 IdTecnico2 = o.IdTecnico2,
                 IdTecnico3 = o.IdTecnico3,
                 IdTecnico4 = o.IdTecnico4,
-                IdTecnico5 = o.IdTecnico5,
+                IdTecnico5 = o.IdTecnico5
             }), new ODataQuerySettings { PageSize = pageSize });
 
+            
             var list = results.Cast<dynamic>().AsEnumerable();
             long? total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
@@ -185,13 +188,13 @@ namespace Hydra.Such.Portal.Controllers
                 var technicals = GetTechnicals(item, null, null);
                 if (technicals != null) { item.Technicals = technicals.ToList(); }
 
-                var client = evolutionWEBContext.Cliente.FirstOrDefault(c => c.IdCliente == item.IdClienteEvolution);
+                var client = evolutionWEBContext.Cliente.FirstOrDefault(c => c.IdCliente == item.IdClienteEvolution && c.Activo == true);
                 if (client != null) { item.ClientName = client.Nome; }
 
-                var institution = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == item.IdInstituicaoEvolution);
+                var institution = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == item.IdInstituicaoEvolution && i.Activo == true);
                 if (institution != null) { item.InstitutionName = institution.DescricaoTreePath; }
 
-                var service = evolutionWEBContext.Servico.FirstOrDefault(s => s.IdServico == item.IdServicoEvolution);
+                var service = evolutionWEBContext.Servico.FirstOrDefault(s => s.IdServico == item.IdServicoEvolution && s.Activo == true);
                 if (service != null) { item.ServiceName = service.Nome; }
 
                 var date = item.OrderDate;
@@ -219,6 +222,88 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [Route("institutions"), HttpGet, AcceptHeader("application/json")]
+        //[ResponseCache(Duration = 60000)]
+        public ActionResult GetInstitutions()
+        {
+            var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+
+            if (loggedUser == null) { return NotFound(); }
+
+            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
+
+            if (evolutionLoggedUser == null) { return NotFound(); }
+
+            var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+
+            var cliente = evolutionWEBContext.Cliente.Where(c => c.Activo == true);
+            var instituicao = evolutionWEBContext.Instituicao.Where(i => i.Activo == true);
+            /*
+             * filter MaintenanceOrder query based on user permissions
+             * 1, 2, 8 = Podem ver tudo
+             * 3, 4 = Filtrado por regiao
+             * 5, 6, 7 = Filtrado por Cresp
+             */
+
+           /**/
+           switch (nivelAcesso)
+           {
+               case 3: case 4:
+                   cliente = cliente.Where(c => c.RegiaoNav == evolutionLoggedUser.Code1).ToList().AsQueryable();
+                   instituicao = instituicao.Where(i => cliente.Select(c => c.IdCliente).Contains(i.Cliente)).ToList().AsQueryable();
+                   break;
+               case 5: case 6: case 7:
+                   //cliente = cliente.Where(c => c.CrespNav == evolutionLoggedUser.Code3).ToList().AsQueryable();
+                   //instituicao = instituicao.Where(i => cliente.Select(c => c.IdCliente).Contains(i.Cliente)).ToList().AsQueryable();
+                   break;
+               default:
+                   break;
+           }
+           /**/
+
+           return Json( instituicao.Select(i => new { id = i.IdInstituicao, name = i.Nome }).ToList() );
+       }
+
+       [Route("clients"), HttpGet, AcceptHeader("application/json")]
+       //[ResponseCache(Duration = 60000)]
+       public ActionResult GetClients()
+       {
+           var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+
+           if (loggedUser == null) { return NotFound(); }
+
+           var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
+
+           if (evolutionLoggedUser == null) { return NotFound(); }
+
+           var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+
+           var clients = evolutionWEBContext.Cliente.Where(c => c.Activo == true);
+           /*
+            * filter MaintenanceOrder query based on user permissions
+            * 1, 2, 8 = Podem ver tudo
+            * 3, 4 = Filtrado por regiao
+            * 5, 6, 7 = Filtrado por Cresp
+            */
+            /**/
+            switch (nivelAcesso)
+            {
+                case 3:
+                case 4:
+                    clients = clients.Where(c => c.RegiaoNav == evolutionLoggedUser.Code1).ToList().AsQueryable();
+                    break;
+                case 5:
+                case 6:
+                case 7:
+                    //clients = clients.Where(c => c.CrespNav == evolutionLoggedUser.Code3).ToList().AsQueryable();
+                    break;
+                default:
+                    break;
+            }
+            /**/
+
+            return Json(clients.Select(c => new { id = c.IdCliente, name = c.Nome }).ToList());
+        }
 
         [Route("technicals"), HttpGet]
         private IQueryable<Utilizador> GetTechnicals(MaintenanceOrderViewModel order, string orderId, string technicalid)
