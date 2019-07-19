@@ -86,6 +86,7 @@
                 "webpack-notifier": "^1.7.0"
         },
         "dependencies": {
+                "@babel/runtime": "^7.5.5",
                 "@jsonforms/core": "^2.2.2",
                 "@jsonforms/examples": "^2.2.2",
                 "@jsonforms/material-renderers": "^2.2.2",
@@ -95,6 +96,7 @@
                 "@progress/kendo-react-intl": "^2.10.0",
                 "@react-simply/state": "^1.0.2",
                 "any-resize-event": "^1.0.0",
+                "async": "^3.1.0",
                 "axios": "^0.18.0",
                 "circular-dependency-plugin": "^5.0.2",
                 "color": "^3.1.0",
