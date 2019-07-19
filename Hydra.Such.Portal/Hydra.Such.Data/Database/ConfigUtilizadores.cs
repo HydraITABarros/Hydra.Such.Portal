@@ -50,6 +50,7 @@ namespace Hydra.Such.Data.Database
         public bool? ValidarPedidoPagamento { get; set; }
         public bool? CriarProjetoSemAprovacao { get; set; }
         public bool? CMHistoricoToActivo { get; set; }
+        public bool? ArquivarREQPendentes { get; set; }
 
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<PerfisUtilizador> PerfisUtilizador { get; set; }

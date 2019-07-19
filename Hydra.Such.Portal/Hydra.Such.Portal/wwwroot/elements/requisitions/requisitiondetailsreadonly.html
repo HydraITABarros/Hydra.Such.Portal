@@ -151,15 +151,7 @@
         <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        
-        
-        
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{Projects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        
-        
-        
-        
-        
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -178,15 +170,18 @@
                    last-response="{{Requisition}}"
                    method="post" handle-as="json" content-type="application/json"
                    on-response="_reqDataSourceResponse"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/DeleteRequisitionLine"
                    id="deleteReqLine_ajax"
                    last-response="{{DelReqLineResponse}}"
                    on-response="_deleteReqLineResponse"
                    method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/CreateRequisitionLine"
                    id="createReqLine_ajax"
                    last-response="{{AddReqLineResponse}}"
                    on-response="_createReqLineResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/ValidacaoMercadoLocal"
                    last-response="{{Requisition}}"
                    id="validateLocalMarket_datasource"
@@ -194,6 +189,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/ValidateRequisition"
                    last-response="{{Requisition}}"
                    id="validaterequisition_datasource"
@@ -201,6 +197,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/AprovarRequisition"
                    last-response="{{Requisition}}"
                    id="aprovarRequisition_datasource"
@@ -208,6 +205,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/RegistByType"
                    last-response="{{regist}}"
                    id="regist_datasource"
@@ -223,6 +221,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/CreatePurchaseOrder"
                    last-response="{{Requisition}}"
                    id="createPurchOrder_ajax"
@@ -230,6 +229,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/SendPrePurchase"
                    last-response="{{Requisition}}"
                    id="sendPrePurchase_ajax"
@@ -237,6 +237,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/CreateTransferShipment"
                    last-response="{{TransferShipmentResponse}}"
                    id="createTransferShipment_ajax"
@@ -244,6 +245,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/SubmitForApproval"
                    last-response="{{SubmitForApprovalResponse}}"
                    id="submitForApproval_ajax"
@@ -251,12 +253,14 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/GetStateDescription"
                    last-response="{{stateDescription}}"
                    id="stateDescription_ajax"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/GetPlaces"
                    last-response="{{PlaceDataCollection}}"
                    method="post"
@@ -272,6 +276,7 @@
                    id="ajax_getPlacesToDeliver"
                    on-response="localDeliveryResponse"
                    content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PreRequisicoes/LoadAttachments"
                    last-response="{{uploads}}"
                    method="post"
@@ -302,6 +307,14 @@
                    id="ajax_TodasEncomendasPorProduto"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/ArquivarReq"
+                   last-response="{{arquivoResult}}"
+                   id="arquivar_datasource"
+                   on-response="_arquivarReqResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -311,7 +324,6 @@
             <!--<paper-button class="tablinks" id="btnAprovar" disabled on-tap="_aprovarRequisicao" title="Aprovar"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Aprovar</paper-button>-->
             <!--<such-dropdown-menu id="menuRegister" disabled on-value-changed="_registerMenuItemSelected" title="Registar" items='[[ _registerMenuItems ]]'></such-dropdown-menu>-->
             <!--<such-dropdown-menu id="menuFunctios" disabled on-value-changed="_functionsMenuItemSelected" title="Funções" items='[[ _functionsMenuItems ]]'></such-dropdown-menu>-->
-
             <!--<paper-button class="tablinks" id="btnPrint" on-tap="_printRequisition"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; Imprimir</paper-button>-->
             <such-dropdown-menu id="menuImprimir" on-value-changed="_menuImprimir" title="Imprimir" items="[[ _imprimirMenuItems ]]"></such-dropdown-menu>
 
@@ -319,6 +331,8 @@
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
 
             <button type="button" class="tablinks" id="btnShowEncomendas" on-tap="_showEncomendas"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Encomendas</button>
+
+            <paper-button class="tablinks" id="btnArquivarReq" on-tap="_arquivarReq" hidden><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -545,7 +559,7 @@
                                         </div>
 
                                         <div class="col-sm-6 ">
-                                            <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição" disabled> </such-textarea>
+                                            <such-textarea rows="5" value="{{Requisition.rejeicaoMotivo}}" id="txtRejeicaoMotivo" name="txtRejeicaoMotivo" label="Motivo de Rejeição \ Motivo de Arquivo" disabled> </such-textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -643,13 +657,13 @@
                                                        timeout=15000>
                                         </vaadin-upload>
                                         <!--<vaadin-upload id="UploadRequest"
-                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
-                                                       accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
-                                                       method="POST"
-                                                       headers="{'Accept': 'application/json'}"
-                                                       hidden="{{ !_permissions.update }}"
-                                                       timeout=15000>
-                                        </vaadin-upload>-->
+                                                   target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}/{{_lineno}}"
+                                                   accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                   method="POST"
+                                                   headers="{'Accept': 'application/json'}"
+                                                   hidden="{{ !_permissions.update }}"
+                                                   timeout=15000>
+                                    </vaadin-upload>-->
                                     </div>
                                     <div class="row break_clear">
                                         <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
@@ -1546,16 +1560,16 @@
                                 </vaadin-grid-column>
 
                                 <!--<template is="dom-if" if="{{ !isReadOnly() }}">
-        <template is="dom-if" if="{{ _permissions.delete }}">
-            <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
-                <template class="header">
-                </template>
-                <template>
-                    <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                </template>
-            </vaadin-grid-column>
-        </template>
-    </template>-->
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </template>
+                            </template>-->
                             </vaadin-grid>
                         </div>
 
@@ -2341,6 +2355,10 @@
                         //excepto para o botão imprimir
                         this.$.menuImprimir.hidden = false;
                     }
+
+                    if (this.Requisition.showBtnArquivarReqPendente == true) {
+                        this.$.btnArquivarReq.hidden = false;
+                    }
                 },
                 _reqDataSourceResponse: function (data) {
                     if (data.detail.status === 200) {
@@ -2791,6 +2809,55 @@
                         }
                     }
                 },
+
+                _arquivarReq: function (e) {
+                    if (e != null) {
+                        var self = this;
+                        var TMessage = this.$.ToastMessageSuccess;
+                        var TMessageError = this.$.ToastMessageError;
+                        var ARequest = this.$.arquivar_datasource;
+
+                        bootbox.prompt({
+                            title: "Introduza o motivo do arquivo!",
+                            inputType: 'textarea',
+                            buttons: {
+                                confirm: {
+                                    label: 'Arquivar',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Cancelar',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result != null) {
+                                    if (result == "") {
+                                        TMessageError.text = "É necessário preencher o motivo do Arquivo.";
+                                        TMessageError.open();
+                                        return false;
+                                    } else {
+                                        self.Requisition.rejeicaoMotivo = result;
+                                        ARequest.body = JSON.stringify(self.Requisition);
+                                        ARequest.generateRequest();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                },
+                _arquivarReqResponse: function (e) {
+                    if (this.arquivoResult.eReasonCode == "1") {
+                        this._openToast(this.arquivoResult.eMessage);
+
+                        location.reload();
+                    }
+                    else {
+                        this._openToastError(this.arquivoResult.eMessage);
+                    }
+                },
+
+
 
             });
         });

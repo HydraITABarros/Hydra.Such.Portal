@@ -1264,6 +1264,17 @@ namespace Hydra.Such.Portal.Controllers
             if (item.State != RequisitionStates.Archived)
                 item.ShowPontoSituacao = true;
 
+            item.ShowBtnArquivarReqPendente = false;
+            if (item.State == RequisitionStates.Pending)
+            {
+                ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                if (CU != null)
+                {
+                    if (CU.ArquivarREQPendentes.HasValue && CU.ArquivarREQPendentes == true)
+                        item.ShowBtnArquivarReqPendente = true;
+                }
+            }
+
             return Json(item);
         }
 
@@ -1360,6 +1371,16 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (linha.QuantityToRequire > 0)
                         {
+                            if (!string.IsNullOrEmpty(linha.ProjectNo))
+                            {
+                                NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(config.NAVDatabaseName, config.NAVCompanyName, linha.ProjectNo).FirstOrDefault();
+                                if (PROJ != null)
+                                {
+                                    linha.RegionCode = !string.IsNullOrEmpty(PROJ.RegionCode) ? PROJ.RegionCode : "";
+                                    linha.FunctionalAreaCode = !string.IsNullOrEmpty(PROJ.AreaCode) ? PROJ.AreaCode : "";
+                                    linha.CenterResponsibilityCode = !string.IsNullOrEmpty(PROJ.CenterResponsibilityCode) ? PROJ.CenterResponsibilityCode : "";
+                                }
+                            }
                             linha.UpdateUser = User.Identity.Name;
                             if (DBRequestLine.Update(DBRequestLine.ParseToDB(linha)) != null)
                             {
@@ -1400,6 +1421,95 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult ArquivarReq([FromBody] RequisitionViewModel item)
+        {
+            item.eReasonCode = 99;
+            item.eMessage = "Ocorreu um erro.";
+
+            if (item != null)
+            {
+                if (item.State == RequisitionStates.Pending)
+                {
+                    if (!string.IsNullOrEmpty(item.RejeicaoMotivo))
+                    {
+                        ConfigUtilizadores CU = DBUserConfigurations.GetById(User.Identity.Name);
+                        if (CU != null && CU.ArquivarREQPendentes.HasValue && CU.ArquivarREQPendentes == true)
+                        {
+                            //Apagar o movimento de aprovação atual
+                            int NoMovApro = 0;
+                            MovimentosDeAprovação MovApro = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 1).LastOrDefault();
+                            if (MovApro != null)
+                            {
+                                NoMovApro = MovApro.NºMovimento;
+                                List<UtilizadoresMovimentosDeAprovação> UserMovs = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == MovApro.NºMovimento).ToList();
+
+                                if (UserMovs != null && UserMovs.Count() > 0)
+                                {
+                                    foreach (UtilizadoresMovimentosDeAprovação UserMov in UserMovs)
+                                    {
+                                        if (UserMov != null)
+                                        {
+                                            if (DBUserApprovalMovements.Delete(UserMov) != true)
+                                            {
+                                                item.eReasonCode = 2;
+                                                item.eMessage = "Ocorreu um erro: Ao eliminar o utilizador de aprovação.";
+                                                return Json(item);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (DBApprovalMovements.Delete(MovApro) != true)
+                                {
+                                    item.eReasonCode = 2;
+                                    item.eMessage = "Ocorreu um erro: Ao eliminar o movimento de aprovação.";
+                                    return Json(item);
+                                }
+                            }
+
+                            //Passa a Requisição para o estado Arquivado
+                            item.State = RequisitionStates.Archived;
+                            item.UpdateUser = User.Identity.Name;
+                            item.UpdateDate = DateTime.Now;
+                            if (DBRequest.Update(item.ParseToDB(), false, true) != null)
+                            {
+                                item.eReasonCode = 1;
+                                item.eMessage = "A Requisição foi Arquivada com sucesso";
+                            }
+                            else
+                            {
+                                item.eReasonCode = 2;
+                                item.eMessage = "Ocorreu um erro: Não foi possivel Arquivar a Requisição.";
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 2;
+                            item.eMessage = "Ocorreu um erro: Não tem permissões para Arquivar a Requisição.";
+                        }
+                    }
+                    else
+                    {
+                        item.eReasonCode = 2;
+                        item.eMessage = "Ocorreu um erro: O motivo de Arquivo tem que estar preenchido.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro: A Requisição têm que estar no Estado Pendente.";
+                }
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: A Requisição não pode ser nula.";
+            }
+
+            return Json(item);
         }
 
         [HttpPost]
