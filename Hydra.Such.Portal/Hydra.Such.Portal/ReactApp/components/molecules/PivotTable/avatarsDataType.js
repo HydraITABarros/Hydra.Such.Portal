@@ -15,7 +15,6 @@ const avatarColors = [
 ];
 
 const AvatarsType = (props) => {
-	console.log(props.value);
 	//return (<div></div>);
 	return (
 		<AvatarGroup style={{ top: "-7px", position: "relative", height: '1px', fontSize: '1px' }} >
