@@ -4,6 +4,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="/lib/paper-input/paper-input.html" />
@@ -33,6 +34,10 @@
 
                 input {
                     font: inherit;
+                }
+
+                vaadin-checkbox{
+                    text-align:center;
                 }
 
                 .grid {
@@ -92,6 +97,15 @@
                 </template>
                 <template>
                     {{ item.noGuiaOriginalInterface }}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable hidden="{{ _historico}}">
+                <template class="header">
+                    <vaadin-grid-sorter path="readyToRegister">Em Registo?</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="readyToRegister"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <vaadin-checkbox id="procedimentoEmLotes" checked="{{ item.readyToRegister }}" disabled></vaadin-checkbox>
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
@@ -228,6 +242,7 @@
                 },
 
                 ready: function () {
+                    debugger;
                     this._hideColumn = !this._historico;
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
                     this.$.grid_databound_ajax.generateRequest();

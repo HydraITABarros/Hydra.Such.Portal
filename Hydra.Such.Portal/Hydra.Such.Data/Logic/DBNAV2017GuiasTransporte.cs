@@ -66,6 +66,12 @@ namespace Hydra.Such.Data.Logic
                                 DimensionSetId = temp.DimensionSetId.Equals(DBNull.Value) ? 0 : (int)temp.DimensionSetId
                             };
 
+                            if (!isHistoric)
+                            {
+                                guia.ReadyToRegister = temp.ReadyToRegister.Equals(DBNull.Value) ? false : (int)temp.ReadyToRegister == 1;
+                                guia.UserEmail = temp.UserEmail.Equals(DBNull.Value) ? "" : (string)temp.UserEmail;
+                            }
+
                             switch (guia.Tipo)
                             {
                                 case 0:
@@ -177,11 +183,15 @@ namespace Hydra.Such.Data.Logic
                         ObservacoesAdicionais = data.ObservacoesAdicionais.Equals(DBNull.Value) ? "" : (string)data.ObservacoesAdicionais,
                         UserObservacoesAdicionai = data.UserObservacoesAdicionais.Equals(DBNull.Value) ? "" : (string)data.UserObservacoesAdicionais,
                         DataObservacoesAdicionais = data.DataObservacoesAdicionais.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)data.DataObservacoesAdicionais,
-                        HoraObservacoesAdicionais = data.HoraObservacoesAdicionais.Equals(DBNull.Value) ? TimeSpan.Parse("00:00") : TimeSpan.Parse(data.HoraObservacoesAdicionais.ToShortTimeString()),
-                        // zpgm.18072019
-                        ReadyToRegister = data.ReadyToRegister.Equals(DBNull.Value) ? false : (int)data.ReadyToRegister == 1,
-                        UserEmail = data.UserEmail.Equals(DBNull.Value) ? "" : (string)data.UserEmail
+                        HoraObservacoesAdicionais = data.HoraObservacoesAdicionais.Equals(DBNull.Value) ? TimeSpan.Parse("00:00") : TimeSpan.Parse(data.HoraObservacoesAdicionais.ToShortTimeString())                        
                     };
+
+                    if (!isHistoric)
+                    {
+                        // zpgm.18072019
+                        result.ReadyToRegister = data.ReadyToRegister.Equals(DBNull.Value) ? false : (int)data.ReadyToRegister == 1;
+                        result.UserEmail = data.UserEmail.Equals(DBNull.Value) ? "" : (string)data.UserEmail;
+                    }
 
                     result.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog();
 

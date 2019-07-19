@@ -182,7 +182,7 @@ namespace Hydra.Such.Data.Database
         /// Adapted to allow the usage of table-valued parameters as decribed in 
         ///     https://docs.microsoft.com/en-us/sql/relational-databases/tables/use-table-valued-parameters-database-engine?view=sql-server-2017
         ///     
-        /// Changed method return type to bool and added the try/catch block, to become possible to catch any error executing the stored procedure
+        /// Changed method return type to bool and added the try/catch block, to catch any error while executing the stored procedure
         /// 
         /// *************************************************************************************************
         /// 

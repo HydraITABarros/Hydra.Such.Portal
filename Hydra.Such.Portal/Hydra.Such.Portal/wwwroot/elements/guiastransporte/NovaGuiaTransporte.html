@@ -336,7 +336,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_copyLines"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp; Copiar Linhas Requisição</paper-button>
+            <paper-button id="btnCopyReqLines" class="tablinks" on-tap="_copyLines"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp; Copiar Linhas Requisição</paper-button>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button raised id="btnRegister" class="tablinks" on-tap="_registerDocument" title="Registar" style="background-color:#EF842D; font-weight:bold"><i class="fa fa-institution" aria-hidden="true"></i>&nbsp; Registar</paper-button>
         </div>
@@ -1311,7 +1311,6 @@
                         self._itemUnitPrice = 0;
                         self.$.precoVendaItem.value = "";
 
-                        
                         var tipoL = this.$.tipoLinha.value;
 
                         if (tipoL != null && tipoL >= 0 && tipoL <= 1) {
@@ -1320,6 +1319,11 @@
                         }
 
                         this._isPageLoad = false;
+
+                        if (this.data.readyToRegister) {
+                            this.__disableAllControls();
+                        }
+
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
@@ -2532,9 +2536,73 @@
                     }
                     // SUCCESS
                     if (this.registerReturnCode === "OK") {
-                        this._openToast("Foi agendado o registo da Guia de Transporte. Receberá um email com o registo. Poderá consultar a Guia Registada no Histórico")
+                        this._openToast("Foi agendado o registo da Guia de Transporte. Receberá um email com o registo. Poderá consultar a Guia Registada no Histórico");
+                        window.location.href = "/GuiasTransporteNav";
                     }
                     //window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + noGuiaTransporteHistoric + "?isHistoric=" + true;
+                },
+
+                __disableAllControls: function () {
+                    var _self = this;
+
+                    if (this.data != undefined && this.data.readyToRegister) {
+                        $(_self.$.btnCopyReqLines).addClass('disabled');
+                        $(_self.$.btnUpdate).addClass('disabled');
+                        $(_self.$.btnRegister).addClass('disabled');
+                        $(_self.$.btnAddShipmentLine).addClass('disabled');
+                        $(_self.$.gridLinhas).addClass('disabled');
+
+                        _self.$.shipmentStartTime.disabled = true;
+                        _self.$.dataGuia.disabled = true;
+                        _self.$.dataSaida.disabled = true;
+                        _self.$.tipoGuia.disabled = true;
+                        _self.$.noCliente.disabled = true;
+                        _self.$.nomeCliente.disabled = true;
+                        _self.$.nomeCliente2.disabled = true;
+                        _self.$.codEnvio.disabled = true;
+                        _self.$.moradaCliente.disabled = true;
+                        _self.$.moradaCliente2.disabled = true;
+                        _self.$.nifCliente.disabled = true;
+                        _self.$.codPostal.disabled = true;
+                        _self.$.cidade.disabled = true;
+                        _self.$.noRequisicao.disabled = true;
+                        _self.$.responsabilityCenter.disabled = true;
+                        _self.$.sourceCode.disabled = true;
+                        _self.$.requisicao.disabled = true;
+                        _self.$.reportedBy.disabled = true;
+                        _self.$.noProjecto.disabled = true;
+                        _self.$.globalDimension1Code.disabled = true;
+                        _self.$.globalDimension2Code.disabled = true;
+                        _self.$.globalDimension3Code.disabled = true;
+                        _self.$.pesoTotal.disabled = true;
+                        _self.$.quantidadeTotal.disabled = true;
+                        _self.$.observacoes.disabled = true;
+                        _self.$.name.disabled = true;
+                        _self.$.address.disabled = true;
+                        _self.$.city.disabled = true;
+                        _self.$.postCode.disabled = true;
+                        _self.$.horaCarga.disabled = true;
+                        _self.$.dataCarga.disabled = true;
+                        _self.$.paisCarga.disabled = true;
+                        _self.$.localDescarga.disabled = true;
+                        _self.$.localDescarga1.disabled = true;
+                        _self.$.codPostalDescarga.disabled = true;
+                        _self.$.horaDescarga.disabled = true;
+                        _self.$.dataDescarga.disabled = true;
+                        _self.$.viatura.disabled = true;
+                        _self.$.tipoLinha.disabled = true;
+                        _self.$.codigoItem.disabled = true;
+                        _self.$.descricaoItem.disabled = true;
+                        _self.$.unidadeMedidaItem.disabled = true;
+                        _self.$.quantidadeItem.disabled = true;
+                        _self.$.quantidadeEnviarItem.disabled = true;
+                        _self.$.precoCustoItem.disabled = true;
+                        _self.$.precoVendaItem.disabled = true;
+                        _self.$.noProjectoItem.disabled = true;
+                        _self.$.regiaoItem.disabled = true;
+                        _self.$.areaFuncionalItem.disabled = true;                          
+
+                    }
                 },
 
                 // **** Auxiliary functions ********
