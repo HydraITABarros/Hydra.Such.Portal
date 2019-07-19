@@ -24,6 +24,7 @@ import BoldTypeProvider from './boldDataType';
 import IsPreventiveTypeProvider from './isPreventiveDataType';
 import DefaultTypeProvider from './defaultDataType';
 import AvatarsTypeProvider from './avatarsDataType';
+import DateTypeProvider from './dateDataType';
 
 import {
 	Column,
@@ -392,8 +393,6 @@ class eTable extends Component {
 			});
 		}
 
-		console.log(props);
-
 		rowPressTimer = setTimeout(() => {
 
 			if (this.props.allowMultiple) {
@@ -489,6 +488,7 @@ class eTable extends Component {
 		var firstColumn = headColumns[0];
 
 		var defaultExpandedGroups = getDefaultExpandedGroups(rows, this.state.group);
+
 		var totalToLoad = rows.length + defaultExpandedGroups.length + this.props.pageSize;
 		var totalMax = this.state.total + defaultExpandedGroups.length;
 		var totalRowCount = totalToLoad;
@@ -500,73 +500,78 @@ class eTable extends Component {
 		}
 		var hiddenColumns = this.state.hiddenColumns;
 
+		console.log(totalRowCount, totalToLoad, totalMax, defaultExpandedGroups, this.state.group);
+
 		return (
 			<div>
 				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading ? "" : "hidden"}>
 					<CircularProgress style={{ position: 'relative', top: '55%', color: this.props.theme.palette.secondary.default }} />
 				</div>
-
-				<SearchWrapper width={"25%"} right={"25%"} >
-					{this.state.searchValues.map((val, index) => {
-						return (
-							<StyledBadge span key={index} >
-								{val}
-								<Icon decline
-									style={{
-										fontSize: '12px', cursor: 'pointer', position: 'relative', top: '1px', left: '2px',
-										display: (this.state.selecting ? 'none' : 'inline-block')
-									}}
-									onClick={(e) => {
-										var searchValues = this.state.searchValues.filter((s) => s != val);
+				{this.props.searchEnabled &&
+					<div>
+						<SearchWrapper width={"25%"} right={"25%"} >
+							{this.state.searchValues.map((val, index) => {
+								return (
+									<StyledBadge span key={index} >
+										{val}
+										<Icon decline
+											style={{
+												fontSize: '12px', cursor: 'pointer', position: 'relative', top: '1px', left: '2px',
+												display: (this.state.selecting ? 'none' : 'inline-block')
+											}}
+											onClick={(e) => {
+												var searchValues = this.state.searchValues.filter((s) => s != val);
+												this.setState({
+													searchValues: searchValues,
+													sort: this.state.sort,
+													page: 0, isLoading: true,
+													rows: [], total: 0, clear: true,
+													selectedRows: []
+												}, () => {
+													this.setState({ clear: false });
+													this.handleSelectionEvent();
+												})
+											}}
+										/>
+									</StyledBadge>
+								)
+							}).reverse()}
+						</SearchWrapper>
+						<SearchWrapper width={"25%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
+							<TextField inputProps={{ autoComplete: "off" }} id="oms-search"
+								onKeyUp={(e) => {
+									if (e.key === 'Enter') {
+										var searchValues = this.state.searchValues;
+										searchValues.push(this.state.searchValue);
+										e.target.value = "";
 										this.setState({
-											searchValues: searchValues,
-											sort: this.state.sort,
-											page: 0, isLoading: true,
-											rows: [], total: 0, clear: true,
-											selectedRows: []
+											searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
+											isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
 										}, () => {
-											this.setState({ clear: false });
-											this.handleSelectionEvent();
-										})
-									}}
-								/>
-							</StyledBadge>
-						)
-					}).reverse()}
-				</SearchWrapper>
-				<SearchWrapper width={"25%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
-					<TextField inputProps={{ autoComplete: "off" }} id="oms-search"
-						onKeyUp={(e) => {
-							if (e.key === 'Enter') {
-								var searchValues = this.state.searchValues;
-								searchValues.push(this.state.searchValue);
-								e.target.value = "";
-								this.setState({
-									searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
-									isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
-								}, () => {
-									this.setState({ clear: false }, () => { });
-								});
-							} else {
-								let search = e.target.value.toLowerCase();
-								Tooltip.Hidden.hide();
-								Tooltip.Hidden.rebuild();
-								this.setState({
-									searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
-									rows: [], total: 0, clear: true, selectedRows: []
-								}, () => {
-									this.setState({ clear: false }, () => { });
-								});
-							}
-						}}
-						type="search" margin="none"
-						endAdornment={
-							<InputAdornment position="end" onClick={() => { document.getElementById("oms-search").focus() }}>
-								<SearchButton round boxShadow={"none"} ><Icon search /></SearchButton>
-							</InputAdornment>
-						}
-					/>
-				</SearchWrapper>
+											this.setState({ clear: false }, () => { });
+										});
+									} else {
+										let search = e.target.value.toLowerCase();
+										Tooltip.Hidden.hide();
+										Tooltip.Hidden.rebuild();
+										this.setState({
+											searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
+											rows: [], total: 0, clear: true, selectedRows: []
+										}, () => {
+											this.setState({ clear: false }, () => { });
+										});
+									}
+								}}
+								type="search" margin="none"
+								endAdornment={
+									<InputAdornment position="end" onClick={() => { document.getElementById("oms-search").focus() }}>
+										<SearchButton round boxShadow={"none"} ><Icon search /></SearchButton>
+									</InputAdornment>
+								}
+							/>
+						</SearchWrapper>
+					</div>
+				}
 				{!this.state.clear &&
 					<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
 
@@ -642,6 +647,8 @@ class eTable extends Component {
 											return (<IsPreventiveTypeProvider value={value} searchValues={this.state.searchValues.concat([this.state.searchValue])} />)
 										case "avatars":
 											return (<AvatarsTypeProvider value={value} searchValues={this.state.searchValues.concat([this.state.searchValue])} />)
+										case "date":
+											return (<DateTypeProvider value={value} searchValues={this.state.searchValues.concat([this.state.searchValue])} />)
 										default:
 											return (<DefaultTypeProvider value={value} searchValues={this.state.searchValues.concat([this.state.searchValue])} />)
 									}
@@ -749,7 +756,7 @@ class eTable extends Component {
 											onClick={() => {
 												props.onToggle()
 											}} >
-											<Icon row-menu style={{fontSize: '16px'}}/>
+											<Icon row-menu style={{ fontSize: '16px' }} />
 										</Button>
 									</div>
 								);
@@ -809,6 +816,10 @@ function multiGroupBy(array, group) {
 }
 
 var getDefaultExpandedGroups = (lines, groups) => {
+
+	if (!groups || groups.length < 1) {
+		return [];
+	}
 	var defaultExpandedGroups = [];
 	var groupedList = multiGroupBy(lines, ...groups.map((item) => { return item.columnName }));
 
