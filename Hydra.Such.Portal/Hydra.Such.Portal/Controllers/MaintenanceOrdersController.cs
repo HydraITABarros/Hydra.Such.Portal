@@ -33,8 +33,7 @@ using System.Reflection;
 namespace Hydra.Such.Portal.Controllers
 {
 
-    //[Authorize]
-    [AllowAnonymous]
+    [Authorize]    
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
@@ -60,8 +59,7 @@ namespace Hydra.Such.Portal.Controllers
             this.evolutionWEBContext = evolutionWEBContext;
             this.suchDBContext = suchDBContext;
         }
-
-        [AllowAnonymous]
+        
         [Route(""), HttpGet, AcceptHeader("text/html")]
         //[ResponseCache(Duration = 60000)]
         public IActionResult Index()
@@ -92,8 +90,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             return Index();
         }
-
-        [AllowAnonymous]
+        
         [Route(""), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
@@ -104,28 +101,20 @@ namespace Hydra.Such.Portal.Controllers
             var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
             var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
-            //if (loggedUser == null) { return NotFound(); }
+            if (loggedUser == null) { return NotFound(); }
 
-<<<<<<< HEAD
             var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
-=======
-            //var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
->>>>>>> f5bf32cd885e49add94b55776acf7f50b8902315
 
-            //if (evolutionLoggedUser == null) { return NotFound(); }
+            if (evolutionLoggedUser == null) { return NotFound(); }
 
-            //var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+            var nivelAcesso = evolutionLoggedUser.NivelAcesso;
 
             IQueryable results;
 
             var query = MaintenanceOrdersRepository.AsQueryable()
                 .Where(o =>
                 (preventiveCodes.Contains(o.OrderType) || curativeCodes.Contains(o.OrderType)) &&
-<<<<<<< HEAD
                 o.Status == 0 && (o.IdClienteEvolution != null && o.IdClienteEvolution != 0 && o.IdInstituicaoEvolution != null && o.IdInstituicaoEvolution != 0));
-=======
-                o.Status == 0 && (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
->>>>>>> f5bf32cd885e49add94b55776acf7f50b8902315
 
             var preventives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
                    preventiveCodes.Contains(o.OrderType) && o.Status == 0 &&
@@ -141,7 +130,7 @@ namespace Hydra.Such.Portal.Controllers
              * 3, 4 = Filtrado por regiao
              * 5, 6, 7 = Filtrado por Cresp
              */
-<<<<<<< HEAD
+
              /**/
             switch (nivelAcesso)
             {
@@ -162,26 +151,6 @@ namespace Hydra.Such.Portal.Controllers
                     break;
             }
             /**/
-=======
-            //switch (nivelAcesso)
-            //{
-            //    case 3:
-            //    case 4:
-            //        preventives = preventives.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
-            //        curatives = curatives.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
-            //        query = query.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
-            //        break;
-            //    case 5:
-            //    case 6:
-            //    case 7:
-            //        preventives = preventives.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
-            //        curatives = curatives.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
-            //        query = query.Where(q => q.ShortcutDimension3Code == evolutionLoggedUser.Code3);
-            //        break;
-            //    default:
-            //        break;
-            //}
->>>>>>> f5bf32cd885e49add94b55776acf7f50b8902315
 
             results = queryOptions.ApplyTo(query.Select(o => new MaintenanceOrder
             {
@@ -194,16 +163,12 @@ namespace Hydra.Such.Portal.Controllers
                 ClientName = o.ClientName,
                 InstitutionName = o.InstitutionName,
                 ServiceName = o.ServiceName,
-<<<<<<< HEAD
                 OrderType = o.OrderType,
                 IdTecnico1 = o.IdTecnico1,
                 IdTecnico2 = o.IdTecnico2,
                 IdTecnico3 = o.IdTecnico3,
                 IdTecnico4 = o.IdTecnico4,
-                IdTecnico5 = o.IdTecnico5
-=======
-                OrderType = o.OrderType
->>>>>>> f5bf32cd885e49add94b55776acf7f50b8902315
+                IdTecnico5 = o.IdTecnico5,             
             }), new ODataQuerySettings { PageSize = pageSize });
 
             
@@ -239,7 +204,6 @@ namespace Hydra.Such.Portal.Controllers
 
                 item.isPreventive = preventiveCodes.Contains(item.OrderType);
 
-
                 var orderCurative = curativeCodes.Contains(item.OrderType);
                 var orderPreventive = preventiveCodes.Contains(item.OrderType);
                 if (orderCurative)
@@ -260,9 +224,8 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
-<<<<<<< HEAD
         [Route("institutions"), HttpGet, AcceptHeader("application/json")]
-        //[ResponseCache(Duration = 60000)]
+        [ResponseCache(Duration = 86400)] /*24h*/
         public ActionResult GetInstitutions()
         {
             var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
@@ -301,10 +264,10 @@ namespace Hydra.Such.Portal.Controllers
            /**/
 
            return Json( instituicao.Select(i => new { id = i.IdInstituicao, name = i.Nome }).ToList() );
-       }
+        }
 
        [Route("clients"), HttpGet, AcceptHeader("application/json")]
-       //[ResponseCache(Duration = 60000)]
+       [ResponseCache(Duration = 86400)] /*24h*/
        public ActionResult GetClients()
        {
            var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
@@ -343,9 +306,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(clients.Select(c => new { id = c.IdCliente, name = c.Nome }).ToList());
         }
-=======
-        [AllowAnonymous]
->>>>>>> f5bf32cd885e49add94b55776acf7f50b8902315
 
         [Route("technicals"), HttpGet]
         private IQueryable<Utilizador> GetTechnicals(MaintenanceOrderViewModel order, string orderId, string technicalid)
@@ -389,10 +349,7 @@ namespace Hydra.Such.Portal.Controllers
             technicals = (new List<Utilizador>()).AsQueryable();
             return technicals;
         }
-
-
-        [AllowAnonymous]
-
+        
         [Route("{orderId}/technical"), HttpPost]
         public ActionResult AddTechnicalToOrder(string orderId)
         {
@@ -441,8 +398,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(false);
         }
-
-        [AllowAnonymous]
 
         [Route("{orderId}"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
@@ -526,7 +481,6 @@ namespace Hydra.Such.Portal.Controllers
                 s.Nome
             }).ToList();
 
-
             newList.ForEach((item) =>
             {
                 var categoria = evolutionWEBContext.EquipCategoria.FirstOrDefault(m => m.IdCategoria == item.Categoria);
@@ -572,16 +526,6 @@ namespace Hydra.Such.Portal.Controllers
             public string OrderType;
         }
 
-
-
-
-
-
-
-
-
-
-        [AllowAnonymous]
         [Route("{maintenanceSheet}"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetEquipmentDetails(List<int?> equipmentId, ODataQueryOptions<Equipamento> queryOptions, int? categoryId)
@@ -791,8 +735,6 @@ namespace Hydra.Such.Portal.Controllers
             public bool iconTaskQuantity;
             public List<int?> iconTaskEMM;
         }
-
-
 
         [Route("room"), HttpPut]
         public ActionResult RoomsPut(int? equipmentId, string room)
