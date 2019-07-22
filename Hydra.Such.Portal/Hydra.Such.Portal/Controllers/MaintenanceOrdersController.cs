@@ -350,8 +350,8 @@ namespace Hydra.Such.Portal.Controllers
             return technicals;
         }
         
-        [Route("{orderId}/technical"), HttpPost]
-        public ActionResult AddTechnicalToOrder(string orderId)
+        [Route("{orderId}/technicals/logged"), HttpPut]
+        public ActionResult SetTechnicals(string orderId)
         {
             if (orderId == null) { return NotFound(); }
 

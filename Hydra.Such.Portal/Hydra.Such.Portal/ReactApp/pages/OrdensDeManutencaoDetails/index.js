@@ -327,7 +327,7 @@ class OrdensDeManutencaoLine extends Component {
 	}
 
 	addTechnical() {
-		axios.post(`/ordens-de-manutencao/${this.state.orderId}/technical`).then((result) => {
+		axios.put(`/ordens-de-manutencao/${this.state.orderId}/technicals/logged`).then((result) => {
 			console.log('added technical', result);
 		}).catch(function (error) {
 			console.log(error);
