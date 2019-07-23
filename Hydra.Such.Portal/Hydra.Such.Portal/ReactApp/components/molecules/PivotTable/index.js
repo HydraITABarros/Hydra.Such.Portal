@@ -327,6 +327,8 @@ var rowPressTimer = 0;
 
 var resetSelection;
 
+var timeout = 0;
+
 class eTable extends Component {
 	state = {
 		group: [],
@@ -547,19 +549,18 @@ class eTable extends Component {
 										this.setState({
 											searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
 											isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
-										}, () => {
-											this.setState({ clear: false }, () => { });
-										});
+										}, () => { this.setState({ clear: false }, () => { }); });
 									} else {
 										let search = e.target.value.toLowerCase();
 										Tooltip.Hidden.hide();
 										Tooltip.Hidden.rebuild();
-										this.setState({
-											searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
-											rows: [], total: 0, clear: true, selectedRows: []
-										}, () => {
-											this.setState({ clear: false }, () => { });
-										});
+										clearTimeout(timeout);
+										timeout = setTimeout(() => {
+											this.setState({
+												searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
+												rows: [], total: 0, clear: true, selectedRows: []
+											}, () => { this.setState({ clear: false }, () => { }); });
+										}, 600);
 									}
 								}}
 								type="search" margin="none"
@@ -574,7 +575,6 @@ class eTable extends Component {
 				}
 				{!this.state.clear &&
 					<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
-
 						<SortingState sorting={this.state.sort} onSortingChange={(sort) => {
 							Tooltip.Hidden.hide();
 							Tooltip.Hidden.rebuild();
@@ -590,7 +590,6 @@ class eTable extends Component {
 						<SearchState />
 						<IntegratedFiltering /><IntegratedSorting /><IntegratedSelection />
 						<IntegratedGrouping />
-
 						<DragDropProvider />
 						<VirtualTableState
 							infiniteScrolling={false}
@@ -626,7 +625,6 @@ class eTable extends Component {
 							}}
 							cellComponent={(props) => {
 								var value = props.value;
-
 								return (<MuiTableCell {..._.omit(props, ['tableRow', 'tableColumn'])}
 									style={{
 										paddingLeft: (props.column.name == firstColumn.name ? '30px' : '12px'),
@@ -674,7 +672,6 @@ class eTable extends Component {
 								)
 							}}
 							cellComponent={(props) => {
-
 								return (<TableHeaderRow.Cell {...props}
 									style={{
 										paddingLeft: props.groupingEnabled ? (props.column.name == firstColumn.name ? '48px' : '24px') : (props.column.name == firstColumn.name ? '28px' : '12px'),
