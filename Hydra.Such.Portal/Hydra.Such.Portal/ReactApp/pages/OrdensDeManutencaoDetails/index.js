@@ -276,7 +276,6 @@ class OrdensDeManutencaoLine extends Component {
 							filter += ")";
 						});
 					}
-
 					var params = {
 						$select: 'Idequipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca,idServico,idRegiao',
 						$filter: filter != "" ? filter : null,
@@ -388,6 +387,7 @@ class OrdensDeManutencaoLine extends Component {
 								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao`);
 							}}
 							groupingEnabled={true}
+							searchEnabled={true}
 							allowMultiple={true}
 						/>
 					</ListContainer>
