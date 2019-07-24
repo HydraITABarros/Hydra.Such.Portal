@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Orçamentos - Lista";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/orcamentos/orcamentos_list.html">
+
+<x-orcamentoslist _areaid="1"
+                   _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                   _reportserverurl='@ViewBag.reportServerURL'>
+</x-orcamentoslist>

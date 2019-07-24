@@ -423,7 +423,12 @@ namespace Hydra.Such.Portal.Extensions
 
                 string Criador = DBFolhasDeHoras.GetById(number).CriadoPor;
                 string FHEmployeeNo = DBFolhasDeHoras.GetById(number).NºEmpregado;
-                string FHEmployeeID = DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo).IdUtilizador;
+                string FHEmployeeID = string.Empty;
+                ConfigUtilizadores ConfUser = DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo);
+                if (ConfUser != null)
+                {
+                    FHEmployeeID = DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo).IdUtilizador;
+                }
 
                 //Get Compatible ApprovalConfigurations
                 List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(type, functionalArea, responsabilityCenter, region, value, DateTime.Now);
