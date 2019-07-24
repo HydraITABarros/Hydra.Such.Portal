@@ -384,6 +384,7 @@ class OrdensDeManutencaoLine extends Component {
 								});
 							}}
 							onRowClick={(row) => {
+								console.log(row);
 								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=${row.categoria}&equipmentsIds=${row.idEquipamento}`);
 							}}
 							groupingEnabled={true}

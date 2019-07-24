@@ -32,8 +32,7 @@ using System.Reflection;
 
 namespace Hydra.Such.Portal.Controllers
 {
-
-    [Authorize]    
+    [Authorize]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
     {
@@ -59,7 +58,7 @@ namespace Hydra.Such.Portal.Controllers
             this.evolutionWEBContext = evolutionWEBContext;
             this.suchDBContext = suchDBContext;
         }
-        
+
         [Route(""), HttpGet, AcceptHeader("text/html")]
         //[ResponseCache(Duration = 60000)]
         public IActionResult Index()
@@ -90,7 +89,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             return Index();
         }
-        
+
         [Route(""), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
@@ -131,7 +130,7 @@ namespace Hydra.Such.Portal.Controllers
              * 5, 6, 7 = Filtrado por Cresp
              */
 
-             /**/
+            /**/
             switch (nivelAcesso)
             {
                 case 3:
@@ -168,10 +167,10 @@ namespace Hydra.Such.Portal.Controllers
                 IdTecnico2 = o.IdTecnico2,
                 IdTecnico3 = o.IdTecnico3,
                 IdTecnico4 = o.IdTecnico4,
-                IdTecnico5 = o.IdTecnico5,             
+                IdTecnico5 = o.IdTecnico5,
             }), new ODataQuerySettings { PageSize = pageSize });
 
-            
+
             var list = results.Cast<dynamic>().AsEnumerable();
             long? total = Request.ODataFeature().TotalCount;
             var nextLink = Request.GetNextPageLink(pageSize);
@@ -223,7 +222,6 @@ namespace Hydra.Such.Portal.Controllers
             });
         }
 
-
         [Route("institutions"), HttpGet, AcceptHeader("application/json")]
         [ResponseCache(Duration = 86400)] /*24h*/
         public ActionResult GetInstitutions()
@@ -247,46 +245,50 @@ namespace Hydra.Such.Portal.Controllers
              * 5, 6, 7 = Filtrado por Cresp
              */
 
-           /**/
-           switch (nivelAcesso)
-           {
-               case 3: case 4:
-                   cliente = cliente.Where(c => c.RegiaoNav == evolutionLoggedUser.Code1).ToList().AsQueryable();
-                   instituicao = instituicao.Where(i => cliente.Select(c => c.IdCliente).Contains(i.Cliente)).ToList().AsQueryable();
-                   break;
-               case 5: case 6: case 7:
-                   //cliente = cliente.Where(c => c.CrespNav == evolutionLoggedUser.Code3).ToList().AsQueryable();
-                   //instituicao = instituicao.Where(i => cliente.Select(c => c.IdCliente).Contains(i.Cliente)).ToList().AsQueryable();
-                   break;
-               default:
-                   break;
-           }
-           /**/
+            /**/
+            switch (nivelAcesso)
+            {
+                case 3:
+                case 4:
+                    cliente = cliente.Where(c => c.RegiaoNav == evolutionLoggedUser.Code1).ToList().AsQueryable();
+                    instituicao = instituicao.Where(i => cliente.Select(c => c.IdCliente).Contains(i.Cliente)).ToList().AsQueryable();
+                    break;
+                case 5:
+                case 6:
+                case 7:
+                    //cliente = cliente.Where(c => c.CrespNav == evolutionLoggedUser.Code3).ToList().AsQueryable();
+                    //instituicao = instituicao.Where(i => cliente.Select(c => c.IdCliente).Contains(i.Cliente)).ToList().AsQueryable();
+                    break;
+                default:
+                    break;
+            }
+            /**/
 
-           return Json( instituicao.Select(i => new { id = i.IdInstituicao, name = i.Nome }).ToList() );
+            return Json(instituicao.Select(i => new { id = i.IdInstituicao, name = i.Nome }).ToList());
         }
 
-       [Route("clients"), HttpGet, AcceptHeader("application/json")]
-       [ResponseCache(Duration = 86400)] /*24h*/
-       public ActionResult GetClients()
-       {
-           var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
-           if (loggedUser == null) { return NotFound(); }
+        [Route("clients"), HttpGet, AcceptHeader("application/json")]
+        [ResponseCache(Duration = 86400)] /*24h*/
+        public ActionResult GetClients()
+        {
+            var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
-           var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
+            if (loggedUser == null) { return NotFound(); }
 
-           if (evolutionLoggedUser == null) { return NotFound(); }
+            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
 
-           var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+            if (evolutionLoggedUser == null) { return NotFound(); }
 
-           var clients = evolutionWEBContext.Cliente.Where(c => c.Activo == true);
-           /*
-            * filter MaintenanceOrder query based on user permissions
-            * 1, 2, 8 = Podem ver tudo
-            * 3, 4 = Filtrado por regiao
-            * 5, 6, 7 = Filtrado por Cresp
-            */
+            var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+
+            var clients = evolutionWEBContext.Cliente.Where(c => c.Activo == true);
+            /*
+             * filter MaintenanceOrder query based on user permissions
+             * 1, 2, 8 = Podem ver tudo
+             * 3, 4 = Filtrado por regiao
+             * 5, 6, 7 = Filtrado por Cresp
+             */
             /**/
             switch (nivelAcesso)
             {
@@ -306,6 +308,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(clients.Select(c => new { id = c.IdCliente, name = c.Nome }).ToList());
         }
+
 
         [Route("technicals"), HttpGet]
         private IQueryable<Utilizador> GetTechnicals(MaintenanceOrderViewModel order, string orderId, string technicalid)
@@ -349,7 +352,8 @@ namespace Hydra.Such.Portal.Controllers
             technicals = (new List<Utilizador>()).AsQueryable();
             return technicals;
         }
-        
+
+
         [Route("{orderId}/technicals/logged"), HttpPut]
         public ActionResult SetTechnicals(string orderId)
         {
@@ -398,6 +402,7 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(false);
         }
+
 
         [Route("{orderId}"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
@@ -484,6 +489,9 @@ namespace Hydra.Such.Portal.Controllers
 
             newList.ForEach((item) =>
             {
+                var equipments = GetEquipments(item, null, null);
+                if (equipments != null) { item.Equipments = equipments.ToList(); }
+      
                 var categoria = evolutionWEBContext.EquipCategoria.FirstOrDefault(m => m.IdCategoria == item.Categoria);
                 var marca = marcas.FirstOrDefault(m => m.IdMarca == item.Marca);
                 var servico = servicos.FirstOrDefault(m => m.IdServico == item.IdServico);
@@ -526,6 +534,74 @@ namespace Hydra.Such.Portal.Controllers
             public string InstitutionDescription;
             public string OrderType;
         }
+        
+        [Route("equipments"), HttpGet, AcceptHeader("application/json")]
+        //[ResponseCache(Duration = 60000)]
+        public IQueryable<Equipamento> GetEquipments(EquipamentoViewModel equipamento, string orderId, int? equipamentoId)
+        {
+            var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+
+            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
+
+            IQueryable<Equipamento> equipment = (new List<Equipamento>()).AsQueryable();
+
+            if (loggedUser != null && evolutionLoggedUser == null)
+            {
+                var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+
+                if ((equipamento == null) && (orderId == null || orderId == "") && (equipamentoId == null)) { return (new List<Equipamento>()).AsQueryable(); }
+
+                var orderClient = evolutionWEBContext.MaintenanceOrder.Where(o => o.No == orderId).Select(o => o.IdClienteEvolution).FirstOrDefault();
+                var orderCresp = evolutionWEBContext.MaintenanceOrder.Where(o => o.No == orderId).Select(o => o.ShortcutDimension3Code).FirstOrDefault();
+
+                var pageSize = 30;
+
+                var Client = evolutionWEBContext.Cliente.Where(c => c.IdCliente == orderClient).Select(c => c.IdCliente).FirstOrDefault();
+                var equipmentCresp = evolutionWEBContext.Equipamento.Where(e => e.IdCliente == orderClient).Select(o => orderCresp).FirstOrDefault();
+                equipamento.EquipmentCresp = equipmentCresp;
+                
+                if (equipamento != null)
+                {
+                    equipamento.EquipmentCresp = equipmentCresp;
+                    equipment = evolutionWEBContext.Equipamento.Where(e => e.IdEquipamento == equipamentoId );
+                    
+                    return equipment;
+                }
+
+                if (orderId != null && orderId != "")
+                {
+                    var _client = evolutionWEBContext.Cliente.FirstOrDefault(c => c.IdCliente == orderClient);
+                    if (_client != null)
+                    {
+                        equipment = evolutionWEBContext.Equipamento.Where(u => u.IdCliente == _client.IdCliente);
+                        return equipment;
+                    }
+                }
+                
+                switch (nivelAcesso)
+                {
+                    case 3:
+                    case 4:
+                        equipment = equipment.Where(e => e.EquipmentCresp == orderCresp);
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                        equipment = equipment.Where(e => e.EquipmentCresp == orderCresp);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            // TODO -- Find Cresp connection throught Equipment - Client - Equipment
+
+            return equipment;
+        }
+
+
+
 
         [Route("/ordens-de-manutencao/ficha-de-manutencao"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]

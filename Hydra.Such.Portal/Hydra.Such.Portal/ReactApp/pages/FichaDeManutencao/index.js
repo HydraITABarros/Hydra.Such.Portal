@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import Breadcrumb from './breadcrumb';
+import Header from './header';
 import { createMuiTheme } from '@material-ui/core/styles';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
@@ -77,6 +78,7 @@ class FichaDeManutencao extends Component {
 			<PageTemplate >
 				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.highlightWrapper = el}>
 					<Breadcrumb orderId={this.state.orderId} client={this.state.client} institution={this.state.institution} />
+					<Header />
 				</Wrapper>
 			</PageTemplate>
 		)
