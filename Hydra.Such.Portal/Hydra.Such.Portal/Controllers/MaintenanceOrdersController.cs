@@ -489,9 +489,6 @@ namespace Hydra.Such.Portal.Controllers
 
             newList.ForEach((item) =>
             {
-                var equipments = GetEquipments(item, null, null);
-                if (equipments != null) { item.Equipments = equipments.ToList(); }
-      
                 var categoria = evolutionWEBContext.EquipCategoria.FirstOrDefault(m => m.IdCategoria == item.Categoria);
                 var marca = marcas.FirstOrDefault(m => m.IdMarca == item.Marca);
                 var servico = servicos.FirstOrDefault(m => m.IdServico == item.IdServico);
@@ -594,7 +591,16 @@ namespace Hydra.Such.Portal.Controllers
             //validar premissoes
 
             //obter ordem de manutencao
-            var order = evolutionWEBContext.MaintenanceOrder.Where(m => m.No == orderId).FirstOrDefault();
+            var order = evolutionWEBContext.MaintenanceOrder.Where(m => m.No == orderId).Select(o => new MaintenanceOrderViewModel()
+            {
+                ClientName = o.ClientName, ContractNo = o.ContractNo,
+                CustomerName = o.CustomerName, CustomerNo = o.CustomerNo,
+                Description = o.Description, IdClienteEvolution = o.IdClienteEvolution,
+                IdInstituicaoEvolution = o.IdInstituicaoEvolution, IdServicoEvolution = o.IdServicoEvolution,
+                IdTecnico1 = o.IdTecnico1, IdTecnico2 = o.IdTecnico2, IdTecnico3 = o.IdTecnico3,
+                IdTecnico4 = o.IdTecnico4, IdTecnico5 = o.IdTecnico5,
+                InstitutionName = o.InstitutionName, isPreventive = o.isPreventive
+            }).FirstOrDefault();
             if (order == null) { return NotFound(); }
 
             //obter campos de ficha de manutencao
@@ -634,24 +640,38 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     item.ModeloText = evolutionWEBContext.Modelos.Where(m => m.IdModelos == modeloType).Select(n => n.Nome).FirstOrDefault();
                 }
+                var servico = evolutionWEBContext.Servico.Where(s => s.IdServico == item.IdServico).FirstOrDefault();
+                if (servico != null)
+                {
+                    item.ServicoText = servico.Nome;
+                }
+
+                var categoria = evolutionWEBContext.EquipCategoria.Where(s => s.IdCategoria == item.Categoria).FirstOrDefault();
+                if (categoria != null)
+                {
+                    item.CategoriaText = categoria.Nome;
+                }
             });
 
-            var insinstituicao = "";
-            try { insinstituicao = evolutionWEBContext.Instituicao.FirstOrDefault(c => c.IdInstituicao == order.IdInstituicaoEvolution).Nome; }
-            catch { insinstituicao = ""; }
+            var institution = "";
+            try { institution = evolutionWEBContext.Instituicao.FirstOrDefault(c => c.IdInstituicao == order.IdInstituicaoEvolution).Nome; }
+            catch { institution = ""; }
+
+            order.InstitutionName = institution;
 
             var client = "";
             try { client = evolutionWEBContext.Cliente.FirstOrDefault(c => c.IdCliente == order.IdClienteEvolution).Nome; }
             catch { client = ""; }
 
+            order.ClientName = client;
+
+            var technicals = GetTechnicals(order, null, null);
+            if (technicals != null) { order.Technicals = technicals.ToList(); }
+
             return Json(new
             {
-                client = client,
-                institution = insinstituicao,
-                equipments,
-                planMaintenance,
-                planQuality,
-                planQuantity
+                order, equipments,
+                planMaintenance, planQuality, planQuantity
             });
         }
         
