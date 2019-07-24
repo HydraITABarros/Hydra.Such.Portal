@@ -17,6 +17,12 @@ namespace Hydra.Such.Portal.ViewModels
     public partial class EquipamentoViewModel
     {
         [NotMapped]
+        public List<Equipamento> Equipments;
+
+        [NotMapped]
+        public string EquipmentCresp { get; set; }
+
+        [NotMapped]
         public string CategoriaText { get; set; }
 
         [NotMapped]
