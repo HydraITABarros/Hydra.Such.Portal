@@ -277,7 +277,7 @@ class OrdensDeManutencaoLine extends Component {
 						});
 					}
 					var params = {
-						$select: 'Idequipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca,idServico,idRegiao',
+						$select: 'idEquipamento,nome,categoria,numSerie,numInventario,numEquipamento,marca,idServico,idRegiao',
 						$filter: filter != "" ? filter : null,
 						$count: true,
 						cancelToken: call.token
@@ -384,7 +384,7 @@ class OrdensDeManutencaoLine extends Component {
 								});
 							}}
 							onRowClick={(row) => {
-								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao`);
+								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=${row.categoria}&equipmentsIds=${row.idEquipamento}`);
 							}}
 							groupingEnabled={true}
 							searchEnabled={true}
