@@ -7,7 +7,8 @@ namespace Hydra.Such.Portal.ViewModels
 
     public class EquipamentoViewModel
     {
-        public int Categoria { get; set; }
+        public int Categoria { get; set; }               
+        public string EquipmentCresp { get; set; }
         public string CategoriaText { get; set; }
         public int Marca { get; set; }
         public string MarcaText { get; set; }
