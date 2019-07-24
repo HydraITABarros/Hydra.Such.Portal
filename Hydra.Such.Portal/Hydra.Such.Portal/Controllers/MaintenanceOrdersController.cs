@@ -527,27 +527,32 @@ namespace Hydra.Such.Portal.Controllers
             public string OrderType;
         }
 
-        [Route("{maintenanceSheet}"), HttpGet, AcceptHeader("application/json")]
+        [Route("/ordens-de-manutencao/ficha-de-manutencao"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
-        public ActionResult GetEquipmentDetails(List<int?> equipmentId, ODataQueryOptions<Equipamento> queryOptions, int? categoryId)
+        public ActionResult GetMaintenancePlans(int categoryId, string orderId, List<int> equipmentIds)
         {
-            if (equipmentId == null) { return NotFound(); }
-            if (categoryId == null) { return NotFound(); }
+            if (equipmentIds == null || equipmentIds.Count() < 1) { return NotFound(); }
+            if (orderId == null || orderId == "") { return NotFound(); }
 
-            var pageSize = 30;
-            var maintenanceSheetCategories = evolutionWEBContext.FichaManutencao.Where(f => f.IdCategoria == categoryId).Select(c => c.IdCategoria).ToList();
-            var maintenanceSheetCodigo = evolutionWEBContext.FichaManutencao.Where(f => f.IdCategoria == categoryId).Select(c => c.Codigo).FirstOrDefault();
-            var headerTaskmaintenance = evolutionWEBContext.FichaManutencao.Where(f => maintenanceSheetCategories.Contains(f.IdCategoria)).Select(c => c.Codigo).FirstOrDefault();
-            var headerTaskquantity = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(q => q.Codigo == maintenanceSheetCodigo).Select(q => q.Codigo).FirstOrDefault();
-            var headerTaskquality = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(q => q.Codigo == maintenanceSheetCodigo).Select(q => q.Codigo).FirstOrDefault();
-            bool taskMaintenance;
-            bool taskQuality;
-            bool taskQuantity;
-            if (headerTaskmaintenance != null) { taskMaintenance = true; }
-            if (headerTaskquantity != null) { taskQuantity = true; }
-            if (headerTaskquality != null) { taskQuality = true; }
+            //validar premissoes
 
-            var equipmentHeader = evolutionWEBContext.Equipamento.AsQueryable().Where(e => equipmentId.Contains(e.IdEquipamento)).Select(e => new EquipmentHeaderViewModel()
+            //obter ordem de manutencao
+            var order = evolutionWEBContext.MaintenanceOrder.Where(m => m.No == orderId).FirstOrDefault();
+            if (order == null) { return NotFound(); }
+
+            //obter campos de ficha de manutencao
+            var codigo = evolutionWEBContext.FichaManutencao.Where(f => f.IdCategoria == categoryId).Select(f=>f.Codigo).FirstOrDefault();
+            if (codigo == null) { return NotFound(); }
+
+            var planHeader = evolutionWEBContext.FichaManutencao.Where(f => f.Codigo == codigo).OrderByDescending(f=>f.Versao).FirstOrDefault();
+            if (planHeader == null) { return NotFound(); }
+
+            var planMaintenance = evolutionWEBContext.FichaManutencaoManutencao.Where(m=> m.Codigo == codigo && m.Versao == planHeader.Versao).ToList();
+            var planQuality = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(m=> m.Codigo == codigo && m.Versao == planHeader.Versao).ToList();
+            var planQuantity = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(m=> m.Codigo == codigo && m.Versao == planHeader.Versao).ToList();
+            //obter fichas de manutencao (reports)
+
+            var equipments = evolutionWEBContext.Equipamento.Where(e => equipmentIds.Contains(e.IdEquipamento) && e.Categoria == categoryId).Select(e => new EquipamentoViewModel()
             {
                 IdEquipamento = e.IdEquipamento,
                 Sala = e.Sala,
@@ -558,177 +563,41 @@ namespace Hydra.Such.Portal.Controllers
                 Modelo = e.Modelo,
                 NumSerie = e.NumSerie,
                 NumInventario = e.NumInventario,
-            }).FirstOrDefault();
-            if (equipmentHeader == null) { return NotFound(); }
+            }).ToList();
 
+            if (equipments == null || equipments.Count() < 1) { return NotFound(); }
 
-            IQueryable headerResults;
-            headerResults = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.Where(o => equipmentId.Contains(o.IdEquipamento)).Select(e => new Equipamento
-            {
-                IdEquipamento = e.IdEquipamento,
-                Nome = e.Nome,
-                Marca = e.Marca,
-                NumSerie = e.NumSerie,
-                NumInventario = e.NumInventario,
-            }).Where(e => true), new ODataQuerySettings { PageSize = pageSize });
-            var headerList = headerResults.Cast<dynamic>().AsEnumerable();
-            var headerTotal = Request.ODataFeature().TotalCount;
-            var headerNextLink = Request.GetNextPageLink(pageSize);
-
-            List<EquipamentoViewModel> headerDataList;
-            try
-            {
-                headerDataList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EquipamentoViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(headerList));
-            }
-            catch
-            {
-                headerDataList = new List<EquipamentoViewModel>();
-            }
-
-            headerDataList.ForEach((item) =>
+            equipments.ForEach((item) =>
             {
                 var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == item.Marca);
                 if (marca != null) { item.MarcaText = marca.Nome; }
-                var modelo = evolutionWEBContext.Equipamento.Where(e => e.IdEquipamento == item.IdEquipamento).Select(m => m.Modelo).FirstOrDefault();
-                var modeloType = evolutionWEBContext.EquipModelo.Where(m => m.IdModelo == modelo).Select(m => m.IdModelos).FirstOrDefault();
-                var modeloNome = evolutionWEBContext.Modelos.Where(m => m.IdModelos == modeloType).Select(n => n.Nome).FirstOrDefault();
+
+                int? modeloType = evolutionWEBContext.EquipModelo.Where(m => m.IdModelo == item.Modelo).Select(m => m.IdModelos).FirstOrDefault();                
                 if (modeloType != null)
                 {
-                    item.ModeloText = modeloNome;
+                    item.ModeloText = evolutionWEBContext.Modelos.Where(m => m.IdModelos == modeloType).Select(n => n.Nome).FirstOrDefault();
                 }
-
-                item.NumSerie = evolutionWEBContext.Equipamento.Where(e => e.IdEquipamento == item.IdEquipamento).Select(m => m.NumSerie).FirstOrDefault();
-                item.NumInventario = evolutionWEBContext.Equipamento.Where(e => e.IdEquipamento == item.IdEquipamento).Select(m => m.NumInventario).FirstOrDefault();
             });
 
-            var headerResultLines = new PageResult<dynamic>(headerDataList, headerNextLink, headerTotal);
+            var insinstituicao = "";
+            try { insinstituicao = evolutionWEBContext.Instituicao.FirstOrDefault(c => c.IdInstituicao == order.IdInstituicaoEvolution).Nome; }
+            catch { insinstituicao = ""; }
 
-            var sheetCategories = evolutionWEBContext.FichaManutencao.Where(f => f.IdCategoria == equipmentHeader.Categoria).Select(c => c.IdCategoria).FirstOrDefault();
-            var maintenanceCode = evolutionWEBContext.FichaManutencao.Where(o => o.IdCategoria == sheetCategories).Select(c => c.Codigo).FirstOrDefault();
-            IQueryable maintenanceResults;
-            maintenanceResults = evolutionWEBContext.FichaManutencaoManutencao.Where(o => o.Codigo == maintenanceCode).Select(f => new FichaManutencaoManutencao
-            {
-                IdManutencao = f.IdManutencao,
-                Codigo = f.Codigo,
-                Descricao = f.Descricao,
-                Rotinas = f.Rotinas,
-            }).Where(f => true);
-            var maintenanceList = maintenanceResults.Cast<dynamic>().AsEnumerable();
-            var maintenanceTotal = Request.ODataFeature().TotalCount;
-            var maintenanceNextLink = Request.GetNextPageLink(pageSize);
-
-            List<FichaManutencaoManutencaoViewModel> maintenanceDataList;
-            try
-            {
-                maintenanceDataList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FichaManutencaoManutencaoViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(maintenanceList));
-            }
-            catch
-            {
-                maintenanceDataList = new List<FichaManutencaoManutencaoViewModel>();
-            }
-
-            if (headerTaskmaintenance != null)
-            {
-                maintenanceDataList.ForEach((item) =>
-                {
-                    var description = evolutionWEBContext.FichaManutencaoManutencao.Where(d => d.Codigo == item.Codigo).Select(d => d.Descricao).FirstOrDefault();
-                    if (description != null) { item.Descricao = description; }
-                });
-            }
-
-            IQueryable quantityResults;
-            quantityResults = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(o => o.Codigo == maintenanceCode).Select(f => new FichaManutencaoTestesQuantitativos
-            {
-                IdTestesQuantitativos = f.IdTestesQuantitativos,
-                Codigo = f.Codigo,
-                Descricao = f.Descricao,
-                Rotinas = f.Rotinas,
-                Versao = f.Versao,
-                TipoCampo1 = f.TipoCampo1,
-                UnidadeCampo1 = f.UnidadeCampo1,
-            }).Where(f => true);
-            var quantityList = quantityResults.Cast<dynamic>().AsEnumerable();
-            var quantityTotal = Request.ODataFeature().TotalCount;
-            var quantityNextLink = Request.GetNextPageLink(pageSize);
-
-            List<FichaManutencaoTestesQuantitativosViewModel> quantityDataList;
-            try
-            {
-                quantityDataList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FichaManutencaoTestesQuantitativosViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(quantityList));
-            }
-            catch
-            {
-                quantityDataList = new List<FichaManutencaoTestesQuantitativosViewModel>();
-            }
-            if (headerTaskquantity != null)
-            {
-                quantityDataList.ForEach((item) =>
-                {
-                    var description = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(d => d.Codigo == item.Codigo).Select(d => d.Descricao).FirstOrDefault();
-                    if (description != null) { item.Descricao = description; }
-                });
-            }
-
-            IQueryable qualityResults;
-            qualityResults = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(o => o.Codigo == maintenanceCode).Select(f => new FichaManutencaoTestesQualitativos
-            {
-                IdTesteQualitativos = f.IdTesteQualitativos,
-                Codigo = f.Codigo,
-                Descricao = f.Descricao,
-                Rotinas = f.Rotinas,
-                Versao = f.Versao,
-            }).Where(f => true);
-            var qualityList = qualityResults.Cast<dynamic>().AsEnumerable();
-            var qualityTotal = Request.ODataFeature().TotalCount;
-            var qualityNextLink = Request.GetNextPageLink(pageSize);
-
-            List<FichaManutencaoTestesQualitativosViewModel> qualityDataList;
-            try
-            {
-                qualityDataList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<FichaManutencaoTestesQualitativosViewModel>>(Newtonsoft.Json.JsonConvert.SerializeObject(qualityList));
-            }
-            catch
-            {
-                qualityDataList = new List<FichaManutencaoTestesQualitativosViewModel>();
-            }
-            if (headerTaskquality != null)
-            {
-                qualityDataList.ForEach((item) =>
-                {
-                    var description = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(d => d.Codigo == item.Codigo).Select(d => d.Descricao).FirstOrDefault();
-                    if (description != null) { item.Descricao = description; }
-                });
-            }
+            var client = "";
+            try { client = evolutionWEBContext.Cliente.FirstOrDefault(c => c.IdCliente == order.IdClienteEvolution).Nome; }
+            catch { client = ""; }
 
             return Json(new
             {
-                headerTaskmaintenance,
-                headerTaskquantity,
-                headerTaskquality,
-                equipmentHeader,
-                headerResultLines,
-                maintenanceResults,
-                qualityDataList,
-                quantityDataList,
+                client = client,
+                institution = insinstituicao,
+                equipments,
+                planMaintenance,
+                planQuality,
+                planQuantity
             });
         }
-
-        public class EquipmentHeaderViewModel
-        {
-            public int? IdEquipamento;
-            public string Sala;
-            public int? IdServico;
-            public int? IdCliente;
-            public int? Categoria;
-            public int? Marca;
-            public int? Modelo;
-            public string NumSerie;
-            public string NumInventario;
-            public bool taskMaintenance;
-            public bool taskQuality;
-            public bool taskQuantity;
-        }
-
+        
         public class IconsTasksHeaderViewModel
         {
             public bool iconTaskMaintenance;
