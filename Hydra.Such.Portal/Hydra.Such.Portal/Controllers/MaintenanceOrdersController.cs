@@ -403,8 +403,6 @@ namespace Hydra.Such.Portal.Controllers
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetOrderDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
         {
-            var orderType = evolutionWEBContext.MaintenanceOrder.Where(o => o.No == orderId).FirstOrDefault();           
-
             if (orderId == null) { return NotFound(); }
 
             var pageSize = 30;
@@ -442,6 +440,9 @@ namespace Hydra.Such.Portal.Controllers
 
             int.TryParse(order.ShortcutDimension1Code, out order.IdRegiao);
 
+            // hammered to force the list to return only equipment with defined maintenance.
+            var availableCategories = evolutionWEBContext.FichaManutencao.Select(m => m.IdCategoria).Distinct().ToList();
+
             IQueryable results;
             results = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.OrderByDescending(o => o.IdEquipamento).Select(e => new Equipamento
             {
@@ -454,7 +455,7 @@ namespace Hydra.Such.Portal.Controllers
                 IdServico = e.IdServico,
                 NumEquipamento = e.NumEquipamento,
                 IdRegiao = e.IdRegiao
-            }).Where(e => true/*e.IdServico == 7231*//*&& e.NumEquipamento == "ni1102821"*/), new ODataQuerySettings { PageSize = pageSize });
+            }).Where(e => true/*e.IdServico == 7231*//*&& e.NumEquipamento == "ni1102821"*/ && availableCategories.Contains(e.Categoria)), new ODataQuerySettings { PageSize = pageSize });
 
             var list = results.Cast<dynamic>().AsEnumerable();
             var total = Request.ODataFeature().TotalCount;
