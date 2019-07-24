@@ -556,27 +556,25 @@ namespace Hydra.Such.Portal.Controllers
             
             switch (evolutionLoggedUser.NivelAcesso)
             {
-                case 3:
-                case 4:
+                case 3: case 4:
                     orderQuery = orderQuery.Where(o => userRegions.Contains(o.ShortcutDimension1Code));
                     break;
-                case 5:
-                case 6:
-                case 7:
+                case 5: case 6: case 7:
                     orderQuery = orderQuery.Where(o => userCresps.Contains(o.ShortcutDimension3Code));
                     break;
                 default:
                     break;
             }
+
             var order = orderQuery.FirstOrDefault();            
             if (order == null) { return NotFound(); }
 
             // obter equipamentos
             var equipas = evolutionWEBContext.Equipa.Where(e => e.Nome == order.ShortcutDimension3Code).Select(s => s.IdEquipa).ToList();
+            if (equipas == null) { return NotFound(); }
+
             var equipments = evolutionWEBContext.Equipamento.Where(e => equipas.Contains((e.IdEquipa == null? 0: (int)e.IdEquipa )));
-
-            // TODO -- Find Cresp connection throught Equipment - Client - Equipment
-
+            
             return Json(equipments.Select(e=> new {
                 id=e.IdEquipamento,
                 name = e.Nome
