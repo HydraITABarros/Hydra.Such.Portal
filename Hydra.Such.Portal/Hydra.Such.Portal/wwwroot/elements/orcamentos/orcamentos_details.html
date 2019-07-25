@@ -138,6 +138,14 @@
             }
         </style>
 
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+
         <!--//-------------------------------------------------------------//-->
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -157,46 +165,104 @@
                             <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
                                 <paper-tab>Geral</paper-tab>
                                 <paper-tab>Anexos</paper-tab>
+                                <paper-tab>Envio E-mail</paper-tab>
+                                <paper-tab>Detalhes</paper-tab>
                             </paper-tabs>
                             <iron-pages selected="{{selected}}">
                                 <!--Geral-->
                                 <div>
-                                    <div class="row break_clear">
-                                        <div class="col-md-3">
-                                            <vaadin-text-field id="CabNo" label="Nº do Orçamento" value="" disabled></vaadin-text-field>
-                                        </div>
+                                    <div class="row">
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="OrcNo" label="Nº do Orçamento" value="" disabled></vaadin-text-field>
+                                            </div>
 
-                                        <div class="col-md-3">
-                                            <vaadin-text-field id="CabCliente" label="Cliente / Contacto" value=""></vaadin-text-field>
-                                        </div>
+                                            <div class="col-md-3">
+                                                <such-selectbox id="OrcNoCliente" value="" label="Cliente"
+                                                                items="[[CBClients]]"
+                                                                text-path="name"
+                                                                value-path="no_"
+                                                                fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
+                                                                required error-message="Este campo é obrigatório">
+                                                </such-selectbox>
+                                            </div>
 
-                                        <div class="col-md-3">
-                                            <vaadin-text-field id="CabData1" label="Data do Orçamento" value=""></vaadin-text-field>
-                                        </div>
+                                            <div class="col-md-3">
+                                                <such-selectbox id="OrcNoContacto" value="" label="Contacto"
+                                                                items="[[CBContacts]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"value", "name":"Nome"}]'
+                                                                required error-message="Este campo é obrigatório">
+                                                </such-selectbox>
+                                            </div>
 
-                                        <div class="col-md-3">
-                                            <vaadin-text-field id="CabData2" label="Data do Orçamento" value=""></vaadin-text-field>
-                                        </div>
+                                            <div class="col-md-2">
+                                                <vaadin-date-picker id="OrcDataValidade" label="Orçamento Válido até" value=""></vaadin-date-picker>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="OrcIDEstado" label="Estado do Orçamento" value="" disabled></vaadin-text-field>
+                                            </div>
                                     </div>
 
-                                    <div class="row break_clear">
-                                        <div class="col-md-3">
-                                            <vaadin-text-field id="CabDescricao" label="Descritivo" value=""></vaadin-text-field>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <such-textarea id="OrcDescricao" label="Descrição" value="" rows="5" maxlength="200"> </such-textarea>
                                         </div>
 
-                                        <div class="col-md-3">
-                                            <vaadin-text-field id="CabEstado" label="Estado do Orçamento" value="" disabled></vaadin-text-field>
-                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <such-selectbox id="OrcRegiao" label="Região" value=""
+                                                                    items="[[CBRegions]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
+                                                </div>
 
-                                        <div class="col-md-3">
-                                            <vaadin-text-field id="CabPropostaNo" label="Nº da Proposta Associada" value="" disabled></vaadin-text-field>
+                                                <div class="col-md-6">
+                                                    <such-selectbox id="OrcUnidadePrestacao" label="Unidade de Prestação" value=""
+                                                                    items="[[LFetchUnits]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
+
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value=""
+                                                                      items="[[CBBillingTypes]]"
+                                                                      item-value-path="id"
+                                                                      item-label-path="value">
+                                                        <template>
+                                                            <b>[[item.value]]</b>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!--Anexos-->
                                 <div>
-                                    <div class="row break_clear">
+                                    <div class="row">
                                         <vaadin-upload id="UploadRequest"
                                                        target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}"
                                                        method="POST"
@@ -205,7 +271,7 @@
                                         </vaadin-upload>
                                     </div>
 
-                                    <div class="row break_clear">
+                                    <div class="row">
                                         <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
                                             <vaadin-grid-column width="70%" resizable>
                                                 <template class="header">
@@ -243,12 +309,85 @@
                                         </vaadin-grid>
                                     </div>
                                 </div>
+
+                                <!--ENVIO EMAIL-->
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="OrcEmail" label="E-mail" value="" maxlength="50"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcEmailDataEnvio" label="Data de Envio" value="" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcEmailUtilizadorEnvio" label="Utilizador de Envio" value="" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="OrcEmailAssunto" label="Assunto" value="" maxlength="100"></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <such-textarea id="OrcEmailCorpo" label="Corpo" value="" rows="5" maxlength="200"></such-textarea>
+                                        </div>
+
+                                        <div class="col-md-6" style="padding-top:14px">
+                                            <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" title="Enviar"><i class="fa fa-send" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--DETALHES-->
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcDataCriacao" label="Data de Criação" value="" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcUtilizadorCriacao" label="Utilizador de Criação" value="" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcDataAceite" label="Data Aceite / Não Aceite" value="" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcUtilizadorAceite" label="Utilizador que Aceitou / Não Aceitou" value="" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcDataConcluido" label="Data Concluído" value="" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcUtilizadorConcluido" label="Utilizador que Concluio" value="" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcDataModificacao" label="Data Última Alteração" value="" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcUtilizadorModificacao" label="Utilizador da Última Modificação" value="" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
                             </iron-pages>
                         </div>
 
+                        <!--LINHAS-->
                         <paper-collapse-group>
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
-                                <div class="row break_clear">
+                                <div class="row">
                                     <div class="col-lg-2">
                                         <vaadin-text-field id="LinhaNo" label="Nº da Linha" value="" disabled></vaadin-text-field>
                                     </div>
@@ -258,19 +397,19 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaQuantidade" label="Quantidade" value=""></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaQuantidade" label="Quantidade" value="" type="number" class="alignRight"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaValorUnitario" label="Valor Unitário" value=""></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaValorUnitario" label="Valor Unitário" value="" type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaTotal" label="Total Linha" value="" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaTaxaIVA" label="Taxa IVA na Linha" value="" type="number" class="alignRight"><div slot="suffix">%</div></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaTaxaIVA" label="Taxa IVA na Linha" value=""></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaTotal" label="Total Linha" value="" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
                                 </div>
                             </paper-collapse-item>
@@ -351,21 +490,6 @@
 
                                     <vaadin-grid-column width="250px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="tabTotal">Total da Linha</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="tabTotal" />
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field id="_tabTotal" value="{{item.tabTotal}}" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}" disabled>
-                                                {{item.tabTotal}}
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="250px" resizable>
-                                        <template class="header">
                                             <vaadin-grid-sorter path="tabTaxaIVA">Taxa IVA na Linha</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="tabTaxaIVA" />
                                         </template>
@@ -375,6 +499,21 @@
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}" disabled>
                                                 {{item.tabTaxaIVA}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="tabTotal">Total da Linha</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="tabTotal" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field id="_tabTotal" value="{{item.tabTotal}}" disabled> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                {{item.tabTotal}}
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -393,22 +532,6 @@
                                         </template>
                                     </vaadin-grid-column>
                                 </vaadin-grid>
-                            </div>
-
-                            <div>
-                                <div class="row break_clear">
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field id="rodTotalSemIVA" label="Total Orçamento sem IVA" value="" disabled> </vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-lg-2" style="padding-top:14px">
-                                        <paper-button raised id="btnSumLines" class="btnSave" on-tap="_sumLines"><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp; IVA p/ Taxa</paper-button>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        <vaadin-text-field id="rodTotalComIVA" label="Total Orçamento com IVA" value="" disabled> </vaadin-text-field>
-                                    </div>
-                                </div>
                             </div>
                         </paper-collapse-group>
                     </div>
