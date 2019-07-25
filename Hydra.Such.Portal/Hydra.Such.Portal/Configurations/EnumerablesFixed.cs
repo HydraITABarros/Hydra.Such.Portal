@@ -2727,6 +2727,28 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> OrcamentosEstados = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "Aguardar Resposta"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Aceite"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Não Aceite"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Conclusão"
+            }
+        };
     }
 
     public class EnumDataString
