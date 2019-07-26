@@ -1,4 +1,5 @@
-﻿using Hydra.Such.Data.Extensions;
+﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,8 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
         public string UtilizadorModificacao { get; set; }
         public string UtilizadorModificacaoText { get; set; }
 
-        public List<Orcamentos.LinhasOrcamentosViewModel> LinhasOrcamentos { get; set; }
+        public List<LinhasOrcamentosViewModel> LinhasOrcamentos { get; set; }
+        public List<AttachmentsViewModel> AnexosOrcamentos { get; set; }
 
 
         //EXPORTAR PARA EXCEL

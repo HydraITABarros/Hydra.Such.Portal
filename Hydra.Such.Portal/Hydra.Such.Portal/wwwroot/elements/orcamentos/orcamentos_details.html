@@ -144,7 +144,32 @@
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Orcamentos/GetDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
 
+        <iron-ajax url="/Orcamentos/CreateLinha"
+                   last-response="{{createLinha}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateLinha_ajax"
+                   on-response="_responseCreateLinha"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/DeleteLinha"
+                   last-response="{{deleteLinha}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteLinha_ajax"
+                   on-response="_responseDeleteLinha"
+                   content-type="application/json">
+        </iron-ajax>
 
         <!--//-------------------------------------------------------------//-->
         <div class="subMenu">
@@ -172,48 +197,48 @@
                                 <!--Geral-->
                                 <div>
                                     <div class="row">
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="OrcNo" label="Nº do Orçamento" value="" disabled></vaadin-text-field>
-                                            </div>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="OrcNo" label="Nº do Orçamento" value="{{data.no}}" disabled></vaadin-text-field>
+                                        </div>
 
-                                            <div class="col-md-3">
-                                                <such-selectbox id="OrcNoCliente" value="" label="Cliente"
-                                                                items="[[CBClients]]"
-                                                                text-path="name"
-                                                                value-path="no_"
-                                                                fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
-                                                                required error-message="Este campo é obrigatório">
-                                                </such-selectbox>
-                                            </div>
+                                        <div class="col-md-3">
+                                            <such-selectbox id="OrcNoCliente" label="Cliente" value="{{data.noCliente}}"
+                                                            items="[[CBClients]]"
+                                                            text-path="name"
+                                                            value-path="no_"
+                                                            fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
+                                                            required error-message="Este campo é obrigatório">
+                                            </such-selectbox>
+                                        </div>
 
-                                            <div class="col-md-3">
-                                                <such-selectbox id="OrcNoContacto" value="" label="Contacto"
-                                                                items="[[CBContacts]]"
-                                                                text-path="value"
-                                                                value-path="id"
-                                                                fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"value", "name":"Nome"}]'
-                                                                required error-message="Este campo é obrigatório">
-                                                </such-selectbox>
-                                            </div>
+                                        <div class="col-md-3">
+                                            <such-selectbox id="OrcNoContacto" label="Contacto" value="{{data.noContacto}}"
+                                                            items="[[CBContacts]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"value", "name":"Nome"}]'
+                                                            required error-message="Este campo é obrigatório">
+                                            </such-selectbox>
+                                        </div>
 
-                                            <div class="col-md-2">
-                                                <vaadin-date-picker id="OrcDataValidade" label="Orçamento Válido até" value=""></vaadin-date-picker>
-                                            </div>
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="OrcDataValidade" label="Orçamento Válido até" value="{{data.dataValidadeText}}"></vaadin-date-picker>
+                                        </div>
 
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="OrcIDEstado" label="Estado do Orçamento" value="" disabled></vaadin-text-field>
-                                            </div>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="OrcIDEstado" label="Estado do Orçamento" value="{{data.estadoText}}" disabled></vaadin-text-field>
+                                        </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <such-textarea id="OrcDescricao" label="Descrição" value="" rows="5" maxlength="200"> </such-textarea>
+                                            <such-textarea id="OrcDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="200"> </such-textarea>
                                         </div>
 
                                         <div class="col-md-7">
                                             <div class="row">
                                                 <div class="col-md-3">
-                                                    <such-selectbox id="OrcRegiao" label="Região" value=""
+                                                    <such-selectbox id="OrcRegiao" label="Região" value="{{data.codRegiao}}"
                                                                     items="[[CBRegions]]"
                                                                     text-path="value"
                                                                     value-path="id"
@@ -222,7 +247,7 @@
                                                 </div>
 
                                                 <div class="col-md-6">
-                                                    <such-selectbox id="OrcUnidadePrestacao" label="Unidade de Prestação" value=""
+                                                    <such-selectbox id="OrcUnidadePrestacao" label="Unidade de Prestação" value="{{data.unidadePrestacao}}"
                                                                     items="[[LFetchUnits]]"
                                                                     text-path="value"
                                                                     value-path="id"
@@ -232,7 +257,7 @@
                                                 </div>
 
                                                 <div class="col-md-3">
-                                                    <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value=""
+                                                    <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value="{{data.tipoFaturacao}}"
                                                                       items="[[CBBillingTypes]]"
                                                                       item-value-path="id"
                                                                       item-label-path="value">
@@ -245,15 +270,15 @@
 
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                    <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="{{data.totalSemIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                    <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="{{data.totalComIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="" disabled></vaadin-text-field>
+                                                    <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" disabled></vaadin-text-field>
                                                 </div>
                                             </div>
                                         </div>
@@ -272,14 +297,14 @@
                                     </div>
 
                                     <div class="row">
-                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[data.anexosOrcamentos]]" class="grid" multi-sort="true">
                                             <vaadin-grid-column width="70%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="url" />
                                                 </template>
                                                 <template>
-                                                    <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                    <a href="/Orcamentos/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
                                                 </template>
                                             </vaadin-grid-column>
 
@@ -314,31 +339,31 @@
                                 <div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <vaadin-text-field id="OrcEmail" label="E-mail" value="" maxlength="50"></vaadin-text-field>
+                                            <vaadin-text-field id="OrcEmail" label="E-mail" value="{{data.email}}" maxlength="50"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcEmailDataEnvio" label="Data de Envio" value="" disabled></vaadin-date-picker>
+                                            <vaadin-date-picker id="OrcEmailDataEnvio" label="Data de Envio" value="{{data.emailDataEnvioText}}" disabled></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="OrcEmailUtilizadorEnvio" label="Utilizador de Envio" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="OrcEmailUtilizadorEnvio" label="Utilizador de Envio" value="{{data.emailUtilizadorEnvioText}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <vaadin-text-field id="OrcEmailAssunto" label="Assunto" value="" maxlength="100"></vaadin-text-field>
+                                            <vaadin-text-field id="OrcEmailAssunto" label="Assunto" value="{{data.emailAssunto}}" maxlength="100"></vaadin-text-field>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <such-textarea id="OrcEmailCorpo" label="Corpo" value="" rows="5" maxlength="200"></such-textarea>
+                                            <such-textarea id="OrcEmailCorpo" label="Corpo" value="{{data.emailCorpo}}" rows="5" maxlength="200"></such-textarea>
                                         </div>
 
                                         <div class="col-md-6" style="padding-top:14px">
-                                            <paper-button id="btn_createPercurso" class="btnSave" raised on-tap="_createPercurso" title="Enviar"><i class="fa fa-send" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
+                                            <paper-button id="btn_EnviarEmail" class="btnSave" raised on-tap="_enviarEmail" title="Enviar"><i class="fa fa-send" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
                                         </div>
                                     </div>
                                 </div>
@@ -347,37 +372,37 @@
                                 <div>
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcDataCriacao" label="Data de Criação" value="" disabled></vaadin-date-picker>
+                                            <vaadin-date-picker id="OrcDataCriacao" label="Data de Criação" value="{{data.dataCriacaoText}}" disabled></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="OrcUtilizadorCriacao" label="Utilizador de Criação" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="OrcUtilizadorCriacao" label="Utilizador de Criação" value="{{data.utilizadorCriacaoText}}" disabled></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcDataAceite" label="Data Aceite / Não Aceite" value="" disabled></vaadin-date-picker>
+                                            <vaadin-date-picker id="OrcDataAceite" label="Data Aceite / Não Aceite" value="{{data.dataAceiteText}}" disabled></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="OrcUtilizadorAceite" label="Utilizador que Aceitou / Não Aceitou" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="OrcUtilizadorAceite" label="Utilizador que Aceitou / Não Aceitou" value="{{data.utilizadorAceiteText}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcDataConcluido" label="Data Concluído" value="" disabled></vaadin-date-picker>
+                                            <vaadin-date-picker id="OrcDataConcluido" label="Data Concluído" value="{{data.dataConcluidoText}}" disabled></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="OrcUtilizadorConcluido" label="Utilizador que Concluio" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="OrcUtilizadorConcluido" label="Utilizador que Concluio" value="{{data.utilizadorConcluidoText}}" disabled></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcDataModificacao" label="Data Última Alteração" value="" disabled></vaadin-date-picker>
+                                            <vaadin-date-picker id="OrcDataModificacao" label="Data Última Alteração" value="{{data.dataModificacaoText}}" disabled></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="OrcUtilizadorModificacao" label="Utilizador da Última Modificação" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="OrcUtilizadorModificacao" label="Utilizador da Última Modificação" value="{{data.utilizadorModificacaoText}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -387,134 +412,134 @@
                         <!--LINHAS-->
                         <paper-collapse-group>
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
-                                <div class="row">
-                                    <div class="col-lg-2">
+                                <div class="row break_clear">
+                                    <div class="col-lg-2" hidden>
                                         <vaadin-text-field id="LinhaNo" label="Nº da Linha" value="" disabled></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaDescricao" label="Descrição" value=""></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaDescricao" label="Descrição" value="" maxlength="100" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaQuantidade" label="Quantidade" value="" type="number" class="alignRight"></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaQuantidade" label="Quantidade" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaValorUnitario" label="Valor Unitário" value="" type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaValorUnitario" label="Valor Unitário" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaTaxaIVA" label="Taxa IVA na Linha" value="" type="number" class="alignRight"><div slot="suffix">%</div></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaTaxaIVA" label="Taxa IVA na Linha" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"><div slot="suffix">%</div></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaTotal" label="Total Linha" value="" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaTotal" label="Total Linha" value="" disabled type="number" class="alignRight" required error-message="Este campo é obrigatório"><div slot="suffix">€</div></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2" style="padding-top:12px">
+                                        <paper-button raised id="btnCreateLinha" class="btnSave" on-tap="_createLinha"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </div>
                                 </div>
                             </paper-collapse-item>
 
                             <div>
-                                <vaadin-grid aria-label="PreReqLines" id="grid_prereqlines" name="grid_prereqlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                    <vaadin-grid-column width="3%" resizable>
+                                <vaadin-grid aria-label="PreReqLines" id="grid_prereqlines" name="grid_prereqlines" items="[[data.linhasOrcamentos]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                    <vaadin-grid-column width="250px" resizable hidden>
                                         <template class="header">
-                                        </template>
-                                        <template>
-                                            <template is="dom-if" if="{{ _permissions.update }}">
-                                                <center style="padding-bottom:10px">
-                                                    <paper-button class="btnSave tableBtn" raised on-tap="_duplicarContractLine" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
-                                                </center>
-                                            </template>
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column width="250px" resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="tabNo">Nº da Linha</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="tabNo" />
+                                            <vaadin-grid-sorter path="noLinha">Nº da Linha</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="noLinha" />
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field id="_tabNo" value="{{item.tabNo}}" disabled> </vaadin-text-field>
+                                                <vaadin-text-field id="_tabNo" value="{{item.noLinha}}" disabled> </vaadin-text-field>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}" disabled>
-                                                {{item.tabNo}}
+                                                {{item.noLinha}}
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column width="250px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="tabDescricao">Descrição</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="tabDescricao" />
+                                            <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="descricao" />
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field id="_tabDescricao"> value="{{item.tabDescricao}}"</vaadin-text-field>
+                                                <vaadin-text-field id="_tabDescricao"> value="{{item.descricao}}"</vaadin-text-field>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.tabDescricao}}
+                                                {{item.descricao}}
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column width="250px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="tabQuantidade">Quantidade</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="tabQuantidade" />
+                                            <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="quantidade" />
                                         </template>
                                         <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field id="_tabQuantidade" value="{{item.tabQuantidade}}" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}" disabled>
-                                                {{item.tabQuantidade}}
-                                            </template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabQuantidade" value="{{item.quantidade}}" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                    {{item.quantidade}}
+                                                </template>
+                                            </div>
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column width="250px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="tabValorUnitario">Valor Unitário</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="tabValorUnitario" />
+                                            <vaadin-grid-sorter path="valorUnitario">Valor Unitário</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="valorUnitario" />
                                         </template>
                                         <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field id="_tabValorUnitario" value="{{item.tabValorUnitario}}"> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.tabValorUnitario}}
-                                            </template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabValorUnitario" value="{{item.valorUnitario}}"> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.valorUnitario}} €
+                                                </template>
+                                            </div>
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column width="250px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="tabTaxaIVA">Taxa IVA na Linha</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="tabTaxaIVA" />
+                                            <vaadin-grid-sorter path="taxaIVA">Taxa IVA na Linha</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="taxaIVA" />
                                         </template>
                                         <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field id="_tabTaxaIVA" value="{{item.tabTaxaIVA}}" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}" disabled>
-                                                {{item.tabTaxaIVA}}
-                                            </template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabTaxaIVA" value="{{item.taxaIVA}}" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                    {{item.taxaIVA}} %
+                                                </template>
+                                            </div>
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column width="250px" resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="tabTotal">Total da Linha</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="tabTotal" />
+                                            <vaadin-grid-sorter path="totalLinha">Total da Linha</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="totalLinha" />
                                         </template>
                                         <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field id="_tabTotal" value="{{item.tabTotal}}" disabled> </vaadin-text-field>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}" disabled>
-                                                {{item.tabTotal}}
-                                            </template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabTotal" value="{{item.totalLinha}}" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                    {{item.totalLinha}} €
+                                                </template>
+                                            </div>
                                         </template>
                                     </vaadin-grid-column>
 
@@ -525,7 +550,7 @@
                                             <center>
                                                 <template is="dom-if" if="{{ _permissions.update }}">
                                                     <center>
-                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteContractLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                     </center>
                                                 </template>
                                             </center>
@@ -548,749 +573,23 @@
             Polymer({
                 is: 'x-orcamentosdetails',
                 properties: {
-                    selected: {
-                        type: Number,
-                        value: 0
+                    _no: {
+                        type: String,
+                        notify: true,
+                        value: ""
                     },
                     _permissions: {
                         type: Array
                     },
-                    _prerequesitionno: {
+                    _reportserverurl: {
                         type: String,
-                        notify: true,
-                        value: ""
                     },
-                    _isCreate: {
-                        type: Boolean,
-                        value: true
-                    },
-                    _SelectedLine: {
-                        observer: '_lineSelected'
-                    },
-                    _areaid: {
+                    selected: {
                         type: Number,
                         value: 0
                     },
-
-                    _LocalCode: {
-                        type: String,
-                        notify: true,
-                        value: "",
-                        //observer: "_getProdtctsForLocation"
-                    },
-                    _filledFromPurch: {
-                        type: Boolean,
-                        notify: true,
-                        value: false,
-                    },
-                    projectNo: {
-                        observer: '_setProjectDim'
-                    },
-                    _CLResponsabilityCenterCode: {
-                        type: String,
-                        notify: true,
-                        observer: '_set_CLResponsabilityCenterCode_PurchaseHeader'
-                    },
-
-                    _TotalLine: {
-                        type: Number,
-                        value: 0
-                    },
-
-                    _showPreReqLines: {
-                        type: String,
-                        notify: true,
-                        value: "none"
-                    },
-                    _showPreReqLinesForm: {
-                        type: String,
-                        notify: true,
-                        value: "none"
-                    },
-                    _lineno: {
-                        type: Number,
-                        value: 0
-                    },
-                    _uploadurl: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    chkReposicaoStock: {
-                        type: Boolean,
-                        notify: true,
-                        value: false
-                    },
                 },
 
-                observers: [
-                    '_onCacheLoaded(data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine, Products)'
-                ],
-
-                ready: function () {
-                    //GET CONTRACT DATA
-                    this._isCreate = false;
-                    this.$.page_createnewForUser_ajax.body = JSON.stringify({ "tipoPreReq": 0, "areaid": this._areaid });
-                    this.$.page_createnewForUser_ajax.generateRequest();
-
-
-                    if (this._isCreate == false && this.$.UploadRequest != null) {
-                        this.$.UploadRequest.addEventListener('upload-response', function (e) {
-                            var results = JSON.parse(e.detail.xhr.response);
-                            if (results == true) {
-                                var msg = document.querySelector("x-orcamentosdetails");
-                                msg._openToast("Ficheiro adicionado com sucesso.");
-
-                                e.detail.xhr.requestURL;
-                                var dd = document.querySelector("x-orcamentosdetails");
-                                dd.$.page_LoadAttachments_ajax.generateRequest();
-                            }
-                            else {
-                                var msg = document.querySelector("x-orcamentosdetails");
-                                msg._openToastError("Não é permitido adicionar este tipo de ficheiros.");
-                            }
-                        });
-                    }
-                    //if (this._isCreate == false && this.$.UploadRequest != null) {
-                    //    this.$.UploadRequest.addEventListener('upload-response', function (e) {
-                    //        if (e.detail.xhr.status == 200) {
-                    //            e.detail.xhr.requestURL;
-                    //            var dd = document.querySelector("x-orcamentosdetails");
-                    //            dd.$.page_LoadAttachments_ajax.generateRequest();
-                    //        }
-                    //    });
-                    //}
-
-                    if (this._isCreate == false) {
-                        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
-                        this.$.page_LoadAttachments_ajax.generateRequest();
-                    }
-
-                },
-
-                _onCacheLoaded: function (data, CBPurchaseLineGrid, CBRequesitionType, LProjectFunctionalAreaCodes, LProjectResponsabilityCenterCodes, LProjectRegionCodes, CBVehicle, CBJobNo, CBVendor, CBLocal, CBLocations, CBPurchaseHeader, CBPurchaseLine, Products) {
-
-                    if (!this.Flag) {
-                        this.$.page_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                        this.$.page_databound_ajax.generateRequest();
-                    }
-                    this.Flag = true;
-                },
-
-                //_set_CLResponsabilityCenterCode_PurchaseHeader: function (e) {
-
-                //     if(!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
-
-                //        this.$.purchaseheader_ajax.body = JSON.stringify({ "id": this.$._CLResponsabilityCenterCode.value });
-                //        this.$.purchaseheader_ajax.generateRequest();
-                //    }
-                //},
-                _setDisabled: function (e) {
-                    if (!this._permissions.update)
-                        return false;
-                    else if (e != null) {
-                        if (e.openOrderLineNo !== null && e.openOrderLineNo !== "" && e.openOrderLineNo !== undefined)
-                            return true;
-                    }
-                    return false;
-                },
-                _getRequesitionType: function (e) {
-                    //uugger;
-                    var _self = this;
-
-                    var requesitionType = e.detail.value;
-                    var locationId = _self.$._CBLocations.value;
-
-                    if (requesitionType == 'FROTA') {
-                        _self.$.projectNo.disabled = true;
-                        _self.$._ProjectNo.disabled = true;
-                        _self.$.grid_prereqlines.__data._columnTree[0][1].__data.frozen = true;
-                    }
-                    else {
-                        _self.$.projectNo.disabled = false;
-                        _self.$._ProjectNo.disabled = false;
-                    }
-
-                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType });
-                    this.$.filteredProducts_ajax.generateRequest();
-                },
-
-                _getCDirect: function (e) {
-                    var requesitionType = this.$.requesitionType.value;
-                    var locationId = e.detail.value;
-
-                    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType });
-                    this.$.filteredProducts_ajax.generateRequest();
-                    if (this.CBLocations != null) {
-                        var whareHouse = this.CBLocations.find(x => x.id == locationId);
-                        if (whareHouse != null) {
-                            this._CBItemsCDirect = whareHouse.extra;
-                        }
-                    }
-                },
-                //_getProdtctsForLocation: function (locationId) {
-                //    var requesitionType = this.$.requesitionType.value;
-
-                //    this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType, "locationCode": locationId });
-                //    this.$.filteredProducts_ajax.generateRequest();
-                //},
-                _setProjectDim: function (e) {
-                    var projectNo = this.$.projectNo.value;
-                    if (projectNo != "") {
-                        this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
-                        this.$.page_getProject_ajax.generateRequest();
-                    }
-                    else {
-                        this.$._CLRegion.value = "";
-                        this.$._CLRegion.valueText = "";
-                        this.$.RegionCode.value = "";
-                        this.$.RegionCode.valueText = "";
-
-                        this.$._CLFunctionalAreaCode.value = "";
-                        this.$._CLFunctionalAreaCode.valueText = "";
-                        this.$.FunctionalAreaCode.value = "";
-                        this.$.FunctionalAreaCode.valueText = "";
-
-                        this.$._CLResponsabilityCenterCode.value = "";
-                        this.$._CLResponsabilityCenterCode.valueText = "";
-                        this.$.ResponsabilityCenterCode.value = "";
-                        this.$.ResponsabilityCenterCode.valueText = "";
-                    }
-                },
-
-                _setProjectDim2: function (e) {
-                    var projectNo = this.$._ProjectNo.value;
-                    this.$.page_getProject2_ajax.body = JSON.stringify(projectNo);
-                    this.$.page_getProject2_ajax.generateRequest();
-                },
-                _setNewLineFormControl(showAsPurchaseForm) {
-                    if (showAsPurchaseForm == true) {
-                        this.$.txtLocalCode.hidden = false;
-                        this.$._CBLocations.hidden = true;
-                        this.$.txtProductCode.hidden = false;
-                        this.$._Products.hidden = true;
-                        this._filledFromPurch = true;
-                    }
-                    else {
-                        if (showAsPurchaseForm == false) {
-                            this.$.txtLocalCode.value = "";
-                            this.$.txtProductCode.value = "";
-                            this.$.txtLocalCode.hidden = true;
-                            this.$._CBLocations.hidden = false;
-                            this.$.txtProductCode.hidden = true;
-                            this.$._Products.hidden = false;
-                            if (this.$._Products != null && this.$._Products != undefined)
-                                this.$._Products._clearSelection();
-                            this._filledFromPurch = false;
-                        }
-                    }
-
-                },
-                _setPurchaseLine: function (e) {
-                    if (e != null && e != undefined) {
-                        if (e.detail.value !== "" && e.detail.value != null && e.detail.value != undefined) {
-                            var composedKey = e.detail.value.split(" ", 2);
-                            var purchHeaderNo = composedKey[0];
-                            var purchLineNo = composedKey[1];
-
-                            if (purchLineNo != null && purchLineNo != undefined && purchHeaderNo != null && purchHeaderNo != undefined) {
-                                var proj = this.CBPurchaseLine.find(x => x.line_No == purchLineNo && x.documentNO == purchHeaderNo);
-                                if (proj != null && proj != undefined) {
-                                    this._setNewLineFormControl(true);
-                                    this.$.txtLocalCode.value = proj.locationCode;
-                                    this._CBItemsCDirect = proj.directPurchLocation ? "1" : "0";
-                                    this.$._Description.value = proj.description;
-                                    this.$._UnitMeasureCode.value = proj.unitofMeasureCode;
-                                    this.$._UnitCost.value = proj.unitCost;
-                                    this._QuantityToOpen = proj.availableQuantity;
-                                    this._CBVendor = proj.buyFromVendorNo;
-                                    this.$._CBPurchaseHeader.value = proj.documentNO;
-                                    this._Products = proj.numb;
-                                    this._UnitCost = proj.unitCost;
-                                }
-                                else {
-                                    this.openToastError("Não foi possivel obter os dados da encomenda.");
-                                }
-                            }
-                        }
-                        else {
-                            this._setNewLineFormControl(false);
-                        }
-                        this.$._UnitCost.disabled = e.detail.value !== "";
-                    }
-                },
-                _onChangeQuantity: function (e) {
-                    if (e != undefined) {
-
-                        var stringVal = "" + e.detail.value;
-                        e.detail.value = stringVal.replace(",", ".");
-                        this.$._QuantityToRequire.value = e.detail.value
-
-                        if (this._QuantityToOpen != "") {
-                            if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
-                                this._QuantityToRequire = 0;
-                                this.$._QuantityToRequire.value = 0;
-                                this._openToastError("A quantidade a requerer é maior do que a disponivel!");
-                            }
-                        }
-                    }
-                },
-                _getProjectDimsResponse: function (e) {
-                    if (e.detail.status === 200) {
-                        this.$.page_GetRegionCode_ajax.generateRequest();
-                        this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
-                        this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
-
-                        if (this.ProjectDims.regionCode != "") {
-                            this.$._CLRegion.value = this.ProjectDims.regionCode;
-
-                            this.$.RegionCode.value = this.ProjectDims.regionCode;
-                        }
-                        else {
-                            this.$._CLRegion.value = "";
-                            this.$._CLRegion.valueText = "";
-
-                            this.$.RegionCode.value = "";
-                            this.$.RegionCode.valueText = "";
-                        }
-
-                        if (this.ProjectDims.functionalAreaCode != "") {
-                            this.$._CLFunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
-
-                            this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
-                            this._PopulatePurchaseLines();
-                        }
-                        else {
-                            this.$._CLFunctionalAreaCode.value = "";
-                            this.$._CLFunctionalAreaCode.valueText = "";
-
-                            this.$.FunctionalAreaCode.value = "";
-                            this.$.FunctionalAreaCode.valueText = "";
-                        }
-
-                        if (this.ProjectDims.responsabilityCenterCode != "") {
-                            this.$._CLResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
-
-                            this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
-                        }
-                        else {
-                            this.$._CLResponsabilityCenterCode.value = "";
-                            this.$._CLResponsabilityCenterCode.valueText = "";
-
-                            this.$.ResponsabilityCenterCode.value = "";
-                            this.$.ResponsabilityCenterCode.valueText = "";
-                        }
-
-                        this.data.contractType = 3;
-                        this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
-                        this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
-                        this.$.page_databoundNoMessage_ajax.generateRequest();
-                    }
-                },
-
-                _getProjectDimsResponse2: function (e) {
-                    if (e.detail.status === 200) {
-                        if (this.ProjectDims2 != null || this.ProjectDims2 != undefined) {
-                            this.$.page_GetRegionCode_ajax.generateRequest();
-                            this.$.page_GetResponsabilityCenterCode_ajax.generateRequest();
-                            this.$.page_GetFunctionalAreaCode_ajax.generateRequest();
-
-                            if (this.ProjectDims2.regionCode != "") {
-                                this.$._CLRegion.value = this.ProjectDims2.regionCode;
-                            }
-                            //else {
-                            //    this.$._CLRegion.value = "";
-                            //    this.$._CLRegion.valueText = "";
-                            //}
-
-                            if (this.ProjectDims2.functionalAreaCode != "") {
-                                this.$._CLFunctionalAreaCode.value = this.ProjectDims2.functionalAreaCode;
-                            }
-                            //else {
-                            //    this.$._CLFunctionalAreaCode.value = "";
-                            //    this.$._CLFunctionalAreaCode.valueText = "";
-                            //}
-
-                            if (this.ProjectDims2.responsabilityCenterCode != "") {
-                                this.$._CLResponsabilityCenterCode.value = this.ProjectDims2.responsabilityCenterCode;
-                            }
-                            //else {
-                            //    this.$._CLResponsabilityCenterCode.value = "";
-                            //    this.$._CLResponsabilityCenterCode.valueText = "";
-                            //}
-                        }
-                    }
-                },
-
-                _deleteFiles: function (e) {
-                    var index = this.dataLines.lines.indexOf(e.model.item);
-                    this.dataLines.lines.splice(index, 1);
-
-                    this.$.delete_files_ajax.body = JSON.stringify(e.model.item);
-                    this.$.delete_files_ajax.generateRequest();
-                },
-
-                _deletedAttachResponse: function (e) {
-                    if (this.deleted_files.eReasonCode === 1) {
-                        this._openToast("Anexo eliminado com sucesso.");
-
-                        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._prerequesitionno });
-                        this.$.page_LoadAttachments_ajax.generateRequest();
-
-                    } else if (this.deleted_files.eReasonCode === 2) {
-                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
-                    }
-                },
-
-                _loadAttachResponse: function (e) {
-                    if (this.uploads.length > 0) {
-                        this.$.AttachmentId.checked = true;
-                    }
-                    else {
-                        this.$.AttachmentId.checked = false;
-                    }
-                },
-
-                _onSearchTermChanged: function (value) {
-                    var id = this.$.requesitionType.value;
-                    if (id != "" && id.length > 0) {
-                        this.$.ajax_cbReqType.body = JSON.stringify(id);
-                        this.$.ajax_cbReqType.generateRequest();
-
-                        this._loadProductsByAreaAndType(id);
-
-                    }
-                },
-                _responseVehicleFleetBool: function (data) {
-                    var self = this;
-                    if (data.detail.status === 200) {
-
-                        var BoolFleet = this.BooleanVehicleFleet;
-                        if (BoolFleet == true) {
-                            this.$.VehicleDiv.hidden = false;
-                        } else {
-                            this.$.VehicleDiv.hidden = true;
-                        }
-                    }
-                },
-
-                _onSearchLocalDataCollection: function (e) {
-                    var placeId = this.$.CollectionLocal.value;
-                    if (placeId != "" && placeId > 0) {
-                        this.$.ajax_getPlaceData.body = JSON.stringify(placeId);
-                        this.$.ajax_getPlaceData.generateRequest();
-                    }
-                },
-
-                _responsePlaceDataCollection: function (e) {
-                    if (e.detail.status === 200) {
-                        this.$.CollectionAddress.value = this.PlaceDataCollection.address;
-                        this.$.CollectionPostalCode.value = this.PlaceDataCollection.postalcode;
-                        this.$.CollectionLocality.value = this.PlaceDataCollection.locality;
-                        this.$.CollectionContact.value = this.PlaceDataCollection.contact;
-                        this.$.CollectionReceptionResponsible.value = this.PlaceDataCollection.responsiblerecept;
-
-                    }
-                },
-
-                _onSearchLocalDataDelivery: function (e) {
-                    var placeId = this.$.DeliveryLocal.value;
-                    if (placeId != "" && placeId > 0) {
-                        this.$.ajax_getPlaceDataDelivery.body = JSON.stringify(placeId);
-                        this.$.ajax_getPlaceDataDelivery.generateRequest();
-                    }
-                },
-
-                _responsePlaceDataDelivery: function (e) {
-                    if (e.detail.status === 200) {
-                        this.$.DeliveryAddress.value = this.PlaceDataDelivery.address;
-                        this.$.DeliveryPostalCode.value = this.PlaceDataDelivery.postalcode;
-                        this.$.DeliveryLocality.value = this.PlaceDataDelivery.locality;
-                        this.$.ReceptionReceptionResponsible.value = this.PlaceDataDelivery.responsiblerecept;
-                    }
-                },
-
-                _reqmodel: function (e) {
-                    var chkRS = this.chkReposicaoStock == true ? true : false;
-                    this.data.stockReplacement = chkRS;
-
-                    if (chkRS == false) {
-                        if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
-                            if (e != null) {
-                                this.$.dialog.open();
-                                this.$.grid_datareqmodel_ajax.generateRequest();
-                            }
-                        }
-                        else {
-                            this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
-                        }
-                    }
-                    else {
-                        if (e != null) {
-                            this.$.dialog.open();
-                            this.$.grid_datareqmodel_ajax.generateRequest();
-                        }
-                    }
-
-                },
-
-                _createnewreq: function (e) {
-                    $(this.$.btn_CriarRequisicao).addClass('disabled');
-                    this.$.btn_CriarRequisicao.disabled = true;
-
-                    this.data.area = this._areaid;
-                    var chkRS = this.chkReposicaoStock == true ? true : false;
-                    this.data.stockReplacement = chkRS;
-
-                    if (chkRS == true) {
-                        this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
-                        this.$.page_validator_req_ajax.generateRequest();
-                    }
-                    else {
-                        if (this.$.projectNo.value != "" && this.$.projectNo.value != null) {
-                            this.$.page_validator_req_ajax.body = JSON.stringify(this.data);
-                            this.$.page_validator_req_ajax.generateRequest();
-                        }
-                        else {
-                            this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
-
-                            $(this.$.btn_CriarRequisicao).removeClass('disabled');
-                            this.$.btn_CriarRequisicao.disabled = false;
-                        }
-                    }
-                },
-
-                //CRUDS
-                _create: function () {
-                    this.data.area = this._areaid;
-                    this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                    this.$.page_validator_ajax.generateRequest();
-                },
-
-                _update: function () {
-                    this.data.area = this._areaid;
-                    if (this.chkReposicaoStock == undefined || this.chkReposicaoStock == false) {
-                        if (this.$.projectNo.value != null && this.$.projectNo.value != "") {
-                            this.data.stockReplacement = false;
-
-                            this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
-                        }
-                        else {
-                            this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
-                        }
-                    }
-                    else {
-                        this.data.stockReplacement = true;
-
-                        this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
-                    }
-                },
-
-                _delete: function () {
-                    var _dataPreReq = this.data;
-                    var ajax_request = this.$.ajax_delete_prereq;
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende limpar a pré-requisição?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
-                            },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
-                            }
-                        },
-                        callback: function (result) {
-                            if (result) {
-                                ajax_request.body = JSON.stringify(_dataPreReq);
-                                ajax_request.generateRequest();
-                            }
-                        }
-                    });
-                },
-
-                _responseValidatorProcessor: function (data) {
-                    var self = this;
-                    if (data.detail.status === 200) {
-                        if (this.validateResponse == "") {
-                            if (this.$.projectNo.value != null && this.$.projectNo.value != "") {
-                                this._executeRequest("/PreRequisicoes/CreatePreRequesition", this.data)
-                            }
-                            else {
-                                this._openToastError('O campo Nº Ordem/Projecto é de preenchimento obrigatório.');
-                            }
-                        } else {
-                            this._openToastError("Ocorreu um erro desconhecido.");
-                        }
-                    }
-                },
-
-                _responseReqValidatorProcessor: function (data) {
-                    var self = this;
-
-                    if (data.detail.status === 200) {
-                        if (self.validateReqResponse == "") {
-                            var ajax_request = self.$.page_create_requisition_ajax;
-                            ajax_request.body = JSON.stringify(self.data);
-
-                            var ok = 0;
-                            for (i = 0; i < self.dataLines.lines.length; i++) {
-                                if (self.dataLines.lines[i].quantityToRequire == null || self.dataLines.lines[i].quantityToRequire == "" || self.dataLines.lines[i].quantityToRequire <= 0) {
-                                    ok = 1
-                                }
-                            }
-
-                            if (ok == 0) {
-                                ajax_request.generateRequest();
-                            }
-                            else {
-                                bootbox.confirm({
-                                    message: "Existe(m) linha(s) sem Qt. a Requerer definida(s), deseja continuar (Sim/Não)?",
-                                    buttons: {
-                                        confirm: {
-                                            label: 'Sim',
-                                            className: 'btn-success'
-                                        },
-                                        cancel: {
-                                            label: 'Não',
-                                            className: 'btn-danger'
-                                        }
-                                    },
-                                    callback: function (result) {
-                                        if (result) {
-                                            ajax_request.generateRequest();
-                                        }
-                                        else {
-                                            $(this.$.btn_CriarRequisicao).removeClass('disabled');
-                                            this.$.btn_CriarRequisicao.disabled = false;
-                                        }
-                                    }
-                                });
-                            }
-                        } else {
-                            self._openToastError(self.validateReqResponse);
-
-                            $(this.$.btn_CriarRequisicao).removeClass('disabled');
-                            this.$.btn_CriarRequisicao.disabled = false;
-                        }
-                    }
-                },
-                _loadProductsByAreaAndType: function (requisitionType) {
-                    if (this._areaid != null && requisitionType != null) {
-                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requisitionType });
-                        this.$.filteredProducts_ajax.generateRequest();
-                    }
-                },
-                _responseProcessor: function (data) {
-                    if (data.detail.status === 200) {
-                        if (data.detail.url.indexOf("GetPreRequesitionDetails") !== -1) {
-                            var id = this.data.preRequesitionsNo;
-                            if (id != "") {
-                                this._showPreReqLines = "";
-
-                                if (this._permissions.update) {
-                                    this._showPreReqLinesForm = "";
-                                } else {
-                                    this._showPreReqLinesForm = "none";
-                                }
-
-                                this.chkReposicaoStock = this.data.stockReplacement;
-
-                                this.$.grid_prereqlines.clearCache();
-
-                                this.$.ajax_cbReqType.body = JSON.stringify(id);
-                                this.$.ajax_cbReqType.generateRequest();
-                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
-                                this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
-                                this.$.prereqLines_databound_ajax.generateRequest();
-
-                                this._loadProductsByAreaAndType(this.data.requesitionType);
-                                this._PopulatePurchaseLines();
-                            }
-                        }
-                        if (data.detail.url.indexOf("CreatePreRequesition") !== -1) {
-                            this._createResponseProcessor();
-                        }
-                        else if (data.detail.url.indexOf("Update") !== -1) {
-                            if (this.data.eReasonCode == 1) {
-
-                                this._openToast("Pré-Requisição atualizada com sucesso.");
-                            } else {
-                                this._openToastError(this.data.eMessage);
-                            }
-                        }
-                    } else {
-                        this._openToastError("Ocorreu um erro desconhecido.")
-                    }
-
-                    if (this.$.requesitionType.value == 'FROTA') {
-                        this.$.projectNo.disabled = true;
-                        this.$._ProjectNo.disabled = true;
-                    }
-                    else {
-                        this.$.projectNo.disabled = false;
-                        this.$._ProjectNo.disabled = false;
-                    }
-
-                    this.data.contractType = 3;
-                    //this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
-                    //this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
-                    //this.$.page_databoundNoMessage_ajax.generateRequest();
-                },
-
-                _copyFromTemplateResponse: function (data) {
-
-                    if (data.detail.status === 200) {
-                        if (data.detail.url.indexOf("CopyReqModelLines") !== -1) {
-                            if (this.CopyFromModelResult.eReasonCode == 1) {
-
-                                this._openToast("Linhas Pré-Requisição criadas com sucesso");
-                                this.$.dialog.close();
-                                this.$.grid_prereqlines.clearCache();
-                                this.data.eMessage = "";
-
-                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
-                                this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno, });
-                                this.$.prereqLines_databound_ajax.generateRequest();
-                            }
-                            else {
-                                this._openToastError(this.CopyFromModelResult.eMessage);
-                            }
-                        }
-                    }
-                },
-                _createResponseProcessor: function () {
-
-                    if (this.data.eReasonCode == 1) {
-                        this._isCreate = false;
-                        this._openToast("Pré-Requisição criada com sucesso.");
-
-                        var PreRequesitionNo = this.data.preRequesitionsNo;
-                        setTimeout(
-                            function () {
-                                window.location.href = "../PreRequisicoesDetalhes/?PreRequesitionNo=" + PreRequesitionNo;
-                            }, 1000);
-
-                    } else {
-                        this._openToast(this.data.eMessage);
-                    }
-                },
-
-                _responseDeleteProcessor: function (data) {
-                    var self = this;
-                    if (data.detail.status === 200) {
-                        this._openToast(this.deletedData.eMessage);
-                        if (this.deletedData.eReasonCode == 1) {
-                            setTimeout(
-                                function () {
-                                    window.location.reload();
-                                }, 2500);
-                        } else if (this.deletedData.eReasonCode == 2) {
-                            this._openToastError(this.deletedData.eMessage);
-                        }
-                    }
-                },
                 _openToast: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
@@ -1300,955 +599,162 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _createNewPreReq: function (item) {
-
-                    if (item != null) {
-                        window.location.href = "../PreRequisicoesDetalhes/";
+                ready: function () {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                _responseProcessor: function (data) {
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetDetails") !== -1) {
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
+                            }
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
+                            } else {
+                                this._openToast("Orçamento criado com sucesso.")
+                            }
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
+                            } else {
+                                this._openToast("Orçamento atualizado com sucesso.")
+                            }
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
                     }
                 },
 
-                //Helpers
                 _executeRequest: function (url, data) {
-                    this.data.contractType = 3;
                     this.$.page_databound_ajax.url = url;
                     this.$.page_databound_ajax.body = JSON.stringify(data);
                     this.$.page_databound_ajax.generateRequest();
                 },
 
-                //Grid
-                _cancel: function () {
-                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
-                    this.$.prereqLines_databound_ajax.generateRequest();
-                    this.$.grid_prereqlines.clearCache();
+                _GuardarOrcamento: function () {
+                    this._executeRequest("/Orcamentos/UpdateOrcamento", this.data);
                 },
 
-                _sumLines: function () {
-                    var count = 0;
-                    if (this.dataLines.lines != null) {
-                        for (var i = 0; i < this.dataLines.lines.length; i++) {
-                            count += this.dataLines.lines[i].totalCost;
-                            this._TotalLine = count;
-                            this.$.dialogTotal.open();
+                _CalcularTotalLinha: function () {
+                    if (this.$.LinhaQuantidade.value != null && this.$.LinhaQuantidade.value != "") {
+                        if (this.$.LinhaValorUnitario.value != null && this.$.LinhaValorUnitario.value != "") {
+                            if (this.$.LinhaTaxaIVA.value != null && this.$.LinhaTaxaIVA.value != "") {
+                                var Quantidade = parseFloat(this.$.LinhaQuantidade.value);
+                                var ValorUnitario = parseFloat(this.$.LinhaValorUnitario.value);
+                                var TaxaIVA = parseFloat(this.$.LinhaTaxaIVA.value);
+                                
+                                var Custo = Quantidade * ValorUnitario;
+                                var ValorIVA = (TaxaIVA * Custo) / 100;
+
+                                this.$.LinhaTotal.value = Custo + ValorIVA;
+                            }
+                        }
+                    }
+                },
+
+                _createLinha: function () {
+                    debugger;
+                    if (this.$.OrcNo.value != null && this.$.OrcNo.value != "") {
+                        if (this.$.LinhaDescricao.value != null && this.$.LinhaDescricao.value != "") {
+                            if (this.$.LinhaQuantidade.value != null && this.$.LinhaQuantidade.value != "") {
+                                if (this.$.LinhaValorUnitario.value != null && this.$.LinhaValorUnitario.value != "") {
+                                    if (this.$.LinhaTaxaIVA.value != null && this.$.LinhaTaxaIVA.value != "") {
+                                        if (this.$.LinhaTotal.value != null && this.$.LinhaTotal.value != "") {
+                                            this.$.page_CreateLinha_ajax.body = JSON.stringify({
+                                                noOrcamento: this.$.OrcNo.value,
+                                                descricao: this.$.LinhaDescricao.value,
+                                                quantidade: this.$.LinhaQuantidade.value,
+                                                valorUnitario: this.$.LinhaValorUnitario.value,
+                                                taxaIVA: this.$.LinhaTaxaIVA.value,
+                                                totalLinha: this.$.LinhaTotal.value
+                                            });
+                                            this.$.page_CreateLinha_ajax.generateRequest();
+                                        } else {
+                                            this._openToastError("O Campo Total da Linha é de preenchimento obrigatório.")
+                                        }
+                                    } else {
+                                        this._openToastError("O Campo Taxa IVA na Linha é de preenchimento obrigatório.")
+                                    }
+                                } else {
+                                    this._openToastError("O Campo Valor Unitário é de preenchimento obrigatório.")
+                                }
+                            } else {
+                                this._openToastError("O Campo Quantidade é de preenchimento obrigatório.")
+                            }
+                        } else {
+                            this._openToastError("O Campo Descrição é de preenchimento obrigatório.")
                         }
                     } else {
-                        this._openToast("Não tem Linhas inseridas.");
-                    }
-
-                },
-
-                _clFormatSupplierProductCode: function (param) {
-                    if (param != undefined && this.Products != undefined) {
-                        var sel = this.Products.find(x => x.code == param);
-                        if (sel != undefined) {
-                            return sel.code;
-                        }
-                    }
-                    return "";
-                },
-
-                _RespChange: function (e) {
-                    if (!(this.$._CLResponsabilityCenterCode.value == "" || this.$._CLResponsabilityCenterCode.value == null)) {
-                        // Não existe purchaseheader_ajax
-                        //this.$.purchaseheader_ajax.body = JSON.stringify(this.$._CLResponsabilityCenterCode.value);
-                        //this.$.purchaseheader_ajax.generateRequest();
+                        this._openToastError("O Orçamento tem que estar criado.")
                     }
                 },
-
-                _purchaseheaderresponse: function (e) {
-                    if (this.CBPurchaseHeader.length == 0) {
-                        if (this.$._CBPurchaseHeader != null)
-                            this.$._CBPurchaseHeader.value = "";
-                        if (this.$._CBPurchaseLine != null)
-                            this.$._CBPurchaseLine.value = "";
-                    }
-                },
-
-
-                //_clFormatProjectNo: function (param) {
-                //    if (param != undefined && this.CBJobNo != undefined) {
-                //        var sel = this.CBJobNo.find(x => x.id == param);
-                //        if (sel != undefined) {
-                //            return sel.id;
-                //        }
-                //    }
-                //    return "";
-                //},
-
-                _CalculateTotalCostLine: function (e) {
-                    var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                    line.totalCost = line.quantityToRequire * line.unitCost;
-                    this.$.grid_prereqlines.clearCache();
-                },
-
-                _GridItemChange: function (e, _selected) {
-                    if (this.dataLines != null && this.dataLines.lines != null) {
-                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                        var itemNo = e.model.item.code
-                        var object = this.Products.find(x => x.code == itemNo);
-                        line.description = object.name;
-
-                        this.$.grid_prereqlines.clearCache();
-                    }
-
-                    //this.$._CLGridDescription.value = object.name;
-                    //this.$._CLGridUnitMeasureCode.value = object.measureUnit;
-                },
-
-                _GridOrderChange: function (e, _selected) {
-                    if (this.dataLines != null && this.dataLines.lines != null) {
-                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                        var itemNo = e.model.item.projectNo;
-
-                        this.$.get_project_dims.body = JSON.stringify(itemNo);
-                        this.$.get_project_dims.generateRequest();
-                    }
-                },
-
-
-                //_getprojectdimsResponse: function (e) {
-                //    if (this.ProjectDims != null) {
-                //        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                //        line.regionCode = this.ProjectDims[0].regionCode;
-                //        line.functionalAreaCode = this.ProjectDims[0].areaCode;
-                //        line.centerResponsibilityCode = this.ProjectDims[0].centerResponsibilityCode;
-                //    }
-                //    this.$.grid_prereqlines.clearCache();
-                //},
-                _GridOpenLineChange: function (e) {
-                    var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
-                    if (line != null) {
-                        this._SelectedLine.openOrderNo = line.documentNO;
-                    }
-                },
-                _GridRespCenterChange: function (e) {
-                    if (this.dataLines != null && this.dataLines.lines != null) {
-                        var line = this.dataLines.lines.find(x => x == this._SelectedLine);
-                        var itemNo = e.model.item.centerResponsibilityCode;
-                        line.openOrderNo = "";
-                        this.CBPurchaseLineGrid = "";
-                        line.openOrderLineNo = "";
-
-                        //Não existe gridpurchaseheader_ajax
-                        //this.$.gridpurchaseheader_ajax.body = JSON.stringify(itemNo);
-                        //this.$.gridpurchaseheader_ajax.generateRequest();
-
-                        //this.$.grid_prereqlines.clearCache();
-                    }
-                },
-
-
-                _clFormatvehicle: function (param) {
-                    if (param != undefined && this.CBVehicle != undefined) {
-                        var sel = this.CBVehicle.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.id;
-                        }
-                    }
-                    return "";
-                },
-
-                _clFormatsupplierNo: function (param) {
-                    if (param != undefined && this.CBVendor != undefined) {
-                        var sel = this.CBVendor.find(x => x.no_ == param);
-                        if (sel != undefined) {
-                            return sel.name;
-                        }
-                    }
-                    return "";
-                },
-
-                _clFormatLocation: function (param) {
-                    if (param != undefined && this.CBLocations != undefined) {
-                        var sel = this.CBLocations.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatRegion: function (param) {
-                    if (param != undefined && this.LProjectRegionCodes != undefined) {
-                        var sel = this.LProjectRegionCodes.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatFunctionalArea: function (param) {
-                    if (param != undefined && this.LProjectFunctionalAreaCodes != undefined) {
-                        var sel = this.LProjectFunctionalAreaCodes.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatOpenOrderNo: function (param) {
-                    if (param != undefined && this.CBPurchaseHeader != undefined) {
-                        var sel = this.CBPurchaseHeader.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.id;
-                        }
-                    }
-                    return "";
-                },
-
-                _clFormatOpenOrderLineNo: function (param) {
-                    if (param != undefined && this.CBPurchaseLine != undefined) {
-                        var sel = this.CBPurchaseLine.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.line_No;
-                        }
-                    }
-                    return "";
-                },
-
-                _clFormatResponsabilityCenter: function (param) {
-                    if (param != undefined && this.LProjectResponsabilityCenterCodes != undefined) {
-                        var sel = this.LProjectResponsabilityCenterCodes.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-
-                //Pre Requesition Lines
-                _createPreReqLine: function () {
-                    var chkRS = this.chkReposicaoStock == true ? true : false;
-                    this.data.stockReplacement = chkRS;
-
-                    var requesitionType = this.$.requesitionType.value;
-
-                    var localCode = "";
-                    var validLocalCode = false;
-                    if (this._filledFromPurch) {
-                        localCode = this.$.txtLocalCode.value;
-                        validLocalCode = (localCode !== null && localCode !== "");
+                _responseCreateLinha: function () {
+                    if (this.createLinha.eReasonCode != 1) {
+                        this._openToastError(this.createLinha.eMessage);
                     }
                     else {
-                        localCode = this._LocalCode;
-                        validLocalCode = (localCode !== null && localCode !== "");
+                        this._openToast("Linha criada com sucesso.");
+
+                        this.$.LinhaDescricao.value = "";
+                        this.$.LinhaQuantidade.value = "";
+                        this.$.LinhaValorUnitario.value = "";
+                        this.$.LinhaTaxaIVA.value = "";
+                        this.$.LinhaTotal.value = "";
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
+                        this.$.page_databound_ajax.generateRequest();
                     }
 
-                    if (chkRS == false) {
-                        if (this.$._ProjectNo.value != "" & this.$._ProjectNo.value != null) {
-                            if (validLocalCode) {
-                                if (this._Products != undefined & this._Products != "") {
-                                    if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
-                                        var totalCost = this._QuantityToRequire * this._UnitCost;
-                                        if (isNaN(totalCost)) {
-                                            totalCost = 0;
-                                        }
-
-                                        var purchHeaderNo = "";
-                                        var purchLineNo = "";
-                                        if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                            var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                            purchHeaderNo = composedKey[0];
-                                            purchLineNo = composedKey[1];
-                                        }
-
-                                        this.dataLines.lines.unshift({
-                                            preRequisitionLineNo: this.data.preRequesitionsNo,
-                                            type: 2, //PRODUTO
-                                            code: this._Products,
-                                            description: this._Description,
-                                            description2: this._Description2,
-                                            localCode: localCode,
-                                            unitMeasureCode: this._UnitMeasureCode,
-                                            quantityToRequire: this._QuantityToRequire,
-                                            regionCode: this.$._CLRegion.value,
-                                            functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                            centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                            projectNo: this.$._ProjectNo.value,
-                                            //qtyByUnitOfMeasure
-                                            //quantityRequired
-                                            //quantityPending:
-                                            quantidadeInicial: this._QuantityToRequire,
-                                            unitCost: this._UnitCost,
-                                            //sellUnityPrice
-                                            //budgetValue
-                                            //expectedReceivingDate
-                                            //billable
-                                            maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                            //employeeNo
-                                            vehicle: this.data.vehicle,
-                                            supplierNo: this._CBVendor,
-                                            //supplierProductCode
-                                            armazemCDireta: this._CBItemsCDirect,
-                                            //unitNutritionProduction
-                                            //customerNo
-                                            openOrderNo: purchHeaderNo,
-                                            openOrderLineNo: purchLineNo,
-                                            totalCost: totalCost > 0 ? totalCost : "",
-                                        });
-
-                                        this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                                        this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                                        this.$.prereqLines_databound_ajax.generateRequest();
-                                        this.$.grid_prereqlines.clearCache();
-                                    }
-                                    else {
-                                        this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
-                                    }
-                                }
-                                else {
-                                    this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
-                                }
-                            }
-                            else {
-                                this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
-                            }
-                        }
-                        else {
-                            this._openToastError('O valor do campo Nº Ordem/Projecto tem que estar preenchido.');
-                        }
-                    }
-                    else {
-                        if (validLocalCode) {
-                            if (this._Products != undefined & this._Products != "") {
-                                if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
-                                    var totalCost = this._QuantityToRequire * this._UnitCost;
-                                    if (isNaN(totalCost)) {
-                                        totalCost = 0;
-                                    }
-
-                                    var purchHeaderNo = "";
-                                    var purchLineNo = "";
-                                    if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                        var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                        purchHeaderNo = composedKey[0];
-                                        purchLineNo = composedKey[1];
-                                    }
-
-                                    this.dataLines.lines.unshift({
-                                        preRequisitionLineNo: this.data.preRequesitionsNo,
-                                        type: 2, //PRODUTO
-                                        code: this._Products,
-                                        description: this._Description,
-                                        description2: this._Description2,
-                                        localCode: localCode,
-                                        unitMeasureCode: this._UnitMeasureCode,
-                                        quantityToRequire: this._QuantityToRequire,
-                                        regionCode: this.$._CLRegion.value,
-                                        functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                        centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                        projectNo: this.$._ProjectNo.value,
-                                        //qtyByUnitOfMeasure
-                                        //quantityRequired
-                                        //quantityPending:
-                                        quantidadeInicial: this._QuantityToRequire,
-                                        unitCost: this._UnitCost,
-                                        //sellUnityPrice
-                                        //budgetValue
-                                        //expectedReceivingDate
-                                        //billable
-                                        maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                        //employeeNo
-                                        vehicle: this.data.vehicle,
-                                        supplierNo: this._CBVendor,
-                                        //supplierProductCode
-                                        armazemCDireta: this._CBItemsCDirect,
-                                        //unitNutritionProduction
-                                        //customerNo
-                                        openOrderNo: purchHeaderNo,
-                                        openOrderLineNo: purchLineNo,
-                                        totalCost: totalCost > 0 ? totalCost : "",
-                                    });
-
-                                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                                    this.$.prereqLines_databound_ajax.generateRequest();
-                                    this.$.grid_prereqlines.clearCache();
-                                }
-                                else {
-                                    this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
-                                }
-                            }
-                            else {
-                                this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
-                            }
-                        }
-                        else {
-                            this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
-                        }
-                    }
                 },
 
-                _updateLinhaPreRequisicao: function (e) {
-                    var index = this.dataLines.lines.indexOf(e.model.item);
-
-                    //var line = this.CBPurchaseLine.find(x => x.id == e.currentTarget.__data.selectedItem.id);
-                    //if (line != null) {
-                    //    e.model.item.openOrderNo = line.documentNO;
-                    //}
-
-                    if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
-                        this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
-                            preRequisitionLineNo: e.model.item.preRequisitionLineNo,
-                            lineNo: e.model.item.lineNo,
-                            type: e.model.item.type,
-                            code: e.model.item.code,
-                            description: e.model.item.description,
-                            description2: e.model.item.description2,
-                            localCode: e.model.item.localCode,
-                            unitMeasureCode: e.model.item.unitMeasureCode,
-                            quantityToRequire: e.model.item.quantityToRequire,
-                            quantidadeInicial: e.model.item.quantityToRequire,
-                            regionCode: e.model.item.regionCode,
-                            functionalAreaCode: e.model.item.functionalAreaCode,
-                            centerResponsibilityCode: e.model.item.centerResponsibilityCode,
-                            projectNo: e.model.item.projectNo,
-                            createDateTime: e.model.item.createDateTime,
-                            createUser: e.model.item.createUser,
-                            updateDateTime: e.model.item.updateDateTime,
-                            updateUser: e.model.item.updateUser,
-                            qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
-                            quantityRequired: e.model.item.quantityRequired,
-                            quantityPending: e.model.item.quantityPending,
-                            unitCost: e.model.item.unitCost,
-                            sellUnityPrice: e.model.item.sellUnityPrice,
-                            budgetValue: e.model.item.budgetValue,
-                            expectedReceivingDate: e.model.item.expectedReceivingDate,
-                            billable: e.model.item.billable,
-                            maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
-                            employeeNo: e.model.item.employeeNo,
-                            vehicle: e.model.item.vehicle,
-                            supplierNo: e.model.item.supplierNo,
-                            supplierProductCode: e.model.item.supplierProductCode,
-                            unitNutritionProduction: e.model.item.unitNutritionProduction,
-                            customerNo: e.model.item.customerNo,
-                            openOrderNo: e.model.item.openOrderNo,
-                            openOrderLineNo: e.model.item.openOrderLineNo,
-                            totalCost: e.model.item.totalCost,
-                            armazemCDireta: e.model.item.armazemCDireta,
-                            selected: e.model.item.selected,
+                _deleteLinha: function (e) {
+                    if (e != null) {
+                        var index = this.data.linhasOrcamentos.indexOf(e.model.item);
+                        var data = this.data.linhasOrcamentos[index];
+                        var ajax_request = this.$.page_DeleteLinha_ajax;
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende eliminar a Linha.",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.body = JSON.stringify(data);
+                                    ajax_request.generateRequest();
+                                }
+                            }
                         });
-                        this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.generateRequest();
-                        this.$.grid_prereqlines.clearCache();
+                    }
+                },
+                _responseDeleteLinha: function () {
+                    if (this.deleteLinha.eReasonCode != 1) {
+                        this._openToastError(this.deleteLinha.eMessage);
                     }
                     else {
-                        this._openToastError('Na linha o campo Nº Ordem/Projeto é de preenchimento obrigatório.');
-                    }
-                },
-                _UpdateLinhaPreRequisicao_ResponseProcessor: function (e) {
-                    if (this.updateLinhaPreRequisicaoResponse.eReasonCode == 1) {
-                        this._openToast(this.updateLinhaPreRequisicaoResponse.eMessage);
-                    }
-                    else {
-                        this._openToastError(this.updateLinhaPreRequisicaoResponse.eMessage);
-                    }
-                    this.$.page_databound_ajax.generateRequest();
-                },
+                        this._openToast("Linha eliminada com sucesso.");
 
-                _onProductInGridChanged: function (e) {
-                    var index = this.dataLines.lines.indexOf(e.model.item);
-
-                    this.$.prereqLines_UpdateLinhaPreRequisicaoProduto_ajax.body = JSON.stringify({
-                        preRequisitionLineNo: e.model.item.preRequisitionLineNo,
-                        lineNo: e.model.item.lineNo,
-                        type: e.model.item.type,
-                        code: e.model.item.code,
-                        description: e.model.item.description,
-                        description2: e.model.item.description2,
-                        localCode: e.model.item.localCode,
-                        unitMeasureCode: e.model.item.unitMeasureCode,
-                        quantityToRequire: e.model.item.quantityToRequire,
-                        regionCode: e.model.item.regionCode,
-                        functionalAreaCode: e.model.item.functionalAreaCode,
-                        centerResponsibilityCode: e.model.item.centerResponsibilityCode,
-                        projectNo: e.model.item.projectNo,
-                        createDateTime: e.model.item.createDateTime,
-                        createUser: e.model.item.createUser,
-                        updateDateTime: e.model.item.updateDateTime,
-                        updateUser: e.model.item.updateUser,
-                        qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
-                        quantityRequired: e.model.item.quantityRequired,
-                        quantityPending: e.model.item.quantityPending,
-                        unitCost: e.model.item.unitCost,
-                        sellUnityPrice: e.model.item.sellUnityPrice,
-                        budgetValue: e.model.item.budgetValue,
-                        expectedReceivingDate: e.model.item.expectedReceivingDate,
-                        billable: e.model.item.billable,
-                        maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
-                        employeeNo: e.model.item.employeeNo,
-                        vehicle: e.model.item.vehicle,
-                        supplierNo: e.model.item.supplierNo,
-                        supplierProductCode: e.model.item.supplierProductCode,
-                        unitNutritionProduction: e.model.item.unitNutritionProduction,
-                        customerNo: e.model.item.customerNo,
-                        openOrderNo: e.model.item.openOrderNo,
-                        openOrderLineNo: e.model.item.openOrderLineNo,
-                        totalCost: e.model.item.totalCost,
-                        armazemCDireta: e.model.item.armazemCDireta,
-                        selected: e.model.item.selected,
-                    });
-                    this.$.prereqLines_UpdateLinhaPreRequisicaoProduto_ajax.generateRequest();
-                    this.$.grid_prereqlines.clearCache();
-                },
-                _UpdateLinhaPreRequisicaoProduto_ResponseProcessor: function (e) {
-                    if (this.updateLinhaPreRequisicaoProdutoResponse.eReasonCode == 1) {
-                        this._openToast(this.updateLinhaPreRequisicaoProdutoResponse.eMessage);
-                    }
-                    else {
-                        this._openToastError(this.updateLinhaPreRequisicaoProdutoResponse.eMessage);
-                    }
-                    this.$.page_databound_ajax.generateRequest();
-                },
-
-                _updateContractLines: function () {
-                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.prereqLines_databound_ajax.generateRequest();
-                },
-                _deleteContractLine: function (e) {
-
-                    var index = this.dataLines.lines.indexOf(e.model.item);
-                    this.dataLines.lines.splice(index, 1);
-
-                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.prereqLines_databound_ajax.generateRequest();
-
-                    //this.$.gridUserAccesses.clearCache();
-                },
-                _duplicarContractLine: function (e) {
-                    var index = this.dataLines.lines.indexOf(e.model.item);
-
-                    this.$.prereqLines_DuplicarLinha_ajax.body = JSON.stringify({
-                        preRequisitionLineNo: e.model.item.preRequisitionLineNo,
-                        lineNo: e.model.item.lineNo,
-                    });
-                    this.$.prereqLines_DuplicarLinha_ajax.generateRequest();
-                    this.$.grid_prereqlines.clearCache();
-                },
-                _dlResponseProcessor: function (e) {
-                    if (this.duplicarLinhasResponse.eReasonCode == 1) {
-                        this._openToast(this.duplicarLinhasResponse.eMessage);
-                    }
-                    else {
-                        this._openToastError(this.duplicarLinhasResponse.eMessage);
-                    }
-                    this.$.grid_prereqlines.clearCache();
-                    this.$.page_databound_ajax.generateRequest();
-                },
-                _onProductChanged: function (e) {
-                    //var item = this.Products.find(x => x.code == e.detail.value);
-                    //if (item != null) {
-                    //    this.$._Description.value = item.name;
-                    //    this.$._Description2.value = item.name2;
-                    //    this.$._UnitMeasureCode.value = item.measureUnit;
-                    //    this.$._UnitCost.value = item.unitCost;
-                    //}
-                    //else {
-                    //    this.$._Description.value = "";
-                    //    this.$._Description2.value = "";
-                    //    this.$._UnitMeasureCode.value = "";
-                    //    this.$._UnitCost.value = "";
-                    //}
-
-                    if (this.$._Products.value != "") {
-                        this.$.measuresunit_ajax.params = { "produto": this.$._Products.value };
-                        this.$.measuresunit_ajax.generateRequest();
-
-                        this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
-                        this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
-                        this.$.page_GetProductLocation_ajax.generateRequest();
-                    }
-                    else {
-                        this.$._Description.value = "";
-                        this.$._Description2.value = "";
-                        this.$._UnitMeasureCode.value = "";
-                        this.$._UnitCost.value = "";
-                        this.$._CBLocations.value = "";
-
-                        this.$._UnitCost.disabled = false;
-                    }
-                },
-                _onProductClick: function (e) {
-                    var requesitionType = this.$.requesitionType.value;
-                    //var locationId = this.$._CBLocations.value;
-
-                    if (requesitionType == null | requesitionType == "") {
-                        this._openToastError('É obrigatório preencher o campo Tipo Requesição.');
-                    }
-                    //} else {
-                    //    if (locationId == null | locationId == "") {
-                    //        this._openToastError('É obrigatório preencher o campo Cód. Localização.');
-                    //    }
-                    //}
-                },
-
-                _onLocationChanged: function (e) {
-                    if (this.$._Products.value != "" && this.$._CBLocations.value != "") {
-                        this.$.page_LocationChanged_ajax.params = { "produto": this.$._Products.value, "localizacao": this.$._CBLocations.value };
-                        this.$.page_LocationChanged_ajax.generateRequest()
-                    }
-                },
-
-                _GetUnitCostLinhaResponse: function (e) {
-                    if (this.UnitCostLinha.locationCode != null) {
-                        if (this.UnitCostLinha.unitCost != null) {
-                            this.$._UnitCost.value = this.UnitCostLinha.unitCost;
-                            this.$._UnitCost.disabled = true;
-                        }
-                    }
-                    else {
-                        this.$._UnitCost.disabled = false;
-                        this.$._UnitCost.value = "";
+                        this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
+                        this.$.page_databound_ajax.generateRequest();
                     }
 
-                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
-                    this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
-                    this.$.page_GetProductLocation_ajax.generateRequest()
-                },
-                _GetProductLocationResponse: function (e) {
-                    if (this.productInfo != null) {
-                        this.$._Description.value = this.productInfo.name;
-                        this.$._Description2.value = this.productInfo.name2;
-                        this.$._UnitMeasureCode.value = this.productInfo.measureUnit;
-                        this.$._UnitCost.value = this.productInfo.unitCost;
-
-                        if (this.productInfo.inventoryValueZero == 1) {
-                            this.$._UnitCost.disabled = false;
-                        }
-                        else {
-                            this.$._UnitCost.disabled = true;
-                        }
-
-                        if (this.productInfo.locationCode != null) {
-                            this.$._CBLocations.value = this.productInfo.locationCode;
-                        }
-                        else {
-                            this._openToastError("Este produto não têm Cód. Localização contate a área das compras.");
-                        }
-
-                        if (this.productInfo.openOrderLines == true) {
-                            setTimeout(
-                                function () {
-                                    bootbox.alert({
-                                        message: "O produto selecionado já existe em acordo de fornecedor.",
-                                    });
-                                }, 0);
-                        }
-                    }
-                    else {
-                        this.$._CBLocations.value = "";
-                    }
                 },
 
-                _LocationChangedResponse: function (e) {
-                    if (this.locationInfo != null) {
-                        if (this.locationInfo.eReasonCode == 2) {
-                            this.$._CBLocations._clearSelection();
-                            this.$._CBLocations.value = this.locationInfo.eMessage;
-                        }
-                        else {
-                            if (this.locationInfo.eReasonCode == 3) {
-                                this.$._CBLocations._clearSelection();
-                            }
-                        }
-                    }
-                },
 
-                //_btnUpload: function (e) {
-                //
-                //    var index = this.dataLines.lines.indexOf(e.model.item);
-                //    this.dataLines.lines.splice(index, 1);
-                //    this._lineno = e.model.item.lineNo;
 
-                //    if (e != null) {
-                //        this.$.dialogAttach.open();
-                //        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "id": this._prerequesitionno, "linha": this._lineno });
-                //        this.$.page_LoadAttachments_ajax.generateRequest();
-                //    }
-                //},
-                _ConvertDecimals: function (e) {
-                    var stringVal = "" + e.target.value;
-                    e.target.value = stringVal.replace(",", ".");
 
-                },
-                _lineSelected: function (item) {
-                    if (item != null) {
-                        var oSel = this.dataLines.lines.find(x => x.selected);
-                        if (oSel != undefined) {
-                            oSel.selected = false;
-                        }
 
-                        var sel = this.dataLines.lines.find(x => x == item);
-                        if (sel != undefined) {
-
-                            this.dataLines.lines.find(x => x == item).selected = true;
-
-                            var PurchaseNo = item.openOrderNo;
-                            this.$.purchaselinesgrid_ajax.body = JSON.stringify(PurchaseNo);
-                            this.$.purchaselinesgrid_ajax.generateRequest();
-                            if (this._areaid != null && this.$.requesitionType.value) {
-                                this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value });
-                                this.$.filteredProducts_ajax.generateRequest();
-                            }
-
-                            this.$.grid_prereqlines.clearCache();
-                            //Não existe gridpurchaseheader_ajax
-                            //if (!(item.centerResponsibilityCode == "" || item.centerResponsibilityCode == null)) {
-                            //    this.$.gridpurchaseheader_ajax.body = JSON.stringify(item.centerResponsibilityCode);
-                            //    this.$.gridpurchaseheader_ajax.generateRequest();
-                            //}
-                        }
-                    }
-                },
-                _GridLocationChange: function (e) {
-                    if (this._areaid != null && this.$.requesitionType.value) {
-                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": this.$.requesitionType.value });
-                        this.$.filteredProducts_ajax.generateRequest();
-                    }
-                },
-                _clResponseProcessor: function (data) {
-                    if (data.detail.status === 200) {
-                        if (!(data.detail.url.indexOf("GetPreReqLines") !== -1)) {
-                            if (this.dataLines.eReasonCode != 1) {
-                                this.$.grid_prereqlines.clearCache();
-                                this._openToastError(this.dataLines.eMessage);
-                            }
-                            else {
-                                this._openToast(this.dataLines.eMessage);
-                                this.$._CBLocations.value = "";
-                                this._CBItemsCDirect = "0";
-                                this.$._Description.value = "";
-                                this.$._Description2.value = "";
-                                this.$._UnitMeasureCode.value = "";
-                                this.$._QuantityToRequire.value = "";
-                                this.$._QuantityToOpen.value = "";
-                                this.$._UnitCost.value = "";
-                                this.$._MaintenanceOrderLineNo.value = "";
-                                if (this.$._CBPurchaseHeader != null)
-                                    this.$._CBPurchaseHeader.value = "";
-                                this.$._CBPurchaseLine.value = "";
-                                this.$._Products._clearSelection();
-                                this.$._ProjectNo.value = this.data.projectNo;
-                                this.$._ProjectNo.valueText = this.data.projectNo;
-                                this.$._CBVendor._clearSelection();
-                                if (this.$._CBPurchaseLine != null)
-                                    this.$._CBPurchaseLine._clearSelection();
-                                if (this.data != null) {
-                                    this.$._CLRegion.value = this.data.regionCode;
-                                    this.$._CLFunctionalAreaCode.value = this.data.functionalAreaCode;
-                                    this.$._CLResponsabilityCenterCode.value = this.data.responsabilityCenterCode;
-                                }
-                                this._setNewLineFormControl(false);
-
-                                //location.reload();
-                                //this.$.grid_prereqlines.clearCache();
-                                //this.$.page_GetPreReq_ajax.body = JSON.stringify({ "preReqID": this._prerequesitionno });
-                                //this.$.page_GetPreReq_ajax.generateRequest()
-
-                            }
-                        }
-                    }
-                },
-
-                _PopulatePurchaseLines: function (data) {
-                    var codArea = this.$.FunctionalAreaCode.value;
-                    if (codArea != "") {
-                        this.PurchaseLine = "";
-                        this.$.purchaselines_ajax.body = JSON.stringify(codArea);
-                        this.$.purchaselines_ajax.generateRequest();
-                    }
-                },
-
-                _responsePurchaseLinesProcessor: function (data) {
-
-                    if (this.CBPurchaseLineGrid != null) {
-                        var oSel = this.dataLines.lines.find(x => x.selected);
-                        if (oSel != undefined) {
-                            oSel.openOrderLineNo = this.CBPurchaseLineGrid;
-                        }
-                        this.$.grid_prereqlines.clearCache();
-                    }
-                },
-
-                _SaveLines: function (e) {
-                    var index = this.result.indexOf(e.model.item);
-                    this.result.splice(index, 1);
-                    e.model.item.preRequisitionNo = this.data.preRequesitionsNo;
-                    e.model.item.projectNo = this.data.projectNo;
-                    this.$.grid_copyreqmodel_ajax.body = JSON.stringify(e.model.item);
-                    this.$.grid_copyreqmodel_ajax.generateRequest();
-                },
-
-                _pendingreq: function (e) {
-                    window.location.href = "/PreRequisicoes/RequisicoesPendentes";
-                },
-                _CleanPreRequesitionResponse: function (e) {
-                    if (this.ClPreReq.eReasonCode != null) {
-                        this._openToastError(this.ClPreReq.eMessage);
-                    }
-                    if (e.detail.status === 200) {
-                        setTimeout(
-                            function () {
-                                location.reload();
-                            }, 2000);
-                    }
-                },
-                _createRequesitionResponse: function (e) {
-                    if (this.CreateReqResponse.eReasonCode == "1") {
-                        this._openToast(this.CreateReqResponse.eMessage);
-
-                        this.$.CleanPreRequesition_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno });
-                        var req = this.$.CleanPreRequesition_ajax;
-                        var errorsToDisplay = this.CreateReqResponse.eMessages.find(x => x.type == 0);
-                        //if (this.CreateReqResponse.eMessages.length > 0) {
-                        if (errorsToDisplay != undefined) {//.length > 0) {
-                            if (Array.isArray(errors)) {
-                                var errors = errorsToDisplay[0].message;
-                                for (var i = 1; i < errorsToDisplay.length; i++) {
-                                    errors += errorsToDisplay[i].message + ";";
-                                }
-                            }
-                            else {
-                                var errors = errorsToDisplay.message;
-                            }
-
-                            var thisCtx = this;
-
-                            setTimeout(
-                                function () {
-                                    bootbox.alert({
-                                        message: errors,
-                                        callback: function () {
-                                            req.generateRequest();
-                                        }
-                                    });
-                                }, 4000);
-                        }
-                        else {
-                            req.generateRequest();
-                        }
-                    }
-                    else {
-                        this._openToastError(this.CreateReqResponse.eMessage);
-                    }
-                    $(this.$.btn_CriarRequisicao).removeClass('disabled');
-                    this.$.btn_CriarRequisicao.disabled = false;
-
-                    this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
-                    this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
-                    this.$.prereqLines_databound_ajax.generateRequest();
-                },
-
-                _GetNoProjetoCabecalho: function (e) {
-                    var matricula = this.$.Vehicle.value;
-                    this.$.page_GetProjetoNoCabecalho_ajax.body = JSON.stringify(matricula);
-                    this.$.page_GetProjetoNoCabecalho_ajax.generateRequest();
-                },
-                _GetProjetoNoCabecalhoResponse: function (e) {
-                    //if (this.ProjetoNo != "") {
-                    //    this.$.projectNo.value = this.ProjetoNo;
-                    //}
-                    //else {
-                    //    this.$.projectNo.value = this.ProjetoNo;
-                    //    this.$.projectNo.valueText = this.ProjetoNo;
-                    //}
-
-                    this.$.projectNo.value = this.ProjetoNo;
-                    this.$.projectNo.valueText = this.ProjetoNo;
-                },
-
-                _GetNoProjetoLinha: function (e) {
-                    var matricula = this.$._VehicleLines.value;
-                    this.$.page_GetProjetoNoLinha_ajax.body = JSON.stringify(matricula);
-                    this.$.page_GetProjetoNoLinha_ajax.generateRequest();
-                },
-                _GetProjetoNoLinhaResponse: function (e) {
-                    if (this.ProjetoNo != "") {
-                        this.$._ProjectNo.value = this.ProjetoNo;
-                    }
-                    else {
-                        this.$._ProjectNo.value = this.ProjetoNo;
-                        this.$._ProjectNo.valueText = this.ProjetoNo;
-                    }
-                },
-
-                _goBack: function (e) {
-                    window.history.back();
-                },
-
-                _validacaoReposicaoStock: function () {
-                    this.chkReposicaoStock = !this.chkReposicaoStock;
-
-                    if (this.chkReposicaoStock == true) {
-                        var RegiaoValue = "";
-                        var AreaValue = "";
-                        var CrespValue = "";
-                        var RegiaoValueText = "";
-                        var AreaValueText = "";
-                        var CrespValueText = "";
-
-                        var Regiao2Value = "";
-                        var Area2Value = "";
-                        var Cresp2Value = "";
-                        var Regiao2ValueText = "";
-                        var Area2ValueText = "";
-                        var Cresp2ValueText = "";
-
-                        RegiaoValue = this.$.RegionCode.value;
-                        AreaValue = this.$.FunctionalAreaCode.value;
-                        CrespValue = this.$.ResponsabilityCenterCode.value;
-                        RegiaoValueText = this.$.RegionCode.valueText;
-                        AreaValueText = this.$.FunctionalAreaCode.valueText;
-                        CrespValueText = this.$.ResponsabilityCenterCode.valueText;
-
-                        Regiao2Value = this.$._CLRegion.value;
-                        Area2Value = this.$._CLFunctionalAreaCode.value;
-                        Cresp2Value = this.$._CLResponsabilityCenterCode.value;
-                        Regiao2ValueText = this.$._CLRegion.valueText;
-                        Area2ValueText = this.$._CLFunctionalAreaCode.valueText;
-                        Cresp2ValueText = this.$._CLResponsabilityCenterCode.valueText;
-
-                        this.$.projectNo._clearSelection();
-                        this.$.projectNo.disabled = true;
-                        this.$.RegionCode.disabled = false;
-                        this.$.FunctionalAreaCode.disabled = false;
-                        this.$.ResponsabilityCenterCode.disabled = false;
-
-                        this.$._ProjectNo._clearSelection();
-                        this.$._ProjectNo.disabled = true;
-                        this.$._CLRegion.disabled = false;
-                        this.$._CLFunctionalAreaCode.disabled = false;
-                        this.$._CLResponsabilityCenterCode.disabled = false;
-
-                        this.$.RegionCode.value = RegiaoValue;
-                        this.$.FunctionalAreaCode.value = AreaValue;
-                        this.$.ResponsabilityCenterCode.value = CrespValue;
-                        this.$.RegionCode.valueText = RegiaoValueText;
-                        this.$.FunctionalAreaCode.valueText = AreaValueText;
-                        this.$.ResponsabilityCenterCode.valueText = CrespValueText;
-
-                        this.$._CLRegion.value = Regiao2Value;
-                        this.$._CLFunctionalAreaCode.value = Area2Value;
-                        this.$._CLResponsabilityCenterCode.value = Cresp2Value;
-                        this.$._CLRegion.valueText = Regiao2ValueText;
-                        this.$._CLFunctionalAreaCode.valueText = Area2ValueText;
-                        this.$._CLResponsabilityCenterCode.valueText = Cresp2ValueText;
-                    }
-                    else {
-                        this.$.projectNo.disabled = false;
-                        this.$.RegionCode.disabled = true;
-                        this.$.FunctionalAreaCode.disabled = true;
-                        this.$.ResponsabilityCenterCode.disabled = true;
-
-                        this.$._ProjectNo.disabled = false;
-                        this.$._CLRegion.disabled = true;
-                        this.$._CLFunctionalAreaCode.disabled = true;
-                        this.$._CLResponsabilityCenterCode.disabled = true;
-                    }
-                }
             });
         });
     </script>
-
 </dom-module>
 
 

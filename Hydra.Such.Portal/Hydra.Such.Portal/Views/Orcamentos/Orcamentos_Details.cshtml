@@ -5,7 +5,7 @@
 
 <link rel="import" href="~/elements/orcamentos/orcamentos_details.html">
 
-<x-orcamentosdetails _NoOrcamento='@ViewBag.NoOrcamento'
-                     _reportserverurl='@ViewBag.reportServerURL'
-                     _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+<x-orcamentosdetails _no='@ViewBag.NoOrcamento'
+                     _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                     _reportserverurl='@ViewBag.reportServerURL'>
 </x-orcamentosdetails>

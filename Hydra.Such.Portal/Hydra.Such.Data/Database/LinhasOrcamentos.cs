@@ -7,7 +7,7 @@ namespace Hydra.Such.Data.Database
     public partial class LinhasOrcamentos
     {
         public int NoLinha { get; set; }
-        public string NoOrcamento { get; set; }
+        public string OrcamentosNo { get; set; }
         public string Descricao { get; set; }
         public decimal? Quantidade { get; set; }
         public decimal? ValorUnitario { get; set; }

@@ -53,12 +53,12 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        public IActionResult Orcamentos_Details(string NoOrcamento)
+        public IActionResult Orcamentos_Details(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Orcamentos);
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.NoOrcamento = NoOrcamento ?? "";
+                ViewBag.NoOrcamento = id ?? "";
                 ViewBag.reportServerURL = _config.ReportServerURL;
                 ViewBag.UPermissions = UPerm;
 
@@ -207,7 +207,187 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        #region details
+        [HttpPost]
+        public JsonResult GetDetails([FromBody] OrcamentosViewModel ORC)
+        {
+            ORC.eReasonCode = 3;
+            ORC.eMessage = "Ocorreu um erro a obter o Orcamento.";
 
+            try
+            {
+                if (ORC != null && !string.IsNullOrEmpty(ORC.No))
+                {
+                    ORC = DBOrcamentos.GetById(ORC.No).ParseToViewModel();
+
+                    ORC.LinhasOrcamentos = DBLinhasOrcamentos.GetAllByOrcamento(ORC.No).ParseToViewModel();
+                    ORC.AnexosOrcamentos = DBAttachments.ParseToViewModel(DBAttachments.GetById(ORC.No));
+
+                    ORC.TotalSemIVA = ORC.LinhasOrcamentos.Sum(item => item.Quantidade * item.ValorUnitario);
+                    ORC.TotalComIVA = ORC.LinhasOrcamentos.Sum(item => item.TotalLinha);
+
+                    List<EnumData> AllEstados = EnumerablesFixed.OrcamentosEstados;
+                    List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
+                    List<EnumData> AllTipoFaturacao = EnumerablesFixed.ContractBillingTypes;
+                    List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+                    List<Contactos> AllContacts = DBContacts.GetAll();
+                    List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+                    List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
+
+                    ORC.EstadoText = ORC.IDEstado != null ? AllEstados.Where(y => y.Id == ORC.IDEstado).FirstOrDefault() != null ? AllEstados.Where(y => y.Id == ORC.IDEstado).FirstOrDefault().Value : "" : "";
+                    ORC.UnidadePrestacaoText = ORC.UnidadePrestacao != null ? AllUnidadesPrestacao.Where(y => y.Código == ORC.UnidadePrestacao).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == ORC.UnidadePrestacao).FirstOrDefault().Descrição : "" : "";
+                    ORC.TipoFaturacaoText = ORC.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == ORC.UnidadePrestacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == ORC.UnidadePrestacao).FirstOrDefault().Value : "" : "";
+                    ORC.ClienteText = !string.IsNullOrEmpty(ORC.NoCliente) ? AllClients.Where(y => y.No_ == ORC.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == ORC.NoCliente).FirstOrDefault().Name : "" : "";
+                    ORC.ContactoText = !string.IsNullOrEmpty(ORC.NoContacto) ? AllContacts.Where(y => y.No == ORC.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No == ORC.NoContacto).FirstOrDefault().Nome : "" : "";
+                    ORC.RegiaoText = !string.IsNullOrEmpty(ORC.CodRegiao) ? AllRegions.Where(y => y.Code == ORC.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == ORC.CodRegiao).FirstOrDefault().Name : "" : "";
+
+                    ORC.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(ORC.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
+                    ORC.UtilizadorCriacaoText = !string.IsNullOrEmpty(ORC.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
+                    ORC.UtilizadorAceiteText = !string.IsNullOrEmpty(ORC.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                    ORC.UtilizadorConcluidoText = !string.IsNullOrEmpty(ORC.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
+                    ORC.UtilizadorModificacaoText = !string.IsNullOrEmpty(ORC.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
+
+                    using (var ctx = new SuchDBContext())
+                    {
+                        ctx.Orcamentos.Update(ORC.ParseToDB());
+                        ctx.SaveChanges();
+                    }
+
+                    ORC.eReasonCode = 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                ORC.eReasonCode = 3;
+                ORC.eMessage = "Ocorreu um erro a obter o Orcamento.";
+                return Json(ORC);
+            }
+
+            return Json(ORC);
+        }
+
+        [HttpGet]
+        public FileStreamResult DownloadFile(string id)
+        {
+            if (_generalConfig.Conn == "eSUCH_Prod" || _generalConfig.Conn == "PlataformaOperacionalSUCH_TST")
+                return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Orcamentos\\" + id, FileMode.Open), "application/xlsx");
+            else
+                return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Orcamentos\\" + id, FileMode.Open), "application/xlsx");
+        }
+
+        [HttpPost]
+        public JsonResult UpdateOrcamento([FromBody] OrcamentosViewModel ORCAMENTO)
+        {
+            ORCAMENTO.eReasonCode = 3;
+            ORCAMENTO.eMessage = "Ocorreu um erro ao atualizar o Orçamento.";
+
+            try
+            {
+                if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.No))
+                {
+                    ORCAMENTO.UtilizadorModificacao = User.Identity.Name;
+                    ORCAMENTO.DataModificacao = DateTime.Now;
+
+                    if (DBOrcamentos.Update(ORCAMENTO.ParseToDB()) != null)
+                    {
+                        ORCAMENTO.eReasonCode = 1;
+                        return Json(ORCAMENTO);
+                    }
+                    else
+                    {
+                        ORCAMENTO.eReasonCode = 3;
+                        ORCAMENTO.eMessage = "Ocorreu um erro ao atualizar o Orçamento.";
+                        return Json(ORCAMENTO);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ORCAMENTO.eReasonCode = 3;
+                ORCAMENTO.eMessage = "Ocorreu um erro ao atualizar o Orçamento.";
+                return Json(ORCAMENTO);
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult CreateLinha([FromBody] LinhasOrcamentosViewModel LINHA)
+        {
+            LINHA.eReasonCode = 3;
+            LINHA.eMessage = "Ocorreu um erro ao criar a Linha.";
+
+            try
+            {
+                if (LINHA != null && !string.IsNullOrEmpty(LINHA.NoOrcamento) && !string.IsNullOrEmpty(LINHA.Descricao) && LINHA.Quantidade != null && LINHA.ValorUnitario != null && LINHA.TaxaIVA != null && LINHA.TotalLinha != null)
+                {
+                    LINHA.UtilizadorCriacao = User.Identity.Name;
+                    LINHA.DataCriacao = DateTime.Now;
+
+                    if (DBLinhasOrcamentos.Create(LINHA.ParseToDB()) != null)
+                    {
+                        LINHA.eReasonCode = 1;
+                        return Json(LINHA);
+                    }
+                    else
+                    {
+                        LINHA.eReasonCode = 3;
+                        LINHA.eMessage = "Ocorreu um erro ao criar a Linha.";
+                        return Json(LINHA);
+                    }
+                }
+                else
+                {
+                    LINHA.eReasonCode = 3;
+                    LINHA.eMessage = "Existem campos por preencher.";
+                    return Json(LINHA);
+                }
+            }
+            catch (Exception ex)
+            {
+                LINHA.eReasonCode = 3;
+                LINHA.eMessage = "Ocorreu um erro ao criar a Linha.";
+                return Json(LINHA);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteLinha([FromBody] LinhasOrcamentosViewModel LINHA)
+        {
+            LINHA.eReasonCode = 3;
+            LINHA.eMessage = "Ocorreu um erro ao eliminar a Linha.";
+
+            try
+            {
+                if (LINHA != null && LINHA.NoLinha > 0)
+                {
+                    if (DBLinhasOrcamentos.Delete(LINHA.NoLinha) == true)
+                    {
+                        LINHA.eReasonCode = 1;
+                        return Json(LINHA);
+                    }
+                    else
+                    {
+                        LINHA.eReasonCode = 3;
+                        LINHA.eMessage = "Ocorreu um erro ao eliminar a Linha.";
+                        return Json(LINHA);
+                    }
+                }
+                else
+                {
+                    LINHA.eReasonCode = 3;
+                    LINHA.eMessage = "A linha tem que existir.";
+                    return Json(LINHA);
+                }
+            }
+            catch (Exception ex)
+            {
+                LINHA.eReasonCode = 3;
+                LINHA.eMessage = "Ocorreu um erro ao eliminar a Linha.";
+                return Json(LINHA);
+            }
+        }
+
+        #endregion
 
 
 

@@ -11175,14 +11175,14 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<LinhasOrcamentos>(entity =>
             {
-                entity.HasKey(e => new { e.NoLinha, e.NoOrcamento });
+                entity.HasKey(e => new { e.NoLinha });
 
                 entity.ToTable("Linhas Orcamentos");
 
                 entity.Property(e => e.NoLinha);
 
-                entity.Property(e => e.NoOrcamento)
-                    .HasColumnName("NoOrcamento")
+                entity.Property(e => e.OrcamentosNo)
+                    .HasColumnName("OrcamentosNo")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.Descricao)

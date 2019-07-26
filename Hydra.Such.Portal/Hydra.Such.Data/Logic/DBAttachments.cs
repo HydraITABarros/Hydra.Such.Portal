@@ -178,6 +178,15 @@ namespace Hydra.Such.Data.Logic
 
         }
 
+        public static List<AttachmentsViewModel> ParseToViewModel(List<Anexos> items)
+        {
+            List<AttachmentsViewModel> anexos = new List<AttachmentsViewModel>();
+            if (items != null)
+                items.ForEach(x =>
+                    anexos.Add(DBAttachments.ParseToViewModel(x)));
+            return anexos;
+        }
+
         public static Anexos ParseToDB(AttachmentsViewModel x)
         {
             Anexos result = new Anexos()

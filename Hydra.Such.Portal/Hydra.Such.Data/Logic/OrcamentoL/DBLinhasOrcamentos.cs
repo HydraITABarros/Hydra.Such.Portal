@@ -1,5 +1,4 @@
 ﻿using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.Orcamentos;
 using Hydra.Such.Data.ViewModel.OrcamentoVM;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasOrcamentos.Where(x => x.NoLinha == NoLinha && x.NoOrcamento == NoOrcamento).FirstOrDefault();
+                    return ctx.LinhasOrcamentos.Where(x => x.NoLinha == NoLinha && x.OrcamentosNo == NoOrcamento).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -46,7 +45,7 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasOrcamentos.Where(x => x.NoOrcamento == NoOrcamento).ToList();
+                    return ctx.LinhasOrcamentos.Where(x => x.OrcamentosNo == NoOrcamento).ToList();
                 }
             }
             catch (Exception ex)
@@ -115,13 +114,13 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
             }
         }
 
-        public static bool Delete(int NoLinha, string NoOrcamento)
+        public static bool Delete(int NoLinha)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    LinhasOrcamentos linha = ctx.LinhasOrcamentos.Where(x => x.NoLinha == NoLinha && x.NoOrcamento == NoOrcamento).FirstOrDefault();
+                    LinhasOrcamentos linha = ctx.LinhasOrcamentos.Where(x => x.NoLinha == NoLinha).FirstOrDefault();
                     if (linha != null)
                     {
                         ctx.LinhasOrcamentos.Remove(linha);
@@ -165,7 +164,7 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
                 return new LinhasOrcamentosViewModel()
                 {
                     NoLinha = item.NoLinha,
-                    NoOrcamento = item.NoOrcamento,
+                    NoOrcamento = item.OrcamentosNo,
                     Descricao = item.Descricao,
                     Quantidade = item.Quantidade,
                     ValorUnitario = item.ValorUnitario,
@@ -198,15 +197,15 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
                 return new LinhasOrcamentos()
                 {
                     NoLinha = item.NoLinha,
-                    NoOrcamento = item.NoOrcamento,
+                    OrcamentosNo = item.NoOrcamento,
                     Descricao = item.Descricao,
                     Quantidade = item.Quantidade,
                     ValorUnitario = item.ValorUnitario,
                     TaxaIVA = item.TaxaIVA,
                     TotalLinha = item.TotalLinha,
-                    DataCriacao = string.IsNullOrEmpty(item.DataCriacaoText) ? (DateTime?)null : DateTime.Parse(item.DataCriacaoText),
+                    DataCriacao = item.DataCriacao,
                     UtilizadorCriacao = item.UtilizadorCriacao,
-                    DataModificacao = string.IsNullOrEmpty(item.DataModificacaoText) ? (DateTime?)null : DateTime.Parse(item.DataModificacaoText),
+                    DataModificacao = item.DataModificacao,
                     UtilizadorModificacao = item.UtilizadorModificacao
                 };
             }

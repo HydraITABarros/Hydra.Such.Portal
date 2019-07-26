@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hydra.Such.Data.ViewModel.Orcamentos
+namespace Hydra.Such.Data.ViewModel.OrcamentoVM
 {
     public class LinhasOrcamentosViewModel : ErrorHandler
     {

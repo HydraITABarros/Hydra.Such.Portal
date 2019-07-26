@@ -64,7 +64,7 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_CriarOrcamento"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>
+            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -378,7 +378,7 @@
                         });
                         window.setGridFilter('orcamentos-orcamentoslist', filters || {});
 
-                        window.location.href = "../Orcamentos/Orcamentos_Details/?NoOrcamento=" + item.no;
+                        window.location.href = "Orcamentos_Details/" + item.no;
                     }
                 },
                 /*FILTROS*/
@@ -387,7 +387,7 @@
                 },
                 _create: function (item) {
                     if (item != null) {
-                        window.location.href = "Orcamentos/";
+                        window.location.href = "Orcamentos_Details/";
                     }
                 },
                 ready: function () {
