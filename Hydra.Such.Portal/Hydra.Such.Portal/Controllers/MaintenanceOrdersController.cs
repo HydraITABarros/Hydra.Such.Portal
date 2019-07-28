@@ -32,7 +32,6 @@ using System.Reflection;
 
 namespace Hydra.Such.Portal.Controllers
 {
-
     [Authorize]
     [Route("ordens-de-manutencao")]
     public class MaintenanceOrdersController : Controller
@@ -675,7 +674,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(equipmentToUpdate);
         }
 
-      
+
         [Route("equipments"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetEquipments(string orderId)
@@ -772,19 +771,69 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(true);
         }
-    }
 
-    public class UpdateTechnicalsModel
-    {
-        public string orderId;
-        public string[] technicalsId;
-    }
+   
+        [Route("equipments"), HttpPost]
+        public ActionResult CreateEquipment(int? equipmentId, int brand, int model, string serialNumber, string inventoryNumber)
+        {
+            if (equipmentId == null) { return NotFound(); }
 
-    public class UpdateRoomsModel
-    {
-        public int? equipmentId;
-        public string room;
-    }
+            var previousEquipment = evolutionWEBContext.Equipamento.FirstOrDefault(o => o.IdEquipamento == equipmentId);
 
+            if (previousEquipment == null) { return NotFound(); }
+
+            var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+
+            if (loggedUser == null) { return NotFound(); }
+
+            var loggedUserCresps = suchDBContext.AcessosDimensões.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).ToList();
+
+            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
+
+            if (evolutionLoggedUser == null) { return NotFound(); }
+
+            Equipamento newEquipment = new Equipamento();
+            try
+            {
+                newEquipment.Nome = previousEquipment.Nome;
+                newEquipment.Sala = previousEquipment.Sala;
+                newEquipment.IdServico = previousEquipment.IdServico;
+                newEquipment.Marca = brand;
+                newEquipment.Modelo = model;
+                newEquipment.Categoria = evolutionWEBContext.Equipamento.Select(m => m.Categoria).FirstOrDefault();
+                newEquipment.IdCliente = evolutionWEBContext.Equipamento.Select(m => m.IdCliente).FirstOrDefault();
+                newEquipment.NumSerie = serialNumber;
+                newEquipment.NumInventario = inventoryNumber;
+                newEquipment.DataAquisicao = new DateTime(1753,1,1);
+                newEquipment.DataInstalacao = new DateTime(1753, 1, 1);
+                newEquipment.DataInsercao = new DateTime(1753, 1, 1);
+                newEquipment.DataValidacao = new DateTime(1753, 1, 1);
+                newEquipment.DataEntradaContrato = new DateTime(1753, 1, 1);
+                newEquipment.DataSaidaContrato = new DateTime(1753, 1, 1);
+                evolutionWEBContext.Equipamento.AddRange(newEquipment);
+                evolutionWEBContext.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return Json(e);
+            }
+
+            return Json(newEquipment);
+
+        }
+
+
+        public class UpdateTechnicalsModel
+        {
+            public string orderId;
+            public string[] technicalsId;
+        }
+
+        public class UpdateRoomsModel
+        {
+            public int? equipmentId;
+            public string room;
+        }
+    }
 }
 
