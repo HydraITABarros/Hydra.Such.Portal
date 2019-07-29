@@ -187,6 +187,8 @@ namespace Hydra.Such.Data
             LinhasContratosInternos = 69,
             [Description("Contabilidade Mapas")]
             ContabilidadeMapas = 70,
+            [Description("Orcamentos")]
+            Orcamentos = 71,
 
 
 

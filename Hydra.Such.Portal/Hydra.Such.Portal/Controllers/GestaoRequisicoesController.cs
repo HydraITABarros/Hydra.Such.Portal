@@ -3908,7 +3908,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 throw;
             }
-            return Json("");
+            return Json(true);
         }
 
         [HttpPost]

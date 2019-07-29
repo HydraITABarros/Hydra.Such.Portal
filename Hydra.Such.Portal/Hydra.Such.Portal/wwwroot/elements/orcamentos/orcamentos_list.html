@@ -1,0 +1,534 @@
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-orcamentoslist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Orcamentos/GetList"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/ExportToExcel_Orcamentos"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true" column-reordering-allowed>
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.no.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="no">Nº do Orçamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="no" value="[[filter.no]]" />
+                </template>
+                <template>
+                    {{item.no}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.clienteText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clienteText">Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clienteText" value="[[filter.clienteText]]" />
+                </template>
+                <template>
+                    {{item.clienteText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.contactoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactoText">Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactoText" value="[[filter.contactoText]]" />
+                </template>
+                <template>
+                    {{item.contactoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.dataValidadeText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataValidadeText">Orçamento Válido até</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataValidadeText" value="[[filter.dataValidadeText]]" />
+                </template>
+                <template>
+                    {{item.dataValidadeText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.estadoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="estadoText">Estado do Orçamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estadoText" value="[[filter.estadoText]]" />
+                </template>
+                <template>
+                    {{item.estadoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.descricao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricao" value="[[filter.descricao]]" />
+                </template>
+                <template>
+                    {{item.descricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.regiaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiaoText">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiaoText" value="[[filter.regiaoText]]" />
+                </template>
+                <template>
+                    {{item.regiaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.unidadePrestacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="unidadePrestacaoText">Unidade de Prestação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unidadePrestacaoText" value="[[filter.unidadePrestacaoText]]" />
+                </template>
+                <template>
+                    {{item.unidadePrestacaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.tipoFaturacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipoFaturacaoText">Tipo Faturação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoFaturacaoText" value="[[filter.tipoFaturacaoText]]" />
+                </template>
+                <template>
+                    {{item.tipoFaturacaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.totalSemIVA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="totalSemIVA">Total sem IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalSemIVA" value="[[filter.totalSemIVA]]" />
+                </template>
+                <template>
+                    {{item.totalSemIVA}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.totalComIVA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="totalComIVA">Total com IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalComIVA" value="[[filter.totalComIVA]]" />
+                </template>
+                <template>
+                    {{item.totalComIVA}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.noProposta.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noProposta">Nº da Proposta Associada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noProposta" value="[[filter.noProposta]]" />
+                </template>
+                <template>
+                    {{item.noProposta}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.email.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="email">E-mail</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="email" value="[[filter.email]]" />
+                </template>
+                <template>
+                    {{item.email}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.emailAssunto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailAssunto">Assunto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailAssunto" value="[[filter.emailAssunto]]" />
+                </template>
+                <template>
+                    {{item.emailAssunto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.emailCorpo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailCorpo">Corpo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailCorpo" value="[[filter.emailCorpo]]" />
+                </template>
+                <template>
+                    {{item.emailCorpo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.emailDataEnvioText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailDataEnvioText">Data de Envio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailDataEnvioText" value="[[filter.emailDataEnvioText]]" />
+                </template>
+                <template>
+                    {{item.emailDataEnvioText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.emailUtilizadorEnvioText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="emailUtilizadorEnvioText">Utilizador de Envio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="emailUtilizadorEnvioText" value="[[filter.emailUtilizadorEnvioText]]" />
+                </template>
+                <template>
+                    {{item.emailUtilizadorEnvioText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.dataCriacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataCriacaoText">Data de Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataCriacaoText" value="[[filter.dataCriacaoText]]" />
+                </template>
+                <template>
+                    {{item.dataCriacaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.utilizadorCriacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorCriacaoText">Utilizador de Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorCriacaoText" value="[[filter.utilizadorCriacaoText]]" />
+                </template>
+                <template>
+                    {{item.utilizadorCriacaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.dataAceiteText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataAceiteText">Data Aceite / Não Aceite</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataAceiteText" value="[[filter.dataAceiteText]]" />
+                </template>
+                <template>
+                    {{item.dataAceiteText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.utilizadorAceiteText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorAceiteText">Utilizador que Aceitou / Não Aceitou</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorAceiteText" value="[[filter.utilizadorAceiteText]]" />
+                </template>
+                <template>
+                    {{item.utilizadorAceiteText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.dataConcluidoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataConcluidoText">Data Concluído</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataConcluidoText" value="[[filter.dataConcluidoText]]" />
+                </template>
+                <template>
+                    {{item.dataConcluidoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.utilizadorConcluidoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorConcluidoText">Utilizador que Concluio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorConcluidoText" value="[[filter.utilizadorConcluidoText]]" />
+                </template>
+                <template>
+                    {{item.utilizadorConcluidoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.dataModificacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataModificacaoText">Data Última Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataModificacaoText" value="[[filter.dataModificacaoText]]" />
+                </template>
+                <template>
+                    {{item.dataModificacaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.utilizadorModificacaoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorModificacaoText">Utilizador da Última Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorModificacaoText" value="[[filter.utilizadorModificacaoText]]" />
+                </template>
+                <template>
+                    {{item.utilizadorModificacaoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_deletePreReq" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-orcamentoslist',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _noorcamento: {
+                        type: String,
+                        value: false
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('orcamentos-orcamentoslist', filters || {});
+
+                        window.location.href = "Orcamentos_Details/" + item.no;
+                    }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('orcamentos-orcamentoslist');
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "Orcamentos_Details/";
+                    }
+                },
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify();
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'orcamentos-orcamentoslist');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        } else if (this.deletedData.eReasonCode == 2) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+
+                    var columns = {
+                        "no": { hidden: false, label: "Nº do Orçamento" },
+                        "clienteText": { hidden: false, label: "Cliente" },
+                        "contactoText": { hidden: false, label: "Contacto" },
+                        "dataValidadeText": { hidden: false, label: "Orçamento Válido até" },
+                        "estadoText": { hidden: false, label: "Estado do Orçamento" },
+                        "descricao": { hidden: false, label: "Descrição" },
+                        "regiaoText": { hidden: false, label: "Região" },
+                        "unidadePrestacaoText": { hidden: false, label: "Unidade de Prestação" },
+                        "tipoFaturacaoText": { hidden: false, label: "Tipo Faturação" },
+                        "totalSemIVA": { hidden: false, label: "Total sem IVA" },
+                        "totalComIVA": { hidden: false, label: "Total com IVA" },
+                        "noProposta": { hidden: false, label: "Nº da Proposta Associada" },
+                        "email": { hidden: false, label: "E-mail" },
+                        "emailAssunto": { hidden: false, label: "Assunto" },
+                        "emailCorpo": { hidden: false, label: "Corpo" },
+                        "emailDataEnvioText": { hidden: false, label: "Data de Envio" },
+                        "emailUtilizadorEnvioText": { hidden: false, label: "Utilizador de Envio" },
+                        "dataCriacaoText": { hidden: false, label: "Data de Criação" },
+                        "utilizadorCriacaoText": { hidden: false, label: "Utilizador de Criação" },
+                        "dataAceiteText": { hidden: false, label: "Data Aceite / Não Aceite" },
+                        "utilizadorAceiteText": { hidden: false, label: "Utilizador que Aceitou / Não Aceitou" },
+                        "dataConcluidoText": { hidden: false, label: "Data Concluído" },
+                        "utilizadorConcluidoText": { hidden: false, label: "Utilizador que Concluio" },
+                        "dataModificacaoText": { hidden: false, label: "Data Última Alteração" },
+                        "utilizadorModificacaoText": { hidden: false, label: "Utilizador da Última Modificação" }
+                    };
+
+                    if (localStorage["orcamentosList.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["orcamentosList.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["orcamentosList.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                formatRegiaoCliente: function (value) {
+                    if (!value || value == "_blank_")
+                        return "";
+                    return value;
+                },
+                formatBool: function (value) {
+                    return value ? "Sim" : "Não";
+                },
+                /* end - ColumnToggle */
+
+                _exportEXCEL: function () {
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+                _exportEXCELResponse: function (e) {
+
+                    var FileName = this.export;
+                    location.href = '../Orcamentos/ExportToExcelDownload_Orcamentos?sFileName=' + FileName;
+                },
+
+
+
+
+
+
+            });
+        });
+    </script>
+
+</dom-module>

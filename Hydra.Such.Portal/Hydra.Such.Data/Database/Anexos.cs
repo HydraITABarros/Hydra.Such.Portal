@@ -25,6 +25,7 @@ namespace Hydra.Such.Data.Database
         Procedimentos = 4,
         ConsultaMercado = 5,
         Oportunidades = 6,
-        Propostas = 7
+        Propostas = 7,
+        Orcamentos = 8
     }
 }

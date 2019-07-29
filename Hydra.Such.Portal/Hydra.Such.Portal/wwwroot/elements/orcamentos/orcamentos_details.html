@@ -1,0 +1,760 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+
+<dom-module id="x-orcamentosdetails">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+        <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Orcamentos/GetDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/CreateLinha"
+                   last-response="{{createLinha}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateLinha_ajax"
+                   on-response="_responseCreateLinha"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/DeleteLinha"
+                   last-response="{{deleteLinha}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteLinha_ajax"
+                   on-response="_responseDeleteLinha"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--//-------------------------------------------------------------//-->
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button class="tablinks" on-tap="_MeusOrcamentos"><i class="fa fa-list" aria-hidden="true"></i>  Os meus Orçamentos</paper-button>
+            <paper-button class="tablinks" on-tap="_CriarOrcamento"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>
+            <paper-button class="tablinks" on-tap="_GuardarOrcamento"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
+            <paper-button class="tablinks" on-tap="_LimparOrcamento"><i class="fa fa-remove" aria-hidden="true"></i>  Limpar</paper-button>
+            <paper-button class="tablinks" on-tap="_HistoricoOrcamento"><i class="fa fa-archive" aria-hidden="true"></i>  Histórico</paper-button>
+            <paper-button class="tablinks" on-tap="_PorValidarOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Por Validar</paper-button>
+        </div>
+
+        <div class="row break_frm">
+            <div class="col-md-12 col-md-12 col-lg-12">
+                <iron-form id="formOrcamentos">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                                <paper-tab>Geral</paper-tab>
+                                <paper-tab>Anexos</paper-tab>
+                                <paper-tab>Envio E-mail</paper-tab>
+                                <paper-tab>Detalhes</paper-tab>
+                            </paper-tabs>
+                            <iron-pages selected="{{selected}}">
+                                <!--Geral-->
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="OrcNo" label="Nº do Orçamento" value="{{data.no}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <such-selectbox id="OrcNoCliente" label="Cliente" value="{{data.noCliente}}"
+                                                            items="[[CBClients]]"
+                                                            text-path="name"
+                                                            value-path="no_"
+                                                            fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
+                                                            required error-message="Este campo é obrigatório">
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <such-selectbox id="OrcNoContacto" label="Contacto" value="{{data.noContacto}}"
+                                                            items="[[CBContacts]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"value", "name":"Nome"}]'
+                                                            required error-message="Este campo é obrigatório">
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="OrcDataValidade" label="Orçamento Válido até" value="{{data.dataValidadeText}}"></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="OrcIDEstado" label="Estado do Orçamento" value="{{data.estadoText}}" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <such-textarea id="OrcDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="200"> </such-textarea>
+                                        </div>
+
+                                        <div class="col-md-7">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <such-selectbox id="OrcRegiao" label="Região" value="{{data.codRegiao}}"
+                                                                    items="[[CBRegions]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <such-selectbox id="OrcUnidadePrestacao" label="Unidade de Prestação" value="{{data.unidadePrestacao}}"
+                                                                    items="[[LFetchUnits]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
+
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value="{{data.tipoFaturacao}}"
+                                                                      items="[[CBBillingTypes]]"
+                                                                      item-value-path="id"
+                                                                      item-label-path="value">
+                                                        <template>
+                                                            <b>[[item.value]]</b>
+                                                        </template>
+                                                    </vaadin-combo-box>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="{{data.totalSemIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="{{data.totalComIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" disabled></vaadin-text-field>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Anexos-->
+                                <div>
+                                    <div class="row">
+                                        <vaadin-upload id="UploadRequest"
+                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       timeout=15000>
+                                        </vaadin-upload>
+                                    </div>
+
+                                    <div class="row">
+                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[data.anexosOrcamentos]]" class="grid" multi-sort="true">
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/Orcamentos/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <center>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                            </center>
+                                                        </template>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+                                    </div>
+                                </div>
+
+                                <!--ENVIO EMAIL-->
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="OrcEmail" label="E-mail" value="{{data.email}}" maxlength="50"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcEmailDataEnvio" label="Data de Envio" value="{{data.emailDataEnvioText}}" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcEmailUtilizadorEnvio" label="Utilizador de Envio" value="{{data.emailUtilizadorEnvioText}}" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="OrcEmailAssunto" label="Assunto" value="{{data.emailAssunto}}" maxlength="100"></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <such-textarea id="OrcEmailCorpo" label="Corpo" value="{{data.emailCorpo}}" rows="5" maxlength="200"></such-textarea>
+                                        </div>
+
+                                        <div class="col-md-6" style="padding-top:14px">
+                                            <paper-button id="btn_EnviarEmail" class="btnSave" raised on-tap="_enviarEmail" title="Enviar"><i class="fa fa-send" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--DETALHES-->
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcDataCriacao" label="Data de Criação" value="{{data.dataCriacaoText}}" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcUtilizadorCriacao" label="Utilizador de Criação" value="{{data.utilizadorCriacaoText}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcDataAceite" label="Data Aceite / Não Aceite" value="{{data.dataAceiteText}}" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcUtilizadorAceite" label="Utilizador que Aceitou / Não Aceitou" value="{{data.utilizadorAceiteText}}" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcDataConcluido" label="Data Concluído" value="{{data.dataConcluidoText}}" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcUtilizadorConcluido" label="Utilizador que Concluio" value="{{data.utilizadorConcluidoText}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-date-picker id="OrcDataModificacao" label="Data Última Alteração" value="{{data.dataModificacaoText}}" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="OrcUtilizadorModificacao" label="Utilizador da Última Modificação" value="{{data.utilizadorModificacaoText}}" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </iron-pages>
+                        </div>
+
+                        <!--LINHAS-->
+                        <paper-collapse-group>
+                            <paper-collapse-item class="panel-heading" header="Linhas" closed>
+                                <div class="row break_clear">
+                                    <div class="col-lg-2" hidden>
+                                        <vaadin-text-field id="LinhaNo" label="Nº da Linha" value="" disabled></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field id="LinhaDescricao" label="Descrição" value="" maxlength="100" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field id="LinhaQuantidade" label="Quantidade" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field id="LinhaValorUnitario" label="Valor Unitário" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field id="LinhaTaxaIVA" label="Taxa IVA na Linha" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"><div slot="suffix">%</div></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <vaadin-text-field id="LinhaTotal" label="Total Linha" value="" disabled type="number" class="alignRight" required error-message="Este campo é obrigatório"><div slot="suffix">€</div></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-2" style="padding-top:12px">
+                                        <paper-button raised id="btnCreateLinha" class="btnSave" on-tap="_createLinha"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+
+                            <div>
+                                <vaadin-grid aria-label="PreReqLines" id="grid_prereqlines" name="grid_prereqlines" items="[[data.linhasOrcamentos]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                    <vaadin-grid-column width="250px" resizable hidden>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="noLinha">Nº da Linha</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="noLinha" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field id="_tabNo" value="{{item.noLinha}}" disabled> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                {{item.noLinha}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="descricao" />
+                                        </template>
+                                        <template>
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field id="_tabDescricao"> value="{{item.descricao}}"</vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.descricao}}
+                                            </template>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="quantidade" />
+                                        </template>
+                                        <template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabQuantidade" value="{{item.quantidade}}" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                    {{item.quantidade}}
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="valorUnitario">Valor Unitário</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="valorUnitario" />
+                                        </template>
+                                        <template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabValorUnitario" value="{{item.valorUnitario}}"> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}">
+                                                    {{item.valorUnitario}} €
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="taxaIVA">Taxa IVA na Linha</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="taxaIVA" />
+                                        </template>
+                                        <template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabTaxaIVA" value="{{item.taxaIVA}}" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                    {{item.taxaIVA}} %
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="250px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="totalLinha">Total da Linha</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="totalLinha" />
+                                        </template>
+                                        <template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabTotal" value="{{item.totalLinha}}" disabled> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                    {{item.totalLinha}} €
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="50px">
+                                        <template class="header">
+                                        </template>
+                                        <template>
+                                            <center>
+                                                <template is="dom-if" if="{{ _permissions.update }}">
+                                                    <center>
+                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    </center>
+                                                </template>
+                                            </center>
+                                        </template>
+                                    </vaadin-grid-column>
+                                </vaadin-grid>
+                            </div>
+                        </paper-collapse-group>
+                    </div>
+                </iron-form>
+            </div>
+        </div>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-orcamentosdetails',
+                properties: {
+                    _no: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _reportserverurl: {
+                        type: String,
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                ready: function () {
+                    this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                _responseProcessor: function (data) {
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetDetails") !== -1) {
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
+                            }
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
+                            } else {
+                                this._openToast("Orçamento criado com sucesso.")
+                            }
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
+                            } else {
+                                this._openToast("Orçamento atualizado com sucesso.")
+                            }
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _GuardarOrcamento: function () {
+                    this._executeRequest("/Orcamentos/UpdateOrcamento", this.data);
+                },
+
+                _CalcularTotalLinha: function () {
+                    if (this.$.LinhaQuantidade.value != null && this.$.LinhaQuantidade.value != "") {
+                        if (this.$.LinhaValorUnitario.value != null && this.$.LinhaValorUnitario.value != "") {
+                            if (this.$.LinhaTaxaIVA.value != null && this.$.LinhaTaxaIVA.value != "") {
+                                var Quantidade = parseFloat(this.$.LinhaQuantidade.value);
+                                var ValorUnitario = parseFloat(this.$.LinhaValorUnitario.value);
+                                var TaxaIVA = parseFloat(this.$.LinhaTaxaIVA.value);
+                                
+                                var Custo = Quantidade * ValorUnitario;
+                                var ValorIVA = (TaxaIVA * Custo) / 100;
+
+                                this.$.LinhaTotal.value = Custo + ValorIVA;
+                            }
+                        }
+                    }
+                },
+
+                _createLinha: function () {
+                    debugger;
+                    if (this.$.OrcNo.value != null && this.$.OrcNo.value != "") {
+                        if (this.$.LinhaDescricao.value != null && this.$.LinhaDescricao.value != "") {
+                            if (this.$.LinhaQuantidade.value != null && this.$.LinhaQuantidade.value != "") {
+                                if (this.$.LinhaValorUnitario.value != null && this.$.LinhaValorUnitario.value != "") {
+                                    if (this.$.LinhaTaxaIVA.value != null && this.$.LinhaTaxaIVA.value != "") {
+                                        if (this.$.LinhaTotal.value != null && this.$.LinhaTotal.value != "") {
+                                            this.$.page_CreateLinha_ajax.body = JSON.stringify({
+                                                noOrcamento: this.$.OrcNo.value,
+                                                descricao: this.$.LinhaDescricao.value,
+                                                quantidade: this.$.LinhaQuantidade.value,
+                                                valorUnitario: this.$.LinhaValorUnitario.value,
+                                                taxaIVA: this.$.LinhaTaxaIVA.value,
+                                                totalLinha: this.$.LinhaTotal.value
+                                            });
+                                            this.$.page_CreateLinha_ajax.generateRequest();
+                                        } else {
+                                            this._openToastError("O Campo Total da Linha é de preenchimento obrigatório.")
+                                        }
+                                    } else {
+                                        this._openToastError("O Campo Taxa IVA na Linha é de preenchimento obrigatório.")
+                                    }
+                                } else {
+                                    this._openToastError("O Campo Valor Unitário é de preenchimento obrigatório.")
+                                }
+                            } else {
+                                this._openToastError("O Campo Quantidade é de preenchimento obrigatório.")
+                            }
+                        } else {
+                            this._openToastError("O Campo Descrição é de preenchimento obrigatório.")
+                        }
+                    } else {
+                        this._openToastError("O Orçamento tem que estar criado.")
+                    }
+                },
+                _responseCreateLinha: function () {
+                    if (this.createLinha.eReasonCode != 1) {
+                        this._openToastError(this.createLinha.eMessage);
+                    }
+                    else {
+                        this._openToast("Linha criada com sucesso.");
+
+                        this.$.LinhaDescricao.value = "";
+                        this.$.LinhaQuantidade.value = "";
+                        this.$.LinhaValorUnitario.value = "";
+                        this.$.LinhaTaxaIVA.value = "";
+                        this.$.LinhaTotal.value = "";
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+
+                },
+
+                _deleteLinha: function (e) {
+                    if (e != null) {
+                        var index = this.data.linhasOrcamentos.indexOf(e.model.item);
+                        var data = this.data.linhasOrcamentos[index];
+                        var ajax_request = this.$.page_DeleteLinha_ajax;
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende eliminar a Linha.",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.body = JSON.stringify(data);
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
+                _responseDeleteLinha: function () {
+                    if (this.deleteLinha.eReasonCode != 1) {
+                        this._openToastError(this.deleteLinha.eMessage);
+                    }
+                    else {
+                        this._openToast("Linha eliminada com sucesso.");
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+
+                },
+
+
+
+
+
+            });
+        });
+    </script>
+</dom-module>
+
+
