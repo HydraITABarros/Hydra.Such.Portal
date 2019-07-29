@@ -183,7 +183,7 @@ namespace Hydra.Such.Data.Database
         ///     https://docs.microsoft.com/en-us/sql/relational-databases/tables/use-table-valued-parameters-database-engine?view=sql-server-2017
         ///     
         /// Changed method return type to bool and added the try/catch block, to catch any error while executing the stored procedure
-        /// 
+        /// Changed SP execution to prevent SQL injection
         /// *************************************************************************************************
         /// 
         /// Execute stored procedure with single table value parameter.
@@ -196,8 +196,6 @@ namespace Hydra.Such.Data.Database
         /// <param name="typeName">User table type name</param>
         public virtual bool ExecuteTableValueProcedure<T>(IEnumerable<T> data, string procedureName, string paramName, string typeName)
         {
-            SuchDBContext context = new SuchDBContext();
-
             //// convert source data to DataTable
             DataTable table = data.ToDataTable();
 
@@ -208,20 +206,34 @@ namespace Hydra.Such.Data.Database
                 TypeName = typeName
             };
 
-
-            //// execute sp sql
-            string sql = String.Format("EXEC {0} {1};", procedureName, paramName);
-
-
-            //// execute sql
             try
             {
-                // /!\/!\ zpgm.18072019 ****** SQL injection vulnerability! *******
-                context.Database.ExecuteSqlCommand(sql, parameter);
+                using(var conn = new SqlConnection(ConnectionString))
+                {
+                    conn.Open();
+
+                    using(var cmd = new SqlCommand(procedureName, conn))
+                    {
+                        cmd.Parameters.Add(parameter);
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        var dr = cmd.ExecuteReader();
+                        if (dr.HasRows)
+                        {
+                            int res = dr.GetInt32(0);
+                            if (res != 0)
+                                return false;
+                        }
+
+                        dr.Close();
+                    }
+                    conn.Close();
+                }
                 return true;
             }
             catch (Exception ex)
             {
+
                 return false;
             }
 
