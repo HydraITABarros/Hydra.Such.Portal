@@ -648,33 +648,7 @@ namespace Hydra.Such.Portal.Controllers
             public List<int?> iconTaskEMM;
         }
 
-
-        [Route("room"), HttpPut]
-        public ActionResult RoomsPut(int? equipmentId, string room)
-        {
-            if (equipmentId == null || equipmentId == 0 || room == null || room == "") { return NotFound(); }
-            if (room == null || room == "") { return NotFound(); }
-
-            var equipmentToUpdate = EquipamentoRepository.AsQueryable().Where(m => m.IdEquipamento == equipmentId).FirstOrDefault();
-            if (equipmentToUpdate == null) { return NotFound(); }
-
-            var roomToUpdate = evolutionWEBContext.Equipamento.Where(u => u.IdEquipamento == equipmentId).Select(r => r.Sala).FirstOrDefault();
-            equipmentToUpdate.Sala = room;
-
-            try
-            {
-                evolutionWEBContext.Update(equipmentToUpdate);
-                evolutionWEBContext.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return Json(0);
-            }
-
-            return Json(equipmentToUpdate);
-        }
-
-
+        
         [Route("equipments"), HttpGet, AcceptHeader("application/json")]
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetEquipments(string orderId)
@@ -821,8 +795,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(newEquipment);
 
         }
-
-
+        
 
         [Route("emms"), HttpGet]
         public ActionResult GetEmms()
@@ -857,6 +830,40 @@ namespace Hydra.Such.Portal.Controllers
             return Json(emms.ToList());
         }
 
+
+        [Route("equipamentos/{equipmentId}/room"), HttpPut]
+        public ActionResult UpdateEquipmentRoom(int? equipmentId, string room)
+        {
+            if (equipmentId == null || room == null || room == "") { return NotFound(); }
+
+            var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+
+            if (loggedUser == null) { return NotFound(); }
+
+            var loggedUserCresps = suchDBContext.AcessosDimensões.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).ToList();
+
+            var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
+
+            if (evolutionLoggedUser == null) { return NotFound(); }
+            
+            var equipmentRepository = EquipamentoRepository.AsQueryable().Where(m => m.IdEquipamento == equipmentId).FirstOrDefault();
+            if (equipmentRepository == null) { return NotFound(); }
+
+            var equipment = evolutionWEBContext.Equipamento.Where(u => u.IdEquipamento == equipmentId).Select(r => r.Sala).FirstOrDefault();
+            equipmentRepository.Sala = room;
+
+            try
+            {
+                evolutionWEBContext.Update(equipmentRepository);
+                evolutionWEBContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return Json(false);
+            }
+
+            return Json(true);
+        }
 
         public class UpdateTechnicalsModel
         {
