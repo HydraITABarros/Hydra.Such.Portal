@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.OrcamentoL;
 using Hydra.Such.Data.Logic.Project;
@@ -266,15 +269,6 @@ namespace Hydra.Such.Portal.Controllers
             return Json(ORC);
         }
 
-        [HttpGet]
-        public FileStreamResult DownloadFile(string id)
-        {
-            if (_generalConfig.Conn == "eSUCH_Prod" || _generalConfig.Conn == "PlataformaOperacionalSUCH_TST")
-                return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Orcamentos\\" + id, FileMode.Open), "application/xlsx");
-            else
-                return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Orcamentos\\" + id, FileMode.Open), "application/xlsx");
-        }
-
         [HttpPost]
         public JsonResult UpdateOrcamento([FromBody] OrcamentosViewModel ORCAMENTO)
         {
@@ -386,6 +380,173 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(LINHA);
             }
         }
+
+        [HttpPost]
+        public JsonResult LoadAttachments([FromBody] JObject requestParams)
+        {
+            string id = requestParams["no"].ToString();
+
+            List<Anexos> list = DBAttachments.GetById(id);
+            List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
+            list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
+            return Json(attach);
+        }
+
+        [HttpGet]
+        public FileStreamResult DownloadFile(string id)
+        {
+            if (_generalConfig.Conn == "eSUCH_Prod" || _generalConfig.Conn == "PlataformaOperacionalSUCH_TST")
+                return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\Orcamentos\\" + id, FileMode.Open), "application/xlsx");
+            else
+                return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Orcamentos\\" + id, FileMode.Open), "application/xlsx");
+        }
+
+        [HttpPost]
+        [Route("Orcamentos/FileUpload")]
+        [Route("Orcamentos/FileUpload/{id}")]
+        public JsonResult FileUpload(string id)
+        {
+            try
+            {
+                var files = Request.Form.Files;
+                string full_filename;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".msg" ||
+                            extension.ToLower() == ".txt" || extension.ToLower() == ".text" ||
+                            extension.ToLower() == ".pdf" ||
+                            extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" || extension.ToLower() == ".dotx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".pjpeg" || extension.ToLower() == ".jfif" || extension.ToLower() == ".pjp" ||
+                            extension.ToLower() == ".png" || extension.ToLower() == ".gif")
+                        {
+                            string filename = Path.GetFileName(file.FileName);
+
+                            full_filename = id + "_" + filename;
+                            var path = "";
+                            if (_generalConfig.Conn == "eSUCH_Prod" || _generalConfig.Conn == "PlataformaOperacionalSUCH_TST")
+                                path = Path.Combine("E:\\Data\\eSUCH\\Orcamentos\\", full_filename);
+                            else
+                                path = Path.Combine("C:\\Data\\eSUCH\\Orcamentos\\", full_filename);
+
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                file.CopyTo(dd);
+                                dd.Dispose();
+
+                                Anexos newfile = new Anexos();
+                                newfile.NºOrigem = id;
+                                newfile.UrlAnexo = full_filename;
+                                newfile.TipoOrigem = TipoOrigemAnexos.Orcamentos;
+                                newfile.DataHoraCriação = DateTime.Now;
+                                newfile.UtilizadorCriação = User.Identity.Name;
+
+                                DBAttachments.Create(newfile);
+                                if (newfile.NºLinha == 0)
+                                {
+                                    System.IO.File.Delete(path);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json(true);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAnexo([FromBody] AttachmentsViewModel requestParams)
+        {
+            try
+            {
+                if (_generalConfig.Conn == "eSUCH_Prod" || _generalConfig.Conn == "PlataformaOperacionalSUCH_TST")
+                    System.IO.File.Delete("E:\\Data\\eSUCH\\Orcamentos\\" + requestParams.Url);
+                else
+                    System.IO.File.Delete("C:\\Data\\eSUCH\\Orcamentos\\" + requestParams.Url);
+
+                DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
+                requestParams.eReasonCode = 1;
+            }
+            catch (Exception ex)
+            {
+                requestParams.eReasonCode = 2;
+                return Json(requestParams);
+            }
+            return Json(requestParams);
+        }
+
+        [HttpPost]
+        public JsonResult SendEmail([FromBody] OrcamentosViewModel ORCAMENTO)
+        {
+            ORCAMENTO.eReasonCode = 3;
+            ORCAMENTO.eMessage = "Ocorreu um erro ao enviar o email.";
+
+            try
+            {
+                if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.Email) && !string.IsNullOrEmpty(ORCAMENTO.EmailAssunto) && !string.IsNullOrEmpty(ORCAMENTO.EmailCorpo))
+                {
+                    //ENVIO DE EMAIL
+                    SendEmailApprovals Email = new SendEmailApprovals();
+
+                    Email.Subject = ORCAMENTO.EmailAssunto;
+                    Email.From = User.Identity.Name;
+                    Email.To.Add(ORCAMENTO.Email);
+                    Email.Body = ORCAMENTO.EmailCorpo;
+                    Email.IsBodyHtml = true;
+
+                    Email.SendEmail_Simple();
+
+                    Orcamentos ORC_DB = ORCAMENTO.ParseToDB();
+                    ORC_DB.EmailDataEnvio = DateTime.Now;
+                    ORC_DB.EmailUtilizadorEnvio = User.Identity.Name;
+                    ORC_DB.DataModificacao = DateTime.Now;
+                    ORC_DB.UtilizadorModificacao = User.Identity.Name;
+
+                    if (DBOrcamentos.Update(ORC_DB) != null)
+                    {
+                        ORCAMENTO.eReasonCode = 1;
+                        return Json(ORCAMENTO);
+                    }
+                    else
+                    {
+                        ORCAMENTO.eReasonCode = 3;
+                        ORCAMENTO.eMessage = "Ocorreu um erro ao atualizar o Orçamento.";
+                        return Json(ORCAMENTO);
+                    }
+                }
+                else
+                {
+                    ORCAMENTO.eReasonCode = 3;
+                    ORCAMENTO.eMessage = "Existem campos obrigatórios por preencher.";
+                    return Json(ORCAMENTO);
+                }
+            }
+            catch (Exception ex)
+            {
+                ORCAMENTO.eReasonCode = 3;
+                ORCAMENTO.eMessage = "Ocorreu um erro ao atualizar o Orçamento.";
+                return Json(ORCAMENTO);
+            }
+        }
+
+
+
+
+
+
+
+
 
         #endregion
 

@@ -139,10 +139,12 @@
         </style>
 
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContactsByType" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllContactsOrcamentos" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetOrcamentosEstados" last-response="{{CBOrcamentosEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
         <iron-ajax url="/Orcamentos/GetDetails"
                    last-response="{{data}}"
@@ -168,6 +170,31 @@
                    handle-as="json"
                    id="page_DeleteLinha_ajax"
                    on-response="_responseDeleteLinha"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_LoadAttachments_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Orcamentos/DeleteAnexo"
+                   last-response="{{deletedAnexo}}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_Anexo_ajax"
+                   on-response="_deletedAnexoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/SendEmail"
+                   last-response="{{sendEmail}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_SendEmail_ajax"
+                   on-response="_sendEmailResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -206,18 +233,18 @@
                                                             items="[[CBClients]]"
                                                             text-path="name"
                                                             value-path="no_"
-                                                            fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"country_RegionCode", "name":"Região"}]'
-                                                            required error-message="Este campo é obrigatório">
+                                                            fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"eMail", "name":"E-mail"}]'
+                                                            on-value-changed="_actualizarEmailCliente">
                                             </such-selectbox>
                                         </div>
 
                                         <div class="col-md-3">
                                             <such-selectbox id="OrcNoContacto" label="Contacto" value="{{data.noContacto}}"
                                                             items="[[CBContacts]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"value", "name":"Nome"}]'
-                                                            required error-message="Este campo é obrigatório">
+                                                            text-path="name"
+                                                            value-path="no_"
+                                                            fields='[{"field":"no_", "name":"Cód. Contato"}, {"field":"name", "name":"Nome"}, {"field":"email", "name":"E-mail"}]'
+                                                            on-value-changed="_actualizarEmailContacto">
                                             </such-selectbox>
                                         </div>
 
@@ -226,7 +253,15 @@
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="OrcIDEstado" label="Estado do Orçamento" value="{{data.estadoText}}" disabled></vaadin-text-field>
+                                            <vaadin-combo-box id="OrcIDEstado" label="Estado do Orçamento" value="{{data.idEstado}}"
+                                                              items="[[CBOrcamentosEstados]]"
+                                                              item-value-path="id"
+                                                              item-label-path="value">
+                                                <template>
+                                                    <b>[[item.value]]</b>
+                                                </template>
+                                            </vaadin-combo-box>
+
                                         </div>
                                     </div>
 
@@ -289,7 +324,7 @@
                                 <div>
                                     <div class="row">
                                         <vaadin-upload id="UploadRequest"
-                                                       target="/PreRequisicoes/FileUpload/{{_prerequesitionno}}"
+                                                       target="/Orcamentos/FileUpload/{{_no}}"
                                                        method="POST"
                                                        headers="{'Accept': 'application/json'}"
                                                        timeout=15000>
@@ -297,7 +332,8 @@
                                     </div>
 
                                     <div class="row">
-                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[data.anexosOrcamentos]]" class="grid" multi-sort="true">
+                                        <!--<vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[data.anexosOrcamentos]]" class="grid" multi-sort="true">-->
+                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
                                             <vaadin-grid-column width="70%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
@@ -325,7 +361,7 @@
                                                     <center>
                                                         <template is="dom-if" if="{{ _permissions.update }}">
                                                             <center>
-                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteFiles" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAnexo" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                             </center>
                                                         </template>
                                                     </center>
@@ -600,8 +636,29 @@
                 },
 
                 ready: function () {
+                    if (this.$.UploadRequest != null) {
+                        this.$.UploadRequest.addEventListener('upload-response', function (e) {
+                            var results = JSON.parse(e.detail.xhr.response);
+                            if (results == true) {
+                                var msg = document.querySelector("x-orcamentosdetails");
+                                msg._openToast("Ficheiro adicionado com sucesso.");
+
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-orcamentosdetails");
+                                dd.$.page_LoadAttachments_ajax.generateRequest();
+                            }
+                            else {
+                                var msg = document.querySelector("x-orcamentosdetails");
+                                msg._openToastError("Não é permitido adicionar este tipo de ficheiros.");
+                            }
+                        });
+                    }
+
                     this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
                     this.$.page_databound_ajax.generateRequest();
+
+                    this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "no": this._no });
+                    this.$.page_LoadAttachments_ajax.generateRequest();
                 },
                 _responseProcessor: function (data) {
                     if (data.detail.status === 200) {
@@ -644,7 +701,7 @@
                                 var Quantidade = parseFloat(this.$.LinhaQuantidade.value);
                                 var ValorUnitario = parseFloat(this.$.LinhaValorUnitario.value);
                                 var TaxaIVA = parseFloat(this.$.LinhaTaxaIVA.value);
-                                
+
                                 var Custo = Quantidade * ValorUnitario;
                                 var ValorIVA = (TaxaIVA * Custo) / 100;
 
@@ -655,7 +712,6 @@
                 },
 
                 _createLinha: function () {
-                    debugger;
                     if (this.$.OrcNo.value != null && this.$.OrcNo.value != "") {
                         if (this.$.LinhaDescricao.value != null && this.$.LinhaDescricao.value != "") {
                             if (this.$.LinhaQuantidade.value != null && this.$.LinhaQuantidade.value != "") {
@@ -715,7 +771,7 @@
                         var data = this.data.linhasOrcamentos[index];
                         var ajax_request = this.$.page_DeleteLinha_ajax;
                         bootbox.confirm({
-                            message: "Tem a certeza que pretende eliminar a Linha.",
+                            message: "Tem a certeza que pretende eliminar a Linha?",
                             buttons: {
                                 confirm: {
                                     label: 'Sim',
@@ -745,10 +801,95 @@
                         this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
                         this.$.page_databound_ajax.generateRequest();
                     }
-
                 },
 
 
+                _deleteAnexo: function (e) {
+                    var index = this.data.anexosOrcamentos.indexOf(e.model.item);
+                    this.data.anexosOrcamentos.splice(index, 1);
+                    var data = e.model.item
+                    var ajax_request = this.$.delete_Anexo_ajax;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende eliminar o Anexo?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(data);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _deletedAnexoResponse: function (e) {
+                    if (this.deletedAnexo.eReasonCode === 1) {
+                        this._openToast("Anexo eliminado com sucesso.");
+
+                        //this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
+                        //this.$.page_databound_ajax.generateRequest();
+
+                        this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "no": this._no });
+                        this.$.page_LoadAttachments_ajax.generateRequest();
+                    } else if (this.deletedAnexo.eReasonCode === 2) {
+                        this._openToastError("Ocorreu um erro ao eliminar o anexo.");
+                    }
+                },
+
+                _enviarEmail: function () {
+                    if (this.$.OrcEmail.value != null && this.$.OrcEmail.value != "") {
+                        if (this.$.OrcEmailAssunto.value != null && this.$.OrcEmailAssunto.value != "") {
+                            if (this.$.OrcEmailCorpo.value != null && this.$.OrcEmailCorpo.value != "") {
+                                this.$.page_SendEmail_ajax.body = JSON.stringify( this.data );
+                                this.$.page_SendEmail_ajax.generateRequest();
+                            } else {
+                                this._openToastError("O campo Corpo é de preenchimento obrigatório.")
+                            }
+                        } else {
+                            this._openToastError("O campo Assunto é de preenchimento obrigatório.")
+                        }
+                    } else {
+                        this._openToastError("O campo E-mail é de preenchimento obrigatório.")
+                    }
+                },
+                _sendEmailResponse: function () {
+                    if (this.sendEmail.eReasonCode != 1) {
+                        this._openToastError(this.sendEmail.eMessage);
+                    }
+                    else {
+                        this._openToast("E-mail enviado com sucesso.");
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+
+                },
+
+                _actualizarEmailCliente: function (item) {
+                    if (this.$.OrcNoCliente.value != null && this.$.OrcNoCliente.value != "") {
+                        var cliente = this.CBClients.find(x => x.no_ == this.$.OrcNoCliente.value);
+                        if (cliente != undefined) {
+                            this.$.OrcEmail.value = cliente.eMail;
+                        }
+                    }
+                },
+
+                _actualizarEmailContacto: function (item) {
+                    if (this.$.OrcNoContacto.value != null && this.$.OrcNoContacto.value != "") {
+                        var contacto = this.CBContacts.find(x => x.no_ == this.$.OrcNoContacto.value);
+                        if (contacto != undefined) {
+                            this.$.OrcEmail.value = contacto.email;
+                        }
+                    }
+                },
 
 
 

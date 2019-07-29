@@ -352,7 +352,7 @@
 
                             <vaadin-grid id="boxModalGrid" aria-label="ViaturasGrid" items="[[items]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
                                 <template is="dom-repeat" items="{{fields}}" as="field">
-                                    <vaadin-grid-column width="190px">
+                                    <vaadin-grid-column width="190px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="[[field.field]]">{{field.name}}</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="[[field.field]]" />

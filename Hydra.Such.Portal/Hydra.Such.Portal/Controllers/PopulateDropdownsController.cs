@@ -2762,6 +2762,19 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult GetOrcamentosEstados()
+        {
+            List<EnumData> result = EnumerablesFixed.OrcamentosEstados;
+            return Json(result);
+        }
+        [HttpPost]
+        public JsonResult GetAllContactsOrcamentos()
+        {
+            var result = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            return Json(result);
+        }
+
 
         //PEDIDOS DE DESENVOLVIMENTO
         [HttpPost]

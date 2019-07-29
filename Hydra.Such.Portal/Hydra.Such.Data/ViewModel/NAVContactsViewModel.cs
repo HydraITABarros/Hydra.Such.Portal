@@ -12,5 +12,6 @@ namespace Hydra.Such.Data.ViewModel
         public string PostCode { get; set; }
         public string City { get; set; }
         public string Country_RegionCode { get; set; }
+        public string Email { get; set; }
     }
 }

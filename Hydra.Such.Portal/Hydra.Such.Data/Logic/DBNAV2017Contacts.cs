@@ -33,7 +33,8 @@ namespace Hydra.Such.Data.Logic
                             Address = (string)temp.Address,
                             PostCode = (string)temp.PostCode,
                             City = (string)temp.City,
-                            Country_RegionCode = (string)temp.Country_RegionCode
+                            Country_RegionCode = (string)temp.Country_RegionCode,
+                            Email =(string)temp.Email
                         });
                     }
                 }
