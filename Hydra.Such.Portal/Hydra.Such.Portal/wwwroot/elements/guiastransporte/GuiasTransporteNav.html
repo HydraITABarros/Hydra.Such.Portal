@@ -99,15 +99,15 @@
                     {{ item.noGuiaOriginalInterface }}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable hidden="{{ _historico}}">
+            <!--<vaadin-grid-column width="110px" resizable hidden="{{ _historico}}">
                 <template class="header">
                     <vaadin-grid-sorter path="readyToRegister">Em Registo?</vaadin-grid-sorter>
                     <vaadin-grid-filter path="readyToRegister"></vaadin-grid-filter>
                 </template>
                 <template>
-                    <vaadin-checkbox id="procedimentoEmLotes" checked="{{ item.readyToRegister }}" disabled></vaadin-checkbox>
+                    <vaadin-checkbox id="readyToRegister" checked="{{ item.readyToRegister }}" disabled></vaadin-checkbox>
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="dataGuia">Data Guia</vaadin-grid-sorter>

@@ -1461,7 +1461,7 @@
                 },     
 
                 _setThirdParty: function (e) {
-                   debugger;
+                    debugger;
                     
                     if (this.data != undefined) {
                         var type = this.$.tipoGuia.value;
@@ -2535,11 +2535,12 @@
                         return;
                     }
                     // SUCCESS
-                    if (this.registerReturnCode === "OK") {
-                        this._openToast("Foi agendado o registo da Guia de Transporte. Receberá um email com o registo. Poderá consultar a Guia Registada no Histórico");
-                        window.location.href = "/GuiasTransporteNav";
-                    }
-                    //window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + noGuiaTransporteHistoric + "?isHistoric=" + true;
+                    //if (this.registerReturnCode === "OK") {
+                    //    this._openToast("Foi agendado o registo da Guia de Transporte. Receberá um email com o registo. Poderá consultar a Guia Registada no Histórico");
+                    //    window.location.href = "/GuiasTransporteNav";
+                    //}
+                    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.registerReturnCode + "?isHistoric=" + true;
+
                 },
 
                 __disableAllControls: function () {

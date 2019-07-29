@@ -317,7 +317,7 @@ namespace Hydra.Such.Data.Logic
                             {
                                 SourceNo = flog.SourceNo.Equals(DBNull.Value) ? "" : (string)flog.SourceNo,
                                 DocumentCodeId = flog.DocCodId.Equals(DBNull.Value) ? "" : (string)flog.DocCodId,
-                                CommunicationDateTime = flog.DateTimeCommunication.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)flog.DateTimeCommunication,
+                                CommunicationDateTime = flog.DateTimeCommunication.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : ((DateTime)flog.DateTimeCommunication).ToLocalTime(),
                                 ReturnCode = flog.ReturnCode.Equals(DBNull.Value) ? "" : (string)flog.ReturnCode,
                                 ReturnMessage = flog.ReturnMessage.Equals(DBNull.Value) ? "" : (string)flog.ReturnMessage
                             };
@@ -631,11 +631,7 @@ namespace Hydra.Such.Data.Logic
             };
 
 
-            if (!_contextExt.ExecuteTableValueProcedure<CabecalhoGuiaTransporteSqlModel>(
-                _cabecalhos, 
-                "NAV2017CabGuiaTransporte_Update", 
-                "@CabecalhoGuia", 
-                "CabGuiaTransporteType"))
+            if (!_contextExt.ExecuteTableValueProcedure<CabecalhoGuiaTransporteSqlModel>(_cabecalhos, "NAV2017CabGuiaTransporte_Update", "@CabecalhoGuia", "CabGuiaTransporteType"))
             {
                 return false;
             }
