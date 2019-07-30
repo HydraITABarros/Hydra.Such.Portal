@@ -46,11 +46,28 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/Orcamentos/GetList"
+        <iron-ajax url="/Orcamentos/GetListByEstado"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/GetListMeusOrcamentos"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_MeusOrcamentos_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/DeleteOrcamento"
+                   last-response="{{deleteOrcamento}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteOrcamento_ajax"
+                   on-response="_responseDeleteOrcamento"
                    content-type="application/json">
         </iron-ajax>
 
@@ -65,6 +82,14 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>
+
+            <paper-button class="tablinks" on-tap="_TodosOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Todos Orçamentos</paper-button>
+            <paper-button class="tablinks" on-tap="_MeusOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Meus Orçamentos</paper-button>
+            <paper-button class="tablinks" on-tap="_AguardaRespostaOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Aguarda Resposta</paper-button>
+            <paper-button class="tablinks" on-tap="_AceiteOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Aceite</paper-button>
+            <paper-button class="tablinks" on-tap="_NaoAceiteOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Não Aceite</paper-button>
+            <paper-button class="tablinks" on-tap="_ConcluidoOrcamento"><i class="fa fa-archive" aria-hidden="true"></i>  Concluído</paper-button>
+
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
@@ -333,12 +358,12 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%" resizable>
+            <vaadin-grid-column width="10%" resizable hidden>
                 <template class="header">
                 </template>
                 <template>
                     <center>
-                        <paper-button class="btnRemove tableBtn" raised on-tap="_deletePreReq" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteOrcamento" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                     </center>
                 </template>
             </vaadin-grid-column>
@@ -391,7 +416,7 @@
                     }
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify();
+                    this.$.grid_databound_ajax.body = JSON.stringify({ idEstado: 0 });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*FILTROS*/
@@ -522,11 +547,73 @@
                     location.href = '../Orcamentos/ExportToExcelDownload_Orcamentos?sFileName=' + FileName;
                 },
 
+                _MeusOrcamento: function () {
+                    this.$.grid_MeusOrcamentos_ajax.body = JSON.stringify();
+                    this.$.grid_MeusOrcamentos_ajax.generateRequest();
+                },
 
+                _TodosOrcamento: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ idEstado: 0 });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
 
+                _AguardaRespostaOrcamento: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ idEstado: 1 });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
 
+                _AceiteOrcamento: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ idEstado: 2 });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
 
+                _NaoAceiteOrcamento: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ idEstado: 3 });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
 
+                _ConcluidoOrcamento: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ idEstado: 4 });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
+
+                _deleteOrcamento: function (e) {
+                    if (e != null) {
+                        var index = this.result.indexOf(e.model.item);
+                        var data = this.result[index];
+                        var ajax_request = this.$.page_DeleteOrcamento_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende eliminar o Orçamento?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.body = JSON.stringify(data);
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
+                _responseDeleteOrcamento: function () {
+                    if (this.deleteOrcamento.eReasonCode != 1) {
+                        this._openToastError(this.deleteOrcamento.eMessage);
+                    }
+                    else {
+                        this._openToast("Orçamento eliminado com sucesso.");
+
+                        location.reload();
+                    }
+                },
             });
         });
     </script>

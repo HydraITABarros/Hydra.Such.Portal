@@ -2731,7 +2731,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 1,
-                Value = "Aguardar Resposta"
+                Value = "Aguarda Resposta"
             },
             new EnumData()
             {
@@ -2746,7 +2746,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 4,
-                Value = "Conclusão"
+                Value = "Concluído"
             }
         };
     }

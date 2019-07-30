@@ -39,6 +39,37 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
             }
         }
 
+        public static List<Orcamentos> GetAllByEstado(int IDEstado)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Orcamentos.Where(x => x.IDEstado == IDEstado).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Orcamentos> GetAllByMeusOrcamentos(string user)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Orcamentos.Where(x => x.UtilizadorCriacao.ToLower() == user.ToLower() || x.UtilizadorAceite.ToLower() == user.ToLower() ||
+                    x.UtilizadorConcluido.ToLower() == user.ToLower() || x.UtilizadorModificacao.ToLower() == user.ToLower() ||
+                    x.EmailUtilizadorEnvio.ToLower() == user.ToLower()).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public static Orcamentos Create(Orcamentos item)
         {

@@ -180,6 +180,15 @@
                    id="page_LoadAttachments_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Orcamentos/DeleteOrcamento"
+                   last-response="{{deleteOrcamento}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteOrcamento_ajax"
+                   on-response="_responseDeleteOrcamento"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Orcamentos/DeleteAnexo"
                    last-response="{{deletedAnexo}}"
                    method="post"
@@ -201,12 +210,13 @@
         <!--//-------------------------------------------------------------//-->
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_MeusOrcamentos"><i class="fa fa-list" aria-hidden="true"></i>  Os meus Orçamentos</paper-button>
-            <paper-button class="tablinks" on-tap="_CriarOrcamento"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>
+            <!--<paper-button class="tablinks" on-tap="_MeusOrcamentos"><i class="fa fa-list" aria-hidden="true"></i>  Os meus Orçamentos</paper-button>-->
+            <!--<paper-button class="tablinks" on-tap="_CriarOrcamento"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>-->
             <paper-button class="tablinks" on-tap="_GuardarOrcamento"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
-            <paper-button class="tablinks" on-tap="_LimparOrcamento"><i class="fa fa-remove" aria-hidden="true"></i>  Limpar</paper-button>
-            <paper-button class="tablinks" on-tap="_HistoricoOrcamento"><i class="fa fa-archive" aria-hidden="true"></i>  Histórico</paper-button>
-            <paper-button class="tablinks" on-tap="_PorValidarOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Por Validar</paper-button>
+            <!--<paper-button class="tablinks" on-tap="_LimparOrcamento"><i class="fa fa-remove" aria-hidden="true"></i>  Limpar</paper-button>-->
+            <!--<paper-button class="tablinks" on-tap="_HistoricoOrcamento"><i class="fa fa-archive" aria-hidden="true"></i>  Histórico</paper-button>-->
+            <!--<paper-button class="tablinks" on-tap="_PorValidarOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Por Validar</paper-button>-->
+            <paper-button class="tablinks" on-tap="_DeleteOrcamento"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -690,6 +700,10 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
 
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
                 _GuardarOrcamento: function () {
                     this._executeRequest("/Orcamentos/UpdateOrcamento", this.data);
                 },
@@ -891,6 +905,42 @@
                     }
                 },
 
+                _DeleteOrcamento: function (e) {
+                    debugger;
+                    if (e != null) {
+                        var ajax_request = this.$.page_DeleteOrcamento_ajax;
+                        ajax_request.body = JSON.stringify({ "no": this._no });
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende eliminar o Orçamento?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
+                _responseDeleteOrcamento: function () {
+                    if (this.deleteOrcamento.eReasonCode != 1) {
+                        this._openToastError(this.deleteOrcamento.eMessage);
+                    }
+                    else {
+                        this._openToast("Orçamento eliminado com sucesso.");
+
+                        window.history.back();
+                    }
+                },
 
 
             });

@@ -59,6 +59,40 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Orcamentos_Details(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Orcamentos);
+
+            if (UPerm != null && UPerm.Create.Value == true && string.IsNullOrEmpty(id))
+            {
+                //Get Orcamentos Numeration
+                Configuração Configs = DBConfigurations.GetById(1);
+                int OrcamentosNumerationConfigurationId = Configs.NumeracaoOrcamentos.Value;
+                id = DBNumerationConfigurations.GetNextNumeration(OrcamentosNumerationConfigurationId, true, false);
+
+                //Update Last Numeration Used
+                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(OrcamentosNumerationConfigurationId);
+                ConfigNumerations.ÚltimoNºUsado = id;
+                DBNumerationConfigurations.Update(ConfigNumerations);
+
+                Orcamentos ORC = new Orcamentos();
+                ORC.No = id;
+                ORC.IDEstado = 1;
+                ORC.TotalSemIVA = 0;
+                ORC.TotalComIVA = 0;
+                ORC.DataCriacao = DateTime.Now;
+                ORC.UtilizadorCriacao = User.Identity.Name;
+                if (DBOrcamentos.Create(ORC) != null)
+                {
+                    ViewBag.NoOrcamento = id ?? "";
+                    ViewBag.reportServerURL = _config.ReportServerURL;
+                    ViewBag.UPermissions = UPerm;
+
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("AccessDenied", "Error");
+                }
+            }
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.NoOrcamento = id ?? "";
@@ -84,16 +118,16 @@ namespace Hydra.Such.Portal.Controllers
             List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
             List<EnumData> AllTipoFaturacao = EnumerablesFixed.ContractBillingTypes;
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            List<Contactos> AllContacts = DBContacts.GetAll();
+            List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
 
             result.ForEach(x => {
                 x.EstadoText = x.IDEstado != null ? AllEstados.Where(y => y.Id == x.IDEstado).FirstOrDefault() != null ? AllEstados.Where(y => y.Id == x.IDEstado).FirstOrDefault().Value : "" : "";
                 x.UnidadePrestacaoText = x.UnidadePrestacao != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault().Descrição : "" : "";
-                x.TipoFaturacaoText = x.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == x.UnidadePrestacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == x.UnidadePrestacao).FirstOrDefault().Value : "" : "";
+                x.TipoFaturacaoText = x.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault().Value : "" : "";
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
-                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No == x.NoContacto).FirstOrDefault().Nome : "" : "";
+                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
 
                 x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
@@ -103,7 +137,76 @@ namespace Hydra.Such.Portal.Controllers
                 x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
             });
 
-            return Json(result);
+            return Json(result.OrderByDescending(x => x.No));
+        }
+
+        [HttpPost]
+        public JsonResult GetListByEstado([FromBody] OrcamentosViewModel ORC)
+        {
+            
+            List<OrcamentosViewModel> result = new List<OrcamentosViewModel>();
+            if (ORC == null || ORC.IDEstado == null || ORC.IDEstado == 0)
+                result = DBOrcamentos.GetAll().ParseToViewModel().ToList();
+            else
+                result = DBOrcamentos.GetAllByEstado((int)ORC.IDEstado).ParseToViewModel().ToList();
+
+            List<EnumData> AllEstados = EnumerablesFixed.OrcamentosEstados;
+            List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
+            List<EnumData> AllTipoFaturacao = EnumerablesFixed.ContractBillingTypes;
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+            List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
+
+            result.ForEach(x => {
+                x.EstadoText = x.IDEstado != null ? AllEstados.Where(y => y.Id == x.IDEstado).FirstOrDefault() != null ? AllEstados.Where(y => y.Id == x.IDEstado).FirstOrDefault().Value : "" : "";
+                x.UnidadePrestacaoText = x.UnidadePrestacao != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault().Descrição : "" : "";
+                x.TipoFaturacaoText = x.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault().Value : "" : "";
+                x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
+                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
+                x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
+
+                x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorCriacaoText = !string.IsNullOrEmpty(x.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorAceiteText = !string.IsNullOrEmpty(x.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorConcluidoText = !string.IsNullOrEmpty(x.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
+            });
+
+            return Json(result.OrderByDescending(x => x.No));
+        }
+
+        [HttpPost]
+        public JsonResult GetListMeusOrcamentos()
+        {
+
+            List<OrcamentosViewModel> result = new List<OrcamentosViewModel>();
+            result = DBOrcamentos.GetAllByMeusOrcamentos(User.Identity.Name).ParseToViewModel().ToList();
+
+            List<EnumData> AllEstados = EnumerablesFixed.OrcamentosEstados;
+            List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
+            List<EnumData> AllTipoFaturacao = EnumerablesFixed.ContractBillingTypes;
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+            List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
+
+            result.ForEach(x => {
+                x.EstadoText = x.IDEstado != null ? AllEstados.Where(y => y.Id == x.IDEstado).FirstOrDefault() != null ? AllEstados.Where(y => y.Id == x.IDEstado).FirstOrDefault().Value : "" : "";
+                x.UnidadePrestacaoText = x.UnidadePrestacao != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault().Descrição : "" : "";
+                x.TipoFaturacaoText = x.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault().Value : "" : "";
+                x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
+                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
+                x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
+
+                x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorCriacaoText = !string.IsNullOrEmpty(x.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorAceiteText = !string.IsNullOrEmpty(x.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorConcluidoText = !string.IsNullOrEmpty(x.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
+            });
+
+            return Json(result.OrderByDescending(x => x.No));
         }
 
         //1
@@ -302,6 +405,86 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(ORCAMENTO);
             }
             return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteOrcamento([FromBody] OrcamentosViewModel ORCAMENTO)
+        {
+            ORCAMENTO.eReasonCode = 3;
+            ORCAMENTO.eMessage = "Ocorreu um erro ao eliminar o Orçamento.";
+
+            try
+            {
+                UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Orcamentos);
+
+                if (UPerm != null && UPerm.Delete.Value == true)
+                {
+                    if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.No))
+                    {
+                        List<LinhasOrcamentos> LINHAS = DBLinhasOrcamentos.GetAllByOrcamento(ORCAMENTO.No);
+                        if (LINHAS != null && LINHAS.Count > 0)
+                        {
+                            if (DBLinhasOrcamentos.Delete(LINHAS) != true)
+                            {
+                                ORCAMENTO.eReasonCode = 3;
+                                ORCAMENTO.eMessage = "Ocorreu um erro ao eliminar as Linhas do Orçamento.";
+                                return Json(ORCAMENTO);
+                            }
+                        }
+
+                        List<Anexos> ANEXOS = DBAttachments.GetAll().Where(x => x.TipoOrigem == TipoOrigemAnexos.Orcamentos).ToList();
+                        if (ANEXOS != null && ANEXOS.Count > 0)
+                        {
+                            if (DBAttachments.Delete(ANEXOS) != true)
+                            {
+                                ORCAMENTO.eReasonCode = 3;
+                                ORCAMENTO.eMessage = "Ocorreu um erro ao eliminar os Anexos do Orçamento.";
+                                return Json(ORCAMENTO);
+                            }
+                        }
+
+                        Orcamentos ORC_DB = DBOrcamentos.GetById(ORCAMENTO.No);
+                        if (ORC_DB != null)
+                        {
+                            if (DBOrcamentos.Delete(ORC_DB) == true)
+                            {
+                                ORCAMENTO.eReasonCode = 1;
+                                return Json(ORCAMENTO);
+                            }
+                            else
+                            {
+                                ORCAMENTO.eReasonCode = 3;
+                                ORCAMENTO.eMessage = "Ocorreu um erro ao eliminar o Orçamento.";
+                                return Json(ORCAMENTO);
+                            }
+                        }
+                        else
+                        {
+                            ORCAMENTO.eReasonCode = 3;
+                            ORCAMENTO.eMessage = "Ocorreu um erro ao obter o Orçamento da Base de Dados.";
+                            return Json(ORCAMENTO);
+                        }
+                    }
+                    else
+                    {
+                        ORCAMENTO.eReasonCode = 3;
+                        ORCAMENTO.eMessage = "O Orçamento tem que existir.";
+                        return Json(ORCAMENTO);
+                    }
+                }
+                else
+                {
+                    ORCAMENTO.eReasonCode = 3;
+                    ORCAMENTO.eMessage = "Não tem permissões para Eliminar Orçamentos.";
+                    return Json(ORCAMENTO);
+                }
+            }
+            catch (Exception ex)
+            {
+                ORCAMENTO.eReasonCode = 3;
+                ORCAMENTO.eMessage = "Ocorreu um erro ao eliminar o Orçamento.";
+                return Json(ORCAMENTO);
+            }
         }
 
         [HttpPost]
