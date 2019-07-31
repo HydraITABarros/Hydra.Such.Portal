@@ -24,6 +24,7 @@
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <dom-module id="x-clientdetails">
     <template>
@@ -163,7 +164,7 @@
                    last-response="{{export}}"
                    id="ajax_InvoiceLinesExport"
                    method="post"
-                   handle-as="json" 
+                   handle-as="json"
                    on-response="_invoiceListExportEXCELResponse"
                    content-type="application/json">
         </iron-ajax>
@@ -224,6 +225,8 @@
             <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>
             <!--</template>-->
             <!--<paper-button id="btn_imprimirCD" class="tablinks" on-tap="_printCD" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Cliente</paper-button>-->
+
+            <such-dropdown-menu on-value-changed="_viewMenuConsultartemSelected" title="Consultar" items='[[ _viewMenuConsultartemItems ]]'></such-dropdown-menu>
         </div>
 
 
@@ -306,7 +309,7 @@
                                                             <vaadin-text-field value="{{data.phone_No}}" maxlength="30" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.e_Mail}}"  maxlength="80" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.e_Mail}}" maxlength="80" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
                                                             <!--<vaadin-text-field value="{{data.fax_No}}" pattern="^(?:\s*\d){9}$" onKeyDown="forceNumericWithMaxLength(this,event,9, true)" onblur="trimPhone(this,event)" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax"> </vaadin-text-field>-->
@@ -625,14 +628,14 @@
                                                         <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="grid break_clear" multi-sort="true" active-item="{{_SelectedBalance}}">
 
                                                             <!--<vaadin-grid-column width="100px" resizable>
-                                                            <template class="header">
-                                                                <vaadin-grid-sorter path="entryNo">entryNo</vaadin-grid-sorter>
-                                                                <vaadin-grid-filter path="entryNo" />
-                                                            </template>
-                                                            <template>
-                                                                {{item.entryNo}}
-                                                            </template>
-                                                        </vaadin-grid-column>-->
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="entryNo">entryNo</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="entryNo" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.entryNo}}
+                                                                </template>
+                                                            </vaadin-grid-column>-->
 
                                                             <vaadin-grid-column width="100px" resizable>
                                                                 <template class="header">
@@ -656,11 +659,11 @@
 
                                                             <vaadin-grid-column width="100px" resizable>
                                                                 <template class="header">
-                                                                    <vaadin-grid-sorter path="documentType">Tipo Documento</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="documentType" />
+                                                                    <vaadin-grid-sorter path="documentTypeText">Tipo Documento</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="documentTypeText" />
                                                                 </template>
                                                                 <template>
-                                                                    {{item.documentType}}
+                                                                    {{item.documentTypeText}}
                                                                 </template>
                                                             </vaadin-grid-column>
 
@@ -1213,6 +1216,7 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
+                            ss
                             <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                             <vaadin-grid-filter path="unitPrice" />
                         </template>
@@ -1226,6 +1230,7 @@
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
+                            as
                             <vaadin-grid-sorter path="vat">Iva</vaadin-grid-sorter>
                             <vaadin-grid-filter path="vat" />
                         </template>
@@ -1239,6 +1244,9 @@
 
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
+                            "h
+                            
+
                             <vaadin-grid-sorter path="amount">Preço Total</vaadin-grid-sorter>
                             <vaadin-grid-filter path="amount" />
                         </template>
@@ -1252,6 +1260,9 @@
 
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
+                            ss
+                            
+
                             <vaadin-grid-sorter path="tipoRefeicao">Tp Refeição</vaadin-grid-sorter>
                             <vaadin-grid-filter path="tipoRefeicao" />
                         </template>
@@ -1466,7 +1477,12 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+
+                    _viewMenuConsultartemItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Contratos" }, { value: 2, description: "Propostas" }, { value: 3, description: "Oportunidades" }],
+                    },
                 },
                 ready: function () {
                     var _this = this;
@@ -2070,9 +2086,45 @@
                     }
                     return Math.round(value * 1, decimal);
                 },
+
+                _viewMenuConsultartemSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+
+                    var item = e.detail.value;
+                    if (item == null)
+                        return;
+
+                    switch (item.value) {
+                        case 1:
+                            this._openContratosPage();
+                            break;
+                        case 2:
+                            this._openPropostasPage();
+                            break;
+                        case 3:
+                            this._openOportunidadesPage();
+                            break;
+                    }
+                },
+
+                _openContratosPage: function (e) {
+                    window.location.href = "/Contratos/ContratosByCliente/" + this._no;
+                },
+
+                _openPropostasPage: function (e) {
+                    window.location.href = "/Contratos/PropostasByCliente/" + this._no;
+                },
+
+                _openOportunidadesPage: function (e) {
+                    window.location.href = "/Contratos/OportunidadesByCliente/" + this._no;
+                },
+
+
+
+
             });
         });
-
 
         var forceNumericWithMaxLength = function (el, event, maxLength, allowSpaces) {
 
@@ -2086,8 +2138,8 @@
                 return false;
             }
         };
-        
-        
+
+
         var trimPhone = function (el, event) {
             el.value = el.value.replace(/  +/g, ' ').trim();
         };

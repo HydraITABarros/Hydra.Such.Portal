@@ -260,6 +260,7 @@ namespace Hydra.Such.Data.Logic
                             Description = temp.Description.Equals(DBNull.Value) ? "" : (string)temp.Description,
                             DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo,
                             DocumentType = temp.DocumentType.Equals(DBNull.Value) ? "" : (string)temp.DocumentType.ToString(),
+                            DocumentTypeText = temp.DocumentTypeText.Equals(DBNull.Value) ? "" : (string)temp.DocumentTypeText.ToString(),
                             Obs = temp.Obs.Equals(DBNull.Value) ? "" : (string)temp.Obs,
                             PostingDate = (DateTime?)temp.PostingDate,
                             RemainingAmount = (decimal?)temp.RemainingAmount,

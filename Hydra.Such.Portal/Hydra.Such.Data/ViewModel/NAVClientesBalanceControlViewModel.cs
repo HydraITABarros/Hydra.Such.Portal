@@ -13,6 +13,7 @@ namespace Hydra.Such.Data.ViewModel
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? PostingDate { get; set; }
         public string DocumentType { get; set; }
+        public string DocumentTypeText { get; set; }
         public string DocumentNo { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DocumentDate { get; set; }

@@ -210,13 +210,10 @@
         <!--//-------------------------------------------------------------//-->
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <!--<paper-button class="tablinks" on-tap="_MeusOrcamentos"><i class="fa fa-list" aria-hidden="true"></i>  Os meus Orçamentos</paper-button>-->
-            <!--<paper-button class="tablinks" on-tap="_CriarOrcamento"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>-->
-            <paper-button class="tablinks" on-tap="_GuardarOrcamento"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
-            <!--<paper-button class="tablinks" on-tap="_LimparOrcamento"><i class="fa fa-remove" aria-hidden="true"></i>  Limpar</paper-button>-->
-            <!--<paper-button class="tablinks" on-tap="_HistoricoOrcamento"><i class="fa fa-archive" aria-hidden="true"></i>  Histórico</paper-button>-->
-            <!--<paper-button class="tablinks" on-tap="_PorValidarOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Por Validar</paper-button>-->
-            <paper-button class="tablinks" on-tap="_DeleteOrcamento"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
+            <paper-button class="tablinks" on-tap="_GuardarOrcamento" disabled="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
+            <paper-button class="tablinks" on-tap="_DeleteOrcamento" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
+            <paper-button class="tablinks" on-tap="_RelatorioOrcamento" ><i class="fa fa-print" aria-hidden="true"></i>  Imprimir</paper-button>
+            <paper-button class="tablinks" on-tap="_TornarProposta" disabled="{{ !_permissions.update }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Tornar em Proposta</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -244,7 +241,8 @@
                                                             text-path="name"
                                                             value-path="no_"
                                                             fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"eMail", "name":"E-mail"}]'
-                                                            on-value-changed="_actualizarEmailCliente">
+                                                            on-value-changed="_actualizarEmailCliente"
+                                                            disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
 
@@ -254,19 +252,21 @@
                                                             text-path="name"
                                                             value-path="no_"
                                                             fields='[{"field":"no_", "name":"Cód. Contato"}, {"field":"name", "name":"Nome"}, {"field":"email", "name":"E-mail"}]'
-                                                            on-value-changed="_actualizarEmailContacto">
+                                                            on-value-changed="_actualizarEmailContacto"
+                                                            disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-date-picker id="OrcDataValidade" label="Orçamento Válido até" value="{{data.dataValidadeText}}"></vaadin-date-picker>
+                                            <vaadin-date-picker id="OrcDataValidade" label="Orçamento Válido até" value="{{data.dataValidadeText}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-2">
                                             <vaadin-combo-box id="OrcIDEstado" label="Estado do Orçamento" value="{{data.idEstado}}"
                                                               items="[[CBOrcamentosEstados]]"
                                                               item-value-path="id"
-                                                              item-label-path="value">
+                                                              item-label-path="value"
+                                                              disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
@@ -277,7 +277,7 @@
 
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <such-textarea id="OrcDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="200"> </such-textarea>
+                                            <such-textarea id="OrcDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="200" disabled="{{ !_permissions.update }}"> </such-textarea>
                                         </div>
 
                                         <div class="col-md-7">
@@ -287,7 +287,8 @@
                                                                     items="[[CBRegions]]"
                                                                     text-path="value"
                                                                     value-path="id"
-                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                                    disabled="{{ !_permissions.update }}">
                                                     </such-selectbox>
                                                 </div>
 
@@ -296,7 +297,8 @@
                                                                     items="[[LFetchUnits]]"
                                                                     text-path="value"
                                                                     value-path="id"
-                                                                    fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'>
+                                                                    fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
+                                                                    disabled="{{ !_permissions.update }}">
                                                     </such-selectbox>
 
                                                 </div>
@@ -305,7 +307,8 @@
                                                     <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value="{{data.tipoFaturacao}}"
                                                                       items="[[CBBillingTypes]]"
                                                                       item-value-path="id"
-                                                                      item-label-path="value">
+                                                                      item-label-path="value"
+                                                                      disabled="{{ !_permissions.update }}">
                                                         <template>
                                                             <b>[[item.value]]</b>
                                                         </template>
@@ -337,12 +340,12 @@
                                                        target="/Orcamentos/FileUpload/{{_no}}"
                                                        method="POST"
                                                        headers="{'Accept': 'application/json'}"
-                                                       timeout=15000>
+                                                       timeout=15000
+                                                       disabled="{{ !_permissions.update }}">
                                         </vaadin-upload>
                                     </div>
 
                                     <div class="row">
-                                        <!--<vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[data.anexosOrcamentos]]" class="grid" multi-sort="true">-->
                                         <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
                                             <vaadin-grid-column width="70%" resizable>
                                                 <template class="header">
@@ -371,7 +374,7 @@
                                                     <center>
                                                         <template is="dom-if" if="{{ _permissions.update }}">
                                                             <center>
-                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAnexo" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAnexo" title="Eliminar" disabled="{{ !_permissions.update }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                             </center>
                                                         </template>
                                                     </center>
@@ -385,7 +388,7 @@
                                 <div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <vaadin-text-field id="OrcEmail" label="E-mail" value="{{data.email}}" maxlength="50"></vaadin-text-field>
+                                            <vaadin-text-field id="OrcEmail" label="E-mail" value="{{data.email}}" maxlength="50" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3">
@@ -399,17 +402,17 @@
 
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <vaadin-text-field id="OrcEmailAssunto" label="Assunto" value="{{data.emailAssunto}}" maxlength="100"></vaadin-text-field>
+                                            <vaadin-text-field id="OrcEmailAssunto" label="Assunto" value="{{data.emailAssunto}}" maxlength="100" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <such-textarea id="OrcEmailCorpo" label="Corpo" value="{{data.emailCorpo}}" rows="5" maxlength="200"></such-textarea>
+                                            <such-textarea id="OrcEmailCorpo" label="Corpo" value="{{data.emailCorpo}}" rows="5" maxlength="200" disabled="{{ !_permissions.update }}"></such-textarea>
                                         </div>
 
                                         <div class="col-md-6" style="padding-top:14px">
-                                            <paper-button id="btn_EnviarEmail" class="btnSave" raised on-tap="_enviarEmail" title="Enviar"><i class="fa fa-send" aria-hidden="true"></i>&nbsp; Enviar</paper-button>
+                                            <paper-button id="btn_EnviarEmail" class="btnSave" raised on-tap="_enviarEmail" title="Enviar"><i class="fa fa-send" aria-hidden="true" disabled="{{ !_permissions.update }}"></i>&nbsp; Enviar</paper-button>
                                         </div>
                                     </div>
                                 </div>
@@ -464,27 +467,27 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaDescricao" label="Descrição" value="" maxlength="100" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaDescricao" label="Descrição" value="" maxlength="100" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaQuantidade" label="Quantidade" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaQuantidade" label="Quantidade" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaValorUnitario" label="Valor Unitário" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaValorUnitario" label="Valor Unitário" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaTaxaIVA" label="Taxa IVA na Linha" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight"><div slot="suffix">%</div></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaTaxaIVA" label="Taxa IVA na Linha" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight" disabled="{{ !_permissions.update }}"><div slot="suffix">%</div></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-text-field id="LinhaTotal" label="Total Linha" value="" disabled type="number" class="alignRight" required error-message="Este campo é obrigatório"><div slot="suffix">€</div></vaadin-text-field>
+                                        <vaadin-text-field id="LinhaTotal" label="Total Linha" value="" disabled type="number" class="alignRight" required error-message="Este campo é obrigatório"><div slot="suffix" disabled="{{ !_permissions.update }}">€</div></vaadin-text-field>
                                     </div>
 
                                     <div class="col-lg-2" style="padding-top:12px">
-                                        <paper-button raised id="btnCreateLinha" class="btnSave" on-tap="_createLinha"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        <paper-button raised id="btnCreateLinha" class="btnSave" on-tap="_createLinha"><i class="fa fa-plus" aria-hidden="true" disabled="{{ !_permissions.update }}"></i>&nbsp; Criar</paper-button>
                                     </div>
                                 </div>
                             </paper-collapse-item>
@@ -596,7 +599,7 @@
                                             <center>
                                                 <template is="dom-if" if="{{ _permissions.update }}">
                                                     <center>
-                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" title="Eliminar" disabled="{{ !_permissions.update }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                     </center>
                                                 </template>
                                             </center>

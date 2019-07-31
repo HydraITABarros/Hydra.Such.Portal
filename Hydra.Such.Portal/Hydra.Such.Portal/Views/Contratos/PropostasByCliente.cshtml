@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewData["Title"] = "Propostas por Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="import" href="~/elements/contracts/proposalsByCliente_list.html">
+
+<x-proposalsbycliente _clienteno="@ViewBag.ClienteNo"
+                _uploadurl="@ViewBag.UploadURL"
+                _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-proposalsbycliente>

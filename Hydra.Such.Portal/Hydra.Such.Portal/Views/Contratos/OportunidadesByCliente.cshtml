@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewData["Title"] = "Oportunidades por Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="import" href="~/elements/contracts/oportunitiesByCliente_list.html">
+
+<x-oportunitiesbycliente _clienteno="@ViewBag.ClienteNo"
+                _uploadurl="@ViewBag.UploadURL"
+                _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-oportunitiesbycliente>

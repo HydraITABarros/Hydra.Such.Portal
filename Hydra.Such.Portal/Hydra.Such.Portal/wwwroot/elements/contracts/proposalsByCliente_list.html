@@ -1,0 +1,628 @@
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-proposalsbycliente">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+        <iron-ajax url="/PopulateDropdowns/GetProposalsStatus" last-response="{{CBProposalsStatus}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/GetListContractsProposalsByCliente"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/DeleteContract"
+                   last-response="{{deletedData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_contract"
+                   on-response="_responseDeleteProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/ExportToExcel_Propostas"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <template is="dom-if" if="{{ _permissions.create }}">
+            <template is="dom-if" if="{{ !_disabledCreate }}">
+                <div class="subMenu">
+                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                    <!--<paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>-->
+                    <!--A pedido do António José não se deve mostrar as Listas Perdidas e Canceladas 21-01-2019-->
+                    <!--<paper-button class="tablinks" id="showLost" on-tap="_showLosts"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showLostMessage}}</paper-button>
+                    <paper-button class="tablinks" id="showAborted" on-tap="_showAborted"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showAbortedMessage}}</paper-button>-->
+                    <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
+                    <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                    <!--start ColumnToggle-->
+                    <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                        <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                        <div class="list-group" slot="dropdown-content">
+                            <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                                <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                                    {{ item.value.label }}
+                                </a>
+                                <hr />
+                            </template>
+                        </div>
+                    </paper-menu-button>
+                    <!--end ColumnToggle-->
+                </div>
+            </template>
+        </template>
+
+        <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contractNo" value="[[filter.contractNo]]" />
+                </template>
+                <template>
+                    {{item.contractNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.oportunityNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="oportunityNo" value="[[filter.oportunityNo]]" />
+                </template>
+                <template>
+                    {{item.oportunityNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="startData" value="[[filter.startData]]" />
+                </template>
+                <template>
+                    {{item.startData}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dueDate" value="[[filter.dueDate]]" />
+                </template>
+                <template>
+                    {{item.dueDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusDescription" value="[[filter.statusDescription]]" />
+                </template>
+                <template>
+                    {{item.statusDescription}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.clientNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientNo" value="[[filter.clientNo]]" />
+                </template>
+                <template>
+                    {{item.clientNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.clientName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" value="[[filter.clientName]]" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.contactNoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactNoText">Nome Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactNoText" value="[[filter.contactNoText]]" />
+                </template>
+                <template>
+                    {{item.contactNoText}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.description.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" value="[[filter.description]]" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="status" />
+                </template>
+                <template>
+                    {{item.statusDescription}}
+                </template>
+            </vaadin-grid-column>-->
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeRegion" value="[[filter.codeRegion]]" />
+                </template>
+                <template>
+                    {{item.codeRegion}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeFunctionalArea" value="[[filter.codeFunctionalArea]]" />
+                </template>
+                <template>
+                    {{item.codeFunctionalArea}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codeResponsabilityCenter" />
+                </template>
+                <template>
+                    {{item.codeResponsabilityCenter}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.versionNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="versionNo" value="[[filter.versionNo]]" />
+                </template>
+                <template>
+                    {{item.versionNo}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.ordOrderSource.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="ordOrderSource">Origem do Pedido Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ordOrderSource" value="[[filter.ordOrderSource]]" />
+                </template>
+                <template>
+                    {{item.ordOrderSource}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.relatedContract.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="relatedContract">Nº Contrato</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="relatedContract" value="[[filter.relatedContract]]" />
+                </template>
+                <template>
+                    {{item.relatedContract}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.customerShipmentDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerShipmentDate">Data Envio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerShipmentDate" value="[[filter.customerShipmentDate]]" />
+                </template>
+                <template>
+                    {{item.customerShipmentDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.proposalChangeDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="proposalChangeDate">Data Alteração</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="proposalChangeDate" value="[[filter.proposalChangeDate]]" />
+                </template>
+                <template>
+                    {{item.proposalChangeDate}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.internalNumeration.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="internalNumeration">Numeração Interna</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="internalNumeration" value="[[filter.internalNumeration]]" />
+                </template>
+                <template>
+                    {{item.internalNumeration}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.totalProposalValue.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="totalProposalValue">Valor Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="totalProposalValue" value="[[filter.totalProposalValue]]" />
+                </template>
+                <template>
+                    <!--{{item.totalProposalValue}}-->
+                    [[_formatValue(item.totalProposalValue)]]
+                </template>
+            </vaadin-grid-column>
+            -g
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.provisionUnit.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="provisionUnit">Unidade de Prestação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="provisionUnit" value="[[filter.provisionUnit]]" />
+                </template>
+                <template>
+                    {{item.provisionUnit}}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.baseValueProcedure.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="baseValueProcedure">Valor Base Procedimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="baseValueProcedure" value="[[filter.baseValueProcedure]]" />
+                </template>
+                <template>
+                    <!--{{item.baseValueProcedure}}-->
+                    [[_formatValue(item.baseValueProcedure)]]
+                </template>
+            </vaadin-grid-column>
+            -g
+            <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.notes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="notes">Notas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="notes" value="[[filter.notes]]" />
+                </template>
+                <template>
+                    {{item.notes}}
+                </template>
+            </vaadin-grid-column>
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <!--<paper-button class="btnRemove" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}">Eliminar</paper-button>-->
+                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteOprotunity" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+            </template>
+        </vaadin-grid>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-proposalsbycliente',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _clienteno: {
+                        type: String,
+                        value: false
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _archived: {
+                        type: Number,
+                        value: 0
+                    },
+                    _contractno: {
+                        type: String,
+                        //value: false
+                    },
+                    _disabledCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _showLostMessage: {
+                        type: String,
+                        value: "Exibir Perdidas"
+                    },
+                    _showAbortedMessage: {
+                        type: String,
+                        value: "Exibir Canceladas"
+                    },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Exibir Histórico"
+                    },
+                    _showLevel: {
+                        type: Number,
+                        value: 1
+                    },
+                    _isHistoric: {
+                        type: String,
+                        value: "false"
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+
+                        window.setGridFilter('contratos-propostas', filters || {});
+
+                        window.location.href = "DetalhesProposta/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
+                    }
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "DetalhesProposta/";
+                    }
+                },
+                created: function () {
+                    this.filter = window.getGridFilter('contratos-propostas');
+                },
+                ready: function () {
+                    if (this._archived == 1) {
+                        this._disabledCreate = true;
+                    }
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel, "ClienteNo": this._clienteno });
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    window.handleGridListColumnsOrder(this.$.grid, 'contratos-propostas');
+
+                    window.grid = this.$.grid;
+                    window._this = this;
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        this._openToast(this.deletedData.eMessage);
+                        if (this.deletedData.eReasonCode == 1) {
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        } else if (this.deletedData.eReasonCode == 2) {
+                            this._openToastError(this.deletedData.eMessage);
+                        }
+                    }
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _deleteOprotunity: function (data) {
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_delete_contract.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete_contract.generateRequest();
+                },
+                _showAborted: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 2) {
+                            this._archived = 0;
+                            this._showLevel = 1;
+                        } else {
+                            this._archived = 1;
+                            this._showLevel = 2;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel, "ClienteNo": this._clienteno });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+                _showLosts: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 3) {
+                            this._archived = 0;
+                            this._showLevel = 1;
+                        } else {
+                            this._archived = 1;
+                            this._showLevel = 3;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel, "ClienteNo": this._clienteno });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+                _showHistory: function (item) {
+                    if (item != null) {
+                        if (this._showLevel == 4) {
+                            this._archived = 0;
+                            this._showLevel = 1;
+                        } else {
+                            this._archived = 1;
+                            this._showLevel = 4;
+                        }
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel, "ClienteNo": this._clienteno });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+                _setButtonTexts: function () {
+                    if (this._showLevel == 1) {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Exibir Histórico";
+                        this._isHistoric = "false";
+                    } else if (this._showLevel == 2) {
+                        this._showAbortedMessage = "Exibir Ativas";
+                        this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Exibir Histórico";
+                        this._isHistoric = "false";
+                    } else if (this._showLevel == 4) {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Exibir Perdidas";
+                        this._showHistoryMessage = "Exibir Ativas";
+                        this._isHistoric = "true";
+                    } else {
+                        this._showAbortedMessage = "Exibir Canceladas";
+                        this._showLostMessage = "Exibir Ativas";
+                        this._showHistoryMessage = "Exibir Histórico";
+                        this._isHistoric = "false";
+                    }
+                },
+
+                _exportEXCEL: function () {
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../Contratos/ExportToExcelDownload_Propostas?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "contractNo": { hidden: false, label: "Nº Proposta" },
+                        "oportunityNo": { hidden: false, label: "Nº Oportunidade" },
+                        "startData": { hidden: false, label: "Data Inicio" },
+                        "dueDate": { hidden: false, label: "Data Fim" },
+                        "contactNoText": { hidden: false, label: "Nome Contacto" },
+                        "clientNo": { hidden: false, label: "Nº Cliente" },
+                        "clientName": { hidden: false, label: "Nome Cliente" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "statusDescription": { hidden: false, label: "Estado" },
+                        "codeRegion": { hidden: false, label: "Cód. Região" },
+                        "codeFunctionalArea": { hidden: false, label: "Cód. Área Funcional" },
+                        "codeResponsabilityCenter": { hidden: false, label: "Cód. Centro Responsabilidade" },
+                        "versionNo": { hidden: false, label: "Nº Versão" },
+
+                        "ordOrderSource": { hidden: false, label: "Origem do Pedido Descrição" },
+                        "relatedContract": { hidden: false, label: "Nº Contrato" },
+                        "customerShipmentDate": { hidden: false, label: "Data Envio" },
+                        "proposalChangeDate": { hidden: false, label: "Data Alteração" },
+                        "internalNumeration": { hidden: false, label: "Numeração Interna" },
+                        "totalProposalValue": { hidden: false, label: "Valor Total" },
+                        "provisionUnit": { hidden: false, label: "Unidade de Prestação" },
+                        "baseValueProcedure": { hidden: false, label: "Valor Base Procedimento" },
+                        "notes": { hidden: false, label: "Notas" }
+                    };
+
+                    if (localStorage["proposalsbycliente.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["proposalsbycliente.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["proposalsbycliente.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+
+            });
+        });
+    </script>
+</dom-module>
