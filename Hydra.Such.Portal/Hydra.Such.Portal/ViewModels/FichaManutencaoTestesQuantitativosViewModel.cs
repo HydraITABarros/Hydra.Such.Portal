@@ -22,5 +22,6 @@ namespace Hydra.Such.Portal.ViewModels
         public int Numero { get; set; }
         public string Versao { get; set; }
         public int Value { get; set; }
+        public string UnidadeCampo1 { get; set; }
     }
 }
