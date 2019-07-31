@@ -602,8 +602,9 @@ namespace Hydra.Such.Portal.Controllers
                     IdTestesQuantitativos = p.IdTestesQuantitativos,
                     Numero = p.Numero,
                     Rotinas = p.Rotinas,
-                    Versao = p.Versao
-            }).ToList();
+                    Versao = p.Versao,
+                    UnidadeCampo1 = p.UnidadeCampo1
+    }).ToList();
 
             //obter fichas de manutencao (reports)
 
