@@ -3205,10 +3205,12 @@
                     var count = 0;
                     if (this.Requisition.lines != null) {
                         for (var i = 0; i < this.Requisition.lines.length; i++) {
-                            count += (this.Requisition.lines[i].quantityToRequire * this.Requisition.lines[i].unitCost);
-                            this._TotalLine = count;
-                            this.$.dialogTotal.open();
+                            if (this.Requisition.lines[i].semEfeito != true) {
+                                count += (this.Requisition.lines[i].quantityToRequire * this.Requisition.lines[i].unitCost);
+                            }
                         }
+                        this._TotalLine = count;
+                        this.$.dialogTotal.open();
                     } else {
                         this._openToast("Não tem Linhas inseridas.");
                     }
