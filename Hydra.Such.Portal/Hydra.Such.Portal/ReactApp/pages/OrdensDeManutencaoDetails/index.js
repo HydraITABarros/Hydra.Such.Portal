@@ -347,8 +347,11 @@ class OrdensDeManutencaoLine extends Component {
 							onBackClick={() => {
 								this.table.resetSelection();
 							}}
-							onOpenClick={(rows) => {
-								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao`);
+							onOpenClick={(e) => {
+								console.log(this.state.selectedRows);
+								var rows = this.state.selectedRows;
+
+								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=${rows[0].categoria}&equipmentsIds=${rows.map((item) => { return item.idEquipamento }).join(',')}`);
 							}}
 						/> :
 						<Header isLoading={this.state.isLoading}

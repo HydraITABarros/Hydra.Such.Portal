@@ -41,52 +41,52 @@ const dialog = css`
 const Dialog = styled(MuiDialog)`${dialog}`;
 
 const Action = ({ ...props }) => {
-        return <ActionDiv {...props}>{props.children}</ActionDiv>
+	return <ActionDiv {...props}>{props.children}</ActionDiv>
 }
 
 class ModalLarge extends React.Component {
-        state = {
-                open: false,
-        }
+	state = {
+		open: false,
+	}
 
-        constructor(props) {
-                super(props);
-                this.handleClickOpen = this.handleClickOpen.bind(this);
-        }
+	constructor(props) {
+		super(props);
+		this.handleClickOpen = this.handleClickOpen.bind(this);
+	}
 
-        handleClickOpen = () => {
+	handleClickOpen = () => {
 
-                this.setState({
-                        open: true,
-                }, () => {
-                        this.props.onOpen ? this.props.onOpen() : '';
-                });
-        };
+		this.setState({
+			open: true,
+		}, () => {
+			this.props.onOpen ? this.props.onOpen() : '';
+		});
+	};
 
-        handleClose = () => {
-                this.setState({ open: false }, () => {
-                        this.props.onClose ? this.props.onClose() : '';
-                });
-        };
+	handleClose = () => {
+		this.setState({ open: false }, () => {
+			this.props.onClose ? this.props.onClose() : '';
+		});
+	};
 
-        render() {
-                return (
-                        <div>
-                                <Action onClick={this.handleClickOpen} >
-                                        {this.props.action}
-                                </Action>
-                                <Dialog onClose={this.handleClose} 
-                                        aria-labelledby="customized-dialog-title" 
-                                        open={this.props.open || this.state.open}
-                                        fullWidth={true}
-                                        maxWidth = {'lg'}>
-                                        <CloseIcon iconSolo onClick={this.handleClose}><Icon decline /></CloseIcon>
-                                        {this.props.children}
-                                </Dialog>
-                        </div>
+	render() {
+		return (
+			<span>
+				<Action onClick={this.handleClickOpen} >
+					{this.props.action}
+				</Action>
+				<Dialog onClose={this.handleClose}
+					aria-labelledby="customized-dialog-title"
+					open={this.props.open || this.state.open}
+					fullWidth={true}
+					maxWidth={'lg'}>
+					<CloseIcon iconSolo onClick={this.handleClose}><Icon decline /></CloseIcon>
+					{this.props.children}
+				</Dialog>
+			</span>
 
-                );
-        }
+		);
+	}
 }
 
 const styles = css`&& {

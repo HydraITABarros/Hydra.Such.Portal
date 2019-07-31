@@ -16,7 +16,6 @@ namespace Hydra.Such.Portal.ViewModels
             get { return (this.Status == 0); }
         }
         public bool isPreventive;
-        public List<Utilizador> Technicals;
         public string ClientName { get; set; }
         public string InstitutionName { get; set; }
         public string ServiceName { get; set; }
@@ -29,7 +28,9 @@ namespace Hydra.Such.Portal.ViewModels
         public string CustomerName { get; set; }
         public int? Status { get; set; }
         public string ResponsibleEmployee { get; set; }
+        public Utilizador ResponsibleEmployeeObj;
         public string MaintenanceResponsible { get; set; }
+        public Utilizador MaintenanceResponsibleObj;
         public DateTime? OrderDate { get; set; }
         public string NoSeries { get; set; }
         public int? IdClienteEvolution { get; set; }
@@ -40,5 +41,6 @@ namespace Hydra.Such.Portal.ViewModels
         public int? IdTecnico3 { get; set; }
         public int? IdTecnico4 { get; set; }
         public int? IdTecnico5 { get; set; }
+        public List<Utilizador> Technicals;
     }
 }

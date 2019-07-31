@@ -643,16 +643,12 @@ class OrdensDeManutencao extends Component {
 								</CircleOm.icon>
 								<CircleOm.chart>
 									<Circle
-										loading={this.state.isLoading}
-										label=""
+										loading={this.state.isLoading} label=""
 										strokeValue={this.state.isLoading ? 0 : ordersCounts.preventive}
-										trailValue={ordersCounts.curative}
-										strokeIcon={<Icon curativa />}
-										trailIcon={<Icon preventiva />}
-										width={191}
+										trailValue={ordersCounts.curative} strokeIcon={<Icon curativa />}
+										trailIcon={<Icon preventiva />} width={191}
 										strokeColor={_theme.palette.secondary.default}
-										trailColor={_theme.palette.primary.dark}
-										full
+										trailColor={_theme.palette.primary.dark} full
 									/>
 								</CircleOm.chart>
 
