@@ -790,7 +790,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["documentType"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item["documentType"].ToString());
+                            row.CreateCell(Col).SetCellValue(item["documentTypeText"].ToString());
                             Col = Col + 1;
                         }
                         if (dp["documentNo"]["hidden"].ToString() == "False")
