@@ -9,7 +9,7 @@ import PlanEquipmentsItem from './planEquipmentsItem';
 const Root = styled.div`
 	white-space: nowrap;
 	display: inline-block;
-	padding: 0 44px 0 12px;
+	padding: 0 144px 0 12px;
 `;
 
 const Index = styled(Text)`

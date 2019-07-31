@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { PageTemplate } from 'components';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, OmDatePicker, Tooltip, Text, CheckBox, Input } from 'components';
+import { Wrapper, OmDatePicker, Tooltip, Text, CheckBox, Input, Icon, Button } from 'components';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
@@ -307,7 +307,7 @@ class FichaDeManutencao extends Component {
 							order={this.state.order} equipments={this.state.equipments}
 						/>
 						<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} >
-							<Grid item xs={9} sm={9} md={6} >
+							<Grid item xs={8} sm={8} md={6} >
 								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
 									<PlanHeader>
 										<Wrapper padding="32px 0px 16px 32px" >
@@ -367,10 +367,12 @@ class FichaDeManutencao extends Component {
 									{this.state.planQuantity.length > 0 && this.state.planQuantityHtml}
 								</Wrapper>
 								<Wrapper padding="0" minHeight="164px" background={Color(this.props.theme.palette.secondary.default).alpha(0.2).toString()}>
-
+									<Wrapper padding="48px 16px 56px 50px">
+										<Text h2 ><b>Estado final</b></Text>
+									</Wrapper>
 								</Wrapper>
 							</Grid>
-							<Grid item xs={3} sm={3} md={6} >
+							<Grid item xs={4} sm={4} md={6} >
 								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
 									<PlanHeader className={this.getScrollShadow()}
 										ref={(el) => { this.equipmentsHeaderWrapper = el }}>
@@ -437,6 +439,7 @@ class FichaDeManutencao extends Component {
 													return (
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32} >
 															{this.state.equipmentsCheckBoxHtml}
+															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
 														</PlanRow>
 													);
 												})
@@ -447,6 +450,7 @@ class FichaDeManutencao extends Component {
 													return (
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
 															{this.state.equipmentsCheckBoxHtml}
+															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
 														</PlanRow>
 													);
 												})}
@@ -455,7 +459,8 @@ class FichaDeManutencao extends Component {
 												{this.state.planQuantity.length > 0 && this.state.planQuantity.map((item, index) => {
 													return (
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
-															{this.state.equipmentsInputHtml}
+															{this.state.equipmentsInputHtml}<Text span>{item.unidadeCampo1 && item.unidadeCampo1}</Text>
+															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
 														</PlanRow>
 													);
 												})}
@@ -469,6 +474,17 @@ class FichaDeManutencao extends Component {
 											background={Color(this.props.theme.palette.secondary.default).alpha(0.2).toString()}
 											width={this.state.equipmentsHeaderScroll.innerWidth + 'px'}>
 
+											<Wrapper padding="48px 12px 56px">
+												{this.state.equipments.map(() => {
+													return (
+														<PlanEquipmentsItem >
+															<Wrapper padding="0 8px">
+																<Button icon={<Icon remove />} style={{ maxWidth: '100%' }}></Button>
+															</Wrapper>
+														</PlanEquipmentsItem>
+													)
+												})}
+											</Wrapper>
 										</Wrapper>
 
 									</ScrollContainer>

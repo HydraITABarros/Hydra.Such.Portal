@@ -49,6 +49,9 @@ const buttonIcon = css`&& {
     b {
         color: ${_theme.palette.primary.medium};
     }
+    &:hover {
+        background-color: ${_theme.palette.white};
+    }
 
 }
 `
@@ -57,6 +60,9 @@ const buttonIconPrimary = css`${buttonPrimary} && {
         line-height: 14px;
 	[class*="icon"] {
 		color: ${_theme.palette.white};
+	}
+	&:hover {
+		background: inherit;
 	}
     }
     `
@@ -191,7 +197,7 @@ const Button = ({ ...props }) => {
 			<ButtonIcon
 				variant="contained"
 				{..._.omit(props, ['icon', 'color'])}
-			>{props.icon}{"\u00a0"}<Text b>{props.children}</Text>
+			>{props.icon}{props.children && "\u00a0"}<Text b>{props.children}</Text>
 			</ButtonIcon>
 		)
 	} else if (props.iconPrimary) {

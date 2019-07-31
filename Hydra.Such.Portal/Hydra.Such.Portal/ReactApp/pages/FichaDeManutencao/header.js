@@ -123,7 +123,7 @@ class HTitle extends Component {
 					<Grid item xs={12} sm={5} md={5} padding="15px">
 						<div style={{ textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left' }}>
 							<Options >
-								<Button icon={<Icon options style={{ marginLeft: '7px' }} />}
+								<Button icon={<Icon options />}
 									style={{ lineHeight: '14px', verticalAlign: 'middle', padding: 0, width: '40px', minWidth: '40px', textAlign: 'center', marginRight: '15px' }}
 								></Button>
 							</Options>
