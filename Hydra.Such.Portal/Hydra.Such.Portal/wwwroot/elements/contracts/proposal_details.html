@@ -392,7 +392,6 @@
                                                             text-path="value"
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Cód. Contato"}, {"field":"value", "name":"Nome"}]'
-                                                            required error-message="Este campo é obrigatório"
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
 
@@ -403,7 +402,6 @@
                                                             text-path="name"
                                                             value-path="no_"
                                                             fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"regionCode", "name":"Região"}, {"field":"vatRegistrationNo_", "name":"Nº Contribuinte"}]'
-                                                            required error-message="Este campo é obrigatório"
                                                             disabled="{{ !_permissions.update }}"
                                                             on-value-changed="_clientChanged">
                                             </such-selectbox>
@@ -447,7 +445,7 @@
                                             </vaadin-combo-box>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-date-picker label="Data Envio" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            <vaadin-date-picker label="Data Envio" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Alteração" id="mProposalChangeDate" name="ProposalChangeDate" value="{{data.proposalChangeDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -465,8 +463,7 @@
                                                             items="[[CBRegions]]"
                                                             text-path="value"
                                                             value-path="id"
-                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
-                                                            required error-message="Este campo é obrigatório">
+                                                            fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
 
                                             </such-selectbox>
                                         </div>
@@ -494,7 +491,6 @@
                                                             text-path="value"
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
-                                                            required error-message="Este campo é obrigatório"
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                         </div>
@@ -555,7 +551,7 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-3 ">
-                                            <vaadin-combo-box items="[[CBBillingTypes]]" id="mBillingTypes" item-value-path="id" item-label-path="value" value="{{data.billingType}}" label="Tipo Faturação" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
+                                            <vaadin-combo-box items="[[CBBillingTypes]]" id="mBillingTypes" item-value-path="id" item-label-path="value" value="{{data.billingType}}" label="Tipo Faturação" disabled="{{ !_permissions.update }}">
                                                 <template>
                                                     <b>[[item.value]]</b>
                                                 </template>
@@ -768,7 +764,6 @@
                                                         text-path="id"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
-                                                        required error-message="Este campo é obrigatório"
                                                         disabled="{{ !_permissions.update }}"
                                                         on-value-changed="_clContractLineCodeChange">
                                         </such-selectbox>
@@ -842,10 +837,10 @@
                                         <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                     </div>
                                     <div class="col-lg-2">
-                                        <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                     </div>
                                     <div class="col-lg-2" hidden>
                                         <such-selectbox id="_CLResponsible" name="_CLResponsible" value="{{_CLResponsible}}" label="Responsável" disabled="{{ !_permissions.update }}"
@@ -1262,7 +1257,7 @@
 
         <paper-dialog id="dlgCustomerShipmentDate" modal style="height:200px; width:300px">
             <div>
-                <vaadin-date-picker label="Data de Envio" id="dtpCustomerShipmentDate" name="dtpCustomerShipmentDate" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                <vaadin-date-picker label="Data de Envio" id="dtpCustomerShipmentDate" name="dtpCustomerShipmentDate"></vaadin-date-picker>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" on-tap="_setProposalStatus">Guardar</paper-button>
@@ -1272,7 +1267,7 @@
 
         <paper-dialog id="dlgArchiveReason" modal style="height:300px; width:500px">
             <div>
-                <such-textarea rows="5" id="archiveReason" name="archiveReason" label="Razão Arquivo" required error-message="Este campo é obrigatório" maxlength="2000"> </such-textarea>
+                <such-textarea rows="5" id="archiveReason" name="archiveReason" label="Razão Arquivo" maxlength="2000"> </such-textarea>
             </div>
             <div class="buttons">
                 <paper-button raised class="btnEdit" on-tap="_setProposalStatus">Guardar</paper-button>
@@ -1283,13 +1278,13 @@
         <paper-dialog id="dlgUpdateContract" modal style="height:300px; width:500px">
             <div style="height: 180px;">
                 Tem a certeza que pretende atualizar o contrato [[ data.relatedContract ]]?
-                <vaadin-combo-box items="[[ _contractUpdateType ]]" id="cmbContractUpdateType" item-value-path="value" item-label-path="description" label="Selecione o tipo de atualização" required error-message="Este campo é obrigatório">
+                <vaadin-combo-box items="[[ _contractUpdateType ]]" id="cmbContractUpdateType" item-value-path="value" item-label-path="description" label="Selecione o tipo de atualização">
                     <template>
                         <span><b>[[ item.description ]]</b></span>
                     </template>
                 </vaadin-combo-box>
                 <template is="dom-if" if="[[ _mustSelectStatus ]]">
-                    <vaadin-combo-box items="[[ _statusForContractUpdate ]]" id="cmbStatusForContractUpdate" item-value-path="value" item-label-path="description" label="Selecione o estado da proposta" required error-message="Este campo é obrigatório">
+                    <vaadin-combo-box items="[[ _statusForContractUpdate ]]" id="cmbStatusForContractUpdate" item-value-path="value" item-label-path="description" label="Selecione o estado da proposta">
                         <template>
                             <span><b>[[ item.description ]]</b></span>
                         </template>
@@ -1724,6 +1719,8 @@
                 },
 
                 _validateData: function () {
+                    return true;
+
                     if (this.$.Description.validate() &
                         this.$.contractNo.validate() &
                         this.$.mNotes.validate() &
@@ -1834,7 +1831,7 @@
                     //}
                 },
                 _update: function () {
-                    if (this._validateData()) {
+                    //if (this._validateData()) {
                         /*
                         //Status Changed
                         if (this._oldStatus != this.data.status) {
@@ -1881,7 +1878,7 @@
                         }
                         */
                         this._executeRequest("/Contratos/UpdateContract", this.data);
-                    }
+                    //}
                 },
                 _delete: function () {
                     var _dataContract = this.data;
