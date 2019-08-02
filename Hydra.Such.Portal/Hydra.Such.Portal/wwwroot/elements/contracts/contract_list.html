@@ -281,6 +281,17 @@
                     {{item.versionNo}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.fixedVowsAgreementText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fixedVowsAgreementText">Contrato Avença Fixa</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fixedVowsAgreementText" value="[[filter.fixedVowsAgreementText]]" />
+                </template>
+                <template>
+                    {{item.fixedVowsAgreementText}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="200px" resizable id="ColunaReativar" hidden="{{_ifHistoric}}">
                 <template class="header">
                 </template>
@@ -522,7 +533,8 @@
                         "codeRegion": { hidden: false, label: "Cód. Região" },
                         "codeFunctionalArea": { hidden: false, label: "Cód. Área Funcional" },
                         "codeResponsabilityCenter": { hidden: false, label: "Cód. Centro Responsabilidade" },
-                        "versionNo": { hidden: false, label: "Nº Versão" }
+                        "versionNo": { hidden: false, label: "Nº Versão" },
+                        "fixedVowsAgreementText": { hidden: false, label: "Contrato Avença Fixa" }
                     };
 
                     if (localStorage["contractlist.ToggleColumn"]) {

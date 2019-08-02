@@ -78,6 +78,8 @@ namespace Hydra.Such.Data.NAV
 
             try
             {
+                navCreate.WSShipToAddress.Utilizador_Alteracao_eSUCH = shipToAddress.Utilizador_Alteracao_eSUCH;
+
                 WSShipToAddressNAV.Create_Result result = await WS_ShipToAddress.CreateAsync(navCreate);
                 return result;
             }
@@ -109,6 +111,8 @@ namespace Hydra.Such.Data.NAV
 
             try
             {
+                navUpdate.WSShipToAddress.Utilizador_Alteracao_eSUCH = shipToAddress.Utilizador_Alteracao_eSUCH;
+
                 WSShipToAddressNAV.Update_Result result = await WS_ShipToAddress.UpdateAsync(navUpdate);
                 return result;
             }

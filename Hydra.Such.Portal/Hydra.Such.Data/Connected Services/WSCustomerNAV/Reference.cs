@@ -132,6 +132,8 @@ namespace WSCustomerNAV
         
         private bool blockedFieldSpecified;
         
+        private string utilizador_Alteracao_eSUCHField;
+        
         private string bill_to_Customer_NoField;
         
         private string gen_Bus_Posting_GroupField;
@@ -630,6 +632,20 @@ namespace WSCustomerNAV
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=29)]
+        public string Utilizador_Alteracao_eSUCH
+        {
+            get
+            {
+                return this.utilizador_Alteracao_eSUCHField;
+            }
+            set
+            {
+                this.utilizador_Alteracao_eSUCHField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
         public string Bill_to_Customer_No
         {
             get
@@ -643,7 +659,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
         public string Gen_Bus_Posting_Group
         {
             get
@@ -657,7 +673,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
         public string VAT_Bus_Posting_Group
         {
             get
@@ -671,7 +687,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         public string Customer_Posting_Group
         {
             get
@@ -685,7 +701,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
         public string No_Fornecedor_Assoc
         {
             get
@@ -699,7 +715,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
         public bool Cliente_Associado
         {
             get
@@ -727,7 +743,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
         public decimal Taxa_Aprovisionamento
         {
             get
@@ -755,7 +771,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
         public bool Abrigo_Lei_Compromisso
         {
             get
@@ -783,7 +799,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
         public bool Cliente_Interno
         {
             get
@@ -811,7 +827,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
         public bool Cliente_Nacional
         {
             get
@@ -839,7 +855,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
         public string Associado_A_N
         {
             get
@@ -853,7 +869,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
         public Tipo_Cliente Tipo_Cliente
         {
             get
@@ -881,7 +897,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
         public Natureza_Cliente Natureza_Cliente
         {
             get
@@ -909,7 +925,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
         public string Cliente_Principal
         {
             get
@@ -923,7 +939,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=43)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=44)]
         public System.DateTime Data_Cliente_Pai
         {
             get
@@ -951,7 +967,7 @@ namespace WSCustomerNAV
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
         public string Codigo_Serviço_DGO
         {
             get
@@ -1173,6 +1189,9 @@ namespace WSCustomerNAV
         
         /// <remarks/>
         Blocked,
+        
+        /// <remarks/>
+        Utilizador_Alteracao_eSUCH,
         
         /// <remarks/>
         Bill_to_Customer_No,
@@ -1807,8 +1826,7 @@ namespace WSCustomerNAV
         {
             if ((endpointConfiguration == EndpointConfiguration.WSCustomer_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/W" +
-                        "SCustomer");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/WSCustomer");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

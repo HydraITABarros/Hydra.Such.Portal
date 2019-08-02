@@ -49,6 +49,7 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public string Centro_Resp_Dimensao { get; set; }
         public Blocked Blocked { get; set; }
         public string Blocked_Text { get; set; }
+        public string Utilizador_Alteracao_eSUCH { get; set; }
         // Endereços de envio ???
 
         //EXPORTAR PARA EXCEL

@@ -188,6 +188,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (data != null)
             {
+                data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
                 var createClientTask = WSCustomerService.CreateAsync(data, _configws);
                 try
                 {
@@ -227,6 +228,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (data != null)
             {
+                data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
                 var updateClientTask = WSCustomerService.UpdateAsync(data, _configws);
                 try
                 {
@@ -290,6 +292,19 @@ namespace Hydra.Such.Portal.Controllers
 
             }
             return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult Verificar_VAT([FromBody] ClientDetailsViewModel data)
+        {
+            if (data != null && !string.IsNullOrEmpty(data.VAT_Registration_No))
+            {
+                List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
+                if (AllClients != null && AllClients.Where(x => x.No_ != data.No && x.VATRegistrationNo_ == data.VAT_Registration_No).ToList().Count() > 0)
+                    return Json("Existe pelo menos um Cliente ( " + AllClients.Where(x => x.No_ != data.No && x.VATRegistrationNo_ == data.VAT_Registration_No).FirstOrDefault().No_ + " ) com este Nº Contribuinte.");
+            }
+            return Json("");
         }
         #endregion
 

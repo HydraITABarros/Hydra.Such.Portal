@@ -460,6 +460,7 @@ namespace Hydra.Such.Portal.Controllers
             result.ForEach(x => {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
                 x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).FirstOrDefault() != null ? status.Where(y => y.Id == x.Status).FirstOrDefault().Value : "" : "";
+                x.FixedVowsAgreementText = x.FixedVowsAgreement.HasValue ? x.FixedVowsAgreement == true ? "Sim" : "Não" : "Não";
             });
 
             return Json(result);
@@ -5654,6 +5655,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Versão");
                     Col = Col + 1;
                 }
+                if (dp["fixedVowsAgreementText"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Contrato Avença Fixa");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
@@ -5721,6 +5727,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["versionNo"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.VersionNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["fixedVowsAgreementText"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.FixedVowsAgreementText);
                             Col = Col + 1;
                         }
                         count++;

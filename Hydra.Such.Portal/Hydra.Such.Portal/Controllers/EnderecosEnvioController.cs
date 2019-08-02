@@ -65,6 +65,7 @@ namespace Hydra.Such.Portal.Controllers
             if (data != null)
             {
                 //data.Country_Region_Code = null;
+                data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
                 var createTask = WSShipToAddressService.CreateAsync(data, _configws);
                 try
                 {
@@ -110,6 +111,7 @@ namespace Hydra.Such.Portal.Controllers
                 foreach (var data in listData)
                 {
                     Customer_No = data.Customer_No;
+                    data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
                     var updateTask = WSShipToAddressService.UpdateAsync(data, _configws);
                     try
                     {

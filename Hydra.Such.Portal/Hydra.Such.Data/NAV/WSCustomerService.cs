@@ -130,6 +130,19 @@ namespace Hydra.Such.Data.NAV
 
                 navCreate.WSCustomer.No = newClientNo;*/
 
+                navCreate.WSCustomer.Utilizador_Alteracao_eSUCH = client.Utilizador_Alteracao_eSUCH;
+
+                navCreate.WSCustomer.Abrigo_Lei_CompromissoSpecified = true;
+                navCreate.WSCustomer.BlockedSpecified = true;
+                navCreate.WSCustomer.Cliente_AssociadoSpecified = true;
+                navCreate.WSCustomer.Cliente_InternoSpecified = true;
+                navCreate.WSCustomer.Cliente_NacionalSpecified = true;
+                navCreate.WSCustomer.Data_Cliente_PaiSpecified = true;
+                navCreate.WSCustomer.Natureza_ClienteSpecified = true;
+                navCreate.WSCustomer.Regiao_ClienteSpecified = true;
+                navCreate.WSCustomer.Taxa_AprovisionamentoSpecified = true;
+                navCreate.WSCustomer.Tipo_ClienteSpecified = true;
+
                 WSCustomerNAV.Create_Result result = await ws_Client.CreateAsync(navCreate);
                 return result;
             }
@@ -163,6 +176,8 @@ namespace Hydra.Such.Data.NAV
 
             try
             {
+                navUpdate.WSCustomer.Utilizador_Alteracao_eSUCH = client.Utilizador_Alteracao_eSUCH;
+
                 navUpdate.WSCustomer.Abrigo_Lei_CompromissoSpecified = true;
                 navUpdate.WSCustomer.BlockedSpecified = true;
                 navUpdate.WSCustomer.Cliente_AssociadoSpecified = true;

@@ -19,6 +19,7 @@ using NPOI.XSSF.UserModel;
 using Newtonsoft.Json.Linq;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.ViewModel.ProjectView;
+using Hydra.Such.Data.ViewModel.Clients;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -383,5 +384,40 @@ namespace Hydra.Such.Portal.Controllers
             sFileName = @"/Upload/temp/" + sFileName;
             return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contactos.xlsx");
         }
+
+        [HttpPost]
+        public JsonResult GetContatosByCliente([FromBody] ClientDetailsViewModel data)
+        {
+            List<ContactViewModel> result = new List<ContactViewModel>();
+            if (data != null && !string.IsNullOrEmpty(data.No))
+            {
+                result = DBContacts.GetAll().Where(x => x.NoCliente == data.No).ToList().ParseToViewModel();
+
+                List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                List<ContactosServicos> AllServicos = DBContactsServicos.GetAll();
+                List<ContactosFuncoes> AllFuncoes = DBContactsFuncoes.GetAll();
+
+                result.ForEach(CT =>
+                {
+                    NAVClientsViewModel cliente = AllClients.Where(x => x.No_ == CT.NoCliente).FirstOrDefault() != null ? AllClients.Where(x => x.No_ == CT.NoCliente).FirstOrDefault() : null;
+                    CT.ClienteNome = cliente != null ? cliente.Name : "";
+                    CT.ClienteNIF = cliente != null ? cliente.VATRegistrationNo_ : "";
+                    CT.ClienteEndereco = cliente != null ? cliente.Address : "";
+                    CT.ClienteCodigoPostal = cliente != null ? cliente.PostCode : "";
+                    CT.ClienteCidade = cliente != null ? cliente.City : "";
+                    CT.ClienteRegiao = cliente != null ? cliente.RegionCode : "";
+                    CT.ClienteTelefone = cliente != null ? cliente.PhoneNo : "";
+                    CT.ClienteEmail = cliente != null ? cliente.EMail : "";
+
+                    CT.ServicoNome = AllServicos.Where(x => x.ID == CT.NoServico).FirstOrDefault() != null ? AllServicos.Where(x => x.ID == CT.NoServico).FirstOrDefault().Servico : "";
+                    CT.FuncaoNome = AllFuncoes.Where(x => x.ID == CT.NoFuncao).FirstOrDefault() != null ? AllFuncoes.Where(x => x.ID == CT.NoFuncao).FirstOrDefault().Funcao : "";
+                });
+
+
+            }
+            return Json(result.OrderByDescending(x => x.No));
+        }
+
+
     }
 }

@@ -22,6 +22,8 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public string Fax_No { get; set; }
         public string E_Mail { get; set; }
         public string Customer_No { get; set; }
+        public string Utilizador_Alteracao_eSUCH { get; set; }
+        
         // Endereços de envio ???
         [NotMapped]
         public bool Selected { get; set; }

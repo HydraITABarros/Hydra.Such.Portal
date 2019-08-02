@@ -116,6 +116,8 @@ namespace WSShipToAddressNAV
         
         private string customer_NoField;
         
+        private string utilizador_Alteracao_eSUCHField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -451,6 +453,20 @@ namespace WSShipToAddressNAV
                 this.customer_NoField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
+        public string Utilizador_Alteracao_eSUCH
+        {
+            get
+            {
+                return this.utilizador_Alteracao_eSUCHField;
+            }
+            set
+            {
+                this.utilizador_Alteracao_eSUCHField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -564,6 +580,9 @@ namespace WSShipToAddressNAV
         
         /// <remarks/>
         Customer_No,
+        
+        /// <remarks/>
+        Utilizador_Alteracao_eSUCH,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1155,7 +1174,8 @@ namespace WSShipToAddressNAV
         {
             if ((endpointConfiguration == EndpointConfiguration.WSShipToAddress_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.11:7047/DynamicsNAV100/WS/SUCH/Page/WSShipToAddress");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/WSShipToAddr" +
+                        "ess");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

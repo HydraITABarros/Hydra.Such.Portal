@@ -47,6 +47,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public decimal? Mc { get; set; }
         public decimal? DisplacementFee { get; set; }
         public bool? FixedVowsAgreement { get; set; }
+        public string FixedVowsAgreementText { get; set; }
         public int? ServiceObject { get; set; }
         public bool? VariableAvengeAgrement { get; set; }
         public string Notes { get; set; }
