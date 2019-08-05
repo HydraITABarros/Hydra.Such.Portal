@@ -1895,6 +1895,55 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult DuplicarContractLines([FromBody] ContractLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao duplicar a linha.";
+
+            try
+            {
+                if (linha != null && linha.ContractType > 0 && !string.IsNullOrEmpty(linha.ContractNo) && linha.VersionNo > 0 && linha.LineNo > 0)
+                {
+                    LinhasContratos LinhaOriginal = DBContractLines.GetById(linha.ContractType, linha.ContractNo, linha.VersionNo, linha.LineNo);
+                    LinhasContratos LinhaDuplicada = new LinhasContratos();
+
+                    LinhaDuplicada = LinhaOriginal;
+                    LinhaDuplicada.NºLinha = 0;
+                    LinhaDuplicada.UtilizadorCriação = User.Identity.Name;
+                    LinhaDuplicada.DataHoraCriação = DateTime.Now;
+                    LinhaDuplicada.UtilizadorModificação = null;
+                    LinhaDuplicada.DataHoraModificação = null;
+
+                    if (DBContractLines.Create(LinhaDuplicada) != null)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "A duplicação da Linha com sucesso.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao criar a linha duplicada.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "Falta informação para duplicar a linha.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult UpdateContractPrices([FromBody] UpdateContractPricesRequest updatePricesRequest)
         {
             ContractViewModel updatedContract;

@@ -285,6 +285,14 @@
                    on-response="_DataFimChangedResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/DuplicarContractLines"
+                   last-response="{{duplicarLinhasResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="contract_DuplicarLinha_ajax"
+                   on-response="_dlResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -1303,6 +1311,18 @@
 
                         <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                <vaadin-grid-column width="3%" resizable>
+                                    <template class="header">
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <center style="padding-bottom:10px">
+                                                <paper-button class="btnSave tableBtn" raised on-tap="_duplicarContractLine" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                            </center>
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <vaadin-grid-column width="130px" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -3430,6 +3450,33 @@
                         }
                     }
                 },
+
+                _duplicarContractLine: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    this.$.contract_DuplicarLinha_ajax.body = JSON.stringify({
+                        contractType: 3,
+                        contractNo: this._contractno,
+                        versionNo: this._versionno,
+                        lineNo: e.model.item.lineNo,
+                    });
+                    this.$.contract_DuplicarLinha_ajax.generateRequest();
+                    this.$.grid_contractlines.clearCache();
+                },
+                _dlResponseProcessor: function (e) {
+                    if (this.duplicarLinhasResponse.eReasonCode == 1) {
+                        this._openToast(this.duplicarLinhasResponse.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.duplicarLinhasResponse.eMessage);
+                    }
+                    this.$.grid_contractlines.clearCache();
+                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                    this.$.contractLines_databound_ajax.generateRequest();
+                },
+
+
+
             });
         });
     </script>
