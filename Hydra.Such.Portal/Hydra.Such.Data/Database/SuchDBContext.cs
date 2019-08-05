@@ -1987,7 +1987,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºCompromisso)
                     .HasColumnName("Nº Compromisso")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.NºContato)
                     .HasColumnName("Nº Contato")
@@ -8955,7 +8955,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºCompromisso)
                     .HasColumnName("Nº Compromisso")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.NºFatura)
                     .HasColumnName("Nº Fatura")

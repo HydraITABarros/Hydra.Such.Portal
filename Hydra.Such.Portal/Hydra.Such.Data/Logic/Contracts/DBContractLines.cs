@@ -78,6 +78,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.CódServiçoCliente = ObjectToCreate.CódServiçoCliente == "" || ObjectToCreate.CódServiçoCliente == "0" ? null : ObjectToCreate.CódServiçoCliente;
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ObjectToCreate.NºLinha = 0;
                     ctx.LinhasContratos.Add(ObjectToCreate);
@@ -101,6 +102,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 {
                     items.ForEach(item =>
                     {
+                        item.CódServiçoCliente = item.CódServiçoCliente == "" || item.CódServiçoCliente == "0" ? null : item.CódServiçoCliente;
                         item.DataHoraCriação = DateTime.Now;
                         item.NºLinha = 0;
                         ctx.LinhasContratos.Add(item);
@@ -137,6 +139,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToUpdate.CódServiçoCliente = ObjectToUpdate.CódServiçoCliente == "" || ObjectToUpdate.CódServiçoCliente == "0" ? null : ObjectToUpdate.CódServiçoCliente;
                     ObjectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.LinhasContratos.Update(ObjectToUpdate);
                     ctx.SaveChanges();
@@ -264,7 +267,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 VersionStartDate = x.DataInícioVersão.HasValue ? x.DataInícioVersão.Value.ToString("yyyy-MM-dd") : "",
                 VersionEndDate = x.DataFimVersão.HasValue ? x.DataFimVersão.Value.ToString("yyyy-MM-dd") : "",
                 ResponsibleNo = x.NºResponsável,
-                ServiceClientNo = x.CódServiçoCliente,
+                ServiceClientNo = x.CódServiçoCliente == "" || x.CódServiçoCliente == "0" ? null : x.CódServiçoCliente,
                 InvoiceGroup = x.GrupoFatura == null ? 0 : x.GrupoFatura,
                 ProjectNo=x.NºProjeto,
                 CreateContract = x.CriaContrato,
@@ -315,7 +318,7 @@ namespace Hydra.Such.Data.Logic.Contracts
                 DataInícioVersão = x.VersionStartDate != null && x.VersionStartDate != "" ? DateTime.Parse(x.VersionStartDate) : (DateTime?)null,
                 DataFimVersão = x.VersionEndDate != null && x.VersionEndDate != "" ? DateTime.Parse(x.VersionEndDate) : (DateTime?)null,
                 NºResponsável = x.ResponsibleNo,
-                CódServiçoCliente = x.ServiceClientNo,
+                CódServiçoCliente = x.ServiceClientNo == "" || x.ServiceClientNo == "0" ? null : x.ServiceClientNo,
                 GrupoFatura = x.InvoiceGroup == null ? 0 : x.InvoiceGroup,
                 CriaContrato = x.CreateContract,
                 NºProjeto=x.ProjectNo,

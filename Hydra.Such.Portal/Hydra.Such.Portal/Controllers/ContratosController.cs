@@ -795,6 +795,60 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult DataInicioChanged([FromBody] ContractViewModel data)
+        {
+            bool result = true;
+            if (data != null && !string.IsNullOrEmpty(data.ContractNo) && data.VersionNo > 0)
+            {
+                List<LinhasContratos> AllLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                AllLines.ForEach(line =>
+                {
+                    line.DataInícioVersão = Convert.ToDateTime(data.StartData);
+                    if (DBContractLines.Update(line) == null)
+                    {
+                        result = false;
+                    }
+                });
+
+                if (result == true)
+                {
+                    if (DBContracts.Update(DBContracts.ParseToDB(data)) == null)
+                    {
+                        result = false;
+                    }
+                }
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult DataFimChanged([FromBody] ContractViewModel data)
+        {
+            bool result = true;
+            if (data != null && !string.IsNullOrEmpty(data.ContractNo) && data.VersionNo > 0)
+            {
+                List<LinhasContratos> AllLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                AllLines.ForEach(line =>
+                {
+                    line.DataFimVersão = Convert.ToDateTime(data.DueDate);
+                    if (DBContractLines.Update(line) == null)
+                    {
+                        result = false;
+                    }
+                });
+
+                if (result == true)
+                {
+                    if (DBContracts.Update(DBContracts.ParseToDB(data)) == null)
+                    {
+                        result = false;
+                    }
+                }
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult ValidateNumeration([FromBody] ContractViewModel data)
         {
             //Get Project Numeration
@@ -1732,6 +1786,19 @@ namespace Hydra.Such.Portal.Controllers
             if (data != null)
             {
                 NAVContractDetailsViewModel result = DBNAV2017ContractDetails.GetContractByNo(data.ContractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+
+                if (data.InvocePeriod == 1)
+                    result.VPeriodFatura = result.VPeriod * 1;
+                if (data.InvocePeriod == 2)
+                    result.VPeriodFatura = result.VPeriod * 2;
+                if (data.InvocePeriod == 3)
+                    result.VPeriodFatura = result.VPeriod * 3;
+                if (data.InvocePeriod == 4)
+                    result.VPeriodFatura = result.VPeriod * 6;
+                if (data.InvocePeriod == 5)
+                    result.VPeriodFatura = result.VPeriod * 12;
+                if (data.InvocePeriod == 6)
+                    result.VPeriodFatura = 0;
 
                 return Json(result);
             }
@@ -5610,12 +5677,12 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 if (dp["startData"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Data Inicio");
+                    row.CreateCell(Col).SetCellValue("Data Início Versão");
                     Col = Col + 1;
                 }
                 if (dp["dueDate"]["hidden"].ToString() == "False")
                 {
-                    row.CreateCell(Col).SetCellValue("Data Fim");
+                    row.CreateCell(Col).SetCellValue("Data Fim Versão");
                     Col = Col + 1;
                 }
                 if (dp["clientNo"]["hidden"].ToString() == "False")

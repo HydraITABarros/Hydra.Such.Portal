@@ -269,6 +269,22 @@
                    on-response="_clResponseProcessorHistoric"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/DataInicioChanged"
+                   last-response="{{dataInicioResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_dataInicioChanged_ajax"
+                   on-response="_DataInicioChangedResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/DataFimChanged"
+                   last-response="{{dataFimResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_dataFimChanged_ajax"
+                   on-response="_DataFimChangedResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -415,10 +431,10 @@
                                                                 <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" name="clientRequisitionNo" label="Nº Requisição do Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Inicial" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Início Versão" id="mStartData" name="startData" value="{{data.startData}}" on-blur="_dataInicioChanged" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ _lockFields }}">
@@ -440,7 +456,7 @@
                                                                 <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Expiração" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                <vaadin-date-picker label="Data Fim Versão" id="dueDate" name="dueDate" value="{{data.dueDate}}" on-blur="_dataFimChanged" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" disabled="{{ _contractStatusLocked }}">
@@ -582,7 +598,7 @@
                                                                     <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </div>
                                                                 <div class="col-lg-2">
                                                                     <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
@@ -679,7 +695,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.promiseNo}}
@@ -919,7 +935,11 @@
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Valor do Período" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
+                                                                <vaadin-text-field value="{{dataNav.vPeriodFatura}}" id="_VPeriodFatura" name="_VPeriodFatura" label="Valor do Período da Fatura" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
+                                                            </div>
+
+                                                            <div class="col-md-3">
+                                                                <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Somatório das Linhas" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
 
                                                             <div class="col-md-3">
@@ -1234,12 +1254,14 @@
                                         <vaadin-text-field value="{{_CLTotalTechnicians}}" id="_CLTotalTechnicians" name="_CLTotalTechnicians" label="Nº Técnicos" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" />
                                     </div>
 
-                                    <div class="col-lg-2">
-                                        <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                    <div class="col-lg-2" hidden>
+                                        <vaadin-date-picker label="Data Início Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
-                                    <div class="col-lg-2">
+
+                                    <div class="col-lg-2" hidden>
                                         <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
+
                                     <div class="col-lg-2" hidden>
                                         <such-selectbox id="_CLResponsible" name="_CLResponsible" value="{{_CLResponsible}}" label="Responsável" disabled="{{ _lockFields }}"
                                                         items="[[CBEmployees]]"
@@ -1550,17 +1572,12 @@
 
                                 <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="versionStartDate">Data Inicio Versão</vaadin-grid-sorter>
+                                        <vaadin-grid-sorter path="versionStartDate">Data Início Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionStartDate" />
                                     </template>
                                     <template>
                                         <div style="text-align:center">
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.versionStartDate}}
-                                            </template>
+                                            {{item.versionStartDate}}
                                         </div>
                                     </template>
                                 </vaadin-grid-column>
@@ -1572,12 +1589,7 @@
                                     </template>
                                     <template>
                                         <div style="text-align:center">
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.versionEndDate}}
-                                            </template>
+                                            {{item.versionEndDate}}
                                         </div>
                                     </template>
                                 </vaadin-grid-column>
@@ -2338,6 +2350,36 @@
                     this.$.shippingAddresses_ajax.generateRequest();
 
                 },
+
+                _dataInicioChanged: function (e) {
+                    this.$.page_dataInicioChanged_ajax.body = JSON.stringify(this.data);
+                    this.$.page_dataInicioChanged_ajax.generateRequest();
+                },
+                _DataInicioChangedResponseProcessor: function () {
+                    if (this.dataInicioResult == true) {
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Ocorreu um erro ao atualizar o campo Data Início Versão nas Linhas.");
+                    }
+                },
+
+                _dataFimChanged: function (e) {
+                    this.$.page_dataFimChanged_ajax.body = JSON.stringify(this.data);
+                    this.$.page_dataFimChanged_ajax.generateRequest();
+                },
+                _DataFimChangedResponseProcessor: function () {
+                    if (this.dataFimResult == true) {
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Ocorreu um erro ao atualizar o campo Data Fim Versão nas Linhas.");
+                    }
+                },
+
+
+
+
                 //CRUDS
                 _create: function () {
                     if (this._validateData()) {
@@ -2690,13 +2732,13 @@
                             codeMeasureUnit: this._CLMeasureUnit,
                             codeRegion: this._CLRegion,
                             frequency: this._CLFrequency,
-                            versionStartDate: this._CLVersionStartDate,
+                            versionStartDate: this.$.mStartData.value, //this._CLVersionStartDate,
                             serviceClientNo: this._CLServiceClient,
                             code: this._CLCode,
                             unitPrice: this._CLUnitPrice,
                             codeFunctionalArea: this._CLFunctionalArea,
                             interventionHours: this._CLInterventionHours,
-                            versionEndDate: this._CLVersionEndDate,
+                            versionEndDate: this.$.dueDate.value, //this._CLVersionEndDate,
                             invoiceGroup: this._CLInvoiceGroup,
                             description: this._CLDescription,
                             description2: this._CLDescription2,

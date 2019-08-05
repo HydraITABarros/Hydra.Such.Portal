@@ -193,7 +193,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="startData">Data Início Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="startData" value="[[filter.startData]]" />
                 </template>
                 <template>
@@ -202,7 +202,7 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dueDate">Data Fim Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dueDate" value="[[filter.dueDate]]" />
                 </template>
                 <template>
@@ -524,8 +524,8 @@
                         "contractNo": { hidden: false, label: "Nº Contrato" },
                         "oportunityNo": { hidden: false, label: "Nº Oportunidade" },
                         "type": { hidden: false, label: "Tipo" },
-                        "startData": { hidden: false, label: "Data Inicio" },
-                        "dueDate": { hidden: false, label: "Data Fim" },
+                        "startData": { hidden: false, label: "Data Início Versão" },
+                        "dueDate": { hidden: false, label: "Data Fim Versão" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },
                         "description": { hidden: false, label: "Âmbito dos Serviços" },

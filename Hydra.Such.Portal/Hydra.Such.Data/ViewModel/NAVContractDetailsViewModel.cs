@@ -11,6 +11,6 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? VBilled { get; set; }
         public decimal? VCreditNotes { get; set; }
         public decimal? VPeriod { get; set; }
-
+        public decimal? VPeriodFatura { get; set; }
     }
 }
