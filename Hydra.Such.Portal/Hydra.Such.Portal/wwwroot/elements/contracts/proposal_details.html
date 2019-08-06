@@ -161,6 +161,13 @@
                    on-response="_responseDeleteProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/UpdateContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="contractLinesUpdate_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/GetContractLines"
                    last-response="{{dataLines}}"
                    method="post"
@@ -350,18 +357,27 @@
                 <paper-button id="btnContractAdd" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_createNewContract" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 <!--</template>-->
                 <!--<template is="dom-if" if="{{ _permissions.update }}">-->
-                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
-                    <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
-                    <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="btnUpdateContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
-                    <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
+                <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
+                <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
+                <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="btnUpdateContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
+                <paper-button class="tablinks" on-tap="_openProposals" id="btnContractArchive" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Cópia de proposta</paper-button>
 
-                    <paper-button class="tablinks" on-tap="_openProposta" id="openContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Abrir</paper-button>
-                    <paper-button class="tablinks" on-tap="_closeProposta" id="closeContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Fechar</paper-button>
+                <paper-button class="tablinks" on-tap="_openProposta" id="openContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Abrir</paper-button>
+                <paper-button class="tablinks" on-tap="_closeProposta" id="closeContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Fechar</paper-button>
 
-                    <such-dropdown-menu id="mnuStatus" on-value-changed="_statusMenuItemSelected" hidden="{{ _readOnly }}" title="Alterar Estado" items="[[ _statusMenuItems ]]"></such-dropdown-menu>
+                <such-dropdown-menu id="mnuStatus" on-value-changed="_statusMenuItemSelected" hidden="{{ _readOnly }}" title="Alterar Estado" items="[[ _statusMenuItems ]]"></such-dropdown-menu>
 
-                    <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+                <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
                 <!--</template>-->
+
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <template is="dom-if" if="{{ _isCreate }}">
+                        <paper-button hidden="{{ _readOnly }}" id="tablinks" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    </template>
+                </template>
+                <paper-button hidden="{{ _readOnly }}" id="btnUpdate" class="tablinks" on-tap="_update" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                <paper-button hidden="{{ _readOnly }}" id="btnDelete" class="tablinks" on-tap="_delete" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+
             </div>
         </template>
 
@@ -645,19 +661,20 @@
                                                 </template>
                                             </vaadin-grid-column>
                                         </vaadin-grid>
+                                        v>
                                     </div>
                                 </div>
                             </iron-pages>
 
-                            <div class="marginSpace">
-                                <template is="dom-if" if="{{ _permissions.create }}">
-                                    <template is="dom-if" if="{{ _isCreate }}">
-                                        <paper-button raised hidden="{{ _readOnly }}" id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                    </template>
+                            <!--<div class="marginSpace">
+                            <template is="dom-if" if="{{ _permissions.create }}">
+                                <template is="dom-if" if="{{ _isCreate }}">
+                                    <paper-button raised hidden="{{ _readOnly }}" id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </template>
-                                <paper-button raised hidden="{{ _readOnly }}" id="btnUpdate" class="btnSave" on-tap="_update" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                <paper-button raised hidden="{{ _readOnly }}" id="btnDelete" class="btnRemove" on-tap="_delete" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                            </div>
+                            </template>
+                            <paper-button raised hidden="{{ _readOnly }}" id="btnUpdate" class="btnSave" on-tap="_update" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <paper-button raised hidden="{{ _readOnly }}" id="btnDelete" class="btnRemove" on-tap="_delete" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                        </div>-->
                         </div>
                         <!-- Datas Limite Fases do Processo -->
                         <div class="row break_clear">
@@ -1247,9 +1264,9 @@
                                 </template>
                             </vaadin-grid>
                         </div>
-                        <div class="marginSpace" style="display: {{ _showContractLines }};">
-                            <paper-button raised hidden="{{ _readOnly }}" id="btnSaveLine" class="btnSave" on-tap="_updateContractLines" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        </div>
+                        <!--<div class="marginSpace" style="display: {{ _showContractLines }};">
+                        <paper-button raised hidden="{{ _readOnly }}" id="btnSaveLine" class="btnSave" on-tap="_updateContractLines" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -1824,60 +1841,63 @@
                 //CRUDS
                 _create: function () {
                     //if (this._validateData()) {
-                        this.data.contractType = 2;
-                        this.data.status = 1;
-                        this.$.page_validator_ajax.body = JSON.stringify(this.data);
-                        this.$.page_validator_ajax.generateRequest();
+                    this.data.contractType = 2;
+                    this.data.status = 1;
+                    this.$.page_validator_ajax.body = JSON.stringify(this.data);
+                    this.$.page_validator_ajax.generateRequest();
                     //}
                 },
                 _update: function () {
                     //if (this._validateData()) {
-                        /*
-                        //Status Changed
-                        if (this._oldStatus != this.data.status) {
-                            switch (this.data.status) {
-                                case 2: //Alterada para enviada
+                    /*
+                    //Status Changed
+                    if (this._oldStatus != this.data.status) {
+                        switch (this.data.status) {
+                            case 2: //Alterada para enviada
 
-                                        //O Campo Origem do Pedido Descrição tem que estar preenchido
-                                        //Tem que existir pelo menos uma linha preenchida
-                                        //Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
+                                    //O Campo Origem do Pedido Descrição tem que estar preenchido
+                                    //Tem que existir pelo menos uma linha preenchida
+                                    //Preencher ‘Data Envio’ com data indicada pelo utilizador.Deve ser criado um mecanismo tipo ‘PopUp’ para indicação dessa data.
 
-                                    if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
-                                        this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
-                                        return false;
-                                    }
-                                    if (this.dataLines.lines.length == 0) {
-                                        this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para enviada.");
-                                        return false;
-                                    }
-                                    if (this.$.dtpCustomerShipmentDate.validate()) {
-                                        this.data.customerShipmentDate = this.$.dtpCustomerShipmentDate.value;
-                                        this.$.dlgCustomerShipmentDate.close();
-                                    }
-                                    else {
-                                        this.$.dlgCustomerShipmentDate.open();
-                                        return false;
-                                    }
-                                    break;
-                                case 4: //Alterada para Perdida
-                                case 5: //Alterada para Cancelada
-                                case 10://Alterada para Não Respondida
+                                if (this.data.orderOrigin == "" || this.data.ordOrderSource == "") {
+                                    this._openToastError("Para alterar a proposta para o estado aberta os campos Origem do Pedido e Origem do pedido descrição devem estar preenchidos.");
+                                    return false;
+                                }
+                                if (this.dataLines.lines.length == 0) {
+                                    this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para enviada.");
+                                    return false;
+                                }
+                                if (this.$.dtpCustomerShipmentDate.validate()) {
+                                    this.data.customerShipmentDate = this.$.dtpCustomerShipmentDate.value;
+                                    this.$.dlgCustomerShipmentDate.close();
+                                }
+                                else {
+                                    this.$.dlgCustomerShipmentDate.open();
+                                    return false;
+                                }
+                                break;
+                            case 4: //Alterada para Perdida
+                            case 5: //Alterada para Cancelada
+                            case 10://Alterada para Não Respondida
 
-                                        //Preencher a razão do Arquivo
+                                    //Preencher a razão do Arquivo
 
-                                    if (this.$.archiveReason.validate()) {
-                                        this.data.archiveReason = this.$.archiveReason.value;
-                                        this.$.dlgArchiveReason.close();
-                                    }
-                                    else {
-                                        this.$.dlgArchiveReason.open();
-                                        return false;
-                                    }
-                                    break;
-                            }
+                                if (this.$.archiveReason.validate()) {
+                                    this.data.archiveReason = this.$.archiveReason.value;
+                                    this.$.dlgArchiveReason.close();
+                                }
+                                else {
+                                    this.$.dlgArchiveReason.open();
+                                    return false;
+                                }
+                                break;
                         }
-                        */
-                        this._executeRequest("/Contratos/UpdateContract", this.data);
+                    }
+                    */
+                    this.$.contractLinesUpdate_databound_ajax.body = JSON.stringify(this.dataLines);
+                    this.$.contractLinesUpdate_databound_ajax.generateRequest();
+
+                    this._executeRequest("/Contratos/UpdateContract", this.data);
                     //}
                 },
                 _delete: function () {

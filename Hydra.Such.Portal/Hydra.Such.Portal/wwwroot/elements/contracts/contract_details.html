@@ -161,6 +161,13 @@
                    on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/UpdateContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="changeStatusChanged_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <!-- PROJECT Valitador -->
         <iron-ajax url="/Contratos/ValidateNumeration"
                    last-response="{{validateResponse}}"
@@ -313,6 +320,18 @@
                 </template>
 
                 <such-dropdown-menu style="display: {{ _showContractLines }};" on-value-changed="_viewMenuItemSelected" title="Consultar" items='[[ _viewMenuItems ]]'></such-dropdown-menu>
+
+                <template is="dom-if" if="{{ !_isHistoricDiv }}">
+                    <template is="dom-if" if="{{ _isCreate }}">
+                        <paper-button id="btnCreate" class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    </template>
+                    <template is="dom-if" if="{{ !_isCreate }}">
+                        <paper-button id="btnUpdate" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    </template>
+                    <template is="dom-if" if="{{ _permissions.delete }}">
+                        <paper-button id="btnDelete" class="tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    </template>
+                </template>
             </div>
         </template>
 
@@ -467,7 +486,7 @@
                                                                 <vaadin-date-picker label="Data Fim Versão" id="dueDate" name="dueDate" value="{{data.dueDate}}" on-blur="_dataFimChanged" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" disabled="{{ _contractStatusLocked }}">
+                                                                <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" on-value-changed="_changeStatusChanged" disabled="{{ _contractStatusLocked }}">
                                                                     <template>
                                                                         <paper-icon-item>
                                                                             <paper-item-body two-line>
@@ -1158,19 +1177,19 @@
                                 </div>
                             </iron-pages>
 
-                            <template is="dom-if" if="{{ !_isHistoricDiv }}">
-                                <div class="marginSpace" style="display: {{ _showButtons }}">
-                                    <template is="dom-if" if="{{ _isCreate }}">
-                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                    </template>
-                                    <template is="dom-if" if="{{ !_isCreate }}">
-                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                    </template>
-                                    <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                    </template>
-                                </div>
-                            </template>
+                            <!--<template is="dom-if" if="{{ !_isHistoricDiv }}">
+                            <div class="marginSpace" style="display: {{ _showButtons }}">
+                                <template is="dom-if" if="{{ _isCreate }}">
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                </template>
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                </template>
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                </template>
+                            </div>
+                        </template>-->
                         </div>
 
                         <paper-collapse-group style="display: {{ _showContractLines }};">
@@ -1713,13 +1732,13 @@
                             </vaadin-grid>
                         </div>
 
-                        <div class="marginSpace" style="display: {{ _showContractLines }};">
+                        <!--<div class="marginSpace" style="display: {{ _showContractLines }};">
                             <template is="dom-if" if="{{ _permissions.update }}">
                                 <template is="dom-if" if="{{ !_lockFields }}">
                                     <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                 </template>
                             </template>
-                        </div>
+                        </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -2260,6 +2279,7 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
+                    debugger;
                     if (this.$.mClients.value == "" || this.$.mClients.value == undefined) {
                         this.$.mClients.validate();
                         this._openToastError("É obrigatória seleção de um Nº Cliente.");
@@ -2409,7 +2429,24 @@
                     }
                 },
                 _update: function () {
+                    //if (this._validateData()) {
+                    //    this._executeRequest("/Contratos/UpdateContract", this.data);
+                    //}
                     if (this._validateData()) {
+
+                        for (i = 0; i < this.dataLines.lines.length; i++) {
+                            if ((this.dataLines.lines[i].codeRegion == null || this.dataLines.lines[i].codeRegion == "") ||
+                                (this.dataLines.lines[i].codeFunctionalArea == null || this.dataLines.lines[i].codeFunctionalArea == "") ||
+                                (this.dataLines.lines[i].codeResponsabilityCenter == null || this.dataLines.lines[i].codeResponsabilityCenter == "")) {
+
+                                this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
+                                return;
+                            }
+                        }
+
+                        this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
+                        this.$.changeStatusChanged_databound_ajax.generateRequest();
+
                         this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
@@ -2823,7 +2860,7 @@
                             this._CLQuantity = "";
                             this._CLBillable = true;
                             this._CLCreateContract = true;
-                            
+
 
                             this._CLRegion = this.data.codeRegion;
                             this._CLFunctionalArea = this.data.codeFunctionalArea;
@@ -3475,7 +3512,29 @@
                     this.$.contractLines_databound_ajax.generateRequest();
                 },
 
+                _changeStatusChanged: function () {
+                    debugger;
+                    if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
+                        if (this._validateData()) {
 
+                            for (i = 0; i < this.dataLines.lines.length; i++) {
+                                if ((this.dataLines.lines[i].codeRegion == null || this.dataLines.lines[i].codeRegion == "") ||
+                                    (this.dataLines.lines[i].codeFunctionalArea == null || this.dataLines.lines[i].codeFunctionalArea == "") ||
+                                    (this.dataLines.lines[i].codeResponsabilityCenter == null || this.dataLines.lines[i].codeResponsabilityCenter == "")) {
+
+                                    this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
+                                    return;
+                                }
+                            }
+
+                            this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
+                            this.$.changeStatusChanged_databound_ajax.generateRequest();
+
+                            this.data.changeStatus = this.$.mChangeStatus.value;
+                            this._executeRequest("/Contratos/UpdateContract", this.data);
+                        }
+                    }
+                },
 
             });
         });
