@@ -4215,7 +4215,6 @@
                     this.$.ToastMessageSuccess.open();
                 },
                 _showErrorMessage: function (message) {
-                    debugger;;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
@@ -4333,7 +4332,6 @@
                         },
                         callback: function (result) {
                             if (result) {
-                                debugger;
                                 _this.data.ratificarCaAdjudicacao = true
                             }
                             _ajaxRequest.generateRequest();
@@ -4386,7 +4384,6 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
-                    debugger;;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -4398,7 +4395,6 @@
 
                             // zpgm.ALT_CCP_#001.y2019.b
                             if (self.data.tipo > 0) {
-                                debugger;;
                                 //this.$.ajax_tipo_procedimento.generateRequest();
                                 this.$.tipo.value = self.data.tipo;
                                 this.$.ajax_fundamentos_page.body = JSON.stringify({ "idTipo": self.data.tipo });
@@ -4416,7 +4412,6 @@
                                 $(self.$.authorizeRegularSection).addClass('hidden');
                                 $(self.$.submitRegularSection).addClass('hidden');
 
-                                debugger;;
 
 
                                 //// https://cdn.vaadin.com/vaadin-grid/3.0.0/demo/sorting-filtering.html#filtering-with-data-provider
@@ -4473,7 +4468,6 @@
 
                 // zpgm.ALT_CCP_#001.y2019.b
                 _fundamentosResponse: function (e) {
-                    debugger;;
                     if (this.data != undefined) {
                         if (this.data.fundamentoLegalTipo > 0 && this.fundamentosTipo != null) {
                             this.$.fundamentoLegalTipo.value = this.data.fundamentoLegalTipo;
@@ -5366,7 +5360,6 @@
                 _confirmAutorizacaoAdjudicacao_Confirmar: function () {
                     var ajax_request = this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
-                    debugger
                     if ((this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 5000) && (this.data.nome_Utilizador != "CASUCH")) {
                         this._confirmAndExecuteActionToast_NR(
                             "O Valor do procedimento é superior a 5.000, pretende ratificar em CA?",
@@ -5393,7 +5386,6 @@
 
                 //NR 20180322
                 _rejectAberturaProcedimento: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_rejectAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5423,7 +5415,6 @@
                     }
                 },
                 _suspendAberturaProcedimento: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_suspendAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5456,7 +5447,6 @@
 
                 //NR 20180323
                 _confirmAberturaProcedimento: function () {
-                    debugger
                     var ajax_request = this.$.ajax_confirmAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5486,7 +5476,6 @@
                 },
 
                 _rejectAutorizarImobilizado: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_rejectAutorizarImobilizado;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5517,7 +5506,6 @@
 
                 //NR 20180326
                 _suspendAutorizarImobilizado: function () {
-                    debugger;
                     var ajax_request = this.$.ajax_suspendAutorizarImobilizado;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -6012,7 +6000,6 @@
 
                 //NR 20180313
                 _btnEnviarsendToEval: function (e) {
-                    debugger;
                     var ajax_request = this.$.ajax_sendEmail_ToJuriAproval;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -6051,7 +6038,6 @@
                     this.$.ajax_confirmPublicacaoNaPlataforma.body = JSON.stringify(this.data);
                 },
                 _confirmPublicacaoNaPlataformaResponse: function (e) {
-                    debugger;
                     if (this.ConfirmPublicacaoNaPlataforma.eReasonCode == 0) {
                         this._openToast("Confirmada Publicação na Plataforma do Procedimento " + this.data.no + " !");
                         setTimeout(
@@ -6444,7 +6430,6 @@
 
                 // zpgm.MenuFunções.b
                 _mnuFuncoes_ItemSelected: function (e) {
-                    debugger;;
                     var item = e.detail.value;
 
                     if (item == null)
@@ -6465,7 +6450,6 @@
                     }
                 },
                 _closeProcedimentoByUserRequest: function () {
-                    debugger;;
                     if (!this.__isFechoProcesso) {
                         this._showErrorMessage("Não está autorizado a executar esta acção!");
                         return;
@@ -6506,7 +6490,6 @@
                 },
 
                 _obtainProcedimentoReference: function () {
-                    debugger;;
                     if (this.data.arquivado) {
                         this._showErrorMessage("Este Procedimento está suspenso, não pode obter referência!");
                         return;
@@ -6527,7 +6510,6 @@
                         return;
                     }
 
-                    debugger;;
                     var ajax_request = this.$.ajax_request_reference;
                     ajax_request.body = JSON.stringify({ "tipoProc": this.data.tipoProcedimento, "tipo": this.data.tipo });
 
@@ -6541,7 +6523,6 @@
 
                 _procedimentoReferenceResponse: function (e) {
                     if (this.procedimentoReference.eReasonCode == -9) {
-                        debugger;;
                         this._showErrorMessage("Ocorreu um erro!");
                     } else {
                         this.data.ano = this.procedimentoReference.referenceYear;
@@ -6576,10 +6557,8 @@
                 },
 
                 _printProcedimento: function (e) {
-                    debugger;;
 
                     if (this._reportserverurl != undefined) {
-                        debugger;;
                         this.$.rptContainer.src = this._reportserverurl + "Procedimento&ProcedimentoNo=" + this.data.no;
                         this.$.rptDialog.open();
                     }
@@ -6588,7 +6567,6 @@
                     }
                 },
                 _closeRptDialog: function () {
-                    debugger;;
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
                 },
@@ -6610,7 +6588,6 @@
                     }
                 },
                 _showBatchesSection: function (e) {
-                    debugger;;
                     if (this.data != undefined) {
                         var _self = this;
                         if (_self.$.procedimentoEmLotes.checked) {
@@ -6643,7 +6620,6 @@
                     }  
                 },
                 _createLote: function (e) {
-                    debugger;;
                     if (this.data != undefined) {
                         var _valorPrecoBase = parseFloat(this.$.valorPrecoBase.value);
 
@@ -6657,7 +6633,6 @@
                             return;
                         }
 
-                        debugger;;
                         var _valor = parseFloat(this._valorEstimadoLote);
 
                         if (isNaN(_valor)) {
@@ -6688,7 +6663,6 @@
                             };
                         }
 
-                        debugger;;
                         _valor = this.__preciseRound(_valor, 2);
 
                         if (_lotes != null && (this.__preciseRound(parseFloat(_totalLotes) + parseFloat(_valor), 2) > this.__preciseRound(parseFloat(this.data.valorPrecoBase), 2))) {
@@ -6718,7 +6692,6 @@
                     }
                 },
                 _createLoteResponse: function (e) {
-                    debugger;;
                     if (this.loteCreated) {
                         this._openToast('Lote adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
@@ -6762,7 +6735,6 @@
                 },
                 
                 _verificaLote: function (lote) {
-                    debugger;;
                     var _valorEstimado = parseFloat(lote.valorEstimado);
 
                     if (isNaN(_valorEstimado)) {
@@ -6808,7 +6780,6 @@
                     return true;
                 },
                 _updateLote: function (e) {
-                    debugger;
                     if (this.data != undefined) {
                         var _lotes = this.data.loteProcedimentoCcp;
                         var index = _lotes.indexOf(e.model.item);
@@ -6833,7 +6804,6 @@
                 },
 
                 _updateLotePaperDialog15: function (e) {
-                    debugger;
                     if (this._verificaLote(this.batchObject15)) {
                         this.$.page_update_lote_ajax.body = JSON.stringify(this.batchObject15);
                         this.$.page_update_lote_ajax.generateRequest();
@@ -6844,18 +6814,15 @@
                 },
 
                 _batchToAuthorizeDetails: function (item) {
-                    debugger;;
                     if (item !== null && item !== undefined) {
                         this.batchObject15 = item;
                         this.$.batchStatus15Detail.open();
 
-                        debugger;;
                     }
                     
                 },
                 
                 _closeDetailStatus15: function (e) {
-                    debugger;;
 
                     var lotes = this.data.loteProcedimentoCcp;
 
@@ -6876,12 +6843,10 @@
                     }
                     
                     
-                    debugger;;
                     this.batchObject15 = null;
                 },
 
                 _adjudicarLote: function (e) {
-                    debugger;;
 
                     if (this.batchObject15 == null || this.batchObject15 == undefined) {
 

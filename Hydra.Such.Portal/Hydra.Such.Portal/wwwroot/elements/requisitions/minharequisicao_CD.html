@@ -2202,12 +2202,10 @@
                 },
 
                 _todasLinhasNotaEncomenda: function () {
-                    debugger;
                     this.$.ajax_TodasLinhasNotaEncomenda.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
                     this.$.ajax_TodasLinhasNotaEncomenda.generateRequest();
                 },
                 _TodasLinhasNotaEncomendaResponseProcessor: function (e) {
-                    debugger;
                     if (this.resultTodasLinhasNotaEncomenda.eReasonCode == "1") {
                         this._openToast(this.resultTodasLinhasNotaEncomenda.eMessage);
 
@@ -2737,21 +2735,18 @@
                 },
 
                 _Approve: function (e) {
-                    debugger;
                     if (e != null) {
                         this.$.aprovarRequisicao_databound.body = JSON.stringify({ requisitionNo: this.$.requisitionNo.value });
                         this.$.aprovarRequisicao_databound.generateRequest();
                     }
                 },
                 _aprovarRequisicaoResponseProcessor: function () {
-                    debugger;
                     if (this.aprovarReqMov > 0) {
                         this.$.action_databound.body = JSON.stringify({ movementNo: this.aprovarReqMov, status: 1, rejectReason: "" });
                         this.$.action_databound.generateRequest();
                     }
                 },
                 _actionResponseProcessor: function (e) {
-                    debugger;
                     var self = this;
                     if (this.actionResult.eReasonCode == 100) {
                         this._openToast(this.actionResult.eMessage);

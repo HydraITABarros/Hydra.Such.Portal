@@ -1743,7 +1743,6 @@
                 },
 
                 _update: function () {
-                    debugger;
                     var itemToRemove = this.result.items.find(x => x.quantity == 0);
                     if (itemToRemove == null) {
                         this.$.ajax_update.body = JSON.stringify(this.result.items);

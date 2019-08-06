@@ -1130,14 +1130,12 @@
                     this.$.requisition_datasource.generateRequest();
                 },
                 _create: function () {
-                    debugger;
                     if (this._validateReqHeaderInput()) {
                         this.$.validateNumeration_ajax.body = JSON.stringify(this.Requisition);
                         this.$.validateNumeration_ajax.generateRequest();
                     }
                 },
                 _onNumValidationResponse: function (data) {
-                    debugger;
                     if (data.detail.status === 200) {
                         if (this.numValidationResponse == "") {
                             this._sendReqRequest("/ModelosRequisicao/CreateRequisition", this.Requisition)
@@ -1462,7 +1460,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    debugger;
                     this.Requisition.lines[0].Colunas = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.Requisition.lines);
@@ -1470,7 +1467,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    debugger
                     var FileName = this.export;
                     location.href = '../ExportToExcelDownload_RequisitionModelDetails?sFileName=' + FileName;
                 },

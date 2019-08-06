@@ -1934,7 +1934,6 @@
                 },
 
                 _updateRequisitionLinesNew: function (e) {
-                    debugger;
                     var index = this.Requisition.lines.indexOf(e.model.item);
 
                     if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
@@ -2026,7 +2025,6 @@
                     }
                 },
                 _UpdateLinhaRequisicao_ResponseProcessor: function (e) {
-                    debugger;
                     if (this.updateLinhaRequisicaoResponse.eReasonCode == 1) {
                         this._openToast(this.updateLinhaRequisicaoResponse.eMessage);
                     }
@@ -2313,12 +2311,10 @@
                 },
 
                 _todasLinhasNotaEncomenda: function () {
-                    debugger;
                     this.$.ajax_TodasLinhasNotaEncomenda.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
                     this.$.ajax_TodasLinhasNotaEncomenda.generateRequest();
                 },
                 _TodasLinhasNotaEncomendaResponseProcessor: function (e) {
-                    debugger;
                     if (this.resultTodasLinhasNotaEncomenda.eReasonCode == "1") {
                         this._openToast(this.resultTodasLinhasNotaEncomenda.eMessage);
 
@@ -2887,7 +2883,6 @@
                 },
 
                 _deleteFiles: function (e) {
-                    debugger;
                     var index = this.uploads.indexOf(e.model.item);
                     this.uploads.splice(index, 1);
 

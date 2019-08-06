@@ -242,7 +242,6 @@
                 },
 
                 ready: function () {
-                    debugger;
                     this._hideColumn = !this._historico;
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
                     this.$.grid_databound_ajax.generateRequest();
@@ -344,7 +343,6 @@
                 },
 
                 _create: function (item) {
-                    debugger;;
                      this.$.create_guia_ajax.generateRequest();
                 },
 

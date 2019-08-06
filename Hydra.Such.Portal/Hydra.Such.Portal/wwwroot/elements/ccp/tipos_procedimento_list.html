@@ -139,7 +139,6 @@
                 },
 
                 ready: function () {
-                    debugger;;
                     this.$.grid_databound_ajax.body = JSON.stringify();
                     this.$.grid_databound_ajax.generateRequest();
 
@@ -177,7 +176,6 @@
                     window.location.href = "/Administracao/ConfiguracaoTiposProcedimento/" + this.newTipo;
                 },
                 _rowSelected: function (item) {
-                    debugger;;
                     if (item != null) {
                         window.location.href = "/Administracao/ConfiguracaoTiposProcedimento/" + item.idTipo;
                     }

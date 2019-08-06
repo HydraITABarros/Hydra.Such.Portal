@@ -535,7 +535,6 @@
                 },
 
                 ready: function () {
-                    //debugger;
                     var _self = this;
                     $(_self.$.btn_ValidadoToTratado).addClass('hidden');
                     $(_self.$.btn_RecusadoToTratado).addClass('hidden');
@@ -560,7 +559,6 @@
                 },
 
                 fixGridToBottom: function () {
-                    //debugger;
                     var grid_el = $(this.$.gridCompras);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
@@ -570,20 +568,17 @@
 
                 //Mostra Mensagens
                 _showMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
 
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
 
                 _showValidadas: function (item) {
-                    //debugger;
                     if (item != null) {
                         if (this._validadas == true) {
                             this._aprovadas = true;
@@ -610,7 +605,6 @@
                 },
 
                 _showRecusadas: function (item) {
-                    //debugger;
                     if (item != null) {
                         if (this._recusadas == true) {
                             this._aprovadas = true;
@@ -637,7 +631,6 @@
                 },
 
                 _showTratadas: function (item) {
-                    //debugger;
                     if (item != null) {
                         if (this._tratadas == true) {
                             this._aprovadas = true;
@@ -664,7 +657,6 @@
                 },
 
                 _setButtonTexts: function () {
-                    debugger;
                     var _self = this;
 
                     //BOTÕES
@@ -750,7 +742,6 @@
                 },
 
                 _goRequisicao: function (e) {
-                    //debugger;
                     var index = this.result.indexOf(e.model.item);
                     var noRequisicao = e.model.item.noRequisicao;
 
@@ -773,7 +764,6 @@
                 },
 
                 _aprovadoToTratado: function (selectedItem, selectedItems) {
-                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_AprovadoToTratado_ajax.body = JSON.stringify(selItms);
@@ -785,7 +775,6 @@
                 },
 
                 _aprovadoToTratadoResponse: function () {
-                    //debugger;
                     if (this.result_AprovadoToTratado.eReasonCode == 0) {
                         this._showMessage(this.result_AprovadoToTratado.eMessage);
                         this.$.compras_databound_ajax.generateRequest();
@@ -797,7 +786,6 @@
 
 
                 _aprovadoToValidar: function (selectedItem, selectedItems) {
-                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_AprovadoToValidar_ajax.body = JSON.stringify(selItms);
@@ -809,7 +797,6 @@
                 },
 
                 _aprovadoToValidarResponse: function () {
-                    //debugger;
                     if (this.result_AprovadoToValidar.eReasonCode == 0) {
                         this._showMessage(this.result_AprovadoToValidar.eMessage);
                         this.$.compras_databound_ajax.generateRequest();
@@ -820,7 +807,6 @@
                 },
 
                 _aprovadoToRecusar: function (selectedItem, selectedItems) {
-                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
 
@@ -860,7 +846,6 @@
                 },
 
                 _aprovadoToRecusarResponse: function () {
-                    //debugger;
                     if (this.result_AprovadoToRecusar.eReasonCode == 0) {
                         this._showMessage(this.result_AprovadoToRecusar.eMessage);
                         this.$.compras_databound_ajax.generateRequest();
@@ -871,7 +856,6 @@
                 },
 
                 _validadoToTratado: function (selectedItem, selectedItems) {
-                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_ValidadoToTratado_ajax.body = JSON.stringify(selItms);
@@ -883,7 +867,6 @@
                 },
 
                 _validadoToTratadoResponse: function () {
-                    //debugger;
                     if (this.result_ValidadoToTratado.eReasonCode == 0) {
                         this._showMessage(this.result_ValidadoToTratado.eMessage);
                         this.$.compras_databound_ajax.generateRequest();
@@ -894,7 +877,6 @@
                 },
 
                 _recusadoToTratado: function (selectedItem, selectedItems) {
-                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_RecusadoToTratado_ajax.body = JSON.stringify(selItms);
@@ -906,7 +888,6 @@
                 },
 
                 _recusadoToTratadoResponse: function () {
-                    //debugger;
                     if (this.result_RecusadoToTratado.eReasonCode == 0) {
                         this._showMessage(this.result_RecusadoToTratado.eMessage);
                         this.$.compras_databound_ajax.generateRequest();
@@ -917,7 +898,6 @@
                 },
 
                 _exportExcel: function (selectedItem, selectedItems) {
-                    //debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
                         var selItms = this.selectedItems;
                         this.$.mercadolocal_ExportExcel_ajax.body = JSON.stringify(selItms);
@@ -928,7 +908,6 @@
                 },
 
                 _exportExcelResponse: function (e) {
-                    //debugger;
                     var FileName = this.result_ExportExcel;
                     location.href = '../MercadoLocal/ExportToExcelDownload_MercadoLocal?sFileName=' + FileName;
                 },

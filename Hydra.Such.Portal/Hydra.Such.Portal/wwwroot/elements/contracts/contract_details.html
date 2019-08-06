@@ -2279,7 +2279,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    debugger;
                     if (this.$.mClients.value == "" || this.$.mClients.value == undefined) {
                         this.$.mClients.validate();
                         this._openToastError("É obrigatória seleção de um Nº Cliente.");
@@ -3513,7 +3512,6 @@
                 },
 
                 _changeStatusChanged: function () {
-                    debugger;
                     if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
                         if (this._validateData()) {
 

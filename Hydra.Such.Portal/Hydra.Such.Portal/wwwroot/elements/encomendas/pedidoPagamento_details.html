@@ -716,12 +716,10 @@
                 },
 
                 _ObterNIB: function () {
-                    debugger;
                     this.$.page_ObterNIB_ajax.body = JSON.stringify(this.data);
                     this.$.page_ObterNIB_ajax.generateRequest();
                 },
                 _ObterNIBResponse: function (e) {
-                    debugger;
                     if (this.resultNIB.eReasonCode == "1") {
                         this._openToast(this.resultNIB.eMessage);
                     }
