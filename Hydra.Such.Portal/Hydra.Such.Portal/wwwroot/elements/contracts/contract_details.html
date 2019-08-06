@@ -439,7 +439,7 @@
                                                                 <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" name="clientRequisitionNo" label="Nº Requisição do Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
                                                                 <vaadin-date-picker label="Data Início Versão" id="mStartData" name="startData" value="{{data.startData}}" on-blur="_dataInicioChanged" disabled="{{ _lockFields }}"></vaadin-date-picker>
@@ -606,7 +606,7 @@
                                                                     <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </div>
                                                                 <div class="col-lg-2">
                                                                     <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
@@ -703,7 +703,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.promiseNo}}
