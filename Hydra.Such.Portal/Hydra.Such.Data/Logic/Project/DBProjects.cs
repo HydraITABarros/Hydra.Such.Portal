@@ -51,6 +51,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToCreate.CódEndereçoEnvio = string.IsNullOrEmpty(ObjectToCreate.CódEndereçoEnvio) ? null : ObjectToCreate.CódEndereçoEnvio;
                     ObjectToCreate.DataHoraCriação = DateTime.Now;
                     ctx.Projetos.Add(ObjectToCreate);
                     ctx.SaveChanges();
@@ -70,6 +71,7 @@ namespace Hydra.Such.Data.Logic.Project
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToUpdate.CódEndereçoEnvio = string.IsNullOrEmpty(ObjectToUpdate.CódEndereçoEnvio) ? null : ObjectToUpdate.CódEndereçoEnvio;
                     ObjectToUpdate.DataHoraModificação = DateTime.Now;
                     ctx.Projetos.Update(ObjectToUpdate);
                     ctx.SaveChanges();
@@ -244,7 +246,7 @@ namespace Hydra.Such.Data.Logic.Project
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
                     Billable = item.Faturável,
                     ContractNo = item.NºContrato,
-                    ShippingAddressCode = item.CódEndereçoEnvio,
+                    ShippingAddressCode = string.IsNullOrEmpty(item.CódEndereçoEnvio) ? null : item.CódEndereçoEnvio,
                     ShippingName = item.EnvioANome,
                     ShippingAddress = item.EnvioAEndereço,
                     ShippingPostalCode = item.EnvioACódPostal,
@@ -303,7 +305,7 @@ namespace Hydra.Such.Data.Logic.Project
                     CódigoCentroResponsabilidade = item.ResponsabilityCenterCode,
                     Faturável = item.Billable,
                     NºContrato = item.ContractNo,
-                    CódEndereçoEnvio = item.ShippingAddressCode,
+                    CódEndereçoEnvio = string.IsNullOrEmpty(item.ShippingAddressCode) ? null : item.ShippingAddressCode,
                     EnvioANome = item.ShippingName,
                     EnvioAEndereço = item.ShippingAddress,
                     EnvioACódPostal = item.ShippingPostalCode,

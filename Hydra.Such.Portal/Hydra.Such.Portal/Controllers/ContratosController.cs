@@ -6711,6 +6711,7 @@ namespace Hydra.Such.Portal.Controllers
                             Anexos newfile = new Anexos();
                             newfile.NºOrigem = id;
                             newfile.UrlAnexo = full_filename;
+                            newfile.Visivel = true;
 
                             //TipoOrigem: 1-PréRequisição; 2-Requisição; 3-Contratos; 4-Procedimentos;5-ConsultaMercado 
                             newfile.TipoOrigem = TipoOrigemAnexos.Contratos;
@@ -6742,8 +6743,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult LoadAttachments([FromBody] JObject requestParams)
         {
             string id = requestParams["id"].ToString();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
 
             List<Anexos> list = DBAttachments.GetById(id);
+
+            if (UPerm != null && UPerm.Update == false)
+            {
+                list.RemoveAll(x => x.Visivel != true);
+            }
+
             List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
             list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
             return Json(attach);
@@ -6765,6 +6773,36 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(requestParams);
             }
             return Json(requestParams);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateAnexoVisivel([FromBody] AttachmentsViewModel Anexo)
+        {
+            try
+            {
+                if (Anexo != null && Anexo.DocLineNo > 0)
+                {
+                    Anexos ANEX = DBAttachments.GetByNoLinha(Anexo.DocLineNo);
+                    if (ANEX != null)
+                    {
+                        ANEX.Visivel = Anexo.Visivel;
+                        ANEX.UtilizadorModificação = User.Identity.Name;
+                        ANEX.DataHoraModificação = DateTime.Now;
+                        if (DBAttachments.Update(ANEX) != null)
+                            return Json(true);
+                        else
+                            return Json(false);
+                    }
+                    else
+                        return Json(false);
+                }
+                else
+                    return Json(false);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
         }
         #endregion
 

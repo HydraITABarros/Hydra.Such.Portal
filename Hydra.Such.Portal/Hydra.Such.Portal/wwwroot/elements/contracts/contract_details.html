@@ -145,6 +145,14 @@
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/UpdateAnexoVisivel"
+                   last-response="{{updateAnexoVisivelResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="updateAnexoVisivel_ajax"
+                   on-response="_updateAnexoVisivelResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/DeleteContract"
                    last-response="{{deletedData}}"
                    method="post"
@@ -1140,8 +1148,8 @@
                                         </template>
                                     </div>
                                     <div class="row break_clear">
-                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-                                            <vaadin-grid-column width="70%" resizable>
+                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                            <vaadin-grid-column width="75%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="url" />
@@ -1150,7 +1158,17 @@
                                                     <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
                                                 </template>
                                             </vaadin-grid-column>
-                                            <vaadin-grid-column width="20%" resizable>
+                                            <vaadin-grid-column width="10%" resizable hidden="{{ !_permissions.update }}">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="visivel">Vísivel</vaadin-grid-sorter>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.visivel}}" id="ckb_AnexoVisivel" on-click="_updateAnexoVisivel" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="createDateTime" />
@@ -1159,7 +1177,7 @@
                                                     {{item.createDateTime}}
                                                 </template>
                                             </vaadin-grid-column>
-                                            <vaadin-grid-column width="10%" resizable>
+                                            <vaadin-grid-column width="5%" resizable>
                                                 <template class="header">
                                                 </template>
                                                 <template>
@@ -1733,12 +1751,12 @@
                         </div>
 
                         <!--<div class="marginSpace" style="display: {{ _showContractLines }};">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <template is="dom-if" if="{{ !_lockFields }}">
-                                    <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                </template>
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <template is="dom-if" if="{{ !_lockFields }}">
+                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
-                        </div>-->
+                        </template>
+                    </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -3532,6 +3550,28 @@
                             this._executeRequest("/Contratos/UpdateContract", this.data);
                         }
                     }
+                },
+
+                _updateAnexoVisivel: function (e) {
+                    var index = this.uploads.indexOf(e.model.item);
+
+                    e.model.item.visivel = !e.model.item.visivel;
+
+                    this.$.updateAnexoVisivel_ajax.body = JSON.stringify(e.model.item);
+                    this.$.updateAnexoVisivel_ajax.generateRequest();
+                    this.$.gridAnexos.clearCache();
+                },
+                _updateAnexoVisivelResponseProcessor: function (e) {
+                    debugger;
+                    if (this.updateAnexoVisivelResponse == true) {
+                        this._openToast("Anexo atualizado com sucesso.");
+                    }
+                    else {
+                        this._openToastError("Ocorreu um erro na atualização do Anexo.");
+                    }
+
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                    this.$.page_update_ajax.generateRequest();
                 },
 
             });
