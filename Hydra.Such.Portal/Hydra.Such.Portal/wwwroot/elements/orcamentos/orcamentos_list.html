@@ -218,6 +218,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.projetoAssociadoText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="projetoAssociadoText">Projeto Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projetoAssociadoText" value="[[filter.projetoAssociadoText]]" />
+                </template>
+                <template>
+                    {{item.projetoAssociadoText}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.noProposta.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noProposta">Nº da Proposta Associada</vaadin-grid-sorter>
@@ -300,7 +310,7 @@
 
             <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.dataAceiteText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataAceiteText">Data Aceite / Não Aceite</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dataAceiteText">Data Aceite</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataAceiteText" value="[[filter.dataAceiteText]]" />
                 </template>
                 <template>
@@ -310,11 +320,31 @@
 
             <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.utilizadorAceiteText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="utilizadorAceiteText">Utilizador que Aceitou / Não Aceitou</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="utilizadorAceiteText">Utilizador que Aceitou</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorAceiteText" value="[[filter.utilizadorAceiteText]]" />
                 </template>
                 <template>
                     {{item.utilizadorAceiteText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.dataNaoAceiteText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataNaoAceiteText">Data Não Aceite</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataNaoAceiteText" value="[[filter.dataNaoAceiteText]]" />
+                </template>
+                <template>
+                    {{item.dataNaoAceiteText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.utilizadorNaoAceiteText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorNaoAceiteText">Utilizador que Não Aceitou</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorNaoAceiteText" value="[[filter.utilizadorNaoAceiteText]]" />
+                </template>
+                <template>
+                    {{item.utilizadorNaoAceiteText}}
                 </template>
             </vaadin-grid-column>
 
@@ -480,6 +510,7 @@
                         "tipoFaturacaoText": { hidden: false, label: "Tipo Faturação" },
                         "totalSemIVA": { hidden: false, label: "Total sem IVA" },
                         "totalComIVA": { hidden: false, label: "Total com IVA" },
+                        "projetoAssociadoText": { hidden: false, label: "Projeto Associado" },
                         "noProposta": { hidden: false, label: "Nº da Proposta Associada" },
                         "email": { hidden: false, label: "E-mail" },
                         "emailAssunto": { hidden: false, label: "Assunto" },
@@ -488,8 +519,10 @@
                         "emailUtilizadorEnvioText": { hidden: false, label: "Utilizador de Envio" },
                         "dataCriacaoText": { hidden: false, label: "Data de Criação" },
                         "utilizadorCriacaoText": { hidden: false, label: "Utilizador de Criação" },
-                        "dataAceiteText": { hidden: false, label: "Data Aceite / Não Aceite" },
-                        "utilizadorAceiteText": { hidden: false, label: "Utilizador que Aceitou / Não Aceitou" },
+                        "dataAceiteText": { hidden: false, label: "Data Aceite" },
+                        "utilizadorAceiteText": { hidden: false, label: "Utilizador que Aceitou" },
+                        "dataNaoAceiteText": { hidden: false, label: "Data Não Aceite" },
+                        "utilizadorNaoAceiteText": { hidden: false, label: "Utilizador que Não Aceitou" },
                         "dataConcluidoText": { hidden: false, label: "Data Concluído" },
                         "utilizadorConcluidoText": { hidden: false, label: "Utilizador que Concluio" },
                         "dataModificacaoText": { hidden: false, label: "Data Última Alteração" },

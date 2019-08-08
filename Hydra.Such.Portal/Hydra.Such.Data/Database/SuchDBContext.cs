@@ -11120,6 +11120,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("NoProposta")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.ProjetoAssociado)
+                    .HasColumnName("ProjetoAssociado")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.Email)
                     .HasColumnName("Email")
                     .HasMaxLength(50);
@@ -11154,6 +11158,14 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.UtilizadorAceite)
                     .HasColumnName("UtilizadorAceite")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataNaoAceite)
+                    .HasColumnName("DataNaoAceite")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorNaoAceite)
+                    .HasColumnName("UtilizadorNaoAceite")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.DataConcluido)

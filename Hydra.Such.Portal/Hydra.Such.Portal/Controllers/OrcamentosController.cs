@@ -122,6 +122,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+            List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
 
             result.ForEach(x => {
@@ -131,10 +132,12 @@ namespace Hydra.Such.Portal.Controllers
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
                 x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
+                x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
                 x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorCriacaoText = !string.IsNullOrEmpty(x.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorAceiteText = !string.IsNullOrEmpty(x.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorNaoAceiteText = !string.IsNullOrEmpty(x.UtilizadorNaoAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorConcluidoText = !string.IsNullOrEmpty(x.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
             });
@@ -158,6 +161,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+            List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
 
             result.ForEach(x => {
@@ -167,10 +171,12 @@ namespace Hydra.Such.Portal.Controllers
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
                 x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
+                x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
                 x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorCriacaoText = !string.IsNullOrEmpty(x.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorAceiteText = !string.IsNullOrEmpty(x.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorNaoAceiteText = !string.IsNullOrEmpty(x.UtilizadorNaoAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorConcluidoText = !string.IsNullOrEmpty(x.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
             });
@@ -191,6 +197,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+            List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
 
             result.ForEach(x => {
@@ -200,10 +207,12 @@ namespace Hydra.Such.Portal.Controllers
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
                 x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
+                x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
                 x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorCriacaoText = !string.IsNullOrEmpty(x.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorAceiteText = !string.IsNullOrEmpty(x.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorNaoAceiteText = !string.IsNullOrEmpty(x.UtilizadorNaoAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorConcluidoText = !string.IsNullOrEmpty(x.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
             });
@@ -245,6 +254,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["tipoFaturacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Faturação"); Col = Col + 1; }
                 if (dp["totalSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Total sem IVA"); Col = Col + 1; }
                 if (dp["totalComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Total com IVA"); Col = Col + 1; }
+                if (dp["projetoAssociadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Projeto Associado"); Col = Col + 1; }
                 if (dp["noProposta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº da Proposta Associada"); Col = Col + 1; }
                 if (dp["email"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("E-mail"); Col = Col + 1; }
                 if (dp["emailAssunto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Assunto"); Col = Col + 1; }
@@ -253,8 +263,10 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["emailUtilizadorEnvioText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador de Envio"); Col = Col + 1; }
                 if (dp["dataCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data de Criação"); Col = Col + 1; }
                 if (dp["utilizadorCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador de Criação"); Col = Col + 1; }
-                if (dp["dataAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Aceite / Não Aceite"); Col = Col + 1; }
-                if (dp["utilizadorAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador que Aceitou / Não Aceitou"); Col = Col + 1; }
+                if (dp["dataAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Aceite"); Col = Col + 1; }
+                if (dp["utilizadorAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador que Aceitou"); Col = Col + 1; }
+                if (dp["dataNaoAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Não Aceite"); Col = Col + 1; }
+                if (dp["utilizadorNaoAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador que Não Aceitou"); Col = Col + 1; }
                 if (dp["dataConcluidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Concluído"); Col = Col + 1; }
                 if (dp["utilizadorConcluidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador que Concluio"); Col = Col + 1; }
                 if (dp["dataModificacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Última Alteração"); Col = Col + 1; }
@@ -279,6 +291,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["tipoFaturacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TipoFaturacaoText); Col = Col + 1; }
                         if (dp["totalSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TotalSemIVA.ToString()); Col = Col + 1; }
                         if (dp["totalComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TotalComIVA.ToString()); Col = Col + 1; }
+                        if (dp["projetoAssociadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjetoAssociadoText); Col = Col + 1; }
                         if (dp["noProposta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoProposta); Col = Col + 1; }
                         if (dp["email"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Email); Col = Col + 1; }
                         if (dp["emailAssunto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmailAssunto); Col = Col + 1; }
@@ -289,6 +302,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["utilizadorCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorCriacaoText); Col = Col + 1; }
                         if (dp["dataAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataAceiteText); Col = Col + 1; }
                         if (dp["utilizadorAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorAceiteText); Col = Col + 1; }
+                        if (dp["dataNaoAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataNaoAceiteText); Col = Col + 1; }
+                        if (dp["utilizadorNaoAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorNaoAceiteText); Col = Col + 1; }
                         if (dp["dataConcluidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataConcluidoText); Col = Col + 1; }
                         if (dp["utilizadorConcluidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorConcluidoText); Col = Col + 1; }
                         if (dp["dataModificacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataModificacaoText); Col = Col + 1; }
@@ -352,6 +367,7 @@ namespace Hydra.Such.Portal.Controllers
                     ORC.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(ORC.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorCriacaoText = !string.IsNullOrEmpty(ORC.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorAceiteText = !string.IsNullOrEmpty(ORC.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                    ORC.UtilizadorNaoAceiteText = !string.IsNullOrEmpty(ORC.UtilizadorNaoAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorNaoAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorNaoAceite.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorConcluidoText = !string.IsNullOrEmpty(ORC.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorModificacaoText = !string.IsNullOrEmpty(ORC.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
 
@@ -408,8 +424,8 @@ namespace Hydra.Such.Portal.Controllers
                         //3 = Não Aceite
                         if (ORCAMENTO.IDEstado == 3 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
                         {
-                            ORCAMENTO.DataAceiteText = DateTime.Now.ToString();
-                            ORCAMENTO.UtilizadorAceite = User.Identity.Name;
+                            ORCAMENTO.DataNaoAceiteText = DateTime.Now.ToString();
+                            ORCAMENTO.UtilizadorNaoAceite = User.Identity.Name;
                         }
 
                         //4 = Concluído

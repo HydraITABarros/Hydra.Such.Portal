@@ -144,6 +144,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetOrcamentosEstados" last-response="{{CBOrcamentosEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <iron-ajax url="/Orcamentos/GetDetails"
@@ -334,16 +335,26 @@
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-5">
+                                                    <such-selectbox id="OrcProjetoAssociado" value="{{data.projetoAssociado}}" label="Projeto Associado"
+                                                                    disabled="{{ !_permissions.update }}"
+                                                                    items="[[CBProjects]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                    </such-selectbox>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" disabled></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
                                                     <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="{{data.totalSemIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-2">
                                                     <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="{{data.totalComIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" disabled></vaadin-text-field>
                                                 </div>
                                             </div>
                                         </div>
@@ -439,38 +450,46 @@
                                 <!--DETALHES-->
                                 <div>
                                     <div class="row">
-                                        <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcDataCriacao" label="Data de Criação" value="{{data.dataCriacaoText}}" disabled></vaadin-date-picker>
-                                        </div>
-
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <vaadin-text-field id="OrcUtilizadorCriacao" label="Utilizador de Criação" value="{{data.utilizadorCriacaoText}}" disabled></vaadin-text-field>
                                         </div>
 
-                                        <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcDataAceite" label="Data Aceite / Não Aceite" value="{{data.dataAceiteText}}" disabled></vaadin-date-picker>
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="OrcDataCriacao" label="Data de Criação" value="{{data.dataCriacaoText}}" disabled></vaadin-date-picker>
                                         </div>
 
-                                        <div class="col-md-3">
-                                            <vaadin-text-field id="OrcUtilizadorAceite" label="Utilizador que Aceitou / Não Aceitou" value="{{data.utilizadorAceiteText}}" disabled></vaadin-text-field>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="OrcUtilizadorAceite" label="Utilizador que Aceitou" value="{{data.utilizadorAceiteText}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="OrcDataAceite" label="Data Aceite" value="{{data.dataAceiteText}}" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="OrcUtilizadorNaoAceite" label="Utilizador que Não Aceitou" value="{{data.utilizadorNaoAceiteText}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="OrcDataNaoAceite" label="Data Não Aceite" value="{{data.dataNaoAceiteText}}" disabled></vaadin-date-picker>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcDataConcluido" label="Data Concluído" value="{{data.dataConcluidoText}}" disabled></vaadin-date-picker>
-                                        </div>
-
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <vaadin-text-field id="OrcUtilizadorConcluido" label="Utilizador que Concluio" value="{{data.utilizadorConcluidoText}}" disabled></vaadin-text-field>
                                         </div>
 
-                                        <div class="col-md-3">
-                                            <vaadin-date-picker id="OrcDataModificacao" label="Data Última Alteração" value="{{data.dataModificacaoText}}" disabled></vaadin-date-picker>
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="OrcDataConcluido" label="Data Concluído" value="{{data.dataConcluidoText}}" disabled></vaadin-date-picker>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <vaadin-text-field id="OrcUtilizadorModificacao" label="Utilizador da Última Modificação" value="{{data.utilizadorModificacaoText}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="OrcDataModificacao" label="Data Última Alteração" value="{{data.dataModificacaoText}}" disabled></vaadin-date-picker>
                                         </div>
                                     </div>
                                 </div>
@@ -713,26 +732,34 @@
                             } else {
                                 this._openToast("Orçamento criado com sucesso.")
 
-                                this.$.page_GetDetails_ajax.body = JSON.stringify({ "no": this._no });
-                                this.$.page_GetDetails_ajax.generateRequest();
-                            }
+                                location.reload();                            }
                         } else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode != 1) {
                                 this._openToastError(this.data.eMessage);
                             } else {
                                 this._openToast("Orçamento atualizado com sucesso.")
 
-                                this.$.page_GetDetails_ajax.body = JSON.stringify({ "no": this._no });
-                                this.$.page_GetDetails_ajax.generateRequest();
-                            }
+                                location.reload();                            }
                         }
                     } else {
                         this._openToastError("Ocorreu um erro.")
                     }
 
+                    //Aceite
+                    if (this.$.OrcIDEstado.value == 2 && _permissions.update == true) {
+                        this.$.OrcProjetoAssociado.disabled = false;
+                    }
+                    else {
+                        this.$.OrcProjetoAssociado.disabled = true;
+                    }
+
+                    //Concluído
                     if (this.$.OrcIDEstado.value == 4) {
                         this._EstadoConcluido();
                     }
+
+                    
+
                 },
 
                 _executeRequest: function (url, data) {
@@ -889,9 +916,6 @@
                     if (this.deletedAnexo.eReasonCode === 1) {
                         this._openToast("Anexo eliminado com sucesso.");
 
-                        //this.$.page_databound_ajax.body = JSON.stringify({ "no": this._no });
-                        //this.$.page_databound_ajax.generateRequest();
-
                         this.$.page_LoadAttachments_ajax.body = JSON.stringify({ "no": this._no });
                         this.$.page_LoadAttachments_ajax.generateRequest();
                     } else if (this.deletedAnexo.eReasonCode === 2) {
@@ -1039,6 +1063,7 @@
                 _EstadoConcluido: function () {
                     this.$.btn_GuardarOrcamento.hidden = true;
                     this.$.btn_DeleteOrcamento.hidden = true;
+                    this.$.btn_CriarProposta.hidden = true;
                     this.$.btnCreateLinha.hidden = true;
                     this.$.btn_EnviarEmail.hidden = true;
                     this.$.UploadRequest.hidden = true;
@@ -1051,6 +1076,7 @@
                     this.$.OrcRegiao.disabled = true;
                     this.$.OrcUnidadePrestacao.disabled = true;
                     this.$.OrcTipoFaturacao.disabled = true;
+                    this.$.OrcProjetoAssociado.disabled = true;
                     this.$.OrcEmail.disabled = true;
                     this.$.OrcEmailAssunto.disabled = true;
                     this.$.OrcEmailCorpo.disabled = true;
