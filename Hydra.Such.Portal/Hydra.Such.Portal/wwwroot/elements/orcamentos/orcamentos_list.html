@@ -81,7 +81,7 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>
+            <paper-button class="tablinks" on-tap="_create" hidden="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>  Criar Orçamento</paper-button>
 
             <paper-button class="tablinks" on-tap="_TodosOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Todos Orçamentos</paper-button>
             <paper-button class="tablinks" on-tap="_MeusOrcamento"><i class="fa fa-list" aria-hidden="true"></i>  Meus Orçamentos</paper-button>

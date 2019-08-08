@@ -8,7 +8,7 @@
     <OverwriteDataSources>True</OverwriteDataSources>
     <TargetServerVersion>SSRS2016</TargetServerVersion>
     <Platform>Win32</Platform>
-    <TargetReportFolder>eSUCH</TargetReportFolder>
+    <TargetReportFolder>eSUCH Testes</TargetReportFolder>
     <TargetDatasetFolder>Datasets</TargetDatasetFolder>
     <TargetDatasourceFolder>Data Sources</TargetDatasourceFolder>
     <TargetReportPartFolder>Report Parts</TargetReportPartFolder>
@@ -70,6 +70,7 @@
     <Report Include="LinhasAcordoPrecos.rdl" />
     <Report Include="MovimentosProjetoFaturados.rdl" />
     <Report Include="OpotunidadeProposta_Contrato.rdl" />
+    <Report Include="Orcamentos.rdl" />
     <Report Include="PedidoPagamentoAntecipado.rdl" />
     <Report Include="PrecosServicosCliente.rdl" />
     <Report Include="Procedimento.rdl" />

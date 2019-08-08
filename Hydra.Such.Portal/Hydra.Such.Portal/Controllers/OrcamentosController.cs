@@ -11,6 +11,7 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.OrcamentoL;
+using Hydra.Such.Data.Logic.PedidoCotacao;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
@@ -97,6 +98,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.NoOrcamento = id ?? "";
                 ViewBag.reportServerURL = _config.ReportServerURL;
+
                 ViewBag.UPermissions = UPerm;
 
                 return View();
@@ -382,6 +384,31 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.No))
                 {
+                    Orcamentos OrcOriginal = DBOrcamentos.GetById(ORCAMENTO.No);
+                    if (OrcOriginal != null)
+                    {
+                        //2 = Aceite
+                        if (ORCAMENTO.IDEstado == 2 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
+                        {
+                            ORCAMENTO.DataAceiteText = DateTime.Now.ToString();
+                            ORCAMENTO.UtilizadorAceite = User.Identity.Name;
+                        }
+
+                        //3 = Não Aceite
+                        if (ORCAMENTO.IDEstado == 3 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
+                        {
+                            ORCAMENTO.DataAceiteText = DateTime.Now.ToString();
+                            ORCAMENTO.UtilizadorAceite = User.Identity.Name;
+                        }
+
+                        //4 = Concluído
+                        if (ORCAMENTO.IDEstado == 4 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
+                        {
+                            ORCAMENTO.DataConcluidoText = DateTime.Now.ToString();
+                            ORCAMENTO.UtilizadorConcluido = User.Identity.Name;
+                        }
+                    }
+
                     ORCAMENTO.UtilizadorModificacao = User.Identity.Name;
                     ORCAMENTO.DataModificacao = DateTime.Now;
 
@@ -670,7 +697,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult SendEmail([FromBody] OrcamentosViewModel ORCAMENTO)
+        public async Task<JsonResult> SendEmail([FromBody] OrcamentosViewModel ORCAMENTO)
         {
             ORCAMENTO.eReasonCode = 3;
             ORCAMENTO.eMessage = "Ocorreu um erro ao enviar o email.";
@@ -679,16 +706,47 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.Email) && !string.IsNullOrEmpty(ORCAMENTO.EmailAssunto) && !string.IsNullOrEmpty(ORCAMENTO.EmailCorpo))
                 {
-                    //ENVIO DE EMAIL
-                    SendEmailApprovals Email = new SendEmailApprovals();
+                    string sWebRootFolder = "E:\\Data\\eSUCH\\tmp";
+                    string sFileName = "Orcamento" + "_" + ORCAMENTO.No + ".pdf";
 
-                    Email.Subject = ORCAMENTO.EmailAssunto;
-                    Email.From = User.Identity.Name;
+                    var theURL = (_config.ReportServerURL_PDF + "Orcamentos&OrcamentosNo=" + ORCAMENTO.No + "&ClienteNo=" + ORCAMENTO.NoCliente + "&ContatoNo=" + ORCAMENTO.NoContacto + "&rs:Command=Render&rs:format=PDF");
+
+                    //OBTER CREDENCIAIS PARA O SERVIDOR DE REPORTS
+                    Configuração config = DBConfigurations.GetById(1);
+
+                    WebClient Client = new WebClient
+                    {
+                        Credentials = new NetworkCredential(config.ReportUsername, config.ReportPassword)
+                    };
+
+
+                    byte[] myDataBuffer = Client.DownloadData(theURL);
+
+                    using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+                    {
+                        await fs.WriteAsync(myDataBuffer, 0, myDataBuffer.Length);
+                    }
+
+                    Stream _my_stream = new MemoryStream(myDataBuffer);
+
+                    using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+                    {
+                        await stream.CopyToAsync(_my_stream);
+                    }
+
+                    SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
+                    {
+                        DisplayName = "e-SUCH",
+                        From = User.Identity.Name,
+                        Subject = ORCAMENTO.EmailAssunto,
+                        Anexo = Path.Combine(sWebRootFolder, sFileName),
+                        Body = MakeEmailBodyContent(ORCAMENTO.EmailCorpo, User.Identity.Name),
+                        IsBodyHtml = true
+                    };
+
                     Email.To.Add(ORCAMENTO.Email);
-                    Email.Body = ORCAMENTO.EmailCorpo;
-                    Email.IsBodyHtml = true;
-
-                    Email.SendEmail_Simple();
+                    Email.BCC.Add(User.Identity.Name);
+                    Email.SendEmail();
 
                     Orcamentos ORC_DB = ORCAMENTO.ParseToDB();
                     ORC_DB.EmailDataEnvio = DateTime.Now;
@@ -718,11 +776,170 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
                 ORCAMENTO.eReasonCode = 3;
-                ORCAMENTO.eMessage = "Ocorreu um erro ao atualizar o Orçamento.";
+                ORCAMENTO.eMessage = "Ocorreu um erro ao enviar o E-mail.";
                 return Json(ORCAMENTO);
             }
         }
 
+        public static string MakeEmailBodyContent(string BodyText, string SenderName)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Exmos (as) Senhores (as)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
+        }
+
+        [HttpPost]
+        public JsonResult CriarProposta([FromBody] OrcamentosViewModel ORCAMENTO)
+        {
+            ORCAMENTO.eReasonCode = 3;
+            ORCAMENTO.eMessage = "Ocorreu um erro ao Criar Proposta.";
+
+            try
+            {
+                if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.No))
+                {
+                    if (ORCAMENTO.IDEstado == 2)
+                    {
+                        if (string.IsNullOrEmpty(ORCAMENTO.NoProposta))
+                        {
+                            if (!string.IsNullOrEmpty(ORCAMENTO.NoCliente) && !string.IsNullOrEmpty(ORCAMENTO.CodRegiao) &&
+                                ORCAMENTO.TipoFaturacao != null && ORCAMENTO.UnidadePrestacao != null)
+                            {
+                                Configuração Configs = DBConfigurations.GetById(1);
+                                string newNumeration = DBNumerationConfigurations.GetNextNumeration(Configs.NumeraçãoPropostas.Value, true, false);
+                                Contratos NewProposta = new Contratos
+                                {
+                                    TipoContrato = 2,
+                                    NºDeContrato = newNumeration,
+                                    NºVersão = 1,
+                                    Estado = 1,
+                                    NºCliente = ORCAMENTO.NoCliente,
+                                    CódigoRegião = ORCAMENTO.CodRegiao,
+                                    TipoFaturação = ORCAMENTO.TipoFaturacao,
+                                    UnidadePrestação = ORCAMENTO.UnidadePrestacao,
+                                    DataHoraCriação = DateTime.Now,
+                                    UtilizadorCriação = User.Identity.Name,
+                                    Arquivado = false,
+                                    Historico = false,
+                                    Tipo = 1
+                                };
+
+                                if (DBContracts.Create(NewProposta) != null)
+                                {
+                                    Orcamentos OrcOriginal = DBOrcamentos.GetById(ORCAMENTO.No);
+                                    if (OrcOriginal != null)
+                                    {
+                                        //2 = Aceite
+                                        if (ORCAMENTO.IDEstado == 2 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
+                                        {
+                                            ORCAMENTO.DataAceiteText = DateTime.Now.ToString();
+                                            ORCAMENTO.UtilizadorAceite = User.Identity.Name;
+                                        }
+                                    }
+
+                                    ORCAMENTO.NoProposta = newNumeration;
+                                    ORCAMENTO.DataModificacaoText = DateTime.Now.ToString();
+                                    ORCAMENTO.UtilizadorModificacao = User.Identity.Name;
+
+                                    if (DBOrcamentos.Update(DBOrcamentos.ParseToDB(ORCAMENTO)) != null)
+                                    {
+                                        ORCAMENTO.eReasonCode = 1;
+                                        ORCAMENTO.eMessage = "A Proposta Nº " + newNumeration + " foi criada com sucesso.";
+                                        return Json(ORCAMENTO);
+                                    }
+                                }
+                                else
+                                {
+                                    ORCAMENTO.eReasonCode = 3;
+                                    ORCAMENTO.eMessage = "Ocorreu um erro ao criar a Proposta.";
+                                    return Json(ORCAMENTO);
+                                }
+                            }
+                            else
+                            {
+                                ORCAMENTO.eReasonCode = 3;
+                                ORCAMENTO.eMessage = "Os campos Cliente, Região, Unidade de Prestação e Tipo Faturação são de preenchimento obrigatório.";
+                                return Json(ORCAMENTO);
+                            }
+                        }
+                        else
+                        {
+                            ORCAMENTO.eReasonCode = 3;
+                            ORCAMENTO.eMessage = "Não é possivel criar Proposta, por existir uma Proposta Nº " + ORCAMENTO.NoProposta + " associada a este Orçamento.";
+                            return Json(ORCAMENTO);
+                        }
+                    }
+                    else
+                    {
+                        ORCAMENTO.eReasonCode = 3;
+                        ORCAMENTO.eMessage = "Para criar Proposta, o Orçamento têm que estar no estado Aceite.";
+                        return Json(ORCAMENTO);
+                    }
+                }
+                else
+                {
+                    ORCAMENTO.eReasonCode = 3;
+                    ORCAMENTO.eMessage = "Não foi possível obter o Orçamento";
+                    return Json(ORCAMENTO);
+                }
+            }
+            catch (Exception ex)
+            {
+                ORCAMENTO.eReasonCode = 3;
+                ORCAMENTO.eMessage = "Ocorreu um erro ao criar a Proposta.";
+                return Json(ORCAMENTO);
+            }
+
+            return Json(ORCAMENTO);
+        }
 
 
 

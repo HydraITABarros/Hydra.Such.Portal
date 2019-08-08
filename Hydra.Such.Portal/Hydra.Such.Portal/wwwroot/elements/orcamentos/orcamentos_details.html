@@ -150,6 +150,14 @@
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
+                   id="page_GetDetails_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Orcamentos/GetDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
                    content-type="application/json">
@@ -207,13 +215,22 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Orcamentos/CriarProposta"
+                   last-response="{{criarProposta}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CriarProposta_ajax"
+                   on-response="_responseCriarProposta"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--//-------------------------------------------------------------//-->
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_GuardarOrcamento" disabled="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
-            <paper-button class="tablinks" on-tap="_DeleteOrcamento" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
-            <paper-button class="tablinks" on-tap="_RelatorioOrcamento" ><i class="fa fa-print" aria-hidden="true"></i>  Imprimir</paper-button>
-            <paper-button class="tablinks" on-tap="_TornarProposta" disabled="{{ !_permissions.update }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Tornar em Proposta</paper-button>
+            <paper-button class="tablinks" on-tap="_GuardarOrcamento" hidden="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
+            <paper-button class="tablinks" on-tap="_DeleteOrcamento" hidden="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
+            <paper-button class="tablinks" on-tap="_RelatorioOrcamento"><i class="fa fa-print" aria-hidden="true"></i>  Imprimir</paper-button>
+            <paper-button class="tablinks" on-tap="_CriarProposta" hidden="{{ !_permissions.update }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Criar Proposta</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -341,7 +358,7 @@
                                                        method="POST"
                                                        headers="{'Accept': 'application/json'}"
                                                        timeout=15000
-                                                       disabled="{{ !_permissions.update }}">
+                                                       hidden="{{ !_permissions.update }}">
                                         </vaadin-upload>
                                     </div>
 
@@ -372,9 +389,9 @@
                                                 </template>
                                                 <template>
                                                     <center>
-                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                        <template is="dom-if" if="{{ _permissions.delete }}">
                                                             <center>
-                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAnexo" title="Eliminar" disabled="{{ !_permissions.update }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAnexo" title="Eliminar" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                             </center>
                                                         </template>
                                                     </center>
@@ -412,7 +429,7 @@
                                         </div>
 
                                         <div class="col-md-6" style="padding-top:14px">
-                                            <paper-button id="btn_EnviarEmail" class="btnSave" raised on-tap="_enviarEmail" title="Enviar"><i class="fa fa-send" aria-hidden="true" disabled="{{ !_permissions.update }}"></i>&nbsp; Enviar</paper-button>
+                                            <paper-button id="btn_EnviarEmail" class="btnSave" raised on-tap="_enviarEmail" title="Enviar" hidden="{{ !_permissions.update }}"><i class="fa fa-send" aria-hidden="true" disabled="{{ !_permissions.update }}"></i>&nbsp; Enviar</paper-button>
                                         </div>
                                     </div>
                                 </div>
@@ -487,7 +504,7 @@
                                     </div>
 
                                     <div class="col-lg-2" style="padding-top:12px">
-                                        <paper-button raised id="btnCreateLinha" class="btnSave" on-tap="_createLinha"><i class="fa fa-plus" aria-hidden="true" disabled="{{ !_permissions.update }}"></i>&nbsp; Criar</paper-button>
+                                        <paper-button raised id="btnCreateLinha" class="btnSave" on-tap="_createLinha" hidden="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </div>
                                 </div>
                             </paper-collapse-item>
@@ -597,9 +614,9 @@
                                         </template>
                                         <template>
                                             <center>
-                                                <template is="dom-if" if="{{ _permissions.update }}">
+                                                <template is="dom-if" if="{{ _permissions.delete }}">
                                                     <center>
-                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" title="Eliminar" disabled="{{ !_permissions.update }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" title="Eliminar" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                     </center>
                                                 </template>
                                             </center>
@@ -615,6 +632,13 @@
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
     </template>
 
     <script>
@@ -684,12 +708,18 @@
                                 this._openToastError(this.data.eMessage);
                             } else {
                                 this._openToast("Orçamento criado com sucesso.")
+
+                                this.$.page_GetDetails_ajax.body = JSON.stringify({ "no": this._no });
+                                this.$.page_GetDetails_ajax.generateRequest();
                             }
                         } else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode != 1) {
                                 this._openToastError(this.data.eMessage);
                             } else {
                                 this._openToast("Orçamento atualizado com sucesso.")
+
+                                this.$.page_GetDetails_ajax.body = JSON.stringify({ "no": this._no });
+                                this.$.page_GetDetails_ajax.generateRequest();
                             }
                         }
                     } else {
@@ -895,6 +925,7 @@
                         var cliente = this.CBClients.find(x => x.no_ == this.$.OrcNoCliente.value);
                         if (cliente != undefined) {
                             this.$.OrcEmail.value = cliente.eMail;
+                            this.$.OrcNoContacto._clearSelection();
                         }
                     }
                 },
@@ -904,6 +935,7 @@
                         var contacto = this.CBContacts.find(x => x.no_ == this.$.OrcNoContacto.value);
                         if (contacto != undefined) {
                             this.$.OrcEmail.value = contacto.email;
+                            this.$.OrcNoCliente._clearSelection();
                         }
                     }
                 },
@@ -944,6 +976,57 @@
                     }
                 },
 
+                _CriarProposta: function (e) {
+                    if (e != null) {
+                        var ajax_request = this.$.page_CriarProposta_ajax;
+                        ajax_request.body = JSON.stringify(this.data);
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Criar Proposta?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
+                _responseCriarProposta: function () {
+                    if (this.criarProposta.eReasonCode != 1) {
+                        this._openToastError(this.criarProposta.eMessage);
+                    }
+                    else {
+                        this._openToast(this.criarProposta.eMessage);
+
+                        this.$.page_GetDetails_ajax.body = JSON.stringify({ "no": this._no });
+                        this.$.page_GetDetails_ajax.generateRequest();
+                    }
+                },
+
+                _RelatorioOrcamento: function () {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "Orcamentos&OrcamentosNo=" + this._no + "&ClienteNo=" + this.$.OrcNoCliente.value + "&ContatoNo=" + this.$.OrcNoContacto.value;
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
 
             });
         });
