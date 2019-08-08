@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
         public decimal? ValorUnitario { get; set; }
         public decimal? TaxaIVA { get; set; }
         public decimal? TotalLinha { get; set; }
+        public bool? Visivel { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataCriacao { get; set; }
         public string DataCriacaoText { get; set; }

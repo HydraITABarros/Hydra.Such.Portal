@@ -355,6 +355,17 @@ namespace Hydra.Such.Portal.Controllers
                     ORC.UtilizadorConcluidoText = !string.IsNullOrEmpty(ORC.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorModificacaoText = !string.IsNullOrEmpty(ORC.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
 
+                    if (ORC.IDEstado == 4)
+                    {
+                        ORC.LinhasOrcamentos.ForEach(x => x.Visivel = false);
+                        ORC.AnexosOrcamentos.ForEach(x => x.Visivel = false);
+                    }
+                    else
+                    {
+                        ORC.LinhasOrcamentos.ForEach(x => x.Visivel = true);
+                        ORC.AnexosOrcamentos.ForEach(x => x.Visivel = true);
+                    }
+
                     using (var ctx = new SuchDBContext())
                     {
                         ctx.Orcamentos.Update(ORC.ParseToDB());

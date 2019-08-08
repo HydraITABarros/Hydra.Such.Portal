@@ -226,11 +226,11 @@
 
         <!--//-------------------------------------------------------------//-->
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button class="tablinks" on-tap="_GuardarOrcamento" hidden="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
-            <paper-button class="tablinks" on-tap="_DeleteOrcamento" hidden="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
-            <paper-button class="tablinks" on-tap="_RelatorioOrcamento"><i class="fa fa-print" aria-hidden="true"></i>  Imprimir</paper-button>
-            <paper-button class="tablinks" on-tap="_CriarProposta" hidden="{{ !_permissions.update }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Criar Proposta</paper-button>
+            <paper-button id="btn_GoBack" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btn_GuardarOrcamento" class="tablinks" on-tap="_GuardarOrcamento" hidden="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
+            <paper-button id="btn_DeleteOrcamento" class="tablinks" on-tap="_DeleteOrcamento" hidden="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
+            <paper-button id="btn_RelatorioOrcamento" class="tablinks" on-tap="_RelatorioOrcamento"><i class="fa fa-print" aria-hidden="true"></i>  Imprimir</paper-button>
+            <paper-button id="btn_CriarProposta" class="tablinks" on-tap="_CriarProposta" hidden="{{ !_permissions.update }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Criar Proposta</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -389,10 +389,12 @@
                                                 </template>
                                                 <template>
                                                     <center>
-                                                        <template is="dom-if" if="{{ _permissions.delete }}">
-                                                            <center>
-                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAnexo" title="Eliminar" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                                            </center>
+                                                        <template is="dom-if" if="{{ item.visivel }}">
+                                                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                                                <center>
+                                                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAnexo" title="Eliminar" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                                </center>
+                                                            </template>
                                                         </template>
                                                     </center>
                                                 </template>
@@ -510,7 +512,7 @@
                             </paper-collapse-item>
 
                             <div>
-                                <vaadin-grid aria-label="PreReqLines" id="grid_prereqlines" name="grid_prereqlines" items="[[data.linhasOrcamentos]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                <vaadin-grid aria-label="PreReqLines" id="gridLinhas" name="gridLinhas" items="[[data.linhasOrcamentos]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
                                     <vaadin-grid-column width="250px" resizable hidden>
                                         <template class="header">
                                             <vaadin-grid-sorter path="noLinha">Nº da Linha</vaadin-grid-sorter>
@@ -614,10 +616,12 @@
                                         </template>
                                         <template>
                                             <center>
-                                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                                    <center>
-                                                        <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" title="Eliminar" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                                    </center>
+                                                <template is="dom-if" if="{{ item.visivel }}">
+                                                    <template is="dom-if" if="{{ _permissions.delete }}">
+                                                        <center>
+                                                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteLinha" title="Eliminar" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                        </center>
+                                                    </template>
                                                 </template>
                                             </center>
                                         </template>
@@ -724,6 +728,10 @@
                         }
                     } else {
                         this._openToastError("Ocorreu um erro.")
+                    }
+
+                    if (this.$.OrcIDEstado.value == 4) {
+                        this._EstadoConcluido();
                     }
                 },
 
@@ -1027,6 +1035,30 @@
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
                 },
+
+                _EstadoConcluido: function () {
+                    this.$.btn_GuardarOrcamento.hidden = true;
+                    this.$.btn_DeleteOrcamento.hidden = true;
+                    this.$.btnCreateLinha.hidden = true;
+                    this.$.btn_EnviarEmail.hidden = true;
+                    this.$.UploadRequest.hidden = true;
+
+                    this.$.OrcNoCliente.disabled = true;
+                    this.$.OrcNoContacto.disabled = true;
+                    this.$.OrcDataValidade.disabled = true;
+                    this.$.OrcIDEstado.disabled = true;
+                    this.$.OrcDescricao.disabled = true;
+                    this.$.OrcRegiao.disabled = true;
+                    this.$.OrcUnidadePrestacao.disabled = true;
+                    this.$.OrcTipoFaturacao.disabled = true;
+                    this.$.OrcEmail.disabled = true;
+                    this.$.OrcEmailAssunto.disabled = true;
+                    this.$.OrcEmailCorpo.disabled = true;
+                    this.$.LinhaDescricao.disabled = true;
+                    this.$.LinhaQuantidade.disabled = true;
+                    this.$.LinhaValorUnitario.disabled = true;
+                    this.$.LinhaTaxaIVA.disabled = true;
+                }
 
             });
         });
