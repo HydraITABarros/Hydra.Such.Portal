@@ -20,6 +20,7 @@ namespace Hydra.Such.Data.Database
         public string CodRegiao { get; set; }
         public int? UnidadePrestacao { get; set; }
         public int? TipoFaturacao { get; set; }
+        public int? CondicoesPagamento { get; set; }
         public decimal? TotalSemIVA { get; set; }
         public decimal? TotalComIVA { get; set; }
         public string NoProposta { get; set; }

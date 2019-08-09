@@ -145,6 +145,7 @@
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetOrcamentosEstados" last-response="{{CBOrcamentosEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetContractPaymentTerms" last-response="{{CBContractPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <iron-ajax url="/Orcamentos/GetDetails"
@@ -247,119 +248,135 @@
                             </paper-tabs>
                             <iron-pages selected="{{selected}}">
                                 <!--Geral-->
-                                <div>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="OrcNo" label="Nº do Orçamento" value="{{data.no}}" disabled></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <such-selectbox id="OrcNoCliente" label="Cliente" value="{{data.noCliente}}"
-                                                            items="[[CBClients]]"
-                                                            text-path="name"
-                                                            value-path="no_"
-                                                            fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"eMail", "name":"E-mail"}]'
-                                                            on-value-changed="_actualizarEmailCliente"
-                                                            disabled="{{ !_permissions.update }}">
-                                            </such-selectbox>
-                                        </div>
-
-                                        <div class="col-md-3">
-                                            <such-selectbox id="OrcNoContacto" label="Contacto" value="{{data.noContacto}}"
-                                                            items="[[CBContacts]]"
-                                                            text-path="name"
-                                                            value-path="no_"
-                                                            fields='[{"field":"no_", "name":"Cód. Contato"}, {"field":"name", "name":"Nome"}, {"field":"email", "name":"E-mail"}]'
-                                                            on-value-changed="_actualizarEmailContacto"
-                                                            disabled="{{ !_permissions.update }}">
-                                            </such-selectbox>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-date-picker id="OrcDataValidade" label="Orçamento Válido até" value="{{data.dataValidadeText}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-combo-box id="OrcIDEstado" label="Estado do Orçamento" value="{{data.idEstado}}"
-                                                              items="[[CBOrcamentosEstados]]"
-                                                              item-value-path="id"
-                                                              item-label-path="value"
-                                                              disabled="{{ !_permissions.update }}">
-                                                <template>
-                                                    <b>[[item.value]]</b>
-                                                </template>
-                                            </vaadin-combo-box>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <such-textarea id="OrcDescricao" label="Descrição" value="{{data.descricao}}" rows="5" maxlength="200" disabled="{{ !_permissions.update }}"> </such-textarea>
-                                        </div>
-
-                                        <div class="col-md-7">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <such-selectbox id="OrcRegiao" label="Região" value="{{data.codRegiao}}"
-                                                                    items="[[CBRegions]]"
-                                                                    text-path="value"
-                                                                    value-path="id"
-                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
-                                                                    disabled="{{ !_permissions.update }}">
-                                                    </such-selectbox>
-                                                </div>
-
-                                                <div class="col-md-6">
-                                                    <such-selectbox id="OrcUnidadePrestacao" label="Unidade de Prestação" value="{{data.unidadePrestacao}}"
-                                                                    items="[[LFetchUnits]]"
-                                                                    text-path="value"
-                                                                    value-path="id"
-                                                                    fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
-                                                                    disabled="{{ !_permissions.update }}">
-                                                    </such-selectbox>
-
-                                                </div>
-
-                                                <div class="col-md-3">
-                                                    <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value="{{data.tipoFaturacao}}"
-                                                                      items="[[CBBillingTypes]]"
-                                                                      item-value-path="id"
-                                                                      item-label-path="value"
-                                                                      disabled="{{ !_permissions.update }}">
-                                                        <template>
-                                                            <b>[[item.value]]</b>
-                                                        </template>
-                                                    </vaadin-combo-box>
-                                                </div>
+                                <paper-collapse-group>
+                                    <paper-collapse-item class="panel-heading" header="Cabeçalho" opened>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="OrcNo" label="Nº do Orçamento" value="{{data.no}}" disabled></vaadin-text-field>
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <such-selectbox id="OrcProjetoAssociado" value="{{data.projetoAssociado}}" label="Projeto Associado"
-                                                                    disabled="{{ !_permissions.update }}"
-                                                                    items="[[CBProjects]]"
-                                                                    text-path="value"
-                                                                    value-path="id"
-                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                                    </such-selectbox>
+                                            <div class="col-md-3">
+                                                <such-selectbox id="OrcNoCliente" label="Cliente" value="{{data.noCliente}}"
+                                                                items="[[CBClients]]"
+                                                                text-path="name"
+                                                                value-path="no_"
+                                                                fields='[{"field":"no_", "name":"Cód. Cliente"}, {"field":"name", "name":"Nome"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Cód. Postal"}, {"field":"city", "name":"Cidade"}, {"field":"country_RegionCode", "name":"Região"}, {"field":"eMail", "name":"E-mail"}]'
+                                                                on-value-changed="_actualizarEmailCliente"
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <such-selectbox id="OrcNoContacto" label="Contacto" value="{{data.noContacto}}"
+                                                                items="[[CBContacts]]"
+                                                                text-path="name"
+                                                                value-path="no_"
+                                                                fields='[{"field":"no_", "name":"Cód. Contato"}, {"field":"name", "name":"Nome"}, {"field":"email", "name":"E-mail"}]'
+                                                                on-value-changed="_actualizarEmailContacto"
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-date-picker id="OrcDataValidade" label="Orçamento Válido até" value="{{data.dataValidadeText}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-combo-box id="OrcIDEstado" label="Estado do Orçamento" value="{{data.idEstado}}"
+                                                                  items="[[CBOrcamentosEstados]]"
+                                                                  item-value-path="id"
+                                                                  item-label-path="value"
+                                                                  required error-message="Este campo é obrigatório"
+                                                                  disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <b>[[item.value]]</b>
+                                                    </template>
+                                                </vaadin-combo-box>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <such-textarea id="OrcDescricao" label="Descrição" value="{{data.descricao}}" rows="7" maxlength="200" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                            </div>
+
+                                            <div class="col-md-7">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <such-selectbox id="OrcRegiao" label="Região" value="{{data.codRegiao}}"
+                                                                        items="[[CBRegions]]"
+                                                                        text-path="value"
+                                                                        value-path="id"
+                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                                        disabled="{{ !_permissions.update }}">
+                                                        </such-selectbox>
+                                                    </div>
+
+                                                    <div class="col-md-5">
+                                                        <such-selectbox id="OrcUnidadePrestacao" label="Unidade de Prestação" value="{{data.unidadePrestacao}}"
+                                                                        items="[[LFetchUnits]]"
+                                                                        text-path="value"
+                                                                        value-path="id"
+                                                                        fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
+                                                                        disabled="{{ !_permissions.update }}">
+                                                        </such-selectbox>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value="{{data.tipoFaturacao}}"
+                                                                          items="[[CBBillingTypes]]"
+                                                                          item-value-path="id"
+                                                                          item-label-path="value"
+                                                                          disabled="{{ !_permissions.update }}">
+                                                            <template>
+                                                                <b>[[item.value]]</b>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
                                                 </div>
 
-                                                <div class="col-md-3">
-                                                    <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" disabled></vaadin-text-field>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <vaadin-combo-box id="OrcCondicoesPagamento" items="[[CBContractPaymentTerms]]" item-value-path="id" item-label-path="value" value="{{data.condicoesPagamento}}" label="Condições Pagamento" disabled="{{ !_permissions.update }}">
+                                                            <template>
+                                                                <paper-icon-item>
+                                                                    <paper-item-body two-line>
+                                                                        <div>[[item.value]]</div>
+                                                                    </paper-item-body>
+                                                                </paper-icon-item>
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-md-5">
+                                                        <such-selectbox id="OrcProjetoAssociado" value="{{data.projetoAssociado}}" label="Projeto Associado"
+                                                                        disabled="{{ !_permissions.update }}"
+                                                                        items="[[CBProjects]]"
+                                                                        text-path="value"
+                                                                        value-path="id"
+                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                        </such-selectbox>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" disabled></vaadin-text-field>
+                                                    </div>
                                                 </div>
 
-                                                <div class="col-md-2">
-                                                    <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="{{data.totalSemIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
-                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="{{data.totalSemIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                    </div>
 
-                                                <div class="col-md-2">
-                                                    <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="{{data.totalComIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                    <div class="col-md-2">
+                                                        <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="{{data.totalComIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </paper-collapse-item>
+                                </paper-collapse-group>
 
                                 <!--Anexos-->
                                 <div>
@@ -756,14 +773,16 @@
                             } else {
                                 this._openToast("Orçamento criado com sucesso.")
 
-                                location.reload();                            }
+                                location.reload();
+                            }
                         } else if (data.detail.url.indexOf("Update") !== -1) {
                             if (this.data.eReasonCode != 1) {
                                 this._openToastError(this.data.eMessage);
                             } else {
                                 this._openToast("Orçamento atualizado com sucesso.")
 
-                                location.reload();                            }
+                                location.reload();
+                            }
                         }
                     } else {
                         this._openToastError("Ocorreu um erro.")
@@ -782,7 +801,7 @@
                         this._EstadoConcluido();
                     }
 
-                    
+
 
                 },
 
@@ -818,7 +837,13 @@
                 },
 
                 _GuardarOrcamento: function () {
-                    this._executeRequest("/Orcamentos/UpdateOrcamento", this.data);
+                    if (this.$.OrcIDEstado.validate() && this.$.OrcIDEstado.value != "") {
+                        this._executeRequest("/Orcamentos/UpdateOrcamento", this.data);
+                    }
+                    else {
+                        this._openToastError("O campo Estado do Orçamento é de preechimento obrigatório")
+                    }
+
                 },
 
                 _CalcularTotalLinha: function () {
@@ -957,7 +982,7 @@
                     if (this.$.OrcEmail.value != null && this.$.OrcEmail.value != "") {
                         if (this.$.OrcEmailAssunto.value != null && this.$.OrcEmailAssunto.value != "") {
                             if (this.$.OrcEmailCorpo.value != null && this.$.OrcEmailCorpo.value != "") {
-                                this.$.page_SendEmail_ajax.body = JSON.stringify( this.data );
+                                this.$.page_SendEmail_ajax.body = JSON.stringify(this.data);
                                 this.$.page_SendEmail_ajax.generateRequest();
                             } else {
                                 this._openToastError("O campo Corpo é de preenchimento obrigatório.")

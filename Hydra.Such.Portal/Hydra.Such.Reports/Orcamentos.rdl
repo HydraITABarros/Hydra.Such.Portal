@@ -339,7 +339,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Str(Fields!Quantidade.Value)</Value>
+                                  <Value>=IIF(Fields!Quantidade.Value = 0, "", Str(Fields!Quantidade.Value))</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -373,7 +373,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Str(Fields!ValorUnitario.Value) + " €"</Value>
+                                  <Value>=IIF(Fields!ValorUnitario.Value = 0, "", Str(Fields!ValorUnitario.Value) + " €")</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -407,7 +407,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Str(Fields!TaxaIVA.Value) + " %"</Value>
+                                  <Value>=IIF(Fields!TaxaIVA.Value = 0, "", Str(Fields!TaxaIVA.Value) + " %")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
@@ -442,7 +442,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Str(Fields!TotalLinha.Value) + " €"</Value>
+                                  <Value>=IIF(Fields!TotalLinha.Value = 0, "", Str(Fields!TotalLinha.Value) + " €")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>

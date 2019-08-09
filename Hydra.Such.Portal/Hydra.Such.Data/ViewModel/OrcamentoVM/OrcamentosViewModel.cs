@@ -26,6 +26,8 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
         public string UnidadePrestacaoText { get; set; }
         public int? TipoFaturacao { get; set; }
         public string TipoFaturacaoText { get; set; }
+        public int? CondicoesPagamento { get; set; }
+        public string CondicoesPagamentoText { get; set; }
         public decimal? TotalSemIVA { get; set; }
         public decimal? TotalComIVA { get; set; }
         public string NoProposta { get; set; }

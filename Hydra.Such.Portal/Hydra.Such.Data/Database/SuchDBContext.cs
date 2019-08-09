@@ -11109,6 +11109,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.TipoFaturacao);
 
+                entity.Property(e => e.CondicoesPagamento);
+
                 entity.Property(e => e.TotalSemIVA)
                     .HasColumnName("TotalSemIVA")
                     .HasColumnType("decimal(38, 20)");
