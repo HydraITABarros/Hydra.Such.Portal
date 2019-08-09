@@ -411,6 +411,34 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.No))
                 {
+                    if (ORCAMENTO.LinhasOrcamentos != null && ORCAMENTO.LinhasOrcamentos.Count > 0)
+                    {
+                        foreach (LinhasOrcamentosViewModel linha in ORCAMENTO.LinhasOrcamentos)
+                        {
+                            if (linha.Quantidade != null || linha.ValorUnitario != null || linha.TaxaIVA != null || linha.TotalLinha != null)
+                            {
+                                if (linha.Quantidade == null)
+                                    linha.Quantidade = 0;
+                                if (linha.ValorUnitario == null)
+                                    linha.ValorUnitario = 0;
+                                if (linha.TaxaIVA == null)
+                                    linha.TaxaIVA = 0;
+                                if (linha.TotalLinha == null)
+                                    linha.TotalLinha = 0;
+
+                                decimal Custo = (decimal)(linha.Quantidade * linha.ValorUnitario);
+                                decimal ValorIVA = (decimal)((linha.TaxaIVA * Custo) / 100);
+
+                                linha.TotalLinha = Custo + ValorIVA;
+                            }
+
+                            DBLinhasOrcamentos.Update(linha.ParseToDB());
+                        }
+
+                        ORCAMENTO.TotalSemIVA = ORCAMENTO.LinhasOrcamentos.Sum(item => item.Quantidade * item.ValorUnitario);
+                        ORCAMENTO.TotalComIVA = ORCAMENTO.LinhasOrcamentos.Sum(item => item.TotalLinha);
+                    }
+
                     Orcamentos OrcOriginal = DBOrcamentos.GetById(ORCAMENTO.No);
                     if (OrcOriginal != null)
                     {
@@ -549,8 +577,13 @@ namespace Hydra.Such.Portal.Controllers
 
             try
             {
-                if (LINHA != null && !string.IsNullOrEmpty(LINHA.NoOrcamento) && !string.IsNullOrEmpty(LINHA.Descricao) && LINHA.Quantidade != null && LINHA.ValorUnitario != null && LINHA.TaxaIVA != null && LINHA.TotalLinha != null)
+                if (LINHA != null && !string.IsNullOrEmpty(LINHA.NoOrcamento) && !string.IsNullOrEmpty(LINHA.Descricao))
                 {
+                    if (LINHA.Ordem == null)
+                    {
+                        LINHA.Ordem = DBLinhasOrcamentos.GetMaxOrdemByOrcamento(LINHA.NoOrcamento) + 1;
+                    }
+
                     LINHA.UtilizadorCriacao = User.Identity.Name;
                     LINHA.DataCriacao = DateTime.Now;
 

@@ -504,11 +504,15 @@
                                         <vaadin-text-field id="LinhaNo" label="Nº da Linha" value="" disabled></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
+                                        <vaadin-text-field id="LinhaOrdem" label="Nº Ordenação" value="" type="number" class="alignRight" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-lg-4">
                                         <vaadin-text-field id="LinhaDescricao" label="Descrição" value="" maxlength="100" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <vaadin-text-field id="LinhaQuantidade" label="Quantidade" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                     </div>
 
@@ -516,7 +520,7 @@
                                         <vaadin-text-field id="LinhaValorUnitario" label="Valor Unitário" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <vaadin-text-field id="LinhaTaxaIVA" label="Taxa IVA na Linha" value="" on-value-changed="_CalcularTotalLinha" type="number" class="alignRight" disabled="{{ !_permissions.update }}"><div slot="suffix">%</div></vaadin-text-field>
                                     </div>
 
@@ -524,7 +528,7 @@
                                         <vaadin-text-field id="LinhaTotal" label="Total Linha" value="" disabled type="number" class="alignRight" required error-message="Este campo é obrigatório"><div slot="suffix" disabled="{{ !_permissions.update }}">€</div></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-lg-2" style="padding-top:12px">
+                                    <div class="col-lg-1" style="padding-top:12px">
                                         <paper-button raised id="btnCreateLinha" class="btnSave" on-tap="_createLinha" hidden="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </div>
                                 </div>
@@ -547,14 +551,31 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column width="250px" resizable>
+                                    <vaadin-grid-column width="100px" resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="ordem">Nº Ordenação</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="ordem" />
+                                        </template>
+                                        <template>
+                                            <div style="text-align:right">
+                                                <template is="dom-if" if="{{ item.selected }}">
+                                                    <vaadin-text-field id="_tabQuantidade" value="{{item.ordem}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                                                </template>
+                                                <template is="dom-if" if="{{ !item.selected }}" disabled>
+                                                    {{item.ordem}}
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="500px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="descricao" />
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field id="_tabDescricao"> value="{{item.descricao}}"</vaadin-text-field>
+                                                <vaadin-text-field id="_tabDescricao" value="{{item.descricao}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.descricao}}
@@ -562,7 +583,7 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column width="250px" resizable>
+                                    <vaadin-grid-column width="150px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="quantidade" />
@@ -570,7 +591,7 @@
                                         <template>
                                             <div style="text-align:right">
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="_tabQuantidade" value="{{item.quantidade}}" disabled> </vaadin-text-field>
+                                                    <vaadin-text-field id="_tabQuantidade" value="{{item.quantidade}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}" disabled>
                                                     {{item.quantidade}}
@@ -587,7 +608,7 @@
                                         <template>
                                             <div style="text-align:right">
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="_tabValorUnitario" value="{{item.valorUnitario}}"> </vaadin-text-field>
+                                                    <vaadin-text-field id="_tabValorUnitario" value="{{item.valorUnitario}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}">
                                                     {{item.valorUnitario}} €
@@ -596,7 +617,7 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <vaadin-grid-column width="250px" resizable>
+                                    <vaadin-grid-column width="150px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="taxaIVA">Taxa IVA na Linha</vaadin-grid-sorter>
                                             <vaadin-grid-filter path="taxaIVA" />
@@ -604,7 +625,7 @@
                                         <template>
                                             <div style="text-align:right">
                                                 <template is="dom-if" if="{{ item.selected }}">
-                                                    <vaadin-text-field id="_tabTaxaIVA" value="{{item.taxaIVA}}" disabled> </vaadin-text-field>
+                                                    <vaadin-text-field id="_tabTaxaIVA" value="{{item.taxaIVA}}" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                 </template>
                                                 <template is="dom-if" if="{{ !item.selected }}" disabled>
                                                     {{item.taxaIVA}} %
@@ -683,6 +704,9 @@
                     selected: {
                         type: Number,
                         value: 0
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
                     },
                 },
 
@@ -768,6 +792,27 @@
                     this.$.page_databound_ajax.generateRequest();
                 },
 
+                _lineSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.data.linhasOrcamentos.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.data.linhasOrcamentos.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.data.linhasOrcamentos.find(x => x == item).selected = true;
+
+                            //this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                            //this.$.contractlinecodesgrid_ajax.generateRequest();
+
+
+                            this.$.gridLinhas.clearCache();
+                        }
+                    }
+                },
+
                 _goBack: function (e) {
                     window.history.back();
                 },
@@ -796,31 +841,16 @@
                 _createLinha: function () {
                     if (this.$.OrcNo.value != null && this.$.OrcNo.value != "") {
                         if (this.$.LinhaDescricao.value != null && this.$.LinhaDescricao.value != "") {
-                            if (this.$.LinhaQuantidade.value != null && this.$.LinhaQuantidade.value != "") {
-                                if (this.$.LinhaValorUnitario.value != null && this.$.LinhaValorUnitario.value != "") {
-                                    if (this.$.LinhaTaxaIVA.value != null && this.$.LinhaTaxaIVA.value != "") {
-                                        if (this.$.LinhaTotal.value != null && this.$.LinhaTotal.value != "") {
-                                            this.$.page_CreateLinha_ajax.body = JSON.stringify({
-                                                noOrcamento: this.$.OrcNo.value,
-                                                descricao: this.$.LinhaDescricao.value,
-                                                quantidade: this.$.LinhaQuantidade.value,
-                                                valorUnitario: this.$.LinhaValorUnitario.value,
-                                                taxaIVA: this.$.LinhaTaxaIVA.value,
-                                                totalLinha: this.$.LinhaTotal.value
-                                            });
-                                            this.$.page_CreateLinha_ajax.generateRequest();
-                                        } else {
-                                            this._openToastError("O Campo Total da Linha é de preenchimento obrigatório.")
-                                        }
-                                    } else {
-                                        this._openToastError("O Campo Taxa IVA na Linha é de preenchimento obrigatório.")
-                                    }
-                                } else {
-                                    this._openToastError("O Campo Valor Unitário é de preenchimento obrigatório.")
-                                }
-                            } else {
-                                this._openToastError("O Campo Quantidade é de preenchimento obrigatório.")
-                            }
+                            this.$.page_CreateLinha_ajax.body = JSON.stringify({
+                                noOrcamento: this.$.OrcNo.value,
+                                ordem: this.$.LinhaOrdem.value,
+                                descricao: this.$.LinhaDescricao.value,
+                                quantidade: this.$.LinhaQuantidade.value,
+                                valorUnitario: this.$.LinhaValorUnitario.value,
+                                taxaIVA: this.$.LinhaTaxaIVA.value,
+                                totalLinha: this.$.LinhaTotal.value
+                            });
+                            this.$.page_CreateLinha_ajax.generateRequest();
                         } else {
                             this._openToastError("O Campo Descrição é de preenchimento obrigatório.")
                         }

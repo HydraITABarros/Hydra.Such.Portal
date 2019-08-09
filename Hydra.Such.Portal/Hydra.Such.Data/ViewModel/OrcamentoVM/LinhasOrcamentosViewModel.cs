@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
     {
         public int NoLinha { get; set; }
         public string NoOrcamento { get; set; }
+        public int? Ordem { get; set; }
         public string Descricao { get; set; }
         public decimal? Quantidade { get; set; }
         public decimal? ValorUnitario { get; set; }

@@ -314,7 +314,6 @@
 
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                    <!--<paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>-->
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
                     <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateProject"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
@@ -343,6 +342,13 @@
             </div>
         </template>
 
+        <template is="dom-if" if="{{ _isCreate }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                <paper-button id="btnCreate" class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        </template>
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -624,7 +630,7 @@
                                                                     <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                    <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
                                                                     <vaadin-text-field value="{{_CRRequisitionNo}}" id="_CRRequisitionNo" name="_CRRequisitionNo" label="Nº Requisição Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
@@ -2705,9 +2711,10 @@
                 },
                 _validateRequisitionData: function () {
                     var startDateElem = Polymer.dom(this.root).querySelector('#_CRStartDate');
+                    var endDateElem = Polymer.dom(this.root).querySelector('#_CREndDate');
                     var promisseNoElem = Polymer.dom(this.root).querySelector('#_CRPromiseNo');
 
-                    if (startDateElem.validate() &
+                    if (startDateElem.validate() & endDateElem.validate() &
                         promisseNoElem.validate()) {
 
                         return true;

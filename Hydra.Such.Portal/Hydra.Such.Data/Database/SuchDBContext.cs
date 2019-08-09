@@ -1929,7 +1929,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DescriçãoDuraçãoContrato)
                     .HasColumnName("Descrição Duração Contrato")
-                    .HasColumnType("text");
+                    .HasMaxLength(4000);
 
                 entity.Property(e => e.DuraçãoMáxContrato)
                     .HasColumnName("Duração Máx. Contrato")
@@ -1973,7 +1973,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("% MC")
                     .HasColumnType("decimal(, 20)");
 
-                entity.Property(e => e.Notas).HasColumnType("text");
+                entity.Property(e => e.Notas)
+                    .HasMaxLength(4000);
 
                 entity.Property(e => e.NumeraçãoInterna)
                     .HasColumnName("Numeração Interna")

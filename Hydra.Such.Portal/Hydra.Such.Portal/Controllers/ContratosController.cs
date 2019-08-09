@@ -1265,6 +1265,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (ContratoDB != null)
                         {
                             ContratoDB = DBContracts.ParseToDB(data);
+                            ContratoDB.UtilizadorModificação = User.Identity.Name;
                             ContratoDB = DBContracts.Update(ContratoDB);
 
                             //Create/Update Contract Client Requests
@@ -1403,6 +1404,8 @@ namespace Hydra.Such.Portal.Controllers
                         DBContractClientRequisition.DeleteAllFromContract(data.ContractNo);
 
                         // Delete Contract 
+                        data.UpdateUser = User.Identity.Name;
+                        DBContracts.Update(DBContracts.ParseToDB(data));
                         DBContracts.DeleteByContractNo(data.ContractNo);
 
 
@@ -1836,8 +1839,13 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
-                    List<LinhasContratos> CLToDelete = ContractLines.Where(y => !data.Lines.Any(x => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha)).ToList();
 
+                    List<LinhasContratos> CLToDelete = ContractLines.Where(y => !data.Lines.Any(x => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha)).ToList();
+                    CLToDelete.ForEach(x =>
+                    {
+                        x.UtilizadorModificação = User.Identity.Name;
+                        DBContractLines.Update(x);
+                    });
                     CLToDelete.ForEach(x => DBContractLines.Delete(x));
 
                     data.Lines.ForEach(x =>
@@ -1878,6 +1886,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
+                            x.CreateUser = User.Identity.Name;
                             x = DBContractLines.ParseToViewModel(DBContractLines.Create(DBContractLines.ParseToDB(x)));
                         }
                     });
@@ -2025,6 +2034,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (requisition != null)
                 {
+                    requisition.UpdateUser = User.Identity.Name;
+                    DBContractClientRequisition.Update(DBContractClientRequisition.ParseToDB(requisition));
                     DBContractClientRequisition.Delete(DBContractClientRequisition.ParseToDB(requisition));
 
                     requisition.eReasonCode = 1;
