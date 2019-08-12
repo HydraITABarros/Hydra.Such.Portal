@@ -474,9 +474,14 @@
                                                             <div class="col-md-3 ">
                                                                 <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
-                                                            <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Início Versão" id="mStartData" name="startData" value="{{data.startData}}" on-blur="_dataInicioChanged" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                            <div class="col-md-2">
+                                                                <vaadin-date-picker label="Data Início Versão" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
+
+                                                            <div class="col-md-1" style="padding:12px">
+                                                                <paper-button class="btnSave" raised on-tap="_dataInicioChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                                            </div>
+
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ _lockFields }}">
                                                                     <template>
@@ -496,9 +501,15 @@
                                                             <div class="col-md-3 ">
                                                                 <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
                                                             </div>
-                                                            <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Fim Versão" id="dueDate" name="dueDate" value="{{data.dueDate}}" on-blur="_dataFimChanged" disabled="{{ _lockFields }}"></vaadin-date-picker>
+
+                                                            <div class="col-md-2 ">
+                                                                <vaadin-date-picker label="Data Fim Versão" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
+
+                                                            <div class="col-md-1" style="padding:12px">
+                                                                <paper-button class="btnSave" raised on-tap="_dataFimChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                                            </div>
+
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" on-value-changed="_changeStatusChanged" disabled="{{ _contractStatusLocked }}">
                                                                     <template>
@@ -668,7 +679,7 @@
                                                             </div>
                                                         </template>
                                                         <!-- VAADIN GRID  Requisições Cliente -->
-                                                        <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}">
+                                                        <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}" active-item="{{_SelectedLineRequisicao}}">
                                                             <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
@@ -794,11 +805,10 @@
                                                             <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="projectNo">Descrição</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="projectNo" />
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectName" name="_CRGridProjectName" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectName" name="_CRGridProjectName" value="{{item.projectNo}}" disabled>
                                                                             <template>
                                                                                 <paper-icon-item>
                                                                                     <paper-item-body two-line>
@@ -1639,9 +1649,14 @@
                                         <vaadin-grid-filter path="versionStartDate" />
                                     </template>
                                     <template>
-                                        <div style="text-align:center">
-                                            {{item.versionStartDate}}
-                                        </div>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-date-picker value="{{item.versionStartDate}}" id="_CLGridVersionStartDate" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            <div style="text-align:center">
+                                                {{item.versionStartDate}}
+                                            </div>
+                                        </template>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1651,9 +1666,14 @@
                                         <vaadin-grid-filter path="versionEndDate" />
                                     </template>
                                     <template>
-                                        <div style="text-align:center">
-                                            {{item.versionEndDate}}
-                                        </div>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-date-picker value="{{item.versionEndDate}}" id="_CLGridVersionEndDate" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            <div style="text-align:center">
+                                                {{item.versionEndDate}}
+                                            </div>
+                                        </template>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -2217,6 +2237,9 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    _SelectedLineRequisicao: {
+                        observer: '_lineRequisicaoSelected'
+                    },
                     _contractStatusLocked: {
                         type: Boolean,
                         value: false
@@ -2415,8 +2438,27 @@
                 },
 
                 _dataInicioChanged: function (e) {
-                    this.$.page_dataInicioChanged_ajax.body = JSON.stringify(this.data);
-                    this.$.page_dataInicioChanged_ajax.generateRequest();
+                    var ajax_request = this.$.page_dataInicioChanged_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Pretende que as linhas sejam automáticamente atualizadas com a data Início Versão?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                 },
                 _DataInicioChangedResponseProcessor: function () {
                     if (this.dataInicioResult == true) {
@@ -2428,8 +2470,27 @@
                 },
 
                 _dataFimChanged: function (e) {
-                    this.$.page_dataFimChanged_ajax.body = JSON.stringify(this.data);
-                    this.$.page_dataFimChanged_ajax.generateRequest();
+                    var ajax_request = this.$.page_dataFimChanged_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Pretende que as linhas sejam automáticamente atualizadas com a data Fim Versão?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                 },
                 _DataFimChangedResponseProcessor: function () {
                     if (this.dataFimResult == true) {
@@ -2859,10 +2920,28 @@
                     var index = this.dataLines.lines.indexOf(e.model.item);
                     this.dataLines.lines.splice(index, 1);
 
-                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
-                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.contractLines_databound_ajax.generateRequest();
+                    var ajax_request = this.$.contractLines_databound_ajax;
+                    ajax_request.url = "/Contratos/UpdateContractLines";
+                    ajax_request.body = JSON.stringify(this.dataLines);
 
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende eliminar a linha?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                     //this.$.gridUserAccesses.clearCache();
                 },
                 _clResponseProcessor: function (data) {
@@ -3080,6 +3159,27 @@
 
 
                             this.$.grid_contractlines.clearCache();
+                        }
+                    }
+                },
+
+                _lineRequisicaoSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.data.clientRequisitions.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.data.clientRequisitions.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.data.clientRequisitions.find(x => x == item).selected = true;
+
+                            //this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                            //this.$.contractlinecodesgrid_ajax.generateRequest();
+
+
+                            this.$.grid_ClientRequisitions.clearCache();
                         }
                     }
                 },

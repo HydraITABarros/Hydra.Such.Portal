@@ -2646,7 +2646,7 @@
                                             //billable
                                             maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
                                             //employeeNo
-                                            vehicle: this.data.vehicle,
+                                            vehicle: this.$._VehicleLines.value,
                                             supplierNo: this._CBVendor,
                                             //supplierProductCode
                                             armazemCDireta: this._CBItemsCDirect,
@@ -3086,11 +3086,9 @@
                             }
                             else {
                                 this._openToast(this.dataLines.eMessage);
-                                this.$._CBLocations.value = "";
                                 this._CBItemsCDirect = "0";
                                 this.$._Description.value = "";
                                 this.$._Description2.value = "";
-                                this.$._UnitMeasureCode.value = "";
                                 this.$._QuantityToRequire.value = "";
                                 this.$._QuantityToOpen.value = "";
                                 this.$._UnitCost.value = "";
@@ -3099,9 +3097,15 @@
                                     this.$._CBPurchaseHeader.value = "";
                                 this.$._CBPurchaseLine.value = "";
                                 this.$._Products._clearSelection();
-                                this.$._ProjectNo.value = this.data.projectNo;
-                                this.$._ProjectNo.valueText = this.data.projectNo;
                                 this.$._CBVendor._clearSelection();
+                                if (this.$._CBLocations != null)
+                                    this.$._CBLocations._clearSelection();
+                                if (this.$._UnitMeasureCode != null)
+                                    this.$._UnitMeasureCode._clearSelection();
+                                if (this.$._ProjectNo != null)
+                                    this.$._ProjectNo._clearSelection();
+                                if (this.$._VehicleLines != null)
+                                    this.$._VehicleLines._clearSelection();
                                 if (this.$._CBPurchaseLine != null)
                                     this.$._CBPurchaseLine._clearSelection();
                                 if (this.data != null) {

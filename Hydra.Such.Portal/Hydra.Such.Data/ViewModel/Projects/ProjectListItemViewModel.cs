@@ -21,6 +21,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string ContractoNo { get; set; }
         public int? ProjectTypeCode { get; set; }
         public string ProjectTypeDescription { get; set; }
+        public string MovimentosVenda { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

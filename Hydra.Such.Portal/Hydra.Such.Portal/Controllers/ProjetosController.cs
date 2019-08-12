@@ -98,44 +98,51 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetListProjectsByArea([FromBody] JObject requestParams)
         {
-            //int AreaId = int.Parse(requestParams["areaid"].ToString());
-            Boolean Ended = Boolean.Parse(requestParams["ended"].ToString());
-
-            List<ProjectListItemViewModel> result = new List<ProjectListItemViewModel>();
-
-            if (!Ended)
+            try
             {
-                result = DBProjects.GetAllByAreaToList();
-                result.RemoveAll(x => x.Status == EstadoProjecto.Terminado);
+                //int AreaId = int.Parse(requestParams["areaid"].ToString());
+                Boolean Ended = Boolean.Parse(requestParams["ended"].ToString());
+
+                List<ProjectListItemViewModel> result = new List<ProjectListItemViewModel>();
+
+                if (!Ended)
+                {
+                    result = DBProjects.GetAllByAreaToList();
+                    result.RemoveAll(x => x.Status == EstadoProjecto.Terminado);
+                }
+                else
+                {
+                    result = DBProjects.GetAllByEstado((EstadoProjecto)2); //Terminado
+
+                }
+
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //Regions
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+                //FunctionalAreas
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+                //ResponsabilityCenter
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenterCode));
+
+                List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
+                result.ForEach(x =>
+                {
+                    x.StatusDescription = x.Status.HasValue ? x.Status.Value.GetDescription() : "";
+                    x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
+                    //x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
+                });
+
+                return Json(result);
             }
-            else
+            catch (Exception ex)
             {
-                result = DBProjects.GetAllByEstado((EstadoProjecto)2); //Terminado
-
+                return null;
             }
-
-            //Apply User Dimensions Validations
-            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
-            //FunctionalAreas
-            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
-            //ResponsabilityCenter
-            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.ResponsabilityCenterCode));
-
-            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-
-            result.ForEach(x =>
-            {
-                x.StatusDescription = x.Status.HasValue ? x.Status.Value.GetDescription() : "";
-                x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
-                //x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
-            });
-
-            return Json(result);
         }
 
         [HttpPost]
@@ -5932,6 +5939,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nome Cliente");
                     Col = Col + 1;
                 }
+                if (dp["movimentosVenda"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Movimentos Venda");
+                    Col = Col + 1;
+                }
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Código Região");
@@ -5999,6 +6011,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["clientName"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ClientName);
+                            Col = Col + 1;
+                        }
+                        if (dp["movimentosVenda"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.MovimentosVenda);
                             Col = Col + 1;
                         }
                         if (dp["regionCode"]["hidden"].ToString() == "False")

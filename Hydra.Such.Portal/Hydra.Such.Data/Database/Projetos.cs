@@ -32,6 +32,7 @@ namespace Hydra.Such.Data.Database
         public string NºCliente { get; set; }
         public DateTime? Data { get; set; }
         public EstadoProjecto? Estado { get; set; }
+        public string MovimentosVenda { get; set; }
         public string CódigoRegião { get; set; }
         public string CódigoÁreaFuncional { get; set; }
         public string CódigoCentroResponsabilidade { get; set; }

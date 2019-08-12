@@ -138,6 +138,18 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Viaturas viaturaToCreate = DBViatura.ParseToDB(data);
                             viaturaToCreate.UtilizadorCriação = User.Identity.Name;
+
+                            if (string.IsNullOrEmpty(viaturaToCreate.NoProjeto))
+                            {
+                                string projectToSearch = "V" + viaturaToCreate.Matrícula;
+
+                                List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, projectToSearch).ToList();
+                                if (AllProjects != null && AllProjects.Count > 0)
+                                {
+                                    viaturaToCreate.NoProjeto = projectToSearch;
+                                }
+                            }
+
                             viaturaToCreate = DBViatura.Create(viaturaToCreate);
 
                             if (data.Imagem != null)
