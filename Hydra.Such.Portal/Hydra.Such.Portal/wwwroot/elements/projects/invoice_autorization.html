@@ -796,12 +796,16 @@
                 <div class="col-md-12 ">
                     <h5 hidden id="validationTitle">Atenção</h5>
                     <template is="dom-repeat" items="{{ _validationMessages }}">
-                        <template is="dom-if" if="{{ _isError(item.type) }}">
+                        <template is="dom-if" if="{{ _isError(item.type) }}" style="color:red">
                             <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color:red;">&nbsp;&nbsp;</i>{{ item.message }}
                             <br />
                         </template>
                         <template is="dom-if" if="{{ _isWarning(item.type) }}">
                             <i class="fa fa-info-circle" aria-hidden="true" style="color:orange;">&nbsp;&nbsp;</i>{{ item.message }}
+                            <br />
+                        </template>
+                        <template is="dom-if" if="{{ _isException(item.type) }}">
+                            <font color="red"><i class="fa fa-info-circle" aria-hidden="true" style="color:orange;">&nbsp;&nbsp;</i>{{ item.message }}</font>
                             <br />
                         </template>
                     </template>
@@ -1059,13 +1063,14 @@
                         this._validationMessages = [];
                         if (this.projMovValResponse.eReasonCode == 1) {
                             this.$.btnConfirmAuthorization.hidden = false;
-                            var warnings = this.projMovValResponse.eMessages.filter(x => x.type == 3);
+
+                            var warnings = this.projMovValResponse.eMessages.filter(x => x.type == 2 || x.type == 3);
                             if (warnings != undefined)
                                 this._validationMessages = warnings;
                         }
                         else {
-                            var errors = this.projMovValResponse.eMessages.filter(x => x.type == 0 || x.type == 2);
-                            var warnings = this.projMovValResponse.eMessages.filter(x => x.type == 3);
+                            var errors = this.projMovValResponse.eMessages.filter(x => x.type == 0);
+                            var warnings = this.projMovValResponse.eMessages.filter(x => x.type == 2 || x.type == 3);
 
                             if (errors != undefined) {
                                 this._validationMessages = errors;
@@ -1083,10 +1088,13 @@
                     }
                 },
                 _isError: function (type) {
-                    return type == 0 || type == 2;
+                    return type == 0// || type == 2;
                 },
                 _isWarning: function (type) {
                     return type == 3;
+                },
+                _isException: function (type) {
+                    return type == 2;
                 },
                 GetMovementsResponse: function (e) {
                     if (e.detail.status === 200) {

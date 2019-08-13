@@ -2749,6 +2749,16 @@ namespace Hydra.Such.Portal.Controllers
                             result.eMessages.Add(new TraceInformation(TraceType.Error, "O tipo de refeição é obrigatório nas linhas com Área Funcional Nutrição"));
                         }
                     }
+
+                    if (x.Quantity == 0)
+                    {
+                        result.eMessages.Add(new TraceInformation(TraceType.Exception, "Existem Movimentos com Quantidade a 0"));
+                    }
+
+                    if (x.UnitPrice == 0)
+                    {
+                        result.eMessages.Add(new TraceInformation(TraceType.Exception, "Existem Movimentos com Preço Unitário a 0"));
+                    }
                 });
 
                 Projetos project = null;
@@ -2853,9 +2863,9 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
                 result.eReasonCode = 2;
-                result.eMessages.Add(new TraceInformation(TraceType.Exception, "Ocorreu um erro ao validar os movimentos: " + ex.Message + "."));
+                result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar os movimentos: " + ex.Message + "."));
             }
-            bool hasErrors = result.eMessages.Any(x => x.Type == TraceType.Error || x.Type == TraceType.Exception);
+            bool hasErrors = result.eMessages.Any(x => x.Type == TraceType.Error);
             if (hasErrors || result.eReasonCode > 1)
             {
                 result.eReasonCode = 2;
