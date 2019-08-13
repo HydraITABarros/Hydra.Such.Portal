@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.Approvals;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using static Hydra.Such.Data.Enumerations;
@@ -47,5 +49,7 @@ namespace Hydra.Such.Data.ViewModel
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
         public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }
         public List<UserAcessosLocalizacoesViewModel> UserAcessosLocalizacoes { get; set; }
+
+        public List<ApprovalGroupViewModel> UserGruposAprovacao { get; set; }
     }
 }
