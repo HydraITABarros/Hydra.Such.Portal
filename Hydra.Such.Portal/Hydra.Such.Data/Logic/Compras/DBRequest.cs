@@ -735,7 +735,6 @@ namespace Hydra.Such.Data.Logic.Request
                         PedirOrcamento = item.PedirOrcamento,
                         ValorTotalDocComIVA = item.ValorTotalDocComIVA,
 
-
                         LinhasRequisição = item.Lines.ParseToDB(),
                         RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()
                     };

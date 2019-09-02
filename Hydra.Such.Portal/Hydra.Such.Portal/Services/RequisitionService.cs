@@ -52,6 +52,9 @@ namespace Hydra.Such.Portal.Services
         {
             if (requisition != null)
             {
+                requisition.eReasonCode = 99;
+                requisition.eMessage = "Ocorreu um erro na Validação da Requisição.";
+
                 if (requisition.State == RequisitionStates.Approved)
                 {
                     if (requisition.Lines != null && requisition.Lines.Count > 0)
@@ -60,7 +63,7 @@ namespace Hydra.Such.Portal.Services
                             .Where(x => x.QuantityRequired != null && x.QuantityRequired.Value > 0)
                             .ToList();
 
-                        if (linesToValidate.Count() > 0)
+                        if (linesToValidate != null && linesToValidate.Count() > 0)
                         {
                             requisition.State = RequisitionStates.Validated;
                             requisition.ResponsibleValidation = this.changedByUserName;
