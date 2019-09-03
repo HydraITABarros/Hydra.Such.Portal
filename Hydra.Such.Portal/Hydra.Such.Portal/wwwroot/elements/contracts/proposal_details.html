@@ -370,14 +370,18 @@
                 <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
                 <!--</template>-->
 
-                <template is="dom-if" if="{{ _permissions.create }}">
-                    <template is="dom-if" if="{{ _isCreate }}">
-                        <paper-button hidden="{{ _readOnly }}" id="tablinks" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                    </template>
-                </template>
                 <paper-button hidden="{{ _readOnly }}" id="btnUpdate" class="tablinks" on-tap="_update" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                 <paper-button hidden="{{ _readOnly }}" id="btnDelete" class="tablinks" on-tap="_delete" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            </div>
+        </template>
 
+        <template is="dom-if" if="{{ _isCreate }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button hidden="{{ _readOnly }}" id="tablinks" class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
             </div>
         </template>
 

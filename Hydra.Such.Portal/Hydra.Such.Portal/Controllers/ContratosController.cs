@@ -1790,16 +1790,36 @@ namespace Hydra.Such.Portal.Controllers
             {
                 NAVContractDetailsViewModel result = DBNAV2017ContractDetails.GetContractByNo(data.ContractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
 
+                decimal ValorPeriodo = 0;
+                decimal SomatorioLinhas = 0;
+                decimal tmpQuantidade = 0;
+                decimal tmpPrecoUnitario = 0;
+
+                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                if (ContractLines != null && ContractLines.Count > 0)
+                {
+                    ContractLines.ForEach(linha =>
+                    {
+                        tmpQuantidade = linha.Quantidade.HasValue ? (decimal)linha.Quantidade : 0;
+                        tmpPrecoUnitario = linha.PreçoUnitário.HasValue ? (decimal)linha.PreçoUnitário : 0;
+
+                        ValorPeriodo = ValorPeriodo + (tmpQuantidade * tmpPrecoUnitario);
+                        SomatorioLinhas = SomatorioLinhas + (tmpQuantidade * tmpPrecoUnitario);
+                    });
+                }
+
+                result.SomatorioLinhas = SomatorioLinhas;
+
                 if (data.InvocePeriod == 1)
-                    result.VPeriodFatura = result.VPeriod * 1;
+                    result.VPeriodFatura = ValorPeriodo * 1;
                 if (data.InvocePeriod == 2)
-                    result.VPeriodFatura = result.VPeriod * 2;
+                    result.VPeriodFatura = ValorPeriodo * 2;
                 if (data.InvocePeriod == 3)
-                    result.VPeriodFatura = result.VPeriod * 3;
+                    result.VPeriodFatura = ValorPeriodo * 3;
                 if (data.InvocePeriod == 4)
-                    result.VPeriodFatura = result.VPeriod * 6;
+                    result.VPeriodFatura = ValorPeriodo * 6;
                 if (data.InvocePeriod == 5)
-                    result.VPeriodFatura = result.VPeriod * 12;
+                    result.VPeriodFatura = ValorPeriodo * 12;
                 if (data.InvocePeriod == 6)
                     result.VPeriodFatura = 0;
 

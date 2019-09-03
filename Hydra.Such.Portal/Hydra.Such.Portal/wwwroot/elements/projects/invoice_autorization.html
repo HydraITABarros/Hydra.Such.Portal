@@ -298,7 +298,7 @@
                                                 <vaadin-text-field id="txtDescricaoProjeto" name="txtDescricaoProjeto" label="Descrição Projeto" value="[[Project.description]]" disabled></vaadin-text-field>
                                             </div>
                                             <div class="col-md-3 ">
-                                                <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}" maxlength="50"></vaadin-text-field>
+                                                <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}" maxlength="20"></vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -992,24 +992,29 @@
                     }
                 },
                 _openDlg: function () {
-                    if (this.selectedItems != null && this.selectedItems.length > 0) {
-                        this.validationMessages = [];
-                        var validationRequest = {
-                            "projectNo": this._projectno,
-                            "commitmentNumber": this._commitmentNo,
-                            "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
-                            "customerRequestNo": this._customerRequestNo,
-                            "customerRequestDate": this._customerRequestDate,
-                            "serviceDate": this.$.dpDataPrestacaoServ.value,
-                            "authorizationTotalValue": this.$.txtValorAAutorizar.value,
-                            "projMovements": this.selectedItems,
-                        };
-                        this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
-                        this.$.projMovValidation_ajax.generateRequest();
-                        this.$.dlgValidation.open();
+                    if (this._commitmentNo.length > 20) {
+                        this.openToastError("O Nº Compromisso não pode ter mais de 20 carateres.");
                     }
                     else {
-                        this.openToastError("Selecione os movimentos a autorizar");
+                        if (this.selectedItems != null && this.selectedItems.length > 0) {
+                            this.validationMessages = [];
+                            var validationRequest = {
+                                "projectNo": this._projectno,
+                                "commitmentNumber": this._commitmentNo,
+                                "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
+                                "customerRequestNo": this._customerRequestNo,
+                                "customerRequestDate": this._customerRequestDate,
+                                "serviceDate": this.$.dpDataPrestacaoServ.value,
+                                "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                                "projMovements": this.selectedItems,
+                            };
+                            this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
+                            this.$.projMovValidation_ajax.generateRequest();
+                            this.$.dlgValidation.open();
+                        }
+                        else {
+                            this.openToastError("Selecione os movimentos a autorizar");
+                        }
                     }
                 },
                 _closedlgValidationDlg: function () {

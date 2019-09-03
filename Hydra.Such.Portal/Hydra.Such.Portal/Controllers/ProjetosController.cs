@@ -1263,9 +1263,9 @@ namespace Hydra.Such.Portal.Controllers
                         newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
                         newdp.Utilizador = User.Identity.Name;
                         newdp.CustoUnitário = x.UnitCost;
-                        newdp.CustoTotal = x.TotalCost;
+                        newdp.CustoTotal = x.Quantity * x.UnitCost; //x.TotalCost;
                         newdp.PreçoUnitário = x.UnitPrice;
-                        newdp.PreçoTotal = x.TotalPrice;
+                        newdp.PreçoTotal = x.Quantity * x.UnitPrice; //x.TotalPrice;
                         newdp.Faturável = x.Billable;
                         newdp.Registado = false;
                         newdp.FaturaANºCliente = x.InvoiceToClientNo;
@@ -1303,9 +1303,9 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
                             Utilizador = User.Identity.Name,
                             CustoUnitário = x.UnitCost,
-                            CustoTotal = x.TotalCost,
+                            CustoTotal = x.Quantity * x.UnitCost, //x.TotalCost,
                             PreçoUnitário = x.UnitPrice,
-                            PreçoTotal = x.TotalPrice,
+                            PreçoTotal = x.Quantity * x.UnitPrice, //x.TotalPrice,
                             Faturável = x.Billable,
                             Registado = false,
                             FaturaANºCliente = x.InvoiceToClientNo,
@@ -1834,9 +1834,9 @@ namespace Hydra.Such.Portal.Controllers
                                     CódigoCentroResponsabilidade = newdp.CódigoCentroResponsabilidade,
                                     Utilizador = User.Identity.Name,
                                     CustoUnitário = newdp.CustoUnitário,
-                                    CustoTotal = newdp.CustoTotal,
+                                    CustoTotal = newdp.Quantidade * newdp.CustoUnitário, //newdp.CustoTotal,
                                     PreçoUnitário = newdp.PreçoUnitário,
-                                    PreçoTotal = newdp.PreçoTotal,
+                                    PreçoTotal = newdp.Quantidade * newdp.PreçoUnitário, //newdp.PreçoTotal,
                                     Faturável = newdp.Faturável,
                                     Registado = true,
                                     Faturada = false,
@@ -2657,7 +2657,7 @@ namespace Hydra.Such.Portal.Controllers
                         });
 
                         ctx.ProjectosAutorizados.Add(authorizedProject);
-                        ctx.MovimentosDeProjeto.UpdateRange(unchangedProjectMovements);// projMovements.ParseToDB());
+                        ctx.MovimentosDeProjeto.UpdateRange(unchangedProjectMovements);
                         ctx.MovimentosProjectoAutorizados.AddRange(authorizedProjMovements);
 
                         try
@@ -2824,6 +2824,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (commitmentNumber != contract.NºCompromisso)
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Nº do Compromisso é diferente do que está no Contrato."));
+                        }
+
+                        if (commitmentNumber.Length > 20)
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "O Nº Compromisso não pode ter mais de 20 carateres."));
                         }
                     }
 

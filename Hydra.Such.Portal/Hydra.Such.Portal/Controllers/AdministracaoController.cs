@@ -200,7 +200,7 @@ namespace Hydra.Such.Portal.Controllers
                 foreach (GruposAprovação grupo in AllGrupos)
                 {
                     List<UtilizadoresGruposAprovação> AllUsersByGrupo = DBApprovalUserGroup.GetByGroup(grupo.Código);
-                    if (AllUsersByGrupo != null && AllUsersByGrupo.Where(x => x.UtilizadorAprovação.ToLower() == User.Identity.Name.ToLower()).Count() > 0)
+                    if (AllUsersByGrupo != null && AllUsersByGrupo.Where(x => x.UtilizadorAprovação.ToLower() == userConfig.IdUtilizador.ToLower()).Count() > 0)
                         ListGrupoAprovacao.Add(grupo.ParseToViewModel());
                 }
                 result.UserGruposAprovacao = ListGrupoAprovacao.OrderBy(x => x.Description).ToList();
