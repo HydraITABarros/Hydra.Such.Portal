@@ -971,6 +971,7 @@
                     this.$.ToastMessageError.open();
                 },
                 _confirm: function (selectedItem, selectedItems) {
+                    debugger;
                     if (this.selectedItems != null && this.selectedItems.length > 0) {
                         var authorizationRequest = {
                             "projectNo": this._projectno,
@@ -992,6 +993,9 @@
                     }
                 },
                 _openDlg: function () {
+                    debugger;
+                    if (this._commitmentNo == null)
+                        this._commitmentNo = "";
                     if (this._commitmentNo.length > 20) {
                         this.openToastError("O Nº Compromisso não pode ter mais de 20 carateres.");
                     }

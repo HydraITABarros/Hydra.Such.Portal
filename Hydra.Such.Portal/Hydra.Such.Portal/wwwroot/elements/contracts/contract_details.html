@@ -3390,6 +3390,7 @@
                     return false;
                 },
                 _ValidateInvoice: function () {
+                    debugger;
                     var messageErro = "";
                     if (this.$.mStatus.value != 4 && this.$.mStatus.value != 7) {
                         messageErro = "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
@@ -3410,10 +3411,10 @@
                         messageErro += "Os termos de pagamento de estar preenchido \n";
                     }
                     if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
-                        messageErro += "Data da expiração não pode ser menor que o inicio da faturação \n";
+                        messageErro += "Data Fim Versão não pode ser menor que a Data início Contrato \n";
 
-                    if (this.$.dueDate.value < this.$.contractEndDate.value && this.$.dueDate.value != null)
-                        messageErro += "Data da fim de periodo não pode ser maior que a data de expiração \n";
+                    if (this.$.dueDate.value > this.$.contractEndDate.value && this.$.dueDate.value != null)
+                        messageErro += "Data Fim Versão não pode ser maior que a Data Final Contrato \n";
 
                     if (this.dataLines != null) {
                         var exist = false;
