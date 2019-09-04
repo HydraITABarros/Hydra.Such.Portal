@@ -2489,7 +2489,7 @@
                                                     </template>
                                                     <template>
                                                         <!--<vaadin-text-field id="comentarioAutorizacaoAdjudicacao" value="{{item.comentarioAutorizacaoAdjudicacao}}" disabled></vaadin-text-field>-->
-                                                        <such-textarea id="comentarioAutorizacaoAdjudicacao" name="comentarioAutorizacaoAdjudicacao" rows="3" value="{{item.comentarioAutorizacaoAdjudicacao}}" disabled></such-textarea>
+                                                        <such-textarea id="comentarioAutorizacaoAdjudicacao" name="comentarioAutorizacaoAdjudicacao" rows="3" value="{{item.comentarioAdjudicacao}}" disabled></such-textarea>
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
@@ -3918,7 +3918,7 @@
                                 <vaadin-text-field id="valorAdjudicarInPaperDlg15" name="valorAdjudicarInPaperDlg15" label="Valor Adjudicar" value="{{batchObject15.valorAdjudicacao}}" on-blur="_updateLotePaperDialog15" prevent-invalid-input pattern="[0-9.]*" required></vaadin-text-field>
                             </div>
                             <div class="col-md-10">
-                                <such-textarea id="comentarioAdjudicacaoInPaperDlg15" name="comentarioAdjudicacaoInPaperDlg15" label="Comentário Adjudicação" rows="3" value="{{batchObject15.comentarioAutorizacaoAdjudicacao}}" on-blur="_updateLotePaperDialog15" required></such-textarea>
+                                <such-textarea id="comentarioAdjudicacaoInPaperDlg15" name="comentarioAdjudicacaoInPaperDlg15" label="Comentário Adjudicação" rows="3" value="{{batchObject15.comentarioAdjudicacao}}" on-blur="_updateLotePaperDialog15" required></such-textarea>
                             </div>
                         </div>
                     </div>
@@ -3926,7 +3926,7 @@
             </div>
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeDetailStatus15" dialog-dismiss>Fechar</paper-button>
-                <paper-button class="btnSave" on-tap="_adjudicarLote" data-args="foo, bar, -1" dialog-confirm>Adjudicar</paper-button>
+                <paper-button class="btnSave" on-tap="_adjudicarLote" dialog-confirm>Enviar Área</paper-button>
             </div>
         </paper-dialog>
         <!-- ALT_CCP_#001.y2019.b -->
@@ -4125,7 +4125,15 @@
                     _SelectedBatchToAward: {
                         observer:'_batchToAuthorizeDetails'
                     },
+
+                    _SelectedBatchToSubmit: {
+                        observer:'_batchToSubmit'
+                    },
                     batchObject15: {
+                        type: Object,
+                        value: null
+                    },
+                    batchObject16: {
                         type: Object,
                         value: null
                     }
@@ -6689,9 +6697,13 @@
                         }
 
                         debugger;;
-                        _valor = this.__preciseRound(_valor, 2);
+                        //_valor = this.__preciseRound(_valor, 2);
+                        _valorPrecoBase = parseFloat(this.__preciseRound(_valorPrecoBase, 2))
+                        _totalLotes = parseFloat(this.__preciseRound(_totalLotes, 2));
+                        _valor = parseFloat(this.__preciseRound(_valor, 2));
 
-                        if (_lotes != null && (this.__preciseRound(parseFloat(_totalLotes) + parseFloat(_valor), 2) > this.__preciseRound(parseFloat(this.data.valorPrecoBase), 2))) {
+                        //if (_lotes != null && (this.__preciseRound(parseFloat(_totalLotes) + parseFloat(_valor), 2) > this.__preciseRound(parseFloat(this.data.valorPrecoBase), 2))) {
+                        if (_lotes != null && (_totalLotes + _valor > _valorPrecoBase)) {
                            this._showErrorMessage("O somatório dos Lotes é superior ao Preço Base!");
                             return;
                         }
@@ -6748,8 +6760,7 @@
                     this.$.page_delete_lote_ajax.generateRequest();
 
                     this.$.gridLotesProcedimento1.clearCache();
-                },
-
+                },  
                 _deleteLoteResponse: function (e) {
                     if (this.loteDeleted) {
                         this._showUpdateProcedimentoMsg = true;
@@ -6859,8 +6870,7 @@
 
                     var lotes = this.data.loteProcedimentoCcp;
 
-                    if ((this.batchObject15.valorAdjudicacao !== null && this.batchObject15.valorAdjudicacao !== undefined) ||
-                        (this.batchObject15.comentarioAutorizacaoAdjudicacao !== null && this.batchObject15.comentarioAutorizacaoAdjudicacao !== undefined)) {
+                    if ((this.batchObject15.valorAdjudicacao !== null && this.batchObject15.valorAdjudicacao !== undefined) || (this.batchObject15.comentarioAutorizacaoAdjudicacao !== null && this.batchObject15.comentarioAutorizacaoAdjudicacao !== undefined)) {
                         if (lotes.valorAdjudicacao !== this.batchObject15.valorAdjudicacao || lotes.comentarioAutorizacaoAdjudicacao !== this.batchObject15.comentarioAutorizacaoAdjudicacao) {
                             var index = lotes.findIndex(b => b.noProcedimento === this.batchObject15.noProcedimento && b.idLote === this.batchObject15.idLote);
                             
@@ -6884,12 +6894,50 @@
                     debugger;;
 
                     if (this.batchObject15 == null || this.batchObject15 == undefined) {
-
+                        this._showErrorMessage("Sem dados!");
+                        return;
                     }
-                    
+
+                    if (this.batchObject15.estadoLote != 15) {
+                        this._showErrorMessage("Estado inválido para adjudicação!");
+                        return;
+                    }
+
                     if (!this.__isElementCompras) {
                         this._showErrorMessage("Não está autorizado a utilizar esta opção!");
                         return;
+                    }
+
+                    this.batchObject15.valorAdjudicacao = this.__preciseRound(parseFloat(this.batchObject15.valorAdjudicacao));
+                    if (this.batchObject15.valorAdjudicacao == null || this.batchObject15.valorAdjudicacao <= 0) {
+                        this._showErrorMessage("Valor Adjudicação tem que ser maior que zero!");
+                        return;
+                    }
+
+                    this.batchObject15.valorEstimado = this.__preciseRound(parseFloat(this.batchObject15.valorEstimado));
+                    if (this.batchObject15.valorAdjudicacao > this.batchObject15.valorEstimado) {
+                        this._showErrorMessage("Valor Adjudicação não pode ser superior ao Valor Estimado do Lote!");
+                        return;
+                    }
+
+                    if (this.batchObject15.comentarioAutorizacaoAdjudicacao === null || this.batchObject15.comentarioAutorizacaoAdjudicacao === undefined) {
+                        this._showErrorMessage("Obrigatório um comentário de Adjudicação!")
+                        return;
+                    }
+
+                    debugger;
+                    if (this._verificaLote(this.batchObject15)) {
+                        this.$.page_adjudicarLote_ajax.body = JSON.stringify(this.batchObject15);
+                        this.$.page_update_lote_ajax.body = JSON.stringify(this.batchObject15);
+
+                        var sav = this.$.page_update_lote_ajax.generateRequest();
+                        var lin = this.$.page_adjudicarLote_ajax.generateRequest();
+
+                        Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                            //var savReq = requests[0].result;
+                            //var linReq = requests[1].result;
+                        });
+
                     }
                 },
 

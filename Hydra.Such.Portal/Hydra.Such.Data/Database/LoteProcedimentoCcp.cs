@@ -14,11 +14,18 @@ namespace Hydra.Such.Data.Database
         public int? EstadoLote { get; set; }
         public string DescricaoObjectoLote { get; set; }
         public decimal? ValorEstimado { get; set; }
+
         public decimal? ValorAdjudicacao { get; set; }
-        public string ComentarioAutorizacaoAdjudicacao { get; set; }
+        public string ComentarioAdjudicacao { get; set; }
         public string UtilizadorAdjudicacao { get; set; }
         public DateTime? DataAdjudicacao { get; set; }
         public DateTime? HoraAdjudicacao { get; set; }
+
+        public string ComentarioAutorizacaoAdjudicacao { get; set; }
+        public string UtilizadorAutorizacaoAdjudicacao { get; set; }
+        public DateTime? DataAutorizacaoAdjudicacao { get; set; }
+        public DateTime? HoraAutorizacaoAdjudicacao { get; set; }
+
         public string ComentarioNaoAdjudicacao { get; set; }
         public string UtilizadorNaoAdjudicacao { get; set; }
         public DateTime? DataNaoAdjudicacao { get; set; }
