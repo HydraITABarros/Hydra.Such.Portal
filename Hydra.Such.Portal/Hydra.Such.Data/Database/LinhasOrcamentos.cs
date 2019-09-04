@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.Database
     {
         public int NoLinha { get; set; }
         public string OrcamentosNo { get; set; }
+        public int? Ordem { get; set; }
         public string Descricao { get; set; }
         public decimal? Quantidade { get; set; }
         public decimal? ValorUnitario { get; set; }

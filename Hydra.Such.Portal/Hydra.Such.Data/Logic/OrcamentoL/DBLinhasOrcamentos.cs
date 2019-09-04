@@ -30,7 +30,7 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasOrcamentos.ToList();
+                    return ctx.LinhasOrcamentos.OrderBy(x => x.Ordem).ToList();
                 }
             }
             catch (Exception ex)
@@ -45,12 +45,28 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.LinhasOrcamentos.Where(x => x.OrcamentosNo == NoOrcamento).ToList();
+                    return ctx.LinhasOrcamentos.Where(x => x.OrcamentosNo == NoOrcamento).OrderBy(x => x.Ordem).ToList();
                 }
             }
             catch (Exception ex)
             {
                 return null;
+            }
+        }
+
+        public static int GetMaxOrdemByOrcamento(string NoOrcamento)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<LinhasOrcamentos> AllLinhas = ctx.LinhasOrcamentos.Where(x => x.OrcamentosNo == NoOrcamento).ToList();
+                    return (int)AllLinhas.Max(x => x.Ordem);
+                }
+            }
+            catch (Exception ex)
+            {
+                return -1;
             }
         }
 
@@ -165,6 +181,7 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
                 {
                     NoLinha = item.NoLinha,
                     NoOrcamento = item.OrcamentosNo,
+                    Ordem = item.Ordem,
                     Descricao = item.Descricao,
                     Quantidade = item.Quantidade,
                     ValorUnitario = item.ValorUnitario,
@@ -198,6 +215,7 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
                 {
                     NoLinha = item.NoLinha,
                     OrcamentosNo = item.NoOrcamento,
+                    Ordem = item.Ordem,
                     Descricao = item.Descricao,
                     Quantidade = item.Quantidade,
                     ValorUnitario = item.ValorUnitario,

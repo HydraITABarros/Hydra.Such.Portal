@@ -123,7 +123,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (REQ != null)
                     {
-                        switch(REQ.TipoReq)
+                        switch (REQ.TipoReq)
                         {
                             case 0:
                                 x.NumberLink = "/GestaoRequisicoes/MinhaRequisicao/" + x.Number; //"/GestaoRequisicoes/DetalhesReqAprovada/"
@@ -253,7 +253,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Get Requistion Lines
                             //List<RequisitionLineViewModel> requesitionLines = DBRequestLine.ParseToViewModel(DBRequestLine.GetAllByRequisiçãos(requisition.RequisitionNo));
                             //if (requesitionLines != null && requesitionLines.Count > 0)
-                            if (requisition.Lines.Count > 0)
+                            if (requisition.Lines != null && requisition.Lines.Count > 0)
                             {
                                 //Check if requisition have Request Nutrition a false and all lines have ProjectNo
                                 if ((!requisition.Lines.Any(x => x.ProjectNo == null || x.ProjectNo == "") && (requisition.RequestNutrition.HasValue && requisition.RequestNutrition.Value)) || !requisition.RequestNutrition.HasValue || !requisition.RequestNutrition.Value)
@@ -269,23 +269,13 @@ namespace Hydra.Such.Portal.Controllers
                                     requisition.UpdateUser = User.Identity.Name;
 
                                     //if (DBRequest.Update(requisition.ParseToDB()) != null)
-                                    Requisição ReqDB = new Requisição();
-                                    ReqDB = requisition.ParseToDB();
-                                    if (ReqDB != null)
+                                    //Requisição ReqDB = new Requisição();
+                                    //ReqDB = requisition.ParseToDB();
+                                    if (DBRequest.Update(requisition.ParseToDB()) != null)
                                     {
-                                        if (DBRequest.Update(ReqDB) != null)
+                                        //Update Requisition Lines Data
+                                        if (requisition.Lines != null && requisition.Lines.Count > 0)
                                         {
-                                            //Create Workflow
-                                            var ctx = new SuchDBContext();
-                                            var logEntry = new RequisicoesRegAlteracoes();
-                                            logEntry.NºRequisição = requisition.RequisitionNo;
-                                            logEntry.Estado = (int)RequisitionStates.Approved; //APROVADO = 4
-                                            logEntry.ModificadoEm = DateTime.Now;
-                                            logEntry.ModificadoPor = User.Identity.Name;
-                                            ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                            ctx.SaveChanges();
-
-                                            //Update Requisition Lines Data
                                             requisition.Lines.ForEach(line =>
                                             {
                                                 if (line.QuantityToRequire.HasValue && line.QuantityToRequire.Value > 0)
@@ -294,57 +284,97 @@ namespace Hydra.Such.Portal.Controllers
                                                     DBRequestLine.Update(line.ParseToDB());
                                                 }
                                             });
+                                        }
 
-                                            //Se a requesição tiver o campo "Requisição Nutrição" a true faz automaticamente a validação
-                                            if (requisition.RequestNutrition == true)
+                                        //Create Workflow de Aprovação
+                                        var ctx = new SuchDBContext();
+                                        var logEntry = new RequisicoesRegAlteracoes();
+                                        logEntry.NºRequisição = requisition.RequisitionNo;
+                                        logEntry.Estado = (int)RequisitionStates.Approved; //APROVADO = 4
+                                        logEntry.ModificadoEm = DateTime.Now;
+                                        logEntry.ModificadoPor = User.Identity.Name;
+                                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                        ctx.SaveChanges();
+
+                                        //Se a requesição tiver o campo "Requisição Nutrição" a true faz automaticamente a validação
+                                        if (requisition != null && requisition.RequestNutrition.HasValue && requisition.RequestNutrition == true)
+                                        {
+                                            try
                                             {
+                                                requisition.eReasonCode = 204;
+                                                requisition.eMessage = "Ocorreu um erro na Validação da Requisição.";
+
                                                 RequisitionService serv = new RequisitionService(configws, HttpContext.User.Identity.Name);
                                                 requisition = serv.ValidateRequisition(requisition);
-                                                if (requisition.eReasonCode == 1)
+                                                if (requisition != null && requisition.eReasonCode == 1)
                                                 {
                                                     //Create Workflow
-                                                    ctx = new SuchDBContext();
-                                                    logEntry = new RequisicoesRegAlteracoes();
-                                                    logEntry.NºRequisição = requisition.RequisitionNo;
-                                                    logEntry.Estado = (int)RequisitionStates.Validated; //VALIDADO = 3
-                                                    logEntry.ModificadoEm = DateTime.Now;
-                                                    logEntry.ModificadoPor = User.Identity.Name;
-                                                    ctx.RequisicoesRegAlteracoes.Add(logEntry);
-                                                    ctx.SaveChanges();
+                                                    //ctx = new SuchDBContext();
+                                                    //logEntry = new RequisicoesRegAlteracoes();
+                                                    //logEntry.NºRequisição = requisition.RequisitionNo;
+                                                    //logEntry.Estado = (int)RequisitionStates.Validated; //VALIDADO = 3
+                                                    //logEntry.ModificadoEm = DateTime.Now;
+                                                    //logEntry.ModificadoPor = User.Identity.Name;
+                                                    //ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                                    //ctx.SaveChanges();
 
-                                                    result.eReasonCode = 100;
-                                                    result.eMessage = "A requisição foi aprovada e validada com sucesso.";
+                                                    Requisição REQTMP = DBRequest.GetById(approvalMovement.Number);
+                                                    if (REQTMP != null && REQTMP.Estado.HasValue && REQTMP.Estado == (int)RequisitionStates.Validated)
+                                                    {
+                                                        approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
+
+                                                        if (approvalResult != null && approvalResult.eReasonCode == 103)
+                                                        {
+                                                            result.eReasonCode = 100;
+                                                            result.eMessage = "A requisição foi aprovada e validada com sucesso.";
+                                                        }
+                                                        else
+                                                        {
+                                                            result.eReasonCode = 204;
+                                                            result.eMessage = "Ocorreu um erro no Movimento de Aprovação da Requisição.";
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        result.eReasonCode = 204;
+                                                        result.eMessage = "Ocorreu um erro na Validação da Requisição.";
+                                                    }
                                                 }
                                                 else
                                                 {
                                                     result.eReasonCode = requisition.eReasonCode;
                                                     result.eMessage = requisition.eMessage;
                                                 }
-                                            }
 
-                                            approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
-                                            if (approvalResult.eReasonCode == 103)
-                                            {
-                                                result.eReasonCode = 100;
-                                                result.eMessage = "A requisição foi aprovada com sucesso.";
-
+                                                return Json(result);
                                             }
-                                            else if (approvalResult.eReasonCode == 100)
+                                            catch (Exception ex)
                                             {
-                                                result.eReasonCode = 100;
-                                                result.eMessage = "Requisição aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
+                                                result.eReasonCode = 204;
+                                                result.eMessage = "Ocorreu um erro inesperado na Validação da Requisição.";
+
+                                                return Json(result);
                                             }
                                         }
-                                        else
+
+                                        approvalResult = ApprovalMovementsManager.ApproveMovement(approvalMovement.MovementNo, User.Identity.Name);
+
+                                        if (approvalResult.eReasonCode == 103)
                                         {
-                                            result.eReasonCode = 204;
-                                            result.eMessage = "Ocorreu um erro na atualização da Requisição.";
+                                            result.eReasonCode = 100;
+                                            result.eMessage = "A requisição foi aprovada com sucesso.";
+
+                                        }
+                                        else if (approvalResult.eReasonCode == 100)
+                                        {
+                                            result.eReasonCode = 100;
+                                            result.eMessage = "Requisição aprovada com sucesso, encontra-se a aguardar aprovação do nivel seguinte.";
                                         }
                                     }
                                     else
                                     {
-                                        result.eReasonCode = 203;
-                                        result.eMessage = "Ocorreu um erro na conversão dos dados na Requisição!";
+                                        result.eReasonCode = 204;
+                                        result.eMessage = "Ocorreu um erro na atualização da Requisição.";
                                     }
                                 }
                                 else

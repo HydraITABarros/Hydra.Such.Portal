@@ -42,6 +42,22 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static Anexos GetByNoLinha(int NoLinha)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Anexos.Where(x => x.NºLinha == NoLinha).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<Anexos> GetAll()
         {
             try
@@ -168,6 +184,7 @@ namespace Hydra.Such.Data.Logic
                DocNumber = x.NºOrigem,
                DocType = x.TipoOrigem,
                Url = x.UrlAnexo,
+               Visivel = x.Visivel,
                CreateDateTime = x.DataHoraCriação.HasValue ? x.DataHoraCriação.Value.ToString("yyyy-MM-dd") : "",
                UpdateDateTime = x.DataHoraModificação.HasValue ? x.DataHoraModificação.Value.ToString("yyyy-MM-dd") : "",
                CreateUser = x.UtilizadorCriação,
@@ -195,6 +212,7 @@ namespace Hydra.Such.Data.Logic
                 NºOrigem = x.DocNumber,
                 TipoOrigem = x.DocType,
                 UrlAnexo = x.Url,
+                Visivel = x.Visivel,
                 DataHoraCriação = x.CreateDateTime != null ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null,
                 DataHoraModificação = x.CreateDateTime != null ? DateTime.Parse(x.CreateDateTime) : (DateTime?)null,
                 UtilizadorCriação = x.CreateUser,

@@ -520,7 +520,6 @@
                 },
 
                 _create: function () {
-                    debugger
                     if (this._validateData()) {
                         this.$.ajax_createprocedimento.body = JSON.stringify({
                             "numCartao": this.$.numCartao.value,
@@ -573,7 +572,6 @@
                 },
 
                 _update: function () {
-                    debugger
                     if (this._validateData()) {
                         this.$.ajax_updateprocedimento.body = JSON.stringify({
                             "numCartao": this.$.numCartao.value,

@@ -194,6 +194,16 @@ namespace Hydra.Such.Portal.Controllers
                 result.AllowedUserDimensions = DBUserDimensions.GetByUserId(data.IdUser).ParseToViewModel();
 
                 result.UserAcessosLocalizacoes = DBAcessosLocalizacoes.GetByUserId(data.IdUser).ParseToViewModel();
+
+                List<GruposAprovação> AllGrupos = DBApprovalGroups.GetAll();
+                List<ApprovalGroupViewModel> ListGrupoAprovacao = new List<ApprovalGroupViewModel>();
+                foreach (GruposAprovação grupo in AllGrupos)
+                {
+                    List<UtilizadoresGruposAprovação> AllUsersByGrupo = DBApprovalUserGroup.GetByGroup(grupo.Código);
+                    if (AllUsersByGrupo != null && AllUsersByGrupo.Where(x => x.UtilizadorAprovação.ToLower() == userConfig.IdUtilizador.ToLower()).Count() > 0)
+                        ListGrupoAprovacao.Add(grupo.ParseToViewModel());
+                }
+                result.UserGruposAprovacao = ListGrupoAprovacao.OrderBy(x => x.Description).ToList();
             }
 
             return Json(result);
@@ -597,6 +607,33 @@ namespace Hydra.Such.Portal.Controllers
             {
                 //log
             }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CreateUserGruposAprovacao([FromBody] ApprovalUserGroupViewModel data)
+        {
+            UtilizadoresGruposAprovação NewUserGrupo = new UtilizadoresGruposAprovação
+            {
+                DataHoraCriação = DateTime.Now,
+                UtilizadorCriação = User.Identity.Name,
+                EnviarEmailAlerta = data.EnviarEmailAlerta,
+                GrupoAprovação = data.ApprovalGroup,
+                UtilizadorAprovação = data.ApprovalUser
+            };
+
+            if (DBApprovalUserGroup.Create(NewUserGrupo) != null)
+                return Json(true);
+            else
+                return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteUserGruposAprovacao([FromBody] ApprovalUserGroupViewModel data)
+        {
+            UtilizadoresGruposAprovação UserGrupo = DBApprovalUserGroup.GetById(data.ApprovalGroup, data.ApprovalUser);
+            bool result = DBApprovalUserGroup.Delete(UserGrupo);
+
             return Json(result);
         }
 

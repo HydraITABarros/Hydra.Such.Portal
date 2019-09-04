@@ -20,9 +20,11 @@ namespace Hydra.Such.Data.Database
         public string CodRegiao { get; set; }
         public int? UnidadePrestacao { get; set; }
         public int? TipoFaturacao { get; set; }
+        public int? CondicoesPagamento { get; set; }
         public decimal? TotalSemIVA { get; set; }
         public decimal? TotalComIVA { get; set; }
         public string NoProposta { get; set; }
+        public string ProjetoAssociado { get; set; }
         public string Email { get; set; }
         public string EmailAssunto { get; set; }
         public string EmailCorpo { get; set; }
@@ -32,6 +34,8 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataAceite { get; set; }
         public string UtilizadorAceite { get; set; }
+        public DateTime? DataNaoAceite { get; set; }
+        public string UtilizadorNaoAceite { get; set; }
         public DateTime? DataConcluido { get; set; }
         public string UtilizadorConcluido { get; set; }
         public DateTime? DataModificacao { get; set; }

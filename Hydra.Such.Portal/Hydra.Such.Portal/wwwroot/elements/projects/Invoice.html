@@ -599,7 +599,6 @@
                 },
                
                 _deleteLine: function (selectedItem, selectedItems) {
-                    debugger;;
                     if (this.selectedItems.length != 0) {
                         this.$.page_cancelLines_ajax.body = JSON.stringify(this.selectedItems);
                         this.$.page_cancelLines_ajax.generateRequest();
@@ -644,7 +643,6 @@
                     }
                 },
                 _createInvoice: function () {
-                    debugger;;
                     if (this.validateC.eMessages.length != 0) {
                         var validation = this.validateC.eMessages.find(x => x.type == 0);
                         var option = this.$._CLOptionInvoice.value;
@@ -691,7 +689,6 @@
                     }
                 },
                 _CancelLinesResponse: function () {
-                    debugger;;
                     if (this.CancelLineRes.length == 0) {
                         this.openToastError("Não foi possivel eliminar as linhas");
                     }
@@ -715,7 +712,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -723,7 +719,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../Projetos/ExportToExcelDownload_FaturacaoProjetos?sFileName=' + FileName;
                 },

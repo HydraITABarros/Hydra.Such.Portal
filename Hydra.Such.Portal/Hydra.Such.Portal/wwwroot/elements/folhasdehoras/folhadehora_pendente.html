@@ -221,14 +221,12 @@
 
                 //Mostra Mensagens
                 _showMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
 
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
@@ -248,7 +246,6 @@
                 },
 
                 _toHistoric: function (e) {
-                    debugger;
                     if (e != null) {
                         var index = this.result.indexOf(e.model.item);
                         this.result.splice(index, 1);
@@ -261,7 +258,6 @@
                 },
 
                 _toHistoricResponse: function (e) {
-                    debugger;
                     if (this.toHistoricResult) {
                         this._showMessage('Folha de Horas transferida para Histórico com sucesso.');
                         this.$.grid_databound_ajax.generateRequest();

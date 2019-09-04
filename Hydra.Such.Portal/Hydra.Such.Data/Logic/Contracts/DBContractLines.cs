@@ -26,6 +26,22 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static LinhasContratos GetByLineNoId(int LineNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasContratos.Where(x => x.NºLinha == LineNo).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<LinhasContratos> GetAll()
         {
             try

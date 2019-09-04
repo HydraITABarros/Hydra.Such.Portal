@@ -132,7 +132,6 @@ namespace Hydra.Such.Portal.Controllers
 
             List<ConsultaMercado> AllConsultaMercado = DBConsultaMercado.GetAllConsultaMercadoToList();
 
-
             List<RegistoDePropostas> AllRegistoDePropostas = new List<RegistoDePropostas>();
             List<LinhasConsultaMercado> AllLinhasConsultaMercado = new List<LinhasConsultaMercado>();
             using (var ctx = new SuchDBContext())

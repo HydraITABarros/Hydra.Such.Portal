@@ -726,7 +726,6 @@
                     return false;
                 },
                 _updateRegisterResponse: function (e) {
-                    debugger;
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
                         this.openToastError("Não existem pré movimentos associados a este projeto.");
                     } else {
@@ -749,7 +748,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     var result = this.$.projectMovementTable._filter(this.result);
                     result[0].ColunasEXCEL = this._columns;
 
@@ -758,7 +756,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../ExportToExcelDownload_PreMovimentosProjetos?sFileName=' + FileName;
                 },
@@ -827,7 +824,6 @@
                 /* end - ColumnToggle */
 
                 _ElimnarPreMovimento: function (e) {
-                    debugger;
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
                     var ajax_request = this.$.delete_PreMovimento_ajax;
@@ -854,7 +850,6 @@
 
                 },
                 _deletedPreMovimentoResponse: function (e) {
-                    debugger;
                     if (this.deletedPreMovimento.eReasonCode == 1) {
                         this.openToastSuccess(this.deletedPreMovimento.eMessage);
 

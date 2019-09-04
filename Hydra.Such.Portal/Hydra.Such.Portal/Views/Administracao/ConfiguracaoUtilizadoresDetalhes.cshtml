@@ -124,20 +124,20 @@
             </div>
         }
 
-            <div class="row">
-                <div class="col-lg-3">
-                    <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
-                </div>
-                <div class="col-lg-3">
-                    <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
-                </div>
-                <div class="col-lg-2 alignPoga">
-                    <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
-                </div>
-                <div class="col-lg-2 alignPoga">
-                    <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
-                </div>
+        <div class="row">
+            <div class="col-lg-3">
+                <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
             </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
+            </div>
+            <div class="col-lg-2 alignPoga">
+                <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
+            </div>
+            <div class="col-lg-2 alignPoga">
+                <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
+            </div>
+        </div>
         <div class="row break_clear">
             <div class="col-sm-3">
                 <vaadin-combo-box items="[[LRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.regiao}}" label="Dim. Região">
@@ -378,11 +378,10 @@
         <iron-ajax url="/PopulateDropdowns/GetAreas" last-response="{{AreasData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFeatures" last-response="{{FeaturesData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUserProfileModels" last-response="{{UserProfileModelsData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
+        <iron-ajax url="/PopulateDropdowns/GetUserGruposAprovacaoData" last-response="{{UserGruposAprovacaoData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensions" last-response="{{DimensionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValue_ajax" last-response="{{DimensionValueData}}" auto method="post" params='{"dimensionId": ""}' handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensionValuesFromLines" id="dimensionValueInGrid_ajax" last-response="{{DimensionValueGridData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT1_ajax" auto last-response="{{DimensionValuesForRegion}}" method="post" params='{"dimensionId": 1}' handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT2_ajax" auto last-response="{{DimensionValuesForArea}}" method="post" params='{"dimensionId": 2}' handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetDimensionValues" id="dimensionValueInGridOPT3_ajax" auto last-response="{{DimensionValuesForResponsability}}" method="post" params='{"dimensionId": 3}' handle-as="json" content-type="application/json"></iron-ajax>
@@ -394,6 +393,13 @@
         <iron-ajax url="/Administracao/DeleteUserProfile" last-response="{{UserProfileDeleted}}" method="post" handle-as="json" id="page_deleteuserprofile_ajax" on-response="_deleteUserProfileResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/CreateUserProfile" last-response="{{UserProfileCreated}}" method="post" handle-as="json" id="page_createuserprofile_ajax" on-response="_createUserProfileResponse" content-type="application/json"></iron-ajax>
 
+
+
+        <iron-ajax url="/Administracao/DeleteUserGruposAprovacao" last-response="{{UserGruposAprovacaoDeleted}}" method="post" handle-as="json" id="page_deleteUserGruposAprovacao_ajax" on-response="_deleteUserGruposAprovacaoResponse" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/Administracao/CreateUserGruposAprovacao" last-response="{{UserGruposAprovacaoCreated}}" method="post" handle-as="json" id="page_createUserGrupoAprovacao_ajax" on-response="_createUserGrupoAprovacaoResponse" content-type="application/json"></iron-ajax>
+
+
+
         <iron-ajax url="/PopulateDropdowns/GetAllLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/CreateUserAcessosLocalizacoes" last-response="{{UserAcessosLocalizacoesCreated}}" method="post" handle-as="json" id="page_createuserAcessosLocalizacoes_ajax" on-response="_createUserAcessosLocalizacoesResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Administracao/DeleteUserAcessosLocalizacoes" last-response="{{UserAcessosLocalizacoesDeleted}}" method="post" handle-as="json" id="page_deleteuserAcessosLocalizacoes_ajax" on-response="_deleteUserAcessosLocalizacoesResponse" content-type="application/json"></iron-ajax>
@@ -402,7 +408,6 @@
         {
             <paper-collapse-item class="panel-heading" header="Perfis Utilizadores" closed>
                 <div class="panel-body">
-                    @*<h2 class="separator">Perfis Utilizadores</h2>*@
                     <template is="dom-if" if="{{ _permissions.update }}">
                         <div class="row">
                             <div class="col-lg-3">
@@ -446,6 +451,56 @@
                                     <center>
                                         @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteUserProfile"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
                                         <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_deleteUserProfile" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                    </center>
+                                </template>
+                            </vaadin-grid-column>
+                        </template>
+                    </vaadin-grid>
+                </div>
+            </paper-collapse-item>
+
+            <paper-collapse-item class="panel-heading" header="Grupos de Aprovação" closed>
+                <div class="panel-body">
+                    <template is="dom-if" if="{{ _permissions.update }}">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <vaadin-combo-box items="[[UserGruposAprovacaoData]]" id="_ddGrupoAprovacao" item-value-path="id" item-label-path="value" value="{{ddGrupoAprovacao}}" label="Grupo Aprovação">
+                                    <template>
+                                        <paper-icon-item>
+                                            <paper-item-body two-line>
+                                                <div>[[item.value]]</div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </template>
+                                </vaadin-combo-box>
+                            </div>
+
+                            <div class="col-lg-2 alignPoga">
+                                <vaadin-checkbox id="enviarEmailAlerta" checked="{{chkEnviarEmailAlerta}}">Enviar Email de Alerta</vaadin-checkbox>
+                            </div>
+
+                            <div class="col-lg-3 alignPoga">
+                                <paper-button class="btnEdit" raised on-tap="_createUserGrupoAprovacao"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Associar</paper-button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <vaadin-grid id="gridUserGruposAprovacao" items="{{ data.userGruposAprovacao }}" class="grid">
+                        <vaadin-grid-column width="20%">
+                            <template class="header">
+                                Grupo Aprovação
+                            </template>
+                            <template>
+                                {{ item.description }}
+                            </template>
+                        </vaadin-grid-column>
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <vaadin-grid-column width="80%">
+                                <template class="header">
+                                </template>
+                                <template>
+                                    <center>
+                                        <paper-button raised id="btnCancel" class="btnRemove tableBtn" on-tap="_deleteUserGruposAprovacao" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                     </center>
                                 </template>
                             </vaadin-grid-column>
@@ -802,6 +857,11 @@
                         notify: true,
                         value: ""
                     },
+                    ddGrupoAprovacao: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
                     ddFeature: {
                         type: Number,
                         notify: true,
@@ -843,6 +903,11 @@
                     _permissions: {
 	                    type: Array,
 	                    value: @Html.Raw(Json.Serialize(ViewBag.UPermissions))
+                    },
+                    chkEnviarEmailAlerta: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
                     },
                 },
 
@@ -1015,6 +1080,47 @@
                     this.$.page_deleteuserprofile_ajax.generateRequest();
                     this.$.gridUserProfiles.clearCache();
                 },
+
+                //User Grupos Aprovação Functions
+                _createUserGrupoAprovacao: function () {
+                    if (this.ddGrupoAprovacao == null || this.ddGrupoAprovacao == "") {
+                        this._showErrorMessage("É obrigatório escolher o Grupo Aprovação.");
+                    } else {
+                        this.$.page_createUserGrupoAprovacao_ajax.body = JSON.stringify({ approvalUser: this.data.idUser, approvalGroup: this.ddGrupoAprovacao, enviarEmailAlerta: this.chkEnviarEmailAlerta });
+                        this.$.page_createUserGrupoAprovacao_ajax.generateRequest();
+                        this.$.gridUserGruposAprovacao.clearCache();
+                    }
+
+                },
+                _deleteUserGruposAprovacao: function (e) {
+                    var index = this.data.userGruposAprovacao.indexOf(e.model.item);
+                    this.data.userGruposAprovacao.splice(index, 1);
+
+                    var ajax_request = this.$.page_deleteUserGruposAprovacao_ajax;
+                    ajax_request.body = JSON.stringify({ approvalUser: this.data.idUser, approvalGroup: e.model.item.code });
+                    var grid = this.$.gridUserGruposAprovacao;
+
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Utilizador do Grupo de Aprovação?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (deleteUserGrupo) {
+                            if (deleteUserGrupo) {
+                                ajax_request.generateRequest();
+                                grid.clearCache();
+                            }
+                        }
+                    });
+                },
+
                 //User Accesses Functions
                 _createUserAccess: function () {
                     if (this.ddFeature == null) {
@@ -1112,7 +1218,6 @@
                     }
                 },
                 _createUserAcessosLocalizacoes: function () {
-                    debugger;
                     if (this.acessoLocalizacao == "" || this.acessoLocalizacao == null) {
                         this._showErrorMessage("É obrigatório preencher a localização.");
                     } else {
@@ -1194,6 +1299,30 @@
                         this._showErrorMessage('Ocorreu um erro ao adicionar.');
                     }
                 },
+
+                _createUserGrupoAprovacaoResponse: function (e) {
+                    if (this.UserGruposAprovacaoCreated) {
+                        this._showMessage('Utilizador Associado com sucesso ao Grupo Aprovação.');
+
+                        this.ddGrupoAprovacao = "";
+                        this.chkEnviarEmailAlerta = true;
+
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao Associar.');
+                    }
+                },
+
+                _deleteUserGruposAprovacaoResponse: function (e) {
+                    if (this.UserGruposAprovacaoDeleted) {
+                        this._showMessage('Utilizador eliminado com sucesso do Grupo Aprovação.');
+                    }
+                    else {
+                        this._showErrorMessage('Ocorreu um erro ao eliminar.');
+                    }
+                },
+
                 _redirectToNewUserConfigForm: function (item) {
                     if (item != null) {
                         window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/0";
@@ -1231,7 +1360,6 @@
                 },
 
                 _GetAllcodigoCentroResponsabilidade: function () {
-                    debugger;
                     this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.body = JSON.stringify(this.$.codigoAreaFuncional.value);
                     this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.generateRequest();
                 }

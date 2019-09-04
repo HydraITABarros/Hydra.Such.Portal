@@ -1265,6 +1265,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (ContratoDB != null)
                         {
                             ContratoDB = DBContracts.ParseToDB(data);
+                            ContratoDB.UtilizadorModificação = User.Identity.Name;
                             ContratoDB = DBContracts.Update(ContratoDB);
 
                             //Create/Update Contract Client Requests
@@ -1403,6 +1404,8 @@ namespace Hydra.Such.Portal.Controllers
                         DBContractClientRequisition.DeleteAllFromContract(data.ContractNo);
 
                         // Delete Contract 
+                        data.UpdateUser = User.Identity.Name;
+                        DBContracts.Update(DBContracts.ParseToDB(data));
                         DBContracts.DeleteByContractNo(data.ContractNo);
 
 
@@ -1787,16 +1790,36 @@ namespace Hydra.Such.Portal.Controllers
             {
                 NAVContractDetailsViewModel result = DBNAV2017ContractDetails.GetContractByNo(data.ContractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
 
+                decimal ValorPeriodo = 0;
+                decimal SomatorioLinhas = 0;
+                decimal tmpQuantidade = 0;
+                decimal tmpPrecoUnitario = 0;
+
+                List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                if (ContractLines != null && ContractLines.Count > 0)
+                {
+                    ContractLines.ForEach(linha =>
+                    {
+                        tmpQuantidade = linha.Quantidade.HasValue ? (decimal)linha.Quantidade : 0;
+                        tmpPrecoUnitario = linha.PreçoUnitário.HasValue ? (decimal)linha.PreçoUnitário : 0;
+
+                        ValorPeriodo = ValorPeriodo + (tmpQuantidade * tmpPrecoUnitario);
+                        SomatorioLinhas = SomatorioLinhas + (tmpQuantidade * tmpPrecoUnitario);
+                    });
+                }
+
+                result.SomatorioLinhas = SomatorioLinhas;
+
                 if (data.InvocePeriod == 1)
-                    result.VPeriodFatura = result.VPeriod * 1;
+                    result.VPeriodFatura = ValorPeriodo * 1;
                 if (data.InvocePeriod == 2)
-                    result.VPeriodFatura = result.VPeriod * 2;
+                    result.VPeriodFatura = ValorPeriodo * 2;
                 if (data.InvocePeriod == 3)
-                    result.VPeriodFatura = result.VPeriod * 3;
+                    result.VPeriodFatura = ValorPeriodo * 3;
                 if (data.InvocePeriod == 4)
-                    result.VPeriodFatura = result.VPeriod * 6;
+                    result.VPeriodFatura = ValorPeriodo * 6;
                 if (data.InvocePeriod == 5)
-                    result.VPeriodFatura = result.VPeriod * 12;
+                    result.VPeriodFatura = ValorPeriodo * 12;
                 if (data.InvocePeriod == 6)
                     result.VPeriodFatura = 0;
 
@@ -1836,8 +1859,13 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null)
                 {
                     List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
-                    List<LinhasContratos> CLToDelete = ContractLines.Where(y => !data.Lines.Any(x => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha)).ToList();
 
+                    List<LinhasContratos> CLToDelete = ContractLines.Where(y => !data.Lines.Any(x => x.ContractType == y.TipoContrato && x.ContractNo == y.NºContrato && x.VersionNo == y.NºVersão && x.LineNo == y.NºLinha)).ToList();
+                    CLToDelete.ForEach(x =>
+                    {
+                        x.UtilizadorModificação = User.Identity.Name;
+                        DBContractLines.Update(x);
+                    });
                     CLToDelete.ForEach(x => DBContractLines.Delete(x));
 
                     data.Lines.ForEach(x =>
@@ -1878,6 +1906,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         else
                         {
+                            x.CreateUser = User.Identity.Name;
                             x = DBContractLines.ParseToViewModel(DBContractLines.Create(DBContractLines.ParseToDB(x)));
                         }
                     });
@@ -1892,6 +1921,55 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro ao atualizar as linhas de contrato.";
             }
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult DuplicarContractLines([FromBody] ContractLineViewModel linha)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 0;
+            result.eMessage = "Ocorreu um erro ao duplicar a linha.";
+
+            try
+            {
+                if (linha != null && linha.ContractType > 0 && !string.IsNullOrEmpty(linha.ContractNo) && linha.VersionNo > 0 && linha.LineNo > 0)
+                {
+                    LinhasContratos LinhaOriginal = DBContractLines.GetById(linha.ContractType, linha.ContractNo, linha.VersionNo, linha.LineNo);
+                    LinhasContratos LinhaDuplicada = new LinhasContratos();
+
+                    LinhaDuplicada = LinhaOriginal;
+                    LinhaDuplicada.NºLinha = 0;
+                    LinhaDuplicada.UtilizadorCriação = User.Identity.Name;
+                    LinhaDuplicada.DataHoraCriação = DateTime.Now;
+                    LinhaDuplicada.UtilizadorModificação = null;
+                    LinhaDuplicada.DataHoraModificação = null;
+
+                    if (DBContractLines.Create(LinhaDuplicada) != null)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "A duplicação da Linha com sucesso.";
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao criar a linha duplicada.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "Falta informação para duplicar a linha.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+
+                return Json(result);
+            }
+
+            return Json(result);
         }
 
         [HttpPost]
@@ -1976,6 +2054,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (requisition != null)
                 {
+                    requisition.UpdateUser = User.Identity.Name;
+                    DBContractClientRequisition.Update(DBContractClientRequisition.ParseToDB(requisition));
                     DBContractClientRequisition.Delete(DBContractClientRequisition.ParseToDB(requisition));
 
                     requisition.eReasonCode = 1;
@@ -6662,6 +6742,7 @@ namespace Hydra.Such.Portal.Controllers
                             Anexos newfile = new Anexos();
                             newfile.NºOrigem = id;
                             newfile.UrlAnexo = full_filename;
+                            newfile.Visivel = true;
 
                             //TipoOrigem: 1-PréRequisição; 2-Requisição; 3-Contratos; 4-Procedimentos;5-ConsultaMercado 
                             newfile.TipoOrigem = TipoOrigemAnexos.Contratos;
@@ -6693,8 +6774,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult LoadAttachments([FromBody] JObject requestParams)
         {
             string id = requestParams["id"].ToString();
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Contratos);
 
             List<Anexos> list = DBAttachments.GetById(id);
+
+            if (UPerm != null && UPerm.Update == false)
+            {
+                list.RemoveAll(x => x.Visivel != true);
+            }
+
             List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
             list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
             return Json(attach);
@@ -6716,6 +6804,36 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(requestParams);
             }
             return Json(requestParams);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateAnexoVisivel([FromBody] AttachmentsViewModel Anexo)
+        {
+            try
+            {
+                if (Anexo != null && Anexo.DocLineNo > 0)
+                {
+                    Anexos ANEX = DBAttachments.GetByNoLinha(Anexo.DocLineNo);
+                    if (ANEX != null)
+                    {
+                        ANEX.Visivel = Anexo.Visivel;
+                        ANEX.UtilizadorModificação = User.Identity.Name;
+                        ANEX.DataHoraModificação = DateTime.Now;
+                        if (DBAttachments.Update(ANEX) != null)
+                            return Json(true);
+                        else
+                            return Json(false);
+                    }
+                    else
+                        return Json(false);
+                }
+                else
+                    return Json(false);
+            }
+            catch (Exception ex)
+            {
+                return Json(false);
+            }
         }
         #endregion
 

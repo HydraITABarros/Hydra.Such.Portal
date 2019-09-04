@@ -210,6 +210,13 @@
                    on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/UpdateContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="contractLinesUpdate_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
         <!-- PROJECT Valitador -->
         <iron-ajax url="/Contratos/ValidateNumeration"
                    last-response="{{validateResponse}}"
@@ -228,19 +235,36 @@
                    on-response="_addressResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+        <template is="dom-if" if="{{ !_isCreate }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button style="display: {{ _showContractLines }};" class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-            </template>
-            <!--<paper-button style="display: {{ _showContractLines }};" id="btnContractArchive" class="tablinks" on-tap="_openContractArchive"><i class="fa fa-eye" aria-hidden="true" hidden></i>&nbsp; Consulta de arquivos</paper-button>-->
-            <template is="dom-if" if="{{ _permissions.update }}">
-                <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp; Tornar em Proposta</paper-button>
-                <paper-button class="tablinks" on-tap="_setArquivado" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; {{ _btnArchiveMessage }}</paper-button>
-                <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
-            </template>
-        </div>
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button style="display: {{ _showContractLines }};" class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
+
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp; Tornar em Proposta</paper-button>
+                    <paper-button class="tablinks" on-tap="_setArquivado" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; {{ _btnArchiveMessage }}</paper-button>
+                    <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+                    <paper-button id="btnUpdate" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </template>
+
+                <template is="dom-if" if="{{ _permissions.delete }}">
+                    <paper-button class="tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </div>
+        </template>
+
+        <template is="dom-if" if="{{ _isCreate }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button id="btnCreate" class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
+            </div>
+        </template>
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -513,25 +537,28 @@
                                 </div>
                             </iron-pages>
 
-                            <div class="marginSpace">
-                                <template is="dom-if" if="{{ _permissions.create }}">
-                                    <template is="dom-if" if="{{ _isCreate }}">
-                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                    </template>
+                            <!--<div class="marginSpace">
+                            <template is="dom-if" if="{{ _permissions.create }}">
+                                <template is="dom-if" if="{{ _isCreate }}">
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                 </template>
-                                <template is="dom-if" if="{{ !_isCreate }}">
-                                    <template is="dom-if" if="{{ _permissions.update }}">
-                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                    </template>
+                            </template>
+                            <template is="dom-if" if="{{ !_isCreate }}">
+                                <template is="dom-if" if="{{ _permissions.update }}">
+                                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                                 </template>
-                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <paper-button raised class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                </template>
-                            </div>
+                            </template>
+                            <template is="dom-if" if="{{ _permissions.delete }}">
+                                <paper-button raised class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                            </template>
+                        </div>-->
                         </div>
+
+
 
                         <!-- Contract Lines -->
                         <paper-collapse-group style="display: {{ _showContractLines }};">
+                            r-
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
                                 <div class="row break_clear">
                                     <div class="col-lg-2" hidden>
@@ -1051,11 +1078,11 @@
                                 </template>
                             </vaadin-grid>
                         </div>
-                        <div class="marginSpace" style="display: {{ _showContractLines }};">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                            </template>
-                        </div>
+                        <!--<div class="marginSpace" style="display: {{ _showContractLines }};">
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                        </template>
+                    </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -1081,1045 +1108,1048 @@
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
     </template>
-    <script>
-        document.addEventListener('WebComponentsReady', function () {
-            Polymer({
-                is: 'x-oportunitydetails',
-                properties: {
-                    _permissions: {
-                        type: Array
-                    },
-                    _history: {
-                        type: String,
-                        value: "",
-                    },
-                    _areaid: {
-                        type: Number,
-                        notify: true,
-                        value: 0
-                    },
-                    _contractno: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _versionno: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    selected: {
-                        type: Number,
-                        value: 0
-                    },
-                    _isCreate: {
-                        type: Boolean,
-                        value: true
-                    },
+        <script>
+            document.addEventListener('WebComponentsReady', function () {
+                Polymer({
+                    is: 'x-oportunitydetails',
+                    properties: {
+                        _permissions: {
+                            type: Array
+                        },
+                        _history: {
+                            type: String,
+                            value: "",
+                        },
+                        _areaid: {
+                            type: Number,
+                            notify: true,
+                            value: 0
+                        },
+                        _contractno: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _versionno: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        selected: {
+                            type: Number,
+                            value: 0
+                        },
+                        _isCreate: {
+                            type: Boolean,
+                            value: true
+                        },
 
-                    _elementsDisabled: {
-                        type: Boolean,
-                        value: true
-                    },
+                        _elementsDisabled: {
+                            type: Boolean,
+                            value: true
+                        },
 
-                    //FORM CLIENT REQUISITIONS
-                    _CRStartDate: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _CREndDate: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _CRRequisitionNo: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _CRRequisitionDate: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _CRPromiseNo: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _CRInvoiceGroup: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _CRProjectNo: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _CRLastInvoiceDate: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
+                        //FORM CLIENT REQUISITIONS
+                        _CRStartDate: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _CREndDate: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _CRRequisitionNo: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _CRRequisitionDate: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _CRPromiseNo: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _CRInvoiceGroup: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _CRProjectNo: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _CRLastInvoiceDate: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
 
-                    //FORM INVOICE TEXTS
-                    _IRInvoiceGroup: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _IRProjectNo: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _IRInvoiceText: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
+                        //FORM INVOICE TEXTS
+                        _IRInvoiceGroup: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _IRProjectNo: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _IRInvoiceText: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
 
 
-                    //CONTRACT LINES
-                    _showContractLines: {
-                        type: String,
-                        notify: true,
-                        value: "none"
+                        //CONTRACT LINES
+                        _showContractLines: {
+                            type: String,
+                            notify: true,
+                            value: "none"
+                        },
+                        _CLContractLineType: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLMeasureUnit: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLRegion: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLFrequency: {
+                            type: Number,
+                            value: 0
+                        },
+                        _CLVersionStartDate: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLServiceClient: {
+                            type: Number,
+                            value: 0
+                        },
+                        _CLCode: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLUnitPrice: {
+                            type: Number,
+                            value: 0
+                        },
+                        _CLFunctionalArea: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLInterventionHours: {
+                            type: Number,
+                            value: 0
+                        },
+                        _CLVersionEndDate: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLInvoiceGroup: {
+                            type: Number,
+                            value: 0
+                        },
+                        _CLDescription: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLDescription2: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLDiscountLine: {
+                            type: Number,
+                            value: 0
+                        },
+                        _CLResponsabilityCenter: {
+                            type: String,
+                            value: ""
+                        },
+                        _CLTotalTechnicians: {
+                            type: Number,
+                            value: 0
+                        },
+                        _CLCreateContract: {
+                            type: Boolean,
+                            value: false
+                        },
+                        _CLQuantity: {
+                            type: Number,
+                            value: 0
+                        },
+                        _CLBillable: {
+                            type: Boolean,
+                            value: false
+                        },
+                        _hiddeproposalNo: {
+                            type: Boolean,
+                            value: false
+                        },
+                        _CLResponsible: {
+                            type: String,
+                            value: ""
+                        },
+                        _SelectedLine: {
+                            observer: '_lineSelected'
+                        },
+                        contactNo: {
+                            type: Number,
+                            value: ""
+                        },
+                        limitClarificationDate: {
+                            type: String,
+                            notify: true,
+                            value: ""
+                        },
+                        _btnArchiveMessage: {
+                            type: String,
+                            value: "",
+                        },
+                        _reportserverurl: {
+                            type: String,
+                        },
                     },
-                    _CLContractLineType: {
-                        type: String,
-                        value: ""
+                    observers: [
+                        'filedChanged(data.filed)'
+                    ],
+                    filedChanged: function (newValue) {
+                        this._setControlsVisibility(newValue);
                     },
-                    _CLMeasureUnit: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLRegion: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLFrequency: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CLVersionStartDate: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLServiceClient: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CLCode: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLUnitPrice: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CLFunctionalArea: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLInterventionHours: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CLVersionEndDate: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLInvoiceGroup: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CLDescription: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLDescription2: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLDiscountLine: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CLResponsabilityCenter: {
-                        type: String,
-                        value: ""
-                    },
-                    _CLTotalTechnicians: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CLCreateContract: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _CLQuantity: {
-                        type: Number,
-                        value: 0
-                    },
-                    _CLBillable: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _hiddeproposalNo: {
-                        type: Boolean,
-                        value: false
-                    },
-                    _CLResponsible: {
-                        type: String,
-                        value: ""
-                    },
-                    _SelectedLine: {
-                        observer: '_lineSelected'
-                    },
-                    contactNo: {
-                        type: Number,
-                        value: ""
-                    },
-                    limitClarificationDate: {
-                        type: String,
-                        notify: true,
-                        value: ""
-                    },
-                    _btnArchiveMessage: {
-                        type: String,
-                        value: "",
-                    },
-                    _reportserverurl: {
-                        type: String,
-                    },
-                },
-                observers: [
-                    'filedChanged(data.filed)'
-                ],
-                filedChanged: function (newValue) {
-                    this._setControlsVisibility(newValue);
-                },
-                _setControlsVisibility: function (isArquived) {
-                    this._btnArchiveMessage = isArquived ? "Ativar" : "Arquivar";
-                    var excludeItemsIds = ["btnContractAdd", "btnArchive", "btn_imprimir", "btn_reportClose"];
-                    elems = Polymer.dom(this.root).querySelectorAll('paper-button');
-                    elems.forEach(function (elem) {
-                        if (excludeItemsIds.indexOf(elem.id) == -1)
-                            elem.hidden = isArquived;
-                    });
-                    elems = Polymer.dom(this.root).querySelectorAll('such-dropdown-menu');
-                    elems.forEach(function (elem) {
-                        if (excludeItemsIds.indexOf(elem.id) == -1)
-                            elem.hidden = isArquived;
-                    });
-                },
-                ready: function () {
-                    var _self = this;
-
-                    this._CLBillable = true;
-                    this._CLCreateContract = true;
-
-                    //GET CONTRACT DATA
-                    var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
-                    this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType": 1 });
-                    this.$.page_databound_ajax.generateRequest();
-
-                    if (this._contractno == "") {
-                        this._isCreate = true;
-                    }
-
-                    if (this._history != "") {
-                        _self.$.contractNo.disabled = true;
-                        _self.$.description.disabled = true;
-                        _self.$.mClients.disabled = true;
-                        _self.$.contactNo.disabled = true;
-                        _self.$.mOrderOrigin.disabled = true;
-                        _self.$.mOrdOrderSource.disabled = true;
-                        _self.$.mProposalNo.disabled = true;
-                        this._hiddeproposalNo = false;
-                        _self.$.versionNo.disabled = true;
-                        _self.$.mStartData.disabled = true;
-                        _self.$.DueDate.disabled = true;
-                        _self.$.mCustomerShipmentDate.disabled = true;
-                        _self.$.mProposalChangeDate.disabled = true;
-                        _self.$.mInternalNumeration.disabled = true;
-                        _self.$.mTotalProposalValue.disabled = true;
-                        _self.$.mCodeRegion.disabled = true;
-                        _self.$.mFunctionalArea.disabled = true;
-                        _self.$.mResponsabilityCenter.disabled = true;
-                        _self.$.mFeeUnits.disabled = true;
-                        _self.$.mNoVEP.disabled = true;
-                        _self.$.mBaseValueProcedure.disabled = true;
-                        _self.$.mNotes.disabled = true;
-                        _self.$.mLimitClarificationDate.disabled = true;
-                        _self.$.mLimitClarificationTime.disabled = true;
-                        _self.$.mErrorsOmissionsDate.disabled = true;
-                        _self.$.mErrorsOmissionsTime.disabled = true;
-                        _self.$.mProposalDelivery.disabled = true;
-                        _self.$.proposalDeliveryTime.disabled = true;
-                        _self.$._CLContractLineType.disabled = true;
-                        _self.$._CLCode.disabled = true;
-                        _self.$._CLDescription.disabled = true;
-                        _self.$._CLDescription2.disabled = true;
-                        _self.$._CLQuantity.disabled = true;
-                        _self.$._CLMeasureUnit.disabled = true;
-                        _self.$._CLUnitPrice.disabled = true;
-                        _self.$._CLDiscountLine.disabled = true;
-                        _self.$._CLBillable.disabled = true;
-                        _self.$._CLRegion.disabled = true;
-                        _self.$._CLFunctionalArea.disabled = true;
-                        _self.$._CLResponsabilityCenter.disabled = true;
-                        _self.$._CLFrequency.disabled = true;
-                        _self.$._CLInterventionHours.disabled = true;
-                        _self.$._CLTotalTechnicians.disabled = true;
-                        _self.$._CLVersionStartDate.disabled = true;
-                        _self.$._CLVersionEndDate.disabled = true;
-                        _self.$._CLResponsible.disabled = true;
-                        _self.$._CLServiceClient.disabled = true;
-                        _self.$._CLInvoiceGroup.disabled = true;
-                        _self.$._CLCreateContract.disabled = true;
-                        _self.$.txtArchiveReason.hidden = false;
-
-                        $(_self.$.grid_contractlines).addClass('disabled');
-                    }
-                    else {
-                        this._hiddeproposalNo = true;
-                    }
-
-                    var upload = document.querySelector('vaadin-upload#uploadRequest');
-
-                    if (this._isCreate == false && this.$.uploadRequest != null) {
-                        this.$.uploadRequest.addEventListener('upload-response', function (e) {
-                            if (e.detail.xhr.status == 200) {
-                                e.detail.xhr.requestURL;
-                                var dd = document.querySelector("x-oportunitydetails");
-                                dd.$.page_update_ajax.generateRequest();
-                            }
+                    _setControlsVisibility: function (isArquived) {
+                        this._btnArchiveMessage = isArquived ? "Ativar" : "Arquivar";
+                        var excludeItemsIds = ["btnContractAdd", "btnArchive", "btn_imprimir", "btn_reportClose"];
+                        elems = Polymer.dom(this.root).querySelectorAll('paper-button');
+                        elems.forEach(function (elem) {
+                            if (excludeItemsIds.indexOf(elem.id) == -1)
+                                elem.hidden = isArquived;
                         });
-                    }//if (this._isCreate == false) {
-                    //    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
-                    //    this.$.page_update_ajax.generateRequest();
-                    //}
+                        elems = Polymer.dom(this.root).querySelectorAll('such-dropdown-menu');
+                        elems.forEach(function (elem) {
+                            if (excludeItemsIds.indexOf(elem.id) == -1)
+                                elem.hidden = isArquived;
+                        });
+                    },
+                    ready: function () {
+                        var _self = this;
 
-                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
-                    this.$.page_update_ajax.generateRequest();
-                },
-                _openToast: function (message) {
-                    this.$.ToastMessage.text = message;
-                    this.$.ToastMessage.open();
-                },
-                _openToastError: function (message) {
-                    this.$.ToastError.text = message;
-                    this.$.ToastError.open();
-                },
-                _ConvertDecimals: function (e) {
-                    e.target.value = e.target.value.replace(",", ".");
-                },
-                _validateData: function () {
-                    //Validate function of such-element doesn't work. Ensure validation message
-                    //this.$.mClients.validate();
-                    //this.$.contactNo.validate();
-                    if (this.$.contractNo.validate() &
-                        this.$.description.validate() &
-                        //this.$.mClients.validate() & //validate doesn't work
-                        //this.$.mFeeUnits.validate() &
-                        //this.$.mCodeRegion.validate() &
-                        //this.$.mFunctionalArea.validate() &
-                        //this.$.mResponsabilityCenter.validate() &
-                        this.$.mNotes.validate() &
-                        this.$.mProposalNo.validate() &
-                        //this.$.mPaymentTerms.validate() &
-                        //this.$.mStartDateFirstContract.validate() &
-                        //this.$.mFirstContractReference.validate() &
-                        //this.$.mClientRequisitionNo.validate() &
-                        //this.$.mPromiseNo.validate() &
-                        this.$.mStartData.validate() &
-                        //this.$.mStatus.validate() &
-                        //this.$.mReceiptDateRequisition.validate() &
-                        this.$.versionNo.validate() &
-                        //this.$.dueDate.validate() &
-                        //this.$.mChangeStatus.validate() &
-                        //this.$.mServiceObject.validate() &
-                        //this.$.ShippingAddress.validate() &
-                        //this.$.ShippingLocality.validate() &
-                        //this.$.ShippingName.validate() &
-                        //this.$.shippingZipCode.validate() &
-                        //this.$.contactNo.validate() & //validate doesn't work
-                        //this.$.mBillingTypes.validate() &
-                        //this.$.mMaintenanceTypes.validate() &
-                        //this.$.mProvisioningFee.validate() &
-                        //this.$.mc.validate() &
-                        //this.$.mDisplacementFee.validate() &
-                        //this.$.mInvoicePeriods.validate() &
-                        this.$.mTotalProposalValue.validate()
+                        this._CLBillable = true;
+                        this._CLCreateContract = true;
 
-                    ) {
-                        //Validate function of such-element doesn't work.
-                        //if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &
-                        //    (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
-                        //    return true;
-                        //}
-                        //if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
-                        //    this.$.mFeeUnits.validate();
-                        //    this._openToastError("É obrigatória seleção de uma unidade de prestação.");
-                        //    return false;
-                        //}
-                        if ((this.$.mClients.value == "" || this.$.mClients.value == undefined) &&
-                            (this.$.contactNo.value == "" || this.$.contactNo.value == undefined)) {
-                            this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
-                            return false;
+                        //GET CONTRACT DATA
+                        var VersionNo = this._versionno == "" ? 0 : parseInt(this._versionno);
+                        this.$.page_databound_ajax.body = JSON.stringify({ "ContractNo": this._contractno, "VersionNo": VersionNo, "ContractType": 1 });
+                        this.$.page_databound_ajax.generateRequest();
+
+                        if (this._contractno == "") {
+                            this._isCreate = true;
                         }
-                        //if (this.$.mCodeRegion.value == null || this.$.mCodeRegion.value == undefined || this.$.mCodeRegion.value == "") {
-                        //    this._openToastError("É obrigatória seleção de Cód. Região.");
-                        //    return false;
-                        //}
-                        //if (this.$.mFunctionalArea.value == null || this.$.mFunctionalArea.value == undefined || this.$.mFunctionalArea.value == "") {
-                        //    this._openToastError("É obrigatória seleção de Cód. Área Funcional.");
-                        //    return false;
+
+                        if (this._history != "") {
+                            _self.$.contractNo.disabled = true;
+                            _self.$.description.disabled = true;
+                            _self.$.mClients.disabled = true;
+                            _self.$.contactNo.disabled = true;
+                            _self.$.mOrderOrigin.disabled = true;
+                            _self.$.mOrdOrderSource.disabled = true;
+                            _self.$.mProposalNo.disabled = true;
+                            this._hiddeproposalNo = false;
+                            _self.$.versionNo.disabled = true;
+                            _self.$.mStartData.disabled = true;
+                            _self.$.DueDate.disabled = true;
+                            _self.$.mCustomerShipmentDate.disabled = true;
+                            _self.$.mProposalChangeDate.disabled = true;
+                            _self.$.mInternalNumeration.disabled = true;
+                            _self.$.mTotalProposalValue.disabled = true;
+                            _self.$.mCodeRegion.disabled = true;
+                            _self.$.mFunctionalArea.disabled = true;
+                            _self.$.mResponsabilityCenter.disabled = true;
+                            _self.$.mFeeUnits.disabled = true;
+                            _self.$.mNoVEP.disabled = true;
+                            _self.$.mBaseValueProcedure.disabled = true;
+                            _self.$.mNotes.disabled = true;
+                            _self.$.mLimitClarificationDate.disabled = true;
+                            _self.$.mLimitClarificationTime.disabled = true;
+                            _self.$.mErrorsOmissionsDate.disabled = true;
+                            _self.$.mErrorsOmissionsTime.disabled = true;
+                            _self.$.mProposalDelivery.disabled = true;
+                            _self.$.proposalDeliveryTime.disabled = true;
+                            _self.$._CLContractLineType.disabled = true;
+                            _self.$._CLCode.disabled = true;
+                            _self.$._CLDescription.disabled = true;
+                            _self.$._CLDescription2.disabled = true;
+                            _self.$._CLQuantity.disabled = true;
+                            _self.$._CLMeasureUnit.disabled = true;
+                            _self.$._CLUnitPrice.disabled = true;
+                            _self.$._CLDiscountLine.disabled = true;
+                            _self.$._CLBillable.disabled = true;
+                            _self.$._CLRegion.disabled = true;
+                            _self.$._CLFunctionalArea.disabled = true;
+                            _self.$._CLResponsabilityCenter.disabled = true;
+                            _self.$._CLFrequency.disabled = true;
+                            _self.$._CLInterventionHours.disabled = true;
+                            _self.$._CLTotalTechnicians.disabled = true;
+                            _self.$._CLVersionStartDate.disabled = true;
+                            _self.$._CLVersionEndDate.disabled = true;
+                            _self.$._CLResponsible.disabled = true;
+                            _self.$._CLServiceClient.disabled = true;
+                            _self.$._CLInvoiceGroup.disabled = true;
+                            _self.$._CLCreateContract.disabled = true;
+                            _self.$.txtArchiveReason.hidden = false;
+
+                            $(_self.$.grid_contractlines).addClass('disabled');
+                        }
+                        else {
+                            this._hiddeproposalNo = true;
+                        }
+
+                        var upload = document.querySelector('vaadin-upload#uploadRequest');
+
+                        if (this._isCreate == false && this.$.uploadRequest != null) {
+                            this.$.uploadRequest.addEventListener('upload-response', function (e) {
+                                if (e.detail.xhr.status == 200) {
+                                    e.detail.xhr.requestURL;
+                                    var dd = document.querySelector("x-oportunitydetails");
+                                    dd.$.page_update_ajax.generateRequest();
+                                }
+                            });
+                        }//if (this._isCreate == false) {
+                        //    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                        //    this.$.page_update_ajax.generateRequest();
                         //}
 
-                        //if (this.$.mResponsabilityCenter.value == null || this.$.mResponsabilityCenter.value == undefined || this.$.mResponsabilityCenter.value == "") {
-                        //    this._openToastError("É obrigatória seleção de Cód. Centro Resp.");
-                        //    return false;
-                        //}
-                        //if (this.$.mPaymentTerms.value == null || this.$.mPaymentTerms.value == undefined || this.$.mPaymentTerms.value == "") {
-                        //    this._openToastError("É obrigatória seleção de Cód. Termos Pagamento.");
-                        //    return false;
-                        //}
-                        return true;
-                    }
-                    this._openToastError("Verifique os dados inseridos.");
-                    return false;
-                },
-                _createNewContract: function () {
-                    window.location.href = "../DetalhesOportunidade/";
-                },
-                _clientChanged: function (e) {
-                    this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.shippingAddresses_ajax.generateRequest();
+                        this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                        this.$.page_update_ajax.generateRequest();
+                    },
+                    _openToast: function (message) {
+                        this.$.ToastMessage.text = message;
+                        this.$.ToastMessage.open();
+                    },
+                    _openToastError: function (message) {
+                        this.$.ToastError.text = message;
+                        this.$.ToastError.open();
+                    },
+                    _ConvertDecimals: function (e) {
+                        e.target.value = e.target.value.replace(",", ".");
+                    },
+                    _validateData: function () {
+                        //Validate function of such-element doesn't work. Ensure validation message
+                        //this.$.mClients.validate();
+                        //this.$.contactNo.validate();
+                        if (this.$.contractNo.validate() &
+                            this.$.description.validate() &
+                            //this.$.mClients.validate() & //validate doesn't work
+                            //this.$.mFeeUnits.validate() &
+                            //this.$.mCodeRegion.validate() &
+                            //this.$.mFunctionalArea.validate() &
+                            //this.$.mResponsabilityCenter.validate() &
+                            this.$.mNotes.validate() &
+                            this.$.mProposalNo.validate() &
+                            //this.$.mPaymentTerms.validate() &
+                            //this.$.mStartDateFirstContract.validate() &
+                            //this.$.mFirstContractReference.validate() &
+                            //this.$.mClientRequisitionNo.validate() &
+                            //this.$.mPromiseNo.validate() &
+                            this.$.mStartData.validate() &
+                            //this.$.mStatus.validate() &
+                            //this.$.mReceiptDateRequisition.validate() &
+                            this.$.versionNo.validate() &
+                            //this.$.dueDate.validate() &
+                            //this.$.mChangeStatus.validate() &
+                            //this.$.mServiceObject.validate() &
+                            //this.$.ShippingAddress.validate() &
+                            //this.$.ShippingLocality.validate() &
+                            //this.$.ShippingName.validate() &
+                            //this.$.shippingZipCode.validate() &
+                            //this.$.contactNo.validate() & //validate doesn't work
+                            //this.$.mBillingTypes.validate() &
+                            //this.$.mMaintenanceTypes.validate() &
+                            //this.$.mProvisioningFee.validate() &
+                            //this.$.mc.validate() &
+                            //this.$.mDisplacementFee.validate() &
+                            //this.$.mInvoicePeriods.validate() &
+                            this.$.mTotalProposalValue.validate()
 
-                    //this.$.contacts_ajax.body = JSON.stringify(e.detail.value);
-                    //this.$.contacts_ajax.generateRequest();
+                        ) {
+                            //Validate function of such-element doesn't work.
+                            //if ((this.$.mClients.value != "" && this.$.mClients.value != undefined) &
+                            //    (this.$.contactNo.value != "" && this.$.contactNo.value != undefined)) {
+                            //    return true;
+                            //}
+                            //if (this.$.mFeeUnits.value == "" || this.$.mFeeUnits.value == undefined) {
+                            //    this.$.mFeeUnits.validate();
+                            //    this._openToastError("É obrigatória seleção de uma unidade de prestação.");
+                            //    return false;
+                            //}
+                            if ((this.$.mClients.value == "" || this.$.mClients.value == undefined) &&
+                                (this.$.contactNo.value == "" || this.$.contactNo.value == undefined)) {
+                                this._openToastError("É obrigatória seleção de um cliente ou de um contato.");
+                                return false;
+                            }
+                            //if (this.$.mCodeRegion.value == null || this.$.mCodeRegion.value == undefined || this.$.mCodeRegion.value == "") {
+                            //    this._openToastError("É obrigatória seleção de Cód. Região.");
+                            //    return false;
+                            //}
+                            //if (this.$.mFunctionalArea.value == null || this.$.mFunctionalArea.value == undefined || this.$.mFunctionalArea.value == "") {
+                            //    this._openToastError("É obrigatória seleção de Cód. Área Funcional.");
+                            //    return false;
+                            //}
 
-                    //this.data.shippingAddressCode = "";
-                    //this.$.sbClientShippingAddresses._clearSelection();
-                    //this.data.contactNo = "";
-                    //this.$.contactNo._clearSelection();
-                },
+                            //if (this.$.mResponsabilityCenter.value == null || this.$.mResponsabilityCenter.value == undefined || this.$.mResponsabilityCenter.value == "") {
+                            //    this._openToastError("É obrigatória seleção de Cód. Centro Resp.");
+                            //    return false;
+                            //}
+                            //if (this.$.mPaymentTerms.value == null || this.$.mPaymentTerms.value == undefined || this.$.mPaymentTerms.value == "") {
+                            //    this._openToastError("É obrigatória seleção de Cód. Termos Pagamento.");
+                            //    return false;
+                            //}
+                            return true;
+                        }
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    },
+                    _createNewContract: function () {
+                        window.location.href = "../DetalhesOportunidade/";
+                    },
+                    _clientChanged: function (e) {
+                        this.$.shippingAddresses_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.shippingAddresses_ajax.generateRequest();
 
-                //CRUDS
-                _create: function () {
-                    //if (this._validateData()) {
+                        //this.$.contacts_ajax.body = JSON.stringify(e.detail.value);
+                        //this.$.contacts_ajax.generateRequest();
+
+                        //this.data.shippingAddressCode = "";
+                        //this.$.sbClientShippingAddresses._clearSelection();
+                        //this.data.contactNo = "";
+                        //this.$.contactNo._clearSelection();
+                    },
+
+                    //CRUDS
+                    _create: function () {
+                        //if (this._validateData()) {
                         this.data.contractType = 1;
                         this.$.page_validator_ajax.body = JSON.stringify(this.data);
                         this.$.page_validator_ajax.generateRequest();
-                    //}
-                },
-                _update: function () {
-                    if (this._validateData()) {
-                        this._executeRequest("/Contratos/UpdateContract", this.data)
-                    }
-                },
-                _delete: function () {
-                    var _dataContract = this.data;
-                    var ajax_request = this.$.ajax_delete_contract;
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover a Oportunidade " + this.data.contractNo + "?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                        //}
+                    },
+                    _update: function () {
+                        if (this._validateData()) {
+                            this.$.contractLinesUpdate_databound_ajax.body = JSON.stringify(this.dataLines);
+                            this.$.contractLinesUpdate_databound_ajax.generateRequest();
+
+                            this._executeRequest("/Contratos/UpdateContract", this.data);
+                        }
+                    },
+                    _delete: function () {
+                        var _dataContract = this.data;
+                        var ajax_request = this.$.ajax_delete_contract;
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Oportunidade " + this.data.contractNo + "?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.body = JSON.stringify(_dataContract);
+                                    ajax_request.generateRequest();
+                                }
                             }
-                        },
-                        callback: function (result) {
-                            if (result) {
-                                ajax_request.body = JSON.stringify(_dataContract);
-                                ajax_request.generateRequest();
-                            }
+                        });
+                    },
+
+                    _setArquivado: function () {
+                        var message = this._btnArchiveMessage.toLowerCase();
+                        var archiveReason = '';
+                        var _dataContract = this.data;
+                        var ajax_request = this.$.page_databound_ajax;
+
+                        if (message == "ativar") {
+                            this._archive();
+                            return false;
                         }
-                    });
-                },
 
-                _setArquivado: function () {
-                    var message = this._btnArchiveMessage.toLowerCase();
-                    var archiveReason = '';
-                    var _dataContract = this.data;
-                    var ajax_request = this.$.page_databound_ajax;
+                        if (this.$.archiveReason.validate()) {
+                            archiveReason = this.$.archiveReason.value;
+                            this.$.dlgArchiveReason.close();
 
-                    if (message == "ativar") {
-                        this._archive();
-                        return false;
-                    }
+                            _dataContract.archiveReason = archiveReason;
+                            if (_dataContract.filed)
+                                ajax_request.url = "/Contratos/UnArchiveContract";
+                            else
+                                ajax_request.url = "/Contratos/ArchiveContract";
+                            ajax_request.body = JSON.stringify(_dataContract);
+                            ajax_request.generateRequest();
+                        }
+                        else {
+                            this.$.dlgArchiveReason.open();
+                            return false;
+                        }
+                    },
 
-                    if (this.$.archiveReason.validate()) {
-                        archiveReason = this.$.archiveReason.value;
-                        this.$.dlgArchiveReason.close();
-
-                        _dataContract.archiveReason = archiveReason;
-                        if (_dataContract.filed)
-                            ajax_request.url = "/Contratos/UnArchiveContract";
-                        else
-                            ajax_request.url = "/Contratos/ArchiveContract";
-                        ajax_request.body = JSON.stringify(_dataContract);
-                        ajax_request.generateRequest();
-                    }
-                    else {
-                        this.$.dlgArchiveReason.open();
-                        return false;
-                    }
-                },
-
-                _archive: function () {
-                    var _dataContract = this.data;
-                    var ajax_request = this.$.page_databound_ajax;
-                    var message = this._btnArchiveMessage.toLowerCase();
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende " + message + " a Oportunidade " + this.data.contractNo + "?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                    _archive: function () {
+                        var _dataContract = this.data;
+                        var ajax_request = this.$.page_databound_ajax;
+                        var message = this._btnArchiveMessage.toLowerCase();
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende " + message + " a Oportunidade " + this.data.contractNo + "?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
+                            callback: function (result) {
+                                if (result) {
+                                    if (_dataContract.filed)
+                                        ajax_request.url = "/Contratos/UnArchiveContract";
+                                    else
+                                        ajax_request.url = "/Contratos/ArchiveContract";
+                                    ajax_request.body = JSON.stringify(_dataContract);
+                                    ajax_request.generateRequest();
+                                }
                             }
-                        },
-                        callback: function (result) {
-                            if (result) {
-                                if (_dataContract.filed)
-                                    ajax_request.url = "/Contratos/UnArchiveContract";
-                                else
-                                    ajax_request.url = "/Contratos/ArchiveContract";
-                                ajax_request.body = JSON.stringify(_dataContract);
-                                ajax_request.generateRequest();
+                        });
+                    },
+                    //Responses Processors
+                    _responseProcessor: function (data) {
+                        var self = this;
+                        if (this.data.contractNo == "" || this.data.contractNo == null) {
+                            this.$.versionNo.value = "1";
+                        } else {
+                            this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.clientNo);
+                            this.$.shippingAddresses_ajax.generateRequest();
+
+                            //this.$.contacts_ajax.body = JSON.stringify(this.data.clientNo);
+                            //this.$.contacts_ajax.generateRequest();
+
+                            this._showContractLines = "";
+                            this._CLRegion = this.data.codeRegion;
+                            this._CLFunctionalArea = this.data.codeFunctionalArea;
+                            this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
+                            this._CLVersionStartDate = this.data.startData;
+                            this._CLVersionEndDate = this.data.dueDate;
+                            this._isCreate = false;
+                        }
+
+                        if (this.data.filed) {
+                            this._permissions.update = false;
+                        }
+
+                        if (data.detail.status === 200) {
+                            if (data.detail.url.indexOf("GetContractDetails") !== -1) {
+                                if (this.data.contractNo != "") {
+                                    this.$.serviceclients_ajax.body = JSON.stringify(this.data.clientNo);
+                                    this.$.serviceclients_ajax.generateRequest();
+
+                                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                                    this.$.contractLines_databound_ajax.generateRequest();
+                                }
                             }
-                        }
-                    });
-                },
-                //Responses Processors
-                _responseProcessor: function (data) {
-                    var self = this;
-                    if (this.data.contractNo == "" || this.data.contractNo == null) {
-                        this.$.versionNo.value = "1";
-                    } else {
-                        this.$.shippingAddresses_ajax.body = JSON.stringify(this.data.clientNo);
-                        this.$.shippingAddresses_ajax.generateRequest();
-
-                        //this.$.contacts_ajax.body = JSON.stringify(this.data.clientNo);
-                        //this.$.contacts_ajax.generateRequest();
-
-                        this._showContractLines = "";
-                        this._CLRegion = this.data.codeRegion;
-                        this._CLFunctionalArea = this.data.codeFunctionalArea;
-                        this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
-                        this._CLVersionStartDate = this.data.startData;
-                        this._CLVersionEndDate = this.data.dueDate;
-                        this._isCreate = false;
-                    }
-
-                    if (this.data.filed) {
-                        this._permissions.update = false;
-                    }
-
-                    if (data.detail.status === 200) {
-                        if (data.detail.url.indexOf("GetContractDetails") !== -1) {
-                            if (this.data.contractNo != "") {
-                                this.$.serviceclients_ajax.body = JSON.stringify(this.data.clientNo);
-                                this.$.serviceclients_ajax.generateRequest();
-
-                                this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
-                                this.$.contractLines_databound_ajax.generateRequest();
+                            else if (data.detail.url.indexOf("Create") !== -1) {
+                                this._createResponseProcessor();
                             }
-                        }
-                        else if (data.detail.url.indexOf("Create") !== -1) {
-                            this._createResponseProcessor();
-                        }
-                        else if (data.detail.url.indexOf("Update") !== -1) {
-                            if (this.data.eReasonCode == 1) {
-                                this._openToast("Oportunidade atualizada com sucesso.")
+                            else if (data.detail.url.indexOf("Update") !== -1) {
+                                if (this.data.eReasonCode == 1) {
+                                    this._openToast("Oportunidade atualizada com sucesso.")
+                                    var contractNo = this.data.contractNo;
+                                    var versionNo = this.data.versionNo;
+                                    setTimeout(
+                                        function () {
+                                            window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
+                                        }, 1000);
+                                } else {
+                                    this._openToast(this.data.eMessage);
+                                }
+                            }
+                            else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
+                                this._openToast(this.data.eMessage);
                                 var contractNo = this.data.contractNo;
                                 var versionNo = this.data.versionNo;
                                 setTimeout(
                                     function () {
                                         window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
                                     }, 1000);
-                            } else {
-                                this._openToast(this.data.eMessage);
                             }
+                        } else {
+                            this._openToastError("Ocorreu um erro desconhecido.")
                         }
-                        else if (data.detail.url.indexOf("ArchiveContract") !== -1) {
-                            this._openToast(this.data.eMessage);
+                    },
+
+                    _createResponseProcessor: function (data) {
+
+                        if (this.data.eReasonCode == 1) {
+                            this._isCreate = false;
+                            this._openToast("Oportunidade guardada com sucesso.");
+
                             var contractNo = this.data.contractNo;
                             var versionNo = this.data.versionNo;
                             setTimeout(
                                 function () {
                                     window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
                                 }, 1000);
-                        }
-                    } else {
-                        this._openToastError("Ocorreu um erro desconhecido.")
-                    }
-                },
 
-                _createResponseProcessor: function (data) {
-
-                    if (this.data.eReasonCode == 1) {
-                        this._isCreate = false;
-                        this._openToast("Oportunidade guardada com sucesso.");
-
-                        var contractNo = this.data.contractNo;
-                        var versionNo = this.data.versionNo;
-                        setTimeout(
-                            function () {
-                                window.location.href = "../DetalhesOportunidade/" + contractNo + "?version=" + versionNo;
-                            }, 1000);
-
-                    } else {
-                        this._openToast(this.data.eMessage);
-                    }
-                },
-
-
-
-                _responseValidatorProcessor: function (data) {
-                    var self = this;
-                    if (data.detail.status === 200) {
-                        if (this.validateResponse == "") {
-                            this._executeRequest("/Contratos/CreateContract", this.data)
                         } else {
-                            this._openToastError("Ocorreu um erro desconhecido.");
+                            this._openToast(this.data.eMessage);
                         }
-                    }
-                },
-                _responseDeleteProcessor: function (data) {
-                    var self = this;
-                    if (data.detail.status === 200) {
-                        this._openToast("Oportunidade eliminada com sucesso");
-                        if (this.deletedData.eReasonCode == 1) {
-                            setTimeout(
-                                function () {
-                                    window.location.replace("/");
-                                }, 2500);
-                        } else if (this.deletedData.eReasonCode == 2) {
-                            this._openToastError(this.deletedData.eMessage);
+                    },
+
+
+
+                    _responseValidatorProcessor: function (data) {
+                        var self = this;
+                        if (data.detail.status === 200) {
+                            if (this.validateResponse == "") {
+                                this._executeRequest("/Contratos/CreateContract", this.data)
+                            } else {
+                                this._openToastError("Ocorreu um erro desconhecido.");
+                            }
                         }
-                    }
-                },
-                //Date
-                _startEndDate: function (e) {
-                    this.$.DueDate.min = this.$.mStartData.value;
-                    this.$.mStartData.max = this.$.DueDate.value;
-                },
-
-                _limitClarificationDateDateChanged: function (e) {
-                    this.$.mErrorsOmissionsDate.min = this.$.mLimitClarificationDate.value;
-                },
-
-                _errorsOmissionsDateChanged: function (e) {
-                    var d = new Date(this.$.mErrorsOmissionsDate.value);
-                    d.setDate(d.getDate() + 1);
-                    this.$.mProposalDelivery.min = d.getFullYear() + '-'
-                        + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
-                        + ('0' + d.getDate()).slice(-2);
-                },
-
-                _propDeliveryDateChanged: function (e) {
-
-                    var d = new Date(this.$.mProposalDelivery.value);
-                    d.setDate(d.getDate() + 1);
-                    this.$.previousHearingDate.min = d.getFullYear() + '-'
-                        + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
-                        + ('0' + d.getDate()).slice(-2);
-                },
-
-                _previousHearingDateChanged: function (e) {
-                    var d = new Date(this.$.previousHearingDate.value);
-                    d.setDate(d.getDate() + 1);
-
-                    this.$.mFinalReportDate.min = d.getFullYear() + '-'
-                        + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
-                        + ('0' + d.getDate()).slice(-2);
-                },
-
-                _finalReporDateChanged: function (e) {
-                    var d = new Date(this.$.mFinalReportDate.value);
-                    d.setDate(d.getDate() + 1);
-
-                    this.$.mDocumentationHabilitationDate.min = d.getFullYear() + '-'
-                        + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
-                        + ('0' + d.getDate()).slice(-2);
-                },
-                //Address Functions
-                _getAddressByCode: function (e) {
-                    var selItem = this.ClientShippingAddresses != null ? this.ClientShippingAddresses.find(x => x.code == e.detail.value) : null;
-                    //if (selItem != null) {
-                    //Fill Data
-                    //this.$.ShippingName.value = selItem.name;
-                    //this.$.ShippingAddress.value = selItem.address;
-                    //this.$.shippingZipCode.value = selItem.zipCode;
-                    //this.$.ShippingLocality.value = selItem.city;
-                    //}
-                    //else {
-                    //this.$.ShippingName.value = "";
-                    //this.$.ShippingAddress.value = "";
-                    //this.$.shippingZipCode.value = "";
-                    //this.$.ShippingLocality.value = "";
-                    //}
-                },
-
-                //Client Requisition Functions
-                _createClientRequisition: function () {
-
-                    this.data.clientRequisitions.unshift({
-                        contractNo: this.data.contractNo,
-                        startDate: this._CRStartDate,
-                        endDate: this._CREndDate,
-                        clientRequisitionNo: this._CRRequisitionNo,
-                        requisitionDate: this._CRRequisitionDate,
-                        promiseNo: this._CRPromiseNo,
-                        invoiceGroup: this._CRInvoiceGroup,
-                        projectNo: this._CRProjectNo,
-                        lastInvoiceDate: this._CRLastInvoiceDate
-                    });
-                    this.$.grid_ClientRequisitions.clearCache();
-                },
-                _deleteClientRequisition: function (data) {
-                    var index = this.data.clientRequisitions.indexOf(data.model.item);
-                    this.data.clientRequisitions.splice(index, 1);
-
-                    this.$.grid_ClientRequisitions.clearCache();
-                },
-
-                //Invoice Texts Functions
-                _createInvoiceText: function () {
-                    this.data.invoiceTexts.unshift({
-                        contractNo: this.data.contractNo,
-                        invoiceGroup: this._IRInvoiceGroup,
-                        projectNo: this._IRProjectNo,
-                        invoiceText: this._IRInvoiceText
-                    });
-                    this.$.grid_invoiceTexts.clearCache();
-                },
-                _deleteInvoiceText: function (data) {
-                    var index = this.data.invoiceTexts.indexOf(data.model.item);
-                    this.data.invoiceTexts.splice(index, 1);
-
-                    this.$.grid_invoiceTexts.clearCache();
-                },
-
-                //Helpers
-                _executeRequest: function (url, data) {
-                    this.data.contractType = 1;
-                    this.$.page_databound_ajax.url = url;
-                    this.$.page_databound_ajax.body = JSON.stringify(data);
-                    this.$.page_databound_ajax.generateRequest();
-                },
-                _openContractArchive: function () {
-                    window.location.href = "/Contratos?archived=1&contractno=" + this.data.contractNo;
-                },
-
-
-                //#################################
-                //        CONTRACT LINES
-                //#################################
-                _createContractLine: function () {
-                    this.dataLines.lines.unshift({
-                        contractNo: this.data.contractNo,
-                        versionNo: this.data.versionNo,
-                        contractType: 1,
-                        type: this._CLContractLineType,
-                        codeMeasureUnit: this._CLMeasureUnit,
-                        codeRegion: this._CLRegion,
-                        frequency: this._CLFrequency,
-                        versionStartDate: this._CLVersionStartDate,
-                        serviceClientNo: this._CLServiceClient,
-                        code: this._CLCode,
-                        unitPrice: this._CLUnitPrice,
-                        codeFunctionalArea: this._CLFunctionalArea,
-                        interventionHours: this._CLInterventionHours,
-                        versionEndDate: this._CLVersionEndDate,
-                        invoiceGroup: this._CLInvoiceGroup,
-                        description: this._CLDescription,
-                        description2: this._CLDescription2,
-                        lineDiscount: this._CLDiscountLine,
-                        codeResponsabilityCenter: this._CLResponsabilityCenter,
-                        totalTechinicians: this._CLTotalTechnicians,
-                        responsibleNo: this._CLResponsible,
-                        createContract: this._CLCreateContract,
-                        quantity: this._CLQuantity,
-                        billable: this._CLBillable,
-                    });
-                    this.$.grid_contractlines.clearCache();
-
-                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
-                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.contractLines_databound_ajax.generateRequest();
-                },
-                _updateContractLines: function () {
-                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
-                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.contractLines_databound_ajax.generateRequest();
-                },
-                _clResponseProcessor: function (data) {
-                    if (data.detail.status === 200) {
-                        if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
-                            this._CLContractLineType = "";
-                            this.$._CLMeasureUnit._clearSelection();
-                            this._CLFrequency = "";
-                            this.$._CLServiceClient._clearSelection();
-                            this.$._CLCode._clearSelection();
-                            this._CLUnitPrice = "";
-                            this._CLInterventionHours = "";
-                            this.$._CLInvoiceGroup._clearSelection();
-                            this._CLDescription = "";
-                            this._CLDescription2 = "";
-                            this._CLDiscountLine = "";
-                            this._CLTotalTechnicians = "";
-                            this.$._CLResponsible._clearSelection();
-                            this._CLQuantity = "";
-                            this._CLBillable = true;
-                            this._CLCreateContract = true;
-
-                            this._CLRegion = this.data.codeRegion;
-                            this._CLFunctionalArea = this.data.codeFunctionalArea;
-                            this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
-                            this._CLVersionStartDate = this.data.startData;
-                            this._CLVersionEndDate = this.data.dueDate;
-
-                            this._openToast(this.dataLines.eMessage);
+                    },
+                    _responseDeleteProcessor: function (data) {
+                        var self = this;
+                        if (data.detail.status === 200) {
+                            this._openToast("Oportunidade eliminada com sucesso");
+                            if (this.deletedData.eReasonCode == 1) {
+                                setTimeout(
+                                    function () {
+                                        window.location.replace("/");
+                                    }, 2500);
+                            } else if (this.deletedData.eReasonCode == 2) {
+                                this._openToastError(this.deletedData.eMessage);
+                            }
                         }
-                    }
-                },
+                    },
+                    //Date
+                    _startEndDate: function (e) {
+                        this.$.DueDate.min = this.$.mStartData.value;
+                        this.$.mStartData.max = this.$.DueDate.value;
+                    },
 
-                _clContractLineTypeChange: function (e) {
-                    this.$.contractlinecodes_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.contractlinecodes_ajax.generateRequest();
-                },
-                _clContractLineCodeChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.CBContractLineCodes.findIndex(i => i.id === e.detail.value);
-                        //this.CBContractLineCodes[index].id;
-                        this._CLDescription = this.CBContractLineCodes[index].value;
-                        this._CLMeasureUnit = this.CBContractLineCodes[index].extra;
-                    }
-                },
+                    _limitClarificationDateDateChanged: function (e) {
+                        this.$.mErrorsOmissionsDate.min = this.$.mLimitClarificationDate.value;
+                    },
 
-                _clContractLineTypeGridChange: function (e) {
-                    this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
-                    this.$.contractlinecodesgrid_ajax.generateRequest();
+                    _errorsOmissionsDateChanged: function (e) {
+                        var d = new Date(this.$.mErrorsOmissionsDate.value);
+                        d.setDate(d.getDate() + 1);
+                        this.$.mProposalDelivery.min = d.getFullYear() + '-'
+                            + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
+                            + ('0' + d.getDate()).slice(-2);
+                    },
 
-                    this.dataLines.lines.find(x => x == this._SelectedLine).code = "";
-                    this.dataLines.lines.find(x => x == this._SelectedLine).type = e.detail.value;
-                    this.$.grid_contractlines.clearCache();
-                },
-                _clContractLineCodeGridChange: function (e) {
-                    if (e.detail.value != null && e.detail.value != "") {
-                        var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
-                        //this.CBContractLineCodes[index].id;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).code = e.detail.value;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
-                        this.dataLines.lines.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
+                    _propDeliveryDateChanged: function (e) {
+
+                        var d = new Date(this.$.mProposalDelivery.value);
+                        d.setDate(d.getDate() + 1);
+                        this.$.previousHearingDate.min = d.getFullYear() + '-'
+                            + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
+                            + ('0' + d.getDate()).slice(-2);
+                    },
+
+                    _previousHearingDateChanged: function (e) {
+                        var d = new Date(this.$.previousHearingDate.value);
+                        d.setDate(d.getDate() + 1);
+
+                        this.$.mFinalReportDate.min = d.getFullYear() + '-'
+                            + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
+                            + ('0' + d.getDate()).slice(-2);
+                    },
+
+                    _finalReporDateChanged: function (e) {
+                        var d = new Date(this.$.mFinalReportDate.value);
+                        d.setDate(d.getDate() + 1);
+
+                        this.$.mDocumentationHabilitationDate.min = d.getFullYear() + '-'
+                            + ('0' + (d.getMonth() + 1)).slice(-2) + '-'
+                            + ('0' + d.getDate()).slice(-2);
+                    },
+                    //Address Functions
+                    _getAddressByCode: function (e) {
+                        var selItem = this.ClientShippingAddresses != null ? this.ClientShippingAddresses.find(x => x.code == e.detail.value) : null;
+                        //if (selItem != null) {
+                        //Fill Data
+                        //this.$.ShippingName.value = selItem.name;
+                        //this.$.ShippingAddress.value = selItem.address;
+                        //this.$.shippingZipCode.value = selItem.zipCode;
+                        //this.$.ShippingLocality.value = selItem.city;
+                        //}
+                        //else {
+                        //this.$.ShippingName.value = "";
+                        //this.$.ShippingAddress.value = "";
+                        //this.$.shippingZipCode.value = "";
+                        //this.$.ShippingLocality.value = "";
+                        //}
+                    },
+
+                    //Client Requisition Functions
+                    _createClientRequisition: function () {
+
+                        this.data.clientRequisitions.unshift({
+                            contractNo: this.data.contractNo,
+                            startDate: this._CRStartDate,
+                            endDate: this._CREndDate,
+                            clientRequisitionNo: this._CRRequisitionNo,
+                            requisitionDate: this._CRRequisitionDate,
+                            promiseNo: this._CRPromiseNo,
+                            invoiceGroup: this._CRInvoiceGroup,
+                            projectNo: this._CRProjectNo,
+                            lastInvoiceDate: this._CRLastInvoiceDate
+                        });
+                        this.$.grid_ClientRequisitions.clearCache();
+                    },
+                    _deleteClientRequisition: function (data) {
+                        var index = this.data.clientRequisitions.indexOf(data.model.item);
+                        this.data.clientRequisitions.splice(index, 1);
+
+                        this.$.grid_ClientRequisitions.clearCache();
+                    },
+
+                    //Invoice Texts Functions
+                    _createInvoiceText: function () {
+                        this.data.invoiceTexts.unshift({
+                            contractNo: this.data.contractNo,
+                            invoiceGroup: this._IRInvoiceGroup,
+                            projectNo: this._IRProjectNo,
+                            invoiceText: this._IRInvoiceText
+                        });
+                        this.$.grid_invoiceTexts.clearCache();
+                    },
+                    _deleteInvoiceText: function (data) {
+                        var index = this.data.invoiceTexts.indexOf(data.model.item);
+                        this.data.invoiceTexts.splice(index, 1);
+
+                        this.$.grid_invoiceTexts.clearCache();
+                    },
+
+                    //Helpers
+                    _executeRequest: function (url, data) {
+                        this.data.contractType = 1;
+                        this.$.page_databound_ajax.url = url;
+                        this.$.page_databound_ajax.body = JSON.stringify(data);
+                        this.$.page_databound_ajax.generateRequest();
+                    },
+                    _openContractArchive: function () {
+                        window.location.href = "/Contratos?archived=1&contractno=" + this.data.contractNo;
+                    },
+
+
+                    //#################################
+                    //        CONTRACT LINES
+                    //#################################
+                    _createContractLine: function () {
+                        this.dataLines.lines.unshift({
+                            contractNo: this.data.contractNo,
+                            versionNo: this.data.versionNo,
+                            contractType: 1,
+                            type: this._CLContractLineType,
+                            codeMeasureUnit: this._CLMeasureUnit,
+                            codeRegion: this._CLRegion,
+                            frequency: this._CLFrequency,
+                            versionStartDate: this._CLVersionStartDate,
+                            serviceClientNo: this._CLServiceClient,
+                            code: this._CLCode,
+                            unitPrice: this._CLUnitPrice,
+                            codeFunctionalArea: this._CLFunctionalArea,
+                            interventionHours: this._CLInterventionHours,
+                            versionEndDate: this._CLVersionEndDate,
+                            invoiceGroup: this._CLInvoiceGroup,
+                            description: this._CLDescription,
+                            description2: this._CLDescription2,
+                            lineDiscount: this._CLDiscountLine,
+                            codeResponsabilityCenter: this._CLResponsabilityCenter,
+                            totalTechinicians: this._CLTotalTechnicians,
+                            responsibleNo: this._CLResponsible,
+                            createContract: this._CLCreateContract,
+                            quantity: this._CLQuantity,
+                            billable: this._CLBillable,
+                        });
                         this.$.grid_contractlines.clearCache();
-                    }
-                },
 
-                _lineSelected: function (item) {
-                    if (item != null) {
-                        var oSel = this.dataLines.lines.find(x => x.selected);
-                        if (oSel != undefined) {
-                            oSel.selected = false;
+                        this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    },
+                    _updateContractLines: function () {
+                        this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    },
+                    _clResponseProcessor: function (data) {
+                        if (data.detail.status === 200) {
+                            if (!(data.detail.url.indexOf("GetContractLines") !== -1)) {
+                                this._CLContractLineType = "";
+                                this.$._CLMeasureUnit._clearSelection();
+                                this._CLFrequency = "";
+                                this.$._CLServiceClient._clearSelection();
+                                this.$._CLCode._clearSelection();
+                                this._CLUnitPrice = "";
+                                this._CLInterventionHours = "";
+                                this.$._CLInvoiceGroup._clearSelection();
+                                this._CLDescription = "";
+                                this._CLDescription2 = "";
+                                this._CLDiscountLine = "";
+                                this._CLTotalTechnicians = "";
+                                this.$._CLResponsible._clearSelection();
+                                this._CLQuantity = "";
+                                this._CLBillable = true;
+                                this._CLCreateContract = true;
+
+                                this._CLRegion = this.data.codeRegion;
+                                this._CLFunctionalArea = this.data.codeFunctionalArea;
+                                this._CLResponsabilityCenter = this.data.codeResponsabilityCenter;
+                                this._CLVersionStartDate = this.data.startData;
+                                this._CLVersionEndDate = this.data.dueDate;
+
+                                this._openToast(this.dataLines.eMessage);
+                            }
                         }
+                    },
 
-                        var sel = this.dataLines.lines.find(x => x == item);
-                        if (sel != undefined) {
+                    _clContractLineTypeChange: function (e) {
+                        this.$.contractlinecodes_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.contractlinecodes_ajax.generateRequest();
+                    },
+                    _clContractLineCodeChange: function (e) {
+                        if (e.detail.value != null && e.detail.value != "") {
+                            var index = this.CBContractLineCodes.findIndex(i => i.id === e.detail.value);
+                            //this.CBContractLineCodes[index].id;
+                            this._CLDescription = this.CBContractLineCodes[index].value;
+                            this._CLMeasureUnit = this.CBContractLineCodes[index].extra;
+                        }
+                    },
 
-                            this.dataLines.lines.find(x => x == item).selected = true;
+                    _clContractLineTypeGridChange: function (e) {
+                        this.$.contractlinecodesgrid_ajax.body = JSON.stringify(e.detail.value);
+                        this.$.contractlinecodesgrid_ajax.generateRequest();
 
-                            this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
-                            this.$.contractlinecodesgrid_ajax.generateRequest();
-
-
+                        this.dataLines.lines.find(x => x == this._SelectedLine).code = "";
+                        this.dataLines.lines.find(x => x == this._SelectedLine).type = e.detail.value;
+                        this.$.grid_contractlines.clearCache();
+                    },
+                    _clContractLineCodeGridChange: function (e) {
+                        if (e.detail.value != null && e.detail.value != "") {
+                            var index = this.CBContractLineCodesGrid.findIndex(i => i.id === e.detail.value);
+                            //this.CBContractLineCodes[index].id;
+                            this.dataLines.lines.find(x => x == this._SelectedLine).code = e.detail.value;
+                            this.dataLines.lines.find(x => x == this._SelectedLine).description = this.CBContractLineCodesGrid[index].value;
+                            this.dataLines.lines.find(x => x == this._SelectedLine).codeMeasureUnit = this.CBContractLineCodesGrid[index].extra;
                             this.$.grid_contractlines.clearCache();
                         }
-                    }
-                },
+                    },
 
-                //FORMAT LINES
-                _clFormatType: function (param) {
-                    if (param != undefined) {
-                        var sel = this.CBContractLineTypes.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatCode: function (param1, param2) {
-                    if (param1 != undefined && param2 != undefined) {
-                        var sel;
-                        if (param2 == 1) {
-                            sel = this.CBCodeProducts.find(x => x.id == param1);
-                        } else if (param2 == 2) {
-                            sel = this.CBResourceCode.find(x => x.id == param1);
-                        } else {
-                            sel = this.CBCGAccountCode.find(x => x.id == param1);
-                        }
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatMeasureUnit: function (param) {
-                    if (param != undefined) {
-                        var sel = this.CBMeasureUnits.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatRegion: function (param) {
-                    if (param != undefined) {
-                        var sel = this.CBRegions.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatFunctionalArea: function (param) {
-                    if (param != undefined) {
-                        var sel = this.CBFunctionalAreas.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatResponsabilityCenter: function (param) {
-                    if (param != undefined) {
-                        var sel = this.CBResponsabilityCenterCodes.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatResponsible: function (param) {
-                    if (param != undefined && this.CBEmployees != undefined) {
-                        var sel = this.CBEmployees.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
-                        }
-                    }
-                    return "";
-                },
-                _clFormatServiceClient: function (param) {
-                    if (param != undefined) {
-                        while (this.CBServiceClients == undefined) {
+                    _lineSelected: function (item) {
+                        if (item != null) {
+                            var oSel = this.dataLines.lines.find(x => x.selected);
+                            if (oSel != undefined) {
+                                oSel.selected = false;
+                            }
 
+                            var sel = this.dataLines.lines.find(x => x == item);
+                            if (sel != undefined) {
+
+                                this.dataLines.lines.find(x => x == item).selected = true;
+
+                                this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                                this.$.contractlinecodesgrid_ajax.generateRequest();
+
+
+                                this.$.grid_contractlines.clearCache();
+                            }
                         }
-                        var sel = this.CBServiceClients.find(x => x.id == param);
-                        if (sel != undefined) {
-                            return sel.value;
+                    },
+
+                    //FORMAT LINES
+                    _clFormatType: function (param) {
+                        if (param != undefined) {
+                            var sel = this.CBContractLineTypes.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
                         }
-                    }
-                    return "";
-                },
-                _deleteContractLine: function (e) {
-                    var index = this.dataLines.lines.indexOf(e.model.item);
-                    var spliceDataLine = this.dataLines.lines;
-                    var contLinesdatabound_ajax = this.$.contractLines_databound_ajax;
-                    var contLines_grid = this.$.grid_contractlines;
-                    var model_item = e.model.item;
-                    var dataL = this.dataLines;
-                    bootbox.confirm({
-                        message: "Tem a certeza que pretende remover esta Linha?",
-                        buttons: {
-                            confirm: {
-                                label: 'Sim',
-                                className: 'btn-success'
+                        return "";
+                    },
+                    _clFormatCode: function (param1, param2) {
+                        if (param1 != undefined && param2 != undefined) {
+                            var sel;
+                            if (param2 == 1) {
+                                sel = this.CBCodeProducts.find(x => x.id == param1);
+                            } else if (param2 == 2) {
+                                sel = this.CBResourceCode.find(x => x.id == param1);
+                            } else {
+                                sel = this.CBCGAccountCode.find(x => x.id == param1);
+                            }
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+                    _clFormatMeasureUnit: function (param) {
+                        if (param != undefined) {
+                            var sel = this.CBMeasureUnits.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+                    _clFormatRegion: function (param) {
+                        if (param != undefined) {
+                            var sel = this.CBRegions.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+                    _clFormatFunctionalArea: function (param) {
+                        if (param != undefined) {
+                            var sel = this.CBFunctionalAreas.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+                    _clFormatResponsabilityCenter: function (param) {
+                        if (param != undefined) {
+                            var sel = this.CBResponsabilityCenterCodes.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+                    _clFormatResponsible: function (param) {
+                        if (param != undefined && this.CBEmployees != undefined) {
+                            var sel = this.CBEmployees.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+                    _clFormatServiceClient: function (param) {
+                        if (param != undefined) {
+                            while (this.CBServiceClients == undefined) {
+
+                            }
+                            var sel = this.CBServiceClients.find(x => x.id == param);
+                            if (sel != undefined) {
+                                return sel.value;
+                            }
+                        }
+                        return "";
+                    },
+                    _deleteContractLine: function (e) {
+                        var index = this.dataLines.lines.indexOf(e.model.item);
+                        var spliceDataLine = this.dataLines.lines;
+                        var contLinesdatabound_ajax = this.$.contractLines_databound_ajax;
+                        var contLines_grid = this.$.grid_contractlines;
+                        var model_item = e.model.item;
+                        var dataL = this.dataLines;
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover esta Linha?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
                             },
-                            cancel: {
-                                label: 'Não',
-                                className: 'btn-danger'
-                            }
-                        },
 
-                        callback: function (result) {
-                            if (result) {
-                                spliceDataLine.splice(index, 1);
-                                contLinesdatabound_ajax.url = "/Contratos/UpdateContractLines";
-                                contLinesdatabound_ajax.body = JSON.stringify(dataL);
-                                contLinesdatabound_ajax.generateRequest();
-                                contLines_grid.clearCache();
+                            callback: function (result) {
+                                if (result) {
+                                    spliceDataLine.splice(index, 1);
+                                    contLinesdatabound_ajax.url = "/Contratos/UpdateContractLines";
+                                    contLinesdatabound_ajax.body = JSON.stringify(dataL);
+                                    contLinesdatabound_ajax.generateRequest();
+                                    contLines_grid.clearCache();
+                                }
+                            }
+                        });
+                    },
+
+                    //Parse To Proposal
+                    _parseToContract: function (param) {
+                        if (param != null) {
+                            if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
+                                this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2, "Parcial": false });
+                                this.$.parseToContract_ajax.generateRequest();
+                            } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null) {
+                                this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2, "Parcial": false });
+                                this.$.parseToContract_ajax.generateRequest();
+                            } else {
+                                this._openToastError("Esta versão de oportunidade já tem proposta associada");
                             }
                         }
-                    });
-                },
+                    },
 
-                //Parse To Proposal
-                _parseToContract: function (param) {
-                    if (param != null) {
-                        if (this.$.mProposalNo.value != null && this.$.mProposalNo.value == "") {
-                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2, "Parcial": false });
-                            this.$.parseToContract_ajax.generateRequest();
-                        } else if (this.$.mProposalNo.value != "" && this.$.mProposalNo.value == null) {
-                            this.$.parseToContract_ajax.body = JSON.stringify({ "HeaderNo": this._contractno, "VersionNo": this._versionno, "OriginType": 1, "HeaderType": 2, "Parcial": false });
-                            this.$.parseToContract_ajax.generateRequest();
-                        } else {
-                            this._openToastError("Esta versão de oportunidade já tem proposta associada");
+                    _responseParseToContract: function (e) {
+                        var self = this;
+                        if (e.detail.status === 200) {
+                            this._openToast("Proposta " + this.numeration + " criada com sucesso");
+                            this.$.mProposalNo.value = this.numeration;
                         }
-                    }
-                },
+                        else {
+                            this._openToastError("Erro na criação da proposta.");
+                        }
+                    },
 
-                _responseParseToContract: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
-                        this._openToast("Proposta " + this.numeration + " criada com sucesso");
-                        this.$.mProposalNo.value = this.numeration;
-                    }
-                    else {
-                        this._openToastError("Erro na criação da proposta.");
-                    }
-                },
+                    _closeArchiveReasonDialog: function () {
+                        this.$.archiveReason.value = "";
+                        this.$.dlgArchiveReason.close();
+                    },
 
-                _closeArchiveReasonDialog: function () {
-                    this.$.archiveReason.value = "";
-                    this.$.dlgArchiveReason.close();
-                },
+                    _goBack: function (e) {
+                        window.history.back();
+                    },
 
-                _goBack: function (e) {
-                    window.history.back();
-                },
-
-                _print: function () {
-                    if (this._reportserverurl != undefined) {
-                        this.$.rptContainer.src = this._reportserverurl + "OpotunidadeProposta_Contrato&TipoContrato=" + this.data.contractType + "&NoContrato=" + this.data.contractNo + "&NoVersao=" + this.data.versionNo;
-                        this.$.rptDialog.open();
-                    }
-                    else {
-                        this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
-                    }
-                },
-                _closeRptDialog: function () {
-                    this.$.rptContainer.src = "about:blank";
-                    this.$.rptDialog.close();
-                },
+                    _print: function () {
+                        if (this._reportserverurl != undefined) {
+                            this.$.rptContainer.src = this._reportserverurl + "OpotunidadeProposta_Contrato&TipoContrato=" + this.data.contractType + "&NoContrato=" + this.data.contractNo + "&NoVersao=" + this.data.versionNo;
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
+                    },
+                    _closeRptDialog: function () {
+                        this.$.rptContainer.src = "about:blank";
+                        this.$.rptDialog.close();
+                    },
 
 
+                });
             });
-        });
-    </script>
+        </script>
 
 </dom-module>
 

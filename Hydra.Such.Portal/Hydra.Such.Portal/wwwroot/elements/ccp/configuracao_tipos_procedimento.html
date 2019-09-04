@@ -302,7 +302,6 @@
                 },
 
                 ready: function () {
-                    debugger;;
                     this.$.page_databound_ajax.body = JSON.stringify({ "id": this._idtipodetail });
                     this.$.page_databound_ajax.generateRequest();
 
@@ -315,7 +314,6 @@
                     $(window).trigger('resize');
                 },
                 _responseProcessor: function (data) {
-                    debugger;;
                     if (data.detail.status === 200) {
                         if (this.data.idTipo === 0) {
                             // type 0 is used only in the Procedimento creation
@@ -325,7 +323,6 @@
                     }
                 },
                 _update: function () {
-                    debugger;;
                     if (this.$.abreviatura.value == null || this.$.abreviatura.value == "") {
                         this._openToastError("O campo Abreviatura é de preenchimento obrigatório!!");
                         return;
@@ -339,7 +336,6 @@
                     var str = this.$.abreviatura.value;
                     this.$.abreviatura.value = str.toUpperCase();
                     
-                    debugger;;
                     var _fundamentos = this.data.fundamentoLegalTipoProcedimentoCcp;
                     if (_fundamentos != null) {
                         for(var i = 0; i < _fundamentos.length; i++) {
@@ -355,7 +351,6 @@
                     this.$.update_tipo_ajax.generateRequest();
                 },   
                 _updateResponse: function (e) {
-                    debugger;;
                     if (this.tipoUpdated) {
                         this._openToast("Tipo Procedimento actualizado com sucesso!");
                         this.$.page_databound_ajax.body = JSON.stringify({ "id": this.data.idTipo });
@@ -369,7 +364,6 @@
                 },
 
                 _addFundamento: function (e) {
-                    debugger;;
                     if (this._descricaoFundamento == null || this._descricaoFundamento == "") {
                         this._openToastError("É obrigatório o preenchimento da Descrição do fundamento legal!");
                         return;
@@ -385,7 +379,6 @@
                     this.$.create_fundamento_ajax.generateRequest();
                 },
                 _createFundamentoResponse: function (e) {
-                    debugger;;
                     if (!this.fundamentoCreated || this.fundamentoCreated == null) {
                         this._openToastError("Não foi possível criar o fundamento!");
                         return;
@@ -401,7 +394,6 @@
 
                 _saveFundamento: function (e) {
                     if (this.data != undefined) {
-                        debugger;;
                         var reasonLines = this.data.fundamentoLegalTipoProcedimentoCcp;
                         var index = reasonLines.indexOf(e.model.item);
 

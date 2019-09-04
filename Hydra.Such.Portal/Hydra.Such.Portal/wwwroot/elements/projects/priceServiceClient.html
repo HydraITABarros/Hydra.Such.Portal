@@ -948,7 +948,6 @@
                     this.$.priceServiceClientGrid.clearCache();
                 },
                 _export: function () {
-                    debugger;
 
                     window.grid = this.$.priceServiceClientGrid;
                     this.$.ajax_Export.body = JSON.stringify(this.$.priceServiceClientGrid._filter(this.$.priceServiceClientGrid.items));

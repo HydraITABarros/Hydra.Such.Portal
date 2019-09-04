@@ -11,6 +11,7 @@ using Hydra.Such.Data.Logic;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.Logic.OrcamentoL;
+using Hydra.Such.Data.Logic.PedidoCotacao;
 using Hydra.Such.Data.Logic.Project;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
@@ -97,6 +98,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ViewBag.NoOrcamento = id ?? "";
                 ViewBag.reportServerURL = _config.ReportServerURL;
+
                 ViewBag.UPermissions = UPerm;
 
                 return View();
@@ -120,6 +122,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+            List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
 
             result.ForEach(x => {
@@ -129,10 +132,12 @@ namespace Hydra.Such.Portal.Controllers
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
                 x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
+                x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
                 x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorCriacaoText = !string.IsNullOrEmpty(x.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorAceiteText = !string.IsNullOrEmpty(x.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorNaoAceiteText = !string.IsNullOrEmpty(x.UtilizadorNaoAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorConcluidoText = !string.IsNullOrEmpty(x.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
             });
@@ -156,6 +161,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+            List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
 
             result.ForEach(x => {
@@ -165,10 +171,12 @@ namespace Hydra.Such.Portal.Controllers
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
                 x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
+                x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
                 x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorCriacaoText = !string.IsNullOrEmpty(x.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorAceiteText = !string.IsNullOrEmpty(x.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorNaoAceiteText = !string.IsNullOrEmpty(x.UtilizadorNaoAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorConcluidoText = !string.IsNullOrEmpty(x.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
             });
@@ -189,6 +197,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+            List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
 
             result.ForEach(x => {
@@ -198,10 +207,12 @@ namespace Hydra.Such.Portal.Controllers
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
                 x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
+                x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
                 x.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(x.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorCriacaoText = !string.IsNullOrEmpty(x.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorAceiteText = !string.IsNullOrEmpty(x.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                x.UtilizadorNaoAceiteText = !string.IsNullOrEmpty(x.UtilizadorNaoAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorNaoAceite.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorConcluidoText = !string.IsNullOrEmpty(x.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                 x.UtilizadorModificacaoText = !string.IsNullOrEmpty(x.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == x.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
             });
@@ -243,6 +254,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["tipoFaturacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Faturação"); Col = Col + 1; }
                 if (dp["totalSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Total sem IVA"); Col = Col + 1; }
                 if (dp["totalComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Total com IVA"); Col = Col + 1; }
+                if (dp["projetoAssociadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Projeto Associado"); Col = Col + 1; }
                 if (dp["noProposta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº da Proposta Associada"); Col = Col + 1; }
                 if (dp["email"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("E-mail"); Col = Col + 1; }
                 if (dp["emailAssunto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Assunto"); Col = Col + 1; }
@@ -251,8 +263,10 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["emailUtilizadorEnvioText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador de Envio"); Col = Col + 1; }
                 if (dp["dataCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data de Criação"); Col = Col + 1; }
                 if (dp["utilizadorCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador de Criação"); Col = Col + 1; }
-                if (dp["dataAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Aceite / Não Aceite"); Col = Col + 1; }
-                if (dp["utilizadorAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador que Aceitou / Não Aceitou"); Col = Col + 1; }
+                if (dp["dataAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Aceite"); Col = Col + 1; }
+                if (dp["utilizadorAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador que Aceitou"); Col = Col + 1; }
+                if (dp["dataNaoAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Não Aceite"); Col = Col + 1; }
+                if (dp["utilizadorNaoAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador que Não Aceitou"); Col = Col + 1; }
                 if (dp["dataConcluidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Concluído"); Col = Col + 1; }
                 if (dp["utilizadorConcluidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador que Concluio"); Col = Col + 1; }
                 if (dp["dataModificacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Última Alteração"); Col = Col + 1; }
@@ -277,6 +291,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["tipoFaturacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TipoFaturacaoText); Col = Col + 1; }
                         if (dp["totalSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TotalSemIVA.ToString()); Col = Col + 1; }
                         if (dp["totalComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TotalComIVA.ToString()); Col = Col + 1; }
+                        if (dp["projetoAssociadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjetoAssociadoText); Col = Col + 1; }
                         if (dp["noProposta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoProposta); Col = Col + 1; }
                         if (dp["email"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Email); Col = Col + 1; }
                         if (dp["emailAssunto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmailAssunto); Col = Col + 1; }
@@ -287,6 +302,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["utilizadorCriacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorCriacaoText); Col = Col + 1; }
                         if (dp["dataAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataAceiteText); Col = Col + 1; }
                         if (dp["utilizadorAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorAceiteText); Col = Col + 1; }
+                        if (dp["dataNaoAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataNaoAceiteText); Col = Col + 1; }
+                        if (dp["utilizadorNaoAceiteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorNaoAceiteText); Col = Col + 1; }
                         if (dp["dataConcluidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataConcluidoText); Col = Col + 1; }
                         if (dp["utilizadorConcluidoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UtilizadorConcluidoText); Col = Col + 1; }
                         if (dp["dataModificacaoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataModificacaoText); Col = Col + 1; }
@@ -350,8 +367,20 @@ namespace Hydra.Such.Portal.Controllers
                     ORC.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(ORC.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorCriacaoText = !string.IsNullOrEmpty(ORC.UtilizadorCriacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorCriacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorCriacao.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorAceiteText = !string.IsNullOrEmpty(ORC.UtilizadorAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorAceite.ToLower()).FirstOrDefault().Nome : "" : "";
+                    ORC.UtilizadorNaoAceiteText = !string.IsNullOrEmpty(ORC.UtilizadorNaoAceite) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorNaoAceite.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorNaoAceite.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorConcluidoText = !string.IsNullOrEmpty(ORC.UtilizadorConcluido) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorConcluido.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorConcluido.ToLower()).FirstOrDefault().Nome : "" : "";
                     ORC.UtilizadorModificacaoText = !string.IsNullOrEmpty(ORC.UtilizadorModificacao) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorModificacao.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.UtilizadorModificacao.ToLower()).FirstOrDefault().Nome : "" : "";
+
+                    if (ORC.IDEstado == 4)
+                    {
+                        ORC.LinhasOrcamentos.ForEach(x => x.Visivel = false);
+                        ORC.AnexosOrcamentos.ForEach(x => x.Visivel = false);
+                    }
+                    else
+                    {
+                        ORC.LinhasOrcamentos.ForEach(x => x.Visivel = true);
+                        ORC.AnexosOrcamentos.ForEach(x => x.Visivel = true);
+                    }
 
                     using (var ctx = new SuchDBContext())
                     {
@@ -382,6 +411,59 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.No))
                 {
+                    if (ORCAMENTO.LinhasOrcamentos != null && ORCAMENTO.LinhasOrcamentos.Count > 0)
+                    {
+                        foreach (LinhasOrcamentosViewModel linha in ORCAMENTO.LinhasOrcamentos)
+                        {
+                            if (linha.Quantidade != null || linha.ValorUnitario != null || linha.TaxaIVA != null || linha.TotalLinha != null)
+                            {
+                                if (linha.Quantidade == null)
+                                    linha.Quantidade = 0;
+                                if (linha.ValorUnitario == null)
+                                    linha.ValorUnitario = 0;
+                                if (linha.TaxaIVA == null)
+                                    linha.TaxaIVA = 0;
+                                if (linha.TotalLinha == null)
+                                    linha.TotalLinha = 0;
+
+                                decimal Custo = (decimal)(linha.Quantidade * linha.ValorUnitario);
+                                decimal ValorIVA = (decimal)((linha.TaxaIVA * Custo) / 100);
+
+                                linha.TotalLinha = Custo + ValorIVA;
+                            }
+
+                            DBLinhasOrcamentos.Update(linha.ParseToDB());
+                        }
+
+                        ORCAMENTO.TotalSemIVA = ORCAMENTO.LinhasOrcamentos.Sum(item => item.Quantidade * item.ValorUnitario);
+                        ORCAMENTO.TotalComIVA = ORCAMENTO.LinhasOrcamentos.Sum(item => item.TotalLinha);
+                    }
+
+                    Orcamentos OrcOriginal = DBOrcamentos.GetById(ORCAMENTO.No);
+                    if (OrcOriginal != null)
+                    {
+                        //2 = Aceite
+                        if (ORCAMENTO.IDEstado == 2 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
+                        {
+                            ORCAMENTO.DataAceiteText = DateTime.Now.ToString();
+                            ORCAMENTO.UtilizadorAceite = User.Identity.Name;
+                        }
+
+                        //3 = Não Aceite
+                        if (ORCAMENTO.IDEstado == 3 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
+                        {
+                            ORCAMENTO.DataNaoAceiteText = DateTime.Now.ToString();
+                            ORCAMENTO.UtilizadorNaoAceite = User.Identity.Name;
+                        }
+
+                        //4 = Concluído
+                        if (ORCAMENTO.IDEstado == 4 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
+                        {
+                            ORCAMENTO.DataConcluidoText = DateTime.Now.ToString();
+                            ORCAMENTO.UtilizadorConcluido = User.Identity.Name;
+                        }
+                    }
+
                     ORCAMENTO.UtilizadorModificacao = User.Identity.Name;
                     ORCAMENTO.DataModificacao = DateTime.Now;
 
@@ -495,8 +577,13 @@ namespace Hydra.Such.Portal.Controllers
 
             try
             {
-                if (LINHA != null && !string.IsNullOrEmpty(LINHA.NoOrcamento) && !string.IsNullOrEmpty(LINHA.Descricao) && LINHA.Quantidade != null && LINHA.ValorUnitario != null && LINHA.TaxaIVA != null && LINHA.TotalLinha != null)
+                if (LINHA != null && !string.IsNullOrEmpty(LINHA.NoOrcamento) && !string.IsNullOrEmpty(LINHA.Descricao))
                 {
+                    if (LINHA.Ordem == null)
+                    {
+                        LINHA.Ordem = DBLinhasOrcamentos.GetMaxOrdemByOrcamento(LINHA.NoOrcamento) + 1;
+                    }
+
                     LINHA.UtilizadorCriacao = User.Identity.Name;
                     LINHA.DataCriacao = DateTime.Now;
 
@@ -670,7 +757,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult SendEmail([FromBody] OrcamentosViewModel ORCAMENTO)
+        public async Task<JsonResult> SendEmail([FromBody] OrcamentosViewModel ORCAMENTO)
         {
             ORCAMENTO.eReasonCode = 3;
             ORCAMENTO.eMessage = "Ocorreu um erro ao enviar o email.";
@@ -679,16 +766,47 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.Email) && !string.IsNullOrEmpty(ORCAMENTO.EmailAssunto) && !string.IsNullOrEmpty(ORCAMENTO.EmailCorpo))
                 {
-                    //ENVIO DE EMAIL
-                    SendEmailApprovals Email = new SendEmailApprovals();
+                    string sWebRootFolder = "E:\\Data\\eSUCH\\tmp";
+                    string sFileName = "Orcamento" + "_" + ORCAMENTO.No + ".pdf";
 
-                    Email.Subject = ORCAMENTO.EmailAssunto;
-                    Email.From = User.Identity.Name;
+                    var theURL = (_config.ReportServerURL_PDF + "Orcamentos&OrcamentosNo=" + ORCAMENTO.No + "&ClienteNo=" + ORCAMENTO.NoCliente + "&ContatoNo=" + ORCAMENTO.NoContacto + "&rs:Command=Render&rs:format=PDF");
+
+                    //OBTER CREDENCIAIS PARA O SERVIDOR DE REPORTS
+                    Configuração config = DBConfigurations.GetById(1);
+
+                    WebClient Client = new WebClient
+                    {
+                        Credentials = new NetworkCredential(config.ReportUsername, config.ReportPassword)
+                    };
+
+
+                    byte[] myDataBuffer = Client.DownloadData(theURL);
+
+                    using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+                    {
+                        await fs.WriteAsync(myDataBuffer, 0, myDataBuffer.Length);
+                    }
+
+                    Stream _my_stream = new MemoryStream(myDataBuffer);
+
+                    using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+                    {
+                        await stream.CopyToAsync(_my_stream);
+                    }
+
+                    SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
+                    {
+                        DisplayName = "e-SUCH",
+                        From = User.Identity.Name,
+                        Subject = ORCAMENTO.EmailAssunto,
+                        Anexo = Path.Combine(sWebRootFolder, sFileName),
+                        Body = MakeEmailBodyContent(ORCAMENTO.EmailCorpo, User.Identity.Name),
+                        IsBodyHtml = true
+                    };
+
                     Email.To.Add(ORCAMENTO.Email);
-                    Email.Body = ORCAMENTO.EmailCorpo;
-                    Email.IsBodyHtml = true;
-
-                    Email.SendEmail_Simple();
+                    Email.BCC.Add(User.Identity.Name);
+                    Email.SendEmail();
 
                     Orcamentos ORC_DB = ORCAMENTO.ParseToDB();
                     ORC_DB.EmailDataEnvio = DateTime.Now;
@@ -718,11 +836,170 @@ namespace Hydra.Such.Portal.Controllers
             catch (Exception ex)
             {
                 ORCAMENTO.eReasonCode = 3;
-                ORCAMENTO.eMessage = "Ocorreu um erro ao atualizar o Orçamento.";
+                ORCAMENTO.eMessage = "Ocorreu um erro ao enviar o E-mail.";
                 return Json(ORCAMENTO);
             }
         }
 
+        public static string MakeEmailBodyContent(string BodyText, string SenderName)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Exmos (as) Senhores (as)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                SenderName +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
+        }
+
+        [HttpPost]
+        public JsonResult CriarProposta([FromBody] OrcamentosViewModel ORCAMENTO)
+        {
+            ORCAMENTO.eReasonCode = 3;
+            ORCAMENTO.eMessage = "Ocorreu um erro ao Criar Proposta.";
+
+            try
+            {
+                if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.No))
+                {
+                    if (ORCAMENTO.IDEstado == 2)
+                    {
+                        if (string.IsNullOrEmpty(ORCAMENTO.NoProposta))
+                        {
+                            if (!string.IsNullOrEmpty(ORCAMENTO.NoCliente) && !string.IsNullOrEmpty(ORCAMENTO.CodRegiao) &&
+                                ORCAMENTO.TipoFaturacao != null && ORCAMENTO.UnidadePrestacao != null)
+                            {
+                                Configuração Configs = DBConfigurations.GetById(1);
+                                string newNumeration = DBNumerationConfigurations.GetNextNumeration(Configs.NumeraçãoPropostas.Value, true, false);
+                                Contratos NewProposta = new Contratos
+                                {
+                                    TipoContrato = 2,
+                                    NºDeContrato = newNumeration,
+                                    NºVersão = 1,
+                                    Estado = 1,
+                                    NºCliente = ORCAMENTO.NoCliente,
+                                    CódigoRegião = ORCAMENTO.CodRegiao,
+                                    TipoFaturação = ORCAMENTO.TipoFaturacao,
+                                    UnidadePrestação = ORCAMENTO.UnidadePrestacao,
+                                    DataHoraCriação = DateTime.Now,
+                                    UtilizadorCriação = User.Identity.Name,
+                                    Arquivado = false,
+                                    Historico = false,
+                                    Tipo = 1
+                                };
+
+                                if (DBContracts.Create(NewProposta) != null)
+                                {
+                                    Orcamentos OrcOriginal = DBOrcamentos.GetById(ORCAMENTO.No);
+                                    if (OrcOriginal != null)
+                                    {
+                                        //2 = Aceite
+                                        if (ORCAMENTO.IDEstado == 2 && ORCAMENTO.IDEstado != OrcOriginal.IDEstado)
+                                        {
+                                            ORCAMENTO.DataAceiteText = DateTime.Now.ToString();
+                                            ORCAMENTO.UtilizadorAceite = User.Identity.Name;
+                                        }
+                                    }
+
+                                    ORCAMENTO.NoProposta = newNumeration;
+                                    ORCAMENTO.DataModificacaoText = DateTime.Now.ToString();
+                                    ORCAMENTO.UtilizadorModificacao = User.Identity.Name;
+
+                                    if (DBOrcamentos.Update(DBOrcamentos.ParseToDB(ORCAMENTO)) != null)
+                                    {
+                                        ORCAMENTO.eReasonCode = 1;
+                                        ORCAMENTO.eMessage = "A Proposta Nº " + newNumeration + " foi criada com sucesso.";
+                                        return Json(ORCAMENTO);
+                                    }
+                                }
+                                else
+                                {
+                                    ORCAMENTO.eReasonCode = 3;
+                                    ORCAMENTO.eMessage = "Ocorreu um erro ao criar a Proposta.";
+                                    return Json(ORCAMENTO);
+                                }
+                            }
+                            else
+                            {
+                                ORCAMENTO.eReasonCode = 3;
+                                ORCAMENTO.eMessage = "Os campos Cliente, Região, Unidade de Prestação e Tipo Faturação são de preenchimento obrigatório.";
+                                return Json(ORCAMENTO);
+                            }
+                        }
+                        else
+                        {
+                            ORCAMENTO.eReasonCode = 3;
+                            ORCAMENTO.eMessage = "Não é possivel criar Proposta, por existir uma Proposta Nº " + ORCAMENTO.NoProposta + " associada a este Orçamento.";
+                            return Json(ORCAMENTO);
+                        }
+                    }
+                    else
+                    {
+                        ORCAMENTO.eReasonCode = 3;
+                        ORCAMENTO.eMessage = "Para criar Proposta, o Orçamento têm que estar no estado Aceite.";
+                        return Json(ORCAMENTO);
+                    }
+                }
+                else
+                {
+                    ORCAMENTO.eReasonCode = 3;
+                    ORCAMENTO.eMessage = "Não foi possível obter o Orçamento";
+                    return Json(ORCAMENTO);
+                }
+            }
+            catch (Exception ex)
+            {
+                ORCAMENTO.eReasonCode = 3;
+                ORCAMENTO.eMessage = "Ocorreu um erro ao criar a Proposta.";
+                return Json(ORCAMENTO);
+            }
+
+            return Json(ORCAMENTO);
+        }
 
 
 

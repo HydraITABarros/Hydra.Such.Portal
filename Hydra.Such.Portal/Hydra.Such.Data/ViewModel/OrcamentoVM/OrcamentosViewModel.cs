@@ -26,9 +26,13 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
         public string UnidadePrestacaoText { get; set; }
         public int? TipoFaturacao { get; set; }
         public string TipoFaturacaoText { get; set; }
+        public int? CondicoesPagamento { get; set; }
+        public string CondicoesPagamentoText { get; set; }
         public decimal? TotalSemIVA { get; set; }
         public decimal? TotalComIVA { get; set; }
         public string NoProposta { get; set; }
+        public string ProjetoAssociado { get; set; }
+        public string ProjetoAssociadoText { get; set; }
         public string Email { get; set; }
         public string EmailAssunto { get; set; }
         public string EmailCorpo { get; set; }
@@ -47,6 +51,11 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
         public string DataAceiteText { get; set; }
         public string UtilizadorAceite { get; set; }
         public string UtilizadorAceiteText { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
+        public DateTime? DataNaoAceite { get; set; }
+        public string DataNaoAceiteText { get; set; }
+        public string UtilizadorNaoAceite { get; set; }
+        public string UtilizadorNaoAceiteText { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataConcluido { get; set; }
         public string DataConcluidoText { get; set; }

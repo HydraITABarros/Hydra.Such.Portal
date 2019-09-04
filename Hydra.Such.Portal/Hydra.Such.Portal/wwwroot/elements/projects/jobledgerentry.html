@@ -1012,7 +1012,6 @@
                 /* end - ColumnToggle */
 
                 _printMovimentos: function () {
-                    debugger;
                     if (this._reportserverurl != undefined) {
                         this.$.rptContainer.src = this._reportserverurl + "ProjetoMovimentos&NoProjeto=" + this.result[0].projectNo + "&Utilizador=" + this.result[0].utilizador + "&DBName=" + this.result[0].nameDB + "&CompanyName=" + this.result[0].companyName;
                         this.$.rptDialog.open();
@@ -1027,7 +1026,6 @@
                 },
 
                 _printMovimentosFaturados: function () {
-                    debugger;
                     if (this._reportserverurl != undefined) {
                         this.$.rptContainer.src = this._reportserverurl + "MovimentosProjetoFaturados&NoProjeto=" + this.result[0].projectNo;
                         this.$.rptDialog.open();

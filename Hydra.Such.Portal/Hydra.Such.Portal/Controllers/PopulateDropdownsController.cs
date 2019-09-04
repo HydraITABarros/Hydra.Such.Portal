@@ -250,6 +250,17 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetUserGruposAprovacaoData()
+        {
+            List<DDMessage> result = DBApprovalGroups.GetAll().Select(x => new DDMessage()
+            {
+                id = x.Código,
+                value = x.Descrição
+            }).ToList();
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
         public JsonResult GetFolhaDeHoraStatus()
         {
             List<EnumData> result = EnumerablesFixed.FolhaDeHoraStatus;

@@ -2663,12 +2663,10 @@
                 },
                 
                 _TodasLinhasConsultaMercado: function () {
-                    debugger;
                     this.$.ajax_TodasLinhasConsultaMercado.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value });
                     this.$.ajax_TodasLinhasConsultaMercado.generateRequest();
                 },
                 _TodasLinhasConsultaMercadoResponseProcessor: function (e) {
-                    debugger;
                     if (this.resultTodasLinhasConsultaMercado.eReasonCode == "1") {
                         this._openToast(this.resultTodasLinhasConsultaMercado.eMessage);
 

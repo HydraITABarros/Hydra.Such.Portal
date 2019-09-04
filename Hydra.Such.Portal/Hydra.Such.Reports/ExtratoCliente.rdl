@@ -498,6 +498,7 @@ Saldo</Value>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
                                     <Color>#333333</Color>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -532,6 +533,7 @@ Saldo</Value>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
                                     <Color>#333333</Color>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -669,6 +671,7 @@ Saldo</Value>
                                     <FontSize>8pt</FontSize>
                                     <Format>#,0.00 '€';(#,0.00 '€')</Format>
                                     <Color>#333333</Color>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -707,6 +710,7 @@ Saldo</Value>
                                     <FontSize>8pt</FontSize>
                                     <Format>#,0.00 '€';(#,0.00 '€')</Format>
                                     <Color>#333333</Color>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>

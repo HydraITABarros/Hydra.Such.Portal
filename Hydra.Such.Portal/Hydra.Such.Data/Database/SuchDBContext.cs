@@ -1929,7 +1929,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DescriçãoDuraçãoContrato)
                     .HasColumnName("Descrição Duração Contrato")
-                    .HasColumnType("text");
+                    .HasMaxLength(4000);
 
                 entity.Property(e => e.DuraçãoMáxContrato)
                     .HasColumnName("Duração Máx. Contrato")
@@ -1973,7 +1973,8 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("% MC")
                     .HasColumnType("decimal(, 20)");
 
-                entity.Property(e => e.Notas).HasColumnType("text");
+                entity.Property(e => e.Notas)
+                    .HasMaxLength(4000);
 
                 entity.Property(e => e.NumeraçãoInterna)
                     .HasColumnName("Numeração Interna")
@@ -8044,7 +8045,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºCompromisso)
                     .HasColumnName("Nº Compromisso")
-                    .HasMaxLength(20);
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.NºContrato)
                     .HasColumnName("Nº Contrato")
@@ -11114,6 +11115,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.TipoFaturacao);
 
+                entity.Property(e => e.CondicoesPagamento);
+
                 entity.Property(e => e.TotalSemIVA)
                     .HasColumnName("TotalSemIVA")
                     .HasColumnType("decimal(38, 20)");
@@ -11124,6 +11127,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NoProposta)
                     .HasColumnName("NoProposta")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.ProjetoAssociado)
+                    .HasColumnName("ProjetoAssociado")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.Email)
@@ -11160,6 +11167,14 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.UtilizadorAceite)
                     .HasColumnName("UtilizadorAceite")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataNaoAceite)
+                    .HasColumnName("DataNaoAceite")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorNaoAceite)
+                    .HasColumnName("UtilizadorNaoAceite")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.DataConcluido)

@@ -145,6 +145,14 @@
                    on-response="_deletedAttachResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/UpdateAnexoVisivel"
+                   last-response="{{updateAnexoVisivelResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="updateAnexoVisivel_ajax"
+                   on-response="_updateAnexoVisivelResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/DeleteContract"
                    last-response="{{deletedData}}"
                    method="post"
@@ -159,6 +167,13 @@
                    handle-as="json"
                    id="contractLines_databound_ajax"
                    on-response="_clResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/UpdateContractLines"
+                   last-response="{{dataLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="changeStatusChanged_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
         <!-- PROJECT Valitador -->
@@ -285,13 +300,20 @@
                    on-response="_DataFimChangedResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/DuplicarContractLines"
+                   last-response="{{duplicarLinhasResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="contract_DuplicarLinha_ajax"
+                   on-response="_dlResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                    <!--<paper-button class="tablinks" on-tap="_archive" id="_archive"><i class="fa fa-archive" aria-hidden="true"></i> Arquivar</paper-button>-->
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
                     <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateProject"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
@@ -305,9 +327,28 @@
                 </template>
 
                 <such-dropdown-menu style="display: {{ _showContractLines }};" on-value-changed="_viewMenuItemSelected" title="Consultar" items='[[ _viewMenuItems ]]'></such-dropdown-menu>
+
+                <template is="dom-if" if="{{ !_isHistoricDiv }}">
+                    <template is="dom-if" if="{{ _isCreate }}">
+                        <paper-button id="btnCreate" class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                    </template>
+                    <template is="dom-if" if="{{ !_isCreate }}">
+                        <paper-button id="btnUpdate" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    </template>
+                    <template is="dom-if" if="{{ _permissions.delete }}">
+                        <paper-button id="btnDelete" class="tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                    </template>
+                </template>
             </div>
         </template>
 
+        <template is="dom-if" if="{{ _isCreate }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                <paper-button id="btnCreate" class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </div>
+        </template>
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
@@ -431,11 +472,16 @@
                                                                 <vaadin-text-field value="{{data.clientRequisitionNo}}" id="mClientRequisitionNo" name="clientRequisitionNo" label="Nº Requisição do Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
                                                             <div class="col-md-3 ">
-                                                                <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                <vaadin-text-field value="{{data.promiseNo}}" id="mPromiseNo" name="promiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                             </div>
-                                                            <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Início Versão" id="mStartData" name="startData" value="{{data.startData}}" on-blur="_dataInicioChanged" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                            <div class="col-md-2">
+                                                                <vaadin-date-picker label="Data Início Versão" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
+
+                                                            <div class="col-md-1" style="padding:12px">
+                                                                <paper-button class="btnSave" raised on-tap="_dataInicioChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                                            </div>
+
                                                             <div class="col-md-3 ">
                                                                 <vaadin-combo-box items="[[CBStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled="{{ _lockFields }}">
                                                                     <template>
@@ -455,11 +501,17 @@
                                                             <div class="col-md-3 ">
                                                                 <vaadin-text-field value="{{data.versionNo}}" id="versionNo" name="versionNo" label="Nº Versão" disabled="true"> </vaadin-text-field>
                                                             </div>
-                                                            <div class="col-md-3 ">
-                                                                <vaadin-date-picker label="Data Fim Versão" id="dueDate" name="dueDate" value="{{data.dueDate}}" on-blur="_dataFimChanged" disabled="{{ _lockFields }}"></vaadin-date-picker>
+
+                                                            <div class="col-md-2 ">
+                                                                <vaadin-date-picker label="Data Fim Versão" id="dueDate" name="dueDate" value="{{data.dueDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                             </div>
+
+                                                            <div class="col-md-1" style="padding:12px">
+                                                                <paper-button class="btnSave" raised on-tap="_dataFimChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                                            </div>
+
                                                             <div class="col-md-3 ">
-                                                                <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" disabled="{{ _contractStatusLocked }}">
+                                                                <vaadin-combo-box items="[[CBChangeStatus]]" id="mChangeStatus" item-value-path="id" item-label-path="value" value="{{data.changeStatus}}" label="Estado Alteração" on-value-changed="_changeStatusChanged" disabled="{{ _contractStatusLocked }}">
                                                                     <template>
                                                                         <paper-icon-item>
                                                                             <paper-item-body two-line>
@@ -589,7 +641,7 @@
                                                                     <vaadin-date-picker label="Inicio Compromisso" id="_CRStartDate" name="_CRStartDate" value="{{_CRStartDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                                                    <vaadin-date-picker label="Fim Compromisso" id="_CREndDate" name="_CREndDate" value="{{_CREndDate}}" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
                                                                     <vaadin-text-field value="{{_CRRequisitionNo}}" id="_CRRequisitionNo" name="_CRRequisitionNo" label="Nº Requisição Cliente" disabled="{{ _lockFields }}"> </vaadin-text-field>
@@ -598,7 +650,7 @@
                                                                     <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </div>
                                                                 <div class="col-lg-2">
                                                                     <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
@@ -627,7 +679,7 @@
                                                             </div>
                                                         </template>
                                                         <!-- VAADIN GRID  Requisições Cliente -->
-                                                        <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}">
+                                                        <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}" active-item="{{_SelectedLineRequisicao}}">
                                                             <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
@@ -695,7 +747,7 @@
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" max-length="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
+                                                                        <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{item.promiseNo}}
@@ -753,11 +805,10 @@
                                                             <vaadin-grid-column resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="projectNo">Descrição</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="projectNo" />
                                                                 </template>
                                                                 <template>
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectName" name="_CRGridProjectName" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
+                                                                        <vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_CRGridProjectName" name="_CRGridProjectName" value="{{item.projectNo}}" disabled>
                                                                             <template>
                                                                                 <paper-icon-item>
                                                                                     <paper-item-body two-line>
@@ -939,7 +990,7 @@
                                                             </div>
 
                                                             <div class="col-md-3">
-                                                                <vaadin-text-field value="{{dataNav.vPeriod}}" id="_VPeriod" name="_VPeriod" label="Somatório das Linhas" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
+                                                                <vaadin-text-field value="{{dataNav.somatorioLinhas}}" id="_VPeriod" name="_VPeriod" label="Somatório das Linhas" disabled placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" style="text-align:right"><div slot="suffix">€</div></vaadin-text-field>
                                                             </div>
 
                                                             <div class="col-md-3">
@@ -1113,8 +1164,8 @@
                                         </template>
                                     </div>
                                     <div class="row break_clear">
-                                        <vaadin-grid aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
-                                            <vaadin-grid-column width="70%" resizable>
+                                        <vaadin-grid id="gridAnexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                            <vaadin-grid-column width="75%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="url" />
@@ -1123,7 +1174,17 @@
                                                     <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
                                                 </template>
                                             </vaadin-grid-column>
-                                            <vaadin-grid-column width="20%" resizable>
+                                            <vaadin-grid-column width="10%" resizable hidden="{{ !_permissions.update }}">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="visivel">Vísivel</vaadin-grid-sorter>
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <vaadin-checkbox checked="{{item.visivel}}" id="ckb_AnexoVisivel" on-click="_updateAnexoVisivel" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                            <vaadin-grid-column width="10%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
                                                     <vaadin-grid-filter path="createDateTime" />
@@ -1132,7 +1193,7 @@
                                                     {{item.createDateTime}}
                                                 </template>
                                             </vaadin-grid-column>
-                                            <vaadin-grid-column width="10%" resizable>
+                                            <vaadin-grid-column width="5%" resizable>
                                                 <template class="header">
                                                 </template>
                                                 <template>
@@ -1150,19 +1211,19 @@
                                 </div>
                             </iron-pages>
 
-                            <template is="dom-if" if="{{ !_isHistoricDiv }}">
-                                <div class="marginSpace" style="display: {{ _showButtons }}">
-                                    <template is="dom-if" if="{{ _isCreate }}">
-                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                    </template>
-                                    <template is="dom-if" if="{{ !_isCreate }}">
-                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                    </template>
-                                    <template is="dom-if" if="{{ _permissions.delete }}">
-                                        <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                    </template>
-                                </div>
-                            </template>
+                            <!--<template is="dom-if" if="{{ !_isHistoricDiv }}">
+                            <div class="marginSpace" style="display: {{ _showButtons }}">
+                                <template is="dom-if" if="{{ _isCreate }}">
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                </template>
+                                <template is="dom-if" if="{{ !_isCreate }}">
+                                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                </template>
+                                <template is="dom-if" if="{{ _permissions.delete }}">
+                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                </template>
+                            </div>
+                        </template>-->
                         </div>
 
                         <paper-collapse-group style="display: {{ _showContractLines }};">
@@ -1303,6 +1364,18 @@
 
                         <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
+                                <vaadin-grid-column width="3%" resizable>
+                                    <template class="header">
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <center style="padding-bottom:10px">
+                                                <paper-button class="btnSave tableBtn" raised on-tap="_duplicarContractLine" title="Duplicar Linha"><i class="fa fa-copy" aria-hidden="true"></i></paper-button>
+                                            </center>
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <vaadin-grid-column width="130px" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -1576,9 +1649,14 @@
                                         <vaadin-grid-filter path="versionStartDate" />
                                     </template>
                                     <template>
-                                        <div style="text-align:center">
-                                            {{item.versionStartDate}}
-                                        </div>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-date-picker value="{{item.versionStartDate}}" id="_CLGridVersionStartDate" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            <div style="text-align:center">
+                                                {{item.versionStartDate}}
+                                            </div>
+                                        </template>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1588,9 +1666,14 @@
                                         <vaadin-grid-filter path="versionEndDate" />
                                     </template>
                                     <template>
-                                        <div style="text-align:center">
-                                            {{item.versionEndDate}}
-                                        </div>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-date-picker value="{{item.versionEndDate}}" id="_CLGridVersionEndDate" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            <div style="text-align:center">
+                                                {{item.versionEndDate}}
+                                            </div>
+                                        </template>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1693,13 +1776,13 @@
                             </vaadin-grid>
                         </div>
 
-                        <div class="marginSpace" style="display: {{ _showContractLines }};">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <template is="dom-if" if="{{ !_lockFields }}">
-                                    <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                </template>
+                        <!--<div class="marginSpace" style="display: {{ _showContractLines }};">
+                        <template is="dom-if" if="{{ _permissions.update }}">
+                            <template is="dom-if" if="{{ !_lockFields }}">
+                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                             </template>
-                        </div>
+                        </template>
+                    </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -2154,6 +2237,9 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    _SelectedLineRequisicao: {
+                        observer: '_lineRequisicaoSelected'
+                    },
                     _contractStatusLocked: {
                         type: Boolean,
                         value: false
@@ -2352,8 +2438,27 @@
                 },
 
                 _dataInicioChanged: function (e) {
-                    this.$.page_dataInicioChanged_ajax.body = JSON.stringify(this.data);
-                    this.$.page_dataInicioChanged_ajax.generateRequest();
+                    var ajax_request = this.$.page_dataInicioChanged_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Pretende que as linhas sejam automáticamente atualizadas com a data Início Versão?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                 },
                 _DataInicioChangedResponseProcessor: function () {
                     if (this.dataInicioResult == true) {
@@ -2365,8 +2470,27 @@
                 },
 
                 _dataFimChanged: function (e) {
-                    this.$.page_dataFimChanged_ajax.body = JSON.stringify(this.data);
-                    this.$.page_dataFimChanged_ajax.generateRequest();
+                    var ajax_request = this.$.page_dataFimChanged_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Pretende que as linhas sejam automáticamente atualizadas com a data Fim Versão?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                 },
                 _DataFimChangedResponseProcessor: function () {
                     if (this.dataFimResult == true) {
@@ -2389,7 +2513,24 @@
                     }
                 },
                 _update: function () {
+                    //if (this._validateData()) {
+                    //    this._executeRequest("/Contratos/UpdateContract", this.data);
+                    //}
                     if (this._validateData()) {
+
+                        for (i = 0; i < this.dataLines.lines.length; i++) {
+                            if ((this.dataLines.lines[i].codeRegion == null || this.dataLines.lines[i].codeRegion == "") ||
+                                (this.dataLines.lines[i].codeFunctionalArea == null || this.dataLines.lines[i].codeFunctionalArea == "") ||
+                                (this.dataLines.lines[i].codeResponsabilityCenter == null || this.dataLines.lines[i].codeResponsabilityCenter == "")) {
+
+                                this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
+                                return;
+                            }
+                        }
+
+                        this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
+                        this.$.changeStatusChanged_databound_ajax.generateRequest();
+
                         this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
@@ -2631,9 +2772,10 @@
                 },
                 _validateRequisitionData: function () {
                     var startDateElem = Polymer.dom(this.root).querySelector('#_CRStartDate');
+                    var endDateElem = Polymer.dom(this.root).querySelector('#_CREndDate');
                     var promisseNoElem = Polymer.dom(this.root).querySelector('#_CRPromiseNo');
 
-                    if (startDateElem.validate() &
+                    if (startDateElem.validate() & endDateElem.validate() &
                         promisseNoElem.validate()) {
 
                         return true;
@@ -2778,10 +2920,28 @@
                     var index = this.dataLines.lines.indexOf(e.model.item);
                     this.dataLines.lines.splice(index, 1);
 
-                    this.$.contractLines_databound_ajax.url = "/Contratos/UpdateContractLines";
-                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                    this.$.contractLines_databound_ajax.generateRequest();
+                    var ajax_request = this.$.contractLines_databound_ajax;
+                    ajax_request.url = "/Contratos/UpdateContractLines";
+                    ajax_request.body = JSON.stringify(this.dataLines);
 
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende eliminar a linha?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
                     //this.$.gridUserAccesses.clearCache();
                 },
                 _clResponseProcessor: function (data) {
@@ -2803,7 +2963,7 @@
                             this._CLQuantity = "";
                             this._CLBillable = true;
                             this._CLCreateContract = true;
-                            
+
 
                             this._CLRegion = this.data.codeRegion;
                             this._CLFunctionalArea = this.data.codeFunctionalArea;
@@ -2999,6 +3159,27 @@
 
 
                             this.$.grid_contractlines.clearCache();
+                        }
+                    }
+                },
+
+                _lineRequisicaoSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.data.clientRequisitions.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.data.clientRequisitions.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.data.clientRequisitions.find(x => x == item).selected = true;
+
+                            //this.$.contractlinecodesgrid_ajax.body = JSON.stringify(item.type);
+                            //this.$.contractlinecodesgrid_ajax.generateRequest();
+
+
+                            this.$.grid_ClientRequisitions.clearCache();
                         }
                     }
                 },
@@ -3209,6 +3390,7 @@
                     return false;
                 },
                 _ValidateInvoice: function () {
+                    debugger;
                     var messageErro = "";
                     if (this.$.mStatus.value != 4 && this.$.mStatus.value != 7) {
                         messageErro = "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
@@ -3229,10 +3411,10 @@
                         messageErro += "Os termos de pagamento de estar preenchido \n";
                     }
                     if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
-                        messageErro += "Data da expiração não pode ser menor que o inicio da faturação \n";
+                        messageErro += "Data Fim Versão não pode ser menor que a Data início Contrato \n";
 
-                    if (this.$.dueDate.value < this.$.contractEndDate.value && this.$.dueDate.value != null)
-                        messageErro += "Data da fim de periodo não pode ser maior que a data de expiração \n";
+                    if (this.$.dueDate.value > this.$.contractEndDate.value && this.$.dueDate.value != null)
+                        messageErro += "Data Fim Versão não pode ser maior que a Data Final Contrato \n";
 
                     if (this.dataLines != null) {
                         var exist = false;
@@ -3430,6 +3612,76 @@
                         }
                     }
                 },
+
+                _duplicarContractLine: function (e) {
+                    var index = this.dataLines.lines.indexOf(e.model.item);
+
+                    this.$.contract_DuplicarLinha_ajax.body = JSON.stringify({
+                        contractType: 3,
+                        contractNo: this._contractno,
+                        versionNo: this._versionno,
+                        lineNo: e.model.item.lineNo,
+                    });
+                    this.$.contract_DuplicarLinha_ajax.generateRequest();
+                    this.$.grid_contractlines.clearCache();
+                },
+                _dlResponseProcessor: function (e) {
+                    if (this.duplicarLinhasResponse.eReasonCode == 1) {
+                        this._openToast(this.duplicarLinhasResponse.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.duplicarLinhasResponse.eMessage);
+                    }
+                    this.$.grid_contractlines.clearCache();
+                    this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                    this.$.contractLines_databound_ajax.generateRequest();
+                },
+
+                _changeStatusChanged: function () {
+                    if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
+                        if (this._validateData()) {
+
+                            for (i = 0; i < this.dataLines.lines.length; i++) {
+                                if ((this.dataLines.lines[i].codeRegion == null || this.dataLines.lines[i].codeRegion == "") ||
+                                    (this.dataLines.lines[i].codeFunctionalArea == null || this.dataLines.lines[i].codeFunctionalArea == "") ||
+                                    (this.dataLines.lines[i].codeResponsabilityCenter == null || this.dataLines.lines[i].codeResponsabilityCenter == "")) {
+
+                                    this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
+                                    return;
+                                }
+                            }
+
+                            this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
+                            this.$.changeStatusChanged_databound_ajax.generateRequest();
+
+                            this.data.changeStatus = this.$.mChangeStatus.value;
+                            this._executeRequest("/Contratos/UpdateContract", this.data);
+                        }
+                    }
+                },
+
+                _updateAnexoVisivel: function (e) {
+                    var index = this.uploads.indexOf(e.model.item);
+
+                    e.model.item.visivel = !e.model.item.visivel;
+
+                    this.$.updateAnexoVisivel_ajax.body = JSON.stringify(e.model.item);
+                    this.$.updateAnexoVisivel_ajax.generateRequest();
+                    this.$.gridAnexos.clearCache();
+                },
+                _updateAnexoVisivelResponseProcessor: function (e) {
+                    debugger;
+                    if (this.updateAnexoVisivelResponse == true) {
+                        this._openToast("Anexo atualizado com sucesso.");
+                    }
+                    else {
+                        this._openToastError("Ocorreu um erro na atualização do Anexo.");
+                    }
+
+                    this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
+                    this.$.page_update_ajax.generateRequest();
+                },
+
             });
         });
     </script>

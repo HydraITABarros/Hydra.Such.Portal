@@ -323,7 +323,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     var result = this.$.grdViaturasGrid._filter(this.result);
                     result[0].ColunasEXCEL = this._columns;
 
@@ -332,7 +331,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../Viaturas/ExportToExcelDownload_Viaturas?sFileName=' + FileName;
                 },

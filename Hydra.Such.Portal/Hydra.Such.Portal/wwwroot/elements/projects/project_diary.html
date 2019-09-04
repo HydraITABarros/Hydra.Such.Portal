@@ -196,7 +196,8 @@
                                     text-path="id"
                                     value-path="id"
                                     on-value-changed="_projectChange"
-                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                    required error-message="Este campo é obrigatório">
                     </such-selectbox>
                 </div>
                 <div class="col-lg-2">
@@ -1792,11 +1793,20 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    if (this.$.dpDate.validate()) {
-                        return true;
+                    if (this.$.projectList.value == "") {
+                        this.openToastError("O campo Nº Projeto é de preenchimento obrigatório.");
+                        return false;
                     }
-                    this.openToastError("Verifique os dados inseridos.");
-                    return false;
+                    if (!this.$.dpDate.validate() || this.$.dpDate.value == "") {
+                        this.openToastError("O campo Data é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    //if (this.$.projectList.validate() && this.$.dpDate.validate()) {
+                    //    return true;
+                    //}
+                    //this.openToastError("Verifique os dados inseridos.");
+                    //return false;
+                    return true;
                 },
                 _add() {
                     if (this._validateData())
@@ -1919,6 +1929,9 @@
                             this.$.piCode._clearSelection();
                             this.$.piDescription.value = "";
                             this.$.piCodeLocation._clearSelection();
+                            this.$.piCodeRegion._clearSelection();
+                            this.$.piFuncArea._clearSelection();
+                            this.$.piCodeResponsabilityCenter._clearSelection();
                             this.$.piUnitCost.value = "";
                             this.$.piTotalCost.value = "";
                             this.$.piUnitPrice.value = "";
@@ -1934,6 +1947,7 @@
                             this.$.piCodeMeasurementUnit._clearSelection();
                             this.$.projectMovementList.value = 1;
                             this.$.projectTypeList.value = "";
+                            this.$.ServiceClientCode._clearSelection();
                         }
                         else {
                             this.openToastError(this.result.eMessage);
@@ -2007,9 +2021,12 @@
                         this.$.ajax_related.generateRequest();
                     } else {
                         this.$.piDescription = "";
-                        this.$.piCodeRegion = "";
-                        this.$.piFuncArea = "";
-                        this.$.piCodeResponsabilityCenter = "";
+                        this.$.piCodeRegion._clearSelection();
+                        this.$.piFuncArea._clearSelection();
+                        this.$.piCodeResponsabilityCenter._clearSelection();
+                        //this.$.piCodeRegion = "";
+                        //this.$.piFuncArea = "";
+                        //this.$.piCodeResponsabilityCenter = "";
                     }
 
                 },

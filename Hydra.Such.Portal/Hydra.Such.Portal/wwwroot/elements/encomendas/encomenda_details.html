@@ -478,7 +478,6 @@
                 },
 
                 _printE: function () {
-                    //debugger;
                     if (this._reportserverurl != undefined) {
                         this.$.rptContainer.src = this._reportserverurl + "EncomendasDetails" + "&No=" + this._no;
                         this.$.rptDialog.open();
@@ -494,7 +493,6 @@
 
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
-                    //debugger;
                     this.$.ToastError.text = message;
                     this.$.ToastError.open();
                 },

@@ -496,7 +496,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     var result = this.$.gridContracts._filter(this.result);
                     result[0].ColunasEXCEL = this._columns;
 
@@ -505,7 +504,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../Contratos/ExportToExcelDownload_Contratos?sFileName=' + FileName;
                 },
