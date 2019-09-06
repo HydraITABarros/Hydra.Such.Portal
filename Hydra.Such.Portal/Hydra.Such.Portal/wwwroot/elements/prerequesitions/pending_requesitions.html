@@ -164,7 +164,7 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-            <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Histórico</paper-button>
+            <paper-button class="tablinks" on-tap="_goHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;Meu Histórico</paper-button>
             <paper-button class="tablinks" on-tap="_goApproval"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showMenuMessage }}</paper-button>
 
             <!--start ColumnToggle-->
@@ -479,7 +479,7 @@
                     }
                 },
                 _goHistory: function (e) {
-                    window.location.href = "/GestaoRequisicoes/Arquivadas";
+                    window.location.href = "/GestaoRequisicoes/MinhaArquivadas";
                 },
                 _closeRequisition: function (e) {
                     //var index = this.result.indexOf(e.model.item);

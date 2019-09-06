@@ -1739,6 +1739,14 @@ namespace Hydra.Such.Portal.Controllers
             //FIM
         }
 
+        public JsonResult GetMyHistoryReq()
+        {
+            List<RequisitionViewModel> result = null;
+            result = DBRequest.GetAllHistoric((int)RequisitionTypes.Normal).Where(x => x.UtilizadorCriação == User.Identity.Name).ToList().ParseToViewModel();
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
         public JsonResult GetHistoryReq_CD()
         {
             List<Requisição> requisition = null;
@@ -3201,6 +3209,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Estado");
                     Col = Col + 1;
                 }
+                if (dp["createUser"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Criada Por");
+                    Col = Col + 1;
+                }
                 if (dp["requisitionDate"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Requisição");
@@ -3248,6 +3261,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["state"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.State.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["createUser"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CreateUser);
                             Col = Col + 1;
                         }
                         if (dp["requisitionDate"]["hidden"].ToString() == "False")

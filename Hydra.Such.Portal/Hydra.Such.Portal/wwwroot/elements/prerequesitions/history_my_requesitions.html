@@ -15,7 +15,7 @@
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
 
-<dom-module id="x-historyreq">
+<dom-module id="x-myhistoryreq">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -121,7 +121,7 @@
 
 
 
-        <iron-ajax url="/PreRequisicoes/GetHistoryReq"
+        <iron-ajax url="/PreRequisicoes/GetMyHistoryReq"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -267,7 +267,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-historyreq',
+                is: 'x-myhistoryreq',
                 properties: {
                     _permissions: {
                         type: Array
@@ -372,9 +372,9 @@
                         "employeeNo": { hidden: false, label: "Nº Funcionário" }
                     };
 
-                    if (localStorage["historyreq.ToggleColumn"]) {
+                    if (localStorage["myhistoryreq.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(localStorage["historyreq.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["myhistoryreq.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -386,7 +386,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        localStorage["historyreq.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["myhistoryreq.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {

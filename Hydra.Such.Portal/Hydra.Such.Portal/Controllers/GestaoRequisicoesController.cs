@@ -404,6 +404,30 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult MinhaArquivadas()
+        {
+            //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+            UserAccessesViewModel UPerm = new UserAccessesViewModel();
+            UPerm.Area = 1;
+            UPerm.Create = true;
+            UPerm.Delete = true;
+            UPerm.Feature = (int)Enumerations.Features.HistóricoRequisições;
+            UPerm.IdUser = User.Identity.Name;
+            UPerm.Read = true;
+            UPerm.Update = true;
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.Area = 4;
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         public IActionResult Arquivadas_CD()
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
@@ -1067,7 +1091,8 @@ namespace Hydra.Such.Portal.Controllers
             if (requestParams["Historic"] != null)
                 Historic = int.Parse(requestParams["Historic"].ToString());
             List<RequisitionStates> states = new List<RequisitionStates>();
-            
+            List<RequisitionViewModel> result = new List<RequisitionViewModel>();
+
             if (Historic == 0)
             {
                 states = new List<RequisitionStates>()
@@ -1079,6 +1104,8 @@ namespace Hydra.Such.Portal.Controllers
                     RequisitionStates.Approved,
                     RequisitionStates.Rejected,
                     RequisitionStates.Available,
+                    RequisitionStates.Consulta,
+                    RequisitionStates.Encomenda,
                 };
             }
             else
@@ -1089,10 +1116,11 @@ namespace Hydra.Such.Portal.Controllers
                 };
             }
 
-            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
+            result = DBRequest.GetByStateSimple((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+
             //Regions
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
@@ -1102,8 +1130,6 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
-
-            //result.RemoveAll(x => x.RequestNutrition == true);
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }

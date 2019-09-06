@@ -63,6 +63,25 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static List<Requisição> GetByStateSimple(int TipoReq, List<RequisitionStates> states)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição
+                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<Requisição> GetAllHistoric(int TipoReq)
         {
             try

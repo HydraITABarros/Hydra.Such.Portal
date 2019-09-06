@@ -1,0 +1,7 @@
+﻿@{
+    ViewData["Title"] = "Minhas Requisições Arquivadas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/elements/prerequesitions/history_my_requesitions.html">
+
+<x-myhistoryreq _areaid="1" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-myhistoryreq>
