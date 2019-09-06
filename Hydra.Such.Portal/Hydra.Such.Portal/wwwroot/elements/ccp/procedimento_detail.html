@@ -2489,7 +2489,7 @@
                                                     </template>
                                                     <template>
                                                         <!--<vaadin-text-field id="comentarioAutorizacaoAdjudicacao" value="{{item.comentarioAutorizacaoAdjudicacao}}" disabled></vaadin-text-field>-->
-                                                        <such-textarea id="comentarioAutorizacaoAdjudicacao" name="comentarioAutorizacaoAdjudicacao" rows="3" value="{{item.comentarioAutorizacaoAdjudicacao}}" disabled></such-textarea>
+                                                        <such-textarea id="comentarioAutorizacaoAdjudicacao" name="comentarioAutorizacaoAdjudicacao" rows="3" value="{{item.comentarioAdjudicacao}}" disabled></such-textarea>
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
@@ -3918,7 +3918,7 @@
                                 <vaadin-text-field id="valorAdjudicarInPaperDlg15" name="valorAdjudicarInPaperDlg15" label="Valor Adjudicar" value="{{batchObject15.valorAdjudicacao}}" on-blur="_updateLotePaperDialog15" prevent-invalid-input pattern="[0-9.]*" required></vaadin-text-field>
                             </div>
                             <div class="col-md-10">
-                                <such-textarea id="comentarioAdjudicacaoInPaperDlg15" name="comentarioAdjudicacaoInPaperDlg15" label="Comentário Adjudicação" rows="3" value="{{batchObject15.comentarioAutorizacaoAdjudicacao}}" on-blur="_updateLotePaperDialog15" required></such-textarea>
+                                <such-textarea id="comentarioAdjudicacaoInPaperDlg15" name="comentarioAdjudicacaoInPaperDlg15" label="Comentário Adjudicação" rows="3" value="{{batchObject15.comentarioAdjudicacao}}" on-blur="_updateLotePaperDialog15" required></such-textarea>
                             </div>
                         </div>
                     </div>
@@ -3926,7 +3926,7 @@
             </div>
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeDetailStatus15" dialog-dismiss>Fechar</paper-button>
-                <paper-button class="btnSave" on-tap="_adjudicarLote" data-args="foo, bar, -1" dialog-confirm>Adjudicar</paper-button>
+                <paper-button class="btnSave" on-tap="_adjudicarLote" dialog-confirm>Enviar Área</paper-button>
             </div>
         </paper-dialog>
         <!-- ALT_CCP_#001.y2019.b -->
@@ -4125,7 +4125,15 @@
                     _SelectedBatchToAward: {
                         observer:'_batchToAuthorizeDetails'
                     },
+
+                    _SelectedBatchToSubmit: {
+                        observer:'_batchToSubmit'
+                    },
                     batchObject15: {
+                        type: Object,
+                        value: null
+                    },
+                    batchObject16: {
                         type: Object,
                         value: null
                     }
@@ -4215,6 +4223,7 @@
                     this.$.ToastMessageSuccess.open();
                 },
                 _showErrorMessage: function (message) {
+                    debugger;;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
@@ -4332,6 +4341,7 @@
                         },
                         callback: function (result) {
                             if (result) {
+                                debugger;
                                 _this.data.ratificarCaAdjudicacao = true
                             }
                             _ajaxRequest.generateRequest();
@@ -4384,6 +4394,7 @@
 
                 //Responses Processors
                 _responseProcessor: function (data) {
+                    debugger;;
                     var self = this;
 
                     if (data.detail.status === 200) {
@@ -4395,6 +4406,7 @@
 
                             // zpgm.ALT_CCP_#001.y2019.b
                             if (self.data.tipo > 0) {
+                                debugger;;
                                 //this.$.ajax_tipo_procedimento.generateRequest();
                                 this.$.tipo.value = self.data.tipo;
                                 this.$.ajax_fundamentos_page.body = JSON.stringify({ "idTipo": self.data.tipo });
@@ -4412,6 +4424,7 @@
                                 $(self.$.authorizeRegularSection).addClass('hidden');
                                 $(self.$.submitRegularSection).addClass('hidden');
 
+                                debugger;;
 
 
                                 //// https://cdn.vaadin.com/vaadin-grid/3.0.0/demo/sorting-filtering.html#filtering-with-data-provider
@@ -4468,6 +4481,7 @@
 
                 // zpgm.ALT_CCP_#001.y2019.b
                 _fundamentosResponse: function (e) {
+                    debugger;;
                     if (this.data != undefined) {
                         if (this.data.fundamentoLegalTipo > 0 && this.fundamentosTipo != null) {
                             this.$.fundamentoLegalTipo.value = this.data.fundamentoLegalTipo;
@@ -5360,6 +5374,7 @@
                 _confirmAutorizacaoAdjudicacao_Confirmar: function () {
                     var ajax_request = this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
+                    debugger
                     if ((this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 5000) && (this.data.nome_Utilizador != "CASUCH")) {
                         this._confirmAndExecuteActionToast_NR(
                             "O Valor do procedimento é superior a 5.000, pretende ratificar em CA?",
@@ -5386,6 +5401,7 @@
 
                 //NR 20180322
                 _rejectAberturaProcedimento: function () {
+                    debugger;
                     var ajax_request = this.$.ajax_rejectAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5415,6 +5431,7 @@
                     }
                 },
                 _suspendAberturaProcedimento: function () {
+                    debugger;
                     var ajax_request = this.$.ajax_suspendAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5447,6 +5464,7 @@
 
                 //NR 20180323
                 _confirmAberturaProcedimento: function () {
+                    debugger
                     var ajax_request = this.$.ajax_confirmAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5476,6 +5494,7 @@
                 },
 
                 _rejectAutorizarImobilizado: function () {
+                    debugger;
                     var ajax_request = this.$.ajax_rejectAutorizarImobilizado;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5506,6 +5525,7 @@
 
                 //NR 20180326
                 _suspendAutorizarImobilizado: function () {
+                    debugger;
                     var ajax_request = this.$.ajax_suspendAutorizarImobilizado;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -6000,6 +6020,7 @@
 
                 //NR 20180313
                 _btnEnviarsendToEval: function (e) {
+                    debugger;
                     var ajax_request = this.$.ajax_sendEmail_ToJuriAproval;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -6038,6 +6059,7 @@
                     this.$.ajax_confirmPublicacaoNaPlataforma.body = JSON.stringify(this.data);
                 },
                 _confirmPublicacaoNaPlataformaResponse: function (e) {
+                    debugger;
                     if (this.ConfirmPublicacaoNaPlataforma.eReasonCode == 0) {
                         this._openToast("Confirmada Publicação na Plataforma do Procedimento " + this.data.no + " !");
                         setTimeout(
@@ -6430,6 +6452,7 @@
 
                 // zpgm.MenuFunções.b
                 _mnuFuncoes_ItemSelected: function (e) {
+                    debugger;;
                     var item = e.detail.value;
 
                     if (item == null)
@@ -6450,6 +6473,7 @@
                     }
                 },
                 _closeProcedimentoByUserRequest: function () {
+                    debugger;;
                     if (!this.__isFechoProcesso) {
                         this._showErrorMessage("Não está autorizado a executar esta acção!");
                         return;
@@ -6490,6 +6514,7 @@
                 },
 
                 _obtainProcedimentoReference: function () {
+                    debugger;;
                     if (this.data.arquivado) {
                         this._showErrorMessage("Este Procedimento está suspenso, não pode obter referência!");
                         return;
@@ -6510,6 +6535,7 @@
                         return;
                     }
 
+                    debugger;;
                     var ajax_request = this.$.ajax_request_reference;
                     ajax_request.body = JSON.stringify({ "tipoProc": this.data.tipoProcedimento, "tipo": this.data.tipo });
 
@@ -6523,6 +6549,7 @@
 
                 _procedimentoReferenceResponse: function (e) {
                     if (this.procedimentoReference.eReasonCode == -9) {
+                        debugger;;
                         this._showErrorMessage("Ocorreu um erro!");
                     } else {
                         this.data.ano = this.procedimentoReference.referenceYear;
@@ -6557,8 +6584,10 @@
                 },
 
                 _printProcedimento: function (e) {
+                    debugger;;
 
                     if (this._reportserverurl != undefined) {
+                        debugger;;
                         this.$.rptContainer.src = this._reportserverurl + "Procedimento&ProcedimentoNo=" + this.data.no;
                         this.$.rptDialog.open();
                     }
@@ -6567,6 +6596,7 @@
                     }
                 },
                 _closeRptDialog: function () {
+                    debugger;;
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
                 },
@@ -6588,6 +6618,7 @@
                     }
                 },
                 _showBatchesSection: function (e) {
+                    debugger;;
                     if (this.data != undefined) {
                         var _self = this;
                         if (_self.$.procedimentoEmLotes.checked) {
@@ -6620,6 +6651,7 @@
                     }  
                 },
                 _createLote: function (e) {
+                    debugger;;
                     if (this.data != undefined) {
                         var _valorPrecoBase = parseFloat(this.$.valorPrecoBase.value);
 
@@ -6633,6 +6665,7 @@
                             return;
                         }
 
+                        debugger;;
                         var _valor = parseFloat(this._valorEstimadoLote);
 
                         if (isNaN(_valor)) {
@@ -6663,9 +6696,14 @@
                             };
                         }
 
-                        _valor = this.__preciseRound(_valor, 2);
+                        debugger;;
+                        //_valor = this.__preciseRound(_valor, 2);
+                        _valorPrecoBase = parseFloat(this.__preciseRound(_valorPrecoBase, 2))
+                        _totalLotes = parseFloat(this.__preciseRound(_totalLotes, 2));
+                        _valor = parseFloat(this.__preciseRound(_valor, 2));
 
-                        if (_lotes != null && (this.__preciseRound(parseFloat(_totalLotes) + parseFloat(_valor), 2) > this.__preciseRound(parseFloat(this.data.valorPrecoBase), 2))) {
+                        //if (_lotes != null && (this.__preciseRound(parseFloat(_totalLotes) + parseFloat(_valor), 2) > this.__preciseRound(parseFloat(this.data.valorPrecoBase), 2))) {
+                        if (_lotes != null && (_totalLotes + _valor > _valorPrecoBase)) {
                            this._showErrorMessage("O somatório dos Lotes é superior ao Preço Base!");
                             return;
                         }
@@ -6692,6 +6730,7 @@
                     }
                 },
                 _createLoteResponse: function (e) {
+                    debugger;;
                     if (this.loteCreated) {
                         this._openToast('Lote adicionado com sucesso');
                         this.$.page_databound_ajax.generateRequest();
@@ -6721,8 +6760,7 @@
                     this.$.page_delete_lote_ajax.generateRequest();
 
                     this.$.gridLotesProcedimento1.clearCache();
-                },
-
+                },  
                 _deleteLoteResponse: function (e) {
                     if (this.loteDeleted) {
                         this._showUpdateProcedimentoMsg = true;
@@ -6735,6 +6773,7 @@
                 },
                 
                 _verificaLote: function (lote) {
+                    debugger;;
                     var _valorEstimado = parseFloat(lote.valorEstimado);
 
                     if (isNaN(_valorEstimado)) {
@@ -6780,6 +6819,7 @@
                     return true;
                 },
                 _updateLote: function (e) {
+                    debugger;
                     if (this.data != undefined) {
                         var _lotes = this.data.loteProcedimentoCcp;
                         var index = _lotes.indexOf(e.model.item);
@@ -6804,6 +6844,7 @@
                 },
 
                 _updateLotePaperDialog15: function (e) {
+                    debugger;
                     if (this._verificaLote(this.batchObject15)) {
                         this.$.page_update_lote_ajax.body = JSON.stringify(this.batchObject15);
                         this.$.page_update_lote_ajax.generateRequest();
@@ -6814,20 +6855,22 @@
                 },
 
                 _batchToAuthorizeDetails: function (item) {
+                    debugger;;
                     if (item !== null && item !== undefined) {
                         this.batchObject15 = item;
                         this.$.batchStatus15Detail.open();
 
+                        debugger;;
                     }
                     
                 },
                 
                 _closeDetailStatus15: function (e) {
+                    debugger;;
 
                     var lotes = this.data.loteProcedimentoCcp;
 
-                    if ((this.batchObject15.valorAdjudicacao !== null && this.batchObject15.valorAdjudicacao !== undefined) ||
-                        (this.batchObject15.comentarioAutorizacaoAdjudicacao !== null && this.batchObject15.comentarioAutorizacaoAdjudicacao !== undefined)) {
+                    if ((this.batchObject15.valorAdjudicacao !== null && this.batchObject15.valorAdjudicacao !== undefined) || (this.batchObject15.comentarioAutorizacaoAdjudicacao !== null && this.batchObject15.comentarioAutorizacaoAdjudicacao !== undefined)) {
                         if (lotes.valorAdjudicacao !== this.batchObject15.valorAdjudicacao || lotes.comentarioAutorizacaoAdjudicacao !== this.batchObject15.comentarioAutorizacaoAdjudicacao) {
                             var index = lotes.findIndex(b => b.noProcedimento === this.batchObject15.noProcedimento && b.idLote === this.batchObject15.idLote);
                             
@@ -6843,18 +6886,58 @@
                     }
                     
                     
+                    debugger;;
                     this.batchObject15 = null;
                 },
 
                 _adjudicarLote: function (e) {
+                    debugger;;
 
                     if (this.batchObject15 == null || this.batchObject15 == undefined) {
-
+                        this._showErrorMessage("Sem dados!");
+                        return;
                     }
-                    
+
+                    if (this.batchObject15.estadoLote != 15) {
+                        this._showErrorMessage("Estado inválido para adjudicação!");
+                        return;
+                    }
+
                     if (!this.__isElementCompras) {
                         this._showErrorMessage("Não está autorizado a utilizar esta opção!");
                         return;
+                    }
+
+                    this.batchObject15.valorAdjudicacao = this.__preciseRound(parseFloat(this.batchObject15.valorAdjudicacao));
+                    if (this.batchObject15.valorAdjudicacao == null || this.batchObject15.valorAdjudicacao <= 0) {
+                        this._showErrorMessage("Valor Adjudicação tem que ser maior que zero!");
+                        return;
+                    }
+
+                    this.batchObject15.valorEstimado = this.__preciseRound(parseFloat(this.batchObject15.valorEstimado));
+                    if (this.batchObject15.valorAdjudicacao > this.batchObject15.valorEstimado) {
+                        this._showErrorMessage("Valor Adjudicação não pode ser superior ao Valor Estimado do Lote!");
+                        return;
+                    }
+
+                    if (this.batchObject15.comentarioAutorizacaoAdjudicacao === null || this.batchObject15.comentarioAutorizacaoAdjudicacao === undefined) {
+                        this._showErrorMessage("Obrigatório um comentário de Adjudicação!")
+                        return;
+                    }
+
+                    debugger;
+                    if (this._verificaLote(this.batchObject15)) {
+                        this.$.page_adjudicarLote_ajax.body = JSON.stringify(this.batchObject15);
+                        this.$.page_update_lote_ajax.body = JSON.stringify(this.batchObject15);
+
+                        var sav = this.$.page_update_lote_ajax.generateRequest();
+                        var lin = this.$.page_adjudicarLote_ajax.generateRequest();
+
+                        Promise.all([sav.completes, lin.completes]).then(function (requests) {
+                            //var savReq = requests[0].result;
+                            //var linReq = requests[1].result;
+                        });
+
                     }
                 },
 

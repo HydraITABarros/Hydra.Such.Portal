@@ -1067,7 +1067,7 @@ namespace Hydra.Such.Portal.Controllers
                     Assunto = data.NoProcedimento + "-" + procedimento.NomeProcesso + " Lote nº " + data.IdLote +  " -  Abertura de Procedimento",
                     UtilizadorEmail = UserEmail,
                     EmailDestinatário = UserEmail_TO,
-                    TextoEmail = data.ComentarioAutorizacaoAdjudicacao,
+                    TextoEmail = data.ComentarioAdjudicacao,
                     DataHoraEmail = DateTime.Now,
                     UtilizadorCriação = User.Identity.Name,
                     DataHoraCriação = DateTime.Now
@@ -1107,7 +1107,42 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        
+        [HttpPost]
+        public JsonResult CBVASubmeterLoteAprovacao([FromBody] LoteProcedimentoCcp data)
+        {
+            if (data != null)
+            {
+                ProcedimentosCcp procedimento = DBProcedimentosCCP.GetProcedimentoById(data.NoProcedimento);
+                ConfigUtilizadores userDetails = DBProcedimentosCCP.GetUserDetails(User.Identity.Name);
+                if (procedimento == null)
+                {
+                      return Json(ReturnHandlers.NoData);
+                }                     
+
+                bool IsElementArea = DBProcedimentosCCP.CheckUserRoleRelatedToCCP(User.Identity.Name, DBProcedimentosCCP._ElementoArea);
+                if (!IsElementArea)
+                {
+                    return Json(ReturnHandlers.UserNotAllowed);
+                }
+
+                if(data.EstadoLote != 16)
+                {
+                    return Json(ReturnHandlers.StateNotAllowed);
+                }
+
+                if (string.IsNullOrEmpty(userDetails.ProcedimentosEmailEnvioParaCa))
+                {
+                    return Json(ReturnHandlers.EmptyCAEmailAddress);
+                }
+
+                return Json(null);
+            }
+            else
+            {
+                return Json(ReturnHandlers.NoData);
+            }
+            
+        }
         #endregion
 
         [HttpPost]

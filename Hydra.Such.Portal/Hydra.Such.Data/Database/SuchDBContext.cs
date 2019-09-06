@@ -7687,6 +7687,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.NoProcedimento).HasMaxLength(10);
 
                 entity.Property(e => e.DataAdjudicacao).HasColumnType("datetime");
+
+                entity.Property(e => e.DataAutorizacaoAdjudicacao).HasColumnType("datetime");
                 
                 entity.Property(e => e.DataCriacao).HasColumnType("datetime");
 
@@ -7696,6 +7698,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.HoraAdjudicacao).HasColumnType("datetime");
 
+                entity.Property(e => e.HoraAutorizacaoAdjudicacao).HasColumnType("datetime");
+
                 entity.Property(e => e.HoraNotificacao).HasColumnType("datetime");
 
                 entity.Property(e => e.DataNaoAdjudicacao).HasColumnType("datetime");
@@ -7703,6 +7707,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.HoraNaoAdjudicacao).HasColumnType("datetime");
 
                 entity.Property(e => e.UtilizadorAdjudicacao).HasMaxLength(100);
+
+                entity.Property(e => e.UtilizadorAutorizacaoAdjudicacao).HasMaxLength(100);
 
                 entity.Property(e => e.UtilizadorCriacao).HasMaxLength(100);
 

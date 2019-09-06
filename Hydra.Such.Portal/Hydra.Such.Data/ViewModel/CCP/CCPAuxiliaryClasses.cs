@@ -265,6 +265,13 @@ namespace Hydra.Such.Data.ViewModel.CCP
             eReasonCode = 202,
             eMessage = "Não foi possível actualizar o Fluxo"
         };
+
+        // ALT_CCP_#001.y2019.b
+        public static ErrorHandler UnableToUpdateBatch = new ErrorHandler {
+            eReasonCode = 203,
+            eMessage = "Não foi possivel actualizar o Lote"
+        };
+        // ALT_CCP_#001.y2019.e
         //NR 20180314
         public static ErrorHandler ProcedimentoNotPublished = new ErrorHandler
         {
@@ -376,12 +383,6 @@ namespace Hydra.Such.Data.ViewModel.CCP
         {
             eReasonCode = 680,
             eMessage = "Lote já adjudicado!"
-        };
-
-        public static ErrorHandler UnableToUpdateBatch = new ErrorHandler
-        {
-            eReasonCode = 681,
-            eMessage = "Não foi possivel actualizar o Lote!"
         };
         // ALT_CCP_#001.y2019.e
 

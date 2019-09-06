@@ -1258,6 +1258,20 @@ namespace Hydra.Such.Data.Logic.CCP
                 return null;
             }
         }
+        public static FluxoTrabalhoListaControlo GetCheckListControloProcedimentoEmLotes(string procedimentoId, int batchId, int procedimentoState)
+        {
+            SuchDBContext _context = new SuchDBContext();
+
+            try
+            {
+                return _context.FluxoTrabalhoListaControlo.Where(f => f.No == procedimentoId && f.IdLote == batchId && f.Estado == procedimentoState).LastOrDefault();
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static FluxoTrabalhoListaControlo __CreateFluxoTrabalho(string ProcedimentoID, DateTime SubmissionDate, int EstadoType, string Comment, string UserID, bool Imob)
         {
@@ -3999,7 +4013,7 @@ namespace Hydra.Such.Data.Logic.CCP
         /// <param name="userDetails"></param>
         /// <param name="stateTocheck"></param>
         /// <returns>
-        ///     Sucsess or Error code
+        ///     Success or Error code
         /// </returns>
         public static ErrorHandler AwardBatch(ProcedimentosCcp procedimento, LoteProcedimentoCcp batch, ConfigUtilizadores userDetails, int stateTocheck)
         {
@@ -4024,7 +4038,7 @@ namespace Hydra.Such.Data.Logic.CCP
                 Estado = 15,
                 Data = DateTime.Now,
                 Hora = DateTime.Now.TimeOfDay,
-                Comentario = batch.ComentarioAutorizacaoAdjudicacao,
+                Comentario = batch.ComentarioAdjudicacao,
                 User = userDetails.IdUtilizador,
                 TipoEstado = stateTocheck,
                 NomeUser = userDetails.Nome,
@@ -4059,6 +4073,118 @@ namespace Hydra.Such.Data.Logic.CCP
             {
                 return ReturnHandlers.UnableToUpdateBatch;
             }
+            return ReturnHandlers.Success;
+        }
+        // zpgm.maps NAV2009 VAAreaConfirmar function but adapted to batches
+        public static ErrorHandler AreaConfirmsBatchValue(ProcedimentosCcp procedimento, LoteProcedimentoCcp batch, ConfigUtilizadores userDetails, int stateToCheck)
+        {
+            // !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\/ !\
+            // TO DO: confirmar como fazer a contagem dos tempos no caso de procedimentos em lotes
+            if (procedimento.TemposPaCcp == null)
+            {
+                TemposPaCcp TemposPA = GetTemposPaCcP(procedimento.Nº);
+            }
+            else
+            {
+
+            }
+            // /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+
+            if (procedimento.FluxoTrabalhoListaControlo == null)
+            {
+                FluxoTrabalhoListaControlo fluxo15 = GetCheckListControloProcedimentoEmLotes(procedimento.Nº, batch.IdLote, 15);
+                if (fluxo15 != null)
+                {
+                    fluxo15.Resposta = batch.ComentarioAutorizacaoAdjudicacao;
+                    fluxo15.TipoResposta = stateToCheck;
+                    fluxo15.UtilizadorModificacao = userDetails.IdUtilizador;
+                    fluxo15.DataHoraModificacao = DateTime.Now;
+                    if (!__UpdateFluxoTrabalho(fluxo15))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+            else
+            {
+                FluxoTrabalhoListaControlo fluxo15 = procedimento.FluxoTrabalhoListaControlo.Where(f => f.IdLote == batch.IdLote && f.Estado == 15).LastOrDefault();
+                if (fluxo15 != null)
+                {
+                    fluxo15.Resposta = batch.ComentarioAutorizacaoAdjudicacao;
+                    fluxo15.TipoResposta = stateToCheck;
+                    fluxo15.UtilizadorModificacao = userDetails.IdUtilizador;
+                    fluxo15.DataHoraModificacao = DateTime.Now;
+                    if (!__UpdateFluxoTrabalho(fluxo15))
+                    {
+                        return ReturnHandlers.UnableToUpdateFluxo;
+                    }
+                }
+            }
+
+            FluxoTrabalhoListaControlo newFluxo16 = new FluxoTrabalhoListaControlo()
+            {
+                No = procedimento.Nº,
+                IdLote = batch.IdLote,
+                Estado = 16,
+                Data = DateTime.Now,
+                Hora = DateTime.Now.TimeOfDay,
+                Comentario = batch.ComentarioAutorizacaoAdjudicacao,
+                User = userDetails.IdUtilizador,
+                TipoEstado = stateToCheck,
+                NomeUser = userDetails.Nome,
+                UtilizadorCriacao = userDetails.IdUtilizador,
+                DataHoraCriacao = DateTime.Now,
+                ImobSimNao = procedimento.Imobilizado ?? false
+            };
+
+            switch (stateToCheck)
+            {
+                case 0:
+                    newFluxo16.EstadoSeguinte = 15;
+                    break;
+                case 1:
+                    newFluxo16.EstadoSeguinte = 17;
+                    break;
+                case 3:
+                    newFluxo16.EstadoSeguinte = 19;
+                    break;
+                case 9:
+                    newFluxo16.EstadoSeguinte = 0;
+                    newFluxo16.TipoEstado = 1;
+                    break;
+            }
+
+            if (__CreateFluxoTrabalho(newFluxo16) == null)
+            {
+                return ReturnHandlers.UnableToCreateFluxo;
+            }
+
+            if(batch.EstadoLote == 16)
+            {
+                switch (stateToCheck)
+                {
+                    case 0:
+                        batch.EstadoLote = 15;  // return to Procurement Dpt
+                        break;
+                    case 1:
+                        batch.EstadoLote = 17;  // send batch to Board approval
+                        break;
+                    case 3:
+                        batch.EstadoLote = 19;  // close Procedimento
+                        break;
+                }
+
+                batch.UtilizadorModificacao = userDetails.IdUtilizador;
+                batch.DataModificacao = DateTime.Now;
+
+                if (!__UpdateBatch(batch))
+                {
+                    return ReturnHandlers.UnableToUpdateBatch;
+                }
+
+                // /!\ TO DO: Actualizar a contagem dos tempos...
+            }
+                             
             return ReturnHandlers.Success;
         }
         #endregion
