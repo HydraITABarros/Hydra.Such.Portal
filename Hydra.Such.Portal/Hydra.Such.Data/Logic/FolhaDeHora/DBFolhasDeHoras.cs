@@ -97,8 +97,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
 
                 CustoTotalAjudaCusto = DBLinhasFolhaHoras.GetCustoTotalAjudaCustoByFolhaHoraNo(NoFolhaHoras);
                 CustoTotalHoras = DBMaoDeObraFolhaDeHoras.GetCustoTotalHorasByFolhaHoraNo(NoFolhaHoras);
-                CustoTotalKm = DBLinhasFolhaHoras.GetCustoTotalKMByFolhaHoraNo(NoFolhaHoras);
                 NumTotalKm = DBLinhasFolhaHoras.GetNoTotalKmByFolhaHoraNo(NoFolhaHoras);
+                CustoTotalKm = DBLinhasFolhaHoras.GetCustoTotalKMByFolhaHoraNo(NoFolhaHoras);
 
                 using (var ctx = new SuchDBContext())
                 {

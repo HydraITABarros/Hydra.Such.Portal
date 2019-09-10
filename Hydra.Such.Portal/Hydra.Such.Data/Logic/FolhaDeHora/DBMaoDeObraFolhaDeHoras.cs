@@ -64,11 +64,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     List<MãoDeObraFolhaDeHoras> result = DBMaoDeObraFolhaDeHoras.GetAll().Where(x => x.NºFolhaDeHoras == FolhaHoraNo).ToList();
-                    result.ForEach(x =>
+                    if (result != null && result.Count > 0)
                     {
-                        if (x.PreçoTotal != null)
-                        CustoTotalHoras = CustoTotalHoras + (decimal)x.PreçoTotal;
-                    });
+                        result.ForEach(x =>
+                        {
+                            if (x.PreçoTotal != null)
+                                CustoTotalHoras = CustoTotalHoras + (decimal)x.PreçoTotal;
+                        });
+                    }
 
 
                     return CustoTotalHoras;

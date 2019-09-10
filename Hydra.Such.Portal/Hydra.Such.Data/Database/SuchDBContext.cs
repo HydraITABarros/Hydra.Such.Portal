@@ -7928,7 +7928,7 @@ namespace Hydra.Such.Data.Database
                     .IsUnicode(false);
 
                 entity.Property(e => e.NumCompromisso)
-                    .HasMaxLength(20)
+                    .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.NumSerie)

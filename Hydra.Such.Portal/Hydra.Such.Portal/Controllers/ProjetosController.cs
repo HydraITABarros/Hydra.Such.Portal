@@ -2826,9 +2826,9 @@ namespace Hydra.Such.Portal.Controllers
                             result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Nº do Compromisso é diferente do que está no Contrato."));
                         }
 
-                        if (commitmentNumber.Length > 20)
+                        if (commitmentNumber.Length > 50)
                         {
-                            result.eMessages.Add(new TraceInformation(TraceType.Error, "O Nº Compromisso não pode ter mais de 20 carateres."));
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "O Nº Compromisso não pode ter mais de 50 carateres."));
                         }
                     }
 

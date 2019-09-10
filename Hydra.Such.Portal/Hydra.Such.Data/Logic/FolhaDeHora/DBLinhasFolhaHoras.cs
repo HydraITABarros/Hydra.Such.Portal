@@ -100,12 +100,19 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
-                    result.ForEach(x =>
+                    if (result != null && result.Count > 0)
                     {
-                        if (x.Distancia != null)
-                            NoTotalKm = NoTotalKm + (decimal)x.Distancia;
-                    });
-
+                        result.ForEach(x =>
+                        {
+                            if (x.DistanciaPrevista != null && x.DistanciaPrevista > 0)
+                                NoTotalKm = NoTotalKm + (decimal)x.DistanciaPrevista;
+                            else
+                            {
+                                if (x.Distancia != null)
+                                    NoTotalKm = NoTotalKm + (decimal)x.Distancia;
+                            }
+                        });
+                    }
 
                     return NoTotalKm;
                 }
@@ -124,11 +131,26 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 1).ToList();
-                    result.ForEach(x =>
+                    if (result != null && result.Count > 0)
                     {
-                        if (x.CustoTotal != null)
-                        CustoTotalKM = CustoTotalKM + (decimal)x.CustoTotal;
-                    });
+                        result.ForEach(x =>
+                        {
+                            if (x.CustoUnitario != null)
+                            {
+                                if (x.DistanciaPrevista != null && x.DistanciaPrevista > 0)
+                                {
+                                    CustoTotalKM = CustoTotalKM + ((decimal)x.DistanciaPrevista * (decimal)x.CustoUnitario);
+                                }
+                                else
+                                {
+                                    if (x.Distancia != null)
+                                    {
+                                        CustoTotalKM = CustoTotalKM + ((decimal)x.Distancia * (decimal)x.CustoUnitario);
+                                    }
+                                }
+                            }
+                        });
+                    }
 
 
                     return CustoTotalKM;
@@ -148,12 +170,14 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                 using (var ctx = new SuchDBContext())
                 {
                     List<LinhasFolhaHoras> result = DBLinhasFolhaHoras.GetAll().Where(x => x.NoFolhaHoras == FolhaHoraNo && x.TipoCusto == 2).ToList();
-                    result.ForEach(x =>
+                    if (result != null && result.Count > 0)
                     {
-                        if (x.CustoTotal != null)
-                            CustoTotalAjudaCusto = CustoTotalAjudaCusto + (decimal)x.CustoTotal;
-                    });
-
+                        result.ForEach(x =>
+                        {
+                            if (x.CustoTotal != null)
+                                CustoTotalAjudaCusto = CustoTotalAjudaCusto + (decimal)x.CustoTotal;
+                        });
+                    }
 
                     return CustoTotalAjudaCusto;
                 }

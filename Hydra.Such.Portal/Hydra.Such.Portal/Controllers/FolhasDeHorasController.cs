@@ -1528,7 +1528,7 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso.Distancia = data.Distancia;
                     Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso.CustoUnitario = data.CustoUnitario;
-                    Percurso.CustoTotal = data.Distancia * data.CustoUnitario;
+                    Percurso.CustoTotal = Percurso.DistanciaPrevista > 0 ? Percurso.DistanciaPrevista * data.CustoUnitario : data.Distancia * data.CustoUnitario;
                     Percurso.UtilizadorModificacao = User.Identity.Name;
                     Percurso.DataHoraModificacao = DateTime.Now;
                     Percurso.NoProjeto = data.NoProjeto;
@@ -2908,7 +2908,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     List<ConfiguracaoAjudaCusto> AjudaCusto = DBConfiguracaoAjudaCusto.GetAll().Where(x =>
                         (x.DataChegadaDataPartida == false) &&
-                        (x.DistanciaMinima <= GetSUMDistancia(data.FolhaDeHorasNo)) &&
+                        (x.DistanciaMinima < GetMAXDistancia(data.FolhaDeHorasNo)) &&
                         (x.TipoCusto != 1) &&
                         (x.CodigoTipoCusto != "AJC0009") //Não existe Ajudas de Custo para Estadias como confirmado com o Carlos Rodrigues 08/05/2019
                         ).ToList();
@@ -3015,7 +3015,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         result.eReasonCode = 1;
-                        result.eMessage = "Com os dados preenchidos nesta Folha de Horas não é possível calcular Ajudas de Custo, verifique as distâncias nos Percursos inseridos.";
+                        result.eMessage = "Com os dados preenchidos nesta Folha de Horas não é possível calcular Ajudas de Custo, verifique a Distância Prevista nos Percursos inseridos.";
                     }
 
                     FolhasDeHoras dbUpdateResult = DBFolhasDeHoras.UpdateDetalhes(data.FolhaDeHorasNo, _config.NAV2009DatabaseName, _config.NAV2009CompanyName);
@@ -3059,6 +3059,41 @@ namespace Hydra.Such.Portal.Controllers
                 //log
             }
             return SUMDistancia;
+        }
+
+        public decimal GetMAXDistancia(string noFH)
+        {
+            decimal MAXDistancia = 0;
+            try
+            {
+                List<LinhasFolhaHoras> Linhas = DBLinhasFolhaHoras.GetPercursoByFolhaHoraNo(noFH).Where(x => x.TipoCusto == 1).ToList();
+                if (Linhas != null)
+                {
+                    Linhas.ForEach(x =>
+                    {
+                        if (x.DistanciaPrevista != null && x.DistanciaPrevista > 0)
+                        {
+                            if (Convert.ToDecimal(x.DistanciaPrevista) > MAXDistancia)
+                                MAXDistancia = Convert.ToDecimal(x.DistanciaPrevista);
+                        }
+                        else
+                        {
+                            if (x.Distancia != null && x.Distancia > 0)
+                            {
+                                if (Convert.ToDecimal(x.Distancia) > MAXDistancia)
+                                    MAXDistancia = Convert.ToDecimal(x.Distancia);
+                            }
+                        }
+                    });
+                }
+
+                return MAXDistancia;
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+            return MAXDistancia;
         }
 
         //[HttpPost]

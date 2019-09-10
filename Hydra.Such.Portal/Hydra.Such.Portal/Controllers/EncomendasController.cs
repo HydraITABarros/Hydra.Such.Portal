@@ -270,7 +270,7 @@ namespace Hydra.Such.Portal.Controllers
                     var details = DBNAV2017Encomendas.GetDetailsByNo(_config.NAVDatabaseName, _config.NAVCompanyName, id, "C%");
                     var lines = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, id, "C%");
                     var vendor = DBNAV2017VendorBankAccount.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName, details.PayToVendorNo);
-                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id).Where(x => x.UserArquivo.ToLower() != "esuch@such.pt".ToLower());
+                    var pedidos = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(id).Where(x => string.IsNullOrEmpty(x.UserArquivo) ? "".ToLower() != "esuch@such.pt".ToLower() : x.UserArquivo.ToLower() != "esuch@such.pt".ToLower());
 
                     PedidosPagamentoViewModel Pedido = new PedidosPagamentoViewModel();
 
