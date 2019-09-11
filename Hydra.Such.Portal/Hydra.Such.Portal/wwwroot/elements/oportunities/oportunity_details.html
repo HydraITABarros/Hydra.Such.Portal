@@ -246,9 +246,10 @@
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button class="tablinks" on-tap="_parseToContract"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp; Tornar em Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_setArquivado" id="btnArchive"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; {{ _btnArchiveMessage }}</paper-button>
-                    <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
                     <paper-button id="btnUpdate" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                 </template>
+
+                <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
 
                 <template is="dom-if" if="{{ _permissions.delete }}">
                     <paper-button class="tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>

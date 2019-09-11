@@ -295,6 +295,22 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static List<LinhasFolhaHoras> GetAllAjudasCustoByFolhaHoraNo(string FolhaHoraNo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    //TipoCusto = 2
+                    return ctx.LinhasFolhaHoras.Where(x => x.TipoCusto == 2 && x.CalculoAutomatico == true && x.NoFolhaHoras == FolhaHoraNo).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static int GetMaxAjudaByFolhaHoraNo(string FolhaHoraNo)
         {
             try

@@ -224,6 +224,8 @@ namespace Hydra.Such.Data
             AdminPedidosDEV = 114,
             [Description("Administração Config Linhas Enc Fornecedor")]
             AdminConfigLinhasEncFornecedor = 115,
+            [Description("Administração Contactos")]
+            AdminContactos = 116,
         }
 
         public enum Areas
