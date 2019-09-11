@@ -4,7 +4,7 @@
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="GTData">
-      <DataSourceReference>eSUCHTestes</DataSourceReference>
+      <DataSourceReference>eSuchDS</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>335f1d45-5d73-4f31-a315-84cd48faeb68</rd:DataSourceID>
     </DataSource>
@@ -401,21 +401,21 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>2.78273cm</Width>
+                  <Width>2.753cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>10.37202cm</Width>
+                  <Width>10.34229cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.49cm</Width>
+                  <Width>2.46027cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.48999cm</Width>
+                  <Width>2.46026cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>0.22in</Height>
+                  <Height>0.83333cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -596,7 +596,7 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.21in</Height>
+                  <Height>0.83333cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -741,7 +741,7 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.25in</Height>
+                  <Height>0.83333cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -897,7 +897,7 @@
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>0.26746in</Size>
+                    <Size>0.64962cm</Size>
                     <CellContents>
                       <Textbox Name="Textbox2">
                         <CanGrow>true</CanGrow>
@@ -975,7 +975,7 @@
                         </SortExpression>
                       </SortExpressions>
                       <TablixHeader>
-                        <Size>0.26746in</Size>
+                        <Size>0.64962cm</Size>
                         <CellContents>
                           <Textbox Name="CodUnidadeMedida1">
                             <CanGrow>true</CanGrow>
@@ -1034,17 +1034,16 @@
             <RepeatColumnHeaders>true</RepeatColumnHeaders>
             <KeepTogether>true</KeepTogether>
             <DataSetName>GTLines</DataSetName>
-            <Top>0.17639cm</Top>
-            <Left>0.18167cm</Left>
-            <Height>0.68in</Height>
-            <Width>18.4022cm</Width>
+            <Left>0.08015cm</Left>
+            <Height>2.5cm</Height>
+            <Width>18.66543cm</Width>
             <Style />
           </Tablix>
         </ReportItems>
-        <Height>2.37645cm</Height>
+        <Height>3.05972cm</Height>
         <Style />
       </Body>
-      <Width>18.8471cm</Width>
+      <Width>19.03952cm</Width>
       <Page>
         <PageHeader>
           <Height>11.37716cm</Height>
@@ -2142,7 +2141,7 @@
                 </Textbox>
               </ReportItems>
               <KeepTogether>true</KeepTogether>
-              <Left>0.18257cm</Left>
+              <Left>0.22634cm</Left>
               <Height>11.05721cm</Height>
               <Width>18.42869cm</Width>
               <Style>
@@ -2851,7 +2850,7 @@
                 </Textbox>
               </ReportItems>
               <KeepTogether>true</KeepTogether>
-              <Left>0.18167cm</Left>
+              <Left>0.22544cm</Left>
               <Height>8.71536cm</Height>
               <Width>18.66543cm</Width>
               <Style>
