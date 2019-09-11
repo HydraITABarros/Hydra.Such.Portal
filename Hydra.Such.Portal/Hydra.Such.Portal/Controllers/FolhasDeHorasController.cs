@@ -2893,6 +2893,35 @@ namespace Hydra.Such.Portal.Controllers
                 decimal NoDias = 0;
                 int noLinha;
 
+                List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().Where(x => x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo &&
+
+                    ((data.DataHoraPartida > x.DataHoraPartida && data.DataHoraChegada < x.DataHoraChegada) ||
+                    ((data.DataHoraPartida > x.DataHoraPartida && data.DataHoraPartida < x.DataHoraChegada) && data.DataHoraChegada > x.DataHoraChegada) ||
+
+                    (data.DataHoraPartida < x.DataHoraPartida && (data.DataHoraChegada < x.DataHoraChegada && data.DataHoraChegada > x.DataHoraPartida)) ||
+                    (data.DataHoraPartida < x.DataHoraPartida && data.DataHoraChegada > x.DataHoraChegada))
+                    ).ToList();
+                if (FH != null && FH.Count > 0)
+                {
+                    FH.ForEach(x =>
+                    {
+                        List<LinhasFolhaHoras> AjudasCusto = DBLinhasFolhaHoras.GetAllAjudasCustoByFolhaHoraNo(x.NºFolhaDeHoras).ToList();
+                        if (AjudasCusto != null && AjudasCusto.Count > 0)
+                        {
+                            result.eReasonCode = 88;
+                            result.eMessage = "Não é possivel criar as Ajudas de Custo, pois já existe pelo menos uma Folha de Horas Nº " + x.NºFolhaDeHoras + " para o período com Ajudas de Custo.";
+                        }
+                    });
+                }
+                if (result.eReasonCode == 88)
+                    return Json(result);
+                //else
+                //{
+                //    result.eReasonCode = 0;
+                //    result.eMessage = "Foram calculados as Ajudas de Custo com sucesso.";
+                //    return Json(result);
+                //}
+
                 //Só Calcula as Ajudas de Custo se a Deslocação Fora do Concelho estiver ativa
                 if (data.DeslocacaoForaConcelho == true)
                 {
