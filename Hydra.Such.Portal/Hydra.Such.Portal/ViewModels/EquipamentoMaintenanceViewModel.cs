@@ -5,8 +5,8 @@ using System.Collections.Generic;
 namespace Hydra.Such.Portal.ViewModels
 {
 
-    public class EquipamentoMaintenanceViewModel
-	{
+    public class EquipamentMaintenancePlanViewModel
+    {
         public int Categoria { get; set; }               
         public string EquipmentCresp { get; set; }
         public string CategoriaText { get; set; }
@@ -27,9 +27,14 @@ namespace Hydra.Such.Portal.ViewModels
         public int IdRegiao { get; set; }
         public int Modelo { get; set; }
         public int IdCliente { get; set; }
-        public List<FichaManutencaoManutencaoViewModel> PlanMaintenance { get; set; }
+        public int? IdManutencao { get; set; }
+        public string Codigo { get; set; }
+        public string Versao { get; set; }
+        public List<FichaManutencaoRelatorioManutencaoViewModel> PlanMaintenance { get; set; }
         public List<FichaManutencaoTestesQualitativosViewModel> PlanQuality { get; set; }
         public List<FichaManutencaoTestesQuantitativosViewModel> PlanQuantity { get; set; }
+        public string Observacao { get; set; }
+        public int? EstadoFinal { get; set; }
     }
 
 }

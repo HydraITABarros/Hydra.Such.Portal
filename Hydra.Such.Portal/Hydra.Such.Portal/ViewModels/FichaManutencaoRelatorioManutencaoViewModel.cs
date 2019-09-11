@@ -13,12 +13,11 @@ using System.Runtime.Serialization;
 namespace Hydra.Such.Portal.ViewModels
 {
 
-    public class FichaManutencaoTestesQuantitativosViewModel
+    public class FichaManutencaoRelatorioManutencaoViewModel
     {
-        public int IdTestesQuantitativos { get; set; }
+        public int? IdManutencao { get; set; }
         public string Descricao { get; set; }
-        public string UnidadeCampo1 { get; set; }
-        public string Resultado { get; set; }
+        public bool? Resultado { get; set; }
         [JsonIgnore]
         public string Codigo { get; set; }
         [JsonIgnore]

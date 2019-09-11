@@ -13,15 +13,9 @@ using System.Runtime.Serialization;
 namespace Hydra.Such.Portal.ViewModels
 {
 
-    public class FichaManutencaoManutencaoViewModel
+    public class FichaManutencaoRelatorioObservacaoViewModel
     {
-        public int? IdManutencao { get; set; }
-        public string Codigo { get; set; }
-        public string Descricao { get; set; }
-        public string Rotinas { get; set; }
-        public int? Numero { get; set; }
-        public string Versao { get; set; }
-        public int Value { get; set; }
+        public string Observacao { get; set; }
     }
 
 }

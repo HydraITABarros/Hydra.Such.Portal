@@ -16,11 +16,11 @@ namespace Hydra.Such.Portal.ViewModels
     public class FichaManutencaoTestesQualitativosViewModel
     {
         public int IdTesteQualitativos { get; set; }
-        public string Codigo { get; set; }
         public string Descricao { get; set; }
-        public string Rotinas { get; set; }
-        public int Numero { get; set; }
+        public bool? Resultado { get; set; }
+        [JsonIgnore]
+        public string Codigo { get; set; }
+        [JsonIgnore]
         public string Versao { get; set; }
-        public int Value { get; set; }
     }
 }
