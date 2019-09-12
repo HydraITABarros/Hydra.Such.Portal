@@ -26,7 +26,7 @@ const Title = styled.h1` && {
 const Header = styled.h2` && {
         font-family: ${_theme.fonts.primary};
         font-style: normal;
-        font-weight: 400;
+        font-weight: 200;
         font-size: 24px;
         line-height: 32px;
         margin: 0;
@@ -95,24 +95,24 @@ const DataSmall = styled.span`
 
 const Text = ({ ...props }) => {
 
-        if (props.h1) {
-                return <Title {..._.omit(props, ['h1'])} />
-        } else if (props.h2) {
-                return <Header {..._.omit(props, ['h2'])} />
-        } else if (props.h3) {
-                return <SubHeader {..._.omit(props, ['h3'])} />
-        } else if (props.p) {
-                return <Paragraph {..._.omit(props, ['p'])} />
-        } else if (props.b) {
-                return <Bold {..._.omit(props, ['b'])} />
-        } else if (props.label) {
-                return <Label {..._.omit(props, ['label'])} />
-        } else if (props.dataBig) {
-                return <DataBig {..._.omit(props, ['dataBig'])} />
-        } else if (props.dataSmall) {
-                return <DataSmall {..._.omit(props, ['dataSmall'])} />
-        }
-        return <Default {..._.omit(props, ['span'])} />
+	if (props.h1) {
+		return <Title {..._.omit(props, ['h1'])} />
+	} else if (props.h2) {
+		return <Header {..._.omit(props, ['h2'])} />
+	} else if (props.h3) {
+		return <SubHeader {..._.omit(props, ['h3'])} />
+	} else if (props.p) {
+		return <Paragraph {..._.omit(props, ['p'])} />
+	} else if (props.b) {
+		return <Bold {..._.omit(props, ['b'])} />
+	} else if (props.label) {
+		return <Label {..._.omit(props, ['label'])} />
+	} else if (props.dataBig) {
+		return <DataBig {..._.omit(props, ['dataBig'])} />
+	} else if (props.dataSmall) {
+		return <DataSmall {..._.omit(props, ['dataSmall'])} />
+	}
+	return <Default {..._.omit(props, ['span'])} />
 }
 
 export default Text;
