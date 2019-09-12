@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Text as eText, Icon, Circle, Wrapper, Spacer, Button, Avatars } from 'components';
+import { Text as eText, Icon, Wrapper, Spacer, Button, Avatars, Select, MenuItem } from 'components';
 import Functions from '../../helpers/functions';
 import MuiGrid from '@material-ui/core/Grid';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
@@ -8,7 +8,9 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import { withRouter } from 'react-router-dom';
 import functions from '../../helpers/functions';
-import eOptions from './options';
+import mOptions from './modalOptions';
+import mEquipments from './modalEquipments';
+import mAssinatura from './modalAssinatura';
 import _theme from '../../themes/default';
 
 const muiTheme = createMuiTheme();
@@ -30,7 +32,15 @@ const RootDescription = styled(Wrapper)` && {
 	z-index: 1;
 }`
 
-const Options = styled(eOptions)` && {
+const ModalOptions = styled(mOptions)` && {
+	display:  inline-block;
+}`
+
+const ModalEquipments = styled(mEquipments)` && {
+	display:  inline-block;
+}`
+
+const ModalAssinatura = styled(mAssinatura)` && {
 	display:  inline-block;
 }`
 
@@ -122,12 +132,23 @@ class HTitle extends Component {
 					</Grid>
 					<Grid item xs={12} sm={5} md={5} padding="15px">
 						<div style={{ textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left' }}>
-							<Options >
+							<ModalOptions >
 								<Button icon={<Icon options />}
 									style={{ lineHeight: '14px', verticalAlign: 'middle', padding: 0, width: '40px', minWidth: '40px', textAlign: 'center', marginRight: '15px' }}
 								></Button>
-							</Options>
-							<Button iconPrimary={<Icon report />} >Relatórios <Icon arrow-down style={{ lineHeight: '14px', verticalAlign: 'middle' }} /></Button>
+							</ModalOptions>
+
+							<Button iconPrimary={<Icon report />} style={{ marginRight: '15px' }}
+								onClick={() => {
+									window.location.href = window.location.origin + '/images/certificados.pdf';
+									//this.props.history.push(`/images/certificado.pdf`);
+								}}
+							>Relatórios <Icon arrow-down style={{ lineHeight: '14px', verticalAlign: 'middle' }} /></Button>
+
+							<ModalAssinatura>
+								<Button icon={<Icon signature />}>Assinar</Button>
+							</ModalAssinatura>
+
 						</div>
 					</Grid>
 					<Grid item xs={12} >
@@ -176,16 +197,20 @@ class HDescription extends Component {
 		if (props.equipments !== this.state.equipments) {
 			newState.equipments = props.equipments;
 		}
+		if (props.$equipments !== this.state.$equipments) {
+			newState.$equipments = props.$equipments;
+		}
 		if (Object.keys(newState).length > 0) {
 			this.setState(newState, () => {/*console.log(this.state)*/ });
 		}
 	}
 	//const[state, setState] = React.useState({});
 	render() {
+
 		return (
 			<RootDescription width="100%" >
 				<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>
-					<Grid item xs={12} sm={6} md={6} padding="0">
+					<Grid item xs={12} sm={6} md={5} padding="0">
 						<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0} >
 							<Grid item xs={12} md={2} ></Grid>
 							<Grid item xs={12} md={10} padding="0">
@@ -234,24 +259,45 @@ class HDescription extends Component {
 						<Grid item xs={12} md={1} ></Grid>
 					</Hidden>
 
-					<Grid item xs={12} sm={6} md={6} padding="0" >
+					<Grid item xs={12} sm={6} md={5} padding="0" >
 						<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0} >
 							<Grid item xs={3} ><Text label data-tip={'Marca'}>#&nbsp;&nbsp;Marca</Text></Grid>
 							<Grid item xs={3} ><Text label data-tip={'Modelo'}>Modelo</Text></Grid>
+							<Grid item xs={3} ><Text label data-tip={'Nº Equip.'}>Nº Equip.</Text></Grid>
 							<Grid item xs={3} ><Text label data-tip={'Nº Série'}>Nº Série</Text></Grid>
-							<Grid item xs={3} ><Text label data-tip={'Nº Inv.'}>Nº Inv.</Text></Grid>
 							{this.state.equipments.slice(0, 5).map((item, index) => {
 								return (<Grid container key={index} direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0} >
 									<Grid item xs={3} ><Text span data-tip={item.marcaText}>{index + 1}&nbsp;&nbsp;{item.marcaText}</Text></Grid>
 									<Grid item xs={3} ><Text span data-tip={item.modeloText}>{item.modeloText}</Text></Grid>
+									<Grid item xs={3} ><Text span data-tip={item.numEquipamento}>{item.numEquipamento}</Text></Grid>
 									<Grid item xs={3} ><Text span data-tip={item.numSerie}>{item.numSerie}</Text></Grid>
-									<Grid item xs={3} ><Text span data-tip={item.numInventario}>{item.numInventario}</Text></Grid>
 								</Grid>)
 							})}
+
+							<Grid item xs={7} >
+								{this.state.equipments.length > 5 &&
+									<span>+
+										<ModalEquipments $equipments={this.state.$equipments} title={this.props.title} categoryId={this.props.categoryId} orderId={this.props.orderId} onChange={this.props.onEquipmentsChange}>
+											<Button link style={{ cursor: 'pointer' }}>
+												{this.state.equipments.length > 5 && (this.state.equipments.length - (this.state.equipments.slice(0, 5).length))}
+											</Button>
+										</ModalEquipments>
+										&nbsp;&nbsp;
+									</span>
+								}
+								<ModalEquipments $equipments={this.state.$equipments} title={this.props.title} categoryId={this.props.categoryId} orderId={this.props.orderId} onChange={this.props.onEquipmentsChange}>
+									<Button link style={{ cursor: 'pointer' }}>
+										Adicionar Equip.
+									</Button>
+								</ModalEquipments>
+							</Grid>
+							<Grid item xs={5} ></Grid>
+
 						</Grid>
 					</Grid>
-					{/* <Grid item xs={12} md={1} ></Grid> */}
+					<Grid item xs={12} md={1} ></Grid>
 				</Grid>
+				<Spacer height={'24px'} />
 			</RootDescription>
 		)
 	}
