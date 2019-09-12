@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { PageTemplate } from 'components';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, OmDatePicker, Tooltip, Text, CheckBox, Input, Icon, Button } from 'components';
+import { Wrapper, OmDatePicker, Tooltip, Text, CheckBox, Input, Icon, Button, Select, MenuItem, Modal } from 'components';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
@@ -17,11 +17,20 @@ import Header from './header';
 import PlanActions from './planActions';
 import PlanEquipmentsHeader from './planEquipmentsHeader';
 import PlanEquipmentsItem from './planEquipmentsItem';
+import FinalState from './finalState';
 import PlanMaintenance from './planMaintenance';
 import PlanRow from './PlanRow';
 import _theme from '../../themes/default';
 import Color from 'color';
+import _ from 'lodash';
+import Functions from '../../helpers/functions';
 import { NotificationPhoneBluetoothSpeaker } from 'material-ui/svg-icons';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
+
+const addLinkedPropsToObject = Functions.addLinkedPropsToObject;
+
+const { DialogTitle, DialogContent, DialogActions } = Modal;
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -30,6 +39,15 @@ const muiTheme = createMuiTheme();
 const breakpoints = muiTheme.breakpoints.values;
 
 injectGlobal`
+	input[type=number]::-webkit-outer-spin-button,
+	input[type=number]::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	input[type=number] {
+		-moz-appearance:textfield;
+	}
 	.scrollable {
 		overflow-x: scroll;   
     	}
@@ -51,6 +69,15 @@ injectGlobal`
 	}
 	.padding-r-32 {
 		padding-right: 32px;
+	}
+	.s-22 {
+		font-size: 22px;
+	}
+	.s-20 {
+		font-size: 20px;
+	}
+	.s-18 {
+		font-size: 18px;
 	}
 `
 const TooltipHidden = styled(Tooltip.Hidden)`
@@ -92,8 +119,7 @@ const PlanRowText = styled(Text)`
 	padding-right: 16px;
 `;
 
-
-
+//@observer
 class FichaDeManutencao extends Component {
 	state = {
 		isLoading: true,
@@ -102,12 +128,12 @@ class FichaDeManutencao extends Component {
 		order: null,
 		categoryId: null,
 		equipmentsIds: null,
+		equipments: [],
 		institution: null,
 		client: null,
 		service: null,
 		types: null,
 		technicals: null,
-		equipments: [],
 		planMaintenance: [],
 		planMaintenanceHtml: null,
 		planQuality: [],
@@ -168,6 +194,7 @@ class FichaDeManutencao extends Component {
 		axios.get(url, { params }).then((result) => {
 			var data = result.data;
 			if (data.order && data.equipments) {
+
 				var state = {
 					order: data.order,
 					title: data.equipments.length > 0 ? data.equipments[0].categoriaText : "",
@@ -177,44 +204,33 @@ class FichaDeManutencao extends Component {
 					planMaintenance: data.planMaintenance,
 					planQuality: data.planQuality,
 					planQuantity: data.planQuantity,
-					planMaintenanceHtml: data.planMaintenance.map((item, index) => {
-						return (
-							<PlanRow odd={index % 2 == 0} key={index} text>
-								<PlanRowText p >{item.descricao}</PlanRowText>
-							</PlanRow>
-						);
-					}),
-					planQualityHtml: data.planQuality.map((item, index) => {
-						return (
-							<PlanRow odd={index % 2 == 0} key={index} text>
-								<PlanRowText p >{item.descricao}</PlanRowText>
-							</PlanRow>
-						);
-					}),
-					planQuantityHtml: data.planQuantity.map((item, index) => {
-						return (
-							<PlanRow odd={index % 2 == 0} key={index} text>
-								<PlanRowText p >{item.descricao}</PlanRowText>
-							</PlanRow>
-						);
-					}),
-					equipmentsCheckBoxHtml: data.equipments.map(() => {
-						return (
-							<PlanEquipmentsItem>
-								<CheckBox />
-							</PlanEquipmentsItem>
-						)
-					}),
-					equipmentsInputHtml: data.equipments.map(() => {
-						return (
-							<PlanEquipmentsItem>
-								<Wrapper padding="0 8px">
-									<Input />
-								</Wrapper>
-							</PlanEquipmentsItem>
-						)
-					})
+					equipments: data.equipments
 				}
+
+				addLinkedPropsToObject(state, this);
+
+				state.planMaintenanceHtml = data.planMaintenance.map((item, index) => {
+					return (
+						<PlanRow odd={index % 2 == 0} key={index} text>
+							<PlanRowText p >{item.descricao}</PlanRowText>
+						</PlanRow>
+					);
+				});
+				state.planQualityHtml = data.planQuality.map((item, index) => {
+					return (
+						<PlanRow odd={index % 2 == 0} key={index} text>
+							<PlanRowText p >{item.descricao}</PlanRowText>
+						</PlanRow>
+					);
+				});
+				state.planQuantityHtml = data.planQuantity.map((item, index) => {
+					return (
+						<PlanRow odd={index % 2 == 0} key={index} text>
+							<PlanRowText p >{item.descricao}</PlanRowText>
+						</PlanRow>
+					);
+				});
+
 				this.setState(state);
 			}
 		}).catch(function (error) {
@@ -238,25 +254,11 @@ class FichaDeManutencao extends Component {
 
 	getScrollShadow() {
 		//return "scroll-shadow " + (this.state.equipmentsHeaderScroll.innerWidth > this.state.equipmentsHeaderScroll.outerWidth ? "right left" : "");
-
 		return "scroll-shadow " + (this.state.equipmentsHeaderScroll.innerWidth > this.state.equipmentsHeaderScroll.outerWidth ?
 			this.state.equipmentsHeaderScroll.scrollLeft == 0 ? "right" :
 				(this.state.equipmentsHeaderScroll.scrollLeft + this.state.equipmentsHeaderScroll.outerWidth >= this.state.equipmentsHeaderScroll.innerWidth ? "left" : "right left")
 			: ""
 		)
-	}
-
-	shouldComponentUpdate(nextProps, nextState) {
-		return true;
-		var stateK = Object.keys(nextState);
-
-		var toUpdate = false;
-		stateK.forEach((item) => {
-			if (this.state[item] && this.state[item] !== nextState[item]) {
-				return toUpdate = true;
-			}
-		});
-		return toUpdate;
 	}
 
 	waipointQualitativoHandlerLeave({ previousPosition, currentPosition, event }) {
@@ -299,12 +301,36 @@ class FichaDeManutencao extends Component {
 				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.pageWrapper = el}>
 					<Breadcrumb order={this.state.order} onRef={el => this.breadcrumbWrapper = el} />
 					<div className="scrollarea" style={{ height: this.state.bodyHeight + 'px', overflow: 'auto' }}>
-						<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} >
-							<HeaderTitle title={this.state.title} onRef={el => this.headerTitleWrapper = el} />
+						<Sticky scrollElement=".scrollarea" style={{ zIndex: 11 }} >
+							<HeaderTitle title={this.state.title} onRef={el => this.headerTitleWrapper = el}
+								onEquipmentsChange={
+									() => {
+										this.setState({
+											isLoading: false,
+											equipmentsHeaderScroll: {
+												outerWidth: ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).offsetWidth,
+												innerWidth: ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollWidth,
+												scrollLeft: 0
+											}
+										});
+										//this.setPlanHeight();
+										setTimeout(() => {
+											this.setState({ tooltipReady: true });
+											Tooltip.Hidden.hide();
+											Tooltip.Hidden.rebuild();
+										}, 1200);
+									}
+								}
+							/>
 						</Sticky>
 						<HeaderDescription
 							service={this.state.service} types={this.state.types}
 							order={this.state.order} equipments={this.state.equipments}
+							$equipments={this.state.$equipments}
+							title={this.state.title}
+							orderId={this.state.orderId}
+							categoryId={this.state.categoryId}
+
 						/>
 						<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} >
 							<Grid item xs={8} sm={8} md={6} >
@@ -382,12 +408,10 @@ class FichaDeManutencao extends Component {
 												ReactDOM.findDOMNode(this.planContent).scrollLeft = e;
 												var className = ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className;
 												if (e > 0 && className.indexOf('left') == -1) {
-
 													ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className += ' left ';
 												}
 												if (e == 0) {
 													ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className = className.replace('left', '');
-
 												}
 
 												var _className = ReactDOM.findDOMNode(this.planContentWrapper).className;
@@ -400,7 +424,7 @@ class FichaDeManutencao extends Component {
 
 											}}>
 											{/* <Wrapper innerRef={el => this.planEquipmentsHeader = el} > */}
-											<Wrapper>
+											<Wrapper padding="0  32px 0 0">
 												<PlanEquipmentsHeader equipments={this.state.equipments} />
 											</Wrapper>
 										</ScrollContainer>
@@ -412,15 +436,12 @@ class FichaDeManutencao extends Component {
 									<ScrollContainer className={"scroll-container"} ref={el => this.planContent = el}
 										onScroll={(e) => {
 											ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollLeft = e;
-
 											var className = ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className;
 											if (e > 0 && className.indexOf('left') == -1) {
-
 												ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className += ' left ';
 											}
 											if (e == 0) {
 												ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className = className.replace('left', '');
-
 											}
 
 											var _className = ReactDOM.findDOMNode(this.planContentWrapper).className;
@@ -430,7 +451,6 @@ class FichaDeManutencao extends Component {
 											if (e == 0) {
 												ReactDOM.findDOMNode(this.planContentWrapper).className = _className.replace('left', '');
 											}
-
 										}}>
 										{/* form */}
 										<Wrapper>
@@ -439,7 +459,14 @@ class FichaDeManutencao extends Component {
 													return (
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32} >
 															{this.state.equipmentsCheckBoxHtml}
-															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
+															{this.state.equipments.map((e, i) => {
+																return (
+																	<PlanEquipmentsItem key={index + '' + i}>
+																		<CheckBox $checked={e.planMaintenance[index].$resultado} />
+																	</PlanEquipmentsItem>
+																)
+															})}
+															{/* <Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button> */}
 														</PlanRow>
 													);
 												})
@@ -449,8 +476,14 @@ class FichaDeManutencao extends Component {
 												{this.state.planQuality.length > 0 && this.state.planQuality.map((item, index) => {
 													return (
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
-															{this.state.equipmentsCheckBoxHtml}
-															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
+															{this.state.equipments.map((e, i) => {
+																return (
+																	<PlanEquipmentsItem key={index + '' + i}>
+																		<CheckBox $checked={e.planQuality[index].$resultado} />
+																	</PlanEquipmentsItem>
+																)
+															})}
+															{/* <Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button> */}
 														</PlanRow>
 													);
 												})}
@@ -459,8 +492,18 @@ class FichaDeManutencao extends Component {
 												{this.state.planQuantity.length > 0 && this.state.planQuantity.map((item, index) => {
 													return (
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
-															{this.state.equipmentsInputHtml}<Text span>{item.unidadeCampo1 && item.unidadeCampo1}</Text>
-															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
+
+															{this.state.equipments.map((e, i) => {
+																return (
+																	<PlanEquipmentsItem key={index + '' + i}>
+																		<Wrapper padding="0 8px">
+																			<Input type="number" step="0.01" $value={e.planQuantity[index].$resultado} />
+																		</Wrapper>
+																	</PlanEquipmentsItem>
+																)
+															})}
+															<Text span>{item.unidadeCampo1}</Text>
+															{/* <Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button> */}
 														</PlanRow>
 													);
 												})}
@@ -475,12 +518,18 @@ class FichaDeManutencao extends Component {
 											width={this.state.equipmentsHeaderScroll.innerWidth + 'px'}>
 
 											<Wrapper padding="48px 12px 56px">
-												{this.state.equipments.map(() => {
+												{this.state.equipments.map((equipment, i) => {
 													return (
-														<PlanEquipmentsItem >
+														<PlanEquipmentsItem key={i}>
 															<Wrapper padding="0 8px">
-																<Button icon={<Icon remove />} style={{ maxWidth: '100%' }}></Button>
+
+																<FinalState
+																	$value={equipment.$estadoFinal}
+																	$message={equipment.$observacao}
+																	brand={equipment.marcaText} model={equipment.modeloText} serialNumber={equipment.numSerie} inventoryNumber={equipment.numInventario} />
+
 															</Wrapper>
+
 														</PlanEquipmentsItem>
 													)
 												})}
