@@ -29,25 +29,27 @@ const DefaultSelect = styled(MuiSelect)`${styles}`;
 
 class Select extends React.Component {
 
-        constructor(props) {
-                super(props);
-                this.state = { value: '' };
-                this.onChangeHandler = this.onChangeHandler.bind(this);
-        }
+	constructor(props) {
+		super(props);
+		this.state = { value: '' };
+		this.state.className = props.className || '';
+		this.onChangeHandler = this.onChangeHandler.bind(this);
+	}
 
-        onChangeHandler(event) {
-                this.setState({ value: event.target.value }, () => {
-                        if (typeof this.props.onChange == 'function') {
-                                this.props.onChange(event);
-                        }
-                });
-        }
+	onChangeHandler(event) {
+		this.setState({ value: event.target.value }, () => {
 
-        render() {
-                return (
-                        <DefaultSelect IconComponent={() => <Icon arrow-down />} value={this.state.value || 0} input={<Input />}  {...this.props} onChange={this.onChangeHandler} >{this.props.children}</DefaultSelect>
-                );
-        }
+			if (typeof this.props.onChange == 'function') {
+				this.props.onChange(event);
+			}
+		});
+	}
+
+	render() {
+		return (
+			<DefaultSelect IconComponent={() => <Icon arrow-down />} value={this.state.value || 0} input={<Input classes={this.state.className} />}  {...this.props} onChange={this.onChangeHandler} >{this.props.children}</DefaultSelect>
+		);
+	}
 }
 
 export default Select;
