@@ -329,6 +329,7 @@ var resetSelection;
 
 var timeout = 0;
 
+var searchAux = "";
 class eTable extends Component {
 	state = {
 		group: [],
@@ -365,6 +366,12 @@ class eTable extends Component {
 		this.handleRowRelease = this.handleRowRelease.bind(this);
 		this.handleSelectionEvent = this.handleSelectionEvent.bind(this);
 		this.resetSelection = this.resetSelection.bind(this);
+		this.handleRowKeyUp = this.handleRowKeyUp.bind(this);
+		this.handleSearchOnClick = this.handleSearchOnClick.bind(this);
+		this.handleOnSortingChange = this.handleOnSortingChange.bind(this);
+		this.handleOnGroupChange = this.handleOnGroupChange.bind(this);
+		this.noDataCellComponent = this.noDataCellComponent.bind(this);
+		this.toggleButtonComponent = this.toggleButtonComponent.bind(this);
 		resetSelection = this.resetSelection;
 		this.state.boldColumns = props.columns.filter((item) => {
 			return item.type && item.dataType == 'bold';
@@ -480,6 +487,89 @@ class eTable extends Component {
 		});
 	}
 
+	handleRowKeyUp(e) {
+		if (e.key === 'Enter') {
+			var searchValues = this.state.searchValues;
+			searchValues.push(searchAux);
+			searchAux = "";
+			this.setState({
+				searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
+				isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
+			}, () => { this.setState({ clear: false }, () => { }); });
+			e.target.value = "";
+
+			this.setState({
+				searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
+				isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
+			}, () => { this.setState({ clear: false }, () => { }); });
+		} else {
+			let search = e.target.value.toLowerCase();
+			Tooltip.Hidden.hide();
+			Tooltip.Hidden.rebuild();
+			searchAux = search;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => {
+				this.setState({
+					searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
+					rows: [], total: 0, clear: true, selectedRows: []
+				}, () => { this.setState({ clear: false }, () => { }); });
+			}, 300);
+		}
+	}
+
+	handleSearchOnClick(val) {
+
+		var searchValues = this.state.searchValues.filter((s) => s != val);
+
+		this.setState({
+			searchValues: searchValues,
+			sort: this.state.sort,
+			page: 0, isLoading: true,
+			rows: [], total: 0, clear: true,
+			selectedRows: []
+		}, () => {
+			this.setState({ clear: false });
+			this.handleSelectionEvent();
+		})
+
+	}
+
+	handleOnSortingChange(sort) {
+		Tooltip.Hidden.hide();
+		Tooltip.Hidden.rebuild();
+		this.setState({ sort, page: 0, isLoading: true, rows: [], total: 0, selectedRows: [] });
+	}
+	handleOnGroupChange(group) {
+		this.setState({ group: group });
+	}
+
+	toggleButtonComponent(props) {
+
+		return (
+			<div ref={el => this.columnToggleRef = el}
+				style={{ position: 'absolute', top: '48px', 'zIndex': 1000, background: 'transparent', boxShadow: 'none', right: '30px' }}>
+				<Button
+					style={{ position: 'realtive', 'zIndex': 1000, background: 'transparent', boxShadow: 'none' }}
+					round
+					{..._.omit(props, ['getMessage', 'active'])}
+					onClick={() => {
+						props.onToggle()
+					}} >
+					<Icon row-menu style={{ fontSize: '16px' }} />
+				</Button>
+			</div>
+		);
+	}
+
+	noDataCellComponent(props) {
+		return <VirtualTable.NoDataCell {...props} style={{
+			position: "absolute", textAlign: "center", top: "50%",
+			width: "100%", border: "none", padding: "0"
+		}} getMessage={() => <Text p style={{ color: this.props.theme.palette.primary.light, lineHeight: '1.4em' }}>
+			<Inbox style={{ fontSize: '48px' }} /><br />Sem Dados</Text>
+		} />
+	}
+
 	render() {
 		const { isLoading, rows } = this.state;
 		var columns = this.props.columns;
@@ -502,7 +592,6 @@ class eTable extends Component {
 		}
 		var hiddenColumns = this.state.hiddenColumns;
 
-		console.log(totalRowCount, totalToLoad, totalMax, defaultExpandedGroups, this.state.group);
 
 		return (
 			<div>
@@ -518,22 +607,10 @@ class eTable extends Component {
 										{val}
 										<Icon decline
 											style={{
-												fontSize: '12px', cursor: 'pointer', position: 'relative', top: '1px', left: '2px',
+												fontSize: '12px', cursor: 'pointer', position: 'relative', top: '-1px', left: '2px',
 												display: (this.state.selecting ? 'none' : 'inline-block')
 											}}
-											onClick={(e) => {
-												var searchValues = this.state.searchValues.filter((s) => s != val);
-												this.setState({
-													searchValues: searchValues,
-													sort: this.state.sort,
-													page: 0, isLoading: true,
-													rows: [], total: 0, clear: true,
-													selectedRows: []
-												}, () => {
-													this.setState({ clear: false });
-													this.handleSelectionEvent();
-												})
-											}}
+											onClick={() => this.handleSearchOnClick(val)}
 										/>
 									</StyledBadge>
 								)
@@ -541,28 +618,7 @@ class eTable extends Component {
 						</SearchWrapper>
 						<SearchWrapper width={"25%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
 							<TextField inputProps={{ autoComplete: "off" }} id="oms-search"
-								onKeyUp={(e) => {
-									if (e.key === 'Enter') {
-										var searchValues = this.state.searchValues;
-										searchValues.push(this.state.searchValue);
-										e.target.value = "";
-										this.setState({
-											searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
-											isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
-										}, () => { this.setState({ clear: false }, () => { }); });
-									} else {
-										let search = e.target.value.toLowerCase();
-										Tooltip.Hidden.hide();
-										Tooltip.Hidden.rebuild();
-										clearTimeout(timeout);
-										timeout = setTimeout(() => {
-											this.setState({
-												searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
-												rows: [], total: 0, clear: true, selectedRows: []
-											}, () => { this.setState({ clear: false }, () => { }); });
-										}, 600);
-									}
-								}}
+								onKeyUp={this.handleRowKeyUp}
 								type="search" margin="none"
 								endAdornment={
 									<InputAdornment position="end" onClick={() => { document.getElementById("oms-search").focus() }}>
@@ -575,17 +631,11 @@ class eTable extends Component {
 				}
 				{!this.state.clear &&
 					<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
-						<SortingState sorting={this.state.sort} onSortingChange={(sort) => {
-							Tooltip.Hidden.hide();
-							Tooltip.Hidden.rebuild();
-							this.setState({ sort, page: 0, isLoading: true, rows: [], total: 0, selectedRows: [] });
-						}} columnExtensions={columns} />
+						<SortingState sorting={this.state.sort} onSortingChange={this.handleOnSortingChange} columnExtensions={columns} />
 						<SelectionState />
 						<GroupingState expandedGroups={defaultExpandedGroups} grouping={this.state.group}
 							columnExtensions={columns.map((item) => { return { columnName: item.name, groupingEnabled: item.groupingEnabled } })}
-							onGroupingChange={(group) => {
-								this.setState({ group: group });
-							}}
+							onGroupingChange={this.handleOnGroupChange}
 						/>
 						<SearchState />
 						<IntegratedFiltering /><IntegratedSorting /><IntegratedSelection />
@@ -602,14 +652,7 @@ class eTable extends Component {
 						<VirtualTable
 							estimatedRowHeight={56}
 							height="auto"
-							noDataCellComponent={(props) => {
-								return <VirtualTable.NoDataCell {...props} style={{
-									position: "absolute", textAlign: "center", top: "50%",
-									width: "100%", border: "none", padding: "0"
-								}} getMessage={() => <Text p style={{ color: this.props.theme.palette.primary.light, lineHeight: '1.4em' }}>
-									<Inbox style={{ fontSize: '48px' }} /><br />Sem Dados</Text>
-								} />
-							}}
+							noDataCellComponent={this.noDataCellComponent}
 							columnExtensions={columns.map((item) => { return { columnName: item.name, width: item.width } })}
 							rowComponent={(props) => {
 								return (
@@ -742,22 +785,7 @@ class eTable extends Component {
 						}} />
 						<TableColumnReordering defaultOrder={columns.map(column => column.name)} />
 						<ColumnChooser
-							toggleButtonComponent={(props) => {
-								return (
-									<div ref={el => this.columnToggleRef = el}
-										style={{ position: 'absolute', top: '48px', 'zIndex': 1000, background: 'transparent', boxShadow: 'none', right: '30px' }}>
-										<Button
-											style={{ position: 'realtive', 'zIndex': 1000, background: 'transparent', boxShadow: 'none' }}
-											round
-											{..._.omit(props, ['getMessage', 'active'])}
-											onClick={() => {
-												props.onToggle()
-											}} >
-											<Icon row-menu style={{ fontSize: '16px' }} />
-										</Button>
-									</div>
-								);
-							}}
+							toggleButtonComponent={this.toggleButtonComponent}
 							itemComponent={(props) => {
 								if (props.item.column.selectionEnabled == false) { return ''; };
 								return <MenuItem style={{ paddingLeft: '5px' }} onClick={props.onToggle} value={props.item.column.name}><CheckBox checked={!(hiddenColumns.indexOf(props.item.column.name) >= 0)} /> &nbsp; {props.item.column.title}</MenuItem>;
