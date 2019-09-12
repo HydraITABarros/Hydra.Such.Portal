@@ -27,7 +27,7 @@ const buttonPrimary = css`&& {
     color: ${_theme.palette.white};
     b {
         color: ${_theme.palette.white};
-        }
+    }
 	&:hover {
 		background-color: ${_theme.palette.secondary.default};
 	}
@@ -38,7 +38,7 @@ const buttonDefault = css`&& {
     color: ${_theme.palette.primary.medium};
     b {
         color: ${_theme.palette.primary.medium};
-        }
+    }
 }
 `
 const buttonIcon = css`&& {
@@ -58,23 +58,25 @@ const buttonIcon = css`&& {
 const buttonIconPrimary = css`${buttonPrimary} && {
         height: 40px;
         line-height: 14px;
-	[class*="icon"] {
-		color: ${_theme.palette.white};
-	}
-	&:hover {
-		background: inherit;
-	}
+		[class*="icon"] {
+			color: ${_theme.palette.white};
+		}
+		&:hover {
+		}
     }
-    `
+`
+
 const Link = styled.a`
     color: ${_theme.palette.primary.default};
     box-shadow: none;
     padding: ${_theme.padding[8]};
     text-decoration: underline;
+	cursor: pointer;
     b {
         color: ${_theme.palette.primary.default};
-        }
+	}
 `
+
 const buttonRound = css`&& {   
     width: 40px;
     min-width: auto;
