@@ -1,6 +1,8 @@
 import React from 'react'
 import styled, { css, theme, withTheme } from 'styled-components';
 import MuiOutlinedInput from '@material-ui/core/OutlinedInput';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 
 const styles = css`&& {
         input {
@@ -32,9 +34,21 @@ const styles = css`&& {
 `
 
 const DefaultOutlinedInput = styled(MuiOutlinedInput)`${styles}`;
+var timeout = 0;
 
 const Input = ({ ...props }) => {
-	return <DefaultOutlinedInput fullWidth={props.fullWidth || true} labelWidth={props.labelWidth || 0} {...props} />
+	if (props.$value) {
+		props.onChange = (e) => {
+			var val = e.target.value;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => {
+				props.$value.value = val;
+			}, 100);
+		}
+		props.defaultValue = props.$value.value || '';
+	}
+
+	return <DefaultOutlinedInput fullWidth={props.fullWidth || true} labelWidth={props.labelWidth || 0} {..._.omit(props, ['$value', 'classes'])} />
 }
 
 export default withTheme(Input);
