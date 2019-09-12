@@ -69,6 +69,12 @@ class ModalLarge extends React.Component {
 		});
 	};
 
+	componentWillReceiveProps(props) {
+		if (this.state.open != props.open) {
+			this.setState({ open: props.open });
+		}
+	}
+
 	render() {
 		return (
 			<span>
