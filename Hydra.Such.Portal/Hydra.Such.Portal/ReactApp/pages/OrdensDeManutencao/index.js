@@ -623,7 +623,6 @@ class OrdensDeManutencao extends Component {
 						<Grid item xs>
 							<Wrapper padding={'25px 25px 0'}>
 								<TextHeader h2>Ordens de Manutenção <br /> <b>Por executar</b></TextHeader>
-
 								<Hidden mdUp >
 									<br /> <br />
 									<Button icon={<Icon archive />} onClick={() => { this.props.history.push(`/ordens-de-manutencao/arquivo`) }} >Arquivo</Button>
@@ -704,7 +703,7 @@ class OrdensDeManutencao extends Component {
 								if (row.isPreventive) {
 									this.props.history.push(`/ordens-de-manutencao/${row.no}`);
 								} else {
-
+									this.props.history.push(`/ordens-de-manutencao/${row.no}/curativa?equipmentId=6744`);
 								}
 							}}
 							groupingEnabled={false}
