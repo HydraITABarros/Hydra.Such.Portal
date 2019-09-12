@@ -41,7 +41,7 @@ import Upload from '../../pages/FichaDeManutencao/Upload';
 import Documentos from '../../pages/FichaDeManutencao/Documentos';
 
 
-const {DialogTitle,DialogContent,DialogActions} = ModalLarge;
+const { DialogTitle, DialogContent, DialogActions } = ModalLarge;
 
 const Tabs = styled(MuiTabs)`
     [class*="MuiTabs-scroller"]>span{
@@ -54,11 +54,11 @@ const Tabs = styled(MuiTabs)`
       margin-left: 0px;
     }
     [class*="icon"] {
-            color: ${props=>props.theme.palette.primary.medium};
+            color: ${props => props.theme.palette.primary.medium};
           }
     [aria-selected="true"]  {
           [class*="icon"] {
-            color: ${props=>props.theme.palette.secondary.default};
+            color: ${props => props.theme.palette.secondary.default};
           }
     }
 `;
@@ -82,62 +82,61 @@ const Bar = styled(AppBar)`&&{
 `;
 
 class Arquivo extends Component {
-    state = {
-      open: false,
-      tab: 0,
-    }
-      constructor(props) {
-        super(props);
-        this.handleChange=this.handleChange.bind(this);
-      }
-      handleChange(e,value) {
-        console.log(value)
-        this.setState({
-          tab: value,
-        });
-      }
+	state = {
+		open: false,
+		tab: 0,
+	}
+	constructor(props) {
+		super(props);
+		this.handleChange = this.handleChange.bind(this);
+	}
+	handleChange(e, value) {
+		this.setState({
+			tab: value,
+		});
+	}
 
-      render() {
-        return (
-          <div>
-              <ModalLarge action={<Button primary >Open Modal</Button>} children={
-                <div>
-                  <DialogTitle>
-                  <Bar position="static" color="default">
-                    <Tabs
-                      value={this.state.tab}
-                      onChange={this.handleChange}
-                      indicatorColor="primary"
-                      textColor="primary"
-                      variant="standard"
-                      scrollButtons="off"
-                    >
-                      <Tab label={<Text b><Icon meter/>EMMs</Text>}/>
-                      <Tab label={<Text b><Icon material/>Mat. Aplicado</Text>} />
-                      <Tab label={<Text b><Icon fotografias/>Fotografias</Text>} />
-                      <Tab label={<Text b><Icon folder/>Documentos</Text>} />
-                      <Tab label={<Text b><Icon upload/>Upload</Text>} />
-                    </Tabs>
-                    <hr/>  
-                  </Bar>
-                  </DialogTitle>
-                  
-                  <DialogContent>
-                      {this.state.tab === 0 && <EMM/>}
-                      {this.state.tab === 1 && <Material/>}
-                      {this.state.tab === 2 && <div>Item Three</div>}
-                      {this.state.tab === 3 && <Documentos/>}
-                      {this.state.tab === 4 && <Upload/>}
-                  </DialogContent>
-                  <hr/>  
-                  <DialogActions>
-                      <Button primary color="primary">Save changes</Button>
-                  </DialogActions>
-              </div>
-              }/>
-          </div>
-          )
-      }
+	render() {
+		return (
+			<div>
+				{/* <ModalLarge action={<Button primary >Open Modal</Button>} children={
+					<div>
+						<DialogTitle>
+							<Bar position="static" color="default">
+								<Tabs
+									value={this.state.tab}
+									onChange={this.handleChange}
+									indicatorColor="primary"
+									textColor="primary"
+									variant="standard"
+									scrollButtons="off"
+								>
+									<Tab label={<Text b><Icon meter />EMMs</Text>} />
+									<Tab label={<Text b><Icon material />Mat. Aplicado</Text>} />
+									<Tab label={<Text b><Icon fotografias />Fotografias</Text>} />
+									<Tab label={<Text b><Icon folder />Documentos</Text>} />
+									<Tab label={<Text b><Icon upload />Upload</Text>} />
+								</Tabs>
+								<hr />
+							</Bar>
+						</DialogTitle>
+
+						<DialogContent>
+							{this.state.tab === 0 && <EMM />}
+							{this.state.tab === 1 && <Material />}
+							{this.state.tab === 2 && <div>Item Three</div>}
+							{this.state.tab === 3 && <Documentos />}
+							{this.state.tab === 4 && <Upload />}
+						</DialogContent>
+						<hr />
+						<DialogActions>
+							<Button primary color="primary">Save changes</Button>
+						</DialogActions>
+					</div>
+				} /> */}
+			</div>
+		)
+	}
 }
 
 export default Arquivo;
