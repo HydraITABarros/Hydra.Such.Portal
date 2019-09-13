@@ -3,6 +3,7 @@
   <ConnectionProperties>
     <Extension>SQL</Extension>
     <ConnectString>Data Source=SUCH-NAVSQL\SQLNAV;Initial Catalog=eSUCH_Prod</ConnectString>
+    <IntegratedSecurity>true</IntegratedSecurity>
   </ConnectionProperties>
   <DataSourceID>396a941f-2596-4348-b257-a87125446397</DataSourceID>
 </RptDataSource>
