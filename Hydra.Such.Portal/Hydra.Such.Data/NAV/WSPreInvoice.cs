@@ -150,9 +150,9 @@ namespace Hydra.Such.Data.NAV
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
             invoiceHeader.Date = billingHeader.Date;
-            invoiceHeader.DataPedido = billingHeader.DataPedido;
-            invoiceHeader.CommitmentNumber = billingHeader.CommitmentNumber;
-            invoiceHeader.ClientRequest = billingHeader.ClientRequest;
+                    invoiceHeader.DataPedido = billingHeader.DataPedido;
+                    invoiceHeader.CommitmentNumber = billingHeader.CommitmentNumber;
+                    invoiceHeader.ClientRequest = billingHeader.ClientRequest;
             invoiceHeader.ClientVATReg = billingHeader.ClientVATReg;
             invoiceHeader.ContractNo = billingHeader.ContractNo;
             invoiceHeader.Currency = billingHeader.Currency;
