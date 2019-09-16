@@ -196,10 +196,12 @@ injectGlobal`
 				&:hover {
 					background-color: ${Color(_theme.palette.secondary.default).lighten(0.05).hex().toString()};
 				}
-				span {
-					color: white;
+				span, b, p {
+					color: white !important;    
+					text-overflow: ellipsis;
 				}
 				td {
+					color: white !important;    
 					border-bottom-color: ${ Color(_theme.palette.secondary.default).darken(0.1).desaturate(0.05).hex().toString()} !important;
 				}
 			}
@@ -297,7 +299,7 @@ const SearchWrapper = styled.div`
     display: block;
     width: ${props => props.width || '50%'};
     right:  ${props => props.right || '0'};
-    z-index: 2;
+    z-index: 20;
     padding: 0 25px 0;
     top: 4px;
     white-space: nowrap;
@@ -330,6 +332,9 @@ var resetSelection;
 var timeout = 0;
 
 var searchAux = "";
+
+var isToUpdate = true;
+
 class eTable extends Component {
 	state = {
 		group: [],
@@ -421,23 +426,39 @@ class eTable extends Component {
 	handleRowRelease(props) {
 		if (!this.state.selectionMode && rowPressTimer != 0 && typeof this.props.onRowClick == 'function') {
 			this.props.onRowClick(props.row);
+			props.row.selected;
+			this.setState({ rows: this.state.rows });
 		}
 		clearTimeout(rowPressTimer);
 	}
 
 	fetchNext() {
-		this.setState({ page: this.state.page + 1, isLoading: true }, () => {
-			var search = this.state.searchValues;
-			if (this.state.searchValue != "") {
-				search = search.concat([this.state.searchValue]);
-			}
-			this.props.getRows({ search: search, sort: this.state.sort, page: this.state.page });
+		console.log(1234);
+		var page = this.state.page + 1;
+		this.setState({ page: page + 1, isLoading: true }, () => {
 		});
+		var search = this.state.searchValues;
+		if (this.state.searchValue != "") {
+			search = search.concat([this.state.searchValue]);
+		}
+		this.props.getRows({ search: search, sort: this.state.sort, page: page });
 	}
 
 	componentDidMount() {
 		//window.addEventListener("resize", this.handleResize);
 		typeof this.props.onRef == 'function' ? this.props.onRef(this) : '';
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+
+		// return this.props.rows !== nextProps.rows || nextProps.isLoading !== this.props.isLoading || nextState.isLoading !== this.state.isLoading
+		// 	|| nextState.rows !== this.state.rows || nextProps.isLoading !== this.state.isLoading || this.state.rows !== nextProps.rows;
+		if (!isToUpdate) {
+			return false;
+		}
+		return nextState.sort !== this.state.sort /* || nextState.clear !== this.state.clear*/ || nextProps.rows !== this.state.rows || this.state.isLoading !== nextState.isLoading || this.state.isLoading !== nextProps.isLoading || this.state.page !== nextState.page;
+		return true;
+		return this.state.rows !== nextProps.rows || this.state.isLoading !== nextProps.isLoading || nextState.searchValues.length !== this.state.searchValues.length;
 	}
 
 	componentWillUnmount() {
@@ -490,29 +511,31 @@ class eTable extends Component {
 	handleRowKeyUp(e) {
 		if (e.key === 'Enter') {
 			var searchValues = this.state.searchValues;
-			searchValues.push(searchAux);
+			searchValues = this.state.searchValues.concat([searchAux]);
 			searchAux = "";
 			this.setState({
 				searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
 				isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
-			}, () => { this.setState({ clear: false }, () => { }); });
+			}, () => {
+				this.setState({ clear: false }, () => { });
+			});
+			//this.setState({ searchValue: "", searchValues: searchValues/*, clear: true*/ }, () => { this.setState({ clear: false }, () => { }); });
 			e.target.value = "";
-
-			this.setState({
-				searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
-				isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
-			}, () => { this.setState({ clear: false }, () => { }); });
 		} else {
 			let search = e.target.value.toLowerCase();
-			Tooltip.Hidden.hide();
-			Tooltip.Hidden.rebuild();
+			isToUpdate = false;
 			searchAux = search;
 			clearTimeout(timeout);
 			timeout = setTimeout(() => {
+				isToUpdate = true;
 				this.setState({
 					searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
 					rows: [], total: 0, clear: true, selectedRows: []
-				}, () => { this.setState({ clear: false }, () => { }); });
+				}, () => {
+					this.setState({ clear: false });
+					Tooltip.Hidden.hide();
+					Tooltip.Hidden.rebuild();
+				});
 			}, 300);
 		}
 	}
@@ -525,7 +548,8 @@ class eTable extends Component {
 			searchValues: searchValues,
 			sort: this.state.sort,
 			page: 0, isLoading: true,
-			rows: [], total: 0, clear: true,
+			rows: [], total: 0,
+			clear: true,
 			selectedRows: []
 		}, () => {
 			this.setState({ clear: false });
@@ -537,7 +561,9 @@ class eTable extends Component {
 	handleOnSortingChange(sort) {
 		Tooltip.Hidden.hide();
 		Tooltip.Hidden.rebuild();
-		this.setState({ sort, page: 0, isLoading: true, rows: [], total: 0, selectedRows: [] });
+		this.setState({ sort, page: 0, isLoading: true, rows: [], total: 0, selectedRows: [], clear: true, }, () => {
+			this.setState({ clear: false });
+		});
 	}
 	handleOnGroupChange(group) {
 		this.setState({ group: group });
@@ -571,6 +597,7 @@ class eTable extends Component {
 	}
 
 	render() {
+
 		const { isLoading, rows } = this.state;
 		var columns = this.props.columns;
 		var headColumns = _.differenceBy(columns, this.state.group, 'columnName');
@@ -592,8 +619,7 @@ class eTable extends Component {
 		}
 		var hiddenColumns = this.state.hiddenColumns;
 
-
-		return (
+		var retval = (
 			<div>
 				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading ? "" : "hidden"}>
 					<CircularProgress style={{ position: 'relative', top: '55%', color: this.props.theme.palette.secondary.default }} />
@@ -617,9 +643,12 @@ class eTable extends Component {
 							}).reverse()}
 						</SearchWrapper>
 						<SearchWrapper width={"25%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
-							<TextField inputProps={{ autoComplete: "off" }} id="oms-search"
+							<TextField
+								inputProps={{ autoComplete: "off" }}
+								id="oms-search"
 								onKeyUp={this.handleRowKeyUp}
-								type="search" margin="none"
+								type="search"
+								margin="none"
 								endAdornment={
 									<InputAdornment position="end" onClick={() => { document.getElementById("oms-search").focus() }}>
 										<SearchButton round boxShadow={"none"} ><Icon search /></SearchButton>
@@ -675,7 +704,7 @@ class eTable extends Component {
 										paddingTop: '16px', paddingBottom: '15px',
 										borderColor: this.props.theme.palette.primary.keylines,
 										borderWidth: '1px',
-										color: this.props.theme.palette.primary.default,
+										//color: this.props.theme.palette.primary.default,
 										whiteSpace: "nowrap",
 										overflow: 'hidden',
 										textOverflow: 'ellipsis'
@@ -822,6 +851,8 @@ class eTable extends Component {
 				<Tooltip.Hidden id={'oms-tooltip'} />
 			</div>
 		)
+
+		return retval;
 	}
 }
 

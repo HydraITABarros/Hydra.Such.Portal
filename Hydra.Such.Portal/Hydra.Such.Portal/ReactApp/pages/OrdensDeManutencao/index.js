@@ -427,6 +427,7 @@ class OrdensDeManutencao extends Component {
 
 
 	fetchMaintenenceOrders({ search, sort, page }, cb) {
+		console.log('AAAA', search);
 		cb = cb || (() => { });
 		var isNext = page > 1;
 		this.setState({ maintenenceOrdersIsLoading: true }, () => {
@@ -437,7 +438,7 @@ class OrdensDeManutencao extends Component {
 			} else {
 				if (call) { call.cancel(); }
 				call = axios.CancelToken.source();
-				this.setState({ maintenenceOrdersIsLoading: true, maintenenceOrdersNext: "", maintenanceOrders: [], maintenanceOrdersTotal: 0 }, () => {
+				this.setState({ maintenenceOrdersNext: "", maintenanceOrders: [], maintenanceOrdersTotal: 0 }, () => {
 					async.parallel([
 						(cb) => {
 							if (this.state.institutions == null) {

@@ -184,7 +184,7 @@ class OrdensDeManutencaoLine extends Component {
 		maintenanceOrder: {},
 		equipments: [],
 		equipmentsTotal: 0,
-		equipmentsIsLoading: false,
+		equipmentsIsLoading: true,
 		equipmentsLinesNext: "",
 		listContainerStyle: {},
 		selectionMode: false,
@@ -256,7 +256,7 @@ class OrdensDeManutencaoLine extends Component {
 			} else {
 				if (call) { call.cancel(); }
 				call = axios.CancelToken.source();
-				this.setState({ equipmentsIsLoading: true, equipmentsLinesNext: "", equipments: [], equipmentsTotal: 0 }, () => {
+				this.setState({ equipmentsLinesNext: "", equipments: [], equipmentsTotal: 0 }, () => {
 					var orderId = this.state.orderId;
 					var filter = "";
 					if (search && search.length > 0) {
@@ -387,7 +387,6 @@ class OrdensDeManutencaoLine extends Component {
 								});
 							}}
 							onRowClick={(row) => {
-								console.log(row);
 								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=${row.categoria}&equipmentsIds=${row.idEquipamento}`);
 							}}
 							groupingEnabled={true}
