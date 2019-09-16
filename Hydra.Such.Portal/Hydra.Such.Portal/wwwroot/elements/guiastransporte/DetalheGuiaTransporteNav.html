@@ -630,6 +630,15 @@
                         //this._openToast(this.data.noGuiaTransporte);
                         if (this.data.fiscalCommunicationLog.documentCodeId == null || this.data.fiscalCommunicationLog.documentCodeId == "") {
                             $(this.$.btnRegister).removeClass('hidden');
+
+                            debugger;;
+                            //this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history })
+                            //// zpgm.16092019_1400.e
+                            //setTimeout(
+                            //    function () {
+                            //        this.$.page_databound_ajax.generateRequest();
+                            //    }, 5000);
+                            //// zpgm.16092019_1400.e
                         }
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
