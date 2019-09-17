@@ -63,13 +63,36 @@ namespace Hydra.Such.Data.Logic
                                 ResponsabilityCenter = temp.ResponsabilityCenter.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenter,
                                 GuiaTransporteInterface = temp.GuiaTransporteInterface.Equals(DBNull.Value) ? 0 : (int)temp.GuiaTransporteInterface,
                                 NoGuiaOriginalInterface = temp.NoGuiaOriginalInterface.Equals(DBNull.Value) ? "" : (string)temp.NoGuiaOriginalInterface,
-                                DimensionSetId = temp.DimensionSetId.Equals(DBNull.Value) ? 0 : (int)temp.DimensionSetId
+                                DimensionSetId = temp.DimensionSetId.Equals(DBNull.Value) ? 0 : (int)temp.DimensionSetId,
+                                UserEmail = temp.UserEmail.Equals(DBNull.Value) ? "" : (string)temp.UserEmail
                             };
 
                             if (!isHistoric)
                             {
                                 guia.ReadyToRegister = temp.ReadyToRegister.Equals(DBNull.Value) ? false : (int)temp.ReadyToRegister == 1;
-                                guia.UserEmail = temp.UserEmail.Equals(DBNull.Value) ? "" : (string)temp.UserEmail;
+                            }
+                            else
+                            {
+                                guia.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog();
+                                var logParameters = new[]{
+                                    new SqlParameter("@DBName", NAVDatabase),
+                                    new SqlParameter("@CompanyName", NAVCompany),
+                                    new SqlParameter("@No", guia.NoGuiaTransporte)
+                                };
+
+                                dynamic flog = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteCommunicationLog @DBName, @CompanyName, @No", logParameters).FirstOrDefault();
+                                if (flog != null)
+                                {
+                                    guia.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog()
+                                    {
+                                        SourceNo = flog.SourceNo.Equals(DBNull.Value) ? "" : (string)flog.SourceNo,
+                                        DocumentCodeId = flog.DocCodId.Equals(DBNull.Value) ? "" : (string)flog.DocCodId,
+                                        CommunicationDateTime = flog.DateTimeCommunication.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : ((DateTime)flog.DateTimeCommunication).ToLocalTime(),
+                                        ReturnCode = flog.ReturnCode.Equals(DBNull.Value) ? "" : (string)flog.ReturnCode,
+                                        ReturnMessage = flog.ReturnMessage.Equals(DBNull.Value) ? "" : (string)flog.ReturnMessage
+                                    };
+
+                                }
                             }
 
                             switch (guia.Tipo)

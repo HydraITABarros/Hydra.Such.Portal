@@ -99,15 +99,15 @@
                     {{ item.noGuiaOriginalInterface }}
                 </template>
             </vaadin-grid-column>
-            <!--<vaadin-grid-column width="110px" resizable hidden="{{ _historico}}">
+            <vaadin-grid-column width="110px" resizable hidden="{{ !_historico }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="readyToRegister">Em Registo?</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="readyToRegister"></vaadin-grid-filter>
+                    <vaadin-grid-sorter path="documentCodeId">Código AT</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="documentCodeId" value="[[filter.documentCodeId]]" />
                 </template>
                 <template>
-                    <vaadin-checkbox id="readyToRegister" checked="{{ item.readyToRegister }}" disabled></vaadin-checkbox>
+                    {{item.fiscalCommunicationLog.documentCodeId}}
                 </template>
-            </vaadin-grid-column>-->
+            </vaadin-grid-column>
             <vaadin-grid-column width="110px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="dataGuia">Data Guia</vaadin-grid-sorter>
@@ -180,7 +180,15 @@
                     {{item.globalDimension2Code}}
                 </template>
             </vaadin-grid-column>
-
+            <vaadin-grid-column width="110px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="userEmail">Email Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="userEmail" value="[[filter.userEmail]]" />
+                </template>
+                <template>
+                    {{item.userEmail}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
     </template>
     
