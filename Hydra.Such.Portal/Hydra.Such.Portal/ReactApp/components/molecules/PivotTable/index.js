@@ -377,6 +377,7 @@ class eTable extends Component {
 		this.handleOnGroupChange = this.handleOnGroupChange.bind(this);
 		this.noDataCellComponent = this.noDataCellComponent.bind(this);
 		this.toggleButtonComponent = this.toggleButtonComponent.bind(this);
+		this.onGroupRowClick = this.onGroupRowClick.bind(this);
 		resetSelection = this.resetSelection;
 		this.state.boldColumns = props.columns.filter((item) => {
 			return item.type && item.dataType == 'bold';
@@ -456,7 +457,7 @@ class eTable extends Component {
 		if (!isToUpdate) {
 			return false;
 		}
-		return nextState.sort !== this.state.sort /* || nextState.clear !== this.state.clear*/ || nextProps.rows !== this.state.rows || this.state.isLoading !== nextState.isLoading || this.state.isLoading !== nextProps.isLoading || this.state.page !== nextState.page;
+		return nextState.group.length !== this.state.group.length || nextState.sort !== this.state.sort /* || nextState.clear !== this.state.clear*/ || nextProps.rows !== this.state.rows || this.state.isLoading !== nextState.isLoading || this.state.isLoading !== nextProps.isLoading || this.state.page !== nextState.page;
 		return true;
 		return this.state.rows !== nextProps.rows || this.state.isLoading !== nextProps.isLoading || nextState.searchValues.length !== this.state.searchValues.length;
 	}
@@ -515,7 +516,7 @@ class eTable extends Component {
 			searchAux = "";
 			this.setState({
 				searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
-				isLoading: true, rows: [], total: 0, clear: true, selectedRows: []
+				isLoading: true,/* rows: [], total: 0,*/ clear: true, selectedRows: []
 			}, () => {
 				this.setState({ clear: false }, () => { });
 			});
@@ -536,7 +537,7 @@ class eTable extends Component {
 					Tooltip.Hidden.hide();
 					Tooltip.Hidden.rebuild();
 				});
-			}, 300);
+			}, 550);
 		}
 	}
 
@@ -596,8 +597,19 @@ class eTable extends Component {
 		} />
 	}
 
-	render() {
+	onGroupRowClick(group, values) {
+		var retval = {};
 
+		group.map((item, index) => {
+			retval[item.columnName] = values[index];
+		});
+
+		if (this.props.onGroupRowClick) {
+			this.props.onGroupRowClick(retval);
+		}
+	}
+
+	render() {
 		const { isLoading, rows } = this.state;
 		var columns = this.props.columns;
 		var headColumns = _.differenceBy(columns, this.state.group, 'columnName');
@@ -621,7 +633,7 @@ class eTable extends Component {
 
 		var retval = (
 			<div>
-				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1 }} className={isLoading ? "" : "hidden"}>
+				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1, pointerEvents: 'none' }} className={isLoading ? "" : "hidden"}>
 					<CircularProgress style={{ position: 'relative', top: '55%', color: this.props.theme.palette.secondary.default }} />
 				</div>
 				{this.props.searchEnabled &&
@@ -791,7 +803,11 @@ class eTable extends Component {
 													<Highlighter searchWords={this.state.searchValues} autoEscape={true} textToHighlight={value}></Highlighter>
 												</Text></span>);
 										})}
-										<Wrapper inline style={{ verticalAlign: 'middle', float: 'right', width: '60px', textAlign: 'center', cursor: 'pointer' }} ><Icon open /></Wrapper>
+										<Wrapper inline style={{ verticalAlign: 'middle', float: 'right', width: '60px', textAlign: 'center', cursor: 'pointer' }} >
+											{/* <Icon open onClick={() => {											
+											this.onGroupRowClick(this.state.group, values);
+										}} /> */}
+										</Wrapper>
 									</MuiTableCell>
 								</TableRow>)
 							}} />
