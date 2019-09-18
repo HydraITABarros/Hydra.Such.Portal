@@ -117,7 +117,7 @@ class Header extends Component {
 							style={{ verticalAlign: 'middle', textDecoration: 'underline', cursor: 'pointer' }}>Voltar</Text>
 					</span>
 					<br /><br />
-					<Text h2 >{this.props.count} Seleccionados</Text>
+					<Text h2 >{this.props.count}<small>/{'20'}</small> Seleccionados</Text>
 				</Wrapper>
 
 				<Wrapper padding={' 20px 25px 0'} width="100%" style={{ position: 'absolute', bottom: 0 }} >
