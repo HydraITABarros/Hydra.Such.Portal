@@ -337,7 +337,6 @@ class OrdensDeManutencaoLine extends Component {
 
 	render() {
 		const { isLoading } = this.state;
-
 		return (
 			<PageTemplate >
 				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.highlightWrapper = el}>
