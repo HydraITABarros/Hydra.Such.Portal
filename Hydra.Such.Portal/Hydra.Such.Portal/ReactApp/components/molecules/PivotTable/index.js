@@ -335,6 +335,27 @@ var searchAux = "";
 
 var isToUpdate = true;
 
+const SortLabel = styled(TableHeaderRow.SortLabel)`&& {
+	&:not(.sorting-blocked) {
+		> span {
+			&:before {
+				content: "-";
+				position: absolute;    
+				top: -1px;
+				right: 8px;
+				font-size: 18px;
+				opacity: 0.6;
+			}
+			&[class*="SortLabel-active"] {
+				&:before {
+					opacity: 0;
+				}
+			} 
+		}
+	}
+}
+`
+
 class eTable extends Component {
 	state = {
 		group: [],
@@ -741,8 +762,8 @@ class eTable extends Component {
 						<TableHeaderRow
 							titleComponent={(props) => { return <Text label {...props} style={{ fontWeight: 500, marginTop: '6px' }} title="" data-tip={props.children} >{props.children}</Text> }}
 							sortLabelComponent={(props) => {
-								if (props.column.sortingEnabled == false) { return <TableHeaderRow.SortLabel {...props} onSort={() => { }} getMessage={() => ""} />; }
-								return <TableHeaderRow.SortLabel  {...props} getMessage={() => ""} onSort={(e) => {
+								if (props.column.sortingEnabled == false) { return <SortLabel {...props} className={"sorting-blocked"} onSort={() => { }} getMessage={() => ""} />; }
+								return <SortLabel  {...props} getMessage={() => ""} onSort={(e) => {
 									props.onSort(e);
 								}} />
 							}}
