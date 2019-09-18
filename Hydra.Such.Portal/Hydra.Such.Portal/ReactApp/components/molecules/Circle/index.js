@@ -59,7 +59,7 @@ const TooltipIcon = styled.span`
     display: inline-block;
     margin-top: -5px;
     margin-bottom: 0px;
-    top: 5px;
+    top: 1px;
     left: -5px;
     height: 14px;
     line-height: 14px;

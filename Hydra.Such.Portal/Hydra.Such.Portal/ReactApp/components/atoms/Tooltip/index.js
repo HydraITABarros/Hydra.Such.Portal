@@ -35,6 +35,6 @@ const Icon = styled.span`&& {
 const Hidden = styled(ReactTooltip)`${tooltip}`;
 
 export {
-        Hidden,
-        Icon
+	Hidden,
+	Icon
 };
