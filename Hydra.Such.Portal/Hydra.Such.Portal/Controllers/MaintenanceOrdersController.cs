@@ -101,7 +101,7 @@ namespace Hydra.Such.Portal.Controllers
         //[ResponseCache(Duration = 60000)]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
         {
-            var pageSize = 30;
+            var pageSize = 150;
 
             var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
             var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
@@ -413,12 +413,12 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [Route("{orderId}"), HttpGet, AcceptHeader("application/json")]
-        //[ResponseCache(Duration = 60000)]
+        [ResponseCache(Duration = 86400)]
         public ActionResult GetOrderDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
         {
             if (orderId == null) { return NotFound(); }
 
-            var pageSize = 30;
+            var pageSize = 150;
             var order = evolutionWEBContext.MaintenanceOrder.AsQueryable().Where(o => o.No == orderId).Select(o => new OmHeaderViewModel()
             {
                 No = o.No,
@@ -521,7 +521,12 @@ namespace Hydra.Such.Portal.Controllers
                 resultLines,
                 ordersCountsLines,
                 marcas,
-                servicos
+                servicos,
+                categorias = evolutionWEBContext.EquipCategoria.Where(m => availableCategories.Contains(m.IdCategoria)).Select(m => new
+                {
+                    m.IdCategoria,
+                    m.Nome
+                }).ToList()
             });
         }
 
@@ -542,8 +547,8 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [Route("/ordens-de-manutencao/ficha-de-manutencao"), HttpGet, AcceptHeader("application/json")]
-        //[ResponseCache(Duration = 60000)]
-        public ActionResult GetMaintenancePlans(int categoryId, string orderId, string equipmentIds)
+        //[ResponseCache(Duration = 86400)]
+        public ActionResult GetMaintenancePlans(int categoryId, string orderId, string equipmentIds, string marcaIds, string servicoIds)
         {
             var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
@@ -555,30 +560,26 @@ namespace Hydra.Such.Portal.Controllers
 
             if (evolutionLoggedUser == null) { return NotFound(); }
 
-            var equipmentIdsSplited = equipmentIds.Split(',');
-            var _equipmentIds = new List<int>();
-            equipmentIdsSplited.ToList().ForEach(item =>
-            {
-                int number;
-                Int32.TryParse(item, out number);
-
-                _equipmentIds.Add(number);
-            });
-            if (_equipmentIds == null || _equipmentIds.Count() < 1) { return NotFound(); }
             if (orderId == null || orderId == "") { return NotFound(); }
-
-            //validar premissoes
-
             //obter ordem de manutencao
             var order = evolutionWEBContext.MaintenanceOrder.Where(m => m.No == orderId).Select(o => new MaintenanceOrderViewModel()
             {
-                No = o.No, ClientName = o.ClientName, ContractNo = o.ContractNo,
-                CustomerName = o.CustomerName, CustomerNo = o.CustomerNo,
-                Description = o.Description, IdClienteEvolution = o.IdClienteEvolution,
-                IdInstituicaoEvolution = o.IdInstituicaoEvolution, IdServicoEvolution = o.IdServicoEvolution,
-                IdTecnico1 = o.IdTecnico1, IdTecnico2 = o.IdTecnico2, IdTecnico3 = o.IdTecnico3,
-                IdTecnico4 = o.IdTecnico4, IdTecnico5 = o.IdTecnico5,
-                InstitutionName = o.InstitutionName, isPreventive = o.isPreventive,
+                No = o.No,
+                ClientName = o.ClientName,
+                ContractNo = o.ContractNo,
+                CustomerName = o.CustomerName,
+                CustomerNo = o.CustomerNo,
+                Description = o.Description,
+                IdClienteEvolution = o.IdClienteEvolution,
+                IdInstituicaoEvolution = o.IdInstituicaoEvolution,
+                IdServicoEvolution = o.IdServicoEvolution,
+                IdTecnico1 = o.IdTecnico1,
+                IdTecnico2 = o.IdTecnico2,
+                IdTecnico3 = o.IdTecnico3,
+                IdTecnico4 = o.IdTecnico4,
+                IdTecnico5 = o.IdTecnico5,
+                InstitutionName = o.InstitutionName,
+                isPreventive = o.isPreventive,
                 ResponsibleEmployee = o.ResponsibleEmployee,
                 MaintenanceResponsible = o.MaintenanceResponsible
             }).FirstOrDefault();
@@ -593,22 +594,25 @@ namespace Hydra.Such.Portal.Controllers
 
             var versao = planHeader.Versao;
 
-            var planMaintenance = evolutionWEBContext.FichaManutencaoManutencao.Where(m=> m.Codigo == codigo && m.Versao == versao)
-                .Select(p => new FichaManutencaoRelatorioManutencaoViewModel() {                    
-                    Descricao= p.Descricao,
-                    IdManutencao= p.IdManutencao,
+            var planMaintenance = evolutionWEBContext.FichaManutencaoManutencao.Where(m => m.Codigo == codigo && m.Versao == versao)
+                .Select(p => new FichaManutencaoRelatorioManutencaoViewModel()
+                {
+                    Descricao = p.Descricao,
+                    IdManutencao = p.IdManutencao,
                     Codigo = p.Codigo,
                     Versao = p.Versao
                 }).ToList();
-            var planQuality = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(m=> m.Codigo == codigo && m.Versao == versao)
-                .Select(p => new FichaManutencaoTestesQualitativosViewModel() {                    
+            var planQuality = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(m => m.Codigo == codigo && m.Versao == versao)
+                .Select(p => new FichaManutencaoTestesQualitativosViewModel()
+                {
                     Descricao = p.Descricao,
                     IdTesteQualitativos = p.IdTesteQualitativos,
                     Codigo = p.Codigo,
                     Versao = p.Versao
                 }).ToList();
-            var planQuantity = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(m=> m.Codigo == codigo && m.Versao == versao)
-                .Select(p => new FichaManutencaoTestesQuantitativosViewModel() {                    
+            var planQuantity = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(m => m.Codigo == codigo && m.Versao == versao)
+                .Select(p => new FichaManutencaoTestesQuantitativosViewModel()
+                {
                     Descricao = p.Descricao,
                     IdTestesQuantitativos = p.IdTestesQuantitativos,
                     UnidadeCampo1 = p.UnidadeCampo1,
@@ -616,29 +620,91 @@ namespace Hydra.Such.Portal.Controllers
                     Versao = p.Versao
                 }).ToList();
 
+            List<EquipamentMaintenancePlanViewModel> equipments;
+
+            if (equipmentIds != null) { 
+                var equipmentIdsSplited = equipmentIds.Split(',');
+                var _equipmentIds = new List<int>();
+                equipmentIdsSplited.ToList().ForEach(item =>
+                {
+                    int number;
+                    Int32.TryParse(item, out number);
+
+                    _equipmentIds.Add(number);
+                });
+                if (_equipmentIds == null || _equipmentIds.Count() < 1) { return NotFound(); }                
+
+                equipments = evolutionWEBContext.Equipamento.Where(e => _equipmentIds.Contains(e.IdEquipamento) && e.Categoria == categoryId).Select(e => new EquipamentMaintenancePlanViewModel()
+                {
+                    IdEquipamento = e.IdEquipamento,
+                    Sala = e.Sala,
+                    IdServico = e.IdServico,
+                    IdCliente = e.IdCliente,
+                    Categoria = e.Categoria,
+                    Marca = e.Marca,
+                    Modelo = e.Modelo,
+                    NumSerie = e.NumSerie,
+                    NumInventario = e.NumInventario,
+                    NumEquipamento = e.NumEquipamento,
+                    Codigo = codigo,
+                    Versao = versao,
+                    PlanMaintenance = planMaintenance,
+                    PlanQuality = planQuality,
+                    PlanQuantity = planQuantity,
+
+
+                }).ToList();
+            } else
+            {
+                var _marcaIds = new List<int>();
+                if (marcaIds != null) { 
+                    var marcaIdsSplited = marcaIds.Split(',');
+                    marcaIdsSplited.ToList().ForEach(item =>
+                    {
+                        int number;
+                        Int32.TryParse(item, out number);
+                        _marcaIds.Add(number);
+                    });
+                }
+                var _servicoIds = new List<int>();
+                if (servicoIds != null)
+                {
+                    var servicoIdsSplited = servicoIds.Split(',');
+                    servicoIdsSplited.ToList().ForEach(item =>
+                    {
+                        int number;
+                        Int32.TryParse(item, out number);
+                        _servicoIds.Add(number);
+                    });
+                }
+
+                equipments = evolutionWEBContext.Equipamento.Where(e => e.Categoria == categoryId
+                && (marcaIds == null ? true : _marcaIds.Contains( e.Marca))
+                && (servicoIds == null ? true : _servicoIds.Contains(e.IdServico) )).Select(e => new EquipamentMaintenancePlanViewModel()
+                {
+                    IdEquipamento = e.IdEquipamento,
+                    Sala = e.Sala,
+                    IdServico = e.IdServico,
+                    IdCliente = e.IdCliente,
+                    Categoria = e.Categoria,
+                    Marca = e.Marca,
+                    Modelo = e.Modelo,
+                    NumSerie = e.NumSerie,
+                    NumInventario = e.NumInventario,
+                    NumEquipamento = e.NumEquipamento,
+                    Codigo = codigo,
+                    Versao = versao,
+                    PlanMaintenance = planMaintenance,
+                    PlanQuality = planQuality,
+                    PlanQuantity = planQuantity,
+                }).ToList();
+            }
+            //validar premissoes
+
+            
             //obter fichas de manutencao (reports)
 
-            var equipments = evolutionWEBContext.Equipamento.Where(e => _equipmentIds.Contains(e.IdEquipamento) && e.Categoria == categoryId).Select(e => new EquipamentMaintenancePlanViewModel()
-            {
-                IdEquipamento = e.IdEquipamento,
-                Sala = e.Sala,
-                IdServico = e.IdServico,
-                IdCliente = e.IdCliente,
-                Categoria = e.Categoria,
-                Marca = e.Marca,
-                Modelo = e.Modelo,
-                NumSerie = e.NumSerie,
-                NumInventario = e.NumInventario,
-                NumEquipamento = e.NumEquipamento,
-                Codigo = codigo,
-                Versao = versao,
-                PlanMaintenance = planMaintenance,
-                PlanQuality = planQuality,
-                PlanQuantity = planQuantity,
-                
-
-            }).ToList();
-
+           
             if (equipments == null || equipments.Count() < 1) { return NotFound(); }
 
             equipments.ForEach((item) =>
