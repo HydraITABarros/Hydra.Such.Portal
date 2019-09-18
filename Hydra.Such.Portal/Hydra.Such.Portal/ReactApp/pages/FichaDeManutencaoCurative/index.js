@@ -156,7 +156,9 @@ class FichaDeManutencao extends Component {
 			innerWidth: null,
 			scrollLeft: null
 		},
-		position: 0
+		position: 0,
+		marcaIds: null,
+		servicoIds: null
 	}
 
 	constructor(props) {
@@ -164,6 +166,10 @@ class FichaDeManutencao extends Component {
 		this.state.orderId = this.props.match.params.orderid;
 		var query = queryString.parse(props.location.search);
 		this.state.equipmentId = query.equipmentId;
+		this.state.marcaIds = query.marcaIds;
+		this.state.servicoIds = query.servicoIds;
+
+		console.log('imp', query);
 
 		this.fetch = this.fetch.bind(this);
 
@@ -198,7 +204,9 @@ class FichaDeManutencao extends Component {
 		var url = `/ordens-de-manutencao/ficha-de-manutencao/curativa`;
 		var params = {
 			orderId: this.state.orderId,
-			equipmentId: this.state.equipmentId
+			equipmentId: this.state.equipmentId,
+			servicoIds: this.state.servicoIds,
+			marcaIds: this.state.marcaIds
 		};
 		axios.get(url, { params }).then((result) => {
 			var data = result.data;
