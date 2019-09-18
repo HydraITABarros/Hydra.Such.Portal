@@ -170,6 +170,7 @@ var call;
 var headerHeightTimer;
 
 class OrdensDeManutencaoLine extends Component {
+
 	state = {
 		orderId: "",
 		isLoading: true,
@@ -180,6 +181,7 @@ class OrdensDeManutencaoLine extends Component {
 		},
 		marcas: [],
 		servicos: [],
+		categorias: [],
 		tooltipReady: false,
 		maintenanceOrder: {},
 		equipments: [],
@@ -189,7 +191,6 @@ class OrdensDeManutencaoLine extends Component {
 		listContainerStyle: {},
 		selectionMode: false,
 		selectedRows: []
-
 	}
 
 	constructor(props) {
@@ -303,6 +304,7 @@ class OrdensDeManutencaoLine extends Component {
 					maintenanceOrder: data.order,
 					marcas: data.marcas,
 					servicos: data.servicos,
+					categorias: data.categorias,
 					equipments: isNext ? this.state.equipments.concat(list) : list,
 					equipmentsTotal: data.resultLines.count,
 					ordersCountsLines: data.ordersCountsLines,
@@ -348,9 +350,7 @@ class OrdensDeManutencaoLine extends Component {
 								this.table.resetSelection();
 							}}
 							onOpenClick={(e) => {
-								console.log(this.state.selectedRows);
 								var rows = this.state.selectedRows;
-
 								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=${rows[0].categoria}&equipmentsIds=${rows.map((item) => { return item.idEquipamento }).join(',')}`);
 							}}
 						/> :
@@ -366,7 +366,7 @@ class OrdensDeManutencaoLine extends Component {
 							onRef={el => this.table = el}
 							isLoading={this.state.equipmentsIsLoading}
 							rows={this.state.equipments}
-							pageSize={30}
+							pageSize={150}
 							total={this.state.equipmentsTotal}
 							rowId={'numEquipamento'}
 							columns={[
@@ -388,6 +388,30 @@ class OrdensDeManutencaoLine extends Component {
 							}}
 							onRowClick={(row) => {
 								this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=${row.categoria}&equipmentsIds=${row.idEquipamento}`);
+							}}
+							onGroupRowClick={selection => {
+								var idsMarca, idsServico, idCategoria, idsCategorias;
+								console.log(selection);
+								if (selection.categoriaText) {
+									idsCategorias = this.state.categorias.filter((item) => { return item.nome.toLowerCase() == selection.categoriaText.toLowerCase() }).map(item => item.idCategoria);
+								}
+								if (selection.servicoText) {
+									idsServico = this.state.servicos.filter((item) => { return item.nome.toLowerCase() == selection.servicoText.toLowerCase() }).map(item => item.idServico).join(',');
+								}
+								if (selection.marcaText) {
+									idsMarca = this.state.marcas.filter((item) => { return item.nome.toLowerCase() == selection.marcaText.toLowerCase() }).map(item => item.idMarca).join(',');
+								}
+								if (idsCategorias) {
+									idCategoria = idsCategorias[0];
+									var url = `/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=${idCategoria}`;
+									if (idsMarca) {
+										url += `&marcaIds=${idsMarca}`;
+									}
+									if (idsServico) {
+										url += `&servicoIds=${idsServico}`;
+									}
+									this.props.history.push(url);
+								}
 							}}
 							groupingEnabled={true}
 							searchEnabled={true}
