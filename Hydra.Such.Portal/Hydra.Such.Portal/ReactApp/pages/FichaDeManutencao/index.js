@@ -147,7 +147,9 @@ class FichaDeManutencao extends Component {
 			innerWidth: null,
 			scrollLeft: null
 		},
-		position: 0
+		position: 0,
+		marcaIds: null,
+		servicoIds: null
 	}
 
 	constructor(props) {
@@ -155,6 +157,8 @@ class FichaDeManutencao extends Component {
 		this.state.orderId = this.props.match.params.orderid;
 		this.fetch = this.fetch.bind(this);
 		var query = queryString.parse(props.location.search);
+		this.state.marcaIds = query.marcaIds;
+		this.state.servicoIds = query.servicoIds;
 		this.state.categoryId = query.categoryId;
 		this.state.equipmentsIds = query.equipmentsIds;
 		this.setBodyHeight = this.setBodyHeight.bind(this);
@@ -189,7 +193,9 @@ class FichaDeManutencao extends Component {
 		var params = {
 			categoryId: this.state.categoryId,
 			orderId: this.state.orderId,
-			equipmentIds: this.state.equipmentsIds
+			equipmentIds: this.state.equipmentsIds,
+			servicoIds: this.state.servicoIds,
+			marcaIds: this.state.marcaIds
 		};
 		axios.get(url, { params }).then((result) => {
 			var data = result.data;
