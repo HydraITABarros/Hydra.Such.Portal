@@ -1090,7 +1090,8 @@
                                             <paper-collapse-group>
                                                 <paper-collapse-item header="Textos Fatura Grupo">
                                                     <div class="panel-body">
-                                                        <template is="dom-if" if="{{ !_lockFields }}">
+                                                        <!--<template is="dom-if" if="{{ !_lockFields }}">-->
+                                                        <div class="row" hidden="{{ _lockFields }}">
                                                             <div class="row">
                                                                 <div class="col-md-3 ">
                                                                     <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_IRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_IRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
@@ -1104,7 +1105,7 @@
                                                                     </vaadin-combo-box>
                                                                 </div>
                                                                 <div class="col-md-3 ">
-                                                                    <such-selectbox id="_IRProjectNo" name="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}"
+                                                                    <such-selectbox id="_IRProjectNo" value="{{_IRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}"
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="id"
                                                                                     value-path="id"
@@ -1121,7 +1122,8 @@
                                                                     <paper-button class="btnSave" raised on-tap="_createInvoiceText">Criar</paper-button>
                                                                 </div>
                                                             </div>
-                                                        </template>
+                                                        </div>
+                                                        <!--</template>-->
 
                                                         <!-- VAADIN GRID  Textos Fatura -->
                                                         <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
@@ -2371,7 +2373,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    debugger;
                     if (this.$.mClients.value == "" || this.$.mClients.value == undefined) {
                         this.$.mClients.validate();
                         this._openToastError("É obrigatória seleção de um Nº Cliente.");
@@ -2857,18 +2858,37 @@
                 },
                 //Invoice Texts Functions
                 _createInvoiceText: function () {
-                    this.data.invoiceTexts.unshift({
-                        contractNo: this.data.contractNo,
-                        invoiceGroup: this._IRInvoiceGroup,
-                        projectNo: this._IRProjectNo,
-                        invoiceText: this._IRInvoiceText
-                    });
+                    var _self = this;
+                    if ((this._IRInvoiceGroup == null || this._IRInvoiceGroup == "") && (this._IRProjectNo == null || this._IRProjectNo == "")) {
+                        this._openToastError('Um dos campos Grupo Fatura ou Nº Projeto é de preenchimento obrigatório.');
+                    }
+                    else {
+                        if (this._IRInvoiceGroup != null && this._IRInvoiceGroup != "" && this._IRProjectNo != null && this._IRProjectNo != "") {
+                            this._openToastError('Só um dos campos Grupo Fatura ou Nº Projeto é que pode estar preenchido.');
+                        }
+                        else {
+                            if (this._IRInvoiceGroup == null || this._IRInvoiceGroup == "") {
+                                this._IRInvoiceGroup = 0;
+                            }
+                            if (this._IRProjectNo == null || this._IRProjectNo == "") {
+                                this._IRProjectNo = "";
+                            }
 
-                    this._IRInvoiceGroup = "";
-                    this._IRProjectNo = "";
-                    this._IRInvoiceText = "";
+                            this.data.invoiceTexts.unshift({
+                                contractNo: this.data.contractNo,
+                                invoiceGroup: this._IRInvoiceGroup,
+                                projectNo: this._IRProjectNo,
+                                invoiceText: this._IRInvoiceText
+                            });
 
-                    this.$.grid_invoiceTexts.clearCache();
+                            this._IRInvoiceGroup = "";
+                            this._IRProjectNo = "";
+                            this.$._IRProjectNo._clearSelection();
+                            this._IRInvoiceText = "";
+
+                            this.$.grid_invoiceTexts.clearCache();
+                        }
+                    }
                 },
                 _deleteInvoiceText: function (data) {
                     var index = this.data.invoiceTexts.indexOf(data.model.item);
@@ -3436,7 +3456,6 @@
                     return false;
                 },
                 _ValidateInvoice: function () {
-                    debugger;
                     var messageErro = "";
                     if (this.$.mStatus.value != 4 && this.$.mStatus.value != 7) {
                         messageErro = "O estado do contrato tem que ser: Assinado ou Em Vigor \n";
@@ -3686,7 +3705,6 @@
                 },
 
                 _changeStatusChanged: function () {
-                    debugger;
                     if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
                         if (this._validateData()) {
 
@@ -3719,7 +3737,6 @@
                     this.$.gridAnexos.clearCache();
                 },
                 _updateAnexoVisivelResponseProcessor: function (e) {
-                    debugger;
                     if (this.updateAnexoVisivelResponse == true) {
                         this._openToast("Anexo atualizado com sucesso.");
                     }

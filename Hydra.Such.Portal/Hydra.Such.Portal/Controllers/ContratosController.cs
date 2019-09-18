@@ -1332,7 +1332,7 @@ namespace Hydra.Such.Portal.Controllers
                                 RCCToDelete.ForEach(x => DBContractClientRequisition.Delete(x));
 
                             //Create/Update Contract Invoice Texts
-                            List<TextoFaturaContrato> CIT = DBContractInvoiceText.GetByContract(ContratoDB.NºContrato);
+                            List<TextoFaturaContrato> CIT = DBContractInvoiceText.GetByContract(ContratoDB.NºDeContrato);
                             List<TextoFaturaContrato> CITToDelete =
                                 CIT.Where(x => !data.InvoiceTexts.Any(
                                     y => x.GrupoFatura == y.InvoiceGroup && x.NºProjeto == y.ProjectNo &&
