@@ -427,7 +427,7 @@ class OrdensDeManutencao extends Component {
 
 
 	fetchMaintenenceOrders({ search, sort, page }, cb) {
-		console.log('AAAA', search);
+
 		cb = cb || (() => { });
 		var isNext = page > 1;
 		this.setState({ maintenenceOrdersIsLoading: true }, () => {
@@ -682,7 +682,7 @@ class OrdensDeManutencao extends Component {
 							onRef={el => this.table = el}
 							isLoading={this.state.maintenenceOrdersIsLoading}
 							rows={this.state.maintenenceOrders}
-							pageSize={30}
+							pageSize={150}
 							total={this.state.maintenanceOrdersTotal}
 							rowId={'no'}
 							columns={[
