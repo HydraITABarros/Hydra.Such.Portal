@@ -27,6 +27,7 @@
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 
+
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 <dom-module id="x-contractdetails">
@@ -508,7 +509,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row break_clear" hidden>
+                                    <!--<div class="row break_clear" hidden>
                                         <div class="panel panel-default">
                                             <paper-collapse-group>
                                                 <paper-collapse-item header="Versão Atual do Contrato">
@@ -572,7 +573,7 @@
                                                 </paper-collapse-item>
                                             </paper-collapse-group>
                                         </div>
-                                    </div>
+                                    </div>-->
 
                                     <div class="row break_clear">
                                         <div class="panel panel-default">
@@ -911,10 +912,10 @@
                                     <div class="row break_clear">
                                         <div class="col-md-2 ">
                                             <!--<vaadin-combo-box items="[[CBShippingAddresses]]" item-value-path="id" item-label-path="value" id="codeShippingAddress" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ _lockFields }}">
-                                            <template>
-                                                <b>[[item.value]]</b>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                                <template>
+                                                    <b>[[item.value]]</b>
+                                                </template>
+                                            </vaadin-combo-box>-->
                                             <such-selectbox id="codeShippingAddress" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio"
                                                             items="[[CBShippingAddresses]]"
                                                             text-path="code"
@@ -984,9 +985,9 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <!--<div class="col-lg-3">
                                             <vaadin-date-picker label="Data Última Fatura" id="_LastInvoiceDate" name="_LastInvoiceDate" value="{{data.lastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                        </div>
+                                        </div>-->
                                         <div class="col-md-3  alignPoga">
                                             <vaadin-checkbox checked="{{data.fixedVowsAgreement}}" id="contractAvencaFixa" disabled="{{ _lockFields }}">Contrato Avença Fixa</vaadin-checkbox>
                                         </div>
@@ -1150,14 +1151,14 @@
                                                                 </template>
                                                                 <template>
                                                                     <!--<vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
-                                                                    <template>
-                                                                        <paper-icon-item>
-                                                                            <paper-item-body two-line>
-                                                                                <div>[[item.value]]</div>
-                                                                            </paper-item-body>
-                                                                        </paper-icon-item>
-                                                                    </template>
-                                                                </vaadin-combo-box>-->
+                                                                        <template>
+                                                                            <paper-icon-item>
+                                                                                <paper-item-body two-line>
+                                                                                    <div>[[item.value]]</div>
+                                                                                </paper-item-body>
+                                                                            </paper-icon-item>
+                                                                        </template>
+                                                                    </vaadin-combo-box>-->
                                                                     <such-selectbox id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}"
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="id"
@@ -1258,18 +1259,18 @@
                             </iron-pages>
 
                             <!--<template is="dom-if" if="{{ !_isHistoricDiv }}">
-                            <div class="marginSpace" style="display: {{ _showButtons }}">
-                                <template is="dom-if" if="{{ _isCreate }}">
-                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                </template>
-                                <template is="dom-if" if="{{ !_isCreate }}">
-                                    <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                </template>
-                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                </template>
-                            </div>
-                        </template>-->
+                                <div class="marginSpace" style="display: {{ _showButtons }}">
+                                    <template is="dom-if" if="{{ _isCreate }}">
+                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </template>
+                                    <template is="dom-if" if="{{ !_isCreate }}">
+                                        <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                    </template>
+                                    <template is="dom-if" if="{{ _permissions.delete }}">
+                                        <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                    </template>
+                                </div>
+                            </template>-->
                         </div>
 
                         <paper-collapse-group style="display: {{ _showContractLines }};">
@@ -1823,12 +1824,12 @@
                         </div>
 
                         <!--<div class="marginSpace" style="display: {{ _showContractLines }};">
-                        <template is="dom-if" if="{{ _permissions.update }}">
-                            <template is="dom-if" if="{{ !_lockFields }}">
-                                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            <template is="dom-if" if="{{ _permissions.update }}">
+                                <template is="dom-if" if="{{ !_lockFields }}">
+                                    <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                </template>
                             </template>
-                        </template>
-                    </div>-->
+                        </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -2372,6 +2373,7 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
+                    debugger;
                     if (this.$.mClients.value == "" || this.$.mClients.value == undefined) {
                         this.$.mClients.validate();
                         this._openToastError("É obrigatória seleção de um Nº Cliente.");
@@ -2428,7 +2430,7 @@
                         //this.$.mStartDateFirstContract.validate() &
                         this.$.mFirstContractReference.validate() &
                         //this.$.mClientRequisitionNo.validate() &
-                        this.$.mPromiseNo.validate() &
+                        //this.$.mPromiseNo.validate() &
                         //this.$.mStartData.validate() &
                         this.$.mStatus.validate() &
                         //this.$.mReceiptDateRequisition.validate() &
@@ -3459,7 +3461,9 @@
                     if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
                         messageErro += "Data Fim Versão não pode ser menor que a Data início Contrato \n";
 
-                    if (this.$.dueDate.value > this.$.contractEndDate.value && this.$.dueDate.value != null)
+                    if (this.$.dueDate.value != null && this.$.dueDate.value != "" &&
+                        this.$.contractEndDate.value != null && this.$.contractEndDate.value != "" &&
+                        this.$.dueDate.value > this.$.contractEndDate.value)
                         messageErro += "Data Fim Versão não pode ser maior que a Data Final Contrato \n";
 
                     if (this.dataLines != null) {
@@ -3684,6 +3688,7 @@
                 },
 
                 _changeStatusChanged: function () {
+                    debugger;
                     if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
                         if (this._validateData()) {
 
