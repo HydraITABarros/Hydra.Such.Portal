@@ -117,6 +117,7 @@ namespace Hydra.Such.Portal.Controllers
                      Global_Dimension_1_Code = c.FunctionalAreaCode,
                      Centro_Resp_Dimensao = c.ResponsabilityCenterCode,
                      Cliente_Associado = c.ClienteAssociado,
+                     Cliente_Associado_Text = c.ClienteAssociado == true ? "Sim" : "Não",
                      Associado_A_N = c.AssociadoAN,
                      Tipo_Cliente = c.TipoCliente,
                      Tipo_Cliente_Text = ((Data.ViewModel.Clients.Tipo_Cliente)c.TipoCliente).GetDescription(),
@@ -350,7 +351,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["regiao_Cliente_Text"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região"); Col = Col + 1; }
                 if (dp["global_Dimension_1_Code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Area"); Col = Col + 1; }
                 if (dp["centro_Resp_Dimensao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro de Responsabilidade"); Col = Col + 1; }
-                if (dp["cliente_Associado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Associado"); Col = Col + 1; }
+                if (dp["cliente_Associado_Text"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Associado"); Col = Col + 1; }
                 if (dp["associado_A_N"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Associado (A/N)"); Col = Col + 1; }
                 if (dp["tipo_Cliente_Text"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo de Cliente"); Col = Col + 1; }
                 if (dp["natureza_Cliente_Text"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Natureza do Cliente"); Col = Col + 1; }
@@ -385,7 +386,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["regiao_Cliente_Text"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Regiao_Cliente_Text); Col = Col + 1; }
                         if (dp["global_Dimension_1_Code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Global_Dimension_1_Code); Col = Col + 1; }
                         if (dp["centro_Resp_Dimensao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Centro_Resp_Dimensao); Col = Col + 1; }
-                        if (dp["cliente_Associado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Cliente_Associado); Col = Col + 1; }
+                        if (dp["cliente_Associado_Text"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Cliente_Associado_Text); Col = Col + 1; }
                         if (dp["associado_A_N"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Associado_A_N); Col = Col + 1; }
                         if (dp["tipo_Cliente_Text"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Tipo_Cliente_Text); Col = Col + 1; }
                         if (dp["natureza_Cliente_Text"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Natureza_Cliente_Text); Col = Col + 1; }

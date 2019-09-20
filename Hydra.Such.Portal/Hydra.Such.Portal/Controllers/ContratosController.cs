@@ -575,7 +575,7 @@ namespace Hydra.Such.Portal.Controllers
             ContractsLinesList.ForEach(x => result.Add(DBContractLines.ParseToViewModel(x)));
 
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-            List<EnumData> AllStatus = EnumerablesFixed.ContractStatus;
+            List<EnumData> AllStatus = EnumerablesFixed.ContractALLStatus;
             List<EnumData> AllContractBillingTypes = EnumerablesFixed.ContractBillingTypes;
             //List<ClientServicesViewModel> AllClientServices = new List<ClientServicesViewModel>();
 
@@ -784,7 +784,7 @@ namespace Hydra.Such.Portal.Controllers
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x)));
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-            List<EnumData> status = EnumerablesFixed.ContractStatus;
+            List<EnumData> status = EnumerablesFixed.ContractALLStatus;
 
             result.ForEach(x => {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
@@ -804,6 +804,7 @@ namespace Hydra.Such.Portal.Controllers
                 AllLines.ForEach(line =>
                 {
                     line.DataInícioVersão = Convert.ToDateTime(data.StartData);
+                    line.UtilizadorModificação = User.Identity.Name;
                     if (DBContractLines.Update(line) == null)
                     {
                         result = false;
@@ -831,6 +832,7 @@ namespace Hydra.Such.Portal.Controllers
                 AllLines.ForEach(line =>
                 {
                     line.DataFimVersão = Convert.ToDateTime(data.DueDate);
+                    line.UtilizadorModificação = User.Identity.Name;
                     if (DBContractLines.Update(line) == null)
                     {
                         result = false;

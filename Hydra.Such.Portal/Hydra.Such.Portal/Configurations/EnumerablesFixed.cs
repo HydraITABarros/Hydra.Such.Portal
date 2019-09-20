@@ -875,6 +875,44 @@ namespace Hydra.Such.Portal.Configurations
             //}
         };
 
+        public static readonly List<EnumData> ContractALLStatus = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 1,
+                Value = "A enviar"
+            },
+            new EnumData()
+            {
+                Id = 2,
+                Value = "Enviado"
+            },
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Pendente"
+            },
+            new EnumData()
+            {
+                Id = 4,
+                Value = "Assinado"
+            },
+            new EnumData()
+            {
+                Id = 5,
+                Value = "Cancelado"
+            },
+            new EnumData()
+            {
+                Id = 6,
+                Value = "Perdido"
+            },
+            new EnumData()
+            {
+                Id = 7,
+                Value = "Em vigor"
+            }
+        };
+
         public static readonly List<EnumData> ContractChangeStatus = new List<EnumData>(){
             new EnumData()
             {
