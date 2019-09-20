@@ -2924,6 +2924,9 @@
                     if (this._validateFolhaHoras()) {
                         if (this.$.tipoDeslocacao.value == 1) {
                             if (this.$.matricula.validate() & this.$.matricula.value != "") {
+                                //Bloqueia o botão Calcular Ajudas de custo
+                                $(this.$.btn_calcularAjudasCusto).addClass('disabled');
+
                                 this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
                                 this.$.page_calcularajudascusto_ajax.generateRequest();
                                 this.$.tabAjuda.clearCache();
@@ -2933,6 +2936,9 @@
                             }
                         }
                         else {
+                            //Bloqueia o botão Calcular Ajudas de custo
+                            $(this.$.btn_calcularAjudasCusto).addClass('disabled');
+
                             this.$.page_calcularajudascusto_ajax.body = JSON.stringify(this.data);
                             this.$.page_calcularajudascusto_ajax.generateRequest();
                             this.$.tabAjuda.clearCache();
@@ -4096,6 +4102,9 @@
 
                 //AJUDA DE CUSTOS
                 _updateCalcularAjudasCustoResponse: function (e) {
+                    //Desbloqueia o botão Calcular Ajudas de custo
+                    $(this.$.btn_calcularAjudasCusto).removeClass('disabled');
+
                     if (this.CalcularAjudasCustoUpdated.eReasonCode == 0) {
                         this._showMessage(this.CalcularAjudasCustoUpdated.eMessage);
                         this.$.page_databound_ajax.generateRequest();
