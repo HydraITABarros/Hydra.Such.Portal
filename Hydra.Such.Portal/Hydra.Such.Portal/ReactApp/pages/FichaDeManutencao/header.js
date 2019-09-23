@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 import functions from '../../helpers/functions';
 import mOptions from './modalOptions';
 import mEquipments from './modalEquipments';
-import mAssinatura from './modalAssinatura';
+import mAssinatura from './ModalSignature';
 import _theme from '../../themes/default';
 
 const muiTheme = createMuiTheme();
@@ -145,7 +145,7 @@ class HTitle extends Component {
 								}}
 							>Relatórios <Icon arrow-down style={{ lineHeight: '14px', verticalAlign: 'middle' }} /></Button>
 
-							<ModalAssinatura equipmentType={this.props.title} equipments={this.props.equipments}>
+							<ModalAssinatura equipmentType={this.props.title} $equipments={this.props.$equipments}>
 								<Button icon={<Icon signature />}>Assinar</Button>
 							</ModalAssinatura>
 

@@ -10,9 +10,9 @@ import { red } from '@material-ui/core/colors';
 import Color from 'color';
 import { Provider } from 'react-redux';
 import store from './store';
+import "index.scss";
 
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
-
 const muiTheme = createMuiTheme({
 	typography: {
 		useNextVariants: true,

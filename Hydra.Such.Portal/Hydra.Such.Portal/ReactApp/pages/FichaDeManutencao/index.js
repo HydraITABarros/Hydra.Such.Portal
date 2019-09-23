@@ -24,9 +24,6 @@ import _theme from '../../themes/default';
 import Color from 'color';
 import _ from 'lodash';
 import Functions from '../../helpers/functions';
-import { NotificationPhoneBluetoothSpeaker } from 'material-ui/svg-icons';
-import { observable } from 'mobx';
-import { observer } from 'mobx-react';
 
 const addLinkedPropsToObject = Functions.addLinkedPropsToObject;
 
@@ -324,7 +321,7 @@ class FichaDeManutencao extends Component {
 							<HeaderTitle
 								title={this.state.title}
 								onRef={el => this.headerTitleWrapper = el}
-								equipments={this.state.equipments}
+								$equipments={this.state.$equipments}
 								onEquipmentsChange={
 									() => {
 										this.setState({
