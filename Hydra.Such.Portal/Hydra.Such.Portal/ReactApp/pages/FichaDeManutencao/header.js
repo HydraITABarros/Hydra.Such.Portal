@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 import functions from '../../helpers/functions';
 import mOptions from './modalOptions';
 import mEquipments from './modalEquipments';
-import mAssinatura from './ModalAssinatura';
+import mAssinatura from './modalAssinatura';
 import _theme from '../../themes/default';
 
 const muiTheme = createMuiTheme();
@@ -145,7 +145,7 @@ class HTitle extends Component {
 								}}
 							>Relatórios <Icon arrow-down style={{ lineHeight: '14px', verticalAlign: 'middle' }} /></Button>
 
-							<ModalAssinatura>
+							<ModalAssinatura equipmentType={this.props.title} equipments={this.props.equipments}>
 								<Button icon={<Icon signature />}>Assinar</Button>
 							</ModalAssinatura>
 
@@ -169,6 +169,7 @@ class HDescription extends Component {
 		service: null,
 		room: null,
 		equipments: [],
+		equipmentsCount: 0,
 	}
 
 	constructor(props) {
@@ -199,6 +200,12 @@ class HDescription extends Component {
 		}
 		if (props.$equipments !== this.state.$equipments) {
 			newState.$equipments = props.$equipments;
+		}
+		if (props.equipmentsCount !== this.state.equipmentsCount) {
+			newState.equipmentsCount = props.equipmentsCount;
+		}
+		if (props.$equipmentsCount !== this.state.$equipmentsCount) {
+			newState.$equipmentsCount = props.$equipmentsCount;
 		}
 		if (Object.keys(newState).length > 0) {
 			this.setState(newState, () => {/*console.log(this.state)*/ });
@@ -277,7 +284,7 @@ class HDescription extends Component {
 							<Grid item xs={7} >
 								{this.state.equipments.length > 5 &&
 									<span>+
-										<ModalEquipments $equipments={this.state.$equipments} title={this.props.title} categoryId={this.props.categoryId} orderId={this.props.orderId} onChange={this.props.onEquipmentsChange}>
+										<ModalEquipments $equipmentsCount={this.state.$equipmentsCount} $equipments={this.state.$equipments} title={this.props.title} categoryId={this.props.categoryId} orderId={this.props.orderId} onChange={this.props.onEquipmentsChange}>
 											<Button link style={{ cursor: 'pointer' }}>
 												{this.state.equipments.length > 5 && (this.state.equipments.length - (this.state.equipments.slice(0, 5).length))}
 											</Button>
@@ -285,7 +292,7 @@ class HDescription extends Component {
 										&nbsp;&nbsp;
 									</span>
 								}
-								<ModalEquipments $equipments={this.state.$equipments} title={this.props.title} categoryId={this.props.categoryId} orderId={this.props.orderId} onChange={this.props.onEquipmentsChange}>
+								<ModalEquipments $equipmentsCount={this.state.$equipmentsCount} $equipments={this.state.$equipments} title={this.props.title} categoryId={this.props.categoryId} orderId={this.props.orderId} onChange={this.props.onEquipmentsChange}>
 									<Button link style={{ cursor: 'pointer' }}>
 										Adicionar Equip.
 									</Button>

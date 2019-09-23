@@ -12,6 +12,7 @@ import Material from './material';
 import Upload from './upload';
 import Documentos from './documentos';
 import Fotografias from './fotografias';
+import { Grid } from '@material-ui/core';
 
 
 const { DialogTitle, DialogContent, DialogActions } = ModalLarge;
@@ -78,13 +79,23 @@ class Options extends Component {
 				action={this.props.children} children={
 					<div>
 						<DialogTitle>
-							<Text h2><Icon signature /> Assinatura</Text>
+							<Text h2><Icon report /> Assinar</Text>
 						</DialogTitle>
 						<hr />
-
-						<DialogContent>
-
-						</DialogContent>
+						<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} >
+							{/* <DialogContent></DialogContent> */}
+							<Grid item xs={12} sm={4} md={3} style={{ borderRight: '1px solid #E4E7EB', borderBottom: '1px solid #E4E7EB' }}>
+								<DialogContent>
+									<Text b>{this.props.equipmentType} ({this.props.equipments.length})</Text>
+								</DialogContent>
+							</Grid>
+							<Grid item xs={12} sm={4} md={4} style={{ borderRight: '1px solid #E4E7EB', borderBottom: '1px solid #E4E7EB' }}>
+								<DialogContent>bbb</DialogContent>
+							</Grid>
+							<Grid item xs={12} sm={4} md={5} >
+								<DialogContent>ccc</DialogContent>
+							</Grid>
+						</Grid>
 						<hr />
 						<DialogActions>
 							<Button primary onClick={() => this.setState({ open: false })} color="primary">Finalizar</Button>

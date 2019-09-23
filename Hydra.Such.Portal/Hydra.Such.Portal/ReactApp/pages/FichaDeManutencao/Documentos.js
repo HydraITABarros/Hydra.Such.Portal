@@ -32,54 +32,53 @@ const TextDoc = styled(Text)`&&{
 `;
 
 const Documentos = (props) => {
-  return (
-    <div>      
+	return (
+		<div>
 
-      <Wrapper padding={'0 0 16px'}>
-        <Grid container spacing={16}>
-        
-           <Grid item container xs={12} md={4}>
-            <Grid item xs={2}>
-              <DocImg/>
-              </Grid>
-            <Grid item xs={4}>
-              <WrapperText>
-                <Text b>Ficha Técnica</Text><br/>
-                <TextDoc label>.pdf (243kb)<br/>11 Abr 2018</TextDoc>
-              </WrapperText>
-            </Grid>
-          </Grid>
+			<Wrapper padding={'0 0 16px'}>
+				<Grid container spacing={16}>
 
-          <Grid item container xs={12} md={4}>
-            <Grid item xs={2}>
-              <DocImg/>
-              </Grid>
-            <Grid item xs={4}>
-              <WrapperText>
-                <Text b>Ficha Técnica</Text><br/>
-                <TextDoc label>.pdf (243kb)<br/>11 Abr 2018</TextDoc>
-              </WrapperText>
-            </Grid>
-          </Grid>
+					<Grid item container xs={12} md={4}>
+						<Grid item xs={2}>
+							<DocImg />
+						</Grid>
+						<Grid item xs={4}>
+							<WrapperText>
+								<Text b>Ficha Técnica</Text><br />
+								<TextDoc label>.pdf (243kb)<br />11 Abr 2018</TextDoc>
+							</WrapperText>
+						</Grid>
+					</Grid>
 
-          <Grid item container xs={12} md={4}>
-            <Grid item xs={2}>
-              <DocImg/>
-              </Grid>
-            <Grid item xs={4}>
-              <WrapperText>
-                <Text b>Ficha Técnica</Text><br/>
-                <TextDoc label>.pdf (243kb)<br/>11 Abr 2018</TextDoc>
-              </WrapperText>
-            </Grid>
-          </Grid>
+					<Grid item container xs={12} md={4}>
+						<Grid item xs={2}>
+							<DocImg />
+						</Grid>
+						<Grid item xs={4}>
+							<WrapperText>
+								<Text b>Ficha Técnica</Text><br />
+								<TextDoc label>.pdf (243kb)<br />11 Abr 2018</TextDoc>
+							</WrapperText>
+						</Grid>
+					</Grid>
 
-        </Grid>
-      </Wrapper>
-      
+					<Grid item container xs={12} md={4}>
+						<Grid item xs={2}>
+							<DocImg />
+						</Grid>
+						<Grid item xs={4}>
+							<WrapperText>
+								<Text b>Ficha Técnica</Text><br />
+								<TextDoc label>.pdf (243kb)<br />11 Abr 2018</TextDoc>
+							</WrapperText>
+						</Grid>
+					</Grid>
 
-    </div>
-  )
-} 
+				</Grid>
+			</Wrapper>
+
+		</div>
+	)
+}
 
 export default Documentos;

@@ -35,10 +35,10 @@ import { renderToString } from 'react-dom/server';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
-import EMM from '../../pages/FichaDeManutencao/EMM';
-import Material from '../../pages/FichaDeManutencao/Material';
-import Upload from '../../pages/FichaDeManutencao/Upload';
-import Documentos from '../../pages/FichaDeManutencao/Documentos';
+import EMM from '../../pages/FichaDeManutencao/emm';
+import Material from '../../pages/FichaDeManutencao/material';
+import Upload from '../../pages/FichaDeManutencao/upload';
+import Documentos from '../../pages/FichaDeManutencao/documentos';
 
 
 const { DialogTitle, DialogContent, DialogActions } = ModalLarge;

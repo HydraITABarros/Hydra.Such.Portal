@@ -19,7 +19,7 @@ import PlanEquipmentsHeader from './planEquipmentsHeader';
 import PlanEquipmentsItem from './planEquipmentsItem';
 import FinalState from './finalState';
 import PlanMaintenance from './planMaintenance';
-import PlanRow from './PlanRow';
+import PlanRow from './planRow';
 import _theme from '../../themes/default';
 import Color from 'color';
 import _ from 'lodash';
@@ -132,6 +132,7 @@ class FichaDeManutencao extends Component {
 		categoryId: null,
 		equipmentsIds: null,
 		equipments: [],
+		equipmentsCount: 0,
 		institution: null,
 		client: null,
 		service: null,
@@ -174,7 +175,11 @@ class FichaDeManutencao extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return nextState.isLoading !== this.state.isLoading || nextState.order !== this.state.order || nextState.equipments !== this.state.equipments /*|| nextState.position !== this.state.position*/;
+		if (nextState.$equipmentsCount && nextState.$equipmentsCount.value != this.state.equipmentsCount) {
+			nextState.equipmentsCount = nextState.$equipmentsCount.value;
+
+		}
+		return nextState.isLoading !== this.state.isLoading || nextState.order !== this.state.order || nextState.equipmentsCount != this.state.equipmentsCount;
 	}
 
 	componentDidMount() {
@@ -217,7 +222,7 @@ class FichaDeManutencao extends Component {
 					planMaintenance: data.planMaintenance,
 					planQuality: data.planQuality,
 					planQuantity: data.planQuantity,
-					equipments: data.equipments
+					equipmentsCount: data.equipments.length
 				}
 
 				addLinkedPropsToObject(state, this);
@@ -243,7 +248,6 @@ class FichaDeManutencao extends Component {
 						</PlanRow>
 					);
 				});
-
 				this.setState(state);
 			}
 		}).catch(function (error) {
@@ -303,7 +307,6 @@ class FichaDeManutencao extends Component {
 	handleScrollTo = (elRef) => {
 		// Incase the ref supplied isn't ref.current
 		const el = elRef.current ? elRef.current : elRef
-
 		// Scroll the element into view
 		el.scrollIntoView({
 			behavior: 'smooth',
@@ -318,7 +321,10 @@ class FichaDeManutencao extends Component {
 					<Breadcrumb order={this.state.order} onRef={el => this.breadcrumbWrapper = el} />
 					<div className="scrollarea" style={{ height: this.state.bodyHeight + 'px', overflow: 'auto' }}>
 						<Sticky scrollElement=".scrollarea" style={{ zIndex: 11 }} >
-							<HeaderTitle title={this.state.title} onRef={el => this.headerTitleWrapper = el}
+							<HeaderTitle
+								title={this.state.title}
+								onRef={el => this.headerTitleWrapper = el}
+								equipments={this.state.equipments}
 								onEquipmentsChange={
 									() => {
 										this.setState({
@@ -343,17 +349,16 @@ class FichaDeManutencao extends Component {
 							service={this.state.service} types={this.state.types}
 							order={this.state.order} equipments={this.state.equipments}
 							$equipments={this.state.$equipments}
+							$equipmentsCount={this.state.$equipmentsCount}
 							title={this.state.title}
 							orderId={this.state.orderId}
 							categoryId={this.state.categoryId}
-
 						/>
 						<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} >
 							<Grid item xs={8} sm={8} md={6} >
 								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
 									<PlanHeader>
 										<Wrapper padding="32px 0px 16px 32px" >
-
 											<PlanActions
 												planMaintenance={this.state.planMaintenance}
 												planQuality={this.state.planQuality}
@@ -361,20 +366,12 @@ class FichaDeManutencao extends Component {
 												position={this.state.position}
 												ref={el => this.planActionsRef = el}
 												onSelect={(item) => {
-													// this.planActionsRef.setState({ position: item });
+													//this.planActionsRef.setState({ position: item });
 													switch (item) {
-														case 0:
-															this.handleScrollTo(this.maintenanceRef);
-
-															break;
-														case 1:
-															this.handleScrollTo(this.qualitativoRef);
-															break;
-														case 2:
-															this.handleScrollTo(this.quantitativo);
-															break;
-														default:
-															break;
+														case 0: this.handleScrollTo(this.maintenanceRef); break;
+														case 1: this.handleScrollTo(this.qualitativoRef); break;
+														case 2: this.handleScrollTo(this.quantitativo); break;
+														default: break;
 													}
 												}}
 											/>
@@ -384,7 +381,6 @@ class FichaDeManutencao extends Component {
 								<Wrapper padding="0 0 0 32px">
 									<div ref={(el) => this.maintenanceRef = el} style={{ position: 'relative', top: '-400px' }}></div>
 									{this.state.planMaintenance.length > 0 && this.state.planMaintenanceHtml}
-
 									<div ref={(el) => this.qualitativoRef = el} style={{ position: 'relative', top: '-200px' }}></div>
 									<Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
 									{this.state.planQuality.length > 0 &&
@@ -396,9 +392,7 @@ class FichaDeManutencao extends Component {
 											<Wrapper padding="16px"><Text b>Qualitativo</Text></Wrapper>
 										</Waypoint>
 									}
-
 									{this.state.planQuality.length > 0 && this.state.planQualityHtml}
-
 									<div ref={(el) => this.quantitativo = el} style={{ position: 'relative', top: '-200px' }}></div>
 									<Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
 									{this.state.planQuantity.length > 0 &&
@@ -422,7 +416,6 @@ class FichaDeManutencao extends Component {
 								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
 									<PlanHeader className={this.getScrollShadow()}
 										ref={(el) => { this.equipmentsHeaderWrapper = el }}>
-
 										<ScrollContainer className="scroll-container" ref={el => this.planEquipmentsHeader = el}
 											onScroll={(e) => {
 												ReactDOM.findDOMNode(this.planContent).scrollLeft = e;
@@ -433,7 +426,6 @@ class FichaDeManutencao extends Component {
 												if (e == 0) {
 													ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className = className.replace('left', '');
 												}
-
 												var _className = ReactDOM.findDOMNode(this.planContentWrapper).className;
 												if (e > 0 && _className.indexOf('left') == -1) {
 													ReactDOM.findDOMNode(this.planContentWrapper).className += ' left ';
@@ -441,14 +433,12 @@ class FichaDeManutencao extends Component {
 												if (e == 0) {
 													ReactDOM.findDOMNode(this.planContentWrapper).className = _className.replace('left', '');
 												}
-
 											}}>
 											{/* <Wrapper innerRef={el => this.planEquipmentsHeader = el} > */}
 											<Wrapper padding="0  32px 0 0">
 												<PlanEquipmentsHeader equipments={this.state.equipments} />
 											</Wrapper>
 										</ScrollContainer>
-
 									</PlanHeader>
 								</Sticky>
 
@@ -489,8 +479,7 @@ class FichaDeManutencao extends Component {
 															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
 														</PlanRow>
 													);
-												})
-												}
+												})}
 												<Wrapper padding="16px"> <Text b>&nbsp;</Text></Wrapper>
 												{this.state.planQuality.length > 0 && <Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>}
 												{this.state.planQuality.length > 0 && this.state.planQuality.map((item, index) => {
@@ -514,7 +503,6 @@ class FichaDeManutencao extends Component {
 												{this.state.planQuantity.length > 0 && this.state.planQuantity.map((item, index) => {
 													return (
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
-
 															{this.state.equipments.map((e, i) => {
 																return (
 																	<PlanEquipmentsItem key={index + '' + i}>
@@ -529,38 +517,30 @@ class FichaDeManutencao extends Component {
 														</PlanRow>
 													);
 												})}
-
 											</Wrapper>
 										</Wrapper>
-
 										<Wrapper
 											padding="0"
 											minHeight="164px"
 											background={Color(this.props.theme.palette.secondary.default).alpha(0.2).toString()}
 											width={this.state.equipmentsHeaderScroll.innerWidth + 'px'}>
-
 											<Wrapper padding="48px 12px 56px">
 												{this.state.equipments.map((equipment, i) => {
 													return (
 														<PlanEquipmentsItem key={i}>
 															<Wrapper padding="0 8px">
-
 																<FinalState
 																	$value={equipment.$estadoFinal}
 																	$message={equipment.$observacao}
 																	brand={equipment.marcaText} model={equipment.modeloText} serialNumber={equipment.numSerie} inventoryNumber={equipment.numInventario} />
-
 															</Wrapper>
-
 														</PlanEquipmentsItem>
 													)
 												})}
 											</Wrapper>
 										</Wrapper>
-
 									</ScrollContainer>
 								</div>
-
 							</Grid>
 						</Grid>
 					</div>

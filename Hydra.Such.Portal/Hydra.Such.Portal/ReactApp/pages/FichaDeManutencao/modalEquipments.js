@@ -103,6 +103,9 @@ class ModalEquipments extends Component {
 		if (props.$equipments !== this.state.$equipments) {
 			newState.$equipments = props.$equipments;
 		}
+		if (props.$equipmentsCount !== this.state.$equipmentsCount) {
+			newState.$equipmentsCount = props.$equipmentsCount;
+		}
 		if (Object.keys(newState).length > 0) {
 			this.setState(newState, () => {/*console.log(this.state)*/ });
 		}
@@ -152,7 +155,7 @@ class ModalEquipments extends Component {
 											value={this.state.selected}
 											options={
 												this.state.searchEquipments.filter((item) => {
-													return !(this.state.$equipments.value.filter((i) => {
+													return !(this.props.$equipments.value.filter((i) => {
 														return i.idEquipamento == item.idEquipamento;
 													}).length > 0);
 												})
@@ -176,18 +179,15 @@ class ModalEquipments extends Component {
 												var data = result.data;
 
 												if (data.order && data.equipments) {
-
+													this.setState({ selected: null });
 													var equipmentPlan = data.equipments[0]
 													addLinkedPropsToObject(equipmentPlan, this);
-													this.setState({ selected: null });
 													var eqArray = this.props.$equipments.value;
 													eqArray.push(equipmentPlan);
+
+													this.props.$equipmentsCount.value = eqArray.length;
 													this.props.$equipments.value = eqArray;
-
-													console.log('Cenas', data);
-
 													this.props.onChange();
-
 													console.log('IMP ', updateURLParameter(window.location.href, 'equipmentsIds', this.props.$equipments.value.map((i) => {
 														return i.idEquipamento;
 													}).join(',')));
