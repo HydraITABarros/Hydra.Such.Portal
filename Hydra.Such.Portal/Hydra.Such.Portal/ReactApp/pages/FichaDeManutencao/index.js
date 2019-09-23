@@ -35,6 +35,7 @@ const { DialogTitle, DialogContent, DialogActions } = Modal;
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
 
+
 const muiTheme = createMuiTheme();
 const breakpoints = muiTheme.breakpoints.values;
 
@@ -119,6 +120,8 @@ const PlanRowText = styled(Text)`
 	padding-right: 16px;
 `;
 
+
+var renderCount = 0;
 //@observer
 class FichaDeManutencao extends Component {
 	state = {
@@ -168,6 +171,10 @@ class FichaDeManutencao extends Component {
 		this.waipointQuantitativoHandlerLeave = this.waipointQuantitativoHandlerLeave.bind(this);
 		this.handleScrollTo = this.handleScrollTo.bind(this);
 		this.fetch();
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return nextState.isLoading !== this.state.isLoading || nextState.order !== this.state.order || nextState.equipments !== this.state.equipments /*|| nextState.position !== this.state.position*/;
 	}
 
 	componentDidMount() {
@@ -272,9 +279,11 @@ class FichaDeManutencao extends Component {
 		const wasInside = previousPosition === Waypoint.inside;
 		if (isAbove && wasInside) {
 			this.setState({ position: 1 });
+			this.planActionsRef.setState({ position: 1 });
 		}
 		if (!isAbove && !wasInside) {
 			this.setState({ position: 0 });
+			this.planActionsRef.setState({ position: 0 });
 		}
 	}
 
@@ -283,9 +292,11 @@ class FichaDeManutencao extends Component {
 		const wasInside = previousPosition === Waypoint.inside;
 		if (isAbove && wasInside) {
 			this.setState({ position: 2 });
+			this.planActionsRef.setState({ position: 2 });
 		}
 		if (!isAbove && !wasInside) {
 			this.setState({ position: 1 });
+			this.planActionsRef.setState({ position: 1 });
 		}
 	}
 
@@ -301,7 +312,6 @@ class FichaDeManutencao extends Component {
 	}
 
 	render() {
-
 		return (
 			<PageTemplate >
 				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.pageWrapper = el}>
@@ -343,15 +353,19 @@ class FichaDeManutencao extends Component {
 								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
 									<PlanHeader>
 										<Wrapper padding="32px 0px 16px 32px" >
+
 											<PlanActions
 												planMaintenance={this.state.planMaintenance}
 												planQuality={this.state.planQuality}
 												planQuantity={this.state.planQuantity}
 												position={this.state.position}
+												ref={el => this.planActionsRef = el}
 												onSelect={(item) => {
+													// this.planActionsRef.setState({ position: item });
 													switch (item) {
 														case 0:
 															this.handleScrollTo(this.maintenanceRef);
+
 															break;
 														case 1:
 															this.handleScrollTo(this.qualitativoRef);
@@ -472,7 +486,7 @@ class FichaDeManutencao extends Component {
 																	</PlanEquipmentsItem>
 																)
 															})}
-															{/* <Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button> */}
+															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
 														</PlanRow>
 													);
 												})
@@ -483,13 +497,15 @@ class FichaDeManutencao extends Component {
 													return (
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
 															{this.state.equipments.map((e, i) => {
+																renderCount++;
+																console.log(renderCount);
 																return (
 																	<PlanEquipmentsItem key={index + '' + i}>
 																		<CheckBox $checked={e.planQuality[index].$resultado} />
 																	</PlanEquipmentsItem>
 																)
 															})}
-															{/* <Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button> */}
+															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
 														</PlanRow>
 													);
 												})}
@@ -509,7 +525,7 @@ class FichaDeManutencao extends Component {
 																)
 															})}
 															<Text span>{item.unidadeCampo1}</Text>
-															{/* <Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button> */}
+															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
 														</PlanRow>
 													);
 												})}

@@ -43,31 +43,49 @@ const ActionItem = styled(Grid)`
 	padding:  8px 0px;
 `;
 
-const PlanActions = (props) => {
-	return (
-		<Root>
-			<ActionWrapper container>
-				{props.planMaintenance &&
-					<Text p className={props.position == 0 ? 'active' : ''} onClick={() => props.onSelect(0)}>
-						<b>Manutenção</b>
-						&nbsp;<small>{props.planMaintenance.length}</small>
-					</Text>
-				}
-				{props.planQuality &&
-					<Text p className={props.position == 1 ? 'active' : ''} onClick={() => props.onSelect(1)}>
-						<b>Qualitativo</b>
-						&nbsp;<small>{props.planQuality.length}</small>
-					</Text>
-				}
-				{props.planQuantity &&
-					<Text p className={props.position == 2 ? 'active' : ''} onClick={() => props.onSelect(2)}>
-						<b>Quantitativo</b>
-						&nbsp;<small>{props.planQuantity.length}</small>
-					</Text>
-				}
-			</ActionWrapper>
-		</Root>
-	);
+class PlanActions extends Component {
+	state = {
+		position: 0
+	}
+	constructor(props) {
+		super(props);
+		this.state.position = props.position;
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		console.log(nextProps, nextState);
+		return true;
+	}
+
+	render() {
+		var props = this.props;
+		return (
+			<Root>
+				<ActionWrapper container>
+					{props.planMaintenance &&
+						<Text p className={this.state.position == 0 ? 'active' : ''} onClick={() => {
+							props.onSelect(0)
+						}}>
+							<b>Manutenção</b>
+							&nbsp;<small>{props.planMaintenance.length}</small>
+						</Text>
+					}
+					{props.planQuality &&
+						<Text p className={this.state.position == 1 ? 'active' : ''} onClick={() => props.onSelect(1)}>
+							<b>Qualitativo</b>
+							&nbsp;<small>{props.planQuality.length}</small>
+						</Text>
+					}
+					{props.planQuantity &&
+						<Text p className={this.state.position == 2 ? 'active' : ''} onClick={() => props.onSelect(2)}>
+							<b>Quantitativo</b>
+							&nbsp;<small>{props.planQuantity.length}</small>
+						</Text>
+					}
+				</ActionWrapper>
+			</Root>
+		);
+	}
 }
 
 export default PlanActions;

@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 import functions from '../../helpers/functions';
 import mOptions from './modalOptions';
 import mEquipments from './modalEquipments';
-import mAssinatura from './modalAssinatura';
+import mAssinatura from './ModalAssinatura';
 import _theme from '../../themes/default';
 
 const muiTheme = createMuiTheme();

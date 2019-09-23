@@ -7,11 +7,11 @@ import MuiTab from '@material-ui/core/Tab';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
 import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, ModalLarge, Tooltip } from 'components';
 import AppBar from '@material-ui/core/AppBar';
-import EMM from './EMM';
-import Material from './Material';
-import Upload from './Upload';
-import Documentos from './Documentos';
-import Fotografias from './Fotografias';
+import EMM from './emm';
+import Material from './material';
+import Upload from './upload';
+import Documentos from './documentos';
+import Fotografias from './fotografias';
 
 
 const { DialogTitle, DialogContent, DialogActions } = ModalLarge;
