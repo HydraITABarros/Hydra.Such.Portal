@@ -825,9 +825,9 @@ class eTable extends Component {
 												</Text></span>);
 										})}
 										<Wrapper inline style={{ verticalAlign: 'middle', float: 'right', width: '60px', textAlign: 'center', cursor: 'pointer' }} >
-											{/* <Icon open onClick={() => {											
-											this.onGroupRowClick(this.state.group, values);
-										}} /> */}
+											<Icon open onClick={() => {
+												this.onGroupRowClick(this.state.group, values);
+											}} />
 										</Wrapper>
 									</MuiTableCell>
 								</TableRow>)
