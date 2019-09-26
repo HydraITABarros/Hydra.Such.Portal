@@ -75,6 +75,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public decimal? ValorTotalDocComIVA { get; set; }
         public bool? ShowStockReplacement { get; set; }
         public decimal? LinhasValorTotalDocComIVA { get; set; }
+        public string NoFornecedor { get; set; }
+
 
         //public int eReasonCode { get; set; }
         //public string eMessage { get; set; }

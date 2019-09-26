@@ -4838,7 +4838,7 @@ namespace Hydra.Such.Portal.Controllers
                                     if (line.Billable == true && group == line.InvoiceGroup)
                                     {
                                         LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
-                                        PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
+                                        PreInvoiceLinesToCreate.Tipo = line.Type.HasValue ? line.Type.Value.ToString() : "2";
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
                                         PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ? line.Description2.Substring(0, 49) : string.IsNullOrEmpty(line.Description2) ? "" : line.Description2;

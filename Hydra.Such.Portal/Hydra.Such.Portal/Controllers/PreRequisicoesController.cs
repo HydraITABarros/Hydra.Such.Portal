@@ -1149,6 +1149,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.NºFatura = data.InvoiceNo;
                             PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
                             PreRequisicaoDB.ValorTotalDocComIVA = data.ValorTotalDocComIVA;
+                            PreRequisicaoDB.NoFornecedor = data.NoFornecedor;
 
                             PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
                         }
