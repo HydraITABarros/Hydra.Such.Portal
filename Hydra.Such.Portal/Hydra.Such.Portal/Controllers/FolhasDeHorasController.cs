@@ -3769,6 +3769,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Obtem a próxima Folha de Horas a validar
+        public JsonResult ValidarFolhaDeHorasGetNext([FromBody] FolhaDeHorasViewModel data)
+        {
+            List<MovimentosDeAprovação> MOV = new List<MovimentosDeAprovação>();
+            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 1);
+
+            if (MOV != null && MOV.Count > 0)
+                if (!string.IsNullOrEmpty(MOV.FirstOrDefault().Número))
+                    return Json(MOV.FirstOrDefault().Número);
+
+            return Json(null);
+        }
+
+        [HttpPost]
         //Intregra as Ajudas de Custo de uma Folha de Horas
         public JsonResult IntegrarEmRHFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
@@ -4013,6 +4027,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        //Obtem a próxima Folha de Horas a validar
+        public JsonResult IntegrarEmRHFolhaDeHorasGetNext([FromBody] FolhaDeHorasViewModel data)
+        {
+            List<MovimentosDeAprovação> MOV = new List<MovimentosDeAprovação>();
+            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 2);
+
+            if (MOV != null && MOV.Count > 0)
+                if (!string.IsNullOrEmpty(MOV.FirstOrDefault().Número))
+                    return Json(MOV.FirstOrDefault().Número);
+
+            return Json(null);
+        }
+
+        [HttpPost]
         //Integra os KM's de uma Folha de Horas
         public JsonResult IntegrarEmRHKMFolhaDeHoras([FromBody] FolhaDeHorasViewModel data)
         {
@@ -4250,6 +4278,20 @@ namespace Hydra.Such.Portal.Controllers
                 result.eMessage = "Ocorreu um erro.";
             }
             return Json(result);
+        }
+
+        [HttpPost]
+        //Obtem a próxima Folha de Horas a validar
+        public JsonResult IntegrarEmRHKMFolhaDeHorasGetNext([FromBody] FolhaDeHorasViewModel data)
+        {
+            List<MovimentosDeAprovação> MOV = new List<MovimentosDeAprovação>();
+            MOV = DBApprovalMovements.GetAllFHAssignedToUserFilteredByStatus(data.FolhaDeHorasNo, User.Identity.Name, 1, 2);
+
+            if (MOV != null && MOV.Count > 0)
+                if (!string.IsNullOrEmpty(MOV.FirstOrDefault().Número))
+                    return Json(MOV.FirstOrDefault().Número);
+
+            return Json(null);
         }
 
         [HttpPost]

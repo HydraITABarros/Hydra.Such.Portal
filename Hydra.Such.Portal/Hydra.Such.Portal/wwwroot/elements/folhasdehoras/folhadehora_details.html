@@ -424,12 +424,30 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/ValidarFolhaDeHorasGetNext"
+                   last-response="{{validarFolhaDeHorasGetNext}}"
+                   method="post"
+                   handle-as="json"
+                   id="validarfolhadehorasgetnext_ajax"
+                   on-response="_validarfolhadehorasGetNextResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/FolhasDeHoras/IntegrarEmRHFolhaDeHoras"
                    last-response="{{integrarEmRHFolhaDeHoras}}"
                    method="post"
                    handle-as="json"
                    id="integraremrhfolhadehoras_ajax"
                    on-response="_integraremrhfolhadehorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/FolhasDeHoras/IntegrarEmRHFolhaDeHorasGetNext"
+                   last-response="{{integrarEmRHFolhaDeHorasGetNext}}"
+                   method="post"
+                   handle-as="json"
+                   id="integraremrhfolhadehorasGetNext_ajax"
+                   on-response="_integraremrhfolhadehorasGetNextResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -442,6 +460,14 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/IntegrarEmRHKMFolhaDeHorasGetNext"
+                   last-response="{{integrarEmRHKMFolhaDeHorasGetNext}}"
+                   method="post"
+                   handle-as="json"
+                   id="integraremrhkmfolhadehorasGetNext_ajax"
+                   on-response="_integraremrhkmfolhadehoraGetNextsResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -1242,14 +1268,14 @@
                             </template>
                             <template>
                                 <!--<vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="tabMaoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" value="{{item.codigoTipoTrabalho}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>-->
                                 {{item.codigoTipoTrabalho}}
                             </template>
                         </vaadin-grid-column>
@@ -1301,14 +1327,14 @@
                             </template>
                             <template>
                                 <!--<vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="tabMaoDeObraCodigoFamiliaRecurso" item-value-path="id" item-label-path="value" value="{{item.codigoFamiliaRecurso}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>-->
                                 {{item.codigoFamiliaRecurso}}
                             </template>
                         </vaadin-grid-column>
@@ -3866,7 +3892,11 @@
                     if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.validarFolhaDeHoras.eMessage);
                         $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
-                        window.history.back();
+
+                        this.$.validarfolhadehorasgetnext_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
+                        this.$.validarfolhadehorasgetnext_ajax.generateRequest();
+
+                        //window.history.back();
                         //this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.validarFolhaDeHoras.eMessage);
@@ -3874,28 +3904,72 @@
                     };
                 },
 
+                _validarfolhadehorasGetNextResponse: function (e) {
+                    debugger;
+                    if (this.validarFolhaDeHorasGetNext != null && this.validarFolhaDeHorasGetNext != "") {
+                        window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + this.validarFolhaDeHorasGetNext;
+
+                        //this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this.validarFolhaDeHorasGetNext });
+                        //this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        window.history.back();
+                    }
+                },
+
                 _integraremrhfolhadehorasResponse: function (e) {
                     if (this.integrarEmRHFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.integrarEmRHFolhaDeHoras.eMessage);
                         $(this.$.btn_integrarEmRH).removeClass('disabled');
-                        this.$.page_databound_ajax.generateRequest();
+
+                        this.$.integraremrhfolhadehorasGetNext_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
+                        this.$.integraremrhfolhadehorasGetNext_ajax.generateRequest();
+
+                        //this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.integrarEmRHFolhaDeHoras.eMessage);
                         $(this.$.btn_integrarEmRH).removeClass('disabled');
                     };
                 },
 
+                _integraremrhfolhadehorasGetNextResponse: function (e) {
+                    if (this.integrarEmRHFolhaDeHorasGetNext != null && this.integrarEmRHFolhaDeHorasGetNext != "") {
+                        window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + this.integrarEmRHFolhaDeHorasGetNext;
+
+                        //this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this.integrarEmRHFolhaDeHorasGetNext });
+                        //this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                },
+
                 _integraremrhkmfolhadehorasResponse: function (e) {
                     if (this.integrarEmRHKMFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHKMFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
                         $(this.$.btn_integrarEmRHKM).removeClass('disabled');
-                        this.$.page_databound_ajax.generateRequest();
+
+                        this.$.integraremrhkmfolhadehorasGetNext_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
+                        this.$.integraremrhkmfolhadehorasGetNext_ajax.generateRequest();
+
+                        //this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._showErrorMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
                         $(this.$.btn_integrarEmRHKM).removeClass('disabled');
                     };
                 },
 
+                _integraremrhkmfolhadehoraGetNextsResponse: function (e) {
+                    if (this.integrarEmRHKMFolhaDeHorasGetNext != null && this.integrarEmRHKMFolhaDeHorasGetNext != "") {
+                        window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + this.integrarEmRHKMFolhaDeHorasGetNext;
+
+                        //this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this.integrarEmRHKMFolhaDeHorasGetNext });
+                        //this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                },
 
                 //PERCURSO
                 _createPercursoResponse: function (e) {
