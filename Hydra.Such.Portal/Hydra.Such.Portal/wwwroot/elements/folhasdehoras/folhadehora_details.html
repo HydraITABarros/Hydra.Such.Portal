@@ -3908,12 +3908,9 @@
                     debugger;
                     if (this.validarFolhaDeHorasGetNext != null && this.validarFolhaDeHorasGetNext != "") {
                         window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + this.validarFolhaDeHorasGetNext;
-
-                        //this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this.validarFolhaDeHorasGetNext });
-                        //this.$.page_databound_ajax.generateRequest();
                     }
                     else {
-                        window.history.back();
+                        window.location.href = "/Approvals";
                     }
                 },
 
@@ -3935,9 +3932,6 @@
                 _integraremrhfolhadehorasGetNextResponse: function (e) {
                     if (this.integrarEmRHFolhaDeHorasGetNext != null && this.integrarEmRHFolhaDeHorasGetNext != "") {
                         window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + this.integrarEmRHFolhaDeHorasGetNext;
-
-                        //this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this.integrarEmRHFolhaDeHorasGetNext });
-                        //this.$.page_databound_ajax.generateRequest();
                     }
                     else {
                         this.$.page_databound_ajax.generateRequest();
@@ -3962,9 +3956,6 @@
                 _integraremrhkmfolhadehoraGetNextsResponse: function (e) {
                     if (this.integrarEmRHKMFolhaDeHorasGetNext != null && this.integrarEmRHKMFolhaDeHorasGetNext != "") {
                         window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + this.integrarEmRHKMFolhaDeHorasGetNext;
-
-                        //this.$.page_databound_ajax.body = JSON.stringify({ "folhaDeHorasNo": this.integrarEmRHKMFolhaDeHorasGetNext });
-                        //this.$.page_databound_ajax.generateRequest();
                     }
                     else {
                         this.$.page_databound_ajax.generateRequest();
