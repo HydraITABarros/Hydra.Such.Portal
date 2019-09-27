@@ -28,6 +28,12 @@ namespace Hydra.Such.Data.Logic
                 var functionalAreas = Dimensions.Where(d => d.Dimensão == (int)Enumerations.Dimensions.FunctionalArea).Select(s => s.ValorDimensão);
                 var responsabilityCenters = Dimensions.Where(d => d.Dimensão == (int)Enumerations.Dimensions.ResponsabilityCenter).Select(s => s.ValorDimensão);
 
+                string userRegions = regions != null && regions.Count() > 0? string.Join(',', regions) : "";
+                string userAreas = functionalAreas != null && functionalAreas.Count() > 0? string.Join(',', functionalAreas) : "";
+                string userCResps = responsabilityCenters != null && responsabilityCenters.Count() > 0? string.Join(',', responsabilityCenters) : "";
+
+                
+
                 var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabase),
                         new SqlParameter("@CompanyName", NAVCompany),
@@ -113,11 +119,31 @@ namespace Hydra.Such.Data.Logic
                                     guia.TipoDescription = "Desconhecido";
                                     break;
                             }
+
+
                             result.Add(guia);
                         }
                         
                     }
                 }
+
+
+                if(userRegions != "")
+                {
+                    result = result.Where(r => userRegions.Contains(r.GlobalDimension1Code) || r.GlobalDimension1Code == null).ToList();
+                }
+
+                if(userAreas != "")
+                {
+                    result = result.Where(a => userAreas.Contains(a.GlobalDimension2Code) || a.GlobalDimension2Code == null).ToList();
+                }
+
+                if(userCResps != "")
+                {
+                    result = result.Where(c => userCResps.Contains(c.GlobalDimension3Code) || c.GlobalDimension3Code == null).ToList();
+                }
+
+               
                 return result;
             }
             catch (Exception ex)
@@ -755,7 +781,7 @@ namespace Hydra.Such.Data.Logic
 
                 List<LinhasRequisição> linhasRq = new List<LinhasRequisição>();
 
-                linhasRq = _context.LinhasRequisição.Where(r => r.NºRequisição == requisitionNo).ToList();
+                linhasRq = _context.LinhasRequisição.Where(r => r.NºRequisição == requisitionNo && r.QuantidadeDisponibilizada > 0).ToList();
 
                 if (linhasRq == null)
                     return false;
@@ -769,6 +795,7 @@ namespace Hydra.Such.Data.Logic
                     {
                           NoGuiaTransporte = noGuia,
                           NoLinha = nextLineNo,
+                          Tipo = l.Tipo ?? 1,
                           No = l.Código,
                           Descricao = l.Descrição,
                           CodUnidadeMedida = l.CódigoUnidadeMedida,
@@ -798,6 +825,7 @@ namespace Hydra.Such.Data.Logic
 
         public static bool DeleteLinhaGuiaTransporte(string NAVDatabase, string NAVCompany, string noGuia, int noLinha)
         {
+            // noLinha = 0, means we are deleting all document lines. The SP is ready to deal with noLinha = 0
             try
             {
                 SuchDBContext _context = new SuchDBContext();
