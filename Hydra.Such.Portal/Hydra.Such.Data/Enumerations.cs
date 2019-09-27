@@ -189,6 +189,8 @@ namespace Hydra.Such.Data
             ContabilidadeMapas = 70,
             [Description("Orçamentos")]
             Orcamentos = 71,
+            [Description("Fornecedores")]
+            Fornecedores = 72,
 
 
 

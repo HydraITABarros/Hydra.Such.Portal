@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewData["Title"] = "Fornecedores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/fornecedores/fornecedor_list.html">
+
+<x-fornecedorlist
+                  _areaid="4"
+                  _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-fornecedorlist>

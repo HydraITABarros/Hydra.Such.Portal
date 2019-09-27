@@ -77,30 +77,51 @@
         </iron-ajax>
 
         <template is="dom-if" if="{{ _permissions.create }}">
-            <template is="dom-if" if="{{ !_disabledCreate }}">
-                <div class="subMenu">
-                    <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                    <!--A pedido do António José não se deve mostrar as Listas Perdidas e Canceladas 21-01-2019-->
-                    <!--<paper-button class="tablinks" id="showLost" on-tap="_showLosts"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showLostMessage}}</paper-button>
-                    <paper-button class="tablinks" id="showAborted" on-tap="_showAborted"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showAbortedMessage}}</paper-button>-->
-                    <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
-                    <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+            <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            
+                <!--A pedido do António José não se deve mostrar as Listas Perdidas e Canceladas 21-01-2019-->
+                <!--<paper-button class="tablinks" id="showLost" on-tap="_showLosts"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showLostMessage}}</paper-button>
+                <paper-button class="tablinks" id="showAborted" on-tap="_showAborted"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showAbortedMessage}}</paper-button>-->
 
-                    <!--start ColumnToggle-->
-                    <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
-                        <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
-                        <div class="list-group" slot="dropdown-content">
-                            <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
-                                <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
-                                    {{ item.value.label }}
-                                </a>
-                                <hr />
-                            </template>
-                        </div>
-                    </paper-menu-button>
-                    <!--end ColumnToggle-->
-                </div>
-            </template>
+                <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                <!--start ColumnToggle-->
+                <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                    <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                    <div class="list-group" slot="dropdown-content">
+                        <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                            <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                                {{ item.value.label }}
+                            </a>
+                            <hr />
+                        </template>
+                    </div>
+                </paper-menu-button>
+                <!--end ColumnToggle-->
+            </div>
+        </template>
+
+        <template is="dom-if" if="{{ !_permissions.create }}">
+            <div class="subMenu">
+                <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{_showHistoryMessage}}</paper-button>
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                <!--start ColumnToggle-->
+                <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                    <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                    <div class="list-group" slot="dropdown-content">
+                        <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                            <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                                {{ item.value.label }}
+                            </a>
+                            <hr />
+                        </template>
+                    </div>
+                </paper-menu-button>
+                <!--end ColumnToggle-->
+            </div>
         </template>
 
         <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -116,7 +137,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.oportunityNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="oportunityNo"  value="[[filter.oportunityNo]]" />
+                    <vaadin-grid-filter path="oportunityNo" value="[[filter.oportunityNo]]" />
                 </template>
                 <template>
                     {{item.oportunityNo}}
@@ -125,7 +146,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="startData" value="[[filter.startData]]"  />
+                    <vaadin-grid-filter path="startData" value="[[filter.startData]]" />
                 </template>
                 <template>
                     {{item.startData}}
@@ -134,7 +155,7 @@
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dueDate" value="[[filter.dueDate]]"  />
+                    <vaadin-grid-filter path="dueDate" value="[[filter.dueDate]]" />
                 </template>
                 <template>
                     {{item.dueDate}}
@@ -170,7 +191,7 @@
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.contactNoText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contactNoText">Nome Contacto</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="contactNoText" value="[[filter.contactNoText]]"/>
+                    <vaadin-grid-filter path="contactNoText" value="[[filter.contactNoText]]" />
                 </template>
                 <template>
                     {{item.contactNoText}}
@@ -186,14 +207,14 @@
                 </template>
             </vaadin-grid-column>
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
-        <template class="header">
-            <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
-            <vaadin-grid-filter path="status" />
-        </template>
-        <template>
-            {{item.statusDescription}}
-        </template>
-    </vaadin-grid-column>-->
+            <template class="header">
+                <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
+                <vaadin-grid-filter path="status" />
+            </template>
+            <template>
+                {{item.statusDescription}}
+            </template>
+        </vaadin-grid-column>-->
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>

@@ -104,12 +104,19 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                     {
                         result.ForEach(x =>
                         {
-                            if (x.DistanciaPrevista != null && x.DistanciaPrevista > 0)
-                                NoTotalKm = NoTotalKm + (decimal)x.DistanciaPrevista;
+                            if (x.Distancia != null && x.Distancia == 0)
+                            {
+                                NoTotalKm = NoTotalKm + (decimal)x.Distancia;
+                            }
                             else
                             {
-                                if (x.Distancia != null)
-                                    NoTotalKm = NoTotalKm + (decimal)x.Distancia;
+                                if (x.DistanciaPrevista != null && x.DistanciaPrevista > 0)
+                                    NoTotalKm = NoTotalKm + (decimal)x.DistanciaPrevista;
+                                else
+                                {
+                                    if (x.Distancia != null)
+                                        NoTotalKm = NoTotalKm + (decimal)x.Distancia;
+                                }
                             }
                         });
                     }
@@ -137,15 +144,22 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         {
                             if (x.CustoUnitario != null)
                             {
-                                if (x.DistanciaPrevista != null && x.DistanciaPrevista > 0)
+                                if (x.Distancia != null && x.Distancia == 0)
                                 {
-                                    CustoTotalKM = CustoTotalKM + ((decimal)x.DistanciaPrevista * (decimal)x.CustoUnitario);
+                                    CustoTotalKM = CustoTotalKM + ((decimal)x.Distancia * (decimal)x.CustoUnitario);
                                 }
                                 else
                                 {
-                                    if (x.Distancia != null)
+                                    if (x.DistanciaPrevista != null && x.DistanciaPrevista > 0)
                                     {
-                                        CustoTotalKM = CustoTotalKM + ((decimal)x.Distancia * (decimal)x.CustoUnitario);
+                                        CustoTotalKM = CustoTotalKM + ((decimal)x.DistanciaPrevista * (decimal)x.CustoUnitario);
+                                    }
+                                    else
+                                    {
+                                        if (x.Distancia != null)
+                                        {
+                                            CustoTotalKM = CustoTotalKM + ((decimal)x.Distancia * (decimal)x.CustoUnitario);
+                                        }
                                     }
                                 }
                             }

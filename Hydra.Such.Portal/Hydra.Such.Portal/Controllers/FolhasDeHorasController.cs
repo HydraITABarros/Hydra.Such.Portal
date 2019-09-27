@@ -1336,7 +1336,11 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    if (Percurso1.Distancia.HasValue && Percurso1.Distancia == 0)
+                        Percurso1.CustoTotal = 0;
+                    else
+                        Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    //Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso1.Funcionario = data.Funcionario;
                     Percurso1.CodRegiao = data.CodRegiao;
@@ -1370,7 +1374,11 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    Percurso2.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    if (Percurso2.Distancia.HasValue && Percurso2.Distancia == 0)
+                        Percurso2.CustoTotal = 0;
+                    else
+                        Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
+                    //Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
                     Percurso2.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso2.Funcionario = data.Funcionario;
                     Percurso2.CodRegiao = data.CodRegiao;
@@ -1411,7 +1419,11 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    if (Percurso1.Distancia.HasValue && Percurso1.Distancia == 0)
+                        Percurso1.CustoTotal = 0;
+                    else
+                        Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    //Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso1.Funcionario = data.Funcionario;
                     Percurso1.CodRegiao = data.CodRegiao;
@@ -1528,7 +1540,13 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso.Distancia = data.Distancia;
                     Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso.CustoUnitario = data.CustoUnitario;
-                    Percurso.CustoTotal = Percurso.DistanciaPrevista > 0 ? Percurso.DistanciaPrevista * data.CustoUnitario : data.Distancia * data.CustoUnitario;
+
+                    if (Percurso.Distancia.HasValue && Percurso.Distancia == 0)
+                        Percurso.CustoTotal = 0;
+                    else
+                        Percurso.CustoTotal = Percurso.DistanciaPrevista > 0 ? Percurso.DistanciaPrevista * data.CustoUnitario : data.Distancia * data.CustoUnitario;
+
+                    //Percurso.CustoTotal = Percurso.DistanciaPrevista > 0 ? Percurso.DistanciaPrevista * data.CustoUnitario : data.Distancia * data.CustoUnitario;
                     Percurso.UtilizadorModificacao = User.Identity.Name;
                     Percurso.DataHoraModificacao = DateTime.Now;
                     Percurso.NoProjeto = data.NoProjeto;

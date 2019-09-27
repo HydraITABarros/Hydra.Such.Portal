@@ -1,0 +1,1069 @@
+﻿
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<dom-module id="x-fornecedordetails">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+            }
+
+            .panel-heading {
+                font-size: 16px;
+            }
+            /*ACORDEÃO*/
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    margin-top: -1px;
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                    border-top:  solid #ddd 1px;
+                };
+            }
+            /*
+            .panel-body {
+                padding-top: 0px !important;
+            }*/
+            .header {
+                margin-top: -1px;
+            }
+
+            .spacer10 {
+                height: 10px;
+            }
+
+            .spacer20 {
+                height: 20px;
+            }
+
+            .spacer40 {
+                height: 40px;
+            }
+
+            .spacer60 {
+                height: 60px;
+            }
+
+            .grid--modal__wrapper {
+                height: 86% !important;
+            }
+
+            .grid--modal {
+                height: 100% !important;
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{LPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPaymentForms" last-response="{{LPaymentMethodCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVClient" last-response="{{LClienteAssoc}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <!-- CUSTOMER CRUDS -->
+        <iron-ajax url="/Fornecedores/GetDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <!-- CUSTOMER CRUDS -->
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <!--<template is="dom-if" if="{{ _permissions.create }}">
+                <template is="dom-if" if="{{ !_isCreate }}">
+                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
+            </template>-->
+
+            <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>
+        </div>
+
+        <div class="panel panel-default break_clear">
+
+            <iron-form>
+                <div id="customer-form">
+                    <!--Geral-->
+                    <div class="spacer10"></div>
+                    <div class="col-xs-12">
+                        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Geral</paper-tab>
+                        </paper-tabs>
+                    </div>
+                    <div class="clearfix"></div>
+                    <iron-pages selected="{{selected}}">
+
+                        <!------------ Geral ------------>
+                        <div>
+                            <div class="panel-body">
+                                <div>
+                                    <div class="row ">
+                                        <div class="col-lg-4">
+                                            <vaadin-text-field value="{{data.no}}" maxlength="20" id="no" name="no" label="Nº" readonly> </vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-lg-8">
+                                            <vaadin-text-field value="{{data.name}}" maxlength="50" id="name" name="name" label="Nome" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" readonly> </vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel-body">
+
+                                <!------------ Endereço & Contacto ------------>
+                                <div class="panel panel-default">
+                                    <paper-collapse-group>
+                                        <paper-collapse-item header="Endereço & Contacto">
+                                            <div class="panel-body">
+                                                <div class="break_clear">
+                                                    <div class="row break_clear">
+                                                        <div class="col-lg-6">
+                                                            <vaadin-text-field value="{{data.address}}" maxlength="50" disabled="{{ !_permissions.update }}" id="address" name="address" label="Endereço" required error-message="Este campo é obrigatório" readonly></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-lg-6">
+                                                            <vaadin-text-field value="{{data.address2}}" maxlength="50" id="address_2" name="address_2" label="Endereço 2" disabled="{{ !_permissions.update }}" readonly></vaadin-text-field>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row break_clear">
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.postCode}}" maxlength="20" disabled="{{ !_permissions.update }}" id="post_Code" name="post_Code" label="Código Postal" required error-message="Este campo é obrigatório" readonly></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.city}}" maxlength="30" id="city" name="city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" readonly> </vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.distrito}}" maxlength="30" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" readonly> </vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.country}}" required error-message="Este campo é obrigatório" readonly>
+                                                                <template>
+                                                                    &nbsp;[[item.value]]&nbsp;
+                                                                </template>
+                                                            </vaadin-combo-box>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row break_clear">
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.phone}}" maxlength="30" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" required error-message="Este campo é obrigatório" readonly></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.email}}" maxlength="80" id="e_Mail" name="e_Mail" label="Email" disabled="{{ !_permissions.update }}"readonly> </vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.fax}}" maxlength="30" disabled="{{ !_permissions.update }}" id="fax_No" name="fax_No" label="Nº Fax" readonly> </vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-lg-3">
+                                                            <vaadin-text-field value="{{data.homePage}}" maxlength="80" id="home_Page" name="home_Page" label="Home Page" disabled="{{ !_permissions.update }}" readonly> </vaadin-text-field>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+                                </div>
+
+                                <!------------ Faturação ------------>
+                                <div class="panel panel-default">
+                                    <paper-collapse-group>
+                                        <paper-collapse-item header="Faturação">
+                                            <div class="panel-body">
+                                                <div class="row break_clear">
+                                                    <div class="col-lg-3">
+                                                        <vaadin-text-field value="{{data.vatRegistrationNo}}" maxlength="20" disabled="{{ !_permissions.update }}" id="vaT_Registration_No" name="vaT_Registration_No" label="Nº Contribuinte" on-value-changed="_Verificar_VAT" required readonly> </vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <vaadin-combo-box items='[[ LPaymentTerms ]]' id="payment_Terms_Code" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.paymentTermsCode}}" label="Termos de Pagamento" readonly>
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <vaadin-combo-box items='[[ LPaymentMethodCode ]]' id="payment_Method_Code" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.paymentMethodCode}}" label="Forma Pagamento" readonly>
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <vaadin-combo-box items='[{"id": 0, "value": ""},{"id": 1, "value": "Pagamento"},{"id": 2, "value": "Todos"}]' id="blocked" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.blocked}}" label="Bloqueado" readonly>
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+                                </div>
+
+                                <!------------ Especificação ------------>
+                                <div class="panel panel-default">
+                                    <paper-collapse-group>
+                                        <paper-collapse-item header="Especificação">
+                                            <div class="panel-body">
+                                                <div class="row break_clear">
+                                                    <div class="col-lg-3">
+                                                        <vaadin-combo-box items='[[LClienteAssoc]]' id="no_Cliente_Assoc" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.noClienteAssociado}}" label="Nº Cliente Associado" readonly>
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <vaadin-text-field value="{{data.criticidadeText}}" maxlength="20" disabled="{{ !_permissions.update }}" id="criticidadeText" name="criticidadeText" label="Criticidade" required readonly> </vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-lg-6">
+                                                        <vaadin-text-field value="{{data.observacoes}}" maxlength="20" disabled="{{ !_permissions.update }}" id="observacoes" name="observacoes" label="Observações" required readonly> </vaadin-text-field>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </paper-collapse-item>
+                                    </paper-collapse-group>
+                                </div>
+
+                                <!--<div class="marginSpace">
+                                    <template is="dom-if" if="{{ _isCreate }}">
+                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                    </template>
+                                    <template is="dom-if" if="{{ !_isCreate }}">
+                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                        </template>
+                                        <template is="dom-if" if="{{ !_isCreate && _permissions.delete }}">
+                                            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                                        </template>
+                                    </template>
+                                </div>-->
+                            </div>
+                        </div>
+                    </iron-pages>
+                </div>
+            </iron-form>
+        </div>
+
+        <paper-dialog id="rptDialog" class="dialgoBox" modal>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeRptDialog"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+            <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-fornecedordetails',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _no: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _showAreas: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _SelectedLine: {
+                        observer: '_lineSelected'
+                    },
+                    _showCreateNew: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _listDisplay: {
+                        type: String,
+                        value: 'none;'
+                    },
+                    shippingData: {
+                        type: Object,
+                        value: {}
+                    },
+                    _reportserverurl: {
+                        type: String,
+                    },
+                    _SelectedInvoice: {
+                        observer: '_invoiceSelected'
+                    },
+                    _SelectedBalance: {
+                        observer: '_balanceSelected'
+                    },
+                    _invoiceLinesColumns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    _invoiceDetailsColumns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    _balancesColumns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+
+                    _viewMenuConsultartemItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Contratos" }, { value: 2, description: "Propostas" }, { value: 3, description: "Oportunidades" }],
+                    },
+                },
+                ready: function () {
+                    var _this = this;
+                    //GET Client DATA
+
+                    this.$.page_databound_ajax.body = JSON.stringify({ "No": this._no });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startInvoiceLinesColumnToggle();
+                    this._startInvoiceDetailsColumnToggle();
+                    this._startBalancesColumnToggle();
+
+                    if (this._no == "") {
+                        this._isCreate = true;
+                        //this.data.area = this._areaid;
+                    }
+                    this._listDisplay = this._getListDisplay();
+
+                    if (this._permissions.create && !this._isCreate) {
+                        this._showCreateNew = true;
+                    }
+
+                    this._showAreas = this._areaid == 4 /* vendas */;
+                },
+                _getListDisplay: function () {
+                    return this._isCreate ? 'none;' : 'block;';
+                },
+                _openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _validateData: function () {
+                    if (this.$.name.value == undefined || this.$.name.value == null || this.$.name.value == "") {
+                        this._openToastError("O campo Nome é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.address.value == undefined || this.$.address.value == null || this.$.address.value == "") {
+                        this._openToastError("O campo Endereço é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.post_Code.value == undefined || this.$.post_Code.value == null || this.$.post_Code.value == "") {
+                        this._openToastError("O campo Código Postal é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.city.value == undefined || this.$.city.value == null || this.$.city.value == "") {
+                        this._openToastError("O campo Cidade é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.county.value == undefined || this.$.county.value == null || this.$.county.value == "") {
+                        this._openToastError("O campo Distrito é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.phone_No.value == undefined || this.$.phone_No.value == null || this.$.phone_No.value == "") {
+                        this._openToastError("O campo Telefone é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.vaT_Registration_No.value == undefined || this.$.vaT_Registration_No.value == null || this.$.vaT_Registration_No.value == "") {
+                        this._openToastError("O campo Nº Contribuinte é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    if (this.$.country_Region_Code.value == undefined || this.$.country_Region_Code.value == null || this.$.country_Region_Code.value == "") {
+                        this._openToastError("O campo Código Pais/Região é de preenchimento obrigatório.");
+                        return false;
+                    }
+                    return true;
+
+                    // TODO: cliente details _validateData [abastos]
+                    //var polymerDom = Polymer.dom(this.root);
+                    //var errors = 0;
+                    //var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    //var formFields = polymerDom.querySelectorAll(formSelector);
+
+                    //formFields.forEach(function (element) {
+
+                    //    if (element.name && element.name.indexOf('shipping') < 0 && !element.validate()) {
+                    //        errors++
+                    //    };
+                    //});
+
+                    //if (errors > 0) {
+                    //    this._openToastError("Verifique os dados inseridos.");
+                    //    return false;
+                    //}
+
+                    //return true;
+                },
+                _validateShippingData: function () {
+
+                    var polymerDom = Polymer.dom(this.root);
+                    var errors = 0;
+                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    var formFields = polymerDom.querySelectorAll(formSelector);
+
+                    formFields.forEach(function (element) {
+
+                        if (element.name && element.name.indexOf('shipping') >= 0 && !element.validate()) {
+                            errors++
+                        };
+                    });
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _goBack: function (e) {
+                    window.history.back();
+                },
+                _createNew: function () {
+                    window.location.href = "../DetalhesCliente";
+                },
+
+                //CRUDS
+                _create: function () {
+
+                    if (this._validateData()) {
+
+                        this._executeRequest("/Clientes/Create", this.data);
+                    }
+                },
+                _update: function () {
+                    if (this._validateData()) {
+                        this._executeRequest("/Clientes/Update", this.data);
+                    }
+                },
+                _delete: function () {
+                    var Client = this.data;
+                    var ajax_request = this.$.ajax_delete_customer;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover o Cliente " + this.data.no + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Client);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                _createShippingLine: function () {
+                    if (this._validateShippingData()) {
+                        this.$.shipping_data.url = "/EnderecosEnvio/Create";
+                        this.shippingData.customer_No = this.data.no;
+                        this.$.shipping_data.body = JSON.stringify(this.shippingData);
+                        this.$.shipping_data.generateRequest();
+                    }
+                },
+                _updateShippingLines: function () {
+                    this.$.shipping_list.url = "/EnderecosEnvio/Update";
+                    this.$.shipping_list.body = JSON.stringify(this.shippingList);
+                    this.$.shipping_list.generateRequest();
+                },
+                _updateBalances: function () {
+
+                    this.$.balances_data.url = "/Clientes/UpdateBalances?CustomerNo=" + this._no;
+                    this.$.balances_data.body = JSON.stringify(this.balances.filter(x => typeof x.changed != 'undefined' && x.changed == true));
+                    this.$.balances_data.generateRequest();
+                },
+                _deleteShippingLine: function (e) {
+                    var index = this.shippingList.indexOf(e.model.item);
+                    var data = this.shippingList[index];
+
+                    this.$.shipping_delete.body = JSON.stringify(data);
+                    this.$.shipping_delete.generateRequest();
+                },
+                //Responses Processors
+                _responseProcessor: function (data) {
+                    var self = this;
+
+                    //Set AreaId
+                    this.data.area = this._areaid;
+
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetDetails") !== -1) {
+                            if (this.data.No == "") {
+                                this._isCreate = true;
+                                this._listDisplay = this._getListDisplay();
+                            }
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            this._createResponseProcessor();
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+
+                            if (this.data.eReasonCode != 1) {
+                                this._openToastError(this.data.eMessage);
+                            } else {
+                                this._openToast("Cliente atualizado com sucesso.")
+                            }
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+                //Responses Processors
+                _responseInvoicesProcessor: function (data) {
+                    var self = this;
+
+                    if (data.detail.status === 200) {
+
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+                _responseBalanceControlList: function (data) {
+                    var self = this;
+
+                    if (data.detail.status === 200) {
+                    } else {
+                        this._openToastError("Ocorreu um erro.")
+                    }
+                },
+                _createResponseProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._listDisplay = this._getListDisplay();
+                        this._openToast("Cliente criado com sucesso.");
+                    } else {
+                        this._openToastError(this.data.eMessage);
+                    }
+                },
+                _responseValidatorProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.validateResponse == "") {
+                            this._executeRequest("/Clientes/Create", this.data)
+                        } else {
+                            this._openToastError(this.validateResponse);
+                        }
+                    }
+                },
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.deletedData.eReasonCode != 0) {
+                            this._openToastError(this.deletedData.eMessage);
+                        } else {
+                            this._openToast(this.deletedData.eMessage);
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        }
+                    }
+                },
+                _shippingResponseProcessor: function (data) {
+
+                    if (data.detail.url.indexOf("Update") >= 0) {
+                        if (data.eReasonCode != 3) {
+                            this._openToast("Linhas actualizadas com sucesso..");
+                        } else {
+                            this._openToastError(this.data.eMessage);
+                        }
+                    } else if (data.detail.url.indexOf("Create") >= 0) {
+
+                        if (this.shippingData.eReasonCode == 1) {
+                            this.$.shipping_list.body = JSON.stringify({ "No": this._no });
+                            this.$.shipping_list.generateRequest();
+
+                            this._openToast("Linha criada com sucesso..");
+
+                            var polymerDom = Polymer.dom(this.root);
+                            var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                            var formFields = polymerDom.querySelectorAll(formSelector);
+
+                            formFields.forEach(function (element) {
+                                if (element.name && element.name.indexOf('shipping') >= 0) {
+                                    element.value = "";
+                                };
+                            });
+                        } else {
+                            this._openToastError(this.shippingData.eMessage);
+                        }
+                    } else if (data.detail.url.indexOf("Delete") >= 0) {
+
+                        if (this.shippingDeletedData.eReasonCode == 0) {
+                            this.$.shipping_list.body = JSON.stringify({ "No": this._no });
+                            this.$.shipping_list.generateRequest();
+
+                            this._openToast("Linha removida com sucesso..");
+                        } else {
+                            this._openToastError(this.shippingDeletedData.eMessage);
+                        }
+                    } else {
+                        if (this.shippingList.length) {
+                            this.shippingList = this.shippingList.map(function (item) {
+                                item.selected = false;
+                                return item;
+                            });
+                            this.$.grid_shippinglines.clearCache();
+                        }
+                    }
+                },
+
+                //Helpers
+                _executeRequest: function (url, data) {
+                    this.$.page_databound_ajax.url = url;
+                    this.$.page_databound_ajax.body = JSON.stringify(data);
+
+                    this.$.page_databound_ajax.generateRequest();
+                },
+                _shippingExecuteRequest: function (url, data) {
+                    this.$.shipping_list.url = url;
+                    this.$.shipping_list.body = JSON.stringify(data);
+
+                    this.$.shipping_list.generateRequest();
+                },
+
+                _lineSelected: function (item) {
+
+                    if (item != null) {
+                        var oSel = this.shippingList.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.shippingList.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.shippingList.find(x => x == item).selected = true;
+
+                            this.$.grid_shippinglines.clearCache();
+                        }
+                    }
+                },
+                _printE: function () {
+                    if (this._reportserverurl != undefined) {
+                        this.$.rptContainer.src = this._reportserverurl + "ExtratoCliente" + "&Cliente=" + this._no + "&Movimentos=0";
+                        this.$.rptDialog.open();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                    }
+                },
+
+                //Mostra Mensagens de Erro
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _closeRptDialog: function () {
+                    this.$.rptContainer.src = "about:blank";
+                    this.$.rptDialog.close();
+                },
+                _formatBoolValue: function (value) {
+                    return value ? "Sim" : "Não";
+                },
+                /* end - ColumnToggle */
+                _formatCurrencyValue: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format() + '€';
+                    }
+                    else {
+                        return "0.00€";
+                    }
+                },
+                _formatIntValue: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        //return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(4) + '€';
+                        return parseFloat(value).toFixed(4) + '€';
+                    }
+                    else {
+                        return "0.0000€";
+                    }
+                },
+                _round2casas: function (value) {
+
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return parseFloat(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).toFixed(2);
+                    }
+                    else {
+                        return "0.00"
+                    }
+                },
+                _invoiceSelected: function (value) {
+
+                    if (value) {
+                        this.$.invoicesLines_data.body = JSON.stringify({ "No_": value.no_, "tipo": value.tipo });
+                        this.$.invoicesLines_data.generateRequest();
+                    }
+                },
+                _balanceSelected: function (item) {
+                    if (item != null) {
+                        var oSel = this.balances.find(x => x.selected);
+                        if (oSel != undefined) {
+                            oSel.selected = false;
+                        }
+
+                        var sel = this.balances.find(x => x == item);
+                        if (sel != undefined) {
+
+                            this.balances.find(x => x == item).selected = true;
+                            this.balances.find(x => x == item).changed = true;
+
+                            this.$.grid_balances.clearCache();
+                        }
+                    }
+                },
+                _responseInvoicesLinesProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+
+                        this._showInvoiceLines();
+                    }
+                },
+                _showInvoiceLines: function () {
+                    this.$.dlgInvoiceLines.open();
+                },
+                _closeInvoiceLines: function () {
+                    this.$.dlgInvoiceLines.close();
+                },
+                _exportInvoiceLines: function () {
+                    var payload = this.$.grid_invoices._filter(this.invoices);
+                    payload[0].ColunasEXCEL = this._invoiceLinesColumns;
+
+                    this.$.ajax_InvoiceLinesExport.body = JSON.stringify(payload);
+                    this.$.ajax_InvoiceLinesExport.generateRequest();
+                },
+                _exportInvoiceDetails: function () {
+                    //var payload = {
+                    //    list: this.$.grid_invoicesdetails._filter(this.invoicesLines),
+                    //    columns: this._invoiceDetailsColumns,
+                    //    noFatura: this._SelectedInvoice.no_,
+                    //    tipo: this._SelectedInvoice.tipo
+                    //};
+
+                    this.$.ajax_InvoiceDetailsExport.body = JSON.stringify(this.$.grid_invoicesdetails._filter(this.invoicesLines));
+                    this.$.ajax_InvoiceDetailsExport.generateRequest();
+                },
+                _exportBalances: function () {
+                    var payload = { list: this.balances, columns: this._balancesColumns };
+
+                    this.$.ajax_BalancesExport.body = JSON.stringify(payload);
+                    this.$.ajax_BalancesExport.generateRequest();
+                },
+                _invoiceDetailsExportEXCELResponse: function () {
+                    var FileName = this.export;
+                    location.href = '../InvoiceDetailsExportToExcel?fileName=' + FileName + "&tipo=" + this._SelectedInvoice.tipo;
+                },
+                _invoiceListExportEXCELResponse: function () {
+                    var FileName = this.export;
+                    location.href = '../InvoiceListExportToExcel?fileName=' + FileName;
+                },
+
+                _balancesExportEXCELResponse: function () {
+                    var FileName = this.export;
+                    location.href = '../BalancesExportToExcel?fileName=' + FileName;
+                },
+
+                _startInvoiceDetailsColumnToggle: function () {
+                    var columns = {
+                        "documentNo": { hidden: false, label: "documentNo" },
+                        "tipo": { hidden: false, label: "Tipo" },
+                        "no": { hidden: false, label: "Nº" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "description2": { hidden: false, label: "Descrição 2" },
+                        "unitOfMeasure": { hidden: false, label: "Unidade de Medida" },
+                        "quantity": { hidden: false, label: "Quantidade" },
+                        "unitPrice": { hidden: false, label: "Preço Unitário" },
+                        "vat": { hidden: false, label: "Iva" },
+                        "amount": { hidden: false, label: "Custo" },
+                        "tipoRefeicao": { hidden: false, label: "Tp Refeição" },
+                        "mealTypeDescription": { hidden: false, label: "Descrição Tp Refeição" },
+                        "grupoServico": { hidden: false, label: "Gr Serviço" },
+                        "serviceGroupDescription": { hidden: false, label: "Descrição Gr Serviço" },
+                        "codServCliente": { hidden: false, label: "Cod Serv Cliente" },
+                        "desServCliente": { hidden: false, label: "Descrição Serv Cliente" },
+                        "nGuiaResiduosGAR": { hidden: false, label: "Nº Guia Resíduos (GAR)" },
+                        "nGuiaExterna": { hidden: false, label: "Nº Guia Externa" },
+
+                        "dataConsumo": { hidden: false, label: "Data de Consumo" },
+                        "regionId": { hidden: false, label: "Cód. Região" },
+                        "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
+                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
+                    };
+
+
+                    if (localStorage["clientesinvoicelist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["clientesinvoicelist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._invoiceDetailsColumns = columns;
+                },
+                _startInvoiceLinesColumnToggle: function () {
+                    var columns = {
+                        "tipo": { hidden: false, label: "Tipo" },
+                        "no_": { hidden: false, label: "Nº" },
+                        "projectNo": { hidden: false, label: "Project Nº" },
+                        "dataServPrestado": { hidden: false, label: "Data Serv. Prestado" },
+                        "dueDate": { hidden: false, label: "Data Venc." },
+                        "amountIncludingVAT": { hidden: false, label: "Valor com IVA" },
+                        "valorPendente": { hidden: false, label: "Valor Pendente" },
+                        "paid": { hidden: false, label: "Pago" },
+                        "regionId": { hidden: false, label: "Cód. Região" },
+                        "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
+                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
+                    };
+
+
+                    if (localStorage["clientesinvoicelineslist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["clientesinvoicelineslist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._invoiceLinesColumns = columns;
+                },
+                _startBalancesColumnToggle: function () {
+
+
+                    var columns = {
+                        "customerNo": { hidden: false, label: "Nº Cliente" },
+                        "postingDate": { hidden: false, label: "Data Registo" },
+                        "documentType": { hidden: false, label: "Tipo Documento" },
+                        "documentNo": { hidden: false, label: "Nº Documento" },
+                        "documentDate": { hidden: false, label: "Data Documento" },
+                        "dueDate": { hidden: false, label: "Data Venc." },
+                        "description": { hidden: false, label: "Descrição" },
+                        "amount": { hidden: false, label: "Valor" },
+                        "remainingAmount": { hidden: false, label: "Valor Pendente" },
+                        "sinalizacaoRec": { hidden: false, label: "Sinalização Reconciliação" },
+                        "dataConcil": { hidden: false, label: "Data Conciliação" },
+                        "obs": { hidden: false, label: "Observações" },
+                        "regionId": { hidden: false, label: "Cód. Região" },
+                        "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
+                        "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
+                    };
+
+
+                    if (localStorage["clientesbalanceslist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["clientesbalanceslist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._balancesColumns = columns;
+                },
+                _formatPercentValue: function (value) {
+                    if (value) {
+                        value = value.replace(",", ".");
+                    }
+
+                    if (value != null && value != 0) {
+                        return this._roundValue(value, 0) + "%";
+                    }
+                    else {
+                        return "0%";
+                    }
+                    //return this._roundValue(value, 0) + "%";
+                },
+                _roundValue: function (value, decimal) {
+                    if (value) {
+                        value = value.replace(",", ".");
+                    }
+                    return Math.round(value * 1, decimal);
+                },
+
+                _viewMenuConsultartemSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+
+                    var item = e.detail.value;
+                    if (item == null)
+                        return;
+
+                    switch (item.value) {
+                        case 1:
+                            this._openContratosPage();
+                            break;
+                        case 2:
+                            this._openPropostasPage();
+                            break;
+                        case 3:
+                            this._openOportunidadesPage();
+                            break;
+                    }
+                },
+
+                _openContratosPage: function (e) {
+                    window.location.href = "/Contratos/ContratosByCliente/" + this._no;
+                },
+
+                _openPropostasPage: function (e) {
+                    window.location.href = "/Contratos/PropostasByCliente/" + this._no;
+                },
+
+                _openOportunidadesPage: function (e) {
+                    window.location.href = "/Contratos/OportunidadesByCliente/" + this._no;
+                },
+
+                _Verificar_VAT: function (e) {
+                    if (this.$.vaT_Registration_No.value != null && this.$.vaT_Registration_No.value != "") {
+                        this.$.page_VerificarVAT_ajax.body = JSON.stringify({ "No": this.$.no.value, "VaT_Registration_No": this.$.vaT_Registration_No.value });
+                        this.$.page_VerificarVAT_ajax.generateRequest();
+                    }
+                },
+                _responseVerificarVATProcessor: function () {
+                    if (this.vatResponse != "") {
+                        this._openToastError(this.vatResponse);
+                    }
+                },
+
+            });
+        });
+
+        var forceNumericWithMaxLength = function (el, event, maxLength, allowSpaces) {
+
+            var allowedKeys = ['ArrowLeft', 'ArrowRight', 'Backspace', 'Delete'];
+            if (allowSpaces) {
+                allowedKeys.push(' ');
+            }
+
+            if ((!/^\d+$/.test(event.key) || (el.value && el.value.length >= maxLength)) && allowedKeys.indexOf(event.key) < 0) {
+                event.preventDefault();
+                return false;
+            }
+        };
+
+
+        var trimPhone = function (el, event) {
+            el.value = el.value.replace(/  +/g, ' ').trim();
+        };
+
+    </script>
+
+</dom-module>
+
+

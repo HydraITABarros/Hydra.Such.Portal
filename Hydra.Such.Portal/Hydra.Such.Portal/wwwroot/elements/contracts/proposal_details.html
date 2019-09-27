@@ -369,10 +369,7 @@
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-                <!--<template is="dom-if" if="{{ _permissions.create }}">-->
                 <paper-button id="btnContractAdd" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_createNewContract" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-                <!--</template>-->
-                <!--<template is="dom-if" if="{{ _permissions.update }}">-->
                 <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
                 <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
                 <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="btnUpdateContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>
@@ -384,7 +381,6 @@
                 <such-dropdown-menu id="mnuStatus" on-value-changed="_statusMenuItemSelected" hidden="{{ _readOnly }}" title="Alterar Estado" items="[[ _statusMenuItems ]]"></such-dropdown-menu>
 
                 <paper-button id="btn_imprimir" class="tablinks" on-tap="_print" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
-                <!--</template>-->
 
                 <paper-button hidden="{{ _readOnly }}" id="btnUpdate" class="tablinks" on-tap="_update" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                 <paper-button hidden="{{ _readOnly }}" id="btnDelete" class="tablinks" on-tap="_delete" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
@@ -1651,6 +1647,7 @@
                     var custShipDate = '';
                     var archiveReason = '';
                     if (this._oldStatus != this._newStatus) {
+                        debugger;
                         switch (this._newStatus) {
                             case 2: //Alterada para enviada
                                 /*
@@ -1669,7 +1666,7 @@
                                 //    this._openToastError("É obrigatório possuir linhas para alterar o estado da proposta para enviada.");
                                 //    return false;
                                 //}
-                                if (this.$.dtpCustomerShipmentDate.validate()) {
+                                if (this.$.dtpCustomerShipmentDate.value != null && this.$.dtpCustomerShipmentDate.value != "") {
                                     custShipDate = this.$.dtpCustomerShipmentDate.value;
                                     this.$.dlgCustomerShipmentDate.close();
                                 }
@@ -1693,7 +1690,7 @@
                                 /*
                                     Preencher a razão do Arquivo
                                 */
-                                if (this.$.archiveReason.validate()) {
+                                if (this.$.archiveReason.value != null && this.$.archiveReason.value != "") {
                                     archiveReason = this.$.archiveReason.value;
                                     this.$.dlgArchiveReason.close();
                                 }
