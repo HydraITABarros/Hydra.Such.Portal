@@ -111,7 +111,7 @@ namespace Hydra.Such.Data.Logic.Request
                 string userAreas = "";
                 string userCresps = "";
 
-                if (userDims != null)
+                if (userDims != null && userDims.Count > 0)
                 {
                     userDims.ForEach(x =>
                     {
@@ -139,74 +139,118 @@ namespace Hydra.Such.Data.Logic.Request
                                 userCresps = userCresps + "," + x.ValorDimensão;
                         }
                     });
-                }
+                }               
 
                 if (userRegions == "")
                 {
-                    List<NAVDimValueViewModel> nav2017Regions = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 1);
+                    //List<NAVDimValueViewModel> nav2017Regions = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 1);
 
-                    if(nav2017Regions != null)
-                    {
-                        nav2017Regions.ForEach(x => { 
-                           if (userRegions == "")
-                                userRegions = x.Code;
-                            else
-                                userRegions = userRegions + "," + x.Code;
-                        });
-                    }
+                    //if(nav2017Regions != null)
+                    //{
+                    //    nav2017Regions.ForEach(x => { 
+                    //       if (userRegions == "")
+                    //            userRegions = x.Code;
+                    //        else
+                    //            userRegions = userRegions + "," + x.Code;
+                    //    });
+                    //}
                 }
 
                 if (userAreas == "")
                 {
-                    List<NAVDimValueViewModel> nav2017Areas = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 2);
+                    //List<NAVDimValueViewModel> nav2017Areas = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 2);
 
-                    if (nav2017Areas != null)
-                    {
-                        nav2017Areas.ForEach(x => {
-                            if (userAreas == "")
-                                userAreas = x.Code;
-                            else
-                                userAreas = userAreas + "," + x.Code;
-                        });
-                    }
+                    //if (nav2017Areas != null)
+                    //{
+                    //    nav2017Areas.ForEach(x => {
+                    //        if (userAreas == "")
+                    //            userAreas = x.Code;
+                    //        else
+                    //            userAreas = userAreas + "," + x.Code;
+                    //    });
+                    //}
                 }
 
                 if (userCresps == "")
                 {
-                    List<NAVDimValueViewModel> nav2017Cresps = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 3);
+                    //List<NAVDimValueViewModel> nav2017Cresps = DBNAV2017DimensionValues.GetByDimType(NAVDatabaseName, NAVCompanyName, 3);
 
-                    if (userCresps != null)
-                    {
-                        nav2017Cresps.ForEach(x => {
-                            if (userCresps == "")
-                                userCresps = x.Code;
-                            else
-                                userCresps = userCresps + "," + x.Code;
-                        });
-                    }
+                    //if (userCresps != null)
+                    //{
+                    //    nav2017Cresps.ForEach(x => {
+                    //        if (userCresps == "")
+                    //            userCresps = x.Code;
+                    //        else
+                    //            userCresps = userCresps + "," + x.Code;
+                    //    });
+                    //}
                 }
+
 
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Requisição.Where(x =>
-                        (stateValues.Contains(x.Estado.Value)) &&
-                        (userRegions.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
-                        (userAreas.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
-                        (userCresps.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null)
+
+                    List<Requisição> reqList = ctx.Requisição.Where(x =>
+                        stateValues.Contains(x.Estado.Value)
                     ).Select(Rq => new Requisição()
                     {
-                               NºRequisição = Rq.NºRequisição,
-                               Estado = Rq.Estado,
-                               CódigoRegião = Rq.CódigoRegião,
-                               CódigoCentroResponsabilidade = Rq.CódigoCentroResponsabilidade,
-                               CódigoÁreaFuncional = Rq.CódigoÁreaFuncional,
-                               CódigoLocalEntrega = Rq.CódigoLocalEntrega,
-                               CódigoLocalRecolha = Rq.CódigoLocalRecolha,
-                               CódigoLocalização = Rq.CódigoLocalização,
-                               NºProjeto = Rq.NºProjeto,
-                               ResponsávelAprovação = Rq.ResponsávelAprovação,
-                               ResponsávelCriação = Rq.ResponsávelCriação
+                        NºRequisição = Rq.NºRequisição,
+                        Estado = Rq.Estado,
+                        CódigoRegião = Rq.CódigoRegião,
+                        CódigoCentroResponsabilidade = Rq.CódigoCentroResponsabilidade,
+                        CódigoÁreaFuncional = Rq.CódigoÁreaFuncional,
+                        CódigoLocalEntrega = Rq.CódigoLocalEntrega,
+                        CódigoLocalRecolha = Rq.CódigoLocalRecolha,
+                        CódigoLocalização = Rq.CódigoLocalização,
+                        NºProjeto = Rq.NºProjeto,
+                        ResponsávelAprovação = Rq.ResponsávelAprovação,
+                        ResponsávelCriação = Rq.ResponsávelCriação
                     }).ToList();
+
+
+                    foreach(var r in reqList)
+                    {
+                        r.CódigoRegião = string.IsNullOrEmpty(r.CódigoRegião) ? "" : r.CódigoRegião;
+                        r.CódigoÁreaFuncional = string.IsNullOrEmpty(r.CódigoÁreaFuncional) ? "" : r.CódigoÁreaFuncional;
+                        r.CódigoCentroResponsabilidade = string.IsNullOrEmpty(r.CódigoCentroResponsabilidade) ? "" : r.CódigoCentroResponsabilidade;
+                    }
+
+                    if (userRegions != "")
+                    {
+                        reqList = reqList.Where(r => userRegions.Contains(r.CódigoRegião) || r.CódigoRegião == null || r.CódigoRegião == "").ToList();
+                    }
+
+                    if(userAreas != "")
+                    {
+                        reqList = reqList.Where(a => userAreas.Contains(a.CódigoÁreaFuncional) || a.CódigoÁreaFuncional == null || a.CódigoÁreaFuncional == "").ToList();
+                    }
+
+                    if(userCresps != "")
+                    {
+                        reqList = reqList.Where(c => userCresps.Contains(c.CódigoCentroResponsabilidade) || c.CódigoCentroResponsabilidade == null || c.CódigoCentroResponsabilidade == "").ToList();
+                    }
+
+                    return reqList;
+                    
+                    //return ctx.Requisição.Where(x =>
+                    //    (stateValues.Contains(x.Estado.Value)) &&
+                    //    (userRegions.ToLower().Contains(x.CódigoRegião.ToLower()) || x.CódigoRegião == null) &&
+                    //    (userAreas.ToLower().Contains(x.CódigoÁreaFuncional.ToLower()) || x.CódigoÁreaFuncional == null) &&
+                    //    (userCresps.ToLower().Contains(x.CódigoCentroResponsabilidade.ToLower()) || x.CódigoCentroResponsabilidade == null)
+                    //).Select(Rq => new Requisição()
+                    //{
+                    //           NºRequisição = Rq.NºRequisição,
+                    //           Estado = Rq.Estado,
+                    //           CódigoRegião = Rq.CódigoRegião,
+                    //           CódigoCentroResponsabilidade = Rq.CódigoCentroResponsabilidade,
+                    //           CódigoÁreaFuncional = Rq.CódigoÁreaFuncional,
+                    //           CódigoLocalEntrega = Rq.CódigoLocalEntrega,
+                    //           CódigoLocalRecolha = Rq.CódigoLocalRecolha,
+                    //           CódigoLocalização = Rq.CódigoLocalização,
+                    //           NºProjeto = Rq.NºProjeto,
+                    //           ResponsávelAprovação = Rq.ResponsávelAprovação,
+                    //           ResponsávelCriação = Rq.ResponsávelCriação
+                    //}).ToList();
                 }
             }
             catch (Exception ex)

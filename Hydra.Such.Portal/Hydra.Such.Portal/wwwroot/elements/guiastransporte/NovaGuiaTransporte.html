@@ -290,6 +290,7 @@
                    on-response="_deleteShipmentLineResponse"
                    content-type="application/json">
         </iron-ajax>
+
         <iron-ajax url="/GuiasTransporteNav/GetPostCodes"
                    last-response="{{ postCodeList }}"
                    method="post"
@@ -337,6 +338,7 @@
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
             <paper-button id="btnCopyReqLines" class="tablinks" on-tap="_copyLines"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp; Copiar Linhas Requisição</paper-button>
+            <paper-button raised id="btnClearLines" class="tablinks" on-tap="_clearShipmentLines" title="Limpar Linhas" style="background-color:#FF3A51"><i class="fa fa-eraser" aria-hidden="true"></i>&nbsp; Limpar Linhas</paper-button>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button raised id="btnRegister" class="tablinks" on-tap="_registerDocument" title="Registar" style="background-color:#EF842D; font-weight:bold"><i class="fa fa-institution" aria-hidden="true"></i>&nbsp; Registar</paper-button>
         </div>
@@ -2188,6 +2190,17 @@
                     }
                 },
 
+                _clearShipmentLines: function (e) {
+                    var linesLength = this.data.linhasGuiaTransporte.length;
+
+                    this.data.linhasGuiaTransporte.splice(0, linesLength);
+
+                    this.$.ajax_delete_linha.body = JSON.stringify({ "noGuia": this.data.noGuiaTransporte, "noLinha": 0 });
+                    this.$.ajax_delete_linha.generateRequest();
+
+                    this.$.gridLinhas.clearCache();
+                },
+
                 _deleteShipmentLine: function (e) {
                     var index = this.data.linhasGuiaTransporte.indexOf(e.model.item);
                     this.data.linhasGuiaTransporte.splice(index, 1);
@@ -2199,10 +2212,10 @@
 
                 _deleteShipmentLineResponse: function (e) {
                     if (this.lineDeleted) {
-                        this._openToast("Linha eliminada com sucesso");
+                        this._openToast("Linha(s) eliminada(s) com sucesso");
                         this.$.gridLinhas.clearCache();
                     } else {
-                        this._openToastError("Não foi possivel eliminar a linha!");
+                        this._openToastError("Não foi possivel eliminar a(s) linha(s)!");
 
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                         this.$.page_databound_ajax.generateRequest();

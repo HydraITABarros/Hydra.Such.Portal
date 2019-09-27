@@ -474,6 +474,7 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(false);
 
             string noGuia = (line["noGuia"] == null || string.Compare((string)line["noGuia"], "") == 0) ? "" : (string)line["noGuia"];
+            // When noLinha = 0 we are deleting all document lines
             int noLinha = (line["noLinha"] == null || string.Compare((string)line["noLinha"], "") == 0) ? 0 : (int)line["noLinha"];
 
             if (noGuia == "")
