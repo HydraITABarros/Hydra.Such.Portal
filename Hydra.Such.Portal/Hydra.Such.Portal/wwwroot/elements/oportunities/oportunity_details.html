@@ -217,6 +217,22 @@
                    id="contractLinesUpdate_databound_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/DataInicioChanged"
+                   last-response="{{dataInicioResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_dataInicioChanged_ajax"
+                   on-response="_DataInicioChangedResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/DataFimChanged"
+                   last-response="{{dataFimResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_dataFimChanged_ajax"
+                   on-response="_DataFimChangedResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <!-- PROJECT Valitador -->
         <iron-ajax url="/Contratos/ValidateNumeration"
                    last-response="{{validateResponse}}"
@@ -334,11 +350,17 @@
                                     </div>
 
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2 ">
                                             <vaadin-date-picker label="Data Inicial Prevista da Prestação" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ !_permissions.update }}" on-value-changed="_startEndDate"></vaadin-date-picker>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-1" style="padding:12px; text-align:center">
+                                            <paper-button class="btnSave" raised on-tap="_dataInicioChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                        </div>
+                                        <div class="col-md-2">
                                             <vaadin-date-picker label="Data Expiração Prevista da Prestação" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}" on-value-changed="_startEndDate"></vaadin-date-picker>
+                                        </div>
+                                        <div class="col-md-1" style="padding:12px; text-align:center">
+                                            <paper-button class="btnSave" raised on-tap="_dataFimChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-date-picker label="Data Prevista para a Adjudicação" id="mCustomerShipmentDate" name="CustomerShipmentDate" value="{{data.customerShipmentDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
@@ -666,11 +688,11 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-date-picker label="Data Inicio Versão" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Inicial Prevista da Prestação" id="_CLVersionStartDate" name="_CLVersionStartDate" value="{{_CLVersionStartDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <vaadin-date-picker label="Data Fim Versão" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                                        <vaadin-date-picker label="Data Expiração Prevista da Prestação" id="_CLVersionEndDate" name="_CLVersionEndDate" value="{{_CLVersionEndDate}}" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-lg-2" hidden>
@@ -963,7 +985,7 @@
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="versionStartDate">Data Inicio Versão</vaadin-grid-sorter>
+                                        <vaadin-grid-sorter path="versionStartDate">Data Inicial Prevista da Prestação</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionStartDate" />
                                     </template>
                                     <template>
@@ -977,7 +999,7 @@
                                 </vaadin-grid-column>
                                 <vaadin-grid-column width="150px" resizable>
                                     <template class="header">
-                                        <vaadin-grid-sorter path="versionEndDate">Data Fim Versão</vaadin-grid-sorter>
+                                        <vaadin-grid-sorter path="versionEndDate">Data Expiração Prevista da Prestação</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionEndDate" />
                                     </template>
                                     <template>
@@ -2146,6 +2168,72 @@
                         this.$.rptContainer.src = "about:blank";
                         this.$.rptDialog.close();
                     },
+
+                    _dataInicioChanged: function (e) {
+                        var ajax_request = this.$.page_dataInicioChanged_ajax;
+                        ajax_request.body = JSON.stringify(this.data);
+
+                        bootbox.confirm({
+                            message: "Pretende que as linhas sejam automáticamente atualizadas com a data Início Versão?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    },
+                    _DataInicioChangedResponseProcessor: function () {
+                        if (this.dataInicioResult == true) {
+                            this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                            this.$.contractLines_databound_ajax.generateRequest();
+                        } else {
+                            this._openToastError("Ocorreu um erro ao atualizar o campo Data Início Versão nas Linhas.");
+                        }
+                    },
+
+                    _dataFimChanged: function (e) {
+                        var ajax_request = this.$.page_dataFimChanged_ajax;
+                        ajax_request.body = JSON.stringify(this.data);
+
+                        bootbox.confirm({
+                            message: "Pretende que as linhas sejam automáticamente atualizadas com a data Fim Versão?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    },
+                    _DataFimChangedResponseProcessor: function () {
+                        if (this.dataFimResult == true) {
+                            this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                            this.$.contractLines_databound_ajax.generateRequest();
+                        } else {
+                            this._openToastError("Ocorreu um erro ao atualizar o campo Data Fim Versão nas Linhas.");
+                        }
+                    },
+
+
 
 
                 });

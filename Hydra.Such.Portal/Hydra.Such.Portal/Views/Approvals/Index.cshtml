@@ -92,7 +92,7 @@
             <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.movementNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="movementNo">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="movementNo" />
+                    <vaadin-grid-filter path="movementNo" value="[[filter.movementNo]]" />
                 </template>
                 <template>
                     {{item.movementNo}}
@@ -102,7 +102,7 @@
             <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.typeText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="typeText">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="typeText" />
+                    <vaadin-grid-filter path="typeText" value="[[filter.typeText]]" />
                 </template>
                 <template>
                     {{item.typeText}}
@@ -112,7 +112,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.number.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="number">Associado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="number" />
+                    <vaadin-grid-filter path="number" value="[[filter.number]]" />
                 </template>
                 <template>
                     {{item.number}}
@@ -122,7 +122,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fhDatePartida.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="fhDatePartida">FH Dia da Partida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fhDatePartida" />
+                    <vaadin-grid-filter path="fhDatePartida" value="[[filter.fhDatePartida]]" />
                 </template>
                 <template>
                     {{item.fhDatePartida}}
@@ -132,7 +132,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fhDateChegada.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="fhDateChegada">FH Dia da Chegada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="fhDateChegada" />
+                    <vaadin-grid-filter path="fhDateChegada" value="[[filter.fhDateChegada]]" />
                 </template>
                 <template>
                     {{item.fhDateChegada}}
@@ -142,7 +142,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAcordosPrecos.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoAcordosPrecos">Req Acordos Preços</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoAcordosPrecos" />
+                    <vaadin-grid-filter path="requisicaoAcordosPrecos" value="[[filter.requisicaoAcordosPrecos]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoAcordosPrecos}}" disabled></vaadin-checkbox>
@@ -152,7 +152,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoUrgente.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoUrgente">Req Urgente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoUrgente" />
+                    <vaadin-grid-filter path="requisicaoUrgente" value="[[filter.requisicaoUrgente]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoUrgente}}" disabled></vaadin-checkbox>
@@ -162,7 +162,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoOrcamentoEmAnexo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoOrcamentoEmAnexo">Req Anexo(s)</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoOrcamentoEmAnexo" />
+                    <vaadin-grid-filter path="requisicaoOrcamentoEmAnexo" value="[[filter.requisicaoOrcamentoEmAnexo]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoOrcamentoEmAnexo}}" disabled></vaadin-checkbox>
@@ -172,7 +172,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoImobilizado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoImobilizado">Req Imobilizado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoImobilizado" />
+                    <vaadin-grid-filter path="requisicaoImobilizado" value="[[filter.requisicaoImobilizado]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoImobilizado}}" disabled></vaadin-checkbox>
@@ -182,7 +182,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoExclusivo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoExclusivo">Req Exclusivo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoExclusivo" />
+                    <vaadin-grid-filter path="requisicaoExclusivo" value="[[filter.requisicaoExclusivo]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoExclusivo}}" disabled></vaadin-checkbox>
@@ -192,7 +192,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoJaExecutado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoJaExecutado">Req Já Executado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoJaExecutado" />
+                    <vaadin-grid-filter path="requisicaoJaExecutado" value="[[filter.requisicaoJaExecutado]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoJaExecutado}}" disabled></vaadin-checkbox>
@@ -202,7 +202,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAmostra.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoAmostra">Req Amostra</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoAmostra" />
+                    <vaadin-grid-filter path="requisicaoAmostra" value="[[filter.requisicaoAmostra]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoAmostra}}" disabled></vaadin-checkbox>
@@ -212,7 +212,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoEquipamento.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoEquipamento">Req Equipamento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoEquipamento" />
+                    <vaadin-grid-filter path="requisicaoEquipamento" value="[[filter.requisicaoEquipamento]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoEquipamento}}" disabled></vaadin-checkbox>
@@ -222,7 +222,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoReposicaoDeStock.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoReposicaoDeStock">Req Reposição De Stock</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoReposicaoDeStock" />
+                    <vaadin-grid-filter path="requisicaoReposicaoDeStock" value="[[filter.requisicaoReposicaoDeStock]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoReposicaoDeStock}}" disabled></vaadin-checkbox>
@@ -232,7 +232,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoPrecoIvaIncluido.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoPrecoIvaIncluido">Req Preço IVA Incluído</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoPrecoIvaIncluido" />
+                    <vaadin-grid-filter path="requisicaoPrecoIvaIncluido" value="[[filter.requisicaoPrecoIvaIncluido]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoPrecoIvaIncluido}}" disabled></vaadin-checkbox>
@@ -242,7 +242,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAdiantamento.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoAdiantamento">Req Adiantamento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoAdiantamento" />
+                    <vaadin-grid-filter path="requisicaoAdiantamento" value="[[filter.requisicaoAdiantamento]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoAdiantamento}}" disabled></vaadin-checkbox>
@@ -252,7 +252,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoPedirOrcamento.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoPedirOrcamento">Req Pedir Orçamento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisicaoPedirOrcamento" />
+                    <vaadin-grid-filter path="requisicaoPedirOrcamento" value="[[filter.requisicaoPedirOrcamento]]" />
                 </template>
                 <template>
                     <vaadin-checkbox checked="{{item.requisicaoPedirOrcamento}}" disabled></vaadin-checkbox>
@@ -262,7 +262,7 @@
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.requestUser.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requestUser">Solicitado Por</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requestUser" />
+                    <vaadin-grid-filter path="requestUser" value="[[filter.requestUser]]" />
                 </template>
                 <template>
                     {{item.requestUser}}
@@ -271,7 +271,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.value.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="value">Valor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="value" />
+                    <vaadin-grid-filter path="value" value="[[filter.value]]" />
                 </template>
                 <template>
                     {{item.value}}
@@ -280,7 +280,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="statusText">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="statusText" />
+                    <vaadin-grid-filter path="statusText" value="[[filter.statusText]]" />
                 </template>
                 <template>
                     {{item.statusText}}
@@ -289,7 +289,7 @@
             <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.level.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="level">Nivel</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="level" />
+                    <vaadin-grid-filter path="level" value="[[filter.level]]" />
                 </template>
                 <template>
                     {{item.level}}
@@ -299,7 +299,7 @@
             <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.region.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="region">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="region" />
+                    <vaadin-grid-filter path="region" value="[[filter.region]]" />
                 </template>
                 <template>
                     {{item.region}}
@@ -309,7 +309,7 @@
             <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.responsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenter">Cód. Cresp</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsabilityCenter" />
+                    <vaadin-grid-filter path="responsabilityCenter" value="[[filter.responsabilityCenter]]" />
                 </template>
                 <template>
                     {{item.responsabilityCenter}}
@@ -332,9 +332,23 @@
                         value: function () {
                             return {};
                         }
-                    }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('approvals-approvalslist');
                 },
                 ready: function () {
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'approvals-approvalslist');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
@@ -361,17 +375,38 @@
                 },
                 _showDetails: function (e) {
                     if (e != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('approvals-approvalslist', filters || {});
+
                         window.location.href = e.model.item.numberLink;
                     }
                 },
                 _Approve: function (e) {
                     if (e != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('approvals-approvalslist', filters || {});
+
                         this.$.action_databound.body = JSON.stringify({ movementNo: e.model.item.movementNo, status: 1, rejectReason: "" });
                         this.$.action_databound.generateRequest();
                     }
                 },
                 _Reject: function (e) {
                     if (e != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('approvals-approvalslist', filters || {});
+
                         var TMessage = this.$.ToastMessage;
                         var TMessageError = this.$.ToastError;
                         var ARequest = this.$.action_databound;

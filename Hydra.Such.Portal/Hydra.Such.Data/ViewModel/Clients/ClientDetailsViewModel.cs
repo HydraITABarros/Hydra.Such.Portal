@@ -27,6 +27,7 @@ namespace Hydra.Such.Data.ViewModel.Clients
 
         public string VAT_Registration_No { get; set; }
         public bool Cliente_Associado { get; set; }
+        public string Cliente_Associado_Text { get; set; }
         public string Associado_A_N { get; set; }
         public WSCustomerNAV.Tipo_Cliente? Tipo_Cliente { get; set; }
         public string Tipo_Cliente_Text { get; set; }

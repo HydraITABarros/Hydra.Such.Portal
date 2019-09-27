@@ -1,4 +1,5 @@
 ﻿using Hydra.Such.Data.Database;
+using Hydra.Such.Data.Logic.FolhaDeHora;
 using Hydra.Such.Data.ViewModel.Approvals;
 using System;
 using System.Collections.Generic;
@@ -125,6 +126,62 @@ namespace Hydra.Such.Data.Logic.Approvals
                 using (var ctx = new SuchDBContext())
                 {
                     return ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador.ToLower() == userId.ToLower()).Select(x => x.NºMovimentoNavigation).Where(x => x.Estado == status && x.Tipo == 1).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<MovimentosDeAprovação> GetAllFHAssignedToUserFilteredByStatus(string NoFH, string userId, int status, int level)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<MovimentosDeAprovação> MOV = new List<MovimentosDeAprovação>();
+                    MovimentosDeAprovação MOVFH = ctx.MovimentosDeAprovação.Where(x => x.Número == NoFH && x.Tipo == 3 && x.Estado == status && x.Nivel == level).FirstOrDefault();
+
+                    MOV = ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador.ToLower() == userId.ToLower()).Select(x => x.NºMovimentoNavigation).Where(x => x.Número != NoFH && x.Estado == status && x.Tipo == 3 && x.Nivel == level).OrderBy(x => x.NºMovimento).ToList();
+
+                    if (MOV != null && MOV.Count > 0)
+                    {
+                        MOV.RemoveAll(x => x.NºMovimento < MOVFH.NºMovimento);
+                    }
+
+                    if (MOV != null && MOV.Count == 0)
+                    {
+                        MOV = ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador.ToLower() == userId.ToLower()).Select(x => x.NºMovimentoNavigation).Where(x => x.Número != NoFH && x.Estado == status && x.Tipo == 3 && x.Nivel == level).OrderByDescending(x => x.NºMovimento).ToList();
+                    }
+
+                    if (MOV != null && MOV.Count > 0)
+                    {
+                        foreach (MovimentosDeAprovação item in MOV)
+                        {
+                            FolhasDeHoras FH = DBFolhasDeHoras.GetById(item.Número);
+                            if (FH != null)
+                            {
+                                if (level == 1) //para validar
+                                {
+                                    if (FH.Estado.HasValue && (FH.Estado == 1 || FH.Estado == 2))
+                                        item.Estado = 99;
+                                }
+                                if (level == 2) //para integrar
+                                {
+                                    if (FH.Estado.HasValue && (FH.Estado == 0 || FH.Estado == 2))
+                                        item.Estado = 99;
+                                }
+                            }
+                            else
+                                item.Estado = 99;
+                        }
+
+                        MOV.RemoveAll(x => x.Estado == 99);
+                    }
+
+                    return MOV;
                 }
             }
             catch (Exception ex)

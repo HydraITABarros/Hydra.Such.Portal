@@ -518,7 +518,7 @@
                                         </div>
 
                                         <div class="col-sm-3">
-                                            <such-selectbox id="_CBVendor" value="{{_CBVendor}}" label="Nº Fornecedor" on-value-changed="_CalcularTaxaIVA"
+                                            <such-selectbox id="_CBVendor" value="{{data.noFornecedor}}" label="Fornecedor" on-value-changed="_CalcularTaxaIVA"
                                                             items="[[CBVendor]]"
                                                             text-path="name"
                                                             value-path="no_"
@@ -1726,13 +1726,40 @@
                 _createnewreq: function (e) {
                     this.data.area = this._areaid;
 
-                    var countWithIVA = 0;
-                    if (this.dataLines.lines != null) {
+                    var count = parseFloat(0);
+                    var countWithIVA = parseFloat(0);
+
+                    var lineQuant = parseFloat(0);
+                    var lineCustoUnitario = parseFloat(0);
+                    var lineTotalCusto = parseFloat(0);
+                    var lineIVA = parseFloat(0);
+                    var lineTotalIVA = parseFloat(0);
+
+                    if (this.dataLines.lines != null && this.dataLines.lines.length > 0) {
                         for (var i = 0; i < this.dataLines.lines.length; i++) {
-                            countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
+                            lineQuant = parseFloat(parseFloat(this.dataLines.lines[i].quantityToRequire).toFixed(4));
+                            lineCustoUnitario = parseFloat(parseFloat(this.dataLines.lines[i].unitCost).toFixed(5));
+                            lineTotalCusto = parseFloat(parseFloat(lineQuant * lineCustoUnitario).toFixed(2));
+
+                            lineIVA = parseFloat(parseFloat(this.dataLines.lines[i].taxaIVA).toFixed(2));
+                            lineIVA = parseFloat(((lineIVA / 100) + 1));
+                            lineTotalIVA = parseFloat(parseFloat(lineTotalCusto * lineIVA).toFixed(2));
+
+                            count = parseFloat((count + lineTotalCusto));
+                            countWithIVA = parseFloat((countWithIVA + lineTotalIVA));
                         }
+                    } else {
+                        this._openToastError("Não tem Linhas inseridas.");
+                        return false;
                     }
-                    this.data.linhasValorTotalDocComIVA = countWithIVA.toFixed(2).replace(",", ".");
+                    //var countWithIVA = 0;
+                    //if (this.dataLines.lines != null) {
+                    //    for (var i = 0; i < this.dataLines.lines.length; i++) {
+                    //        countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
+                    //    }
+                    //}
+                    this.data.linhasValorTotalDocComIVA = parseFloat(parseFloat(countWithIVA).toFixed(2));
+                    this.data.valorTotalDocComIVA = parseFloat(parseFloat(this.$.valorTotalDocComIVA.value).toFixed(2));
 
                     if (this.$.gridAnexos.__data.items.length > 0) {
                         if (this.$.valorTotalDocComIVA.value != "" && this.$.valorTotalDocComIVA.value != null) {
@@ -1747,7 +1774,7 @@
                                         this.$.page_validator_req_ajax.generateRequest();
                                     //}
                                     //else {
-                                    //    this._openToastError('O valor do campo Valor Total Doc. com IVA têm que ser igual ao sumatório do campo Custo Total com IVA das linhas.');
+                                    //    this._openToastError('O valor do campo Valor Total Doc. com IVA têm que ser igual ao somatório do campo Custo Total com IVA das linhas.');
                                     //}
                                 }
                                 else {
@@ -2013,17 +2040,36 @@
                 },
 
                 _sumLines: function () {
-                    var count = 0;
-                    var countWithIVA = 0;
+                    debugger;
+                    this._TotalLine = 0;
+                    this._TotalWithIVALine = 0;
+                    var count = parseFloat(0);
+                    var countWithIVA = parseFloat(0);
+
+                    var lineQuant = parseFloat(0);
+                    var lineCustoUnitario = parseFloat(0);
+                    var lineTotalCusto = parseFloat(0);
+                    var lineIVA = parseFloat(0);
+                    var lineTotalIVA = parseFloat(0);
+
+
                     if (this.dataLines.lines != null && this.dataLines.lines.length > 0) {
                         for (var i = 0; i < this.dataLines.lines.length; i++) {
-                            count += this.dataLines.lines[i].totalCost;
-                            countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
+                            lineQuant = parseFloat(parseFloat(this.dataLines.lines[i].quantityToRequire).toFixed(4));
+                            lineCustoUnitario = parseFloat(parseFloat(this.dataLines.lines[i].unitCost).toFixed(5));
+                            lineTotalCusto = parseFloat(parseFloat(lineQuant * lineCustoUnitario).toFixed(2));
 
-                            this._TotalLine = count.toFixed(4).replace(",", ".");
-                            this._TotalWithIVALine = countWithIVA.toFixed(4).replace(",", ".");
-                            this.$.dialogTotal.open();
+                            lineIVA = parseFloat(parseFloat(this.dataLines.lines[i].taxaIVA).toFixed(2));
+                            lineIVA = parseFloat(((lineIVA / 100) + 1));
+                            lineTotalIVA = parseFloat(parseFloat(lineTotalCusto * lineIVA).toFixed(2));
+
+                            count = parseFloat((count + lineTotalCusto));
+                            countWithIVA = parseFloat((countWithIVA + lineTotalIVA));
                         }
+
+                        this._TotalLine = parseFloat(parseFloat(count).toFixed(2));//.replace(",", ".");
+                        this._TotalWithIVALine = parseFloat(parseFloat(countWithIVA).toFixed(2));//.replace(",", ".");
+                        this.$.dialogTotal.open();
                     } else {
                         this._openToastError("Não tem Linhas inseridas.");
                     }
@@ -2205,7 +2251,7 @@
                             this.$._QuantityToRequire.value = this.calculoAutomatico.quantityToRequire.toFixed(4).replace(",", ".");
 
                         if (this.calculoAutomatico.unitCost != null)
-                            this.$._UnitCost.value = this.calculoAutomatico.unitCost.toFixed(4).replace(",", ".");
+                            this.$._UnitCost.value = this.calculoAutomatico.unitCost.toFixed(5).replace(",", ".");
 
                         if (this.calculoAutomatico.unitCostWithIVA != null)
                             this.$._UnitCostWithIVA.value = this.calculoAutomatico.unitCostWithIVA.toFixed(4).replace(",", ".");
@@ -2230,7 +2276,7 @@
                     if (this.$.valorTotalDocComIVA.value != null && this.$.valorTotalDocComIVA.value != "") {
                         if (this._Products != undefined && this._Products != "") {
                             if (validLocalCode) {
-                                if (this._CBVendor != undefined && this._CBVendor != "") {
+                                if (this.$._CBVendor != undefined && this.$._CBVendor.value != "") {
                                     if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
                                         if (this.$._UnitCost.validate() && parseFloat(this.$._UnitCost.value) > 0) {
                                             if (this.$._UnitCostWithIVA.validate() && parseFloat(this.$._UnitCostWithIVA.value) > 0) {
@@ -2261,7 +2307,7 @@
                                                         unitCostWithIVA: this._UnitCostWithIVA,
                                                         projectNo: this.$._ProjectNo.value,
                                                         vehicle: this.data.vehicle,
-                                                        supplierNo: this._CBVendor,
+                                                        supplierNo: this.$._CBVendor.value,
                                                         regionCode: this.$._CLRegion.value,
                                                         functionalAreaCode: this.$._CLFunctionalAreaCode.value,
                                                         centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
@@ -2620,18 +2666,18 @@
 
                         //Custo Total com IVA
                         if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
-                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(2).replace(",", ".");
                             _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         }
                         if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
-                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(2).replace(",", ".");
                             _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         }
 
                         //Valor Taxa IVA
                         //if (this.$._PercentagemIVA.value == "") {
                         //    if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
-                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(2).replace(",", ".")
                         //    }
                         //}
                     }
@@ -2691,18 +2737,18 @@
 
                         //Custo Total com IVA
                         if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
-                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(2).replace(",", ".");
                             _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         }
                         if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
-                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(2).replace(",", ".");
                             _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         }
 
                         //Valor Taxa IVA
                         //if (this.$._PercentagemIVA.value == "") {
                         //    if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
-                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(2).replace(",", ".")
                         //    }
                         //}
                     }
@@ -2762,18 +2808,18 @@
 
                         //Custo Total com IVA
                         if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
-                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(2).replace(",", ".");
                             _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         }
                         if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
-                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                            this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(2).replace(",", ".");
                             _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         }
 
                         //Valor Taxa IVA
                         //if (this.$._PercentagemIVA.value == "") {
                         //    if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
-                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(2).replace(",", ".")
                         //    }
                         //}
                     }
@@ -2829,14 +2875,14 @@
 
                         //Custo Total com IVA
                         if (_UnitCostWithIVA != 0 && _QuantityToRequire != 0) {
-                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                            this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(2).replace(",", ".");
                             _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         }
 
                         //Valor Taxa IVA
                         //if (this.$._PercentagemIVA.value == "") {
                         //    if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
-                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(2).replace(",", ".")
                         //    }
                         //}
                     }
@@ -2896,18 +2942,18 @@
 
                         //Custo Total com IVA
                         //if (_QuantityToRequire != 0 && _UnitCostWithIVA != 0) {
-                        //    this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(4).replace(",", ".");
+                        //    this.$._CustoTotalComIVA.value = (_QuantityToRequire * _UnitCostWithIVA).toFixed(2).replace(",", ".");
                         //    _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         //}
                         //if (_QuantityToRequire != 0 && _UnitCost != 0 && IVA != 0) {
-                        //    this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(4).replace(",", ".");
+                        //    this.$._CustoTotalComIVA.value = ((_QuantityToRequire * _UnitCost) * IVA).toFixed(2).replace(",", ".");
                         //    _CustoTotalComIVA = this.$._CustoTotalComIVA.value;
                         //}
 
                         //Valor Taxa IVA
                         //if (this.$._PercentagemIVA.value == "") {
                         //    if (_CustoTotalComIVA != 0 && _QuantityToRequire != 0 && _UnitCost != 0) {
-                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(4).replace(",", ".")
+                        //        this.$._PercentagemIVA.value = (((_CustoTotalComIVA * 100) / (_QuantityToRequire * _UnitCost)) - 100).toFixed(2).replace(",", ".")
                         //    }
                         //}
                     }

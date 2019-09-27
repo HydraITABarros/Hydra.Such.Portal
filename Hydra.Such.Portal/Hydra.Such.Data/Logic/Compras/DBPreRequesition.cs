@@ -202,6 +202,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                  NºFatura = x.InvoiceNo,
                  PedirOrcamento = x.PedirOrcamento,
                  ValorTotalDocComIVA = x.ValorTotalDocComIVA,
+                 NoFornecedor = x.NoFornecedor
             };
             return result;
         }
@@ -275,6 +276,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 InvoiceNo = x.NºFatura,
                 PedirOrcamento = x.PedirOrcamento,
                 ValorTotalDocComIVA = x.ValorTotalDocComIVA,
+                NoFornecedor = x.NoFornecedor
             };
 
             return result;

@@ -265,13 +265,13 @@
                     {{item.centro_Resp_Dimensao}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.cliente_Associado.hidden }}">
+            <vaadin-grid-column width="190px" resizable hidden$="{{ _columns.cliente_Associado_Text.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="cliente_Associado">Cliente Associado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="cliente_Associado" value="[[filter.cliente_Associado]]" />
+                    <vaadin-grid-sorter path="cliente_Associado_Text">Cliente Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cliente_Associado_Text" value="[[filter.cliente_Associado_Text]]" />
                 </template>
                 <template>
-                    [[ formatBool(item.cliente_Associado)]]
+                    {{item.cliente_Associado_Text}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.associado_A_N.hidden }}">
@@ -460,7 +460,7 @@
                         "regiao_Cliente_Text": { hidden: false, label: "Região" },
                         "global_Dimension_1_Code": { hidden: false, label: "Area" },
                         "centro_Resp_Dimensao": { hidden: false, label: "Centro de Responsabilidade" },
-                        "cliente_Associado": { hidden: false, label: "Cliente Associado" },
+                        "cliente_Associado_Text": { hidden: false, label: "Cliente Associado" },
                         "associado_A_N": { hidden: false, label: "Associado (A/N)" },
                         "tipo_Cliente_Text": { hidden: false, label: "Tipo de Cliente" },
                         "natureza_Cliente_Text": { hidden: false, label: "Natureza do Cliente" },
