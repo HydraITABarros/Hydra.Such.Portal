@@ -63,6 +63,7 @@
     <Report Include="ContasReceberACSS.rdl" />
     <Report Include="EncomendasDetails.rdl" />
     <Report Include="ExtratoCliente.rdl" />
+    <Report Include="ExtratoFornecedor.rdl" />
     <Report Include="FH_AjudasCustoIntegradasRH.rdl" />
     <Report Include="FolhaCaixa.rdl" />
     <Report Include="FolhaHora.rdl" />

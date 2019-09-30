@@ -166,6 +166,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfigLinhasEncFornecedor> ConfigLinhasEncFornecedor { get; set; }
         public virtual DbSet<Orcamentos> Orcamentos { get; set; }
         public virtual DbSet<LinhasOrcamentos> LinhasOrcamentos { get; set; }
+        public virtual DbSet<ConfiguracaoParametros> ConfiguracaoParametros { get; set; }
 
         #region zpgm.ALT_CCP_#001.y2019
         public virtual DbSet<TipoProcedimentoCcp> TipoProcedimentoCcp { get; set; }
@@ -11243,6 +11244,38 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
             });
 
+            modelBuilder.Entity<ConfiguracaoParametros>(entity =>
+            {
+                entity.HasKey(e => new { e.ID });
+
+                entity.ToTable("Configuracao Parametros");
+
+                entity.Property(e => e.ID);
+
+                entity.Property(e => e.Parametro)
+                    .HasColumnName("Parametro")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Valor)
+                    .HasColumnName("Valor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("DataHoraCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("DataHoraModificacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+            });
 
 
 
