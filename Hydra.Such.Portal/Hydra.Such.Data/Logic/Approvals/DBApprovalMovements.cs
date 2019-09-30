@@ -142,7 +142,7 @@ namespace Hydra.Such.Data.Logic.Approvals
                 using (var ctx = new SuchDBContext())
                 {
                     List<MovimentosDeAprovação> MOV = new List<MovimentosDeAprovação>();
-                    MovimentosDeAprovação MOVFH = ctx.MovimentosDeAprovação.Where(x => x.Número == NoFH && x.Tipo == 3 && x.Estado == status && x.Nivel == level).FirstOrDefault();
+                    MovimentosDeAprovação MOVFH = ctx.MovimentosDeAprovação.Where(x => x.Número == NoFH && x.Tipo == 3 && x.Estado == 2 && x.Nivel == level).FirstOrDefault();
 
                     MOV = ctx.UtilizadoresMovimentosDeAprovação.Where(x => x.Utilizador.ToLower() == userId.ToLower()).Select(x => x.NºMovimentoNavigation).Where(x => x.Número != NoFH && x.Estado == status && x.Tipo == 3 && x.Nivel == level).OrderBy(x => x.NºMovimento).ToList();
 
