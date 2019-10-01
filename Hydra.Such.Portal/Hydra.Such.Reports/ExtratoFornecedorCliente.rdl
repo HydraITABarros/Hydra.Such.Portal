@@ -6,29 +6,23 @@
     <DataSource Name="eSuchDS">
       <DataSourceReference>eSuchDS</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>4c6c8edb-6b37-4fb7-8ab0-cc29d5323a3e</rd:DataSourceID>
+      <rd:DataSourceID>6b375e5c-a253-4420-8a10-22e24191800f</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
-    <DataSet Name="NavFornecedor">
+    <DataSet Name="NavFornecedorCliente">
       <Query>
         <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Fornecedor">
             <Value>=Parameters!Fornecedor.Value</Value>
           </QueryParameter>
+          <QueryParameter Name="@Cliente">
+            <Value>=Parameters!Cliente.Value</Value>
+          </QueryParameter>
         </QueryParameters>
-        <CommandText>SELECT
-	No_
-	,{ fn CONCAT([Name], [Name 2]) } AS [Name]
-	,[VAT Registration No_] AS [VATRegistrationNo]
-	,{ fn CONCAT(CONCAT([Address], ' '), [Address 2]) } AS [Address]
-	,[Currency Code] AS [Currency]
-	,[Post Code] AS [PostalCode]
-	,[City]
-	,[Country_Region Code] AS [Country_RegionCode]
-FROM [SUCH_NAV_PROD].[dbo].[SUCH$Vendor]
-WHERE ([No_] = @Fornecedor)</CommandText>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>dw_FornecedoresClientesIntegrado</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -66,12 +60,15 @@ WHERE ([No_] = @Fornecedor)</CommandText>
         </Field>
       </Fields>
     </DataSet>
-    <DataSet Name="dw_MovFornecedoresIntegrado">
+    <DataSet Name="dw_MovFornecedoresClientesIntegrado">
       <Query>
         <DataSourceName>eSuchDS</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Fornecedor">
             <Value>=Parameters!Fornecedor.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Cliente">
+            <Value>=Parameters!Cliente.Value</Value>
           </QueryParameter>
           <QueryParameter Name="@Data">
             <Value>=Parameters!Data.Value</Value>
@@ -81,11 +78,20 @@ WHERE ([No_] = @Fornecedor)</CommandText>
           </QueryParameter>
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
-        <CommandText>dw_MovFornecedoresIntegrado</CommandText>
+        <CommandText>dw_MovFornecedoresClientesIntegrado</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
-        <Field Name="Customer_No">
-          <DataField>Customer_No</DataField>
+        <Field Name="ID">
+          <DataField>ID</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Origem">
+          <DataField>Origem</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="No">
+          <DataField>No</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Date">
@@ -131,34 +137,75 @@ WHERE ([No_] = @Fornecedor)</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.75523in</Width>
+                  <Width>0.94488in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.88023in</Width>
+                  <Width>0.7874in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.82294in</Width>
+                  <Width>0.7874in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.06773in</Width>
+                  <Width>0.7874in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.45836in</Width>
+                  <Width>0.7874in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.9844in</Width>
+                  <Width>1.49605in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.90871in</Width>
+                  <Width>0.94488in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.2357in</Width>
+                  <Width>0.94488in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
                   <Height>0.39708in</Height>
                   <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="textbox7">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>
+Origem</Value>
+                                  <Style>
+                                    <FontFamily />
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <Color>#666666</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>textbox3</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Color>Black</Color>
+                              <Style>Solid</Style>
+                              <Width>1pt</Width>
+                            </BottomBorder>
+                            <FontFamily />
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
                     <TablixCell>
                       <CellContents>
                         <Textbox Name="textbox3">
@@ -449,28 +496,34 @@ Saldo</Value>
                         </Textbox>
                       </CellContents>
                     </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.19685in</Height>
+                  <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox19">
+                        <Textbox Name="Origem">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value xml:space="preserve"> </Value>
+                                  <Value>=Fields!Origem.Value</Value>
                                   <Style>
                                     <FontFamily />
-                                    <FontSize>9pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                    <Color>#666666</Color>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>=IIF(Year(Fields!Date.Value) = 1, "Bold", "Default")</FontWeight>
+                                    <Color>#333333</Color>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox19</rd:DefaultName>
+                          <rd:DefaultName>Origem</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -483,11 +536,6 @@ Saldo</Value>
                         </Textbox>
                       </CellContents>
                     </TablixCell>
-                  </TablixCells>
-                </TablixRow>
-                <TablixRow>
-                  <Height>0.21in</Height>
-                  <TablixCells>
                     <TablixCell>
                       <CellContents>
                         <Textbox Name="Date">
@@ -497,7 +545,7 @@ Saldo</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Day(Fields!Date.Value).ToString() + "-" + Month(Fields!Date.Value).ToString() + "-" + Year(Fields!Date.Value).ToString()</Value>
+                                  <Value>=IIF(Year(Fields!Date.Value) = 1, "",Day(Fields!Date.Value).ToString() + "-" + Month(Fields!Date.Value).ToString() + "-" + Year(Fields!Date.Value).ToString())</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -532,7 +580,7 @@ Saldo</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Day(Fields!Due_Date.Value).ToString() + "-" + Month(Fields!Due_Date.Value).ToString() + "-" + Year(Fields!Due_Date.Value).ToString()</Value>
+                                  <Value>=IIF(Year(Fields!Date.Value) = 1, "", Day(Fields!Due_Date.Value).ToString() + "-" + Month(Fields!Due_Date.Value).ToString() + "-" + Year(Fields!Due_Date.Value).ToString())</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -668,10 +716,11 @@ Saldo</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Round(Fields!Value.Value, 2)</Value>
+                                  <Value>=IIF(Fields!Value.Value = 0, "", Round(Fields!Value.Value, 2))</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>=IIF(Year(Fields!Date.Value) = 1, "Bold", "Default")</FontWeight>
                                     <Format>#,0.00 '€';(#,0.00 '€')</Format>
                                     <Color>#333333</Color>
                                     <Language>pt-PT</Language>
@@ -707,7 +756,7 @@ Saldo</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Round(RunningValue(Fields!Value.Value, Sum, "dw_MovFornecedoresIntegrado"), 2)</Value>
+                                  <Value>=IIF(Year(Fields!Date.Value) = 1, "", Round(RunningValue(Fields!Value.Value, Sum, "dw_MovFornecedoresClientesIntegrado"), 2))</Value>
                                   <Style>
                                     <FontFamily />
                                     <FontSize>8pt</FontSize>
@@ -732,39 +781,6 @@ Saldo</Value>
                             <PaddingTop>2pt</PaddingTop>
                             <PaddingBottom>2pt</PaddingBottom>
                             <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
-                          </Style>
-                        </Textbox>
-                      </CellContents>
-                    </TablixCell>
-                    <TablixCell>
-                      <CellContents>
-                        <Textbox Name="Balance">
-                          <CanGrow>true</CanGrow>
-                          <KeepTogether>true</KeepTogether>
-                          <Paragraphs>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>=Fields!Factoring_Sem_Recurso.Value</Value>
-                                  <Style>
-                                    <FontFamily />
-                                    <FontSize>9pt</FontSize>
-                                    <Color>#333333</Color>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style />
-                            </Paragraph>
-                          </Paragraphs>
-                          <rd:DefaultName>Balance</rd:DefaultName>
-                          <Style>
-                            <Border>
-                              <Style>None</Style>
-                            </Border>
-                            <PaddingLeft>2pt</PaddingLeft>
-                            <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -805,18 +821,18 @@ Saldo</Value>
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
-            <DataSetName>dw_MovFornecedoresIntegrado</DataSetName>
+            <DataSetName>dw_MovFornecedoresClientesIntegrado</DataSetName>
             <Top>0.17639cm</Top>
-            <Left>0.00003cm</Left>
-            <Height>0.60708in</Height>
-            <Width>7.1133in</Width>
+            <Left>0.00004cm</Left>
+            <Height>0.59393in</Height>
+            <Width>7.4803in</Width>
             <Style />
           </Tablix>
         </ReportItems>
-        <Height>0.67652in</Height>
+        <Height>0.66337in</Height>
         <Style />
       </Body>
-      <Width>7.11331in</Width>
+      <Width>19cm</Width>
       <Page>
         <PageHeader>
           <Height>6.04873cm</Height>
@@ -827,7 +843,7 @@ Saldo</Value>
               <Source>Embedded</Source>
               <Value>SUCH_logo</Value>
               <Sizing>FitProportional</Sizing>
-              <Left>0.00009cm</Left>
+              <Left>0.00004cm</Left>
               <Height>1.47672cm</Height>
               <Width>18.06773cm</Width>
               <Style>
@@ -843,7 +859,7 @@ Saldo</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=First(Fields!No_.Value, "NavFornecedor")</Value>
+                      <Value>=First(Fields!No_.Value, "NavFornecedorCliente")</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                       </Style>
@@ -856,7 +872,7 @@ Saldo</Value>
                       </Style>
                     </TextRun>
                     <TextRun>
-                      <Value>=First(Fields!Country_RegionCode.Value, "NavFornecedor") + " " + First(Fields!VATRegistrationNo.Value, "NavFornecedor")</Value>
+                      <Value>=First(Fields!Country_RegionCode.Value, "NavFornecedorCliente") + " " + First(Fields!VATRegistrationNo.Value, "NavFornecedorCliente")</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                       </Style>
@@ -867,7 +883,7 @@ Saldo</Value>
               </Paragraphs>
               <rd:DefaultName>No_</rd:DefaultName>
               <Top>1.28208in</Top>
-              <Left>1.63548in</Left>
+              <Left>1.63546in</Left>
               <Height>0.46042in</Height>
               <Width>1.89067in</Width>
               <ZIndex>1</ZIndex>
@@ -888,7 +904,7 @@ Saldo</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=First(Fields!Name.Value, "NavFornecedor")</Value>
+                      <Value>=First(Fields!Name.Value, "NavFornecedorCliente")</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                       </Style>
@@ -899,7 +915,7 @@ Saldo</Value>
               </Paragraphs>
               <rd:DefaultName>Name</rd:DefaultName>
               <Top>0.65083in</Top>
-              <Left>3.52615in</Left>
+              <Left>3.52613in</Left>
               <Height>0.21458in</Height>
               <Width>3.58716in</Width>
               <ZIndex>2</ZIndex>
@@ -920,7 +936,7 @@ Saldo</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=First(Fields!Address.Value, "NavFornecedor")</Value>
+                      <Value>=First(Fields!Address.Value, "NavFornecedorCliente")</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                       </Style>
@@ -933,7 +949,7 @@ Saldo</Value>
                       </Style>
                     </TextRun>
                     <TextRun>
-                      <Value>=First(Fields!PostalCode.Value, "NavFornecedor") + " " + First(Fields!City.Value, "NavFornecedor")</Value>
+                      <Value>=First(Fields!PostalCode.Value, "NavFornecedorCliente") + " " + First(Fields!City.Value, "NavFornecedorCliente")</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                       </Style>
@@ -944,7 +960,7 @@ Saldo</Value>
               </Paragraphs>
               <rd:DefaultName>Address</rd:DefaultName>
               <Top>0.96972in</Top>
-              <Left>3.52615in</Left>
+              <Left>3.52613in</Left>
               <Height>0.64778in</Height>
               <Width>3.58716in</Width>
               <ZIndex>3</ZIndex>
@@ -977,7 +993,7 @@ Saldo</Value>
               </Paragraphs>
               <rd:DefaultName>Now</rd:DefaultName>
               <Top>1.81195in</Top>
-              <Left>0.00006cm</Left>
+              <Left>0.00001cm</Left>
               <Height>0.25in</Height>
               <Width>3.52613in</Width>
               <ZIndex>4</ZIndex>
@@ -1034,7 +1050,7 @@ Saldo</Value>
               </Paragraphs>
               <rd:DefaultName>Textbox10</rd:DefaultName>
               <Top>0.65083in</Top>
-              <Left>0.00006cm</Left>
+              <Left>0.00001cm</Left>
               <Height>0.56181in</Height>
               <Width>3.52613in</Width>
               <ZIndex>5</ZIndex>
@@ -1055,7 +1071,7 @@ Saldo</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Nº Fornecedor
+                      <Value>Nº
 Contribuite Nº</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
@@ -1067,7 +1083,7 @@ Contribuite Nº</Value>
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>1.28208in</Top>
-              <Left>0.00006cm</Left>
+              <Left>0.00001cm</Left>
               <Height>0.46042in</Height>
               <Width>1.63546in</Width>
               <ZIndex>6</ZIndex>
@@ -1099,7 +1115,7 @@ Contribuite Nº</Value>
               </Paragraphs>
               <rd:DefaultName>Textbox14</rd:DefaultName>
               <Top>2.13139in</Top>
-              <Left>0.00006cm</Left>
+              <Left>0.00001cm</Left>
               <Height>0.25in</Height>
               <Width>3.52613in</Width>
               <ZIndex>7</ZIndex>
@@ -1120,155 +1136,12 @@ Contribuite Nº</Value>
             </Border>
           </Style>
         </PageHeader>
-        <PageFooter>
-          <Height>6.73834cm</Height>
-          <PrintOnFirstPage>true</PrintOnFirstPage>
-          <PrintOnLastPage>true</PrintOnLastPage>
-          <ReportItems>
-            <Textbox Name="Textbox48">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>Total</Value>
-                      <Style>
-                        <FontSize>8pt</FontSize>
-                        <FontWeight>Bold</FontWeight>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style>
-                    <TextAlign>Right</TextAlign>
-                  </Style>
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox48</rd:DefaultName>
-              <Top>0cm</Top>
-              <Left>12.66058cm</Left>
-              <Height>0.6cm</Height>
-              <Width>2.50038cm</Width>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Textbox49">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=System.Math.Round(Sum(Fields!Value.Value, "dw_MovFornecedoresIntegrado"), 2)</Value>
-                      <Style>
-                        <FontSize>8pt</FontSize>
-                        <FontWeight>Bold</FontWeight>
-                        <Format>#,0.00 '€';(#,0.00 '€')</Format>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style>
-                    <TextAlign>Right</TextAlign>
-                  </Style>
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox49</rd:DefaultName>
-              <Top>-0.00001cm</Top>
-              <Left>15.16096cm</Left>
-              <Height>0.6cm</Height>
-              <Width>2.30812cm</Width>
-              <ZIndex>1</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-                <rd:FormatSymbolCulture>pt-PT</rd:FormatSymbolCulture>
-              </Style>
-            </Textbox>
-            <Textbox Name="Textbox15">
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value />
-                      <Style />
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox13</rd:DefaultName>
-              <Top>-0.00001cm</Top>
-              <Height>0.6cm</Height>
-              <Width>12.66058cm</Width>
-              <ZIndex>2</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-            <Textbox Name="Textbox13">
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value />
-                      <Style />
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Textbox13</rd:DefaultName>
-              <Top>-0.00001cm</Top>
-              <Left>0.00003cm</Left>
-              <Height>0.6cm</Height>
-              <Width>12.66058cm</Width>
-              <ZIndex>3</ZIndex>
-              <Visibility>
-                <Hidden>=Parameters!Movimentos.Value = 1</Hidden>
-              </Visibility>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
-          </ReportItems>
-          <Style>
-            <Border>
-              <Style>None</Style>
-            </Border>
-          </Style>
-        </PageFooter>
         <PageHeight>29.7cm</PageHeight>
         <PageWidth>21cm</PageWidth>
-        <LeftMargin>1cm</LeftMargin>
-        <RightMargin>1cm</RightMargin>
-        <TopMargin>1cm</TopMargin>
-        <BottomMargin>1cm</BottomMargin>
+        <LeftMargin>2cm</LeftMargin>
+        <RightMargin>2cm</RightMargin>
+        <TopMargin>2cm</TopMargin>
+        <BottomMargin>2cm</BottomMargin>
         <ColumnSpacing>0.13cm</ColumnSpacing>
         <Style />
       </Page>
@@ -1277,7 +1150,16 @@ Contribuite Nº</Value>
   <ReportParameters>
     <ReportParameter Name="Fornecedor">
       <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
       <Prompt>Fornecedor</Prompt>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="Cliente">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Cliente</Prompt>
       <Hidden>true</Hidden>
     </ReportParameter>
     <ReportParameter Name="Data">
@@ -1303,10 +1185,15 @@ Contribuite Nº</Value>
         <CellDefinition>
           <ColumnIndex>1</ColumnIndex>
           <RowIndex>0</RowIndex>
-          <ParameterName>Data</ParameterName>
+          <ParameterName>Cliente</ParameterName>
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Data</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>Movimentos</ParameterName>
         </CellDefinition>
@@ -1346,5 +1233,5 @@ OGcNttm+IszYSDwzbyy51mM+ToEeeWSuYH6Y3lhT4edh4REDJjMLNBMtzJhT1QAeaD2RUE+Xgo7OcUl/
     </EmbeddedImage>
   </EmbeddedImages>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
-  <rd:ReportID>7d52dea7-6341-4699-af08-f21ea163fcbc</rd:ReportID>
+  <rd:ReportID>64de8ca0-294b-4fc8-9d57-5b3abe0542cb</rd:ReportID>
 </Report>

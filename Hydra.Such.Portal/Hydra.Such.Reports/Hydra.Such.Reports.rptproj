@@ -64,6 +64,7 @@
     <Report Include="EncomendasDetails.rdl" />
     <Report Include="ExtratoCliente.rdl" />
     <Report Include="ExtratoFornecedor.rdl" />
+    <Report Include="ExtratoFornecedorCliente.rdl" />
     <Report Include="FH_AjudasCustoIntegradasRH.rdl" />
     <Report Include="FolhaCaixa.rdl" />
     <Report Include="FolhaHora.rdl" />

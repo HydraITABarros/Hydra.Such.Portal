@@ -3536,14 +3536,10 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     //09/07/02019
                                     //A Pedido do Marco Marcelo quando o WebService devolve uma mensagem com o texto "maximum message size quota"
-                                    //assume-se que o mesmo foi executado com sucesso.
+                                    //assume-se que o mesmo foi executado com sucesso e continua.
                                     errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
 
-                                    if (errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
-                                    {
-                                        return Json(true);
-                                    }
-                                    else
+                                    if (!errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
                                     {
                                         if (!hasErrors)
                                             hasErrors = true;
