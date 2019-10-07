@@ -699,6 +699,7 @@
                     this.$.dlg_registerPreMov.open();
                 },
                 _RegistMov: function () {
+                    debugger;
                     if (this._validateDlgInput()) {
 
                         //$(this.$.btn_RegistarMovimentos).addClass('disabled');
@@ -718,6 +719,7 @@
                     this.$.dpStartDate.value = "";
                 },
                 _validateDlgInput: function () {
+                    debugger;
                     if (this.$.dpStartDate.validate() &
                         this.$.dpEndDate.validate()) {
                         return true;
