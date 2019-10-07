@@ -30,6 +30,7 @@ using React.AspNet;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Hydra.Such.Data.Evolution.Repositories;
 using SharpRepository.Repository;
+using Hydra.Such.Data.Database;
 
 namespace Hydra.Such.Portal
 {
@@ -103,10 +104,15 @@ namespace Hydra.Such.Portal
             /*sharpRepository for evolution database - IoC*/
             services.AddDbContext<EvolutionWEBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EvolutionConnection")), ServiceLifetime.Transient);
 
+            services.AddDbContext<SuchDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
+
+
             services.AddTransient<MaintenanceOrdersRepository>(r =>
             {
                 return new MaintenanceOrdersRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository")));
             });
+            services.AddTransient<EquipamentoRepository>(r => new EquipamentoRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository"))));
+
             services.AddTransient<MaintenanceOrdersLineRepository>(r => new MaintenanceOrdersLineRepository(RepositoryFactory.BuildSharpRepositoryConfiguation(Configuration.GetSection("sharpRepository"))));
 
             return services.UseSharpRepository(Configuration.GetSection("sharpRepository"));

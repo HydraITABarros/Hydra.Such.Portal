@@ -6,6 +6,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 {
     public partial class EvolutionWEBContext : DbContext
     {
-        
+
     }
 }

@@ -14,13 +14,19 @@ const Wrapper = styled.div`
     line-height: ${props => props.lineHeight || "inherit"};
     display: ${props => props.inline ? 'inline-block' : 'block'};
     position: relative;
+    min-height: ${props => props.minHeight || "auto"};
+    white-space: ${props => props.nowrap ? 'nowrap' : 'normal'};
+    overflow: ${props => props.nowrap ? 'auto' : 'unset'};
+    background: ${props => props.background ? props.background : ''};
     @media (max-width: ${breakpoints["md"] + "px"}) {
         padding: ${props => props.mdPadding || (props.padding || 0)};
         text-align: ${props => props.mdTextAlign || (props.textAlign || "left")};
+    	min-height: ${props => props.mdMinHeight || ""};
     }
     @media (max-width: ${breakpoints["sm"] + "px"}) {
         padding: ${props => props.smPadding || (props.mdPadding || (props.padding || 0))};
         text-align: ${props => props.smTextAlign || (props.mdTextAlign || (props.textAlign || "left"))};
+	min-height: ${props => props.smMinHeight || ""};
     }
 `
 

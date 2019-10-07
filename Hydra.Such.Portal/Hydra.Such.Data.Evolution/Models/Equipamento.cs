@@ -25,6 +25,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public string CategoriaText { get; set; }
 
         [NotMapped]
+        public string EquipmentCresp { get; set; }
+
+        [NotMapped]
         public string MarcaText { get; set; }
 
         [NotMapped]
@@ -32,6 +35,10 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
         [NotMapped]
         public string Estado { get; set; }
+
+
+        [NotMapped]
+        public List<EquipMarca> Marcas;
     }
 
     

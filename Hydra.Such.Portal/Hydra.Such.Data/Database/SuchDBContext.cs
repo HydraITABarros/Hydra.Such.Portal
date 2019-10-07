@@ -6,6 +6,15 @@ namespace Hydra.Such.Data.Database
 {
     public partial class SuchDBContext : DbContext
     {
+        public SuchDBContext()
+        {
+        }
+
+        public SuchDBContext(DbContextOptions<SuchDBContext> options)
+            : base(options)
+        {
+        }
+
         public virtual DbSet<AcessosDimensões> AcessosDimensões { get; set; }
         public virtual DbSet<AcessosLocalizacoes> AcessosLocalizacoes { get; set; }
         public virtual DbSet<AcessosPerfil> AcessosPerfil { get; set; }
