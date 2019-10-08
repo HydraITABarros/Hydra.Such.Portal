@@ -2712,6 +2712,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(sFileName);
         }
         //2
+        [RequestSizeLimit(100_000_000)]
         public IActionResult ExportToExcelDownload_AcordoPrecos(string sFileName)
         {
             sFileName = @"/Upload/temp/" + sFileName;
@@ -2719,6 +2720,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         //3
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public JsonResult OnPostImport_AcordoPrecos() //[FromBody] string NoProcedimento)
         {
             var files = Request.Form.Files;
@@ -2846,6 +2848,7 @@ namespace Hydra.Such.Portal.Controllers
         }
         //4
         [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public JsonResult UpdateCreate_AcordoPrecos([FromBody] List<LinhasAcordoPrecos> data)
         {
             List<LinhasAcordoPrecos> results = DBLinhasAcordoPrecos.GetAllByNoProcedimento(data[0].NoProcedimento);
@@ -2872,104 +2875,115 @@ namespace Hydra.Such.Portal.Controllers
                     u.GrupoRegistoIvaProduto == x.GrupoRegistoIvaProduto
             ));
 
+            List<LinhasAcordoPrecos> AllSearch = DBLinhasAcordoPrecos.GetAll().ToList();
+            List<NAVVendorViewModel> AllVendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+            List<NAVProductsViewModel> AllProduct = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+
             data.ForEach(x =>
             {
                 if (!string.IsNullOrEmpty(x.NoProcedimento) && !string.IsNullOrWhiteSpace(x.NoFornecedor) && !string.IsNullOrWhiteSpace(x.CodProduto) && x.DtValidadeInicio != null && !string.IsNullOrWhiteSpace(x.Cresp) && !string.IsNullOrWhiteSpace(x.Localizacao))
                 {
                     LinhasAcordoPrecos toCreate = new LinhasAcordoPrecos();
                     LinhasAcordoPrecos toUpdate = new LinhasAcordoPrecos();
-                    LinhasAcordoPrecos toSearch = DBLinhasAcordoPrecos.GetById(x.NoProcedimento, x.NoFornecedor, x.CodProduto, x.DtValidadeInicio, x.Cresp, x.Localizacao);
+                    LinhasAcordoPrecos toSearch = new LinhasAcordoPrecos();
 
-                    NAVVendorViewModel Vendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).Where(y => y.No_ == x.NoFornecedor).FirstOrDefault();
-                    NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, x.CodProduto).FirstOrDefault();
+                    toSearch = AllSearch.Where(y => y.NoProcedimento == x.NoProcedimento && y.NoFornecedor == x.NoFornecedor && y.CodProduto == x.CodProduto && y.DtValidadeInicio == x.DtValidadeInicio && y.Cresp == x.Cresp && y.Localizacao == x.Localizacao).FirstOrDefault();
+                    NAVVendorViewModel Vendor = AllVendor.Where(y => y.No_ == x.NoFornecedor).FirstOrDefault();
+                    NAVProductsViewModel Product = AllProduct.Where(y => y.Code == x.CodProduto).FirstOrDefault();
 
                     if (toSearch == null)
                     {
-                        toCreate.NoProcedimento = x.NoProcedimento;
-                        toCreate.NoFornecedor = x.NoFornecedor;
-                        if (string.IsNullOrEmpty(x.NomeFornecedor))
-                            toCreate.NomeFornecedor = Vendor.Name;
-                        else
-                            toCreate.NomeFornecedor = x.NomeFornecedor;
-                        toCreate.CodProduto = x.CodProduto;
-                        if (string.IsNullOrEmpty(x.DescricaoProduto))
-                            toCreate.DescricaoProduto = Product.Name;
-                        else
-                            toCreate.DescricaoProduto = x.DescricaoProduto;
-                        toCreate.DtValidadeInicio = x.DtValidadeInicio;
-                        toCreate.DtValidadeFim = x.DtValidadeFim;
-                        toCreate.Regiao = x.Regiao;
-                        toCreate.Area = x.Area;
-                        toCreate.Cresp = x.Cresp;
-                        toCreate.Localizacao = x.Localizacao;
-                        if (x.CustoUnitario == null)
-                            toCreate.CustoUnitario = Product.UnitCost;
-                        else
-                            toCreate.CustoUnitario = x.CustoUnitario;
-                        if (string.IsNullOrEmpty(x.Um))
-                            toCreate.Um = Product.MeasureUnit;
-                        else
-                            toCreate.Um = x.Um;
-                        toCreate.QtdPorUm = x.QtdPorUm;
-                        toCreate.PesoUnitario = x.PesoUnitario;
-                        toCreate.CodProdutoFornecedor = x.CodProdutoFornecedor;
-                        toCreate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
-                        toCreate.FormaEntrega = x.FormaEntrega;
-                        toCreate.TipoPreco = x.TipoPreco;
-                        toCreate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
-                        if (string.IsNullOrEmpty(x.CodCategoriaProduto))
-                            toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
-                        else
-                            toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
+                        if (Vendor != null && Product != null)
+                        {
+                            toCreate.NoProcedimento = x.NoProcedimento;
+                            toCreate.NoFornecedor = x.NoFornecedor;
+                            if (string.IsNullOrEmpty(x.NomeFornecedor))
+                                toCreate.NomeFornecedor = Vendor.Name;
+                            else
+                                toCreate.NomeFornecedor = x.NomeFornecedor;
+                            toCreate.CodProduto = x.CodProduto;
+                            if (string.IsNullOrEmpty(x.DescricaoProduto))
+                                toCreate.DescricaoProduto = Product.Name;
+                            else
+                                toCreate.DescricaoProduto = x.DescricaoProduto;
+                            toCreate.DtValidadeInicio = x.DtValidadeInicio;
+                            toCreate.DtValidadeFim = x.DtValidadeFim;
+                            toCreate.Regiao = x.Regiao;
+                            toCreate.Area = x.Area;
+                            toCreate.Cresp = x.Cresp;
+                            toCreate.Localizacao = x.Localizacao;
+                            if (x.CustoUnitario == null)
+                                toCreate.CustoUnitario = Product.UnitCost;
+                            else
+                                toCreate.CustoUnitario = x.CustoUnitario;
+                            if (string.IsNullOrEmpty(x.Um))
+                                toCreate.Um = Product.MeasureUnit;
+                            else
+                                toCreate.Um = x.Um;
+                            toCreate.QtdPorUm = x.QtdPorUm;
+                            toCreate.PesoUnitario = x.PesoUnitario;
+                            toCreate.CodProdutoFornecedor = x.CodProdutoFornecedor;
+                            toCreate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
+                            toCreate.FormaEntrega = x.FormaEntrega;
+                            toCreate.TipoPreco = x.TipoPreco;
+                            toCreate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
+                            if (string.IsNullOrEmpty(x.CodCategoriaProduto))
+                                toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
+                            else
+                                toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
 
-                        toCreate.UserId = User.Identity.Name;
-                        toCreate.DataCriacao = DateTime.Now;
+                            toCreate.UserId = User.Identity.Name;
+                            toCreate.DataCriacao = DateTime.Now;
 
-                        DBLinhasAcordoPrecos.Create(toCreate);
+                            DBLinhasAcordoPrecos.Create(toCreate);
+                        }
                     }
                     else
                     {
-                        toUpdate.NoProcedimento = x.NoProcedimento;
-                        toUpdate.NoFornecedor = x.NoFornecedor;
-                        if (string.IsNullOrEmpty(x.NomeFornecedor))
-                            toUpdate.NomeFornecedor = Vendor.Name;
-                        else
-                            toUpdate.NomeFornecedor = x.NomeFornecedor;
-                        toUpdate.CodProduto = x.CodProduto;
-                        if (string.IsNullOrEmpty(x.DescricaoProduto))
-                            toUpdate.DescricaoProduto = Product.Name;
-                        else
-                            toUpdate.DescricaoProduto = x.DescricaoProduto;
-                        toUpdate.DtValidadeInicio = x.DtValidadeInicio;
-                        toUpdate.DtValidadeFim = x.DtValidadeFim;
-                        toUpdate.Regiao = x.Regiao;
-                        toUpdate.Area = x.Area;
-                        toUpdate.Cresp = x.Cresp;
-                        toUpdate.Localizacao = x.Localizacao;
-                        if (x.CustoUnitario == null)
-                            toUpdate.CustoUnitario = Product.UnitCost;
-                        else
-                            toUpdate.CustoUnitario = x.CustoUnitario;
-                        if (string.IsNullOrEmpty(x.Um))
-                            toUpdate.Um = Product.MeasureUnit;
-                        else
-                            toUpdate.Um = x.Um;
-                        toUpdate.QtdPorUm = x.QtdPorUm;
-                        toUpdate.PesoUnitario = x.PesoUnitario;
-                        toUpdate.CodProdutoFornecedor = x.CodProdutoFornecedor;
-                        toUpdate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
-                        toUpdate.FormaEntrega = x.FormaEntrega;
-                        toUpdate.TipoPreco = x.TipoPreco;
-                        toUpdate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
-                        if (Product != null)
-                            toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
-                        else
-                            toUpdate.CodCategoriaProduto = null;
+                        if (Vendor != null && Product != null)
+                        {
+                            toUpdate.NoProcedimento = x.NoProcedimento;
+                            toUpdate.NoFornecedor = x.NoFornecedor;
+                            if (string.IsNullOrEmpty(x.NomeFornecedor))
+                                toUpdate.NomeFornecedor = Vendor.Name;
+                            else
+                                toUpdate.NomeFornecedor = x.NomeFornecedor;
+                            toUpdate.CodProduto = x.CodProduto;
+                            if (string.IsNullOrEmpty(x.DescricaoProduto))
+                                toUpdate.DescricaoProduto = Product.Name;
+                            else
+                                toUpdate.DescricaoProduto = x.DescricaoProduto;
+                            toUpdate.DtValidadeInicio = x.DtValidadeInicio;
+                            toUpdate.DtValidadeFim = x.DtValidadeFim;
+                            toUpdate.Regiao = x.Regiao;
+                            toUpdate.Area = x.Area;
+                            toUpdate.Cresp = x.Cresp;
+                            toUpdate.Localizacao = x.Localizacao;
+                            if (x.CustoUnitario == null)
+                                toUpdate.CustoUnitario = Product.UnitCost;
+                            else
+                                toUpdate.CustoUnitario = x.CustoUnitario;
+                            if (string.IsNullOrEmpty(x.Um))
+                                toUpdate.Um = Product.MeasureUnit;
+                            else
+                                toUpdate.Um = x.Um;
+                            toUpdate.QtdPorUm = x.QtdPorUm;
+                            toUpdate.PesoUnitario = x.PesoUnitario;
+                            toUpdate.CodProdutoFornecedor = x.CodProdutoFornecedor;
+                            toUpdate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
+                            toUpdate.FormaEntrega = x.FormaEntrega;
+                            toUpdate.TipoPreco = x.TipoPreco;
+                            toUpdate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
+                            if (Product != null)
+                                toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
+                            else
+                                toUpdate.CodCategoriaProduto = null;
 
-                        toUpdate.UserId = x.UserId;
-                        toUpdate.DataCriacao = x.DataCriacao;
+                            toUpdate.UserId = x.UserId;
+                            toUpdate.DataCriacao = x.DataCriacao;
 
-                        DBLinhasAcordoPrecos.Update(toUpdate);
+                            DBLinhasAcordoPrecos.Update(toUpdate);
+                        }
                     }
                 }
             });
