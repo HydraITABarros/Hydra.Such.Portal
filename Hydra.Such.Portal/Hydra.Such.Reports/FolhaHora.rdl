@@ -89,6 +89,10 @@
           <DataField>Matricula</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="Terminada">
+          <DataField>Terminada</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
     </DataSet>
     <DataSet Name="LINHAS">
@@ -359,7 +363,7 @@
             <Top>0.85278cm</Top>
             <Left>1.70733cm</Left>
             <Height>0.5cm</Height>
-            <Width>7cm</Width>
+            <Width>16.94267cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -394,7 +398,7 @@
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
             <Top>0.17639cm</Top>
-            <Left>14.03094cm</Left>
+            <Left>6.9cm</Left>
             <Height>0.5cm</Height>
             <Width>1.8175cm</Width>
             <ZIndex>4</ZIndex>
@@ -430,8 +434,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>0.85278cm</Top>
-            <Left>14.03094cm</Left>
+            <Top>0.17639cm</Top>
+            <Left>14.87556cm</Left>
             <Height>0.5cm</Height>
             <Width>1.8175cm</Width>
             <ZIndex>5</ZIndex>
@@ -467,8 +471,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>0.21167cm</Top>
-            <Left>15.98955cm</Left>
+            <Top>0.17639cm</Top>
+            <Left>8.89389cm</Left>
             <Height>0.5cm</Height>
             <Width>1.8175cm</Width>
             <ZIndex>6</ZIndex>
@@ -504,10 +508,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>0.85278cm</Top>
-            <Left>15.98955cm</Left>
+            <Top>0.17639cm</Top>
+            <Left>16.89594cm</Left>
             <Height>0.5cm</Height>
-            <Width>1.8175cm</Width>
+            <Width>1.75406cm</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border>
@@ -2692,7 +2696,6 @@
               </Filter>
             </Filters>
             <Top>3.18806cm</Top>
-            <Left>0cm</Left>
             <Height>2cm</Height>
             <Width>18.65cm</Width>
             <ZIndex>9</ZIndex>
@@ -4851,7 +4854,6 @@
               </Filter>
             </Filters>
             <Top>7.285cm</Top>
-            <Left>0cm</Left>
             <Height>1.5cm</Height>
             <Width>18.75cm</Width>
             <ZIndex>11</ZIndex>
@@ -6049,7 +6051,6 @@
               </Filter>
             </Filters>
             <Top>9.19cm</Top>
-            <Left>0cm</Left>
             <Height>1.5cm</Height>
             <Width>18.7cm</Width>
             <ZIndex>12</ZIndex>
@@ -6061,7 +6062,6 @@
           </Tablix>
           <Line Name="Line2">
             <Top>12.64278cm</Top>
-            <Left>0cm</Left>
             <Height>0cm</Height>
             <Width>18.75cm</Width>
             <ZIndex>13</ZIndex>
@@ -6598,7 +6598,6 @@
             </TablixRowHierarchy>
             <DataSetName>PRESENCAS</DataSetName>
             <Top>10.86639cm</Top>
-            <Left>0cm</Left>
             <Height>1.6cm</Height>
             <Width>18.65cm</Width>
             <ZIndex>14</ZIndex>
@@ -6608,6 +6607,80 @@
               </Border>
             </Style>
           </Tablix>
+          <Textbox Name="Textbox17">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Terminada</Value>
+                    <Style>
+                      <FontFamily>Arial</FontFamily>
+                      <FontSize>8pt</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <TextDecoration>None</TextDecoration>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox8</rd:DefaultName>
+            <Top>0.17639cm</Top>
+            <Left>10.88778cm</Left>
+            <Height>0.5cm</Height>
+            <Width>1.8175cm</Width>
+            <ZIndex>15</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox19">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=First(Fields!Terminada.Value, "CABECALHO")</Value>
+                    <Style>
+                      <FontFamily>Arial</FontFamily>
+                      <FontSize>8pt</FontSize>
+                      <FontWeight>Normal</FontWeight>
+                      <TextDecoration>None</TextDecoration>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Left</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox8</rd:DefaultName>
+            <Top>0.17639cm</Top>
+            <Left>12.88167cm</Left>
+            <Height>0.5cm</Height>
+            <Width>1.8175cm</Width>
+            <ZIndex>16</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
         <Height>12.64278cm</Height>
         <Style />
@@ -6843,7 +6916,6 @@
             </Textbox>
             <Line Name="Line1">
               <Top>2.17639cm</Top>
-              <Left>0cm</Left>
               <Height>0cm</Height>
               <Width>18.75cm</Width>
               <ZIndex>7</ZIndex>
