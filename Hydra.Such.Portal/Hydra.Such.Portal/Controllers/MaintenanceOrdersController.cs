@@ -98,7 +98,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [Route(""), HttpGet, AcceptHeader("application/json")]
-        //[ResponseCache(Duration = 60000)]
+        [ResponseCache(Duration = 60000)]
         public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
         {
             var pageSize = 150;
