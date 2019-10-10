@@ -238,6 +238,9 @@
         </style>
         <div class="subMenu" hidden="{{ !_permissions.read }}">
             <paper-button class="tablinks" on-tap="_registerPreMov"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Registar Movimentos</paper-button>
+
+            <paper-button class="tablinks" id="showRegistadas" on-tap="_showRegistadas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showRegistadasMessage }}</paper-button>
+
             <paper-button id="btn_imprimirPreMov" class="tablinks" on-tap="_printPreMov" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Pré Registros</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
@@ -288,11 +291,11 @@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.movementType.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="moveType">Tipo Movimento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="moveType" />
+                    <vaadin-grid-sorter path="moveTypeText">Tipo Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="moveTypeText" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
+                    <!--<vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -300,17 +303,18 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>-->
+                {{item.moveTypeText}}
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="type" />
+                    <vaadin-grid-sorter path="typeText">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="typeText" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
+                    <!--<vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -318,7 +322,8 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>-->
+                    {{item.typeText}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.code.hidden }}">
@@ -342,11 +347,11 @@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.measurementUnitCode.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="measurementUnitCode" />
+                    <vaadin-grid-sorter path="measurementUnitCodeText">Cód. Unidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="measurementUnitCodeText" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
+                    <!--<vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -354,7 +359,8 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>-->
+                    {{item.measurementUnitCodeText}}
                 </template>
             </vaadin-grid-column>
 
@@ -436,11 +442,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.locationCode.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="locationCode" />
+                    <vaadin-grid-sorter path="locationCodeText">Cód. Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="locationCodeText" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
+                    <!--<vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -448,7 +454,8 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>-->
+                    {{item.locationCodeText}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.serviceObject.hidden }}">
@@ -462,11 +469,11 @@
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regionCode" />
+                    <vaadin-grid-sorter path="regionCodeText">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCodeText" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
+                    <!--<vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -474,16 +481,17 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>-->
+                    {{item.regionCodeText}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="functionalAreaCode">Cód Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="functionalAreaCode" />
+                    <vaadin-grid-sorter path="functionalAreaCodeText">Cód Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaCodeText" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
+                    <!--<vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -491,16 +499,17 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>-->
+                    {{item.functionalAreaCodeText}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsabilityCenterCode" />
+                    <vaadin-grid-sorter path="responsabilityCenterCodeText">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenterCodeText" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
+                    <!--<vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -508,7 +517,8 @@
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box>-->
+                    {{item.responsabilityCenterCodeText}}
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.user.hidden }}">
@@ -523,11 +533,12 @@
 
             <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.billable.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="billable" />
+                    <vaadin-grid-sorter path="billableText">Faturável</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="billableText" />
                 </template>
                 <template>
-                    <paper-checkbox name="billable" disabled checked="{{item.billable}}"></paper-checkbox>
+                    {{item.billableText}}
+                    <!--<paper-checkbox name="billable" disabled checked="{{item.billable}}"></paper-checkbox>-->
                 </template>
             </vaadin-grid-column>
             <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.folhaHoras.hidden }}">
@@ -661,10 +672,20 @@
                     _reportserverurl: {
                         type: String,
                     },
+                    _registadas: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _showRegistadasMessage: {
+                        type: String,
+                        value: "Registadas"
+                    },
                 },
                 ready: function () {
                     if (this.paramprojno != "") {
-                        this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno, this._registadas);
+                        this.$.grid_databound_ajax.params = { "registadas": this._registadas };
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
                     }
@@ -699,7 +720,6 @@
                     this.$.dlg_registerPreMov.open();
                 },
                 _RegistMov: function () {
-                    debugger;
                     if (this._validateDlgInput()) {
 
                         //$(this.$.btn_RegistarMovimentos).addClass('disabled');
@@ -719,7 +739,6 @@
                     this.$.dpStartDate.value = "";
                 },
                 _validateDlgInput: function () {
-                    debugger;
                     if (this.$.dpStartDate.validate() &
                         this.$.dpEndDate.validate()) {
                         return true;
@@ -733,6 +752,8 @@
                     } else {
                         if (this.data.eReasonCode === 1) {
                             this.$.dlg_registerPreMov.close();
+                            this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno, this._registadas);
+                            this.$.grid_databound_ajax.params = { "registadas": this._registadas };
                             this.$.grid_databound_ajax.generateRequest();
                             this.$.projectMovementTable.clearCache();
                             this.openToastSuccess(this.data.eMessage);
@@ -855,7 +876,8 @@
                     if (this.deletedPreMovimento.eReasonCode == 1) {
                         this.openToastSuccess(this.deletedPreMovimento.eMessage);
 
-                        this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno, this._registadas);
+                        this.$.grid_databound_ajax.params = { "registadas": this._registadas };
                         this.$.grid_databound_ajax.generateRequest();
                         this.$.projectMovementTable.clearCache();
                     } else {
@@ -881,8 +903,28 @@
                         value = value + " €";
                     }
                     return value;
-                }
+                },
 
+
+                _showRegistadas: function (item) {
+                    if (item != null) {
+                        if (this._registadas == false)
+                            this._registadas = true;
+                        else
+                            this._registadas = false;
+
+                        this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno, this._registadas);
+                        this.$.grid_databound_ajax.params = { "registadas": this._registadas };
+                        this.$.grid_databound_ajax.generateRequest();
+                        this.$.projectMovementTable.clearCache();
+
+                        if (this._registadas == false) {
+                            this._showRegistadasMessage = "Registadas";
+                        } else {
+                            this._showRegistadasMessage = "Não Registadas";
+                        }
+                    }
+                },
             });
         });
     </script>

@@ -33,6 +33,7 @@ using System.Globalization;
 using Hydra.Such.Data.ViewModel.Clients;
 using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Approvals;
+using Hydra.Such.Data.ViewModel.ProjectView;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3072,18 +3073,19 @@ namespace Hydra.Such.Portal.Controllers
                     if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
 
-                    List<NAVClientsViewModel> clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Join(",", result.Select(r=>r.CodCliente).ToList()) ).ToList();
-                    List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
+                    //List<NAVClientsViewModel> clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Join(",", result.Select(r => r.CodCliente).ToList())).ToList();
+                    //List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
 
-                    result.ForEach(x =>
-                    {
-                        var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto);
-                        if (movements != null) { 
-                            x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
-                        }
+                    //result.ForEach(x =>
+                    //{
+                    //    var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto);
+                    //    if (movements != null)
+                    //    {
+                    //        x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
+                    //    }
 
-                        x.NomeCliente = !string.IsNullOrEmpty(x.CodCliente) ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() != null ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault().Name : "" : "";
-                    });
+                    //    x.NomeCliente = !string.IsNullOrEmpty(x.CodCliente) ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() != null ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault().Name : "" : "";
+                    //});
                 }
                 return Json(result);
             }
@@ -3119,17 +3121,17 @@ namespace Hydra.Such.Portal.Controllers
                     if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         result.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.CodCentroResponsabilidade));
 
-                    List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
-                    List<NAVClientsViewModel> clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+                    //List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
+                    //List<NAVClientsViewModel> clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
 
-                    result.ForEach(x =>
-                    {
-                        var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto).ToList();
-                        if (movements != null && movements.Count() > 0)
-                            x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
+                    //result.ForEach(x =>
+                    //{
+                    //    var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto).ToList();
+                    //    if (movements != null && movements.Count() > 0)
+                    //        x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
 
-                        x.NomeCliente = clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() != null ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault().Name : "";
-                    });
+                    //    x.NomeCliente = clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() != null ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault().Name : "";
+                    //});
                 }
                 return Json(result);
             }
@@ -4460,7 +4462,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPreMovementsProject([FromBody] string ProjectNo)
+        public JsonResult GetPreMovementsProject([FromBody] string ProjectNo, bool registadas)
         {
             try
             {
@@ -4471,28 +4473,44 @@ namespace Hydra.Such.Portal.Controllers
                 List<TiposRefeição>  AllMealTypes = DBMealTypes.GetAll();
                 List<ClientServicesViewModel> AllServiceGroup = DBClientServices.GetAllServiceGroup(string.Empty, true);
 
-                List<ProjectDiaryViewModel> dp = DBPreProjectMovements.GetPreRegistered(ProjectNo).Select(x => new ProjectDiaryViewModel()
+                List<EnumData> AllTiposMovimentos = EnumerablesFixed.ProjectDiaryMovements;
+                List<EnumData> AllTipos = EnumerablesFixed.ProjectDiaryTypes;
+                List<NAVMeasureUnitViewModel> AllUnidadesMedida = DBNAV2017MeasureUnit.GetAllMeasureUnit(_config.NAVDatabaseName, _config.NAVCompanyName);
+                List<NAVLocationsViewModel> AllLocations = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
+                List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 1);
+                List<NAVDimValueViewModel> AllAreas = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
+                List<NAVDimValueViewModel> AllCresps = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
+
+                List<ProjectDiaryViewModel> dp = DBPreProjectMovements.GetPreRegisteredByProjectAndRegistadas(ProjectNo, registadas).Select(x => new ProjectDiaryViewModel()
                 {
                     LineNo = x.NºLinha,
                     ProjectNo = x.NºProjeto,
                     Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
                     MovementType = x.TipoMovimento,
+                    MovementTypeText = x.TipoMovimento.HasValue ? AllTiposMovimentos.Where(y => y.Id == x.TipoMovimento).FirstOrDefault() != null ? AllTiposMovimentos.Where(y => y.Id == x.TipoMovimento).FirstOrDefault().Value : "" : "",
                     Type = x.Tipo,
+                    TypeText = x.Tipo.HasValue ? AllTipos.Where(y => y.Id == x.Tipo).FirstOrDefault() != null ? AllTipos.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "" : "",
                     Code = x.Código,
                     Description = x.Descrição,
                     Quantity = x.Quantidade,
                     MeasurementUnitCode = x.CódUnidadeMedida,
+                    MeasurementUnitCodeText = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? AllUnidadesMedida.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? AllUnidadesMedida.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
                     LocationCode = x.CódLocalização,
+                    LocationCodeText = !string.IsNullOrEmpty(x.CódLocalização) ? AllLocations.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? AllLocations.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "",
                     ProjectContabGroup = x.GrupoContabProjeto,
                     RegionCode = x.CódigoRegião,
+                    RegionCodeText = !string.IsNullOrEmpty(x.CódigoRegião) ? AllRegions.Where(y => y.Code == x.CódigoRegião).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CódigoRegião).FirstOrDefault().Name : "" : "",
                     FunctionalAreaCode = x.CódigoÁreaFuncional,
+                    FunctionalAreaCodeText = !string.IsNullOrEmpty(x.CódigoÁreaFuncional) ? AllAreas.Where(y => y.Code == x.CódigoÁreaFuncional).FirstOrDefault() != null ? AllAreas.Where(y => y.Code == x.CódigoÁreaFuncional).FirstOrDefault().Name : "" : "",
                     ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                    ResponsabilityCenterCodeText = !string.IsNullOrEmpty(x.CódigoCentroResponsabilidade) ? AllCresps.Where(y => y.Code == x.CódigoCentroResponsabilidade).FirstOrDefault() != null ? AllCresps.Where(y => y.Code == x.CódigoCentroResponsabilidade).FirstOrDefault().Name : "" : "",
                     User = x.Utilizador,
                     UnitCost = x.CustoUnitário,
                     TotalCost = x.CustoTotal,
                     UnitPrice = x.PreçoUnitário,
                     TotalPrice = x.PreçoTotal,
                     Billable = x.Faturável,
+                    BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
                     Registered = x.Registado,
                     MealType = x.TipoRefeição,
                     FolhaHoras = x.NºDocumento,
@@ -4505,7 +4523,7 @@ namespace Hydra.Such.Portal.Controllers
                     ServiceClientDescription = !String.IsNullOrEmpty(x.CódServiçoCliente) ? AllServices.Where(y => y.Código == x.CódServiçoCliente).FirstOrDefault().Descrição : "",
                     MealTypeDescription = x.TipoRefeição != null ? AllMealTypes.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : ""
 
-                }).Where(x => x.Registered == false).ToList();
+                }).ToList();
                 //foreach (ProjectDiaryViewModel item in dp)
                 //{
                 //    if (!String.IsNullOrEmpty(item.ServiceClientCode))
@@ -7452,12 +7470,12 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["movementType"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.MovementType.ToString());
+                            row.CreateCell(Col).SetCellValue(item.MovementTypeText);
                             Col = Col + 1;
                         }
                         if (dp["type"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.Type.ToString());
+                            row.CreateCell(Col).SetCellValue(item.TypeText);
                             Col = Col + 1;
                         }
                         if (dp["code"]["hidden"].ToString() == "False")
@@ -7472,7 +7490,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["measurementUnitCode"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.MeasurementUnitCode);
+                            row.CreateCell(Col).SetCellValue(item.MeasurementUnitCodeText);
                             Col = Col + 1;
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
@@ -7512,7 +7530,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["locationCode"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.LocationCode);
+                            row.CreateCell(Col).SetCellValue(item.LocationCodeText);
                             Col = Col + 1;
                         }
                         //if (dp["serviceObject"]["hidden"].ToString() == "False")
@@ -7522,17 +7540,17 @@ namespace Hydra.Such.Portal.Controllers
                         //}
                         if (dp["regionCode"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.RegionCode);
+                            row.CreateCell(Col).SetCellValue(item.RegionCodeText);
                             Col = Col + 1;
                         }
                         if (dp["functionalAreaCode"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode);
+                            row.CreateCell(Col).SetCellValue(item.FunctionalAreaCodeText);
                             Col = Col + 1;
                         }
                         if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode);
+                            row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCodeText);
                             Col = Col + 1;
                         }
                         if (dp["user"]["hidden"].ToString() == "False")

@@ -21,6 +21,20 @@ namespace Hydra.Such.Data.Logic.Project
                 return null;
             }
         }
+        public static List<PréMovimentosProjeto> GetPreRegisteredByProjectAndRegistadas(string ProjectNo, bool Registadas)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PréMovimentosProjeto.Where(x => x.NºProjeto == ProjectNo && x.Registado == Registadas).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         public static PréMovimentosProjeto GetByLine(int Line)
         {
             try

@@ -18,11 +18,16 @@ namespace Hydra.Such.Data.ViewModel
         public string Description { get; set; }
         public decimal? Quantity { get; set; }
         public string MeasurementUnitCode { get; set; }
+        public string MeasurementUnitCodeText { get; set; }
         public string LocationCode { get; set; }
+        public string LocationCodeText { get; set; }
         public string ProjectContabGroup { get; set; }
         public string RegionCode { get; set; }
+        public string RegionCodeText { get; set; }
         public string FunctionalAreaCode { get; set; }
+        public string FunctionalAreaCodeText { get; set; }
         public string ResponsabilityCenterCode { get; set; }
+        public string ResponsabilityCenterCodeText { get; set; }
         public string User { get; set; }
         public decimal? UnitCost { get; set; }
         public decimal? TotalCost { get; set; }
