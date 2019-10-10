@@ -17,7 +17,7 @@ const styles = css`&& {
 `
 
 const DefaultCheckBox = styled(MuiCheckbox)`${styles}`;
-
+var timeout = 0;
 const CheckBox = ({ ...props }) => {
 	if (props.$checked) {
 		props.onChange = (e) => {

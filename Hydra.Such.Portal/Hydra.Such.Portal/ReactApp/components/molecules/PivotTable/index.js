@@ -25,6 +25,8 @@ import IsPreventiveTypeProvider from './isPreventiveDataType';
 import DefaultTypeProvider from './defaultDataType';
 import AvatarsTypeProvider from './avatarsDataType';
 import DateTypeProvider from './dateDataType';
+import { isMobile } from 'react-device-detect';
+import { useDrag, useScroll } from 'react-use-gesture'
 
 import {
 	Column,
@@ -185,6 +187,7 @@ injectGlobal`
                 }
         }
         .table--row {
+		pointer-events: all;
 		&--hoverable {
 			cursor: pointer;
 			&:hover {
@@ -325,9 +328,10 @@ const StyledBadge = styled(Text)`
     	line-height: 16px;
     	display: inline-block;
 `
-var rowPressTimer = 0;
+var rowPressTimer;
+var rowTouchTimer;
 
-var resetSelection;
+var resetSelection = 0;
 
 var timeout = 0;
 
@@ -399,6 +403,9 @@ class eTable extends Component {
 		this.noDataCellComponent = this.noDataCellComponent.bind(this);
 		this.toggleButtonComponent = this.toggleButtonComponent.bind(this);
 		this.onGroupRowClick = this.onGroupRowClick.bind(this);
+		//this.handleRowTouchStart = this.handleRowTouchStart.bind(this);
+		this.handleRowTouchMove = this.handleRowTouchMove.bind(this);
+		//this.handleRowTouchEnd = this.handleRowTouchEnd.bind(this);
 		resetSelection = this.resetSelection;
 		this.state.boldColumns = props.columns.filter((item) => {
 			return item.type && item.dataType == 'bold';
@@ -420,25 +427,40 @@ class eTable extends Component {
 	}
 
 	handleRowPress(props) {
+
 		Tooltip.Hidden.hide();
 		Tooltip.Hidden.rebuild();
 		if (this.state.selectionMode) {
+
 			props.row.selected = !props.row.selected;
-			this.setState({ selectionMode: true, selectedRows: this.state.rows.filter((item) => item.selected) }, () => {
+			var selcted = [];
+			var selectedRows = this.state.selectedRows || [];
+			if (props.row.selected) {
+				selectedRows.push(props.row);
+				selcted = selectedRows;
+			} else {
+				selcted = selectedRows.filter((item) => item.idEquipamento !== props.row.idEquipamento);
+			}
+
+			this.setState({ selectedRowsCount: selcted.length, selectedRows: selcted }, () => {
 				this.handleSelectionEvent();
 			});
-		}
-
-		rowPressTimer = setTimeout(() => {
-
-			if (this.props.allowMultiple) {
-				rowPressTimer = 0;
-				props.row.selected = true;
-				this.setState({ selectionMode: true, selectedRows: this.state.rows.filter((item) => item.selected) }, () => {
-					this.handleSelectionEvent();
-				});
+		} else {
+			if (rowPressTimer != 0) {
+				return;
 			}
-		}, 600);
+			rowPressTimer = setTimeout(() => {
+
+				if (this.props.allowMultiple) {
+					rowPressTimer = 0;
+					props.row.selected = true;
+					var selcted = [props.row];
+					this.setState({ selectionMode: true, selectedRowsCount: selcted.length, selectedRows: selcted }, () => {
+						this.handleSelectionEvent();
+					});
+				}
+			}, 300);
+		}
 	}
 
 	handleSelectionEvent() {
@@ -446,7 +468,7 @@ class eTable extends Component {
 	}
 
 	handleRowRelease(props) {
-		if (!this.state.selectionMode && rowPressTimer != 0 && typeof this.props.onRowClick == 'function') {
+		if (!this.state.selectionMode && rowPressTimer !== 0 && typeof this.props.onRowClick == 'function') {
 			this.props.onRowClick(props.row);
 			props.row.selected;
 			this.setState({ rows: this.state.rows });
@@ -454,8 +476,12 @@ class eTable extends Component {
 		clearTimeout(rowPressTimer);
 	}
 
+	handleRowTouchMove(props) {
+		clearTimeout(rowTouchTimer);
+		clearTimeout(rowPressTimer);
+	}
+
 	fetchNext() {
-		console.log(1234);
 		var page = this.state.page + 1;
 		this.setState({ page: page + 1, isLoading: true }, () => {
 		});
@@ -472,13 +498,20 @@ class eTable extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-
+		return true;
 		// return this.props.rows !== nextProps.rows || nextProps.isLoading !== this.props.isLoading || nextState.isLoading !== this.state.isLoading
 		// 	|| nextState.rows !== this.state.rows || nextProps.isLoading !== this.state.isLoading || this.state.rows !== nextProps.rows;
 		if (!isToUpdate) {
 			return false;
 		}
-		return nextState.group.length !== this.state.group.length || nextState.sort !== this.state.sort /* || nextState.clear !== this.state.clear*/ || nextProps.rows !== this.state.rows || this.state.isLoading !== nextState.isLoading || this.state.isLoading !== nextProps.isLoading || this.state.page !== nextState.page;
+		return nextState.group.length !== this.state.group.length ||
+			nextState.sort !== this.state.sort /* || nextState.clear !== this.state.clear*/ ||
+			nextProps.rows !== this.state.rows ||
+			this.state.isLoading !== nextState.isLoading ||
+			this.state.selectedRowsCount !== nextState.selectedRowsCount ||
+			this.state.isLoading !== nextProps.isLoading ||
+			this.state.page !== nextState.page ||
+			this.state.selectedRowsCount !== nextState.selectedRowsCount;
 		return true;
 		return this.state.rows !== nextProps.rows || this.state.isLoading !== nextProps.isLoading || nextState.searchValues.length !== this.state.searchValues.length;
 	}
@@ -524,8 +557,11 @@ class eTable extends Component {
 	}
 
 	resetSelection() {
+
+		console.log(12312312);
+
 		this.state.rows.map((item) => item.selected = false);
-		this.setState({ selectionMode: false, selectedRows: [] }, () => {
+		this.setState({ selectionMode: false, selectedRowsCount: 0, selectedRows: [] }, () => {
 			this.handleSelectionEvent();
 		});
 	}
@@ -572,7 +608,8 @@ class eTable extends Component {
 			page: 0, isLoading: true,
 			rows: [], total: 0,
 			clear: true,
-			selectedRows: []
+			selectedRows: [],
+			selectedRowsCount: 0
 		}, () => {
 			this.setState({ clear: false });
 			this.handleSelectionEvent();
@@ -692,7 +729,7 @@ class eTable extends Component {
 					</div>
 				}
 				{!this.state.clear &&
-					<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
+					<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]}>
 						<SortingState sorting={this.state.sort} onSortingChange={this.handleOnSortingChange} columnExtensions={columns} />
 						<SelectionState />
 						<GroupingState expandedGroups={defaultExpandedGroups} grouping={this.state.group}
@@ -704,7 +741,7 @@ class eTable extends Component {
 						<IntegratedGrouping />
 						<DragDropProvider />
 						<VirtualTableState
-							infiniteScrolling={false}
+							infiniteScrolling={true}
 							loading={this.state.isLoading}
 							totalRowCount={totalRowCount}
 							pageSize={this.props.pageSize}
@@ -720,14 +757,39 @@ class eTable extends Component {
 								return (
 									<VirtualTable.Row
 										{...props}
+
 										className={"table--row--hoverable" + (props.row.selected ? " table--row--hoverable__selected" : "")}
-										onMouseDown={() => { this.handleRowPress(props) }}
-										onMouseUp={() => { this.handleRowRelease(props) }}
-										onTouchStart={() => { this.handleRowPress(props) }}
-										onTouchEnd={() => { this.handleRowRelease(props) }}
+
+										//onMouseDown={() => { !isMobile ? this.handleRowPress(props) : '' }}
+										//onMouseUp={() => { !isMobile ? this.handleRowRelease(props) : '' }}
+										//onTouchMove={(e) => { console.log("MOVE"); this.handleRowTouchMove(props, e) }}
+										//onDragStart={(e) => { console.log("DRA"); }}
+										//onTouchStart={() => { !this.state.selectionMode && false ? (() => { console.log("START"); this.handleRowPress(props) })() : '' }}
+										//onClick={() => { this.state.selectionMode && isMobile ? (() => { console.log("CLICK"); this.handleRowPress(props) })() : '' }}
+										//onTouchEnd={() => { console.log("END"); this.handleRowRelease(props) }}
+										{...useDrag(({ first, last, down, movement }) => {
+
+											if (movement[0] !== 0 || movement[1] !== 0) {
+												console.log("move", movement);
+												return this.handleRowTouchMove(props);
+											}
+											// if (first) {
+											console.log("FIRST", movement);
+											this.handleRowPress(props);
+											// }
+
+											if (last) {
+												console.log("LAST", movement, last)
+												clearTimeout(rowPressTimer);
+												return this.handleRowRelease(props)
+											}
+										}, { dragDelay: 30 })()}
+										onScroll={(e) => { console.log("MOVE"); this.handleRowTouchMove(props, e) }}
+
 									/>
 								)
 							}}
+
 							cellComponent={(props) => {
 								var value = props.value;
 								return (<MuiTableCell {..._.omit(props, ['tableRow', 'tableColumn'])}

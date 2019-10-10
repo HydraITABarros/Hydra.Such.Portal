@@ -127,10 +127,10 @@ class HTitle extends Component {
 		return (
 			<RootTitle width="100%" className={this.props.className}>
 				<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>
-					<Grid item xs={12} sm={7} md={7} padding="15px">
+					<Grid item xs={12} sm={6} md={6} lg={7} padding="15px">
 						<Title h1 data-tip={this.state.title} >{this.state.title}</Title>
 					</Grid>
-					<Grid item xs={12} sm={5} md={5} padding="15px">
+					<Grid item xs={12} sm={6} md={6} lg={5} padding="15px">
 						<div style={{ textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left' }}>
 							<ModalOptions >
 								<Button icon={<Icon options />}

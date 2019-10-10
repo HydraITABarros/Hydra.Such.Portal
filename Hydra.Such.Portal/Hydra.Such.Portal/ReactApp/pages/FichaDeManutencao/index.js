@@ -24,6 +24,8 @@ import _theme from '../../themes/default';
 import Color from 'color';
 import _ from 'lodash';
 import Functions from '../../helpers/functions';
+import './index.scss';
+import { red } from '@material-ui/core/colors';
 
 const addLinkedPropsToObject = Functions.addLinkedPropsToObject;
 
@@ -181,6 +183,26 @@ class FichaDeManutencao extends Component {
 
 	componentDidMount() {
 		this.setBodyHeight();
+		var planContentEl = this.planContent.getElement();
+		var planEquipmentsHeaderEl = this.planEquipmentsHeader.getElement();
+		var startClientY = 0;
+		planEquipmentsHeaderEl.ontouchstart = (e) => {
+			startClientY = e.changedTouches[0].clientY;
+		};
+		planEquipmentsHeaderEl.ontouchmove = (e) => {
+			this.mainScroll.scrollTop = this.mainScroll.scrollTop + (e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY);
+			//console.log(e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY/*, e.changedTouches.Touch.clientY*/)
+			startClientY = e.changedTouches[0].clientY;
+		};
+
+		planContentEl.ontouchstart = (e) => {
+			startClientY = e.changedTouches[0].clientY;
+		};
+		planContentEl.ontouchmove = (e) => {
+			this.mainScroll.scrollTop = this.mainScroll.scrollTop + (e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY);
+			//console.log(e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY/*, e.changedTouches.Touch.clientY*/)
+			startClientY = e.changedTouches[0].clientY;
+		};
 	}
 
 	setBodyHeight() {
@@ -316,7 +338,7 @@ class FichaDeManutencao extends Component {
 			<PageTemplate >
 				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.pageWrapper = el}>
 					<Breadcrumb order={this.state.order} onRef={el => this.breadcrumbWrapper = el} />
-					<div className="scrollarea" style={{ height: this.state.bodyHeight + 'px', overflow: 'auto' }}>
+					<div className="scrollarea" style={{ height: this.state.bodyHeight + 'px', overflow: 'auto' }} ref={el => this.mainScroll = el}>
 						<Sticky scrollElement=".scrollarea" style={{ zIndex: 11 }} >
 							<HeaderTitle
 								title={this.state.title}
@@ -352,7 +374,7 @@ class FichaDeManutencao extends Component {
 							categoryId={this.state.categoryId}
 						/>
 						<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} >
-							<Grid item xs={8} sm={8} md={6} >
+							<Grid item xs={8} sm={8} md={6} className="before-to-scroll" ref={el => this.beforetoscroll = el}>
 								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
 									<PlanHeader>
 										<Wrapper padding="32px 0px 16px 32px" >
@@ -413,7 +435,8 @@ class FichaDeManutencao extends Component {
 								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
 									<PlanHeader className={this.getScrollShadow()}
 										ref={(el) => { this.equipmentsHeaderWrapper = el }}>
-										<ScrollContainer className="scroll-container" ref={el => this.planEquipmentsHeader = el}
+										<ScrollContainer className="scroll-container h100 natural-scroll" ref={el => this.planEquipmentsHeader = el}
+											nativeMobileScroll={false}
 											onScroll={(e) => {
 												ReactDOM.findDOMNode(this.planContent).scrollLeft = e;
 												var className = ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className;
@@ -439,8 +462,12 @@ class FichaDeManutencao extends Component {
 									</PlanHeader>
 								</Sticky>
 
-								<div ref={el => this.planContentWrapper = el} className={this.getScrollShadow()} >
-									<ScrollContainer className={"scroll-container"} ref={el => this.planContent = el}
+								<div ref={el => this.planContentWrapper = el} className={this.getScrollShadow()}
+									style={{ position: 'relative' }}
+								>
+									<ScrollContainer
+										className={"scroll-container natural-scroll"} ref={el => this.planContent = el}
+										nativeMobileScroll={false}
 										onScroll={(e) => {
 											ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollLeft = e;
 											var className = ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className;
@@ -460,7 +487,7 @@ class FichaDeManutencao extends Component {
 											}
 										}}>
 										{/* form */}
-										<Wrapper>
+										<Wrapper >
 											<Wrapper padding="0  32px 0 0">
 												{this.state.planMaintenance.length > 0 && this.state.planMaintenance.map((item, index) => {
 													return (
@@ -520,8 +547,10 @@ class FichaDeManutencao extends Component {
 											padding="0"
 											minHeight="164px"
 											background={Color(this.props.theme.palette.secondary.default).alpha(0.2).toString()}
-											width={this.state.equipmentsHeaderScroll.innerWidth + 'px'}>
-											<Wrapper padding="48px 12px 56px">
+											width={this.state.equipmentsHeaderScroll.innerWidth + 'px'}
+											margin="none"
+											style={{ minWidth: "45vw" }}>
+											<Wrapper padding="48px 12px 56px" margin="none">
 												{this.state.equipments.map((equipment, i) => {
 													return (
 														<PlanEquipmentsItem key={i}>

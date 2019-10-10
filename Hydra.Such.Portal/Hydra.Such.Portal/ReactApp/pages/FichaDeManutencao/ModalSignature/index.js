@@ -13,10 +13,12 @@ import Upload from '../upload';
 import Documentos from '../documentos';
 import Fotografias from '../fotografias';
 import { Grid } from '@material-ui/core';
+import SignaturePad from 'react-signature-pad-wrapper'
 import "./index.scss";
-
+import ReactDOM from 'react-dom';
 
 const { DialogTitle, DialogContent, DialogActions } = ModalLarge;
+
 
 const Tabs = styled(MuiTabs)`
     [class*="MuiTabs-scroller"]>span{
@@ -56,10 +58,18 @@ const Bar = styled(AppBar)`&&{
     }
 `;
 
+var canvasWidth = window.innerWidth;
+
 class Options extends Component {
 	state = {
 		open: false,
 		tab: 0,
+		clientSignaturePadOpen: false,
+		clientSignaturePadPng: null,
+		technicalSignaturePadOpen: false,
+		technicalSignaturePadPng: null,
+		sieSignaturePadOpen: false,
+		sieSignaturePadPng: null,
 	}
 	constructor(props) {
 		super(props);
@@ -72,14 +82,16 @@ class Options extends Component {
 	}
 
 	render() {
+
+		canvasWidth = window.innerWidth;
+		console.log(canvasWidth);
 		return (
 			<ModalLarge
-				className="modal-signature"
 				onClose={() => this.setState({ open: false })}
 				onOpen={() => this.setState({ open: true })}
 				open={this.state.open}
 				action={this.props.children} children={
-					<div>
+					<div className="modal-signature">
 						<DialogTitle>
 							<Text h2><Icon report /> Assinar</Text>
 						</DialogTitle>
@@ -106,19 +118,15 @@ class Options extends Component {
 									</div>
 									<Spacer height={"10px"} />
 									<div style={{ position: 'relative' }}>
-										<Input placeholder={"Assinatura"} />
-										<Icon signature
-											style={{
-												position: 'absolute',
-												top: 0,
-												right: 0,
-												bottom: 0,
-												margin: 'auto',
-												lineHeight: '40px',
-												width: '40px',
-												pointerEvents: 'none'
-											}}
-										/>
+										{/* <Input placeholder={"Assinatura"} onClick={() => this.setState({ signaturePadOpen: true })} /> */}
+										<Button icon={<Icon signature />} onClick={() => {
+											this.setState({ technicalSignaturePadOpen: true }, () => {
+												if (this.state.technicalSignaturePadPng) {
+													this.technicalSignaturePad.fromDataURL(this.state.technicalSignaturePadPng);
+												}
+											});
+										}} ></Button>
+										{this.state.technicalSignaturePadPng && <Wrapper inline padding="0 10px"><Icon approved style={{ color: _theme.palette.alert.good }} /></Wrapper>}
 									</div>
 									<br /><br /><br />
 									<div>
@@ -126,19 +134,17 @@ class Options extends Component {
 									</div>
 									<Spacer height={"10px"} />
 									<div style={{ position: 'relative' }}>
-										<Input placeholder={"Assinatura"} />
-										<Icon signature
-											style={{
-												position: 'absolute',
-												top: 0,
-												right: 0,
-												bottom: 0,
-												margin: 'auto',
-												lineHeight: '40px',
-												width: '40px',
-												pointerEvents: 'none'
+										{/* <Input placeholder={"Assinatura"} onClick={() => this.setState({ signaturePadOpen: true })} /> */}
+										<Button icon={<Icon signature />}
+											onClick={() => {
+												this.setState({ sieSignaturePadOpen: true }, () => {
+													if (this.state.sieSignaturePadPng) {
+														this.sieSignaturePad.fromDataURL(this.state.sieSignaturePadPng);
+													}
+												});
 											}}
-										/>
+										></Button>
+										{this.state.sieSignaturePadPng && <Wrapper inline padding="0 10px"><Icon approved style={{ color: _theme.palette.alert.good }} /></Wrapper>}
 									</div>
 									<Spacer height={"10px"} />
 									<CheckBox /> <Text span>Assinatura é igual à do cliente</Text>
@@ -153,32 +159,77 @@ class Options extends Component {
 									</div>
 									<Spacer height={"10px"} />
 									<div style={{ position: 'relative' }}>
-										<Input placeholder={"Assinatura"} />
-										<Icon signature
-											style={{
-												position: 'absolute',
-												top: 0,
-												right: 0,
-												bottom: 0,
-												margin: 'auto',
-												lineHeight: '40px',
-												width: '40px',
-												pointerEvents: 'none'
+										<Button icon={<Icon signature />}
+											onClick={() => {
+												this.setState({ clientSignaturePadOpen: true }, () => {
+													if (this.state.clientSignaturePadPng) {
+														this.clientSignaturePad.fromDataURL(this.state.clientSignaturePadPng);
+													}
+												});
 											}}
-										/>
+										></Button>
+										{this.state.clientSignaturePadPng && <Wrapper inline padding="0 10px"><Icon approved style={{ color: _theme.palette.alert.good }} /></Wrapper>}
+
 									</div>
 									<Spacer height={"10px"} />
 									<CheckBox id="assinaturamanual" /> <label htmlFor="assinaturamanual" className="pointer"><Text span>Assinatura manual</Text></label>
 								</DialogContent>
 							</Grid>
 							<Grid item xs={12} lg={1} >
-
 							</Grid>
 						</Grid>
 						<hr />
 						<DialogActions>
 							<Button primary onClick={() => this.setState({ open: false })} color="primary">Finalizar</Button>
 						</DialogActions>
+						{this.state.clientSignaturePadOpen &&
+							<div className={"signature-pad__wrapper signature-pad__wrapper--open"}>
+								<div className="signature-pad__close__wrapper">
+									<Button iconSolo><Icon decline onClick={() => this.setState({ clientSignaturePadOpen: false })} /></Button>
+								</div>
+								<SignaturePad height={window.innerHeight} className="signature-pad" redrawOnResize={true} options={{ minWidth: 2, maxWidth: 10 /*, penColor: 'rgb(66, 133, 244)'*/ }}
+									ref={ref => this.clientSignaturePad = ref} />
+								<div className="signature-pad__actions">
+									<Button default onClick={() => this.clientSignaturePad.clear()} color="primary">Apagar</Button>
+									<Button primary onClick={() => {
+										this.setState({ clientSignaturePadPng: this.clientSignaturePad.toDataURL() });
+										this.setState({ clientSignaturePadOpen: false });
+									}} color="primary">Guardar</Button>
+								</div>
+							</div>
+						}
+						{this.state.sieSignaturePadOpen &&
+							<div className={"signature-pad__wrapper signature-pad__wrapper--open"}>
+								<div className="signature-pad__close__wrapper">
+									<Button iconSolo><Icon decline onClick={() => this.setState({ sieSignaturePadOpen: false })} /></Button>
+								</div>
+								<SignaturePad height={window.innerHeight} className="signature-pad" redrawOnResize={true} options={{ minWidth: 2, maxWidth: 10 /*, penColor: 'rgb(66, 133, 244)'*/ }}
+									ref={ref => this.sieSignaturePad = ref} />
+								<div className="signature-pad__actions">
+									<Button default onClick={() => this.sieSignaturePad.clear()} color="primary">Apagar</Button>
+									<Button primary onClick={() => {
+										this.setState({ sieSignaturePadPng: this.sieSignaturePad.toDataURL() });
+										this.setState({ sieSignaturePadOpen: false });
+									}} color="primary">Guardar</Button>
+								</div>
+							</div>
+						}
+						{this.state.technicalSignaturePadOpen &&
+							<div className={"signature-pad__wrapper signature-pad__wrapper--open"}>
+								<div className="signature-pad__close__wrapper">
+									<Button iconSolo><Icon decline onClick={() => this.setState({ technicalSignaturePadOpen: false })} /></Button>
+								</div>
+								<SignaturePad height={window.innerHeight} className="signature-pad" redrawOnResize={true} options={{ minWidth: 2, maxWidth: 10 /*, penColor: 'rgb(66, 133, 244)'*/ }}
+									ref={ref => this.technicalSignaturePad = ref} />
+								<div className="signature-pad__actions">
+									<Button default onClick={() => this.technicalSignaturePad.clear()} color="primary">Apagar</Button>
+									<Button primary onClick={() => {
+										this.setState({ technicalSignaturePadPng: this.technicalSignaturePad.toDataURL() });
+										this.setState({ technicalSignaturePadOpen: false });
+									}} color="primary">Guardar</Button>
+								</div>
+							</div>
+						}
 					</div>
 				} />
 		)

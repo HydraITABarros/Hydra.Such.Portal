@@ -509,7 +509,6 @@ class OrdensDeManutencao extends Component {
 			if (data.ordersCounts && data.result && data.result.items) {
 				var list = data.result.items;
 				var nextPageLink = data.result.nextPageLink;
-				console.log(data.result.count, isNext);
 				this.setState({
 					ordersCounts: data.ordersCounts,
 					maintenenceOrders: isNext ? this.state.maintenenceOrders.concat(list) : list,

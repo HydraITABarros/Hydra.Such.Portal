@@ -186,11 +186,12 @@ class OrdensDeManutencaoLine extends Component {
 		maintenanceOrder: {},
 		equipments: [],
 		equipmentsTotal: 0,
-		equipmentsIsLoading: true,
+		equipmentsIsLoading: false,
 		equipmentsLinesNext: "",
 		listContainerStyle: {},
 		selectionMode: false,
-		selectedRows: []
+		selectedRows: [],
+		selectedRowsCount: 0
 	}
 
 	constructor(props) {
@@ -208,6 +209,18 @@ class OrdensDeManutencaoLine extends Component {
 		window.addEventListener("resize", this.handleResize);
 		this.setTableMarginTop();
 		this.addTechnical();
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		//return true;
+		return nextState.isLoading !== this.state.isLoading ||
+			nextState.equipmentsIsLoading !== this.state.equipmentsIsLoading ||
+			nextState.equipmentsTotal !== this.state.equipmentsTotal ||
+			nextState.listContainerStyle.marginTop !== this.state.listContainerStyle.marginTop ||
+			nextState.selectedRows !== this.state.selectedRows ||
+			nextState.selectedRowsCount !== this.state.selectedRowsCount ||
+			nextState.selectionMode !== this.state.selectionMode ||
+			nextState.tooltipReady !== this.state.tooltipReady;
 	}
 
 	handleResize() {
@@ -240,7 +253,6 @@ class OrdensDeManutencaoLine extends Component {
 			if (appNavbarCollapse) {
 				var height = window.innerHeight - top - (document.getElementById("app-navbar-collapse").offsetHeight * 1);
 				this.setState({ listContainerStyle: { "height": height, marginTop: top } }, () => {
-					console.log(this.state.listContainerStyle.height, this.state.listContainerStyle.marginTop);
 				})
 			}
 		}, 100);
@@ -329,7 +341,6 @@ class OrdensDeManutencaoLine extends Component {
 
 	addTechnical() {
 		axios.put(`/ordens-de-manutencao/${this.state.orderId}/technicals/logged`).then((result) => {
-			console.log('added technical', result);
 		}).catch(function (error) {
 			console.log(error);
 		});
@@ -341,11 +352,18 @@ class OrdensDeManutencaoLine extends Component {
 			<PageTemplate >
 				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.highlightWrapper = el}>
 					{this.state.selectionMode ?
-						<HeaderSelection count={this.state.selectedRows.length} openEnabled={
-							this.state.selectedRows.filter((item, i) => {
+						<HeaderSelection count={this.state.selectedRows.length} openEnabled={() => {
+							this.state.selectedRows = this.state.selectedRows || [];
+
+							return this.state.selectedRows.filter((item, i) => {
 								return item.categoriaText == this.state.selectedRows[i == 0 ? 0 : i - 1].categoriaText;
-							}).length == this.state.selectedRows.length} onClickOpen={(e) => { }}
+							}).length == this.state.selectedRows.length;
+						}}
+
+							onClickOpen={(e) => { }}
+
 							onBackClick={() => {
+								this.setState({ selectionMode: false });
 								this.table.resetSelection();
 							}}
 							onOpenClick={(e) => {
@@ -381,8 +399,8 @@ class OrdensDeManutencaoLine extends Component {
 							]}
 							getRows={this.fetchEquipements}
 							onRowSelectionChange={(e) => {
-								this.setState({ selectionMode: e.selectionMode, selectedRows: e.selectedRows, equipmentsIsLoading: true }, () => {
-									this.setState({ equipmentsIsLoading: false })
+								this.setState({ selectionMode: e.selectionMode, selectedRows: e.selectedRows, selectedRowsCount: e.selectedRows.length }, () => {
+									//this.setState({ equipmentsIsLoading: false })
 								});
 							}}
 							onRowClick={(row) => {
@@ -390,7 +408,6 @@ class OrdensDeManutencaoLine extends Component {
 							}}
 							onGroupRowClick={selection => {
 								var idsMarca, idsServico, idCategoria, idsCategorias;
-								console.log(selection);
 								if (selection.categoriaText) {
 									idsCategorias = this.state.categorias.filter((item) => { return item.nome.toLowerCase() == selection.categoriaText.toLowerCase() }).map(item => item.idCategoria);
 								}
