@@ -328,8 +328,9 @@ const StyledBadge = styled(Text)`
     	line-height: 16px;
     	display: inline-block;
 `
-var rowPressTimer;
-var rowTouchTimer;
+var rowPressTimer = 0;
+
+var avoidSimultaneousTouchAndMouseEventTimer = 0;
 
 var resetSelection = 0;
 
@@ -427,40 +428,19 @@ class eTable extends Component {
 	}
 
 	handleRowPress(props) {
-
 		Tooltip.Hidden.hide();
 		Tooltip.Hidden.rebuild();
-		if (this.state.selectionMode) {
-
-			props.row.selected = !props.row.selected;
-			var selcted = [];
-			var selectedRows = this.state.selectedRows || [];
-			if (props.row.selected) {
-				selectedRows.push(props.row);
-				selcted = selectedRows;
-			} else {
-				selcted = selectedRows.filter((item) => item.idEquipamento !== props.row.idEquipamento);
+		console.log("AFTER TIMER");
+		rowPressTimer = setTimeout(() => {
+			console.log("LONG PRESS");
+			if (this.props.allowMultiple) {
+				props.row.selected = true;
+				var selcted = [props.row];
+				this.setState({ selectionMode: true, selectedRowsCount: selcted.length, selectedRows: selcted }, () => {
+					this.handleSelectionEvent();
+				});
 			}
-
-			this.setState({ selectedRowsCount: selcted.length, selectedRows: selcted }, () => {
-				this.handleSelectionEvent();
-			});
-		} else {
-			if (rowPressTimer != 0) {
-				return;
-			}
-			rowPressTimer = setTimeout(() => {
-
-				if (this.props.allowMultiple) {
-					rowPressTimer = 0;
-					props.row.selected = true;
-					var selcted = [props.row];
-					this.setState({ selectionMode: true, selectedRowsCount: selcted.length, selectedRows: selcted }, () => {
-						this.handleSelectionEvent();
-					});
-				}
-			}, 300);
-		}
+		}, 400);
 	}
 
 	handleSelectionEvent() {
@@ -468,16 +448,32 @@ class eTable extends Component {
 	}
 
 	handleRowRelease(props) {
-		if (!this.state.selectionMode && rowPressTimer !== 0 && typeof this.props.onRowClick == 'function') {
-			this.props.onRowClick(props.row);
-			props.row.selected;
-			this.setState({ rows: this.state.rows });
-		}
 		clearTimeout(rowPressTimer);
+		clearTimeout(avoidSimultaneousTouchAndMouseEventTimer);
+		avoidSimultaneousTouchAndMouseEventTimer = setTimeout(() => {
+			if (!this.state.selectionMode && rowPressTimer !== 0 && typeof this.props.onRowClick == 'function') {
+				this.props.onRowClick(props.row);
+				props.row.selected;
+				this.setState({ rows: this.state.rows });
+			} else if (this.state.selectionMode) {
+				props.row.selected = !props.row.selected;
+				var selcted = [];
+				var selectedRows = this.state.selectedRows || [];
+				if (props.row.selected) {
+					selectedRows.push(props.row);
+					selcted = selectedRows;
+				} else {
+					selcted = selectedRows.filter((item) => item.idEquipamento !== props.row.idEquipamento);
+				}
+				console.log("selectedRowsCount", selcted.length);
+				this.setState({ selectedRowsCount: selcted.length, selectedRows: selcted }, () => {
+					this.handleSelectionEvent();
+				});
+			}
+		}, 5);
 	}
 
 	handleRowTouchMove(props) {
-		clearTimeout(rowTouchTimer);
 		clearTimeout(rowPressTimer);
 	}
 
@@ -498,7 +494,7 @@ class eTable extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		return true;
+		//return true;
 		// return this.props.rows !== nextProps.rows || nextProps.isLoading !== this.props.isLoading || nextState.isLoading !== this.state.isLoading
 		// 	|| nextState.rows !== this.state.rows || nextProps.isLoading !== this.state.isLoading || this.state.rows !== nextProps.rows;
 		if (!isToUpdate) {
@@ -557,9 +553,6 @@ class eTable extends Component {
 	}
 
 	resetSelection() {
-
-		console.log(12312312);
-
 		this.state.rows.map((item) => item.selected = false);
 		this.setState({ selectionMode: false, selectedRowsCount: 0, selectedRows: [] }, () => {
 			this.handleSelectionEvent();
@@ -689,6 +682,8 @@ class eTable extends Component {
 		}
 		var hiddenColumns = this.state.hiddenColumns;
 
+		console.log("RENDER");
+
 		var retval = (
 			<div>
 				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1, pointerEvents: 'none' }} className={isLoading ? "" : "hidden"}>
@@ -741,7 +736,7 @@ class eTable extends Component {
 						<IntegratedGrouping />
 						<DragDropProvider />
 						<VirtualTableState
-							infiniteScrolling={true}
+							infiniteScrolling={false}
 							loading={this.state.isLoading}
 							totalRowCount={totalRowCount}
 							pageSize={this.props.pageSize}
@@ -767,25 +762,24 @@ class eTable extends Component {
 										//onTouchStart={() => { !this.state.selectionMode && false ? (() => { console.log("START"); this.handleRowPress(props) })() : '' }}
 										//onClick={() => { this.state.selectionMode && isMobile ? (() => { console.log("CLICK"); this.handleRowPress(props) })() : '' }}
 										//onTouchEnd={() => { console.log("END"); this.handleRowRelease(props) }}
-										{...useDrag(({ first, last, down, movement }) => {
+										{...useDrag(({ first, last, down, movement, event }) => {
+
+											console.log(event);
 
 											if (movement[0] !== 0 || movement[1] !== 0) {
 												console.log("move", movement);
 												return this.handleRowTouchMove(props);
 											}
-											// if (first) {
-											console.log("FIRST", movement);
-											this.handleRowPress(props);
-											// }
-
+											if (first) {
+												console.log("FIRST", movement, down);
+												this.handleRowPress(props);
+											}
 											if (last) {
-												console.log("LAST", movement, last)
-												clearTimeout(rowPressTimer);
+												console.log("LAST", movement, last, down);
 												return this.handleRowRelease(props)
 											}
-										}, { dragDelay: 30 })()}
-										onScroll={(e) => { console.log("MOVE"); this.handleRowTouchMove(props, e) }}
-
+										}, { dragDelay: 0 })()}
+									//onScroll={(e) => { console.log("MOVE"); this.handleRowTouchMove(props, e) }}
 									/>
 								)
 							}}
