@@ -256,7 +256,7 @@
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2" hidden>
                     <such-selectbox id="piCodeLocation" name="piCodeLocation" value="{{codeLocation}}" label="Cód. Localização" disabled="{{ !_permissions.create }}"
                                     items="[[Locations]]"
                                     text-path="value"
@@ -280,8 +280,6 @@
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="piCodeResponsabilityCenter" name="piCodeResponsabilityCenter" value="{{codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ !_permissions.create }}"
                                     items="[[ResponsabilityCenterData]]"
@@ -289,7 +287,9 @@
                                     value-path="id"
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                     </such-selectbox>
-                </div>
+                </div>            </div>
+            <div class="row">
+
                 <div class="col-lg-2">
                     <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
@@ -308,11 +308,11 @@
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-2 alignPoga">
                     <vaadin-checkbox id="pcInvoice" checked="{{billable}}" disabled="{{ !_permissions.create }}"> Faturável</vaadin-checkbox>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-2">
                     <such-selectbox id="MealTypesCode" name="MealTypesCode" value="{{ddMealTypes}}" label="Tipo Refeição" disabled="{{ !_permissions.create }}"
                                     items="[[MealTypesData]]"
@@ -343,6 +343,9 @@
                                     fields='[{"field":"serviceCode", "name":"Código"}, {"field":"serviceDescription", "name":"Descrição"}]'>
                     </such-selectbox>
                 </div>
+                <div class="col-lg-2" hidden="{{ !_permissions.create }}" style="padding-top:15px">
+                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </div>
             </div>
             <div class="row">
 
@@ -354,9 +357,6 @@
                                     fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                     style="display: none;">
                     </such-selectbox>
-                </div>
-                <div class="col-lg-2" hidden="{{ !_permissions.create }}">
-                    <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                 </div>
             </div>
             <vaadin-text-field id="piInvoiceClientNo" disabled value="{{invoiceClientNo}}" hidden></vaadin-text-field>
@@ -824,7 +824,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
                     <vaadin-grid-filter path="locationCode"></vaadin-grid-filter>
@@ -838,16 +838,6 @@
                                         value="{{item.locationCode}}"
                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                         </such-selectbox>
-                        <!--<vaadin-combo-box items="[[Locations]]" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{item.locationCode}}">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="40%">[[item.id]]</td>
-                                <td width="60%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>-->
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         [[ _parseLocation(item.locationCode) ]]
@@ -1929,9 +1919,11 @@
                             this.$.piCode._clearSelection();
                             this.$.piDescription.value = "";
                             this.$.piCodeLocation._clearSelection();
-                            this.$.piCodeRegion._clearSelection();
-                            this.$.piFuncArea._clearSelection();
-                            this.$.piCodeResponsabilityCenter._clearSelection();
+                            if (this.disabledProjectNo == false) {
+                                this.$.piCodeRegion._clearSelection();
+                                this.$.piFuncArea._clearSelection();
+                                this.$.piCodeResponsabilityCenter._clearSelection();
+                            }
                             this.$.piUnitCost.value = "";
                             this.$.piTotalCost.value = "";
                             this.$.piUnitPrice.value = "";

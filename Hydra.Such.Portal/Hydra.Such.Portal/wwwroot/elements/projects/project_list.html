@@ -155,16 +155,6 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.movimentosVenda.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="movimentosVenda">Movimentos Venda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="movimentosVenda" value="[[filter.movimentosVenda]]" />
-                </template>
-                <template>
-                    {{item.movimentosVenda}}
-                </template>
-            </vaadin-grid-column>
-
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
@@ -217,6 +207,16 @@
                 </template>
                 <template>
                     {{item.projectTypeDescription}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.movimentosVenda.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="movimentosVenda">Movimentos Venda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movimentosVenda" value="[[filter.movimentosVenda]]" />
+                </template>
+                <template>
+                    {{item.movimentosVenda}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -365,13 +365,13 @@
                         "description": { hidden: false, label: "Descrição" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },
-                        "movimentosVenda": { hidden: false, label: "Movimentos Venda" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "contractoNo": { hidden: false, label: "Nº Contrato" },
                         "projectTypeCode": { hidden: false, label: "Cód. Tipo Projeto" },
-                        "projectTypeDescription": { hidden: false, label: "Tipo Projeto" }
+                        "projectTypeDescription": { hidden: false, label: "Tipo Projeto" },
+                        "movimentosVenda": { hidden: false, label: "Movimentos Venda" },
                     };
 
                     if (localStorage["projectlist.ToggleColumn"]) {

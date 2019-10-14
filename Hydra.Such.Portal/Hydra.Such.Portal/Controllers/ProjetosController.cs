@@ -6001,11 +6001,6 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nome Cliente");
                     Col = Col + 1;
                 }
-                if (dp["movimentosVenda"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Movimentos Venda");
-                    Col = Col + 1;
-                }
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Código Região");
@@ -6034,6 +6029,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["projectTypeDescription"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Tipo Projeto");
+                    Col = Col + 1;
+                }
+                if (dp["movimentosVenda"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Movimentos Venda");
                     Col = Col + 1;
                 }
 
@@ -6075,11 +6075,6 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ClientName);
                             Col = Col + 1;
                         }
-                        if (dp["movimentosVenda"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.MovimentosVenda);
-                            Col = Col + 1;
-                        }
                         if (dp["regionCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegionCode);
@@ -6108,6 +6103,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["projectTypeDescription"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ProjectTypeDescription);
+                            Col = Col + 1;
+                        }
+                        if (dp["movimentosVenda"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.MovimentosVenda);
                             Col = Col + 1;
                         }
                         count++;
