@@ -17,9 +17,13 @@
           <QueryParameter Name="@Data">
             <Value>=Parameters!Data.Value</Value>
           </QueryParameter>
+          <QueryParameter Name="@regiao">
+            <Value>=Parameters!regiao.Value</Value>
+          </QueryParameter>
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
         <CommandText>rpt_mapaACSS</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="Cód__Serviço">
@@ -1391,7 +1395,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>="Antiguidades de Contas a Receber a " + CStr(Parameters!Data.Value)</Value>
+                      <Value>="Antiguidades de Contas a Receber a " + CStr(Parameters!Data.Value) + ", Região = " + CStr(Parameters!regiao.Label)</Value>
                       <Style>
                         <FontSize>14pt</FontSize>
                         <FontWeight>Bold</FontWeight>
@@ -1489,6 +1493,31 @@
       <DataType>DateTime</DataType>
       <Prompt>Data</Prompt>
     </ReportParameter>
+    <ReportParameter Name="regiao">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Região</Prompt>
+      <ValidValues>
+        <ParameterValues>
+          <ParameterValue>
+            <Label>Todas</Label>
+          </ParameterValue>
+          <ParameterValue>
+            <Value>1</Value>
+            <Label>Norte</Label>
+          </ParameterValue>
+          <ParameterValue>
+            <Value>2</Value>
+            <Label>Centro</Label>
+          </ParameterValue>
+          <ParameterValue>
+            <Value>3</Value>
+            <Label>Sul</Label>
+          </ParameterValue>
+        </ParameterValues>
+      </ValidValues>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -1499,6 +1528,11 @@
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>Data</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>regiao</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
