@@ -1,0 +1,105 @@
+@import "../../themes/default";
+
+body {
+	background-color: palette(bg, white);
+}
+
+.navbar-container,
+.navbar-header {
+	background-color: palette(secondary, default);
+}
+
+.app-main {
+	.row {
+		margin: 0;
+	}
+
+	.wrap {
+		padding: 0;
+	}
+}
+
+@keyframes fade {
+	from {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@-webkit-keyframes fade {
+	from {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.blink {
+	animation: fade 1000ms infinite;
+	-webkit-animation: fade 1000ms infinite;
+}
+
+mark,
+.mark {
+	background-color: palette(search, default);
+	padding: 0;
+}
+
+.custom-class {
+	position: relative;
+}
+
+.scroll-overlay {
+	&:before {
+		content: "";
+		position: absolute;
+		z-index: 1000;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+}
+
+.om {
+	&__header {
+		opacity: 1;
+		height: 250px;
+		overflow: hidden;
+		-webkit-transition: opacity 0.5s, height 0.5s;
+		transition: opacity 0.5s, height 0.5s;
+		transform: translate3d(0, 0, 0);
+		will-change: opacity, height;
+
+		&--prepare-transform {
+			-webkit-transition: transform 0.001s;
+			transition: transform 0.001s;
+			transform: translate3d(0, 0, 0);
+			will-change: transform;
+		}
+
+		&--collapsed {
+			height: 0px;
+			opacity: 0;
+		}
+
+		&__container {
+			position: relative;
+			top: 50%;
+			transform: translate3d(0, -50%, 0);
+		}
+	}
+}

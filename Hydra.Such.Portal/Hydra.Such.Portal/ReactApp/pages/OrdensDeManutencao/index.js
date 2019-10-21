@@ -34,50 +34,17 @@ import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import async from 'async';
+import { Parallax, ParallaxProvider } from 'react-scroll-parallax';
+import './index.scss';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
+axios.defaults.headers.get['Cache'] = cacheUnique;
 
 const { DialogTitle, DialogContent, DialogActions } = Modal;
 
 const muiTheme = createMuiTheme();
 const breakpoints = muiTheme.breakpoints.values;
-
-injectGlobal`
-    body {
-        background-color: white;   
-    }
-    .navbar-container, .navbar-header {
-        background-color: ${_theme.palette.secondary.default};
-    }
-    .app-main {
-        .row {
-            margin: 0;
-        }
-        .wrap {
-            padding: 0;
-        }
-    }
-    @keyframes fade {
-        from { opacity: 1.0; }
-        50% { opacity: 0.5; }
-        to { opacity: 1.0; }
-    }                                                                                                                                                                                                                                  
-
-    @-webkit-keyframes fade {
-        from { opacity: 1.0; }
-        50% { opacity: 0.5; }
-        to { opacity: 1.0; }
-    }
-    .blink {
-        animation:fade 1000ms infinite;
-        -webkit-animation:fade 1000ms infinite;
-    }
-    mark, .mark {
-        background-color: ${_theme.palette.search} ;
-        padding: 0;
-    }
-`
 
 const Grid = styled(MuiGrid)`
     position: relative;
@@ -320,19 +287,14 @@ var timer = 0;
 
 var cancelToken = axios.CancelToken;
 var call;
-
+var timeout = 0;
+var tableScrollTop = 0;
 class OrdensDeManutencao extends Component {
 	state = {
 		isLoading: true,
 		client: {
 			"id": null,
 			"name": null
-		},
-		calendar: {
-			"from": null,
-			"to": null,
-			"olderFrom": null,
-			"olderTo": null
 		},
 		ordersCounts: {
 			preventive: null,
@@ -386,7 +348,7 @@ class OrdensDeManutencao extends Component {
 		}
 
 		this.handleResize = this.handleResize.bind(this);
-		this.handleDateChange = this.handleDateChange.bind(this);
+
 		this.filterListByKeysValue = this.filterListByKeysValue.bind(this);
 		this.handleTechnicalsClose = this.handleTechnicalsClose.bind(this);
 		this.handleFetchMaintenanceRequest = this.handleFetchMaintenanceRequest.bind(this);
@@ -427,79 +389,78 @@ class OrdensDeManutencao extends Component {
 
 
 	fetchMaintenenceOrders({ search, sort, page }, cb) {
-
 		cb = cb || (() => { });
 		var isNext = page > 1;
-		this.setState({ maintenenceOrdersIsLoading: true }, () => {
 
-			if (isNext && this.state.maintenenceOrdersNext != "") {
-				call = axios.CancelToken.source();
+		if (isNext && this.state.maintenenceOrdersNext != "") {
+			console.log("NEXT", isNext);
+			call = axios.CancelToken.source();
+			this.setState({ maintenenceOrdersIsLoading: true }, () => {
 				this.handleFetchMaintenanceRequest(axios.get(this.state.maintenenceOrdersNext, { cancelToken: call.token }), isNext);
-			} else {
-				if (call) { call.cancel(); }
-				call = axios.CancelToken.source();
-				this.setState({ maintenenceOrdersNext: "", maintenanceOrders: [], maintenanceOrdersTotal: 0 }, () => {
-					async.parallel([
-						(cb) => {
-							if (this.state.institutions == null) {
-								axios.get('/ordens-de-manutencao/institutions').then((result) => {
-									this.setState({ institutions: result.data }, () => { cb(null, 1); });
-								}).catch(function (error) { cb(null, 1); });
-							} else {
-								cb(null, 1);
-							}
-						}, (cb) => {
-							if (this.state.clients == null) {
-								axios.get('/ordens-de-manutencao/clients').then((result) => {
-									this.setState({ clients: result.data }, () => { cb(null, 2); });
-								}).catch(function (error) {
-									cb(null, 2);
-								});
-							} else {
-								cb(null, 2);
-							}
-						}, (cb) => {
-							var filter = "";
-							if (search && search.length > 0) {
-								search.map((value, index) => {
-									if (index > 0) { filter += " and "; };
-									filter += "(contains(description,'" + value + "') or contains(no,'" + value + "') " + getOdataDateFilterExpression(true, 'orderDate', value, "or");
-									//filter += "(contains(description,'" + value + "') or contains(no,'" + value + "') or " + getOdataDateFilterExpression('orderDate', value) + " or date(orderDate) eq " + moment(value).format('YYYY-MM-DD') + "";
-									var _institutions = this.state.institutions.filter((item) => { return item.name.toLowerCase().indexOf(value.toLowerCase()) > -1; }).map(item => item.id).join(',');
-									if (_institutions.length > 0) {
-										filter += " or idInstituicaoEvolution in (" + _institutions + ")";
-									}
-									var _clients = this.state.clients.filter((item) => { return item.name.toLowerCase().indexOf(value.toLowerCase()) > -1; }).map(item => item.id).join(',');
-									if (_clients.length > 0) {
-										filter += " or idClienteEvolution in (" + _clients + ")";
-									}
-									filter += ")";
-								});
-							}
-							var params = {
-								$select: 'no,description,customerName,orderType,idTecnico1,idTecnico2,idTecnico3,idTecnico4,idTecnico5,orderDate,shortcutDimension1Code,idClienteEvolution,idInstituicaoEvolution,idServicoEvolution',
-								$filter: filter == "" ? null : filter,
-								$count: true,
-								cancelToken: call.token
-							}
+			});
+		} else {
+			console.log("NEW");
 
-							if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
-								params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
-							}
-
-							var request = axios.get('/ordens-de-manutencao', { params });
-
-							cb(null, request);
+			if (call) { call.cancel(); }
+			call = axios.CancelToken.source();
+			this.setState({ maintenenceOrdersIsLoading: true, maintenenceOrdersNext: "", maintenanceOrders: [], maintenanceOrdersTotal: 0 }, () => {
+				async.parallel([
+					(cb) => {
+						if (this.state.institutions == null) {
+							axios.get('/ordens-de-manutencao/institutions').then((result) => {
+								this.setState({ institutions: result.data }, () => { cb(null, 1); });
+							}).catch(function (error) { cb(null, 1); });
+						} else {
+							cb(null, 1);
 						}
-					], (err, results) => {
-						this.handleFetchMaintenanceRequest(results[2]);
-					});
+					}, (cb) => {
+						if (this.state.clients == null) {
+							axios.get('/ordens-de-manutencao/clients').then((result) => {
+								this.setState({ clients: result.data }, () => { cb(null, 2); });
+							}).catch(function (error) {
+								cb(null, 2);
+							});
+						} else {
+							cb(null, 2);
+						}
+					}, (cb) => {
+						var filter = "";
+						if (search && search.length > 0) {
+							search.map((value, index) => {
+								if (index > 0) { filter += " and "; };
+								filter += "(contains(description,'" + value + "') or contains(no,'" + value + "') " + getOdataDateFilterExpression(true, 'orderDate', value, "or");
+								//filter += "(contains(description,'" + value + "') or contains(no,'" + value + "') or " + getOdataDateFilterExpression('orderDate', value) + " or date(orderDate) eq " + moment(value).format('YYYY-MM-DD') + "";
+								var _institutions = this.state.institutions.filter((item) => { return item.name.toLowerCase().indexOf(value.toLowerCase()) > -1; }).map(item => item.id).join(',');
+								if (_institutions.length > 0) {
+									filter += " or idInstituicaoEvolution in (" + _institutions + ")";
+								}
+								var _clients = this.state.clients.filter((item) => { return item.name.toLowerCase().indexOf(value.toLowerCase()) > -1; }).map(item => item.id).join(',');
+								if (_clients.length > 0) {
+									filter += " or idClienteEvolution in (" + _clients + ")";
+								}
+								filter += ")";
+							});
+						}
+						var params = {
+							$select: 'no,description,customerName,orderType,idTecnico1,idTecnico2,idTecnico3,idTecnico4,idTecnico5,orderDate,shortcutDimension1Code,idClienteEvolution,idInstituicaoEvolution,idServicoEvolution',
+							$filter: filter == "" ? null : filter,
+							$count: true,
+							cancelToken: call.token
+						}
 
+						if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
+							params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
+						}
+
+						var request = axios.get('/ordens-de-manutencao', { params });
+
+						cb(null, request);
+					}
+				], (err, results) => {
+					this.handleFetchMaintenanceRequest(results[2]);
 				});
-			};
-
-
-		});
+			});
+		};
 	}
 
 	handleFetchMaintenanceRequest(request, isNext) {
@@ -509,13 +470,17 @@ class OrdensDeManutencao extends Component {
 			if (data.ordersCounts && data.result && data.result.items) {
 				var list = data.result.items;
 				var nextPageLink = data.result.nextPageLink;
+				var morders = isNext ? this.state.maintenenceOrders.concat(list) : list;
 				this.setState({
 					ordersCounts: data.ordersCounts,
-					maintenenceOrders: isNext ? this.state.maintenenceOrders.concat(list) : list,
+					maintenenceOrders: morders,
 					maintenanceOrdersTotal: data.result.count,
 					maintenenceOrdersNext: nextPageLink,
 				}, () => {
 					this.props.dispatchState(this.state);
+					this.handleTableScroll();
+
+					console.log("NEXT", this.state.maintenenceOrders);
 				});
 			}
 		}).catch(function (error) {
@@ -532,27 +497,39 @@ class OrdensDeManutencao extends Component {
 	componentDidMount() {
 		this.setState({ tooltipReady: true });
 		window.addEventListener("resize", this.handleResize);
+		this.handleTableScroll();
+		document.getElementById("basicreactcomponent")
 		this.setDatePickerMarginTop();
 		this.setTableMarginTop();
 	}
 
+	handleTableScroll() {
+		document.getElementById("basicreactcomponent").addEventListener("scroll", (e) => {
+			var height = 240;
+			var parallaxHeader = ReactDOM.findDOMNode(this.parallaxHeader);
+			var opacity = Math.round((e.target.scrollTop - height) / (- height) * 100) / 100;
+			if (parallaxHeader !== null) {
+				parallaxHeader.style = "will-change: transform; opacity: " + opacity + "; transform: translate3d(0px, " + e.target.scrollTop / 2 + "px, 0px); ";
+			}
+			//window.teste = parallaxHeader;
+			// if (e.target.scrollTop + 10 >= parallaxHeader.offsetHeight) {
+			// 	ReactDOM.findDOMNode(this.page).classList.remove("scroll-overlay");
+			// } else {
+			// 	ReactDOM.findDOMNode(this.page).classList.add("scroll-overlay");
+			// }
+		});
 
-	handleResize() {
-		(() => {
-			setTimeout(() => {
-				this.setDatePickerMarginTop();
-				this.setTableMarginTop();
-			}, 0)
-		})();
+
 	}
 
-	handleDateChange(e) {
-		if (this.state.calendar.from != this.state.calendar.olderFrom && this.state.calendar.to != this.state.calendar.olderTo) {
-			this.setState({
-				datePickerOpen: false, isLoading: true, maintenenceOrdersIsLoading: false,
-				calendar: { from: this.state.calendar.from, to: this.state.calendar.to, olderFrom: this.state.calendar.from, olderTo: this.state.calendar.to }
-			}, () => { this.fetchMaintenenceOrders({ ...this.state.calendar }); });
-		}
+	handleResize() {
+		console.log(breakpoints['lg'] < document.body.clientWidth, breakpoints['md'], document.body.clientWidth)
+			(() => {
+				setTimeout(() => {
+					this.setDatePickerMarginTop();
+					this.setTableMarginTop();
+				}, 0)
+			})();
 	}
 
 	handleTechnicalsOpen(item) {
@@ -582,7 +559,8 @@ class OrdensDeManutencao extends Component {
 			var appNavbarCollapse = document.getElementById("app-navbar-collapse");
 			if (appNavbarCollapse) {
 				var height = window.innerHeight - top - (document.getElementById("app-navbar-collapse").offsetHeight * 1);
-				this.setState({ listContainerStyle: { "height": height, marginTop: top } }, () => {
+				height = window.innerHeight - ($('.navbar-container').height() * 1);
+				this.setState({ listContainerStyle: { "height": height, marginTop: '0px'/*top*/, position: 'relative' } }, () => {
 				})
 			}
 		}, 100))();
@@ -614,12 +592,24 @@ class OrdensDeManutencao extends Component {
 		return filteredList;
 	}
 
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return true;
+		return this.state.isLoading !== nextState.isLoading || this.state.maintenanceOrdersTotal !== nextState.maintenanceOrdersTotal ||
+			this.state.listContainerStyle !== nextState.listContainerStyle;
+	}
+
 	render() {
+
 		const { isLoading, ordersCounts, maintenenceOrders, calendar, maintenenceOrdersIsLoading } = this.state;
 		return (
-			<PageTemplate>
-				<Wrapper padding={'0 0 20px'} width="100%">
-					<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} ref={el => this.highlightWrapper = el} padding={"200px"}>
+
+			<PageTemplate ref={(el) => this.page = el}
+			//className="scroll-overlay"
+			>
+
+				<div ref={(el) => this.parallaxHeader = el} className="om__header">
+					<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} ref={el => this.highlightWrapper = el} >
 						<Grid item xs>
 							<Wrapper padding={'25px 25px 0'}>
 								<TextHeader h2>Ordens de Manutenção <br /> <b>Por executar</b></TextHeader>
@@ -672,11 +662,31 @@ class OrdensDeManutencao extends Component {
 
 					</Grid>
 
-				</Wrapper>
-
+				</div>
 
 				{this.state.listContainerStyle.marginTop &&
-					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} >
+					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} onScroll={(e) => {
+						var scrollTop = e.target.scrollTop;
+
+						var basicreactcomponent = document.getElementById("basicreactcomponent");
+						//basicreactcomponent.scrollTop = basicreactcomponent.scrollTop + ((scrollTop - tableScrollTop) * 2);
+						//basicreactcomponent.scrollTop = (scrollTop / 2);
+						//e.target.scrollTop = (scrollTop / 2)
+
+						if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop - 6 <= 0) {
+							ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
+						} else if (scrollTop > tableScrollTop) {
+							ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
+						}
+						// var scrollTop = e.target.scrollTop;
+						// console.log(scrollTop);
+						//  if (scrollTop < 5 || isLoading) {
+						//  	ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
+						//  } else if (scrollTop > tableScrollTop) {
+						//  	ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
+						//  }
+						tableScrollTop = scrollTop;
+					}} >
 						<PivotTable
 							onRef={el => this.table = el}
 							isLoading={this.state.maintenenceOrdersIsLoading}
@@ -684,6 +694,11 @@ class OrdensDeManutencao extends Component {
 							pageSize={150}
 							total={this.state.maintenanceOrdersTotal}
 							rowId={'no'}
+							serchOnType={false}
+							onSearchFocus={(e) => {
+								//ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
+							}}
+							onMove={(e) => { }}
 							columns={[
 								{ name: 'isPreventive', title: 'Tipo', width: 100, dataType: 'isPreventive', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
 								{ name: 'description', title: 'Descrição', dataType: 'bold', sortingEnabled: true, selectionEnabled: true, groupingEnabled: false },
@@ -709,96 +724,10 @@ class OrdensDeManutencao extends Component {
 							groupingEnabled={false}
 							searchEnabled={true}
 							allowMultiple={false}
+							rowClassName="bg-bg-white"
 						/>
-
 						<Tooltip.Hidden id={'oms-tooltip'} />
 					</ListContainer>}
-
-				<Modal open={this.state.technicalsOpen}
-					onClose={this.handleTechnicalsClose}
-					action={<div className="hidden"></div>} >
-					<div>
-						<DialogTitle>
-							<Text h2><Icon tecnico />{"\u00a0"} Editar Técnicos</Text>
-							<SearchWrapper>
-								<TextField
-									inputProps={{ autoComplete: "off" }}
-									id="technicals-search"
-									onChange={(e) => {
-										let search = e.target.value.toLowerCase();
-										this.setState({
-											technicalsSearchValue: search,
-											technicalsFiltered: this.filterListByKeysValue({ list: this.state.technicals, keys: ['nome'], value: search })
-										})
-									}}
-									type="search"
-									margin="none"
-									endAdornment={
-										<InputAdornment position="end" onClick={() => { document.getElementById("technicals-search").focus() }}><SearchButton round boxShadow={"none"} ><Icon search /></SearchButton></InputAdornment>
-									}
-								/>
-							</SearchWrapper>
-						</DialogTitle>
-						<hr />
-						<DialogContent style={{ padding: '0' }}>
-							<div style={{ width: '100vw', height: '100vh', maxWidth: '100%', maxHeight: '100%' }}>
-								{this.state.technicalsIsLoading ? <ListContainer ref={el => this.technicalsLoadingWrapper = el} style={{ textAlign: 'center', 'zIndex': 10 }} onScroll={this.handleGridScroll}><CircularProgress style={{ position: 'relative', top: '40%', color: _theme.palette.secondary.default }} /></ListContainer> : ''}
-								<AutoSizer>
-									{({ height, width }) => {
-										return (
-											<ListWindow
-												ref={el => this.technicalsListWrapper = el}
-												className="List"
-												height={height}
-												itemCount={this.state.technicalsFiltered.length}
-												itemSize={57}
-												width={width}
-											>
-												{({ index, style }) => {
-													var _item = this.state.technicalsFiltered[index];
-													var orderTechnicals = this.state.technicalsSelectedOrder.technicals;
-													var checked = _.find(orderTechnicals, ['numMec', _item.numMec]);
-													return (
-														<TechnicalsListItem key={index} style={{ padding: '16px 30px 0 30px', ...style }}>
-															<TchnicalsCheckBox disabled={this.state.technicalsSelectedOrder.technicals.length >= 5 && !checked} value={index + ""} checked={checked ? true : false} onChange={(e) => {
-																var __item = this.state.technicalsFiltered[e.target.value];
-																var __orderTechnicals = this.state.technicalsSelectedOrder.technicals;
-																var __numMec = __item.numMec;
-																if (e.target.checked) {
-																	if (!_.find(__orderTechnicals, ['numMec', __numMec])) {
-																		__orderTechnicals.push(__item);
-																	}
-																} else {
-																	_.remove(__orderTechnicals, ['numMec', __numMec]);
-																}
-																this.setState({ technicalsSelectedOrder: { technicals: __orderTechnicals, ...this.state.technicalsSelectedOrder } }, () => {
-
-																})
-															}} />
-															<TechnicalsAvatars letter color={this.state.avatarColors[Math.floor(index) % 5]} >{this.getInitials(_item.nome)}</TechnicalsAvatars>
-															<Text p><Highlighter searchWords={this.state.technicalsSearchValue.split(" ")} autoEscape={true} textToHighlight={_item.nome}></Highlighter></Text>
-														</TechnicalsListItem>
-													)
-												}}
-
-											</ListWindow>
-										)
-									}}
-								</AutoSizer>
-							</div>
-						</DialogContent>
-						<hr />
-						<DialogActions>
-							<Button primary onClick={(e) => {
-								if (!_.isEqual(this.state.technicalsSelectedOrder, this.state.technicalsSelectedOrderOld)) {
-									this.updateTechnicals({ orderId: this.state.technicalsSelectedOrder.no, technicalsId: this.state.technicalsSelectedOrder.technicals.map((t) => t.numMec) }, (err, result) => {
-										this.handleTechnicalsClose();
-									});
-								}
-							}}>Guardar</Button>
-						</DialogActions>
-					</div>
-				</Modal>
 			</PageTemplate>
 		)
 	}
