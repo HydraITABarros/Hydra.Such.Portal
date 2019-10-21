@@ -6,9 +6,10 @@ import { Wrapper, OmDatePicker, Tooltip, PivotTable } from 'components';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
-
+import classnames from 'classnames';
 import Header from './header';
 import HeaderSelection from './headerSelection';
+import './index.scss';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -168,7 +169,9 @@ const Hr = styled.hr`
 var cancelToken = axios.CancelToken;
 var call;
 var headerHeightTimer;
+var headerCollapsed = false;
 
+var tableScrollTop = 0;
 class OrdensDeManutencaoLine extends Component {
 
 	state = {
@@ -198,7 +201,6 @@ class OrdensDeManutencaoLine extends Component {
 		super(props);
 		moment.locale("pt");
 		this.handleResize = this.handleResize.bind(this);
-		this.handleGridScroll = this.handleGridScroll.bind(this);
 		this.fetchEquipements = this.fetchEquipements.bind(this);
 		this.handleFetchEquipementsRequest = this.handleFetchEquipementsRequest.bind(this);
 		this.state.orderId = this.props.match.params.orderid;
@@ -230,13 +232,6 @@ class OrdensDeManutencaoLine extends Component {
 
 	}
 
-	handleGridScroll(e) {
-		setTimeout(() => {
-			Tooltip.Hidden.hide();
-			Tooltip.Hidden.rebuild();
-		});
-	}
-
 	setTableMarginTop() {
 		clearTimeout(headerHeightTimer);
 		headerHeightTimer = setTimeout(() => {
@@ -252,7 +247,8 @@ class OrdensDeManutencaoLine extends Component {
 			var appNavbarCollapse = document.getElementById("app-navbar-collapse");
 			if (appNavbarCollapse) {
 				var height = window.innerHeight - top - (document.getElementById("app-navbar-collapse").offsetHeight * 1);
-				this.setState({ listContainerStyle: { "height": height, marginTop: top } }, () => {
+				height = window.innerHeight - ($('.navbar-container').height() * 1);
+				this.setState({ listContainerStyle: { "height": height, marginTop: '0px'/*top*/, position: 'relative' } }, () => {
 				})
 			}
 		}, 100);
@@ -348,9 +344,16 @@ class OrdensDeManutencaoLine extends Component {
 
 	render() {
 		const { isLoading } = this.state;
+		console.log(headerCollapsed);
 		return (
 			<PageTemplate >
-				<Wrapper padding={'0 0 0'} width="100%" minHeight="274px" ref={el => this.highlightWrapper = el}>
+				<div ref={el => this.highlightWrapper = el} className={classnames(
+					{
+						"om-details__header": true,
+						"om-details__header--selection": this.state.selectionMode,
+						"om-details__header--collapsed": headerCollapsed
+					}
+				)}>
 					{this.state.selectionMode ?
 						<HeaderSelection count={this.state.selectedRows.length} openEnabled={() => {
 							this.state.selectedRows = this.state.selectedRows || [];
@@ -375,10 +378,24 @@ class OrdensDeManutencaoLine extends Component {
 							maintenanceOrder={this.state.maintenanceOrder}
 							orderId={this.state.orderId} />
 					}
-				</Wrapper>
+				</div>
 
 				{this.state.listContainerStyle.marginTop &&
-					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} onScroll={this.handleGridScroll} >
+					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }}
+						onScroll={(e) => {
+							var scrollTop = e.target.scrollTop;
+							if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop - 20 <= 0) {
+								ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
+								headerCollapsed = false;
+							} else if (scrollTop > tableScrollTop) {
+								ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
+								headerCollapsed = true;
+							}
+							setTimeout(() => {
+								Tooltip.Hidden.hide();
+								Tooltip.Hidden.rebuild();
+							});
+						}}>
 						<PivotTable
 							onRef={el => this.table = el}
 							isLoading={this.state.equipmentsIsLoading}
