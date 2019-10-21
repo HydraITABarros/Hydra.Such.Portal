@@ -102,6 +102,9 @@ injectGlobal`
 			height: 40px;
 		}
 	}
+        [class*="TableContainer-root"] {
+		background:white;
+	}
         [class*="GroupPanelContainer"] {
 		margin-top: 0 !important;
                 [class*="MuiChip-root"] {
@@ -422,7 +425,7 @@ class eTable extends Component {
 	}
 
 	fetchNew({ search, sort }) {
-		this.setState({ searchValue: search, sort, page: 0, isLoading: true, rows: [], total: 0 }, () => {
+		this.setState({ searchValue: search, sort, page: 0/*, isLoading: true*/, rows: [], total: 0 }, () => {
 			this.props.getRows({ search, sort, page: 0 });
 		});
 	}
@@ -478,14 +481,15 @@ class eTable extends Component {
 	}
 
 	fetchNext() {
+
 		var page = this.state.page + 1;
-		this.setState({ page: page + 1, isLoading: true }, () => {
+		this.setState({ page: page + 1/*, isLoading: true*/ }, () => {
+			var search = this.state.searchValues;
+			if (this.state.searchValue != "") {
+				search = search.concat([this.state.searchValue]);
+			}
+			this.props.getRows({ search: search, sort: this.state.sort, page: page });
 		});
-		var search = this.state.searchValues;
-		if (this.state.searchValue != "") {
-			search = search.concat([this.state.searchValue]);
-		}
-		this.props.getRows({ search: search, sort: this.state.sort, page: page });
 	}
 
 	componentDidMount() {
@@ -501,9 +505,11 @@ class eTable extends Component {
 			return false;
 		}
 		return nextState.group.length !== this.state.group.length ||
-			nextState.sort !== this.state.sort /* || nextState.clear !== this.state.clear*/ ||
-			nextProps.rows !== this.state.rows ||
+			nextState.sort !== this.state.sort || nextState.clear !== this.state.clear ||
+			nextProps.rows[0] !== this.state.rows[0] ||
+			nextProps.total !== this.state.total ||
 			this.state.isLoading !== nextState.isLoading ||
+			nextProps.isLoading !== this.state.isLoading ||
 			this.state.selectedRowsCount !== nextState.selectedRowsCount ||
 			this.state.isLoading !== nextProps.isLoading ||
 			this.state.page !== nextState.page ||
@@ -524,16 +530,22 @@ class eTable extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+		var newState = {};
 		if (nextProps.isLoading !== this.state.isLoading) {
-			this.setState({ isLoading: nextProps.isLoading });
+			newState.isLoading = nextProps.isLoading;
 			this.handleSelectionEvent();
 		}
-		if (nextProps.rows !== this.state.rows) {
-			this.setState({ rows: nextProps.rows, total: nextProps.total });
+		if (nextProps.rows[0] !== this.state.rows[0] || nextProps.rows !== this.state.rows) {
+			newState.rows = nextProps.rows;
+			console.log('new props', nextProps.rows.length);
+		}
+		if (this.state.total !== nextProps.total) {
+			newState.total = nextProps.total;
 		}
 		if (nextProps.resetSelection) {
 			this.resetSelection();
 		}
+		this.setState(newState);
 	}
 
 	getInitials(name) {
@@ -562,32 +574,50 @@ class eTable extends Component {
 	handleRowKeyUp(e) {
 		if (e.key === 'Enter') {
 			var searchValues = this.state.searchValues;
+
+			if (searchValues.indexOf(searchAux) > -1 || searchAux == "") {
+				searchAux = "";
+				e.target.value = "";
+				e.target.blur();
+				return;
+			}
 			searchValues = this.state.searchValues.concat([searchAux]);
 			searchAux = "";
-			this.setState({
-				searchValue: "", searchValues: searchValues, sort: this.state.sort, page: 0,
-				isLoading: true,/* rows: [], total: 0,*/ clear: true, selectedRows: []
-			}, () => {
+			var newState = {
+				searchValue: "", searchValues: _.uniq(searchValues), sort: this.state.sort, page: 0,
+				/*isLoading: true, rows: [], total: 0, */clear: true, selectedRows: []
+			};
+			if (!this.props.serchOnType) {
+				newState.rows = [];
+				newState.total = 0;
+			}
+			this.setState(newState, () => {
 				this.setState({ clear: false }, () => { });
+				this.fetchNext();
+
+				//$(testeteste).find('[class*="TableContainer-root"]')[0].scrollTop = 0
 			});
 			//this.setState({ searchValue: "", searchValues: searchValues/*, clear: true*/ }, () => { this.setState({ clear: false }, () => { }); });
 			e.target.value = "";
+			e.target.blur();
 		} else {
 			let search = e.target.value.toLowerCase();
-			isToUpdate = false;
 			searchAux = search;
-			clearTimeout(timeout);
-			timeout = setTimeout(() => {
-				isToUpdate = true;
-				this.setState({
-					searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
-					rows: [], total: 0, clear: true, selectedRows: []
-				}, () => {
-					this.setState({ clear: false });
-					Tooltip.Hidden.hide();
-					Tooltip.Hidden.rebuild();
-				});
-			}, 550);
+			if (this.props.serchOnType) {
+				isToUpdate = false;
+				clearTimeout(timeout);
+				timeout = setTimeout(() => {
+					isToUpdate = true;
+					this.setState({
+						searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
+						rows: [], total: 0, clear: true, selectedRows: []
+					}, () => {
+						this.setState({ clear: false });
+						Tooltip.Hidden.hide();
+						Tooltip.Hidden.rebuild();
+					});
+				}, 550);
+			}
 		}
 	}
 
@@ -662,6 +692,10 @@ class eTable extends Component {
 
 	render() {
 		const { isLoading, rows } = this.state;
+
+		console.log("ROWS", rows.length);
+		console.log("RENDER");
+
 		var columns = this.props.columns;
 		var headColumns = _.differenceBy(columns, this.state.group, 'columnName');
 		headColumns = headColumns.filter((val) => {
@@ -671,8 +705,8 @@ class eTable extends Component {
 
 		var defaultExpandedGroups = getDefaultExpandedGroups(rows, this.state.group);
 
-		var totalToLoad = rows.length + defaultExpandedGroups.length + this.props.pageSize;
-		var totalMax = this.state.total + defaultExpandedGroups.length;
+		var totalToLoad = rows.length + (defaultExpandedGroups.length || 0) + this.props.pageSize;
+		var totalMax = this.state.total + (defaultExpandedGroups.length || 0);
 		var totalRowCount = totalToLoad;
 		if (totalToLoad > totalMax) {
 			totalRowCount = totalMax;
@@ -682,16 +716,16 @@ class eTable extends Component {
 		}
 		var hiddenColumns = this.state.hiddenColumns;
 
-		console.log("RENDER");
+		console.log('total', totalRowCount, totalMax, this.state.total);
 
 		var retval = (
-			<div>
+			<div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
 				<div style={{ height: '100%', width: '100%', textAlign: 'center', position: 'absolute', zIndex: 1, pointerEvents: 'none' }} className={isLoading ? "" : "hidden"}>
 					<CircularProgress style={{ position: 'relative', top: '55%', color: this.props.theme.palette.secondary.default }} />
 				</div>
 				{this.props.searchEnabled &&
 					<div>
-						<SearchWrapper width={"25%"} right={"25%"} >
+						<SearchWrapper width={this.props.groupingEnabled ? "33%" : "50%"} right={this.props.groupingEnabled ? "33%" : "50%"} >
 							{this.state.searchValues.map((val, index) => {
 								return (
 									<StyledBadge span key={index} >
@@ -707,11 +741,12 @@ class eTable extends Component {
 								)
 							}).reverse()}
 						</SearchWrapper>
-						<SearchWrapper width={"25%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
+						<SearchWrapper width={this.props.groupingEnabled ? "33%" : "50%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
 							<TextField
 								inputProps={{ autoComplete: "off" }}
 								id="oms-search"
 								onKeyUp={this.handleRowKeyUp}
+								onFocus={(e) => this.props.onSearchFocus ? this.props.onSearchFocus(e) : true}
 								type="search"
 								margin="none"
 								endAdornment={
@@ -724,7 +759,7 @@ class eTable extends Component {
 					</div>
 				}
 				{!this.state.clear &&
-					<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]}>
+					<TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]} >
 						<SortingState sorting={this.state.sort} onSortingChange={this.handleOnSortingChange} columnExtensions={columns} />
 						<SelectionState />
 						<GroupingState expandedGroups={defaultExpandedGroups} grouping={this.state.group}
@@ -753,7 +788,7 @@ class eTable extends Component {
 									<VirtualTable.Row
 										{...props}
 
-										className={"table--row--hoverable" + (props.row.selected ? " table--row--hoverable__selected" : "")}
+										className={"table--row--hoverable" + (props.row.selected ? " table--row--hoverable__selected" : "") + (this.props.rowClassName ? " " + this.props.rowClassName : "")}
 
 										//onMouseDown={() => { !isMobile ? this.handleRowPress(props) : '' }}
 										//onMouseUp={() => { !isMobile ? this.handleRowRelease(props) : '' }}
@@ -764,10 +799,11 @@ class eTable extends Component {
 										//onTouchEnd={() => { console.log("END"); this.handleRowRelease(props) }}
 										{...useDrag(({ first, last, down, movement, event }) => {
 
-											console.log(event);
-
 											if (movement[0] !== 0 || movement[1] !== 0) {
 												console.log("move", movement);
+												if (typeof this.props.onMove == 'function') {
+													//this.props.onMove(movement);
+												}
 												return this.handleRowTouchMove(props);
 											}
 											if (first) {
