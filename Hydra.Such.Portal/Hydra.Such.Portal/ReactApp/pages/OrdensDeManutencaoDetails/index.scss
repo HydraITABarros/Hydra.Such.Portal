@@ -1,0 +1,32 @@
+@import "../../themes/default";
+
+.om-details {
+	&__header {
+		opacity: 1;
+		height: 274px;
+		overflow: hidden;
+		-webkit-transition: opacity 0.5s, height 0.7s;
+		transition: opacity 0.5s, height 0.7s;
+		transform: translate3d(0, 0, 0);
+		will-change: opacity, max-height;
+
+		&--prepare-transform {
+			-webkit-transition: transform 0.001s;
+			transition: transform 0.001s;
+			transform: translate3d(0, 0, 0);
+			will-change: transform;
+		}
+
+		&--collapsed {
+			opacity: 0;
+			height: 0px;
+			height: 20px;
+		}
+
+		&__container {
+			position: relative;
+			top: 50%;
+			transform: translate3d(0, -50%, 0);
+		}
+	}
+}
