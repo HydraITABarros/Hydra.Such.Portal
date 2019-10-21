@@ -1,4 +1,109 @@
+@import './themes/default';
+
+@function palette($section, $color: 'default') {
+	@return map-get(map-get($colors, $section), $color);
+}
+
 // toolbox
+@each $section-key,
+$section-value in $colors {
+
+	@each $color-key,
+	$color-value in $section-value {
+
+		.bg-#{$section-key}-#{$color-key} {
+			background-color: $color-value !important;
+		}
+
+		.color-#{$section-key}-#{$color-key} {
+			color: $color-value !important;
+		}
+	}
+}
+
+body {
+	background-color: palette(bg, white);
+}
+
+#app-main {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 60px;
+	//height: 100%;
+	overflow: auto;
+}
+
+#basicreactcomponent {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	overflow: auto;
+}
+
+.overflow {
+	&--hidden {
+		overflow: hidden !important;
+	}
+}
+
+.navbar-container,
+.navbar-header {
+	background-color: palette(secondary, default)
+}
+
+.app-main {
+	.row {
+		margin: 0;
+	}
+
+	.wrap {
+		padding: 0;
+	}
+}
+
+@keyframes fade {
+	from {
+		opacity: 1.0;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+
+	to {
+		opacity: 1.0;
+	}
+}
+
+@-webkit-keyframes fade {
+	from {
+		opacity: 1.0;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+
+	to {
+		opacity: 1.0;
+	}
+}
+
+.blink {
+	animation: fade 1000ms infinite;
+	-webkit-animation: fade 1000ms infinite;
+}
+
+mark,
+.mark {
+	background-color: palette(search, default);
+	padding: 0;
+}
+
 .pointer {
-  cursor: pointer;
+	cursor: pointer;
 }
