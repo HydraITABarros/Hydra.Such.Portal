@@ -393,13 +393,12 @@ class OrdensDeManutencao extends Component {
 		var isNext = page > 1;
 
 		if (isNext && this.state.maintenenceOrdersNext != "") {
-			console.log("NEXT", isNext);
+
 			call = axios.CancelToken.source();
 			this.setState({ maintenenceOrdersIsLoading: true }, () => {
 				this.handleFetchMaintenanceRequest(axios.get(this.state.maintenenceOrdersNext, { cancelToken: call.token }), isNext);
 			});
 		} else {
-			console.log("NEW");
 
 			if (call) { call.cancel(); }
 			call = axios.CancelToken.source();
@@ -451,8 +450,10 @@ class OrdensDeManutencao extends Component {
 						if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
 							params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
 						}
-
-						var request = axios.get('/ordens-de-manutencao', { params });
+						/* remove on production */
+						const urlParams = new URLSearchParams(window.location.search);
+						const v = urlParams.get('v');
+						var request = axios.get('/ordens-de-manutencao' + (v ? '?v=' + v : ''), { params });
 
 						cb(null, request);
 					}
