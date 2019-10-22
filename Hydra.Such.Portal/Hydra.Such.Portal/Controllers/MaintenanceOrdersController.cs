@@ -99,8 +99,15 @@ namespace Hydra.Such.Portal.Controllers
 
 		[Route(""), HttpGet, AcceptHeader("application/json")]
 		[ResponseCache(Duration = 60000, VaryByHeader = "Cache")]
-		public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions)
+		public ActionResult GetAll(ODataQueryOptions<MaintenanceOrder> queryOptions, string v)
 		{
+			var UserName = User.Identity.Name;
+			if (v == "1" || v == "2")
+			{
+				UserName = "MIGUELO@SUCH.PT"; /* equipa  43 */
+				UserName = "HFREITAS@SUCH.PT";/* equipa  14 - HELDER JOSE HENRIQUE FREITAS - OM1907378*/
+			}
+
 			var pageSize = 150;
 
 			var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
@@ -109,7 +116,7 @@ namespace Hydra.Such.Portal.Controllers
 
 			if (loggedUser == null) { return NotFound(); }
 
-			var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
+			var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == UserName && u.Activo == true);
 
 			if (evolutionLoggedUser == null) { return NotFound(); }
 
@@ -131,14 +138,21 @@ namespace Hydra.Such.Portal.Controllers
 			       curativeCodes.Contains(o.OrderType) && (o.Status == 0 || o.Status == 6 || o.Status == 7) &&
 			    (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
 
+			/* remove in production */
+			if (v == "1")
+			{
+				nivelAcesso = 7;
+			}
+			else if (v == "2")
+			{
+				nivelAcesso = 4;
+			}
 			/*
 			 * filter MaintenanceOrder query based on user permissions
 			 * 1, 2, 8 = Podem ver tudo
 			 * 3, 4 = Filtrado por regiao
 			 * 5, 6, 7 = Filtrado por Cresp
 			 */
-
-			/**/
 			switch (nivelAcesso)
 			{
 				case 3:
@@ -428,13 +442,25 @@ namespace Hydra.Such.Portal.Controllers
 
 
 		[Route("{orderId}"), HttpGet, AcceptHeader("application/json")]
-		[ResponseCache(Duration = 86400)]
-		public ActionResult GetOrderDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions)
+		[ResponseCache(Duration = 86400, VaryByHeader = "Cache")]
+		public ActionResult GetOrderDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions, string v)
 		{
 			if (orderId == null) { return NotFound(); }
 
 			var pageSize = 150;
-			var order = evolutionWEBContext.MaintenanceOrder.AsQueryable().Where(o => o.No == orderId).Select(o => new OmHeaderViewModel()
+
+			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+
+			if (loggedUser == null) { return NotFound(); }
+
+			var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
+
+			if (evolutionLoggedUser == null) { return NotFound(); }
+
+			var nivelAcesso = evolutionLoggedUser.NivelAcesso;
+			var utilizadorPermissao = evolutionWEBContext.UtilizadorPermissao.Where(r => r.IdUser == evolutionLoggedUser.Id).ToList();
+
+			var orders = evolutionWEBContext.MaintenanceOrder.AsQueryable().Where(o => o.No == orderId).Select(o => new OmHeaderViewModel()
 			{
 				No = o.No,
 				Description = o.Description,
@@ -444,35 +470,51 @@ namespace Hydra.Such.Portal.Controllers
 				ClientName = o.CustomerName,
 				InstitutionDescription = "",
 				ShortcutDimension1Code = o.ShortcutDimension1Code,
+				ShortcutDimension3Code = o.ShortcutDimension3Code,
 				IdRegiao = 0,
 				OrderType = o.OrderType
+			});
 
-			}).FirstOrDefault();
-
-			if (order == null) { return NotFound(); }
-
-			var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
-			var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
-			var orderPreventive = preventiveCodes.Contains(order.OrderType);
-			var orderCurative = curativeCodes.Contains(order.OrderType);
-
-			if (orderCurative)
+			/*
+			 * filter MaintenanceOrder query based on user permissions
+			 * 1, 2, 8 = Podem ver tudo
+			 * 3, 4 = Filtrado por regiao
+			 * 5, 6, 7 = Filtrado por Cresp
+			 */
+			/**/
+			switch (nivelAcesso)
 			{
-				return Json(false);
+				case 3:
+				case 4:
+					orders = orders.Where(q => q.ShortcutDimension1Code == evolutionLoggedUser.Code1);
+					break;
+				case 5:
+				case 6:
+				case 7:
+					var userTeams = new List<int>();
+					var equipas = utilizadorPermissao.Select(r => r.Equipa).ToList();
+					try { equipas.ForEach((item) => { var teste = item.Split(",").Select(s => int.Parse(s.Trim())); userTeams.AddRange(item.Split(",").Select(s => int.Parse(s.Trim())).ToList()); }); }
+					catch /*(Exception ex)*/ { }
+					var userDimensionCodes3 = evolutionWEBContext.Equipa.Where(e => userTeams.Contains(e.IdEquipa)).Select(s => s.Nome).ToList();
+					orders = orders.Where(q => userDimensionCodes3.Contains(q.ShortcutDimension3Code));
+					break;
+				default:
+					break;
 			}
 
-			var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i => i.IdCliente == order.IdClienteEvolution);
-			order.ClientName = cliente.Nome;
-			var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == order.IdInstituicaoEvolution);
-			order.InstitutionDescription = instituicao.DescricaoTreePath;
+			var order = orders.FirstOrDefault();
+			if (order == null) { return NotFound(); }
 
-			int.TryParse(order.ShortcutDimension1Code, out order.IdRegiao);
+			var maintenanceOrderLine = evolutionWEBContext.MaintenanceOrderLine.Where(r => r.MoNo == order.No);
+			var ordemManutencaoLinha = evolutionWEBContext.OrdemManutencaoLinha.Where(r => r.No == order.No);
+
+			var equipmentIds = maintenanceOrderLine.Select(s => s.IdEquipamento).ToList();
+			equipmentIds.AddRange(ordemManutencaoLinha.Select(s => s.IdEquipamento).ToList());
 
 			// hammered to force the list to return only equipment with defined maintenance.
 			var availableCategories = evolutionWEBContext.FichaManutencao.Select(m => m.IdCategoria).Distinct().ToList();
 
-			IQueryable results;
-			results = queryOptions.ApplyTo(evolutionWEBContext.Equipamento.OrderByDescending(o => o.IdEquipamento).Select(e => new Equipamento
+			var queryEquipments = evolutionWEBContext.Equipamento.OrderByDescending(o => o.IdEquipamento).Select(e => new Equipamento
 			{
 				Nome = e.Nome,
 				Marca = e.Marca,
@@ -483,7 +525,24 @@ namespace Hydra.Such.Portal.Controllers
 				IdServico = e.IdServico,
 				NumEquipamento = e.NumEquipamento,
 				IdRegiao = e.IdRegiao
-			}).Where(e => true/*e.IdServico == 7231*//*&& e.NumEquipamento == "ni1102821"*/ && availableCategories.Contains(e.Categoria)), new ODataQuerySettings { PageSize = pageSize });
+			}).Where(e => (v == "2" ? true : equipmentIds.Contains(e.IdEquipamento)) && (v == "1" ? true : availableCategories.Contains(e.Categoria)));
+
+			var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
+			var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
+			var orderPreventive = preventiveCodes.Contains(order.OrderType);
+			var orderCurative = curativeCodes.Contains(order.OrderType);
+
+			if (orderCurative) { return Json(false); }
+
+			var cliente = evolutionWEBContext.Cliente.FirstOrDefault(i => i.IdCliente == order.IdClienteEvolution);
+			order.ClientName = cliente.Nome;
+			var instituicao = evolutionWEBContext.Instituicao.FirstOrDefault(i => i.IdInstituicao == order.IdInstituicaoEvolution);
+			order.InstitutionDescription = instituicao.DescricaoTreePath;
+
+			int.TryParse(order.ShortcutDimension1Code, out order.IdRegiao);
+
+			IQueryable results;
+			results = queryOptions.ApplyTo(queryEquipments, new ODataQuerySettings { PageSize = pageSize });
 
 			var list = results.Cast<dynamic>().AsEnumerable();
 			var total = Request.ODataFeature().TotalCount;
@@ -555,6 +614,7 @@ namespace Hydra.Such.Portal.Controllers
 			public int? IdInstituicaoEvolution;
 			public int IdRegiao;
 			public string ShortcutDimension1Code;
+			public string ShortcutDimension3Code;
 			public string ClientName;
 			public string InstitutionDescription;
 			public string OrderType;
