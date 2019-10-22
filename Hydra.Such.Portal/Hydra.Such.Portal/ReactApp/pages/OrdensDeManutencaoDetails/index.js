@@ -294,7 +294,10 @@ class OrdensDeManutencaoLine extends Component {
 					if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
 						params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
 					}
-					this.handleFetchEquipementsRequest(axios.get(`/ordens-de-manutencao/${orderId}`, { params }), isNext);
+
+					const urlParams = new URLSearchParams(window.location.search);
+					const v = urlParams.get('v');
+					this.handleFetchEquipementsRequest(axios.get(`/ordens-de-manutencao/${orderId}` + (v ? '?v=' + v : ''), { params }), isNext);
 				});
 			}
 		});
