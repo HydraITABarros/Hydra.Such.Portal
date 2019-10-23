@@ -305,18 +305,21 @@ class OrdensDeManutencaoLine extends Component {
 	}
 
 	handleFetchEquipementsRequest(request, isNext) {
+		// console.log('request', 'isNext', isNext);
 		request.then((result) => {
 			var data = result.data;
 			this.setTableMarginTop();
 			if (data.ordersCountsLines && data.resultLines && data.resultLines.items) {
 				var list = data.resultLines.items;
 				var nextPageLink = data.resultLines.nextPageLink;
+				var equipments = isNext ? this.state.equipments.concat(list) : list;
+				// console.log('IMP', equipments);
 				this.setState({
 					maintenanceOrder: data.order,
 					marcas: data.marcas,
 					servicos: data.servicos,
 					categorias: data.categorias,
-					equipments: isNext ? this.state.equipments.concat(list) : list,
+					equipments: equipments,
 					equipmentsTotal: data.resultLines.count,
 					ordersCountsLines: data.ordersCountsLines,
 					equipmentsLinesNext: nextPageLink,
@@ -347,7 +350,7 @@ class OrdensDeManutencaoLine extends Component {
 
 	render() {
 		const { isLoading } = this.state;
-		console.log(headerCollapsed);
+		// console.log(headerCollapsed);
 		return (
 			<PageTemplate >
 				<div ref={el => this.highlightWrapper = el} className={classnames(

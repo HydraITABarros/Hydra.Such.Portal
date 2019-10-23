@@ -363,6 +363,7 @@ const SortLabel = styled(TableHeaderRow.SortLabel)`&& {
 	}
 }
 `
+var fetchNextTimeout = 0;
 
 class eTable extends Component {
 	state = {
@@ -390,7 +391,6 @@ class eTable extends Component {
 		moment.locale("pt");
 		this.getInitials = this.getInitials.bind(this);
 		this.handleGridScroll = this.handleGridScroll.bind(this);
-		this.fetchNew = this.fetchNew.bind(this);
 		this.fetchNext = this.fetchNext.bind(this);
 		this.state.orderId = this.props.orderId;
 		this.state.group = props.columns.filter((item) => !!item.defaultExpandedGroup).map((item) => { return { columnName: item.name } });
@@ -424,18 +424,12 @@ class eTable extends Component {
 		});
 	}
 
-	fetchNew({ search, sort }) {
-		this.setState({ searchValue: search, sort, page: 0/*, isLoading: true*/, rows: [], total: 0 }, () => {
-			this.props.getRows({ search, sort, page: 0 });
-		});
-	}
-
 	handleRowPress(props) {
 		Tooltip.Hidden.hide();
 		Tooltip.Hidden.rebuild();
-		console.log("AFTER TIMER");
+		// console.log("AFTER TIMER");
 		rowPressTimer = setTimeout(() => {
-			console.log("LONG PRESS");
+			// console.log("LONG PRESS");
 			if (this.props.allowMultiple) {
 				props.row.selected = true;
 				var selcted = [props.row];
@@ -443,6 +437,7 @@ class eTable extends Component {
 					this.handleSelectionEvent();
 				});
 			}
+
 		}, 400);
 	}
 
@@ -468,7 +463,7 @@ class eTable extends Component {
 				} else {
 					selcted = selectedRows.filter((item) => item.idEquipamento !== props.row.idEquipamento);
 				}
-				console.log("selectedRowsCount", selcted.length);
+				// console.log("selectedRowsCount", selcted.length);
 				this.setState({ selectedRowsCount: selcted.length, selectedRows: selcted }, () => {
 					this.handleSelectionEvent();
 				});
@@ -481,15 +476,18 @@ class eTable extends Component {
 	}
 
 	fetchNext() {
-
-		var page = this.state.page + 1;
-		this.setState({ page: page + 1/*, isLoading: true*/ }, () => {
-			var search = this.state.searchValues;
-			if (this.state.searchValue != "") {
-				search = search.concat([this.state.searchValue]);
-			}
-			this.props.getRows({ search: search, sort: this.state.sort, page: page });
-		});
+		clearTimeout(fetchNextTimeout);
+		fetchNextTimeout = setTimeout(() => {
+			console.log('fetchNext');
+			var page = this.state.page + 1;
+			this.setState({ page: page + 1, isLoading: true }, () => {
+				var search = this.state.searchValues;
+				if (this.state.searchValue != "") {
+					search = search.concat([this.state.searchValue]);
+				}
+				this.props.getRows({ search: search, sort: this.state.sort, page: page });
+			});
+		}, 10);
 	}
 
 	componentDidMount() {
@@ -504,16 +502,17 @@ class eTable extends Component {
 		if (!isToUpdate) {
 			return false;
 		}
-		return nextState.group.length !== this.state.group.length ||
-			nextState.sort !== this.state.sort || nextState.clear !== this.state.clear ||
-			nextProps.rows[0] !== this.state.rows[0] ||
-			nextProps.total !== this.state.total ||
-			this.state.isLoading !== nextState.isLoading ||
-			nextProps.isLoading !== this.state.isLoading ||
-			this.state.selectedRowsCount !== nextState.selectedRowsCount ||
-			this.state.isLoading !== nextProps.isLoading ||
-			this.state.page !== nextState.page ||
-			this.state.selectedRowsCount !== nextState.selectedRowsCount;
+		return (
+			nextState.group.length !== this.state.group.length ||
+			nextState.sort !== this.state.sort ||
+			nextState.clear !== this.state.clear ||
+			nextState.rows[0] !== this.state.rows[0] ||
+			nextState.total !== this.state.total ||
+			nextState.isLoading !== this.state.isLoading ||
+			nextState.selectedRowsCount !== this.state.selectedRowsCount ||
+			nextState.page !== this.state.page ||
+			nextState.selectedRowsCount !== this.state.selectedRowsCount
+		)
 		return true;
 		return this.state.rows !== nextProps.rows || this.state.isLoading !== nextProps.isLoading || nextState.searchValues.length !== this.state.searchValues.length;
 	}
@@ -537,9 +536,10 @@ class eTable extends Component {
 		}
 		if (nextProps.rows[0] !== this.state.rows[0] || nextProps.rows !== this.state.rows) {
 			newState.rows = nextProps.rows;
-			console.log('new props', nextProps.rows.length);
+			//console.log('new props', nextProps.rows.length);
 		}
 		if (this.state.total !== nextProps.total) {
+			//console.log('new props total', nextProps.total, 'rows', nextProps.rows.length);			
 			newState.total = nextProps.total;
 		}
 		if (nextProps.resetSelection) {
@@ -588,8 +588,8 @@ class eTable extends Component {
 				/*isLoading: true, rows: [], total: 0, */clear: true, selectedRows: []
 			};
 			if (!this.props.serchOnType) {
-				newState.rows = [];
-				newState.total = 0;
+				//newState.rows = [];
+				//newState.total = 0;
 			}
 			this.setState(newState, () => {
 				this.setState({ clear: false }, () => { });
@@ -610,7 +610,7 @@ class eTable extends Component {
 					isToUpdate = true;
 					this.setState({
 						searchValue: search, sort: this.state.sort, page: 0, isLoading: true,
-						rows: [], total: 0, clear: true, selectedRows: []
+						/*rows: [], total: 0,*/ clear: true, selectedRows: []
 					}, () => {
 						this.setState({ clear: false });
 						Tooltip.Hidden.hide();
@@ -629,7 +629,7 @@ class eTable extends Component {
 			searchValues: searchValues,
 			sort: this.state.sort,
 			page: 0, isLoading: true,
-			rows: [], total: 0,
+			/*rows: [], total: 0,*/
 			clear: true,
 			selectedRows: [],
 			selectedRowsCount: 0
@@ -643,10 +643,11 @@ class eTable extends Component {
 	handleOnSortingChange(sort) {
 		Tooltip.Hidden.hide();
 		Tooltip.Hidden.rebuild();
-		this.setState({ sort, page: 0, isLoading: true, rows: [], total: 0, selectedRows: [], clear: true, }, () => {
+		this.setState({ sort, page: 0, isLoading: true, /*rows: [], total: 0,*/ selectedRows: [], clear: true, }, () => {
 			this.setState({ clear: false });
 		});
 	}
+
 	handleOnGroupChange(group) {
 		this.setState({ group: group });
 	}
@@ -693,8 +694,8 @@ class eTable extends Component {
 	render() {
 		const { isLoading, rows } = this.state;
 
-		console.log("ROWS", rows.length);
-		console.log("RENDER");
+		// console.log("ROWS", rows.length);
+		// console.log("RENDER");
 
 		var columns = this.props.columns;
 		var headColumns = _.differenceBy(columns, this.state.group, 'columnName');
@@ -716,7 +717,7 @@ class eTable extends Component {
 		}
 		var hiddenColumns = this.state.hiddenColumns;
 
-		console.log('total', totalRowCount, totalMax, this.state.total);
+		// console.log('total', totalRowCount, totalMax, this.state.total);
 
 		var retval = (
 			<div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
@@ -800,18 +801,18 @@ class eTable extends Component {
 										{...useDrag(({ first, last, down, movement, event }) => {
 
 											if (movement[0] !== 0 || movement[1] !== 0) {
-												console.log("move", movement);
+												// console.log("move", movement);
 												if (typeof this.props.onMove == 'function') {
 													//this.props.onMove(movement);
 												}
 												return this.handleRowTouchMove(props);
 											}
 											if (first) {
-												console.log("FIRST", movement, down);
+												// console.log("FIRST", movement, down);
 												this.handleRowPress(props);
 											}
 											if (last) {
-												console.log("LAST", movement, last, down);
+												// console.log("LAST", movement, last, down);
 												return this.handleRowRelease(props)
 											}
 										}, { dragDelay: 0 })()}

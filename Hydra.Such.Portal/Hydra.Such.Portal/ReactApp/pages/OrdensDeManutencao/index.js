@@ -387,7 +387,6 @@ class OrdensDeManutencao extends Component {
 		});
 	}
 
-
 	fetchMaintenenceOrders({ search, sort, page }, cb) {
 		cb = cb || (() => { });
 		var isNext = page > 1;
@@ -402,7 +401,8 @@ class OrdensDeManutencao extends Component {
 
 			if (call) { call.cancel(); }
 			call = axios.CancelToken.source();
-			this.setState({ maintenenceOrdersIsLoading: true, maintenenceOrdersNext: "", maintenanceOrders: [], maintenanceOrdersTotal: 0 }, () => {
+			this.setState({ maintenenceOrdersIsLoading: true, maintenenceOrdersNext: "", maintenenceOrders: [], maintenanceOrdersTotal: 0 }, () => {
+				///return;
 				async.parallel([
 					(cb) => {
 						if (this.state.institutions == null) {
@@ -458,7 +458,7 @@ class OrdensDeManutencao extends Component {
 						cb(null, request);
 					}
 				], (err, results) => {
-					this.handleFetchMaintenanceRequest(results[2]);
+					this.handleFetchMaintenanceRequest(results[2], isNext);
 				});
 			});
 		};
@@ -471,17 +471,17 @@ class OrdensDeManutencao extends Component {
 			if (data.ordersCounts && data.result && data.result.items) {
 				var list = data.result.items;
 				var nextPageLink = data.result.nextPageLink;
-				var morders = isNext ? this.state.maintenenceOrders.concat(list) : list;
+				var orders = isNext ? this.state.maintenenceOrders.concat(list) : list;
 				this.setState({
 					ordersCounts: data.ordersCounts,
-					maintenenceOrders: morders,
+					maintenenceOrders: orders,
 					maintenanceOrdersTotal: data.result.count,
 					maintenenceOrdersNext: nextPageLink,
 				}, () => {
 					this.props.dispatchState(this.state);
 					this.handleTableScroll();
 
-					console.log("NEXT", this.state.maintenenceOrders);
+					console.log("NEXT", isNext, this.state.maintenenceOrders);
 				});
 			}
 		}).catch(function (error) {
@@ -524,13 +524,13 @@ class OrdensDeManutencao extends Component {
 	}
 
 	handleResize() {
-		console.log(breakpoints['lg'] < document.body.clientWidth, breakpoints['md'], document.body.clientWidth)
-			(() => {
-				setTimeout(() => {
-					this.setDatePickerMarginTop();
-					this.setTableMarginTop();
-				}, 0)
-			})();
+		// console.log(breakpoints['lg'] < document.body.clientWidth, breakpoints['md'], document.body.clientWidth)
+		(() => {
+			setTimeout(() => {
+				this.setDatePickerMarginTop();
+				this.setTableMarginTop();
+			}, 0)
+		})();
 	}
 
 	handleTechnicalsOpen(item) {
@@ -593,7 +593,6 @@ class OrdensDeManutencao extends Component {
 		return filteredList;
 	}
 
-
 	shouldComponentUpdate(nextProps, nextState) {
 		return true;
 		return this.state.isLoading !== nextState.isLoading || this.state.maintenanceOrdersTotal !== nextState.maintenanceOrdersTotal ||
@@ -601,10 +600,8 @@ class OrdensDeManutencao extends Component {
 	}
 
 	render() {
-
 		const { isLoading, ordersCounts, maintenenceOrders, calendar, maintenenceOrdersIsLoading } = this.state;
 		return (
-
 			<PageTemplate ref={(el) => this.page = el}
 			//className="scroll-overlay"
 			>
