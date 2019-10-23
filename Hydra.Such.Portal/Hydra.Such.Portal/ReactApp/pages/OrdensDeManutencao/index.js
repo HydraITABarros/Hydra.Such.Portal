@@ -112,7 +112,7 @@ const CircleOm = {
         }
     `,
 	chart: styled.div`
-        padding: 6px 6px 0 6px;;
+        padding: 6px 6px 0 6px;
         display: inline-block;
         vertical-align: middle;
         text-align: center;

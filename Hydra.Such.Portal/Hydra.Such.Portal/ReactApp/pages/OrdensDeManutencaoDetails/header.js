@@ -61,7 +61,7 @@ const CircleOm = {
         }
     `,
 	chart: styled.div`
-        padding: 6px;
+        padding: 0px 6px 0 6px;
         display: inline-block;
         vertical-align: middle;
         text-align: center;
@@ -125,8 +125,7 @@ class Header extends Component {
 				<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} padding={"200px"}>
 					<Grid item md={3} xs={12} >
 						{!this.state.isLoading &&
-							<Wrapper padding={'0 25px 0'}>
-								<br />
+							<Wrapper padding={'8px 25px 0'}>
 								<TextHeader h2 style={{
 									whiteSpace: 'nowrap',
 									textOverflow: 'ellipsis',

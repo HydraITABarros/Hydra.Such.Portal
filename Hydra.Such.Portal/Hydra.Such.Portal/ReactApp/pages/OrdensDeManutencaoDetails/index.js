@@ -95,7 +95,7 @@ injectGlobal`
                         &[class*="MuiChip-deletable"] {
                                 &:before {
                                         font-family: 'eSuch' !important;
-                                        content: '\\e90b';
+                                        content: '\\e90f';
                                         color: white;
                                         position: absolute;
                                         top: 4px;                                                                

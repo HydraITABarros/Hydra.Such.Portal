@@ -146,7 +146,7 @@ injectGlobal`
                         &[class*="MuiChip-deletable"] {
                                 &:before {
                                         font-family: 'eSuch' !important;
-                                        content: '\\e90b';
+                                        content: '\\e90f';
                                         color: white;
                                         position: absolute;
                                         top: 4px;                                                                
@@ -325,7 +325,7 @@ const StyledBadge = styled(Text)`
     	padding: 4px 8px;
     	color:${props => props.color ? props.color : props.theme.palette.primary.default};
     	text-transform: uppercase;
-   	margin: 6px 5px 0;
+   	margin: 8px 5px 0;
 	background: ${props => props.theme.palette.search};
     	font-size: 12px;
     	line-height: 16px;
