@@ -50,17 +50,20 @@ module.exports = {
 		modules: [].concat(sourceDir, ['node_modules']),
 	},
 	optimization: {
+		minimize: false,
 		minimizer: [
-			new UglifyJsPlugin({
+
+			new UglifyJsPlugin(/*{
 				cache: true,
 				parallel: true,
 				uglifyOptions: {
-					compress: false,
+					compress: true,
 					ecma: 6,
 					mangle: true
 				},
-				sourceMap: true
-			})
+				sourceMap: false
+			}
+			*/)
 		]
 	},
 	module: {
@@ -89,6 +92,11 @@ module.exports = {
 			}
 		}
 		]
+	},
+	externals: {
+		// "node/npm module name": "name of exported library variable"
+		//"react": "React",
+		//"react-dom": "ReactDOM"
 	},
 	devtool: "inline-source-map"
 };
