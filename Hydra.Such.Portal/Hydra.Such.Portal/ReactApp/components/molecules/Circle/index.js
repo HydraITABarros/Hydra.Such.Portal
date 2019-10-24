@@ -117,8 +117,8 @@ class Circle extends React.Component {
 					strokeValue: this.props.loading ? 0 : this.props.strokeValue,
 					trailColor: this.props.trailColor,
 					strokeColor: this.props.strokeColor,
-					trailTooltipHtml: renderToString(<span><TooltipIcon color={this.props.trailColor}>{this.props.trailIcon}</TooltipIcon> <Text b>{this.props.trailValue}</Text></span>),
-					strokeTooltipHtml: renderToString(<span><TooltipIcon color={this.props.strokeColor}>{this.props.strokeIcon}</TooltipIcon> <Text b>{this.props.strokeValue}</Text></span>)
+					trailTooltipHtml: renderToString(<span><TooltipIcon color={this.props.trailColor}>{this.props.trailIcon}</TooltipIcon> <Text b>{this.props.strokeValue - this.props.trailValue}</Text></span>),
+					strokeTooltipHtml: renderToString(<span><TooltipIcon color={this.props.strokeColor}>{this.props.strokeIcon}</TooltipIcon> <Text b>{this.props.trailValue}</Text></span>)
 				});
 				this.setState({ tooltipReady: true }, () => {
 					count = 0;
@@ -137,7 +137,7 @@ class Circle extends React.Component {
 						(this.props.full ?
 							<CircleTotal>
 								<Text dataBig style={{ fontSize: '50px', lineHeight: '70px', color: this.props.trailColor }}>
-									{this.props.strokeValue}<span style={{ fontSize: '50px', color: this.props.strokeColor }}>/{this.props.trailValue}</span>
+									{this.props.strokeValue - this.props.trailValue}<span style={{ fontSize: '50px', color: this.props.strokeColor }}>/{this.props.trailValue}</span>
 								</Text>
 								<Text p style={{ color: this.props.strokeColor }}>
 									{this.props.label}
@@ -145,7 +145,7 @@ class Circle extends React.Component {
 							</CircleTotal> :
 							<CircleTotal>
 								<Text dataBig>
-									{this.props.trailValue + this.props.strokeValue}
+									{this.props.trailValue /*+ this.props.strokeValue*/}
 								</Text>
 								<Text p>
 									{this.props.label}

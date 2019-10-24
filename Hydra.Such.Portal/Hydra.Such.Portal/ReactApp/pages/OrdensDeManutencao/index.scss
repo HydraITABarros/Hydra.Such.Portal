@@ -79,8 +79,8 @@ mark,
 		opacity: 1;
 		height: 250px;
 		overflow: hidden;
-		-webkit-transition: opacity 0.5s, height 0.5s;
-		transition: opacity 0.5s, height 0.5s;
+		-webkit-transition: opacity 0.05s, height 0.5s;
+		transition: opacity 0.05s, height 0.5s;
 		transform: translate3d(0, 0, 0);
 		will-change: opacity, height;
 
@@ -102,4 +102,9 @@ mark,
 			transform: translate3d(0, -50%, 0);
 		}
 	}
+
+	&__list-container {
+		background: white;
+	}
+
 }

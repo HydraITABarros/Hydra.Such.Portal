@@ -94,18 +94,37 @@ const CircleOmWrapper = styled(CircleOm.wrapper)`
 
 class Header extends Component {
 	state = {
-		isLoading: true
+		isLoading: true,
+		toSigning: 0,
+		toExecute: 0,
+		executed: 0
 	}
 
 	constructor(props) {
 		super(props);
 	}
 
-	componentDidUpdate(prevProps) {
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.isLoading !== this.state.isLoading) {
 
-		if (prevProps.isLoading !== this.state.isLoading) {
-			this.setState({ isLoading: prevProps.isLoading });
+			this.setState({ isLoading: nextProps.isLoading });
 		}
+
+		if (nextProps.executed !== this.state.executed) {
+			this.setState({ executed: nextProps.executed });
+		}
+
+		if (nextProps.toExecute !== this.state.toExecute) {
+			this.setState({ toExecute: nextProps.toExecute });
+		}
+
+		if (nextProps.toSigning !== this.state.toSigning) {
+			this.setState({ toSigning: nextProps.toSigning });
+		}
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return true;
 	}
 
 	render() {
@@ -164,43 +183,44 @@ class Header extends Component {
 					<Grid container item md={6} xs={12}>
 						<Wrapper padding={'1px'} textAlign="center" width="100%">
 						</Wrapper>
-
-						<CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
-							<CircleOm.icon background={this.state.isLoading ? this.props.theme.palette.primary.keylines : this.props.theme.palette.primary.dark} color={this.props.theme.palette.primary.keylines} fontSize="71px" >
-								<Spacer height="15px" />
-								<Icon sad />
-								<Wrapper textAlign="center">
-									{!this.state.isLoading && <Text dataSmall>300</Text>}
-								</Wrapper>
-							</CircleOm.icon>
-							<CircleOm.chart>
-								<Circle
-									loading={this.state.isLoading}
-									label="Equipamentos"
-									strokeValue={this.state.isLoading ? 0 : 241}
-									trailValue={this.state.isLoading ? 0 : 300}
-									strokeIcon={<Icon happy />}
-									trailIcon={<Icon sad />}
-									width={191}
-								/>
-							</CircleOm.chart>
-							<CircleOm.icon
-								background={this.state.isLoading ? this.props.theme.palette.primary.keylines : 'white'}
-								color={this.state.isLoading ? this.props.theme.palette.primary.keylines : this.props.theme.palette.secondary.default} fontSize="71px" >
-								<Spacer height="20px" />
-								<Icon happy />
-								<Wrapper textAlign="center">
-									{!this.state.isLoading && <Text dataSmall color={this.props.theme.palette.secondary.default}>241</Text>}
-								</Wrapper>
-							</CircleOm.icon>
-						</CircleOmWrapper>
+						{this.state.isLoading ? true : this.state.executed + this.state.toExecute > 0 &&
+							<CircleOmWrapper className={this.state.isLoading ? 'blink' : ''}>
+								<CircleOm.icon background={this.state.isLoading ? this.props.theme.palette.primary.keylines : this.props.theme.palette.primary.dark} color={this.props.theme.palette.primary.keylines} fontSize="71px" >
+									<Spacer height="15px" />
+									<Icon sad />
+									<Wrapper textAlign="center">
+										{!this.state.isLoading && <Text dataSmall>{this.state.toExecute}</Text>}
+									</Wrapper>
+								</CircleOm.icon>
+								<CircleOm.chart>
+									<Circle
+										loading={this.state.isLoading}
+										label="Equipamentos"
+										trailValue={this.state.isLoading ? 0 : (this.state.toExecute * 1) + (this.state.executed * 1)}
+										strokeValue={this.state.isLoading ? 0 : (this.state.executed * 1)}
+										strokeIcon={<Icon happy />}
+										trailIcon={<Icon sad />}
+										width={191}
+									/>
+								</CircleOm.chart>
+								<CircleOm.icon
+									background={this.state.isLoading ? this.props.theme.palette.primary.keylines : 'white'}
+									color={this.state.isLoading ? this.props.theme.palette.primary.keylines : this.props.theme.palette.secondary.default} fontSize="71px" >
+									<Spacer height="20px" />
+									<Icon happy />
+									<Wrapper textAlign="center">
+										{!this.state.isLoading && <Text dataSmall color={this.props.theme.palette.secondary.default}>{this.state.executed}</Text>}
+									</Wrapper>
+								</CircleOm.icon>
+							</CircleOmWrapper>
+						}
 					</Grid>
 					<Grid item md={3} xs={12}>
 						<Hidden mdDown>
 							{!this.state.isLoading &&
 								<Wrapper textAlign="center" inline>
 									<Spacer height="25px" />
-									<Text dataBig> 20 </Text>
+									<Text dataBig> {this.state.toSigning} </Text>
 									<Text p> Relatórios por <Button style={{ padding: 0 }} link href={"javascript:void(0)"}>assinar</Button> </Text>
 								</Wrapper>
 							}

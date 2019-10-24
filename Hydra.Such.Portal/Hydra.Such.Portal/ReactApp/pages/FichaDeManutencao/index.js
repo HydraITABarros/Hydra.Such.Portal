@@ -270,6 +270,9 @@ class FichaDeManutencao extends Component {
 				this.setState(state);
 			}
 		}).catch(function (error) {
+			if (error.response.status == 404) {
+				window.history.back();
+			}
 		}).then(() => {
 			this.setState({
 				isLoading: false,

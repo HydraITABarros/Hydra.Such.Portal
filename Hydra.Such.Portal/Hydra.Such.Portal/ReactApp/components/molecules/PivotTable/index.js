@@ -671,12 +671,16 @@ class eTable extends Component {
 	}
 
 	noDataCellComponent(props) {
-		return <VirtualTable.NoDataCell {...props} style={{
-			position: "absolute", textAlign: "center", top: "50%",
-			width: "100%", border: "none", padding: "0"
-		}} getMessage={() => <Text p style={{ color: this.props.theme.palette.primary.light, lineHeight: '1.4em' }}>
-			<Inbox style={{ fontSize: '48px' }} /><br />Sem Dados</Text>
-		} />
+		return (
+			this.props.noData ?
+				this.props.noData :
+				<VirtualTable.NoDataCell {...props} style={{
+					position: "absolute", textAlign: "center", top: "50%",
+					width: "100%", border: "none", padding: "0"
+				}} getMessage={() => <Text p style={{ color: this.props.theme.palette.primary.light, lineHeight: '1.4em' }}>
+					<Inbox style={{ fontSize: '48px' }} /><br />Sem Dados</Text>
+				} />
+		)
 	}
 
 	onGroupRowClick(group, values) {
@@ -744,6 +748,7 @@ class eTable extends Component {
 						</SearchWrapper>
 						<SearchWrapper width={this.props.groupingEnabled ? "33%" : "50%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
 							<TextField
+								className="pivot-table__text-field"
 								inputProps={{ autoComplete: "off" }}
 								id="oms-search"
 								onKeyUp={this.handleRowKeyUp}

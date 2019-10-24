@@ -120,7 +120,7 @@ class Header extends Component {
 					<Text h2 >{this.props.count}<small>/{'20'}</small> Seleccionados</Text>
 				</Wrapper>
 
-				<Wrapper padding={' 20px 25px 0'} width="100%" style={{ position: 'absolute', bottom: 0 }} >
+				<Wrapper id="header__actions" padding={' 20px 25px 0'} width="100%" style={{ position: 'absolute', bottom: 0 }} >
 					<Button iconPrimary={<Icon open />} onClick={(e) => { this.props.onOpenClick(e) }} disabled={!this.props.openEnabled}>Abrir</Button>
 				</Wrapper>
 			</div>

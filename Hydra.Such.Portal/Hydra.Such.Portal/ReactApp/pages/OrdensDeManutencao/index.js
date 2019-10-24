@@ -392,13 +392,11 @@ class OrdensDeManutencao extends Component {
 		var isNext = page > 1;
 
 		if (isNext && this.state.maintenenceOrdersNext != "") {
-
 			call = axios.CancelToken.source();
 			this.setState({ maintenenceOrdersIsLoading: true }, () => {
 				this.handleFetchMaintenanceRequest(axios.get(this.state.maintenenceOrdersNext, { cancelToken: call.token }), isNext);
 			});
 		} else {
-
 			if (call) { call.cancel(); }
 			call = axios.CancelToken.source();
 			this.setState({ maintenenceOrdersIsLoading: true, maintenenceOrdersNext: "", maintenenceOrders: [], maintenanceOrdersTotal: 0 }, () => {
@@ -510,7 +508,7 @@ class OrdensDeManutencao extends Component {
 			var parallaxHeader = ReactDOM.findDOMNode(this.parallaxHeader);
 			var opacity = Math.round((e.target.scrollTop - height) / (- height) * 100) / 100;
 			if (parallaxHeader !== null) {
-				parallaxHeader.style = "will-change: transform; opacity: " + opacity + "; transform: translate3d(0px, " + e.target.scrollTop / 2 + "px, 0px); ";
+				parallaxHeader.style = "will-change: transform; opacity: " + 1 + "; transform: translate3d(0px, " + e.target.scrollTop + "px, 0px); ";
 			}
 			//window.teste = parallaxHeader;
 			// if (e.target.scrollTop + 10 >= parallaxHeader.offsetHeight) {
@@ -631,7 +629,7 @@ class OrdensDeManutencao extends Component {
 								<CircleOm.chart>
 									<Circle
 										loading={this.state.isLoading} label=""
-										strokeValue={this.state.isLoading ? 0 : ordersCounts.preventive}
+										strokeValue={this.state.isLoading ? 0 : ordersCounts.preventive + ordersCounts.curative}
 										trailValue={ordersCounts.curative} strokeIcon={<Icon curativa />}
 										trailIcon={<Icon preventiva />} width={191}
 										strokeColor={_theme.palette.secondary.default}
@@ -663,28 +661,30 @@ class OrdensDeManutencao extends Component {
 				</div>
 
 				{this.state.listContainerStyle.marginTop &&
-					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }} onScroll={(e) => {
-						var scrollTop = e.target.scrollTop;
+					<ListContainer ref={el => this.listContainer = el}
+						className="om__list-container"
+						style={{ ...this.state.listContainerStyle }} onScroll={(e) => {
+							var scrollTop = e.target.scrollTop;
 
-						var basicreactcomponent = document.getElementById("basicreactcomponent");
-						//basicreactcomponent.scrollTop = basicreactcomponent.scrollTop + ((scrollTop - tableScrollTop) * 2);
-						//basicreactcomponent.scrollTop = (scrollTop / 2);
-						//e.target.scrollTop = (scrollTop / 2)
+							var basicreactcomponent = document.getElementById("basicreactcomponent");
+							//basicreactcomponent.scrollTop = basicreactcomponent.scrollTop + ((scrollTop - tableScrollTop) * 2);
+							//basicreactcomponent.scrollTop = (scrollTop / 2);
+							//e.target.scrollTop = (scrollTop / 2)
 
-						if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop - 6 <= 0) {
-							ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
-						} else if (scrollTop > tableScrollTop) {
-							ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
-						}
-						// var scrollTop = e.target.scrollTop;
-						// console.log(scrollTop);
-						//  if (scrollTop < 5 || isLoading) {
-						//  	ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
-						//  } else if (scrollTop > tableScrollTop) {
-						//  	ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
-						//  }
-						tableScrollTop = scrollTop;
-					}} >
+							if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop - 6 <= 0) {
+								ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
+							} else if (scrollTop > tableScrollTop) {
+								ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
+							}
+							// var scrollTop = e.target.scrollTop;
+							// console.log(scrollTop);
+							//  if (scrollTop < 5 || isLoading) {
+							//  	ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
+							//  } else if (scrollTop > tableScrollTop) {
+							//  	ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
+							//  }
+							tableScrollTop = scrollTop;
+						}} >
 						<PivotTable
 							onRef={el => this.table = el}
 							isLoading={this.state.maintenenceOrdersIsLoading}

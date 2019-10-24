@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { PageTemplate } from 'components';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, OmDatePicker, Tooltip, PivotTable } from 'components';
+import { Wrapper, OmDatePicker, Tooltip, PivotTable, Button, Text } from 'components';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
@@ -14,152 +14,9 @@ import './index.scss';
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
 
-injectGlobal`
-    body {
-        background-color: white;   
-    }
-    .navbar-container, .navbar-header {
-        background-color: ${props => props.theme.palette.secondary.default};
-    }
-    .app-main {
-        .row {
-            margin: 0;
-        }
-        .wrap {
-            padding: 0;
-        }
-    }
-    @keyframes fade {
-        from { opacity: 1.0; }
-        50% { opacity: 0.5; }
-        to { opacity: 1.0; }
-    }                                                                                                                                                                                                                                  
 
-    @-webkit-keyframes fade {
-        from { opacity: 1.0; }
-        50% { opacity: 0.5; }
-        to { opacity: 1.0; }
-    }
-    .blink {
-        animation:fade 1000ms infinite;
-        -webkit-animation:fade 1000ms infinite;
-    }
-    mark, .mark {
-        background-color: ${props => props.theme.palette.search} ;
-        padding: 0;
-    }
-        [class*="MuiTableRow"] {
-                .first-cell {
-                        [class*="icon"] {
-                                left: 24px !important;
-                        }
-                }
-        }
-        [class*="GroupPanelContainer"] {
-                [class*="MuiChip-root"] {
-                        position: relative;
-                        background: ${props => props.theme.palette.primary.default};
-                        border-radius: 7px;
-                        padding: 0;
-                        color: white;
-                        font-family: Inter,Helvetica,sans-serif;
-                        font-style: normal;
-                        font-weight: 400;
-                        font-size: 12px;
-                        line-height: 16px;
-                        text-transform: uppercase;
-                        margin: 0 5px;
-                        height: 24px;
-                        &:hover, &:active, &:focus {
-                                background: ${props => props.theme.palette.primary.default};
-                                border-radius: 7px;
-                                color: white;
-                                font-family: Inter,Helvetica,sans-serif;
-                                font-style: normal;
-                                font-weight: 400;
-                                font-size: 12px;
-                                line-height: 16px;
-                                text-transform: uppercase;
-                                margin: 0 5px;
-                        }
-                        [class*="MuiButtonBase-root"] {
-                                color: white;
-                        }
-                        [class*="MuiChip-label"] {
-                                padding-left: 8px;
-                                padding-right: 0px;
-                        }
-                        [class*="MuiChip-deleteIcon"] {
-                                color: ${props => props.theme.palette.primary.default};
-                        }
-                        &[class*="MuiChip-deletable"] {
-                                &:before {
-                                        font-family: 'eSuch' !important;
-                                        content: '\\e90f';
-                                        color: white;
-                                        position: absolute;
-                                        top: 4px;                                                                
-                                        right: 4px;
-                                        pointer-events: none;
-                                }
-                        }
-                }
-        }
-        [class*="MuiPopover-paper"] {
-                [class*="DragDrop-container"] {
-                        [role="button"] {
-                                background: ${props => props.theme.palette.primary.default};
-                                border-radius: 7px;
-                                padding: 0;
-                                color: white;
-                                font-family: Inter,Helvetica,sans-serif;
-                                font-style: normal;
-                                font-weight: 400;
-                                font-size: 12px;
-                                line-height: 16px;
-                                text-transform: uppercase;
-                                margin: 0 5px;
-                                height: 24px;
-                                opacity: .3;
-                        }
-                }
-                [class*="MuiSvgIcon-root"] {
-                        &[focusable] {
-                                color: ${props => props.theme.palette.primary.default}
-                        }
-                }
-                [class*="MuiTypography-root"] {
-                        font-family: Inter,Helvetica,sans-serif;
-                        font-style: normal;
-                        font-weight: 400;
-                        font-size: 14px;
-                        line-height: 24px;
-                        margin: 0;
-                        color: #323F4B;
-                }
-        }
-        .table--row--hoverable {
-                cursor: pointer;
-                &:hover {
-                        background: ${props => props.theme.palette.bg.grey};
-                }
-        }
-        
-`
 const ListContainer = styled.div`
-    position: absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom: 0;
-    z-index: 0;
-    overflow: auto;
-    padding: 0;
-    [class*="RootBase-root"]{
-            position: absolute;
-            top: 0;
-            bottom: 0;
-    }
+    
 `
 const Hr = styled.hr`
     margin-bottom: 0;
@@ -172,15 +29,16 @@ var headerHeightTimer;
 var headerCollapsed = false;
 
 var tableScrollTop = 0;
+var headerScrollTop = 0;
 class OrdensDeManutencaoLine extends Component {
 
 	state = {
 		orderId: "",
 		isLoading: true,
 		ordersCountsLines: {
-			toSigning: null,
-			toExecute: null,
-			executed: null
+			toSigning: 0,
+			toExecute: 0,
+			executed: 0
 		},
 		marcas: [],
 		servicos: [],
@@ -194,7 +52,7 @@ class OrdensDeManutencaoLine extends Component {
 		listContainerStyle: {},
 		selectionMode: false,
 		selectedRows: [],
-		selectedRowsCount: 0
+		selectedRowsCount: null
 	}
 
 	constructor(props) {
@@ -211,6 +69,37 @@ class OrdensDeManutencaoLine extends Component {
 		window.addEventListener("resize", this.handleResize);
 		this.setTableMarginTop();
 		this.addTechnical();
+		document.getElementById("basicreactcomponent").addEventListener("scroll", (e) => {
+			var height = 200;
+			if (headerScrollTop < e.target.scrollTop + 5 /* up */) {
+				console.log('up');
+				if (!ReactDOM.findDOMNode(this.highlightWrapper).classList.contains("om-details__header--collapsed")) {
+					//ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
+				}
+			} else  /* down */ {
+				console.log('down');
+				ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
+			}
+			headerScrollTop = e.target.scrollTop;
+			var parallaxHeader = ReactDOM.findDOMNode(this.highlightWrapper);
+			var opacity = Math.round((e.target.scrollTop - height) / (- height) * 100) / 100;
+			if (parallaxHeader !== null) {
+				//if (!ReactDOM.findDOMNode(this.highlightWrapper).classList.contains("om-details__header--selection")) {
+				parallaxHeader.style = "will-change: transform; transform: translate3d(0px, " + e.target.scrollTop + "px, 0px);";
+				if (document.getElementById('header__actions')) {
+					document.getElementById('header__actions').style = "position: absolute; bottom:" + e.target.scrollTop + "px;";
+				}
+				//parallaxHeader.style = "will-change: transform; height:  " + e.target.scrollTop + "px; ";
+				//}
+				//parallaxHeader.style = "will-change: transform; opacity: " + opacity + "; transform: translate3d(0px, " + e.target.scrollTop / 2 + "px, 0px); ";
+			}
+			//window.teste = parallaxHeader;
+			// if (e.target.scrollTop + 10 >= parallaxHeader.offsetHeight) {
+			// 	ReactDOM.findDOMNode(this.page).classList.remove("scroll-overlay");
+			// } else {
+			// 	ReactDOM.findDOMNode(this.page).classList.add("scroll-overlay");
+			// }
+		});
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -222,14 +111,14 @@ class OrdensDeManutencaoLine extends Component {
 			nextState.selectedRows !== this.state.selectedRows ||
 			nextState.selectedRowsCount !== this.state.selectedRowsCount ||
 			nextState.selectionMode !== this.state.selectionMode ||
-			nextState.tooltipReady !== this.state.tooltipReady;
+			nextState.tooltipReady !== this.state.tooltipReady ||
+			nextState.listContainerStyle.height !== this.state.listContainerStyle.height;
 	}
 
 	handleResize() {
 		setTimeout(() => {
 			this.setTableMarginTop();
 		}, 0)
-
 	}
 
 	setTableMarginTop() {
@@ -247,8 +136,15 @@ class OrdensDeManutencaoLine extends Component {
 			var appNavbarCollapse = document.getElementById("app-navbar-collapse");
 			if (appNavbarCollapse) {
 				var height = window.innerHeight - top - (document.getElementById("app-navbar-collapse").offsetHeight * 1);
-				height = window.innerHeight - ($('.navbar-container').height() * 1);
-				this.setState({ listContainerStyle: { "height": height, marginTop: '0px'/*top*/, position: 'relative' } }, () => {
+				height = window.innerHeight - ($('.navbar-container').height() * 1) - 60;
+
+				this.setState({
+					listContainerStyle: {
+						height: height,
+						marginTop: '0px'/*top*/,
+						position: 'relative'
+					}
+				}, () => {
 				})
 			}
 		}, 100);
@@ -321,8 +217,12 @@ class OrdensDeManutencaoLine extends Component {
 					categorias: data.categorias,
 					equipments: equipments,
 					equipmentsTotal: data.resultLines.count,
-					ordersCountsLines: data.ordersCountsLines,
 					equipmentsLinesNext: nextPageLink,
+					ordersCountsLines: {
+						executed: data.ordersCountsLines.executed,
+						toExecute: data.ordersCountsLines.toExecute,
+						toSigning: data.ordersCountsLines.toSigning
+					}
 				});
 			}
 		}).catch(function (error) {
@@ -332,7 +232,12 @@ class OrdensDeManutencaoLine extends Component {
 				console.log(error);
 			}
 		}).then(() => {
-			this.setState({ isLoading: false, equipmentsIsLoading: false });
+
+			this.setState({
+				isLoading: false,
+				equipmentsIsLoading: false
+			});
+
 			setTimeout(() => {
 				this.setState({ tooltipReady: true });
 				Tooltip.Hidden.hide();
@@ -361,16 +266,14 @@ class OrdensDeManutencaoLine extends Component {
 					}
 				)}>
 					{this.state.selectionMode ?
-						<HeaderSelection count={this.state.selectedRows.length} openEnabled={() => {
-							this.state.selectedRows = this.state.selectedRows || [];
-
-							return this.state.selectedRows.filter((item, i) => {
-								return item.categoriaText == this.state.selectedRows[i == 0 ? 0 : i - 1].categoriaText;
-							}).length == this.state.selectedRows.length;
-						}}
-
+						<HeaderSelection
+							count={this.state.selectedRows.length} openEnabled={() => {
+								this.state.selectedRows = this.state.selectedRows || [];
+								return this.state.selectedRows.filter((item, i) => {
+									return item.categoriaText == this.state.selectedRows[i == 0 ? 0 : i - 1].categoriaText;
+								}).length == this.state.selectedRows.length;
+							}}
 							onClickOpen={(e) => { }}
-
 							onBackClick={() => {
 								this.setState({ selectionMode: false });
 								this.table.resetSelection();
@@ -382,12 +285,16 @@ class OrdensDeManutencaoLine extends Component {
 						/> :
 						<Header isLoading={this.state.isLoading}
 							maintenanceOrder={this.state.maintenanceOrder}
+							executed={this.state.ordersCountsLines.executed}
+							toExecute={this.state.ordersCountsLines.toExecute}
+							toSigning={this.state.ordersCountsLines.toSigning}
 							orderId={this.state.orderId} />
 					}
 				</div>
 
 				{this.state.listContainerStyle.marginTop &&
 					<ListContainer ref={el => this.listContainer = el} style={{ ...this.state.listContainerStyle }}
+						className="om-details__list-container"
 						onScroll={(e) => {
 							var scrollTop = e.target.scrollTop;
 							if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop - 20 <= 0) {
@@ -455,6 +362,29 @@ class OrdensDeManutencaoLine extends Component {
 							groupingEnabled={true}
 							searchEnabled={true}
 							allowMultiple={true}
+							noData={this.state.ordersCountsLines.executed + this.state.ordersCountsLines.toExecute == 0 &&
+								<td style={{
+									position: "absolute",
+									top: 0,
+									left: 0,
+									right: 0,
+									bottom: 0,
+									textAlign: 'center'
+								}}>
+									<div style={{
+										display: 'inline-block',
+										top: '40%',
+										margin: 'auto',
+										position: 'relative'
+									}}>
+										<Text p style={{
+											color: this.props.theme.palette.primary.default,
+											marginBottom: '5px'
+										}}>OM sem equipamentos</Text>
+										<Button primary>Ficha de Manutenção</Button>
+									</div>
+								</td>
+							}
 						/>
 					</ListContainer>
 				}
