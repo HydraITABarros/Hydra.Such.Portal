@@ -112,7 +112,7 @@ namespace Hydra.Such.Portal.Controllers
 
 			var preventiveCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutPreventiva == 1).Select(f => f.Code).ToList();
 			var curativeCodes = evolutionWEBContext.MaintenanceCatalog.Where(f => f.ManutCorrectiva == 1).Select(f => f.Code).ToList();
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
@@ -263,7 +263,7 @@ namespace Hydra.Such.Portal.Controllers
 		[ResponseCache(Duration = 86400)] /*24h*/
 		public ActionResult GetInstitutions()
 		{
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
@@ -309,7 +309,7 @@ namespace Hydra.Such.Portal.Controllers
 		[ResponseCache(Duration = 86400)] /*24h*/
 		public ActionResult GetClients()
 		{
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
@@ -400,7 +400,7 @@ namespace Hydra.Such.Portal.Controllers
 
 			if (order == null) { return NotFound(); }
 
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
@@ -469,7 +469,7 @@ namespace Hydra.Such.Portal.Controllers
 		//[ResponseCache(Duration = 60000)]
 		public ActionResult GetCurativeMaintenancePlans(string orderId, int equipmentId)
 		{
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
@@ -595,7 +595,7 @@ namespace Hydra.Such.Portal.Controllers
 			if (orderId == null && orderId == "") { return NotFound(); }
 
 			// validacao de premissoes
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 			if (loggedUser == null) { return Unauthorized(); }
 
 			var userCresps = suchDBContext.AcessosDimensões.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).Select(d => d.ValorDimensão).ToList();
@@ -650,7 +650,7 @@ namespace Hydra.Such.Portal.Controllers
 
 			if (order == null) { return NotFound(); }
 
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
@@ -695,7 +695,7 @@ namespace Hydra.Such.Portal.Controllers
 
 			if (previousEquipment == null) { return NotFound(); }
 
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
@@ -739,7 +739,7 @@ namespace Hydra.Such.Portal.Controllers
 		[Route("emms"), HttpGet]
 		public ActionResult GetEmms()
 		{
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
@@ -775,7 +775,7 @@ namespace Hydra.Such.Portal.Controllers
 		{
 			if (equipmentId == null || room == null || room == "") { return NotFound(); }
 
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 

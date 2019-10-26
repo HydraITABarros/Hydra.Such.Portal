@@ -43,7 +43,7 @@ namespace Hydra.Such.Portal.Controllers
 
 			var pageSize = 150;
 
-			var loggedUser = suchDBContext.AcessosUtilizador.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
 			if (loggedUser == null) { return NotFound(); }
 
