@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { PageTemplate } from 'components';
-import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, OmDatePicker, Tooltip, Text, CheckBox, Input, Icon, Button, Select, MenuItem, Modal } from 'components';
-import moment from 'moment';
+import styled, { injectGlobal, withTheme } from 'styled-components';
+import { Wrapper, Tooltip, Text, CheckBox, Input, Icon, Button, Modal } from 'components';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import Breadcrumb from './breadcrumb';
@@ -12,28 +11,22 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import StickyEl from 'react-sticky-el';
 import { Waypoint } from 'react-waypoint';
 import MuiGrid from '@material-ui/core/Grid';
-import ScrollContainer from 'react-indiana-drag-scroll';
 import Header from './header';
 import PlanActions from './planActions';
 import PlanEquipmentsHeader from './planEquipmentsHeader';
 import PlanEquipmentsItem from './planEquipmentsItem';
 import FinalState from './finalState';
-import PlanMaintenance from './planMaintenance';
 import PlanRow from './planRow';
 import _theme from '../../themes/default';
 import Color from 'color';
 import _ from 'lodash';
 import Functions from '../../helpers/functions';
 import './index.scss';
-import { red } from '@material-ui/core/colors';
 
 const addLinkedPropsToObject = Functions.addLinkedPropsToObject;
 
-const { DialogTitle, DialogContent, DialogActions } = Modal;
-
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
-
 
 const muiTheme = createMuiTheme();
 const breakpoints = muiTheme.breakpoints.values;
@@ -102,10 +95,18 @@ const Sticky = styled(StickyEl)`
 	&.sticky {
 		${HeaderTitle} {
 			border-bottom: solid 1px ${props => props.theme.palette.primary.keylines};
+			padding-top: 0; 
+			line-height: 1em;
+			h1 {				 
+				line-height: 1.4em;
+			}
+			div {
+				line-height: 0;
+			}
 		}
 		${PlanHeader} {
 			border-bottom: solid 1px ${props => props.theme.palette.primary.keylines};
-			transform: translateZ(0px) translateY(114px);
+			transform: translateZ(0px) translateY(65px);
 		}
 	}
 `;
@@ -183,26 +184,32 @@ class FichaDeManutencao extends Component {
 
 	componentDidMount() {
 		this.setBodyHeight();
-		var planContentEl = this.planContent.getElement();
-		var planEquipmentsHeaderEl = this.planEquipmentsHeader.getElement();
+		//var planContentEl = this.planContent.getElement();
+		var planContentEl = ReactDOM.findDOMNode(this.planContent);
+		//var planEquipmentsHeaderEl = this.planEquipmentsHeader.getElement();
+		var planEquipmentsHeaderEl = ReactDOM.findDOMNode(this.planEquipmentsHeader);
 		var startClientY = 0;
+
 		planEquipmentsHeaderEl.ontouchstart = (e) => {
 			startClientY = e.changedTouches[0].clientY;
 		};
+
 		planEquipmentsHeaderEl.ontouchmove = (e) => {
 			this.mainScroll.scrollTop = this.mainScroll.scrollTop + (e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY);
-			//console.log(e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY/*, e.changedTouches.Touch.clientY*/)
+			//console.log(e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY, e.changedTouches.Touch.clientY)
 			startClientY = e.changedTouches[0].clientY;
 		};
 
 		planContentEl.ontouchstart = (e) => {
 			startClientY = e.changedTouches[0].clientY;
 		};
+
 		planContentEl.ontouchmove = (e) => {
 			this.mainScroll.scrollTop = this.mainScroll.scrollTop + (e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY);
-			//console.log(e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY/*, e.changedTouches.Touch.clientY*/)
+			//console.log(e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY, e.changedTouches.Touch.clientY)
 			startClientY = e.changedTouches[0].clientY;
 		};
+
 	}
 
 	setBodyHeight() {
@@ -378,27 +385,29 @@ class FichaDeManutencao extends Component {
 						/>
 						<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} >
 							<Grid item xs={8} sm={8} md={6} className="before-to-scroll" ref={el => this.beforetoscroll = el}>
-								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
-									<PlanHeader>
-										<Wrapper padding="32px 0px 16px 32px" >
-											<PlanActions
-												planMaintenance={this.state.planMaintenance}
-												planQuality={this.state.planQuality}
-												planQuantity={this.state.planQuantity}
-												position={this.state.position}
-												ref={el => this.planActionsRef = el}
-												onSelect={(item) => {
-													//this.planActionsRef.setState({ position: item });
-													switch (item) {
-														case 0: this.handleScrollTo(this.maintenanceRef); break;
-														case 1: this.handleScrollTo(this.qualitativoRef); break;
-														case 2: this.handleScrollTo(this.quantitativo); break;
-														default: break;
-													}
-												}}
-											/>
-										</Wrapper>
-									</PlanHeader>
+								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-65} >
+									<div className="bg-bg-white">
+										<PlanHeader>
+											<Wrapper padding="32px 0px 16px 32px" >
+												<PlanActions
+													planMaintenance={this.state.planMaintenance}
+													planQuality={this.state.planQuality}
+													planQuantity={this.state.planQuantity}
+													position={this.state.position}
+													ref={el => this.planActionsRef = el}
+													onSelect={(item) => {
+														//this.planActionsRef.setState({ position: item });
+														switch (item) {
+															case 0: this.handleScrollTo(this.maintenanceRef); break;
+															case 1: this.handleScrollTo(this.qualitativoRef); break;
+															case 2: this.handleScrollTo(this.quantitativo); break;
+															default: break;
+														}
+													}}
+												/>
+											</Wrapper>
+										</PlanHeader>
+									</div>
 								</Sticky>
 								<Wrapper padding="0 0 0 32px">
 									<div ref={(el) => this.maintenanceRef = el} style={{ position: 'relative', top: '-400px' }}></div>
@@ -427,6 +436,7 @@ class FichaDeManutencao extends Component {
 										</Waypoint>
 									}
 									{this.state.planQuantity.length > 0 && this.state.planQuantityHtml}
+									<Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
 								</Wrapper>
 								<Wrapper padding="0" minHeight="164px" background={Color(this.props.theme.palette.secondary.default).alpha(0.2).toString()}>
 									<Wrapper padding="48px 16px 56px 50px">
@@ -434,26 +444,31 @@ class FichaDeManutencao extends Component {
 									</Wrapper>
 								</Wrapper>
 							</Grid>
-							<Grid item xs={4} sm={4} md={6} >
-								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-114} >
+							<Grid item xs={4} sm={4} md={6}
+								style={{ overflow: 'hidden' }}
+
+							>
+								<Sticky scrollElement=".scrollarea" style={{ zIndex: 10 }} topOffset={-65} >
 									<PlanHeader className={this.getScrollShadow()}
 										ref={(el) => { this.equipmentsHeaderWrapper = el }}>
-										<ScrollContainer className="scroll-container h100 natural-scroll" ref={el => this.planEquipmentsHeader = el}
-											nativeMobileScroll={false}
+										<div className="scroll-container h100 natural-scroll bg-bg-white" ref={el => this.planEquipmentsHeader = el}
+											//nativeMobileScroll={true}
+											style={{ overflow: 'scroll' }}
 											onScroll={(e) => {
-												ReactDOM.findDOMNode(this.planContent).scrollLeft = e;
+												console.log('IMP', e);
+												ReactDOM.findDOMNode(this.planContent).scrollLeft = e.target.scrollLeft;
 												var className = ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className;
-												if (e > 0 && className.indexOf('left') == -1) {
+												if (e.target.scrollLeft > 0 && className.indexOf('left') == -1) {
 													ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className += ' left ';
 												}
-												if (e == 0) {
+												if (e.target.scrollLeft == 0) {
 													ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className = className.replace('left', '');
 												}
 												var _className = ReactDOM.findDOMNode(this.planContentWrapper).className;
-												if (e > 0 && _className.indexOf('left') == -1) {
+												if (e.target.scrollLeft > 0 && _className.indexOf('left') == -1) {
 													ReactDOM.findDOMNode(this.planContentWrapper).className += ' left ';
 												}
-												if (e == 0) {
+												if (e.target.scrollLeft == 0) {
 													ReactDOM.findDOMNode(this.planContentWrapper).className = _className.replace('left', '');
 												}
 											}}>
@@ -461,31 +476,32 @@ class FichaDeManutencao extends Component {
 											<Wrapper padding="0  32px 0 0">
 												<PlanEquipmentsHeader equipments={this.state.equipments} />
 											</Wrapper>
-										</ScrollContainer>
+										</div>
 									</PlanHeader>
 								</Sticky>
 
 								<div ref={el => this.planContentWrapper = el} className={this.getScrollShadow()}
-									style={{ position: 'relative' }}
+									style={{ position: 'relative', overflow: 'scroll' }}
 								>
-									<ScrollContainer
+									<div
 										className={"scroll-container natural-scroll"} ref={el => this.planContent = el}
-										nativeMobileScroll={false}
+										//nativeMobileScroll={true}
+										style={{ overflow: 'scroll' }}
 										onScroll={(e) => {
-											ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollLeft = e;
+											ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollLeft = e.target.scrollLeft;
 											var className = ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className;
-											if (e > 0 && className.indexOf('left') == -1) {
+											if (ee.target.scrollLeft > 0 && className.indexOf('left') == -1) {
 												ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className += ' left ';
 											}
-											if (e == 0) {
+											if (e.target.scrollLeft == 0) {
 												ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className = className.replace('left', '');
 											}
 
 											var _className = ReactDOM.findDOMNode(this.planContentWrapper).className;
-											if (e > 0 && _className.indexOf('left') == -1) {
+											if (e.target.scrollLeft > 0 && _className.indexOf('left') == -1) {
 												ReactDOM.findDOMNode(this.planContentWrapper).className += ' left ';
 											}
-											if (e == 0) {
+											if (e.target.scrollLeft == 0) {
 												ReactDOM.findDOMNode(this.planContentWrapper).className = _className.replace('left', '');
 											}
 										}}>
@@ -544,6 +560,7 @@ class FichaDeManutencao extends Component {
 														</PlanRow>
 													);
 												})}
+												<Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
 											</Wrapper>
 										</Wrapper>
 										<Wrapper
@@ -568,7 +585,7 @@ class FichaDeManutencao extends Component {
 												})}
 											</Wrapper>
 										</Wrapper>
-									</ScrollContainer>
+									</div>
 								</div>
 							</Grid>
 						</Grid>

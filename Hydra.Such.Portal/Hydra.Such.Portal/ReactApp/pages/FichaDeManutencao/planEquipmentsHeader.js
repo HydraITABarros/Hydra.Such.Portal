@@ -24,7 +24,7 @@ const Num = styled(Text)`
 
 const Container = styled.div`
 	display: inline-block;
-	padding: 40px 0 0;
+	padding: 35px 0 0;
 `
 
 const PlanEquipmentsHeader = (props) => {

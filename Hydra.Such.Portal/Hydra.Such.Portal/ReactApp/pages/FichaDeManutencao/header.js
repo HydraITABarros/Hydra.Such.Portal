@@ -66,7 +66,7 @@ injectGlobal`
 	.sticky && {
 		${Title} {
 			transition: font-size .1s  .0s ease;
-			font-size: 40px !important;
+			font-size: 30px !important;
 		}
 	}
 `;
