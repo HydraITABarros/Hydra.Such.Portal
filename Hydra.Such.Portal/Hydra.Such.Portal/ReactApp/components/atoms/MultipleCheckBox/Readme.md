@@ -1,0 +1,6 @@
+
+```js
+<div >
+    <MultipleCheckBox />
+</div>
+```
