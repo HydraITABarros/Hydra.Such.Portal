@@ -1,55 +1,82 @@
-	.m-checkbox {
-		&__button {
-			box-shadow: none !important;
+@import "../../../themes/default";
+@import "../../../functions";
+
+.m-checkbox {
+	&__button {
+		box-shadow: none !important;
+		background-color: transparent !important;
+
+		&--0 {}
+
+		&--1 {
+			.m-checkbox__icon {
+				color: palette(alert, good);
+			}
+		}
+
+		&--2 {
+			.m-checkbox__icon {
+				background: palette(alert, good) !important;
+				color: white !important;
+				border-radius: 50%;
+				position: relative;
+				width: 20px;
+				height: 20px;
+
+				&:before {
+					border-radius: 50%;
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					right: 0;
+					margin: auto;
+					left: 0;
+					height: 0;
+					padding: 0;
+					line-height: 0;
+					font-size: 20px;
+				}
+			}
+		}
+
+		&--3 {}
+	}
+
+	&__icon-grouped {
+		position: relative;
+
+		span:last-of-type {
+			position: absolute;
+			bottom: 0;
+			line-height: 0;
+			top: 50%;
+			height: 0;
+			left: 0;
+			right: 0;
+			margin: 0 auto;
+		}
+	}
+
+	&--disabled {
+
+		.m-checkbox__button {
+			cursor: not-allowed;
 
 			&--0 {}
 
 			&--1 {
 				.m-checkbox__icon {
-					color: green !important;
+					color: palette(primary, medium) !important;
 				}
 			}
 
 			&--2 {
 				.m-checkbox__icon {
-					background: green !important;
-					color: white !important;
-					border-radius: 50%;
-					position: relative;
-					width: 20px;
-					height: 20px;
-
-					&:before {
-						border-radius: 50%;
-						position: absolute;
-						top: 0;
-						bottom: 0;
-						right: 0;
-						margin: auto;
-						left: 0;
-						height: 0;
-						padding: 0;
-						line-height: 0;
-						font-size: 20px;
-					}
+					background: palette(primary, medium) !important;
 				}
 			}
 
 			&--3 {}
 		}
-
-		&__icon-grouped {
-			position: relative;
-
-			span:last-of-type {
-				position: absolute;
-				bottom: 0;
-				line-height: 0;
-				top: 50%;
-				height: 0;
-				left: 0;
-				right: 0;
-				margin: 0 auto;
-			}
-		}
 	}
+}

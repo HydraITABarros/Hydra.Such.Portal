@@ -1,0 +1,3 @@
+@function palette($section, $color: 'default') {
+	@return map-get(map-get($colors, $section), $color);
+}

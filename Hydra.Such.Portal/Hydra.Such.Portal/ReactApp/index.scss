@@ -1,8 +1,5 @@
 @import './themes/default';
-
-@function palette($section, $color: 'default') {
-	@return map-get(map-get($colors, $section), $color);
-}
+@import './functions';
 
 // toolbox
 @each $section-key,

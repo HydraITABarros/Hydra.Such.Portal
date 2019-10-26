@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { PageTemplate } from 'components';
 import styled, { injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, Tooltip, Text, CheckBox, Input, Icon, Button, Modal } from 'components';
+import { Wrapper, Tooltip, Text, MultipleCheckBox, Input, Icon, Button, Modal } from 'components';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import Breadcrumb from './breadcrumb';
@@ -515,7 +515,7 @@ class FichaDeManutencao extends Component {
 															{this.state.equipments.map((e, i) => {
 																return (
 																	<PlanEquipmentsItem key={index + '' + i}>
-																		<CheckBox $checked={e.planMaintenance[index].$resultado} />
+																		<MultipleCheckBox $value={e.planMaintenance[index].$resultado} />
 																	</PlanEquipmentsItem>
 																)
 															})}
@@ -533,7 +533,7 @@ class FichaDeManutencao extends Component {
 																console.log(renderCount);
 																return (
 																	<PlanEquipmentsItem key={index + '' + i}>
-																		<CheckBox $checked={e.planQuality[index].$resultado} />
+																		<MultipleCheckBox $value={e.planQuality[index].$resultado} />
 																	</PlanEquipmentsItem>
 																)
 															})}
