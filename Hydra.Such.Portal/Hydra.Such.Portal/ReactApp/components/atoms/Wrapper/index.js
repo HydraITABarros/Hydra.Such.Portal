@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     position: ${props => props.position || 'relative'} ;
     min-height: ${props => props.minHeight || 'auto'};
     white-space: ${props => props.nowrap ? 'nowrap' : 'normal'};
-    overflow: ${props => props.nowrap ? 'auto' : 'unset'};
+    overflow: ${props => props.overflow ? props.overflow : props.nowrap ? 'auto' : 'unset'};
     background: ${props => props.background ? props.background : ''};
     @media (max-width: ${breakpoints['md'] + 'px'}) {
         padding: ${props => props.mdPadding || (props.padding || 0)};
