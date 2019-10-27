@@ -19,6 +19,7 @@ namespace Hydra.Such.Portal.ViewModels
         public string Descricao { get; set; }
         public string UnidadeCampo1 { get; set; }
         public string Resultado { get; set; }
+        public string Observacoes { get; set; }
         [JsonIgnore]
         public string Codigo { get; set; }
         [JsonIgnore]

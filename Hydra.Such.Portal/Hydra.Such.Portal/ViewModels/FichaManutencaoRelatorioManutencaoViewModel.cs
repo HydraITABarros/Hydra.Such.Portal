@@ -17,7 +17,8 @@ namespace Hydra.Such.Portal.ViewModels
     {
         public int? IdManutencao { get; set; }
         public string Descricao { get; set; }
-        public bool? Resultado { get; set; }
+        public int? Resultado { get; set; }
+        public string Observacoes { get; set; }
         [JsonIgnore]
         public string Codigo { get; set; }
         [JsonIgnore]
