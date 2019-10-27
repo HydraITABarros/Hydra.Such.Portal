@@ -13,7 +13,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public DateTime Data { get; set; }
         public int IdTesteQualitativos { get; set; }
         public string RotinaTipo { get; set; }
-        public bool ResultadoRotina { get; set; }
+        public byte ResultadoRotina { get; set; }
+        public string Observacoes { get; set; }
         public int Id { get; set; }
     }
 }

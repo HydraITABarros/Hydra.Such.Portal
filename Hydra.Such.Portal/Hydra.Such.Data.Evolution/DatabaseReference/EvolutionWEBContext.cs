@@ -21,11 +21,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public virtual DbSet<Area> Area { get; set; }
         public virtual DbSet<AreaOp> AreaOp { get; set; }
         public virtual DbSet<CabeçalhoFolhaHoras> CabeçalhoFolhaHoras { get; set; }
-        public virtual DbSet<CarregamentoEquip01> CarregamentoEquip01 { get; set; }
         public virtual DbSet<CarregamentoInstituicaoFase2> CarregamentoInstituicaoFase2 { get; set; }
-        public virtual DbSet<CarregamentoInstituicaoFase3> CarregamentoInstituicaoFase3 { get; set; }
         public virtual DbSet<CarregamentoInstituicaoServico> CarregamentoInstituicaoServico { get; set; }
-        public virtual DbSet<CarregamentoServicoFase3> CarregamentoServicoFase3 { get; set; }
+        public virtual DbSet<CarregamentoPimpHtq07out2019> CarregamentoPimpHtq07out2019 { get; set; }
         public virtual DbSet<Chat> Chat { get; set; }
         public virtual DbSet<ChatUsersOn> ChatUsersOn { get; set; }
         public virtual DbSet<Cliente> Cliente { get; set; }
@@ -67,7 +65,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public virtual DbSet<EmmInspeccoesTipos> EmmInspeccoesTipos { get; set; }
         public virtual DbSet<EmmLaboratorio> EmmLaboratorio { get; set; }
         public virtual DbSet<EmmPeriodicidade> EmmPeriodicidade { get; set; }
-        public virtual DbSet<EmmPeriodicidadeTeste> EmmPeriodicidadeTeste { get; set; }
         public virtual DbSet<EmmPermissao> EmmPermissao { get; set; }
         public virtual DbSet<EmmSetPoints> EmmSetPoints { get; set; }
         public virtual DbSet<EmmTipo> EmmTipo { get; set; }
@@ -87,9 +84,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public virtual DbSet<Equipa> Equipa { get; set; }
         public virtual DbSet<Equipamento> Equipamento { get; set; }
         public virtual DbSet<EquipamentoAcessorio> EquipamentoAcessorio { get; set; }
-        public virtual DbSet<EquipamentoBdProdNorte2018jun07> EquipamentoBdProdNorte2018jun07 { get; set; }
-        public virtual DbSet<EquipamentoTesteSeem1> EquipamentoTesteSeem1 { get; set; }
-        public virtual DbSet<EquipamentosNorteParte111022019> EquipamentosNorteParte111022019 { get; set; }
         public virtual DbSet<EstadoObra> EstadoObra { get; set; }
         public virtual DbSet<Familia> Familia { get; set; }
         public virtual DbSet<Feriado> Feriado { get; set; }
@@ -116,7 +110,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public virtual DbSet<JobJournalLine> JobJournalLine { get; set; }
         public virtual DbSet<JobJournalTemplate> JobJournalTemplate { get; set; }
         public virtual DbSet<JobLedgerEntry> JobLedgerEntry { get; set; }
-        public virtual DbSet<JobLedgerEntryBackup> JobLedgerEntryBackup { get; set; }
         public virtual DbSet<LinhaFolhaHoras> LinhaFolhaHoras { get; set; }
         public virtual DbSet<LinhaFolhaHorasDistribCus> LinhaFolhaHorasDistribCus { get; set; }
         public virtual DbSet<LinhaFolhaHorasMãoObra> LinhaFolhaHorasMãoObra { get; set; }
@@ -126,10 +119,12 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public virtual DbSet<MaintenanceHeaderComments> MaintenanceHeaderComments { get; set; }
         public virtual DbSet<MaintenanceOrder> MaintenanceOrder { get; set; }
         public virtual DbSet<MaintenanceOrderAnexo> MaintenanceOrderAnexo { get; set; }
-        public virtual DbSet<MaintenanceOrderBackup> MaintenanceOrderBackup { get; set; }
         public virtual DbSet<MaintenanceOrderClienteIteracao> MaintenanceOrderClienteIteracao { get; set; }
         public virtual DbSet<MaintenanceOrderLine> MaintenanceOrderLine { get; set; }
         public virtual DbSet<Menus> Menus { get; set; }
+        public virtual DbSet<MetCalibracao> MetCalibracao { get; set; }
+        public virtual DbSet<MetCertificado> MetCertificado { get; set; }
+        public virtual DbSet<MetEquipamento> MetEquipamento { get; set; }
         public virtual DbSet<MoCommentLine> MoCommentLine { get; set; }
         public virtual DbSet<MoComponents> MoComponents { get; set; }
         public virtual DbSet<MoTasks> MoTasks { get; set; }
@@ -140,11 +135,13 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public virtual DbSet<Orcamento> Orcamento { get; set; }
         public virtual DbSet<OrcamentoLine> OrcamentoLine { get; set; }
         public virtual DbSet<OrdemManutencao> OrdemManutencao { get; set; }
+        public virtual DbSet<OrdemManutencaoDescricaoAvaria> OrdemManutencaoDescricaoAvaria { get; set; }
         public virtual DbSet<OrdemManutencaoEquipamentos> OrdemManutencaoEquipamentos { get; set; }
         public virtual DbSet<OrdemManutencaoEstadoMaterial> OrdemManutencaoEstadoMaterial { get; set; }
         public virtual DbSet<OrdemManutencaoLinha> OrdemManutencaoLinha { get; set; }
         public virtual DbSet<OrdemManutencaoLinhaMateriais> OrdemManutencaoLinhaMateriais { get; set; }
         public virtual DbSet<OrdemManutencaoMateriais> OrdemManutencaoMateriais { get; set; }
+        public virtual DbSet<OrdemManutencaoRelatorioTrabalho> OrdemManutencaoRelatorioTrabalho { get; set; }
         public virtual DbSet<OrigemAvaria> OrigemAvaria { get; set; }
         public virtual DbSet<Periodicidade> Periodicidade { get; set; }
         public virtual DbSet<PermissoesDefault> PermissoesDefault { get; set; }
@@ -174,38 +171,37 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
         // Unable to generate entity type for table 'dbo.Z_Execucao_Job'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo._CARREGAMENTO_SERVICO'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo._NORMALIZACAO_CLIENTES_20190415_INSTITUICAO'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Solicitacoes_Anexos'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo._NORMALIZACAO_CLIENTES_20190415_Maintenance_Order'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo._NORMALIZACAO_CLIENTES_20190415_Orcamento'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo._NORMALIZACAO_CLIENTES_20190415_Equipamento'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo._NORMALIZACAO_CLIENTES_20190415_Contrato'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo._NORMALIZACAO_CLIENTES_20190415_Cliente'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Equip_Manutencao'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.TEMP_1_FICHA_MANUTENCAO'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.Job_BACKUP'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._Equipamentos_CHULC'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.TEMP_2_FICHA_MANUTENCAO_TEMPO_ESTIMADO_ROTINA'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.TEMP_3_FICHA_MANUTENCAO_EQUIPAMENTOS_TESTE'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.TEMP_4_FICHA_MANUTENCAO_MANUTENCAO'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.TEMP_5_FICHA_MANUTENCAO_TESTES_QUALITATIVOS'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.TEMP_6_FICHA_MANUTENCAO_TESTES_QUANTITATIVOS'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.Historico Maintenance Order'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.EMM_TEMP_Tipo'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.EMM_TEMP_Inspeccoes'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.EMM_TEMP_Equipamento'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._Equipamentos_CHULN'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.Meus_Menus'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.EMM_TEMP_Gama'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.Job Ledger Entry_BACKUP_20190326'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.Job Ledger Entry_BACKUP_20190329'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.EMM_TEMP_Gama2'. Please see the warning messages.
-        // Unable to generate entity type for table 'dbo.EMM_TEMP_Gama_V1'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo.Job Ledger Entry - BACKUP CGs'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo.Logs_2018'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo.Job Ledger Entry - BACKUP RQs'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._View_Requisicoes'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._View_Linhas_Requisicoes'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._View_ConsultasMercado'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._View_Linhas_ConsultasMercado'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._View_Linhas_Encomendas'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo.___Maintenance Order___ Material Entregue 6 e 7'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo.Job Ledger Entry_BACKUP_20190607'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._Carregamento_PIMP_CHTMAD'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._Carregamento_PIMP_HTQ_19Maio'. Please see the warning messages.
+        // Unable to generate entity type for table 'dbo._Carregamento_PIMP_VC170057'. Please see the warning messages.
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=localhost;initial catalog=EvolutionWEB;user id=sa;password=reallyStrongPwd123;");
+                optionsBuilder.UseSqlServer("Server=shared;initial catalog=EvolutionWEB;user id=such_portal_user;password=SuchPW.2K17;");
             }
         }
 
@@ -616,129 +612,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<CarregamentoEquip01>(entity =>
-            {
-                entity.ToTable("_CARREGAMENTO_EQUIP_01");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.Area).HasMaxLength(100);
-
-                entity.Property(e => e.Cliente).HasMaxLength(100);
-
-                entity.Property(e => e.CodFichaManutencao)
-                    .HasColumnName("Cod_Ficha_Manutencao")
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.Contrato).HasMaxLength(100);
-
-                entity.Property(e => e.Cresp).HasMaxLength(100);
-
-                entity.Property(e => e.DescCliente)
-                    .HasColumnName("Desc_Cliente")
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.DescContrato)
-                    .HasColumnName("Desc_Contrato")
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.DescFichaManutencao)
-                    .HasColumnName("Desc_Ficha_Manutencao")
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.Equipa).HasMaxLength(100);
-
-                entity.Property(e => e.Equipamento).HasMaxLength(100);
-
-                entity.Property(e => e.Estado).HasMaxLength(100);
-
-                entity.Property(e => e.IdArea).HasColumnName("ID_AREA");
-
-                entity.Property(e => e.IdAreaop).HasColumnName("ID_AREAOP");
-
-                entity.Property(e => e.IdCategoria).HasColumnName("ID_CATEGORIA");
-
-                entity.Property(e => e.IdCliente).HasColumnName("ID_CLIENTE");
-
-                entity.Property(e => e.IdEquip)
-                    .HasColumnName("ID_Equip")
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.IdEquipa).HasColumnName("ID_EQUIPA");
-
-                entity.Property(e => e.IdFornecedor).HasColumnName("ID_FORNECEDOR");
-
-                entity.Property(e => e.IdInstituicao).HasColumnName("ID_INSTITUICAO");
-
-                entity.Property(e => e.IdMarca).HasColumnName("ID_MARCA");
-
-                entity.Property(e => e.IdModelo).HasColumnName("ID_MODELO");
-
-                entity.Property(e => e.IdModelos).HasColumnName("ID_MODELOS");
-
-                entity.Property(e => e.IdPeriodicidade).HasColumnName("ID_PERIODICIDADE");
-
-                entity.Property(e => e.IdRegiao).HasColumnName("ID_REGIAO");
-
-                entity.Property(e => e.IdServico).HasColumnName("ID_SERVICO");
-
-                entity.Property(e => e.IdTipo).HasColumnName("ID_TIPO");
-
-                entity.Property(e => e.Instituicao).HasMaxLength(100);
-
-                entity.Property(e => e.Localizacao).HasMaxLength(100);
-
-                entity.Property(e => e.Marca).HasMaxLength(100);
-
-                entity.Property(e => e.Modelo).HasMaxLength(100);
-
-                entity.Property(e => e.NomeFornecedor)
-                    .HasColumnName("NOME_FORNECEDOR")
-                    .HasMaxLength(100);
-
-                entity.Property(e => e.NumeroInventario).HasMaxLength(100);
-
-                entity.Property(e => e.NumeroSerie).HasMaxLength(100);
-
-                entity.Property(e => e.Regiao).HasMaxLength(100);
-
-                entity.Property(e => e.Tipo).HasMaxLength(100);
-            });
-
             modelBuilder.Entity<CarregamentoInstituicaoFase2>(entity =>
             {
                 entity.ToTable("_CARREGAMENTO_INSTITUICAO_FASE_2");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.DescricaoEvolution)
-                    .HasColumnName("Descricao_Evolution")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.IdCliente).HasColumnName("ID_CLIENTE");
-
-                entity.Property(e => e.IdInstServ).HasColumnName("ID_INST_SERV");
-
-                entity.Property(e => e.IdInstituicaoSuperior).HasColumnName("ID_INSTITUICAO_SUPERIOR");
-
-                entity.Property(e => e.InstituicaoSuperior).HasMaxLength(50);
-
-                entity.Property(e => e.LocalizacaoFuncional).HasMaxLength(50);
-
-                entity.Property(e => e.NomeCliente).HasMaxLength(250);
-
-                entity.Property(e => e.NumClienteNav2009)
-                    .HasColumnName("NumCliente_NAV2009")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.NumClienteNav2017)
-                    .HasColumnName("NumCliente_NAV2017")
-                    .HasMaxLength(50);
-            });
-
-            modelBuilder.Entity<CarregamentoInstituicaoFase3>(entity =>
-            {
-                entity.ToTable("_CARREGAMENTO_INSTITUICAO_FASE_3");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -806,35 +682,53 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<CarregamentoServicoFase3>(entity =>
+            modelBuilder.Entity<CarregamentoPimpHtq07out2019>(entity =>
             {
-                entity.ToTable("_CARREGAMENTO_SERVICO_FASE_3");
+                entity.ToTable("_Carregamento_PIMP_HTQ_07Out2019");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.DescricaoEvolution)
-                    .HasColumnName("Descricao_Evolution")
-                    .HasMaxLength(250);
+                entity.Property(e => e.Ano).HasMaxLength(50);
+
+                entity.Property(e => e.Contrato).HasMaxLength(50);
+
+                entity.Property(e => e.DataPlano).HasMaxLength(50);
+
+                entity.Property(e => e.DataValidacao).HasMaxLength(50);
+
+                entity.Property(e => e.Dia).HasMaxLength(50);
+
+                entity.Property(e => e.Estado).HasMaxLength(50);
 
                 entity.Property(e => e.IdCliente).HasColumnName("ID_CLIENTE");
 
-                entity.Property(e => e.IdInstServ).HasColumnName("ID_INST_SERV");
-
-                entity.Property(e => e.IdInstituicaoSuperior).HasColumnName("ID_INSTITUICAO_SUPERIOR");
-
-                entity.Property(e => e.InstituicaoSuperior).HasMaxLength(50);
-
-                entity.Property(e => e.LocalizacaoFuncional).HasMaxLength(50);
-
-                entity.Property(e => e.NomeCliente).HasMaxLength(250);
-
-                entity.Property(e => e.NumClienteNav2009)
-                    .HasColumnName("NumCliente_NAV2009")
+                entity.Property(e => e.IdEq)
+                    .HasColumnName("Id_Eq")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.NumClienteNav2017)
-                    .HasColumnName("NumCliente_NAV2017")
-                    .HasMaxLength(50);
+                entity.Property(e => e.IdEquipa).HasColumnName("ID_EQUIPA");
+
+                entity.Property(e => e.IdEquipamento).HasColumnName("ID_EQUIPAMENTO");
+
+                entity.Property(e => e.IdRotina).HasColumnName("ID_ROTINA");
+
+                entity.Property(e => e.IdTecnico).HasColumnName("ID_TECNICO");
+
+                entity.Property(e => e.IdUserInsercao).HasColumnName("ID_USER_INSERCAO");
+
+                entity.Property(e => e.Mes).HasMaxLength(50);
+
+                entity.Property(e => e.Rotina).HasMaxLength(50);
+
+                entity.Property(e => e.Semana).HasMaxLength(50);
+
+                entity.Property(e => e.Semestre).HasMaxLength(50);
+
+                entity.Property(e => e.Tecnico).HasMaxLength(50);
+
+                entity.Property(e => e.Trimestre).HasMaxLength(50);
+
+                entity.Property(e => e.Utilizador).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Chat>(entity =>
@@ -903,6 +797,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => new { e.Nome, e.CodNavision })
                     .HasName("IX_Cliente_Cod_Navision");
+
+                entity.HasIndex(e => new { e.IdCliente, e.Nome, e.CodNavision, e.ActivoManut, e.CrespNav, e.Activo })
+                    .HasName("IX_Cliente_Activo");
 
                 entity.Property(e => e.IdCliente).HasColumnName("ID_Cliente");
 
@@ -1228,7 +1125,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.Property(e => e.NumVersao).HasColumnName("Num_Versao");
 
                 entity.Property(e => e.Observacoes)
-                    .HasMaxLength(250)
+                    .HasMaxLength(500)
                     .IsUnicode(false);
 
                 entity.Property(e => e.PercentagemMc)
@@ -1502,6 +1399,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
             {
                 entity.ToTable("EMM_Anexos");
 
+                entity.HasIndex(e => new { e.IdGrupo, e.NumEmm, e.Activo });
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Activo).HasDefaultValueSql("((1))");
@@ -1649,6 +1548,12 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.ToTable("EMM_Equipamentos");
 
+                entity.HasIndex(e => new { e.NumEmm, e.IdTipo, e.TipoDescricao, e.IdGrupo, e.Activo, e.IdEstado })
+                    .HasName("IX_EMM_Equipamentos_ID_Grupo_Activo_ID_Estado");
+
+                entity.HasIndex(e => new { e.NumEmm, e.IdTipo, e.TipoDescricao, e.IdGrupo, e.IdEquipamento, e.IdEstado })
+                    .HasName("IX_EMM_Equipamentos_ID_Grupo_ID_Equipamento_ID_Estado");
+
                 entity.Property(e => e.NumEmm)
                     .HasColumnName("Num_EMM")
                     .ValueGeneratedNever();
@@ -1700,7 +1605,10 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.Property(e => e.IdEstado).HasColumnName("ID_Estado");
 
-                entity.Property(e => e.IdFornecedor).HasColumnName("ID_Fornecedor");
+                entity.Property(e => e.IdFornecedor)
+                    .HasColumnName("ID_Fornecedor")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.IdGrupo).HasColumnName("ID_Grupo");
 
@@ -1988,6 +1896,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
             {
                 entity.ToTable("EMM_Inspecao_Rotina");
 
+                entity.HasIndex(e => e.IdInspecao);
+
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.CalculoAceitacao).HasColumnName("Calculo_Aceitacao");
@@ -2088,6 +1998,11 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.HasKey(e => e.IdInspecao);
 
                 entity.ToTable("EMM_Inspeccoes");
+
+                entity.HasIndex(e => new { e.IdInspecao, e.NumEmm, e.IdResultado })
+                    .HasName("IX_EMM_Inspeccoes_ID_Resultado");
+
+                entity.HasIndex(e => new { e.NumEmm, e.Activo, e.IdResultado });
 
                 entity.Property(e => e.IdInspecao)
                     .HasColumnName("ID_Inspecao")
@@ -2239,29 +2154,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .IsUnicode(false);
 
                 entity.Property(e => e.TotalDias).HasColumnName("Total_Dias");
-            });
-
-            modelBuilder.Entity<EmmPeriodicidadeTeste>(entity =>
-            {
-                entity.ToTable("EMM_Periodicidade_TESTE");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.Activo).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Ano).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Dia).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Mes).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Periodicidade)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TotalDias)
-                    .HasColumnName("Total_Dias")
-                    .HasDefaultValueSql("((0))");
             });
 
             modelBuilder.Entity<EmmPermissao>(entity =>
@@ -2640,6 +2532,41 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.ToTable("Equip_Modelo");
 
+                entity.HasIndex(e => e.Activo)
+                    .HasName("_dta_index_Equip_Modelo_6_377768403__K6");
+
+                entity.HasIndex(e => e.IdCategoria);
+
+                entity.HasIndex(e => e.IdMarca)
+                    .HasName("_dta_index_Equip_Modelo_6_377768403__K4_f1")
+                    .HasFilter("([Equip_Modelo].[Activo]=(1))");
+
+                entity.HasIndex(e => new { e.IdMarca, e.Activo })
+                    .HasName("_dta_index_Equip_Modelo_6_377768403__K4_K6_f2")
+                    .HasFilter("([Equip_Modelo].[Activo]=(1))");
+
+                entity.HasIndex(e => new { e.IdMarca, e.Activo, e.IdModelos })
+                    .HasName("_dta_index_Equip_Modelo_6_377768403__K4_K6_K5_f6")
+                    .HasFilter("([Equip_Modelo].[Activo]=(1))");
+
+                entity.HasIndex(e => new { e.IdModelos, e.IdMarca, e.Activo })
+                    .HasName("_dta_stat_377768403_5_4_6")
+                    .HasFilter("([Equip_Modelo].[Activo]=(1))");
+
+                entity.HasIndex(e => new { e.IdModelo, e.Activo, e.IdMarca, e.IdModelos })
+                    .HasName("_dta_index_Equip_Modelo_6_377768403__K6_K4_K5_1");
+
+                entity.HasIndex(e => new { e.IdModelo, e.IdMarca, e.Activo, e.IdModelos })
+                    .HasName("_dta_index_Equip_Modelo_6_377768403__K4_K6_K5_1_f4")
+                    .HasFilter("([Equip_Modelo].[Activo]=(1))");
+
+                entity.HasIndex(e => new { e.IdModelo, e.IdModelos, e.IdMarca, e.Activo })
+                    .HasName("_dta_index_Equip_Modelo_6_377768403__K5_K4_K6_1_f3")
+                    .HasFilter("([Equip_Modelo].[Activo]=(1))");
+
+                entity.HasIndex(e => new { e.IdModelo, e.IdCategoria, e.IdMarca, e.IdModelos, e.Activo })
+                    .HasName("_dta_index_Equip_Modelo_6_377768403__col__");
+
                 entity.Property(e => e.IdModelo).HasColumnName("ID_Modelo");
 
                 entity.Property(e => e.Activo)
@@ -2681,6 +2608,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.HasKey(e => e.IdEquipPimp);
 
                 entity.ToTable("Equip_PIMP");
+
+                entity.HasIndex(e => new { e.IdEquipamento, e.Ano });
 
                 entity.Property(e => e.IdEquipPimp).HasColumnName("ID_Equip_PIMP");
 
@@ -2818,6 +2747,10 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
             modelBuilder.Entity<Equipamento>(entity =>
             {
                 entity.HasKey(e => e.IdEquipamento);
+
+                entity.HasIndex(e => e.NumEquipamento);
+
+                entity.HasIndex(e => new { e.IdServico, e.Activo, e.PorValidar });
 
                 entity.HasIndex(e => new { e.Nome, e.NumSerie, e.NumInventario, e.NumEquipamento, e.IdEquipamento })
                     .HasName("_dta_index_Equipamento_6_1118679083__K1_2_6_7_8");
@@ -3052,402 +2985,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasForeignKey(d => d.IdEquipamento)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Equipamento_Acessorio_Equipamento");
-            });
-
-            modelBuilder.Entity<EquipamentoBdProdNorte2018jun07>(entity =>
-            {
-                entity.HasKey(e => e.IdEquipamento);
-
-                entity.ToTable("__Equipamento_BD_PROD_NORTE_2018JUN07");
-
-                entity.Property(e => e.IdEquipamento)
-                    .HasColumnName("ID_Equipamento")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Abatido).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Activo)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.AlteradoPor).HasColumnName("Alterado_Por");
-
-                entity.Property(e => e.AnoFabrico).HasColumnName("Ano_Fabrico");
-
-                entity.Property(e => e.AssociadoContrato).HasColumnName("Associado_Contrato");
-
-                entity.Property(e => e.CodigoBarras).HasColumnType("image");
-
-                entity.Property(e => e.CodigoBarrasCliente).HasColumnType("image");
-
-                entity.Property(e => e.Criticidade).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.DataAlteracao)
-                    .HasColumnName("Data_Alteracao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataAquisicao)
-                    .HasColumnName("Data_Aquisicao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataEntradaContrato)
-                    .HasColumnName("Data_Entrada_Contrato")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataFimGarantia)
-                    .HasColumnName("Data_Fim_Garantia")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataInactivacao)
-                    .HasColumnName("Data_Inactivacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataInsercao)
-                    .HasColumnName("Data_Insercao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataInstalacao)
-                    .HasColumnName("Data_Instalacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataSaidaContrato)
-                    .HasColumnName("Data_Saida_Contrato")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataValidacao)
-                    .HasColumnName("Data_Validacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DescricaoTreePath)
-                    .HasColumnName("Descricao_TreePath")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.DesignacaoComplementar).HasMaxLength(250);
-
-                entity.Property(e => e.DesignacaoComplementar2).HasMaxLength(250);
-
-                entity.Property(e => e.Foto).HasColumnType("image");
-
-                entity.Property(e => e.Garantia).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.IdArea).HasColumnName("ID_Area");
-
-                entity.Property(e => e.IdAreaOp).HasColumnName("ID_AreaOp");
-
-                entity.Property(e => e.IdCliente).HasColumnName("ID_Cliente");
-
-                entity.Property(e => e.IdContrato)
-                    .HasColumnName("ID_Contrato")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.IdEquipa).HasColumnName("ID_Equipa");
-
-                entity.Property(e => e.IdFornecedor)
-                    .HasColumnName("ID_Fornecedor")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.IdPeriodicidade).HasColumnName("ID_Periodicidade");
-
-                entity.Property(e => e.IdRegiao).HasColumnName("ID_Regiao");
-
-                entity.Property(e => e.IdServico).HasColumnName("ID_Servico");
-
-                entity.Property(e => e.IncluiMc)
-                    .HasColumnName("Inclui_MC")
-                    .HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.InseridoPor).HasColumnName("Inserido_Por");
-
-                entity.Property(e => e.Localizacao).HasMaxLength(50);
-
-                entity.Property(e => e.MpPlaneadas).HasColumnName("MP_Planeadas");
-
-                entity.Property(e => e.Nome).HasMaxLength(60);
-
-                entity.Property(e => e.NomeAreaOp)
-                    .HasColumnName("Nome_AreaOp")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.NomeCategoria)
-                    .HasColumnName("Nome_Categoria")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.NomeEquipa)
-                    .HasColumnName("Nome_Equipa")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.NomeFornecedor)
-                    .HasColumnName("Nome_Fornecedor")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.NomeMarca)
-                    .HasColumnName("Nome_Marca")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.NomeModelo)
-                    .HasColumnName("Nome_Modelo")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.NomeServico)
-                    .HasColumnName("Nome_Servico")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.NumEquipamento)
-                    .HasColumnName("Num_Equipamento")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.NumInventario)
-                    .HasColumnName("Num_Inventario")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.NumSerie)
-                    .HasColumnName("Num_Serie")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Observacao).HasMaxLength(250);
-
-                entity.Property(e => e.PorValidar)
-                    .IsRequired()
-                    .HasColumnName("Por_Validar")
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.PrecoAquisicao)
-                    .HasColumnName("Preco_Aquisicao")
-                    .HasColumnType("money");
-
-                entity.Property(e => e.Sala).HasMaxLength(100);
-
-                entity.Property(e => e.SubContratar)
-                    .HasColumnName("Sub_Contratar")
-                    .HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.ToleranciaEquipamento).HasColumnName("Tolerancia_Equipamento");
-
-                entity.Property(e => e.ValidadoPor).HasColumnName("Validado_Por");
-            });
-
-            modelBuilder.Entity<EquipamentoTesteSeem1>(entity =>
-            {
-                entity.HasKey(e => e.IdRegisto);
-
-                entity.ToTable("__Equipamento_TesteSEEM1");
-
-                entity.Property(e => e.IdRegisto).HasColumnName("ID_Registo");
-
-                entity.Property(e => e.Abatido).HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.Aces)
-                    .HasColumnName("ACES")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.Activo).HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.Area).HasMaxLength(250);
-
-                entity.Property(e => e.AreaOperacional).HasMaxLength(250);
-
-                entity.Property(e => e.Categoria).HasMaxLength(250);
-
-                entity.Property(e => e.Cliente).HasMaxLength(250);
-
-                entity.Property(e => e.CodFichaManutencao)
-                    .HasColumnName("Cod_Ficha_Manutencao")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.DesignacaoComplementar)
-                    .HasColumnName("Designacao_Complementar")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.Equipa).HasMaxLength(250);
-
-                entity.Property(e => e.EquipamentoAssociado)
-                    .HasColumnName("Equipamento_Associado")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.IdArea).HasColumnName("ID_Area");
-
-                entity.Property(e => e.IdAreaOp).HasColumnName("ID_AreaOp");
-
-                entity.Property(e => e.IdCategoria).HasColumnName("ID_Categoria");
-
-                entity.Property(e => e.IdCliente).HasColumnName("ID_Cliente");
-
-                entity.Property(e => e.IdContrato)
-                    .HasColumnName("ID_Contrato")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.IdEquipa).HasColumnName("ID_Equipa");
-
-                entity.Property(e => e.IdInstituicao).HasColumnName("ID_Instituicao");
-
-                entity.Property(e => e.IdMarca).HasColumnName("ID_Marca");
-
-                entity.Property(e => e.IdModelo).HasColumnName("ID_Modelo");
-
-                entity.Property(e => e.IdModelos).HasColumnName("ID_Modelos");
-
-                entity.Property(e => e.IdRegiao).HasColumnName("ID_Regiao");
-
-                entity.Property(e => e.IdServico).HasColumnName("ID_Servico");
-
-                entity.Property(e => e.IdTipo).HasColumnName("ID_Tipo");
-
-                entity.Property(e => e.InstituicaoUltima)
-                    .HasColumnName("Instituicao_ultima")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.LocalizacaoCliente)
-                    .HasColumnName("Localizacao_Cliente")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Marca).HasMaxLength(250);
-
-                entity.Property(e => e.Modelo).HasMaxLength(250);
-
-                entity.Property(e => e.NumContrato).HasMaxLength(20);
-
-                entity.Property(e => e.NumInventario)
-                    .HasColumnName("Num_Inventario")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.NumSerie)
-                    .HasColumnName("Num_Serie")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.Observacoes).HasMaxLength(250);
-
-                entity.Property(e => e.Regiao).HasMaxLength(250);
-
-                entity.Property(e => e.Sala).HasMaxLength(250);
-
-                entity.Property(e => e.SubContratar).HasMaxLength(250);
-
-                entity.Property(e => e.SubContratar1)
-                    .HasColumnName("Sub_Contratar")
-                    .HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.TipoEquipamento)
-                    .HasColumnName("Tipo_Equipamento")
-                    .HasMaxLength(250);
-            });
-
-            modelBuilder.Entity<EquipamentosNorteParte111022019>(entity =>
-            {
-                entity.ToTable("_EquipamentosNorte_Parte1_11022019");
-
-                entity.HasIndex(e => e.IdInstituicao)
-                    .HasName("_dta_index__EquipamentosNorte_Parte1_110220_6_651917444__K10");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.Activo).HasMaxLength(50);
-
-                entity.Property(e => e.AreaOperacional).HasMaxLength(50);
-
-                entity.Property(e => e.ClienteNav2009)
-                    .HasColumnName("ClienteNAV2009")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.ClienteNav2017)
-                    .HasColumnName("ClienteNAV2017")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.ContratoAtivo).HasMaxLength(50);
-
-                entity.Property(e => e.DataAquisicao).HasMaxLength(50);
-
-                entity.Property(e => e.DataContrato).HasMaxLength(50);
-
-                entity.Property(e => e.DataCriacaoEquipamento).HasMaxLength(50);
-
-                entity.Property(e => e.DataFicha)
-                    .HasColumnName("Data_Ficha")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.DataInactivacao).HasMaxLength(50);
-
-                entity.Property(e => e.DataSaidaContrato).HasMaxLength(50);
-
-                entity.Property(e => e.DesignacaoAux)
-                    .HasColumnName("Designacao_Aux")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.Equipa).HasMaxLength(50);
-
-                entity.Property(e => e.EquipamentoDesignacao)
-                    .HasColumnName("Equipamento_Designacao")
-                    .HasMaxLength(250);
-
-                entity.Property(e => e.Figura).HasMaxLength(50);
-
-                entity.Property(e => e.Garantia).HasMaxLength(50);
-
-                entity.Property(e => e.IdAreaop).HasColumnName("ID_AREAOP");
-
-                entity.Property(e => e.IdCliente).HasColumnName("ID_CLIENTE");
-
-                entity.Property(e => e.IdClienteEvolution).HasColumnName("ID_Cliente_Evolution");
-
-                entity.Property(e => e.IdEq)
-                    .HasColumnName("ID_Eq")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.IdEquipa).HasColumnName("ID_EQUIPA");
-
-                entity.Property(e => e.IdFornecedor).HasColumnName("ID_FORNECEDOR");
-
-                entity.Property(e => e.IdInstituicao).HasColumnName("ID_Instituicao");
-
-                entity.Property(e => e.IdMarca).HasColumnName("ID_MARCA");
-
-                entity.Property(e => e.IdModelo).HasColumnName("ID_MODELO");
-
-                entity.Property(e => e.IdModelos).HasColumnName("ID_MODELOS");
-
-                entity.Property(e => e.IdPeriodicidade).HasColumnName("ID_PERIODICIDADE");
-
-                entity.Property(e => e.IdServico).HasColumnName("ID_SERVICO");
-
-                entity.Property(e => e.IdTipo).HasColumnName("ID_TIPO");
-
-                entity.Property(e => e.IncluiMc)
-                    .HasColumnName("IncluiMC")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Instituicao).HasMaxLength(50);
-
-                entity.Property(e => e.Marca).HasMaxLength(50);
-
-                entity.Property(e => e.Modelo).HasMaxLength(50);
-
-                entity.Property(e => e.Mpplaneadas)
-                    .HasColumnName("MPPlaneadas")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.NomeCliente).HasMaxLength(250);
-
-                entity.Property(e => e.NumContrato).HasMaxLength(50);
-
-                entity.Property(e => e.NumInventario).HasMaxLength(50);
-
-                entity.Property(e => e.NumSerie).HasMaxLength(50);
-
-                entity.Property(e => e.Observacoes).HasMaxLength(250);
-
-                entity.Property(e => e.PeriodicidadeAnual).HasMaxLength(50);
-
-                entity.Property(e => e.Representante).HasMaxLength(50);
-
-                entity.Property(e => e.SalaPiso)
-                    .HasColumnName("Sala_Piso")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Servico).HasMaxLength(100);
-
-                entity.Property(e => e.Tipo).HasMaxLength(50);
             });
 
             modelBuilder.Entity<EstadoObra>(entity =>
@@ -4034,6 +3571,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.ToTable("Ficha_Manutencao_Testes_Qualitativos");
 
+                entity.HasIndex(e => new { e.IdTesteQualitativos, e.Descricao, e.Codigo, e.Versao })
+                    .HasName("IX_Ficha_Manutencao_Testes_Qualitativos_Codigo_Versao");
+
                 entity.Property(e => e.IdTesteQualitativos).HasColumnName("ID_Teste_Qualitativos");
 
                 entity.Property(e => e.Codigo)
@@ -4290,6 +3830,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
             {
                 entity.HasKey(e => e.IdFornecedor);
 
+                entity.HasIndex(e => new { e.IdFornecedor, e.Nome, e.Activo })
+                    .HasName("IX_Fornecedor_Activo");
+
                 entity.Property(e => e.IdFornecedor)
                     .HasColumnName("ID_Fornecedor")
                     .HasMaxLength(20)
@@ -4382,17 +3925,19 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
             {
                 entity.HasKey(e => e.IdInstituicao);
 
+                entity.HasIndex(e => e.Cliente);
+
                 entity.HasIndex(e => e.IdInstituicao)
-                    .HasName("_dta_index_Instituicao_6_814625945__K1");
+                    .HasName("_dta_index_Instituicao_6_814625945__K1_6497");
 
                 entity.HasIndex(e => new { e.DescricaoTreePath, e.Activo })
-                    .HasName("_dta_index_Instituicao_6_814625945__K6_7");
+                    .HasName("_dta_index_Instituicao_6_814625945__K6_7_8576");
 
                 entity.HasIndex(e => new { e.DescricaoTreePath, e.IdInstituicao })
-                    .HasName("_dta_index_Instituicao_6_814625945__K1_7");
+                    .HasName("_dta_index_Instituicao_6_814625945__K1_7_6497");
 
                 entity.HasIndex(e => new { e.DescricaoTreePath, e.Activo, e.IdInstituicao })
-                    .HasName("_dta_index_Instituicao_6_814625945__K6_K1_7");
+                    .HasName("_dta_index_Instituicao_6_814625945__K6_K1_7_8066");
 
                 entity.HasIndex(e => new { e.Nome, e.Mae, e.Cliente, e.Activo });
 
@@ -4401,6 +3946,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => new { e.Nome, e.Cliente, e.DescricaoTreePath, e.NoNavision, e.Activo, e.Mae, e.IdInstituicao })
                     .HasName("_dta_index_Instituicao_6_814625945__K6_K3_K1_2_4_7_9");
+
+                entity.HasIndex(e => new { e.IdInstituicao, e.Nome, e.Mae, e.Cliente, e.TreePath, e.Activo, e.Morada, e.NoNavision })
+                    .HasName("_dta_index_Instituicao_6_814625945__col___8066");
 
                 entity.Property(e => e.IdInstituicao).HasColumnName("ID_Instituicao");
 
@@ -5745,9 +5293,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.HasIndex(e => e.WsCommunicatedNav2009)
                     .HasName("_dta_index_Job Ledger Entry_6_139915620__K176");
 
-                entity.HasIndex(e => new { e.DataAutorizacaoFacturacao, e.DocumentNo })
-                    .HasName("IX_Job Ledger Entry_Document No_");
-
                 entity.HasIndex(e => new { e.DataAutorizacaoFacturacao, e.EntryNo })
                     .HasName("_dta_index_Job Ledger Entry_6_139915620__K2_125");
 
@@ -5922,6 +5467,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasName("_dta_index_Job Ledger Entry_6_139915620__K7_K24_K5_K3_f77")
                     .HasFilter("([Job Ledger Entry].[Source Code]='VENDAS')");
 
+                entity.HasIndex(e => new { e.Timestamp, e.EntryNo, e.DataAutorizacaoFacturacao, e.DocumentNo })
+                    .HasName("IX_Job Ledger Entry_Document No_");
+
                 entity.HasIndex(e => new { e.TotalPriceLcy, e.JobNo, e.SourceCode, e.DocumentNo })
                     .HasName("_dta_index_Job Ledger Entry_6_139915620__K3_K24_K5_14");
 
@@ -5995,6 +5543,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => new { e.DataAutorizacaoFacturacao, e.EntryNo, e.No, e.JobNo, e.FacturacaoAutorizada, e.Chargeable })
                     .HasName("_dta_index_Job Ledger Entry_6_139915620__K2_K7_K3_K124_K167_125");
+
+                entity.HasIndex(e => new { e.EntryNo, e.JobNo, e.Description, e.Quantity, e.Description2, e.TipoRecurso })
+                    .HasName("IX_Job Ledger Entry_Tipo Recurso");
 
                 entity.HasIndex(e => new { e.EntryNo, e.JobNo, e.FacturacaoAutorizada, e.DataAutorizacaoFacturacao, e.Chargeable, e.DocumentNo })
                     .HasName("_dta_index_Job Ledger Entry_6_139915620__K5_2_3_124_125_167");
@@ -6240,6 +5791,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.HasIndex(e => new { e.EntryNo, e.JobNo, e.PostingDate, e.Description, e.Quantity, e.TotalPriceLcy, e.GlobalDimension1Code, e.GlobalDimension2Code, e.Description2, e.RequisitionNo, e.ObjectDescription, e.DataAutorizacaoFacturacao, e.ContractNo, e.GlobalDimension3Code, e.RequisiçãoInterna, e.Chargeable })
                     .HasName("IX_Job Ledger Entry_Chargeable");
 
+                entity.HasIndex(e => new { e.EntryNo, e.JobNo, e.PostingDate, e.Description, e.Quantity, e.UnitPriceLcy, e.TotalPriceLcy, e.UnitOfMeasureCode, e.GlobalDimension1Code, e.GlobalDimension2Code, e.Description2, e.RequisitionNo, e.ObjectDescription, e.DataAutorizacaoFacturacao, e.ContractNo, e.GlobalDimension3Code, e.RequisiçãoInterna, e.Chargeable, e.No, e.TipoRecurso })
+                    .HasName("IX_Job Ledger Entry_Chargeable_No__Tipo Recurso");
+
                 entity.HasIndex(e => new { e.EntryNo, e.PostingDate, e.DocumentNo, e.Type, e.No, e.Description, e.Quantity, e.DirectUnitCostLcy, e.UnitCostLcy, e.TotalCostLcy, e.UnitPriceLcy, e.TotalPriceLcy, e.ResourceGroupNo, e.UnitOfMeasureCode, e.LocationCode, e.JobPostingGroup, e.GlobalDimension1Code, e.GlobalDimension2Code, e.WorkTypeCode, e.CustomerPriceGroup, e.UserId, e.SourceCode, e.AmtToPostToGL, e.AmtPostedToGL, e.AmtToRecognize, e.AmtRecognized, e.EntryType, e.JournalBatchName, e.ReasonCode, e.TransactionType, e.TransportMethod, e.CountryRegionCode, e.GenBusPostingGroup, e.GenProdPostingGroup, e.EntryExitPoint, e.DocumentDate, e.ExternalDocumentNo, e.Area, e.TransactionSpecification, e.NoSeries, e.AdditionalCurrencyTotalCost, e.AddCurrencyTotalPrice, e.AddCurrencyLineAmount, e.JobTaskNo, e.LineAmountLcy, e.UnitCost, e.TotalCost, e.UnitPrice, e.TotalPrice, e.LineAmount, e.LineDiscountAmount, e.LineDiscountAmountLcy, e.CurrencyCode, e.CurrencyFactor, e.Description2, e.LedgerEntryType, e.LedgerEntryNo, e.SerialNo, e.LotNo, e.LineDiscount, e.LineType, e.OriginalUnitCostLcy, e.OriginalTotalCostLcy, e.OriginalUnitCost, e.OriginalTotalCost, e.OriginalTotalCostAcy, e.Adjusted, e.DateTimeAdjusted, e.VariantCode, e.BinCode, e.QtyPerUnitOfMeasure, e.QuantityBase, e.ServiceOrderNo, e.PostedServiceShipmentNo, e.ShipmentMethodCode, e.Subcontratação, e.CentralIncineração, e.NºGuiaResíduosGar, e.NºGuiaExterna, e.DiaDaSemana, e.LocalRecolha, e.TipoProjecto, e.HoraDeRegisto, e.FacturaANºCliente, e.Classe, e.RequisitionNo, e.RequisitionLineNo, e.CódCategoriaProd, e.CódGrupoProd, e.NºCartãoUtente, e.CodigoOrcamento, e.ChaveOrcamento, e.FacturaCriada, e.UtilizadorDiario, e.Motorista, e.ValorDescQuantidade, e.NºLinhaFolha, e.Estado, e.NºGuiaRemessa, e.TipoRefeição, e.DestinoFinalResiduos, e.TipoMovRefeitorio, e.DataDeSistema, e.HoraDeSistema, e.Tipologia, e.ObjectRefNo, e.ObjectRefType, e.MoLineNo, e.MoNo, e.MoTaskLineNo, e.MoToolLineNo, e.MoComponentLineNo, e.MoCostLineNo, e.ObjectType, e.ObjectNo, e.ObjectDescription, e.FlNo, e.FlDescription, e.MaintEntryNo, e.Utilizador, e.TipoManutencao, e.FacturacaoAutorizada, e.DataAutorizacaoFacturacao, e.UtilizadorIdAutorizacao, e.ContractNo, e.GrupoServiço, e.PesagemCliente, e.EnviadoTr, e.OldGLAccountNo, e.CodServCliente, e.DesServCliente, e.LinhaAutFac, e.LinhaCopiada, e.LinhaCopiada2, e.AjudasdeCusto, e.TipoRecurso, e.LinhaOrdemManutenção, e.AjudaCusto, e.RegistadoMc, e.GlobalDimension3Code, e.FacturaçãoAutorizada2, e.Matricula, e.NºOrdemAs4001, e.NºLinhaOm, e.Total1, e.TotalEquipamento, e.DescriçãoTipo, e.DescriçãoMarca, e.DescriçãoModelo, e.NºFolhaDeHoras, e.BAjmo, e.BOrçamento, e.DescontoVenda, e.RequisiçãoInterna, e.NºFuncionario, e.Description22, e.QuantidadeDevolvida, e.NºMovOriginalDaDevolução, e.QtdTransferida, e.TransfParaProj, e.DataDespesa, e.NºPreRegisto, e.NeOriginal, e.NºGrFornecedor, e.Chargeable, e.FromPlanningLineNo, e.DataConsumo, e.Vat, e.ImportadoManage, e.DocumentoOriginal, e.DocumentoCorrigido, e.AcertoPrecos, e.DataDocumentoCorrigido, e.JobNo })
                     .HasName("IX_Job Ledger Entry_Job No_");
 
@@ -6248,770 +5802,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => new { e.Timestamp, e.EntryNo, e.JobNo, e.PostingDate, e.DocumentNo, e.Type, e.Description, e.Quantity, e.DirectUnitCostLcy, e.UnitCostLcy, e.TotalCostLcy, e.UnitPriceLcy, e.TotalPriceLcy, e.ResourceGroupNo, e.UnitOfMeasureCode, e.LocationCode, e.JobPostingGroup, e.GlobalDimension1Code, e.GlobalDimension2Code, e.CustomerPriceGroup, e.UserId, e.SourceCode, e.AmtToPostToGL, e.AmtPostedToGL, e.AmtToRecognize, e.AmtRecognized, e.EntryType, e.JournalBatchName, e.ReasonCode, e.TransactionType, e.TransportMethod, e.CountryRegionCode, e.GenBusPostingGroup, e.GenProdPostingGroup, e.EntryExitPoint, e.DocumentDate, e.ExternalDocumentNo, e.Area, e.TransactionSpecification, e.NoSeries, e.AdditionalCurrencyTotalCost, e.AddCurrencyTotalPrice, e.AddCurrencyLineAmount, e.JobTaskNo, e.LineAmountLcy, e.UnitCost, e.TotalCost, e.UnitPrice, e.TotalPrice, e.LineAmount, e.LineDiscountAmount, e.LineDiscountAmountLcy, e.CurrencyCode, e.CurrencyFactor, e.Description2, e.LedgerEntryType, e.LedgerEntryNo, e.SerialNo, e.LotNo, e.LineDiscount, e.LineType, e.OriginalUnitCostLcy, e.OriginalTotalCostLcy, e.OriginalUnitCost, e.OriginalTotalCost, e.OriginalTotalCostAcy, e.Adjusted, e.DateTimeAdjusted, e.VariantCode, e.BinCode, e.QtyPerUnitOfMeasure, e.QuantityBase, e.ServiceOrderNo, e.PostedServiceShipmentNo, e.ShipmentMethodCode, e.Subcontratação, e.CentralIncineração, e.NºGuiaResíduosGar, e.NºGuiaExterna, e.DiaDaSemana, e.LocalRecolha, e.TipoProjecto, e.HoraDeRegisto, e.FacturaANºCliente, e.Classe, e.RequisitionNo, e.RequisitionLineNo, e.CódCategoriaProd, e.CódGrupoProd, e.NºCartãoUtente, e.CodigoOrcamento, e.ChaveOrcamento, e.FacturaCriada, e.UtilizadorDiario, e.Motorista, e.ValorDescQuantidade, e.NºLinhaFolha, e.Estado, e.NºGuiaRemessa, e.TipoRefeição, e.DestinoFinalResiduos, e.TipoMovRefeitorio, e.DataDeSistema, e.HoraDeSistema, e.Tipologia, e.ObjectRefNo, e.ObjectRefType, e.MoLineNo, e.MoNo, e.MoTaskLineNo, e.MoToolLineNo, e.MoComponentLineNo, e.MoCostLineNo, e.ObjectType, e.ObjectNo, e.ObjectDescription, e.FlNo, e.FlDescription, e.MaintEntryNo, e.Utilizador, e.TipoManutencao, e.FacturacaoAutorizada, e.DataAutorizacaoFacturacao, e.UtilizadorIdAutorizacao, e.ContractNo, e.GrupoServiço, e.PesagemCliente, e.EnviadoTr, e.OldGLAccountNo, e.CodServCliente, e.DesServCliente, e.LinhaAutFac, e.LinhaCopiada, e.LinhaCopiada2, e.AjudasdeCusto, e.TipoRecurso, e.LinhaOrdemManutenção, e.AjudaCusto, e.RegistadoMc, e.GlobalDimension3Code, e.FacturaçãoAutorizada2, e.Matricula, e.NºOrdemAs4001, e.NºLinhaOm, e.Total1, e.TotalEquipamento, e.DescriçãoTipo, e.DescriçãoMarca, e.DescriçãoModelo, e.NºFolhaDeHoras, e.BAjmo, e.BOrçamento, e.DescontoVenda, e.RequisiçãoInterna, e.NºFuncionario, e.Description22, e.QuantidadeDevolvida, e.NºMovOriginalDaDevolução, e.QtdTransferida, e.TransfParaProj, e.DataDespesa, e.NºPreRegisto, e.NeOriginal, e.NºGrFornecedor, e.Chargeable, e.FromPlanningLineNo, e.DataConsumo, e.Vat, e.ImportadoManage, e.DocumentoOriginal, e.DocumentoCorrigido, e.AcertoPrecos, e.DataDocumentoCorrigido, e.WsCommunicatedNav2009, e.No, e.WorkTypeCode })
                     .HasName("IX_Job Ledger Entry_No__Work Type Code");
-
-                entity.Property(e => e.EntryNo)
-                    .HasColumnName("Entry No_")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.AcertoPrecos).HasColumnName("Acerto Precos");
-
-                entity.Property(e => e.AddCurrencyLineAmount)
-                    .HasColumnName("Add_-Currency Line Amount")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.AddCurrencyTotalPrice)
-                    .HasColumnName("Add_-Currency Total Price")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.AdditionalCurrencyTotalCost)
-                    .HasColumnName("Additional-Currency Total Cost")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.AmtPostedToGL)
-                    .HasColumnName("Amt_ Posted to G_L")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.AmtRecognized)
-                    .HasColumnName("Amt_ Recognized")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.AmtToPostToGL)
-                    .HasColumnName("Amt_ to Post to G_L")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.AmtToRecognize)
-                    .HasColumnName("Amt_ to Recognize")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.Area)
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.BAjmo).HasColumnName("B_Ajmo");
-
-                entity.Property(e => e.BOrçamento).HasColumnName("B_orçamento");
-
-                entity.Property(e => e.BinCode)
-                    .IsRequired()
-                    .HasColumnName("Bin Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CentralIncineração)
-                    .IsRequired()
-                    .HasColumnName("Central Incineração")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ChaveOrcamento).HasColumnName("Chave Orcamento");
-
-                entity.Property(e => e.Classe)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CodServCliente)
-                    .IsRequired()
-                    .HasColumnName("Cod_Serv_Cliente")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CodigoOrcamento)
-                    .IsRequired()
-                    .HasColumnName("Codigo Orcamento")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ContractNo)
-                    .IsRequired()
-                    .HasColumnName("Contract No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CountryRegionCode)
-                    .IsRequired()
-                    .HasColumnName("Country_Region Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CurrencyCode)
-                    .IsRequired()
-                    .HasColumnName("Currency Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CurrencyFactor)
-                    .HasColumnName("Currency Factor")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.CustomerPriceGroup)
-                    .IsRequired()
-                    .HasColumnName("Customer Price Group")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CódCategoriaProd)
-                    .IsRequired()
-                    .HasColumnName("Cód_Categoria Prod_")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CódGrupoProd)
-                    .IsRequired()
-                    .HasColumnName("Cód_Grupo Prod_")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DataAutorizacaoFacturacao)
-                    .HasColumnName("Data Autorizacao Facturacao")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataConsumo)
-                    .HasColumnName("Data Consumo")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataDeSistema)
-                    .HasColumnName("Data de Sistema")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataDespesa)
-                    .HasColumnName("Data Despesa")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataDocumentoCorrigido)
-                    .HasColumnName("Data Documento Corrigido")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DateTimeAdjusted)
-                    .HasColumnName("DateTime Adjusted")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DesServCliente)
-                    .IsRequired()
-                    .HasColumnName("Des_Serv_Cliente")
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DescontoVenda)
-                    .HasColumnName("% Desconto Venda")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Description2)
-                    .IsRequired()
-                    .HasColumnName("Description 2")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Description22)
-                    .IsRequired()
-                    .HasColumnName("Description 2_2")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DescriçãoMarca)
-                    .IsRequired()
-                    .HasColumnName("Descrição Marca")
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DescriçãoModelo)
-                    .IsRequired()
-                    .HasColumnName("Descrição Modelo")
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DescriçãoTipo)
-                    .IsRequired()
-                    .HasColumnName("Descrição Tipo")
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DestinoFinalResiduos)
-                    .IsRequired()
-                    .HasColumnName("Destino Final Residuos")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DiaDaSemana).HasColumnName("Dia da semana");
-
-                entity.Property(e => e.DirectUnitCostLcy)
-                    .HasColumnName("Direct Unit Cost (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.DocumentDate)
-                    .HasColumnName("Document Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DocumentNo)
-                    .IsRequired()
-                    .HasColumnName("Document No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DocumentoCorrigido)
-                    .IsRequired()
-                    .HasColumnName("Documento Corrigido")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DocumentoOriginal)
-                    .IsRequired()
-                    .HasColumnName("Documento Original")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EntryExitPoint)
-                    .IsRequired()
-                    .HasColumnName("Entry_Exit Point")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EntryType).HasColumnName("Entry Type");
-
-                entity.Property(e => e.EnviadoTr).HasColumnName("Enviado TR");
-
-                entity.Property(e => e.ExternalDocumentNo)
-                    .IsRequired()
-                    .HasColumnName("External Document No_")
-                    .HasMaxLength(35)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FacturaANºCliente)
-                    .IsRequired()
-                    .HasColumnName("Factura-a Nº Cliente")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FacturaCriada).HasColumnName("Factura Criada");
-
-                entity.Property(e => e.FacturacaoAutorizada).HasColumnName("Facturacao Autorizada");
-
-                entity.Property(e => e.FacturaçãoAutorizada2).HasColumnName("Facturação Autorizada2");
-
-                entity.Property(e => e.FlDescription)
-                    .IsRequired()
-                    .HasColumnName("FL Description")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FlNo)
-                    .IsRequired()
-                    .HasColumnName("FL No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FromPlanningLineNo).HasColumnName("From Planning Line No_");
-
-                entity.Property(e => e.GenBusPostingGroup)
-                    .IsRequired()
-                    .HasColumnName("Gen_ Bus_ Posting Group")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GenProdPostingGroup)
-                    .IsRequired()
-                    .HasColumnName("Gen_ Prod_ Posting Group")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GlobalDimension1Code)
-                    .IsRequired()
-                    .HasColumnName("Global Dimension 1 Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GlobalDimension2Code)
-                    .IsRequired()
-                    .HasColumnName("Global Dimension 2 Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GlobalDimension3Code)
-                    .IsRequired()
-                    .HasColumnName("Global Dimension 3 Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GrupoServiço)
-                    .IsRequired()
-                    .HasColumnName("Grupo Serviço")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.HoraDeRegisto)
-                    .HasColumnName("Hora de Registo")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.HoraDeSistema)
-                    .HasColumnName("Hora de Sistema")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.ImportadoManage).HasColumnName("Importado Manage");
-
-                entity.Property(e => e.JobNo)
-                    .IsRequired()
-                    .HasColumnName("Job No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.JobPostingGroup)
-                    .IsRequired()
-                    .HasColumnName("Job Posting Group")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.JobTaskNo)
-                    .IsRequired()
-                    .HasColumnName("Job Task No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.JournalBatchName)
-                    .IsRequired()
-                    .HasColumnName("Journal Batch Name")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LedgerEntryNo).HasColumnName("Ledger Entry No_");
-
-                entity.Property(e => e.LedgerEntryType).HasColumnName("Ledger Entry Type");
-
-                entity.Property(e => e.LineAmount)
-                    .HasColumnName("Line Amount")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.LineAmountLcy)
-                    .HasColumnName("Line Amount (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.LineDiscount)
-                    .HasColumnName("Line Discount %")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.LineDiscountAmount)
-                    .HasColumnName("Line Discount Amount")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.LineDiscountAmountLcy)
-                    .HasColumnName("Line Discount Amount (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.LineType).HasColumnName("Line Type");
-
-                entity.Property(e => e.LinhaAutFac).HasColumnName("Linha Aut_ Fac_");
-
-                entity.Property(e => e.LinhaCopiada2)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LinhaOrdemManutenção)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LocalRecolha)
-                    .IsRequired()
-                    .HasColumnName("Local recolha")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LocationCode)
-                    .IsRequired()
-                    .HasColumnName("Location Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LotNo)
-                    .IsRequired()
-                    .HasColumnName("Lot No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MaintEntryNo).HasColumnName("Maint_ Entry No_");
-
-                entity.Property(e => e.Matricula)
-                    .IsRequired()
-                    .HasMaxLength(8)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MoComponentLineNo).HasColumnName("MO Component Line No_");
-
-                entity.Property(e => e.MoCostLineNo).HasColumnName("MO Cost Line No_");
-
-                entity.Property(e => e.MoLineNo).HasColumnName("MO Line No_");
-
-                entity.Property(e => e.MoNo)
-                    .IsRequired()
-                    .HasColumnName("MO No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MoTaskLineNo).HasColumnName("MO Task Line No_");
-
-                entity.Property(e => e.MoToolLineNo).HasColumnName("MO Tool Line No_");
-
-                entity.Property(e => e.Motorista)
-                    .IsRequired()
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NeOriginal)
-                    .IsRequired()
-                    .HasColumnName("NE Original")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.No)
-                    .IsRequired()
-                    .HasColumnName("No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NoSeries)
-                    .IsRequired()
-                    .HasColumnName("No_ Series")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºCartãoUtente)
-                    .IsRequired()
-                    .HasColumnName("Nº Cartão Utente")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºFolhaDeHoras).HasColumnName("Nº Folha de Horas");
-
-                entity.Property(e => e.NºFuncionario)
-                    .IsRequired()
-                    .HasColumnName("Nº Funcionario")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºGrFornecedor)
-                    .IsRequired()
-                    .HasColumnName("Nº GR Fornecedor")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºGuiaExterna)
-                    .IsRequired()
-                    .HasColumnName("Nº Guia Externa")
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºGuiaRemessa)
-                    .IsRequired()
-                    .HasColumnName("Nº Guia Remessa")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºGuiaResíduosGar)
-                    .IsRequired()
-                    .HasColumnName("Nº Guia Resíduos (GAR)")
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºLinhaFolha).HasColumnName("Nº Linha Folha");
-
-                entity.Property(e => e.NºLinhaOm).HasColumnName("Nº Linha OM");
-
-                entity.Property(e => e.NºMovOriginalDaDevolução).HasColumnName("Nº Mov_ Original da Devolução");
-
-                entity.Property(e => e.NºOrdemAs4001).HasColumnName("Nº Ordem AS 400-1");
-
-                entity.Property(e => e.NºPreRegisto).HasColumnName("Nº Pre Registo");
-
-                entity.Property(e => e.ObjectDescription)
-                    .IsRequired()
-                    .HasColumnName("Object Description")
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObjectNo)
-                    .IsRequired()
-                    .HasColumnName("Object No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObjectRefNo)
-                    .IsRequired()
-                    .HasColumnName("Object Ref_ No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObjectRefType).HasColumnName("Object Ref_ Type");
-
-                entity.Property(e => e.ObjectType).HasColumnName("Object Type");
-
-                entity.Property(e => e.OldGLAccountNo)
-                    .IsRequired()
-                    .HasColumnName("Old G_L Account No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.OriginalTotalCost)
-                    .HasColumnName("Original Total Cost")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.OriginalTotalCostAcy)
-                    .HasColumnName("Original Total Cost (ACY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.OriginalTotalCostLcy)
-                    .HasColumnName("Original Total Cost (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.OriginalUnitCost)
-                    .HasColumnName("Original Unit Cost")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.OriginalUnitCostLcy)
-                    .HasColumnName("Original Unit Cost (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.PesagemCliente)
-                    .HasColumnName("Pesagem Cliente")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.PostedServiceShipmentNo)
-                    .IsRequired()
-                    .HasColumnName("Posted Service Shipment No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PostingDate)
-                    .HasColumnName("Posting Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.QtdTransferida)
-                    .HasColumnName("Qtd Transferida")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.QtyPerUnitOfMeasure)
-                    .HasColumnName("Qty_ per Unit of Measure")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.QuantidadeDevolvida)
-                    .HasColumnName("Quantidade Devolvida")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.Quantity).HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.QuantityBase)
-                    .HasColumnName("Quantity (Base)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.ReasonCode)
-                    .IsRequired()
-                    .HasColumnName("Reason Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RegistadoMc).HasColumnName("Registado%MC");
-
-                entity.Property(e => e.RequisitionLineNo).HasColumnName("Requisition Line No_");
-
-                entity.Property(e => e.RequisitionNo)
-                    .IsRequired()
-                    .HasColumnName("Requisition No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RequisiçãoInterna)
-                    .IsRequired()
-                    .HasColumnName("Requisição Interna")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ResourceGroupNo)
-                    .IsRequired()
-                    .HasColumnName("Resource Group No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SerialNo)
-                    .IsRequired()
-                    .HasColumnName("Serial No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ServiceOrderNo)
-                    .IsRequired()
-                    .HasColumnName("Service Order No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipmentMethodCode)
-                    .IsRequired()
-                    .HasColumnName("Shipment Method Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SourceCode)
-                    .IsRequired()
-                    .HasColumnName("Source Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Subcontratação)
-                    .IsRequired()
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Timestamp)
-                    .IsRequired()
-                    .HasColumnName("timestamp")
-                    .IsRowVersion();
-
-                entity.Property(e => e.TipoManutencao).HasColumnName("Tipo Manutencao");
-
-                entity.Property(e => e.TipoMovRefeitorio).HasColumnName("Tipo Mov Refeitorio");
-
-                entity.Property(e => e.TipoProjecto).HasColumnName("Tipo Projecto");
-
-                entity.Property(e => e.TipoRecurso).HasColumnName("Tipo Recurso");
-
-                entity.Property(e => e.TipoRefeição)
-                    .IsRequired()
-                    .HasColumnName("Tipo Refeição")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Tipologia)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Total1).HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalCost)
-                    .HasColumnName("Total Cost")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalCostLcy)
-                    .HasColumnName("Total Cost (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalEquipamento)
-                    .HasColumnName("Total Equipamento")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalPrice)
-                    .HasColumnName("Total Price")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalPriceLcy)
-                    .HasColumnName("Total Price (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TransactionSpecification)
-                    .IsRequired()
-                    .HasColumnName("Transaction Specification")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TransactionType)
-                    .IsRequired()
-                    .HasColumnName("Transaction Type")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TransfParaProj)
-                    .IsRequired()
-                    .HasColumnName("Transf para Proj")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TransportMethod)
-                    .IsRequired()
-                    .HasColumnName("Transport Method")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UnitCost)
-                    .HasColumnName("Unit Cost")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.UnitCostLcy)
-                    .HasColumnName("Unit Cost (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.UnitOfMeasureCode)
-                    .IsRequired()
-                    .HasColumnName("Unit of Measure Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UnitPrice)
-                    .HasColumnName("Unit Price")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.UnitPriceLcy)
-                    .HasColumnName("Unit Price (LCY)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.UserId)
-                    .IsRequired()
-                    .HasColumnName("User ID")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Utilizador)
-                    .IsRequired()
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UtilizadorDiario)
-                    .IsRequired()
-                    .HasColumnName("Utilizador Diario")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UtilizadorIdAutorizacao)
-                    .IsRequired()
-                    .HasColumnName("Utilizador Id Autorizacao")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ValorDescQuantidade)
-                    .HasColumnName("Valor Desc_ Quantidade")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.VariantCode)
-                    .IsRequired()
-                    .HasColumnName("Variant Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Vat)
-                    .HasColumnName("VAT %")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.WorkTypeCode)
-                    .IsRequired()
-                    .HasColumnName("Work Type Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.WsCommunicatedNav2009).HasColumnName("Ws Communicated Nav 2009");
-            });
-
-            modelBuilder.Entity<JobLedgerEntryBackup>(entity =>
-            {
-                entity.HasKey(e => e.EntryNo)
-                    .HasName("Job Ledger Entry$0_BACKUP");
-
-                entity.ToTable("Job Ledger Entry_BACKUP");
-
-                entity.HasIndex(e => e.WsCommunicatedNav2009)
-                    .HasName("_dta_index_Job Ledger Entry_BACKUP_6_523916988__K176");
 
                 entity.Property(e => e.EntryNo)
                     .HasColumnName("Entry No_")
@@ -8264,7 +7054,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.Property(e => e.Comment)
                     .IsRequired()
-                    .HasMaxLength(80)
+                    .HasMaxLength(250)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Date).HasColumnType("datetime");
@@ -8284,6 +7074,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.ToTable("Maintenance Order");
 
+                entity.HasIndex(e => e.IdServicoEvolution);
+
                 entity.HasIndex(e => e.No)
                     .HasName("_dta_index_Maintenance Order_6_859918185__K3_f20")
                     .HasFilter("([Maintenance Order].[Status]<>(3))");
@@ -8293,10 +7085,10 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasFilter("([Maintenance Order].[Status]<>(3))");
 
                 entity.HasIndex(e => e.UserChefeProjecto)
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K168");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K168_6478");
 
                 entity.HasIndex(e => e.UserResponsavel)
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K170");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K170_4149");
 
                 entity.HasIndex(e => new { e.No, e.Status })
                     .HasName("_dta_stat_859918185_3_15")
@@ -8322,6 +7114,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.HasIndex(e => new { e.Description, e.PlannedOrderNo, e.No })
                     .HasName("IX_Maintenance Order_No_");
 
+                entity.HasIndex(e => new { e.No, e.Description, e.Status })
+                    .HasName("IX_Maintenance Order_Status");
+
                 entity.HasIndex(e => new { e.No, e.Status, e.CustomerNo })
                     .HasName("_dta_index_Maintenance Order_6_859918185__K3_K15_K19_f5")
                     .HasFilter("([Maintenance Order].[Status]<>(3))");
@@ -8339,7 +7134,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasFilter("([Maintenance Order].[Status]<>(3))");
 
                 entity.HasIndex(e => new { e.No, e.UserResponsavel, e.UserChefeProjecto })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168_3369");
 
                 entity.HasIndex(e => new { e.ShortcutDimension1Code, e.No, e.Status })
                     .HasName("_dta_stat_859918185_38_3_15")
@@ -8357,31 +7152,34 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasName("_dta_stat_859918185_19_3_15_38");
 
                 entity.HasIndex(e => new { e.IdInstituicaoEvolution, e.No, e.UserResponsavel, e.UserChefeProjecto })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K180_K3_K170_K168");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K180_K3_K170_K168_5201");
 
                 entity.HasIndex(e => new { e.IdServicoEvolution, e.No, e.UserResponsavel, e.UserChefeProjecto })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K181_K3_K170_K168");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K181_K3_K170_K168_3923");
 
                 entity.HasIndex(e => new { e.No, e.UserResponsavel, e.UserChefeProjecto, e.IdInstituicaoEvolution })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168_K180");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168_K180_4364");
 
                 entity.HasIndex(e => new { e.No, e.UserResponsavel, e.UserChefeProjecto, e.IdServicoEvolution })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168_K181");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168_K181_9987_4364");
 
                 entity.HasIndex(e => new { e.No, e.UserResponsavel, e.UserChefeProjecto, e.TécnicoExecutante })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168_K173");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168_K173_440");
 
                 entity.HasIndex(e => new { e.Status, e.No, e.Description, e.PlannedOrderNo })
                     .HasName("_dta_index_Maintenance Order_6_859918185__K3_K4_K79_15");
 
                 entity.HasIndex(e => new { e.TécnicoExecutante, e.No, e.UserResponsavel, e.UserChefeProjecto })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K173_K3_K170_K168");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K173_K3_K170_K168_9850");
 
                 entity.HasIndex(e => new { e.CustomerNo, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.ShortcutDimension3Code, e.No })
                     .HasName("_dta_stat_859918185_19_38_39_100_3");
 
                 entity.HasIndex(e => new { e.No, e.Status, e.ShortcutDimension3Code, e.CustomerNo, e.ShortcutDimension1Code })
                     .HasName("_dta_stat_859918185_3_15_100_19_38");
+
+                entity.HasIndex(e => new { e.No, e.Description, e.ContractNo, e.CustomerNo, e.ShortcutDimension3Code, e.OrderType })
+                    .HasName("IX_Maintenance Order_Order Type");
 
                 entity.HasIndex(e => new { e.ShortcutDimension2Code, e.No, e.Status, e.CustomerNo, e.ShortcutDimension1Code, e.ShortcutDimension3Code })
                     .HasName("_dta_stat_859918185_39_3_15_19_38_100");
@@ -8541,6 +7339,15 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.HasIndex(e => new { e.Description, e.OrderType, e.ContractNo, e.Status, e.CustomerNo, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.FinishingDate, e.ShortcutDimension3Code, e.DataFecho, e.NoDocumentoContactoInicial, e.No })
                     .HasName("_dta_index_Maintenance Order_6_859918185__K3_4_9_13_15_19_38_39_72_100_102_175");
 
+                entity.HasIndex(e => new { e.Description, e.OrderType, e.SourceDocNo, e.ContractNo, e.Status, e.ResponsibilityCenter, e.ShortcutDimension2Code, e.EnteredBy, e.OrderDate, e.OrderTime, e.VatRegistrationNo, e.TipoContactoCliente, e.CustomerDocNo, e.ShortcutDimension3Code, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.ReferenciaEncomenda, e.ShortcutDimension1Code, e.No })
+                    .HasName("IX_Maintenance Order_Shortcut Dimension 1 Code_No_");
+
+                entity.HasIndex(e => new { e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.DataChefeProjecto, e.DataResponsavel, e.DataFacturação, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.ReferenciaEncomenda, e.Timestamp, e.DocumentType, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.TécnicoExecutante, e.No, e.UserResponsavel, e.UserChefeProjecto, e.IdInstituicaoEvolution, e.IdServicoEvolution })
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K173_K3_K170_K168_K180_K181_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_");
+
+                entity.HasIndex(e => new { e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.DataChefeProjecto, e.DataResponsavel, e.DataFacturação, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.ReferenciaEncomenda, e.Timestamp, e.DocumentType, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.TécnicoExecutante, e.No, e.UserResponsavel, e.UserChefeProjecto, e.IdInstituicaoEvolution, e.IdServicoEvolution })
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K173_K3_K170_K168_K180_K181_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_2_8337");
+
                 entity.HasIndex(e => new { e.Timestamp, e.DocumentType, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.DataChefeProjecto, e.DataResponsavel, e.DataFacturação, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.ReferenciaEncomenda, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.TécnicoExecutante, e.No, e.UserChefeProjecto, e.UserResponsavel })
                     .HasName("_dta_index_Maintenance Order_6_859918185__K180_K181_K173_K3_K168_K170_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_");
 
@@ -8560,7 +7367,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasName("_dta_index_Maintenance Order_6_859918185__K3_K170_K168_K173_K180_K181_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_");
 
                 entity.HasIndex(e => new { e.Timestamp, e.DocumentType, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.DataChefeProjecto, e.DataResponsavel, e.DataFacturação, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.ReferenciaEncomenda, e.TécnicoExecutante, e.No, e.UserResponsavel, e.UserChefeProjecto, e.IdInstituicaoEvolution, e.IdServicoEvolution })
-                    .HasName("_dta_index_Maintenance Order_6_859918185__K173_K3_K170_K168_K180_K181_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_");
+                    .HasName("_dta_index_Maintenance Order_6_859918185__K173_K3_K170_K168_K180_K181_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_2_9910");
 
                 entity.HasIndex(e => new { e.Timestamp, e.DocumentType, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.DataChefeProjecto, e.DataResponsavel, e.DataFacturação, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.ReferenciaEncomenda, e.UserChefeProjecto, e.UserResponsavel, e.No, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.TécnicoExecutante })
                     .HasName("_dta_index_Maintenance Order_6_859918185__K168_K170_K3_K180_K181_K173_1_2_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_");
@@ -8573,6 +7380,12 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => new { e.Timestamp, e.DocumentType, e.No, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.Dimension2CodeOld, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.UserChefeProjecto, e.DataChefeProjecto, e.UserResponsavel, e.DataResponsavel, e.DataFacturação, e.TécnicoExecutante, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.LocalAec, e.Contrato, e.IdClienteEvolution, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.GeradaAuto, e.ReferenciaEncomenda, e.DataEncomenda, e.NumOrdem, e.EstadoOrcamento })
                     .HasName("_dta_index_Maintenance Order_6_859918185__K106_K105_1_2_3_4_5_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_23_24_25_26_27_28_");
+
+                entity.HasIndex(e => new { e.DocumentType, e.No, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NumOrdem, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.Dimension2CodeOld, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.UserChefeProjecto, e.DataChefeProjecto, e.UserResponsavel, e.DataResponsavel, e.DataFacturação, e.TécnicoExecutante, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.LocalAec, e.Contrato, e.IdClienteEvolution, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.GeradaAuto, e.ReferenciaEncomenda, e.DataEncomenda, e.DataConclusao, e.ConcluidoPor, e.NumFolhaAssociada })
+                    .HasName("_dta_index_Maintenance Order_6_859918185__col___8341");
+
+                entity.HasIndex(e => new { e.Timestamp, e.DocumentType, e.No, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NumOrdem, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.Dimension2CodeOld, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.UserChefeProjecto, e.DataChefeProjecto, e.UserResponsavel, e.DataResponsavel, e.DataFacturação, e.TécnicoExecutante, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.LocalAec, e.Contrato, e.IdServicoEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.GeradaAuto, e.ReferenciaEncomenda, e.DataEncomenda, e.DataConclusao, e.ConcluidoPor, e.NumFolhaAssociada, e.Status, e.OrderType, e.IdClienteEvolution, e.IdInstituicaoEvolution })
+                    .HasName("IX_Maintenance Order_Status_Order Type_ID_Cliente_Evolution_ID_Instituicao_Evolution");
 
                 entity.Property(e => e.DocumentType).HasColumnName("Document Type");
 
@@ -9377,6 +8190,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.ToTable("Maintenance Order Anexo");
 
+                entity.HasIndex(e => e.MoNo);
+
                 entity.Property(e => e.AnexNo).HasColumnName("Anex No_");
 
                 entity.Property(e => e.Data).HasColumnType("datetime");
@@ -9394,799 +8209,6 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.Property(e => e.Nome)
                     .HasMaxLength(250)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<MaintenanceOrderBackup>(entity =>
-            {
-                entity.HasKey(e => new { e.DocumentType, e.No })
-                    .HasName("Maintenance Order$0_BACKUP");
-
-                entity.ToTable("Maintenance Order_BACKUP");
-
-                entity.HasIndex(e => e.FechoTécnicoObra)
-                    .HasName("_dta_index_Maintenance Order_BACKUP_6_251916019__K119");
-
-                entity.Property(e => e.DocumentType).HasColumnName("Document Type");
-
-                entity.Property(e => e.No)
-                    .HasColumnName("No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ApplicationMethod).HasColumnName("Application Method");
-
-                entity.Property(e => e.Cc)
-                    .HasColumnName("CC:")
-                    .HasMaxLength(25)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ClienteContrato)
-                    .HasColumnName("Cliente Contrato")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Compensa)
-                    .HasMaxLength(1)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ComponentOf)
-                    .HasColumnName("Component Of")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ConfigResponsavel)
-                    .HasColumnName("Config Responsavel")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ContractNo)
-                    .HasColumnName("Contract No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerAddress)
-                    .HasColumnName("Customer Address")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerAddress2)
-                    .HasColumnName("Customer Address 2")
-                    .HasMaxLength(40)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerCity)
-                    .HasColumnName("Customer City")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerContactName)
-                    .HasColumnName("Customer Contact Name")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerCountryCode)
-                    .HasColumnName("Customer Country Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerCounty)
-                    .HasColumnName("Customer County")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerDiscGroup)
-                    .HasColumnName("Customer Disc_ Group")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerDocNo)
-                    .HasColumnName("Customer Doc_ No_")
-                    .HasMaxLength(60)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerEMail)
-                    .HasColumnName("Customer E-Mail")
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerFaxNo)
-                    .HasColumnName("Customer Fax No_")
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerName)
-                    .HasColumnName("Customer Name")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerName2)
-                    .HasColumnName("Customer Name 2")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerNo)
-                    .HasColumnName("Customer No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerPhoneNo)
-                    .HasColumnName("Customer Phone No_")
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerPostCode)
-                    .HasColumnName("Customer Post Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerPriceGroup)
-                    .HasColumnName("Customer Price Group")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerReference)
-                    .HasColumnName("Customer Reference")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerShipToCode)
-                    .HasColumnName("Customer Ship-to Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DataChefeProjecto)
-                    .HasColumnName("Data Chefe Projecto")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataDeEnvio)
-                    .HasColumnName("Data de Envio")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataEncomenda)
-                    .HasColumnName("Data_Encomenda")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataEntrada)
-                    .HasColumnName("Data Entrada")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataEntrega)
-                    .HasColumnName("Data Entrega")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataFacturação)
-                    .HasColumnName("Data Facturação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataFecho)
-                    .HasColumnName("Data Fecho")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataPedido)
-                    .HasColumnName("Data Pedido")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataPedidoReparação)
-                    .HasColumnName("Data Pedido Reparação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataReabertura)
-                    .HasColumnName("Data Reabertura")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataResponsavel)
-                    .HasColumnName("Data Responsavel")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataSaída)
-                    .HasColumnName("Data Saída")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataUltimoMail)
-                    .HasColumnName("Data Ultimo Mail")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.DataValidade)
-                    .HasColumnName("Data Validade")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.De)
-                    .HasColumnName("De:")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DeliberaçãoCa)
-                    .HasColumnName("Deliberação CA")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DescricaoReclamacao)
-                    .HasColumnName("Descricao Reclamacao")
-                    .HasMaxLength(25)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Description)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Descrição1)
-                    .HasMaxLength(150)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Descrição2)
-                    .HasMaxLength(140)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Descrição3)
-                    .HasMaxLength(140)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Dimension2CodeOld)
-                    .HasColumnName("Dimension 2 Code (old)")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.DocumentDate)
-                    .HasColumnName("Document Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.EnteredBy)
-                    .HasColumnName("Entered By")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ExpectedFinishingDate)
-                    .HasColumnName("Expected Finishing Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.ExpectedFinishingTime)
-                    .HasColumnName("Expected Finishing Time")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.ExpectedStartingDate)
-                    .HasColumnName("Expected Starting Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.ExpectedStartingTime)
-                    .HasColumnName("Expected Starting Time")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.FTextDescDim1)
-                    .HasColumnName("F_textDescDim1")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FaNo)
-                    .HasColumnName("FA No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FaPostingGroup)
-                    .HasColumnName("FA Posting Group")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FechadoPor)
-                    .HasColumnName("Fechado Por")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FechoTécnicoObra).HasColumnName("Fecho Técnico Obra");
-
-                entity.Property(e => e.FinishingDate)
-                    .HasColumnName("Finishing Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.FinishingTime)
-                    .HasColumnName("Finishing Time")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.FinishingTimeHours)
-                    .HasColumnName("Finishing Time (Hours)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.FlDescription)
-                    .HasColumnName("FL Description")
-                    .HasMaxLength(250)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FlNo)
-                    .HasColumnName("FL No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.FormaDeEnvio)
-                    .HasColumnName("Forma de Envio")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GenBusPostingGroup)
-                    .HasColumnName("Gen_ Bus_ Posting Group")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GeradaAuto)
-                    .HasColumnName("Gerada_Auto")
-                    .HasDefaultValueSql("((0))");
-
-                entity.Property(e => e.HoraFecho)
-                    .HasColumnName("Hora Fecho")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.HoraPedidoReparação)
-                    .HasColumnName("Hora Pedido Reparação")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.HoraReabertura)
-                    .HasColumnName("Hora Reabertura")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.IdClienteEvolution).HasColumnName("ID_Cliente_Evolution");
-
-                entity.Property(e => e.IdInstituicaoEvolution).HasColumnName("ID_Instituicao_Evolution");
-
-                entity.Property(e => e.IdServicoEvolution).HasColumnName("ID_Servico_Evolution");
-
-                entity.Property(e => e.IdTecnico1).HasColumnName("ID_Tecnico_1");
-
-                entity.Property(e => e.IdTecnico2).HasColumnName("ID_Tecnico_2");
-
-                entity.Property(e => e.IdTecnico3).HasColumnName("ID_Tecnico_3");
-
-                entity.Property(e => e.IdTecnico4).HasColumnName("ID_Tecnico_4");
-
-                entity.Property(e => e.IdTecnico5).HasColumnName("ID_Tecnico_5");
-
-                entity.Property(e => e.JobNo)
-                    .HasColumnName("Job No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.JobPostingGroup)
-                    .HasColumnName("Job Posting Group")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LanguageCode)
-                    .HasColumnName("Language Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LastDateModified)
-                    .HasColumnName("Last Date Modified")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.Loc1)
-                    .HasColumnName("loc1")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Loc2)
-                    .HasColumnName("loc2")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Loc3)
-                    .HasColumnName("loc3")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.LocalAec)
-                    .HasColumnName("Local AEC")
-                    .HasMaxLength(40)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MachineCenterNo)
-                    .HasColumnName("Machine Center No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MaintenanceActivity)
-                    .HasColumnName("Maintenance Activity")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MaintenanceResponsible)
-                    .HasColumnName("Maintenance Responsible")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.MaintenanceTimeHours)
-                    .HasColumnName("Maintenance Time (Hours)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.Margem).HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.MensagemImpressoOrdem).HasColumnName("Mensagem Impresso Ordem");
-
-                entity.Property(e => e.MãoDeObraEDeslocações).HasColumnName("Mão de Obra e Deslocações");
-
-                entity.Property(e => e.NoCompromisso)
-                    .HasColumnName("No_ Compromisso")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NoDocumentoContactoInicial)
-                    .HasColumnName("No Documento Contacto Inicial")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NoDocumentoEnviado)
-                    .HasColumnName("No Documento Enviado")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NoSeries)
-                    .HasColumnName("No_ Series")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NovaReconv)
-                    .HasColumnName("Nova Reconv")
-                    .HasMaxLength(1)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NumOrdem)
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºAntigoAs400)
-                    .HasColumnName("Nº Antigo AS400")
-                    .HasMaxLength(14)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºGeste)
-                    .HasColumnName("Nº GESTE")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.NºLinhaContrato).HasColumnName("Nº Linha Contrato");
-
-                entity.Property(e => e.NºReclamacao).HasColumnName("Nº Reclamacao");
-
-                entity.Property(e => e.NãoCompensa)
-                    .HasColumnName("Não Compensa")
-                    .HasMaxLength(1)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObjectRefDescription)
-                    .HasColumnName("Object Ref_ Description")
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObjectRefNo)
-                    .HasColumnName("Object Ref_ No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObjectRefType).HasColumnName("Object Ref_ Type");
-
-                entity.Property(e => e.ObjectoManutençãoAs400)
-                    .HasColumnName("Objecto Manutenção (AS400)")
-                    .HasMaxLength(80)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObjectoServiço)
-                    .HasColumnName("Objecto Serviço")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ObraReclamada).HasColumnName("Obra Reclamada");
-
-                entity.Property(e => e.OrderDate)
-                    .HasColumnName("Order Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.OrderTime)
-                    .HasColumnName("Order Time")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.OrderType)
-                    .HasColumnName("Order Type")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.OrigemOrdem).HasColumnName("Origem Ordem");
-
-                entity.Property(e => e.PMargem)
-                    .HasColumnName("P_Margem")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.Paginas)
-                    .HasMaxLength(5)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PlannedOrderNo)
-                    .HasColumnName("Planned Order No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PlannerGroupNo)
-                    .HasColumnName("Planner Group No_")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PostingDate)
-                    .HasColumnName("Posting Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.PrazoDeExecuçãoDaOrdem)
-                    .HasColumnName("Prazo de Execução da Ordem")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PrioridadeObra).HasColumnName("Prioridade Obra");
-
-                entity.Property(e => e.PurchaserCode)
-                    .HasColumnName("Purchaser Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ReabertoPor)
-                    .HasColumnName("Reaberto Por")
-                    .HasMaxLength(15)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ReferenciaEncomenda)
-                    .HasColumnName("Referencia_Encomenda")
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.RespCenterAddress)
-                    .HasColumnName("Resp_ Center Address")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterAddress2)
-                    .HasColumnName("Resp_ Center Address 2")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterCity)
-                    .HasColumnName("Resp_ Center City")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterContact)
-                    .HasColumnName("Resp_ Center Contact")
-                    .HasMaxLength(25)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterCountryCode)
-                    .HasColumnName("Resp_ Center Country Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterCounty)
-                    .HasColumnName("Resp_ Center County")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterFaxNo)
-                    .HasColumnName("Resp_ Center Fax No_")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterName)
-                    .HasColumnName("Resp_ Center Name")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterName2)
-                    .HasColumnName("Resp_ Center Name 2")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterPhoneNo)
-                    .HasColumnName("Resp_ Center Phone No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterPostCode)
-                    .HasColumnName("Resp_ Center Post Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.RespCenterReference)
-                    .HasColumnName("Resp_ Center Reference")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ResponseTimeHours)
-                    .HasColumnName("Response Time (Hours)")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.ResponsibilityCenter)
-                    .HasColumnName("Responsibility Center")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ResponsibleEmployee)
-                    .HasColumnName("Responsible Employee")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ServInternosDébInternos).HasColumnName("Serv_ Internos -Déb Internos");
-
-                entity.Property(e => e.ServInternosFolhasDeObra).HasColumnName("Serv_ Internos -Folhas de Obra");
-
-                entity.Property(e => e.ServInternosRequisições).HasColumnName("Serv_ Internos -Requisições");
-
-                entity.Property(e => e.ShipToAddress)
-                    .HasColumnName("Ship-to Address")
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipToAddress2)
-                    .HasColumnName("Ship-to Address 2")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipToCity)
-                    .HasColumnName("Ship-to City")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipToCode)
-                    .HasColumnName("Ship-to Code")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipToContact)
-                    .HasColumnName("Ship-to Contact")
-                    .HasMaxLength(27)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipToCounty)
-                    .HasColumnName("Ship-to County")
-                    .HasMaxLength(27)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipToName)
-                    .HasColumnName("Ship-to Name")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipToName2)
-                    .HasColumnName("Ship-to Name 2")
-                    .HasMaxLength(30)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShipToPostCode)
-                    .HasColumnName("Ship-to Post Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShortcutDimension1Code)
-                    .HasColumnName("Shortcut Dimension 1 Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShortcutDimension2Code)
-                    .HasColumnName("Shortcut Dimension 2 Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShortcutDimension3Code)
-                    .HasColumnName("Shortcut Dimension 3 Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ShortcutDimension4Code)
-                    .HasColumnName("Shortcut Dimension 4 Code")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SourceDocNo)
-                    .HasColumnName("Source Doc_ No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SourceDocType).HasColumnName("Source Doc_ Type");
-
-                entity.Property(e => e.StartingDate)
-                    .HasColumnName("Starting Date")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.StartingTime)
-                    .HasColumnName("Starting Time")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.SuspendedOrderReason)
-                    .HasColumnName("Suspended Order Reason")
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Timestamp)
-                    .IsRequired()
-                    .HasColumnName("timestamp")
-                    .IsRowVersion();
-
-                entity.Property(e => e.TipoContactoCliente)
-                    .HasColumnName("Tipo Contacto Cliente")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TipoContactoClienteInicial)
-                    .HasColumnName("Tipo Contacto Cliente Inicial")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.TotalQPrev)
-                    .HasColumnName("Total-Q_-Prev")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalQReal)
-                    .HasColumnName("Total-Q_-Real")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalQtyToInvoice)
-                    .HasColumnName("Total Qty_ to Invoice")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalQuantidadeFact)
-                    .HasColumnName("Total Quantidade Fact_")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalQuantidadeReal)
-                    .HasColumnName("Total Quantidade Real")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalQuantity)
-                    .HasColumnName("Total Quantity")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TotalValorFact)
-                    .HasColumnName("Total Valor Fact_")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.TécnicoExecutante)
-                    .HasColumnName("Técnico Executante")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UserChefeProjecto)
-                    .HasColumnName("User Chefe Projecto")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UserResponsavel)
-                    .HasColumnName("User Responsavel")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Validade)
-                    .HasMaxLength(32)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.ValidadePedido)
-                    .HasColumnName("Validade Pedido")
-                    .HasColumnType("datetime");
-
-                entity.Property(e => e.ValorCustoRealTotal)
-                    .HasColumnName("Valor Custo Real Total")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.ValorFacturado)
-                    .HasColumnName("Valor Facturado")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.ValorProjecto)
-                    .HasColumnName("Valor Projecto")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.ValorTotalPrev)
-                    .HasColumnName("Valor Total -Prev")
-                    .HasColumnType("decimal(38, 20)");
-
-                entity.Property(e => e.VatRegistrationNo)
-                    .HasColumnName("VAT Registration No_")
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.WorkCenterNo)
-                    .HasColumnName("Work Center No_")
-                    .HasMaxLength(20)
                     .IsUnicode(false);
             });
 
@@ -10235,7 +8257,22 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.ToTable("Maintenance Order Line");
 
+                entity.HasIndex(e => e.LineNo)
+                    .HasName("_dta_index_Maintenance Order Line_6_1791345446__K4");
+
                 entity.HasIndex(e => e.MoNo);
+
+                entity.HasIndex(e => new { e.LineNo, e.MoNo })
+                    .HasName("_dta_stat_1791345446_4_3");
+
+                entity.HasIndex(e => new { e.MoNo, e.IdEquipamento })
+                    .HasName("IX_Maintenance Order Line_ID_Equipamento");
+
+                entity.HasIndex(e => new { e.MoNo, e.LineNo })
+                    .HasName("_dta_index_Maintenance Order Line_6_1791345446__K3_K4");
+
+                entity.HasIndex(e => new { e.DocumentType, e.MoNo, e.LineNo, e.OrderStatus, e.SortField, e.ObjectRefType, e.ObjectRefNo, e.ObjectType, e.ObjectNo, e.ObjectDescription, e.ObjectDescription2, e.FunctionalLocationNo, e.TaskListNo, e.Priority, e.AdditionalData, e.Warranty, e.BomNo, e.WarrantyDate, e.ComponentOf, e.CriticalLevel, e.ResponseTimeHours, e.MaintenanceTimeHours, e.StartingDate, e.StartingTime, e.FinishingDate, e.FinishingTime, e.NotificationType, e.NotificationNo, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.JobNo, e.LineStatus, e.CustomerNo, e.ResponsibilityCenter, e.PlannerGroupNo, e.ResourceNo, e.PostingDate, e.DocumentDate, e.OrderDate, e.OrderTime, e.OrderType, e.ResourceFilterYesNo, e.FinalState, e.UsedDmmFilterYesNo, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.LinhaOrçamento, e.InventoryNo, e.EstadoLinhasOrçamento, e.FaultReasonCode, e.IdEquipamento, e.IdEquipEstado, e.IdRotina, e.Tbf, e.IdInstituicao, e.IdServico })
+                    .HasName("_dta_index_Maintenance Order Line_6_1791345446__col__");
 
                 entity.Property(e => e.DocumentType).HasColumnName("Document Type");
 
@@ -10493,6 +8530,123 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.Property(e => e.ValidadorEquipamento).HasColumnName("Validador_Equipamento");
             });
 
+            modelBuilder.Entity<MetCalibracao>(entity =>
+            {
+                entity.HasKey(e => e.IdMetCalibracao);
+
+                entity.ToTable("MET_Calibracao");
+
+                entity.Property(e => e.IdMetCalibracao).HasColumnName("ID_MET_Calibracao");
+
+                entity.Property(e => e.Activo)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.Conformidade).HasMaxLength(50);
+
+                entity.Property(e => e.CriterioAceitacao)
+                    .HasColumnName("Criterio_Aceitacao")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.DataCalibracao)
+                    .HasColumnName("Data_Calibracao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataExecucao)
+                    .HasColumnName("Data_Execucao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.IdMetEquipamento).HasColumnName("ID_MET_Equipamento");
+
+                entity.Property(e => e.NumCertificado)
+                    .HasColumnName("Num_Certificado")
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<MetCertificado>(entity =>
+            {
+                entity.HasKey(e => e.IdMetFicheiro);
+
+                entity.ToTable("MET_Certificado");
+
+                entity.Property(e => e.IdMetFicheiro).HasColumnName("ID_MET_Ficheiro");
+
+                entity.Property(e => e.Activo)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.ContentType)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Data).HasColumnType("datetime");
+
+                entity.Property(e => e.Ficheiro).IsRequired();
+
+                entity.Property(e => e.IdMetCalibracao).HasColumnName("ID_MET_Calibracao");
+
+                entity.Property(e => e.IdMetEquipamento).HasColumnName("ID_MET_Equipamento");
+
+                entity.Property(e => e.Nome).HasMaxLength(255);
+            });
+
+            modelBuilder.Entity<MetEquipamento>(entity =>
+            {
+                entity.HasKey(e => e.IdMetEquipamento);
+
+                entity.ToTable("MET_Equipamento");
+
+                entity.Property(e => e.IdMetEquipamento).HasColumnName("ID_MET_Equipamento");
+
+                entity.Property(e => e.Activo)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.Conformidade).HasMaxLength(50);
+
+                entity.Property(e => e.CriterioAceitacao)
+                    .HasColumnName("Criterio_Aceitacao")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.DataEfectivaCalibracao)
+                    .HasColumnName("Data_Efectiva_Calibracao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataProximaCalibracao)
+                    .HasColumnName("Data_Proxima_Calibracao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataUltimaCalibracao)
+                    .HasColumnName("Data_Ultima_Calibracao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.IdCategoria).HasColumnName("ID_Categoria");
+
+                entity.Property(e => e.IdCliente).HasColumnName("ID_Cliente");
+
+                entity.Property(e => e.IdInstituicao).HasColumnName("ID_Instituicao");
+
+                entity.Property(e => e.IdMarca).HasColumnName("ID_Marca");
+
+                entity.Property(e => e.IdModelo).HasColumnName("ID_Modelo");
+
+                entity.Property(e => e.IdServico).HasColumnName("ID_Servico");
+
+                entity.Property(e => e.NumCertificado)
+                    .HasColumnName("Num_Certificado")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NumInventario)
+                    .IsRequired()
+                    .HasColumnName("Num_Inventario")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NumSerie)
+                    .IsRequired()
+                    .HasColumnName("Num_Serie")
+                    .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<MoCommentLine>(entity =>
             {
                 entity.HasKey(e => new { e.Table, e.Type, e.HeaderNo, e.LineNo, e.CommentNo });
@@ -10553,12 +8707,12 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.ToTable("MO Components");
 
                 entity.HasIndex(e => e.MoNo)
-                    .HasName("_dta_index_MO Components_6_1904777893__K3");
+                    .HasName("_dta_index_MO Components_6_1904777893__K3_3928");
 
                 entity.HasIndex(e => new { e.MoNo, e.OrcAlternativo });
 
                 entity.HasIndex(e => new { e.TotalPrice, e.MoNo })
-                    .HasName("_dta_index_MO Components_6_1904777893__K3_24");
+                    .HasName("_dta_index_MO Components_6_1904777893__K3_24_9429");
 
                 entity.HasIndex(e => new { e.Type, e.Description, e.Description2, e.Quantity, e.TotalPrice, e.MoNo })
                     .HasName("_dta_index_MO Components_6_1904777893__K3_6_8_13_14_24");
@@ -10571,6 +8725,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => new { e.Type, e.No, e.Description, e.Description2, e.Quantity, e.TotalPrice, e.ShortcutDimension1Code, e.ShortcutDimension3Code, e.MoNo })
                     .HasName("_dta_index_MO Components_6_1904777893__K3_6_7_8_13_14_24_42_62");
+
+                entity.HasIndex(e => new { e.DocumentType, e.MoNo, e.MoLineNo, e.LineNo, e.Type, e.No, e.Description, e.VariantCode, e.CreatedFromNonstockItem, e.BinCode, e.LocationCode, e.Description2, e.Quantity, e.QuantityBase, e.QtyToInvoice, e.QtyToInvoiceBase, e.UnitOfMeasureCode, e.OutstandingQtyBase, e.UnitCost, e.CostAmount, e.QtyPerUnitOfMeasure, e.UnitPrice, e.TotalPrice, e.Profit, e.CustomerNo, e.CustomerPriceGroup, e.GenProductPostingGroup, e.PostingGroup, e.Chargeable, e.ObjectType, e.ObjectNo, e.ObjectDescription, e.BomNo, e.TaskListNo, e.TaskNo, e.JobNo, e.ContractNo, e.GenBusPostingGroup, e.OrderDate, e.OrderTime, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.Class, e.ProductGroupCode, e.ItemCategoryCode, e.TransactionType, e.TransportMethod, e.CountryCode, e.EntryExitPoint, e.Area, e.TransactionSpecification, e.TaskListLinkCode, e.Date, e.ReservedQtyBase, e.ReservedQuantity, e.Reserve, e.ObjectRefType, e.ObjectRefNo, e.RequestedQty, e.OutstandingQty, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.NºOrçamentoAs400, e.Estado, e.TaxaAprovisionamento, e.OrcAlternativo })
+                    .HasName("_dta_index_MO Components_6_1904777893__col___9910");
 
                 entity.HasIndex(e => new { e.Timestamp, e.Type, e.No, e.Description, e.VariantCode, e.CreatedFromNonstockItem, e.BinCode, e.LocationCode, e.Description2, e.Quantity, e.QuantityBase, e.QtyToInvoice, e.QtyToInvoiceBase, e.UnitOfMeasureCode, e.OutstandingQtyBase, e.UnitCost, e.CostAmount, e.QtyPerUnitOfMeasure, e.UnitPrice, e.TotalPrice, e.Profit, e.CustomerNo, e.CustomerPriceGroup, e.GenProductPostingGroup, e.PostingGroup, e.Chargeable, e.ObjectType, e.ObjectNo, e.ObjectDescription, e.BomNo, e.TaskListNo, e.TaskNo, e.JobNo, e.ContractNo, e.GenBusPostingGroup, e.OrderDate, e.OrderTime, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.Class, e.ProductGroupCode, e.ItemCategoryCode, e.TransactionType, e.TransportMethod, e.CountryCode, e.EntryExitPoint, e.Area, e.TransactionSpecification, e.TaskListLinkCode, e.Date, e.ReservedQtyBase, e.ReservedQuantity, e.Reserve, e.ObjectRefType, e.ObjectRefNo, e.RequestedQty, e.OutstandingQty, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.NºOrçamentoAs400, e.Estado, e.TaxaAprovisionamento, e.OrcAlternativo, e.MoNo, e.DocumentType, e.MoLineNo, e.LineNo })
                     .HasName("_dta_index_MO Components_6_1904777893__K3_K2_K4_K5_1_6_7_8_9_10_11_12_13_14_15_16_17_18_19_20_21_22_23_24_25_26_27_28_29_3_4364");
@@ -10881,18 +9038,21 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.ToTable("MO Tasks");
 
                 entity.HasIndex(e => e.MoNo)
-                    .HasName("_dta_index_MO Tasks_6_1872777779__K3");
+                    .HasName("_dta_index_MO Tasks_6_1872777779__K3_8809");
 
                 entity.HasIndex(e => new { e.MoNo, e.OrcAlternativo });
 
                 entity.HasIndex(e => new { e.TotalPrice, e.MoNo })
-                    .HasName("_dta_index_MO Tasks_6_1872777779__K3_21");
+                    .HasName("_dta_index_MO Tasks_6_1872777779__K3_21_6980");
 
                 entity.HasIndex(e => new { e.DocumentType, e.MoLineNo, e.LineNo, e.TotalPrice, e.MoNo })
                     .HasName("_dta_index_MO Tasks_6_1872777779__K3_2_4_5_21");
 
                 entity.HasIndex(e => new { e.TotalPrice, e.MoNo, e.DocumentType, e.MoLineNo, e.LineNo })
                     .HasName("_dta_index_MO Tasks_6_1872777779__K3_K2_K4_K5_21");
+
+                entity.HasIndex(e => new { e.DocumentType, e.MoNo, e.MoLineNo, e.LineNo, e.TaskListNo, e.No, e.ResourceNo, e.Description, e.ProcessTime, e.ProcessTimeUnitOfMeasure, e.Description2, e.ConcurrentCapacities, e.QtyPerUnitOfMeasure, e.Duration, e.DurationUnitOfMeasure, e.UnitCostPer, e.CostAmount, e.DirectUnitCost, e.UnitPrice, e.TotalPrice, e.Profit, e.LocationCode, e.OperationCondition, e.MaintenanceActivity, e.SkillCode, e.TaskListLinkCode, e.GenProductPostingGroup, e.GenBusPostingGroup, e.Chargeable, e.InitialDate, e.EndDate, e.ContractNo, e.ObjectType, e.ObjectNo, e.ObjectDescription, e.CustomerNo, e.JobNo, e.OrderDate, e.OrderTime, e.ResourceGroupNo, e.WorkTypeCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.Comment, e.ObjectRefType, e.ObjectRefNo, e.QuantityBase, e.QtyToInvoice, e.QtyToInvoiceBase, e.OutstandingQtyBase, e.TransactionType, e.Area, e.TransactionSpecification, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.TipoRecurso, e.NºOrçamentoAs4000, e.Estado, e.OrcAlternativo })
+                    .HasName("_dta_index_MO Tasks_6_1872777779__col___4864");
 
                 entity.Property(e => e.DocumentType).HasColumnName("Document Type");
 
@@ -11165,6 +9325,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
             {
                 entity.HasKey(e => e.IdModelos);
 
+                entity.HasIndex(e => new { e.Activo, e.Nome });
+
                 entity.Property(e => e.IdModelos).HasColumnName("ID_Modelos");
 
                 entity.Property(e => e.Activo)
@@ -11186,6 +9348,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => e.BAjmo)
                     .HasName("_dta_index_Mov Projecto Autorizados Fact_6_1968778121__K120");
+
+                entity.HasIndex(e => new { e.TotalPrice, e.JobNo, e.GrupoFactura })
+                    .HasName("IX_Mov Projecto Autorizados Fact_Job No__Grupo Factura");
 
                 entity.Property(e => e.EntryNo)
                     .HasColumnName("Entry No_")
@@ -11832,16 +9997,16 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasName("Orcamento$0");
 
                 entity.HasIndex(e => e.No)
-                    .HasName("_dta_index_Orcamento_6_1243919553__K3");
+                    .HasName("_dta_index_Orcamento_6_1243919553__K3_6355");
 
                 entity.HasIndex(e => e.NumOrdem)
-                    .HasName("_dta_index_Orcamento_6_1243919553__K106");
+                    .HasName("_dta_index_Orcamento_6_1243919553__K106_1771");
 
                 entity.HasIndex(e => new { e.No, e.NumOrdem })
-                    .HasName("_dta_index_Orcamento_6_1243919553__K3_K106");
+                    .HasName("_dta_index_Orcamento_6_1243919553__K3_K106_5543");
 
                 entity.HasIndex(e => new { e.NumOrdem, e.No })
-                    .HasName("_dta_index_Orcamento_6_1243919553__K106_K3");
+                    .HasName("_dta_index_Orcamento_6_1243919553__K106_K3_9429");
 
                 entity.HasIndex(e => new { e.NumOrdem, e.Status });
 
@@ -11859,6 +10024,12 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.HasIndex(e => new { e.Description, e.OrderType, e.SourceDocNo, e.ContractNo, e.ResponsibilityCenter, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.ReferenciaEncomenda, e.EstadoOrcamento, e.NumOrdem, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.VatRegistrationNo, e.TipoContactoCliente, e.CustomerDocNo, e.ShortcutDimension3Code, e.No })
                     .HasName("IX_Orcamento_No_01");
+
+                entity.HasIndex(e => new { e.Description, e.OrderType, e.SourceDocNo, e.ContractNo, e.ResponsibilityCenter, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.OrderDate, e.OrderTime, e.VatRegistrationNo, e.TipoContactoCliente, e.CustomerDocNo, e.ShortcutDimension3Code, e.EstadoOrcamento, e.NumOrdem, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.IdClienteEvolution, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.ReferenciaEncomenda, e.No })
+                    .HasName("IX_Orcamento_No_");
+
+                entity.HasIndex(e => new { e.DocumentType, e.No, e.Description, e.ObjectRefType, e.ObjectRefNo, e.ObjectRefDescription, e.ComponentOf, e.OrderType, e.MaintenanceActivity, e.SourceDocType, e.SourceDocNo, e.ContractNo, e.Priority, e.Status, e.SuspendedOrderReason, e.ResponsibilityCenter, e.LastDateModified, e.CustomerNo, e.CustomerName, e.CustomerName2, e.CustomerAddress, e.CustomerAddress2, e.CustomerCity, e.CustomerPostCode, e.CustomerPhoneNo, e.CustomerEMail, e.CustomerShipToCode, e.CustomerFaxNo, e.CustomerReference, e.CustomerContactName, e.CustomerCountryCode, e.PostingDate, e.CustomerCounty, e.JobNo, e.ApplicationMethod, e.LanguageCode, e.ShortcutDimension1Code, e.ShortcutDimension2Code, e.RespCenterCountryCode, e.TotalQuantity, e.TotalQtyToInvoice, e.RespCenterName, e.RespCenterName2, e.RespCenterFaxNo, e.RespCenterCounty, e.RespCenterAddress, e.RespCenterAddress2, e.RespCenterPostCode, e.RespCenterCity, e.RespCenterContact, e.RespCenterPhoneNo, e.RespCenterReference, e.FaNo, e.FlNo, e.FlDescription, e.ResponsibleEmployee, e.EnteredBy, e.MaintenanceResponsible, e.PlannerGroupNo, e.OrderDate, e.OrderTime, e.DocumentDate, e.ExpectedFinishingDate, e.ExpectedFinishingTime, e.ExpectedStartingDate, e.ExpectedStartingTime, e.StartingDate, e.StartingTime, e.ResponseTimeHours, e.MaintenanceTimeHours, e.FinishingDate, e.FinishingTime, e.GenBusPostingGroup, e.CustomerPriceGroup, e.CustomerDiscGroup, e.VatRegistrationNo, e.PurchaserCode, e.PlannedOrderNo, e.NoSeries, e.Reserve, e.Validade, e.Budget, e.FaPostingGroup, e.WorkCenterNo, e.MachineCenterNo, e.FinishingTimeHours, e.TipoContactoCliente, e.CustomerDocNo, e.JobPostingGroup, e.ShipToCode, e.ShipToName, e.ShipToName2, e.ShipToAddress, e.ShipToAddress2, e.ShipToPostCode, e.ShipToCity, e.ShipToCounty, e.ShipToContact, e.ShortcutDimension3Code, e.ShortcutDimension4Code, e.DataFecho, e.HoraFecho, e.Loc1, e.EstadoOrcamento, e.NumOrdem, e.NoDocumentoEnviado, e.FormaDeEnvio, e.DataDeEnvio, e.DataEntrada, e.NºGeste, e.DataEntrega, e.DataSaída, e.OrigemOrdem, e.Loc2, e.Loc3, e.Urgência, e.PrioridadeObra, e.FechoTécnicoObra, e.PrazoDeExecuçãoDaOrdem, e.Descrição1, e.Descrição2, e.Descrição3, e.ValorTotalPrev, e.TotalQPrev, e.TotalQReal, e.NºLinhaContrato, e.DataReabertura, e.HoraReabertura, e.NºAntigoAs400, e.ValorFacturado, e.ObjectoManutençãoAs400, e.TotalQuantidadeReal, e.ValorCustoRealTotal, e.ClienteContrato, e.TotalQuantidadeFact, e.TotalValorFact, e.PMargem, e.Margem, e.FTextDescDim1, e.Cc, e.Paginas, e.De, e.Compensa, e.NãoCompensa, e.ObraReclamada, e.NºReclamacao, e.DescricaoReclamacao, e.DataPedidoReparação, e.HoraPedidoReparação, e.FechadoPor, e.ReabertoPor, e.Dimension2CodeOld, e.MensagemImpressoOrdem, e.NovaReconv, e.ObjectoServiço, e.DataPedido, e.DataValidade, e.ValidadePedido, e.ValorProjecto, e.DeliberaçãoCa, e.ServInternosRequisições, e.ServInternosFolhasDeObra, e.ServInternosDébInternos, e.MãoDeObraEDeslocações, e.ConfigResponsavel, e.DataUltimoMail, e.UserChefeProjecto, e.DataChefeProjecto, e.UserResponsavel, e.DataResponsavel, e.DataFacturação, e.TécnicoExecutante, e.NoCompromisso, e.NoDocumentoContactoInicial, e.TipoContactoClienteInicial, e.LocalAec, e.Contrato, e.IdClienteEvolution, e.IdInstituicaoEvolution, e.IdServicoEvolution, e.IdTecnico1, e.IdTecnico2, e.IdTecnico3, e.IdTecnico4, e.IdTecnico5, e.OrcAlternativo, e.ReferenciaEncomenda })
+                    .HasName("_dta_index_Orcamento_6_1243919553__col___1912");
 
                 entity.Property(e => e.DocumentType).HasColumnName("Document Type");
 
@@ -12972,6 +11143,27 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasConstraintName("FK_Ordem_Manutencao_Servico");
             });
 
+            modelBuilder.Entity<OrdemManutencaoDescricaoAvaria>(entity =>
+            {
+                entity.HasKey(e => e.IdDescricaoAvaria);
+
+                entity.ToTable("Ordem_Manutencao_DescricaoAvaria");
+
+                entity.Property(e => e.IdDescricaoAvaria).HasColumnName("ID_DescricaoAvaria");
+
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.DescricaoAvaria)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.Om)
+                    .IsRequired()
+                    .HasColumnName("OM")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<OrdemManutencaoEquipamentos>(entity =>
             {
                 entity.HasKey(e => e.IdOmEquipamento);
@@ -13086,6 +11278,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
 
                 entity.ToTable("Ordem_Manutencao_Linha_Materiais");
 
+                entity.HasIndex(e => e.No);
+
                 entity.Property(e => e.IdOmLinhaMateriais).HasColumnName("ID_OM_Linha_Materiais");
 
                 entity.Property(e => e.DataCriacao).HasColumnType("datetime");
@@ -13093,6 +11287,8 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.Property(e => e.DescMaterial)
                     .HasColumnName("Desc_Material")
                     .HasMaxLength(250);
+
+                entity.Property(e => e.EntryNo).HasColumnName("Entry_No");
 
                 entity.Property(e => e.HoraFim).HasColumnType("datetime");
 
@@ -13156,6 +11352,27 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                     .HasForeignKey(d => d.IdOm)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Ordem_Manutencao_Materiais_Ordem_Manutencao");
+            });
+
+            modelBuilder.Entity<OrdemManutencaoRelatorioTrabalho>(entity =>
+            {
+                entity.HasKey(e => e.IdRelatorioTrabalho);
+
+                entity.ToTable("Ordem_Manutencao_RelatorioTrabalho");
+
+                entity.Property(e => e.IdRelatorioTrabalho).HasColumnName("ID_RelatorioTrabalho");
+
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.Om)
+                    .IsRequired()
+                    .HasColumnName("OM")
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RelatorioTrabalho)
+                    .IsRequired()
+                    .HasMaxLength(250);
             });
 
             modelBuilder.Entity<OrigemAvaria>(entity =>
@@ -14532,16 +12749,19 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
                 entity.HasKey(e => e.IdServico);
 
                 entity.HasIndex(e => e.IdServico)
-                    .HasName("_dta_index_Servico_6_606625204__K1");
+                    .HasName("_dta_index_Servico_6_606625204__K1_5492");
 
                 entity.HasIndex(e => e.Nome)
-                    .HasName("_dta_index_Servico_6_606625204__K2");
+                    .HasName("_dta_index_Servico_6_606625204__K2_8337");
 
                 entity.HasIndex(e => new { e.Nome, e.IdServico })
-                    .HasName("_dta_index_Servico_6_606625204__K2_K1");
+                    .HasName("_dta_index_Servico_6_606625204__K2_K1_9085");
 
                 entity.HasIndex(e => new { e.IdServico, e.Nome, e.NoNavision, e.Instituicao, e.Activo })
                     .HasName("_dta_index_Servico_6_606625204__K3_K5_1_2_8");
+
+                entity.HasIndex(e => new { e.IdServico, e.Nome, e.Instituicao, e.TreePath, e.Activo, e.CentroCusto, e.Morada, e.NoNavision })
+                    .HasName("_dta_index_Servico_6_606625204__col___4606");
 
                 entity.Property(e => e.IdServico).HasColumnName("ID_Servico");
 
@@ -14874,16 +13094,38 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
             modelBuilder.Entity<Utilizador>(entity =>
             {
                 entity.HasIndex(e => e.Nome)
-                    .HasName("_dta_index_Utilizador_6_1602872827__K2");
+                    .HasName("_dta_index_Utilizador_6_1602872827__K2_8258");
 
                 entity.HasIndex(e => e.NumMec)
-                    .HasName("_dta_index_Utilizador_6_1602872827__K14");
+                    .HasName("_dta_index_Utilizador_6_1602872827__K14_9987");
 
                 entity.HasIndex(e => new { e.Nome, e.NumMec })
-                    .HasName("_dta_index_Utilizador_6_1602872827__K2_K14");
+                    .HasName("_dta_index_Utilizador_6_1602872827__K2_K14_8809");
+
+                entity.HasIndex(e => new { e.ResponsavelProjecto, e.UserRespProjecto });
+
+                entity.HasIndex(e => new { e.Username, e.Activo });
+
+                entity.HasIndex(e => new { e.Username, e.NumMec })
+                    .HasName("_dta_index_Utilizador_6_1602872827__K14_3");
+
+                entity.HasIndex(e => new { e.Id, e.Nome, e.Activo, e.NivelAcesso })
+                    .HasName("IX_Utilizador_Activo_Nivel_Acesso");
+
+                entity.HasIndex(e => new { e.Nome, e.Activo, e.Code2, e.NumMec })
+                    .HasName("IX_Utilizador_Activo_Code 2_Num_Mec");
 
                 entity.HasIndex(e => new { e.Nome, e.Username, e.Code1, e.Code2, e.Code3, e.ChefeProjecto, e.ResponsavelProjecto, e.UserRespProjecto, e.NumMec })
                     .HasName("IX_Utilizador_Num_Mec");
+
+                entity.HasIndex(e => new { e.Nome, e.Username, e.NivelAcesso, e.Code1, e.Code2, e.ChefeProjecto, e.ResponsavelProjecto, e.UserRespProjecto, e.Code3, e.NumMec })
+                    .HasName("IX_Utilizador_Code 3_Num_Mec");
+
+                entity.HasIndex(e => new { e.Id, e.Nome, e.Username, e.Password, e.Email, e.TelefoneGeral, e.TelefoneExtensao, e.Telemovel, e.NivelAcesso, e.Code1, e.Code3, e.NumMec, e.Code2 })
+                    .HasName("IX_Utilizador_Code 2");
+
+                entity.HasIndex(e => new { e.Id, e.Nome, e.Username, e.Password, e.Email, e.TelefoneGeral, e.TelefoneExtensao, e.Telemovel, e.NivelAcesso, e.Activo, e.Code1, e.Code2, e.Code3, e.NumMec, e.AcessoAdministracao, e.ModuloFolhaObra, e.ModuloFichaEquip, e.ModuloRequisicoes, e.ModuloRegistoDiario, e.ModuloContratos, e.ModuloPlaneamento, e.ValidadorEquipamento, e.ModuloClientes, e.ModuloFornecedores, e.ModuloInstituicoes, e.ModuloServicos, e.ModuloDadosEstatisticos, e.ModuloHabilitacoes, e.ModuloFormacoesCompetencias, e.ModuloUtilizadores, e.SuperiorHierarquico, e.ModuloReplicarPlaneamento, e.ModuloEmm, e.ModuloSolicitacoes, e.EquipaFixa, e.IdEquipa, e.IdCliente, e.AutorizarFacturar, e.ChefeProjecto, e.ResponsavelProjecto, e.UserRespProjecto })
+                    .HasName("_dta_index_Utilizador_6_1602872827__col___6980");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 

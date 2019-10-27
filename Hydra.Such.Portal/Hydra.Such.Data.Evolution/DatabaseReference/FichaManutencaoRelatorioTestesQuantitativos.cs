@@ -38,6 +38,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public byte? Na { get; set; }
         public byte? Ignoravel { get; set; }
         public byte? Subcontratacao { get; set; }
+        public string Observacoes { get; set; }
         public int Id { get; set; }
     }
 }

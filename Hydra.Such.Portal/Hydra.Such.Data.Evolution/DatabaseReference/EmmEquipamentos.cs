@@ -27,7 +27,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public DateTime? DataAbate { get; set; }
         public DateTime? DataUltimaInspecao { get; set; }
         public DateTime? DataProximaInspecao { get; set; }
-        public int? IdFornecedor { get; set; }
+        public string IdFornecedor { get; set; }
         public int? IdCalibracao { get; set; }
         public int? IdServico { get; set; }
         public string UsadoProcesso { get; set; }
