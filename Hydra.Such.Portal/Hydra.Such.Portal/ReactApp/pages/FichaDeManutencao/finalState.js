@@ -104,6 +104,14 @@ injectGlobal`
 			background: ${_theme.palette.alert.good};
 		}
 	}
+
+
+	.fs-grey {
+		[class*="MuiSelect-root"]  {
+			color: ${_theme.palette.bg.white};
+			background: ${_theme.palette.primary.medium};
+		}
+	}
 `;
 
 const Spacer = styled.div`
@@ -125,14 +133,17 @@ class FinalState extends Component {
 
 		return (
 			<Root>
-				<ActionWrapper container className={props.$value.value == 0 ? '' : props.$value.value == 3 ? 'fs-red' : 'fs-green'}>
+				<ActionWrapper container className={props.$value.value == 0 ? 'fs-grey' : props.$value.value == 3 ? 'fs-red' : 'fs-green'}>
 					<Select
 						input={<FinalInput value={props.$value.value} />}
 						onChange={(e) => {
-							props.$value.value = e.target.value;
-							if (e.target.value >= 2) {
-								this.setState({ open: true });
-							}
+							var value = e.target.value;
+							props.$value.value = value;
+							this.setState({}, () => {
+								if (value >= 2) {
+									this.setState({ open: true });
+								}
+							});
 						}}
 					>
 						<MenuItem value={0} style={{ padding: '11px', textAlign: 'center' }}>
