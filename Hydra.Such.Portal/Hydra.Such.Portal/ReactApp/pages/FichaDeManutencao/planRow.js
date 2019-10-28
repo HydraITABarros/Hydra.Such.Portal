@@ -31,7 +31,7 @@ const Content = styled.div`
 
 const PlanRow = (props) => {
 	return (
-		<Root width={props.width ? props.width + 'px' : '100%'}  >
+		<Root width={props.width ? props.width + 'px' : '100%'} className={props.className}>
 			<Content odd={props.odd} right={props.right} text={props.text}>
 				{props.children}
 			</Content>

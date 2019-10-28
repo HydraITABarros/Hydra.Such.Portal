@@ -20,7 +20,7 @@ const Container = styled.div`
 const PlanEquipmentsItem = (props) => {
 
 	return (
-		<Container >
+		<Container className={props.className}>
 			{props.children}
 		</Container>
 	);
