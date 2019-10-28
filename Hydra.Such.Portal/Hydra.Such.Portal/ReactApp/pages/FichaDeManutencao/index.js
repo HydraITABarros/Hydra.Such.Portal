@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { PageTemplate } from 'components';
 import styled, { injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, Tooltip, Text, MultipleCheckBox, Input, Icon, Button, Modal } from 'components';
+import { Wrapper, Tooltip, Text, MultipleCheckBox, MenuItem, Input, Icon, Button, Modal, Menu } from 'components';
 import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import Breadcrumb from './breadcrumb';
@@ -15,12 +15,15 @@ import Header from './header';
 import PlanActions from './planActions';
 import PlanEquipmentsHeader from './planEquipmentsHeader';
 import PlanEquipmentsItem from './planEquipmentsItem';
+import ModalComments from './ModalComments';
 import FinalState from './finalState';
 import PlanRow from './planRow';
 import _theme from '../../themes/default';
 import Color from 'color';
 import _ from 'lodash';
 import Functions from '../../helpers/functions';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import './index.scss';
 
 const addLinkedPropsToObject = Functions.addLinkedPropsToObject;
@@ -153,7 +156,9 @@ class FichaDeManutencao extends Component {
 		},
 		position: 0,
 		marcaIds: null,
-		servicoIds: null
+		servicoIds: null,
+		toUpdate: 0,
+		selectedOptionsEl: null
 	}
 
 	constructor(props) {
@@ -171,10 +176,15 @@ class FichaDeManutencao extends Component {
 		this.waipointQualitativoHandlerLeave = this.waipointQualitativoHandlerLeave.bind(this);
 		this.waipointQuantitativoHandlerLeave = this.waipointQuantitativoHandlerLeave.bind(this);
 		this.handleScrollTo = this.handleScrollTo.bind(this);
+		window.html2canvas = html2canvas;
+		window.jsPDF = jsPDF;
 		this.fetch();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
+		if (nextState.toUpdate != this.state.toUpdate) {
+			return true;
+		}
 		if (nextState.$equipmentsCount && nextState.$equipmentsCount.value != this.state.equipmentsCount) {
 			nextState.equipmentsCount = nextState.$equipmentsCount.value;
 
@@ -196,7 +206,7 @@ class FichaDeManutencao extends Component {
 
 		planEquipmentsHeaderEl.ontouchmove = (e) => {
 			this.mainScroll.scrollTop = this.mainScroll.scrollTop + (e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY);
-			//console.log(e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY, e.changedTouches.Touch.clientY)
+
 			startClientY = e.changedTouches[0].clientY;
 		};
 
@@ -206,7 +216,7 @@ class FichaDeManutencao extends Component {
 
 		planContentEl.ontouchmove = (e) => {
 			this.mainScroll.scrollTop = this.mainScroll.scrollTop + (e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY);
-			//console.log(e.changedTouches[0].clientY, startClientY - e.changedTouches[0].clientY, e.changedTouches.Touch.clientY)
+
 			startClientY = e.changedTouches[0].clientY;
 		};
 
@@ -455,7 +465,6 @@ class FichaDeManutencao extends Component {
 											//nativeMobileScroll={true}
 											style={{ overflow: 'scroll' }}
 											onScroll={(e) => {
-												console.log('IMP', e);
 												ReactDOM.findDOMNode(this.planContent).scrollLeft = e.target.scrollLeft;
 												var className = ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className;
 												if (e.target.scrollLeft > 0 && className.indexOf('left') == -1) {
@@ -509,17 +518,34 @@ class FichaDeManutencao extends Component {
 										<Wrapper >
 											<Wrapper padding="0  32px 0 0">
 												{this.state.planMaintenance.length > 0 && this.state.planMaintenance.map((item, index) => {
+
 													return (
-														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32} >
+														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32} className={"form__row"}>
 															{this.state.equipmentsCheckBoxHtml}
 															{this.state.equipments.map((e, i) => {
 																return (
-																	<PlanEquipmentsItem key={index + '' + i}>
-																		<MultipleCheckBox $value={e.planMaintenance[index].$resultado} />
+																	<PlanEquipmentsItem key={index + '' + i} >
+																		<span className={"inline-block form__item" +
+																			(e.planMaintenance[index].$observacoes.value != null &&
+																				e.planMaintenance[index].$observacoes.value != "" ?
+																				" form__item--commented" :
+																				"")}>
+																			<MultipleCheckBox $value={e.planMaintenance[index].$resultado} />
+																		</span>
 																	</PlanEquipmentsItem>
 																)
 															})}
-															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
+															<Menu action={<Button iconSolo ><Icon row-menu /></Button>}
+																containerStyle={{ float: 'right', display: 'inline-block', marginTop: '5px' }}>
+																<MenuItem onClick={() => { item.open = true; this.setState({ toUpdate: this.state.toUpdate + 1 }); }}>
+																	Observações
+																</MenuItem>
+															</Menu>
+															<ModalComments open={item.open || false} description={item.descricao}
+																$equipments={this.state.$equipments}
+																category={'planMaintenance'} itemIndex={index}
+																onClose={() => { item.open = false; this.setState({ toUpdate: this.state.toUpdate + 1 }); }}>
+															</ModalComments>
 														</PlanRow>
 													);
 												})}
@@ -530,14 +556,29 @@ class FichaDeManutencao extends Component {
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
 															{this.state.equipments.map((e, i) => {
 																renderCount++;
-																console.log(renderCount);
 																return (
-																	<PlanEquipmentsItem key={index + '' + i}>
-																		<MultipleCheckBox $value={e.planQuality[index].$resultado} />
+																	<PlanEquipmentsItem key={index + '' + i} >
+																		<span className={"inline-block form__item" +
+																			(e.planQuality[index].$observacoes.value != null &&
+																				e.planQuality[index].$observacoes.value != "" ?
+																				" form__item--commented" :
+																				"")}>
+																			<MultipleCheckBox $value={e.planQuality[index].$resultado} />
+																		</span>
 																	</PlanEquipmentsItem>
 																)
 															})}
-															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
+															<Menu action={<Button iconSolo ><Icon row-menu /></Button>}
+																containerStyle={{ float: 'right', display: 'inline-block', marginTop: '5px' }}>
+																<MenuItem onClick={() => { item.open = true; this.setState({ toUpdate: this.state.toUpdate + 1 }); }}>
+																	Observações
+																</MenuItem>
+															</Menu>
+															<ModalComments open={item.open || false} description={item.descricao}
+																$equipments={this.state.$equipments}
+																category={'planQuality'} itemIndex={index}
+																onClose={() => { item.open = false; this.setState({ toUpdate: this.state.toUpdate + 1 }); }}>
+															</ModalComments>
 														</PlanRow>
 													);
 												})}
@@ -548,15 +589,30 @@ class FichaDeManutencao extends Component {
 														<PlanRow odd={index % 2 == 0} key={index} right width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
 															{this.state.equipments.map((e, i) => {
 																return (
-																	<PlanEquipmentsItem key={index + '' + i}>
-																		<Wrapper padding="0 8px">
+																	<PlanEquipmentsItem key={index + '' + i} >
+																		<Wrapper padding="0 8px" className={"form__item" +
+																			(e.planQuantity[index].$observacoes.value != null &&
+																				e.planQuantity[index].$observacoes.value != "" ?
+																				" form__item--commented" :
+																				"")}>
 																			<Input type="number" step="0.01" $value={e.planQuantity[index].$resultado} />
 																		</Wrapper>
 																	</PlanEquipmentsItem>
 																)
 															})}
 															<Text span>{item.unidadeCampo1}</Text>
-															<Button iconSolo style={{ float: 'right', marginTop: '5px' }}><Icon row-menu /></Button>
+
+															<Menu action={<Button iconSolo ><Icon row-menu /></Button>}
+																containerStyle={{ float: 'right', display: 'inline-block', marginTop: '5px' }}>
+																<MenuItem onClick={() => { item.open = true; this.setState({ toUpdate: this.state.toUpdate + 1 }); }}>
+																	Observações
+																</MenuItem>
+															</Menu>
+															<ModalComments open={item.open || false} description={item.descricao}
+																$equipments={this.state.$equipments}
+																category={'planQuantity'} itemIndex={index}
+																onClose={() => { item.open = false; this.setState({ toUpdate: this.state.toUpdate + 1 }); }}>
+															</ModalComments>
 														</PlanRow>
 													);
 												})}
