@@ -20,7 +20,13 @@ const sharedStyles = css`&& {
     &:hover {
         background: inherit;
     }
-    [disabled] {
+    &[disabled] {
+	    pointer-events: all;
+	    cursor: not-allowed;
+	    * {
+	    	cursor: not-allowed;
+	    }
+	    color: ${props => props.theme.palette.primary.light}
     }
 }
 `
@@ -53,6 +59,12 @@ const buttonIcon = css`&& {
     }
     &:hover {
         background-color: ${_theme.palette.white};
+    }
+    &[disabled] {
+    	background-color: ${_theme.palette.white};
+	&:hover {
+		background-color: ${_theme.palette.white};
+	}
     }
 
 }
