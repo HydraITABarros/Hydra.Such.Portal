@@ -28,16 +28,17 @@ const closeIcon = css`&& {
 const CloseIcon = styled(Button)`${closeIcon}`;
 
 const dialog = css`
-    [class*="MuiPaper-root"] {
-        position: relative;
-		width: 100%;
-    }
-    hr {
-        margin: 0;
-        border: 0;
-        height: 0;
-        border-top: 1px solid  ${props => props.theme.palette.primary.keylines};
-    }
+	display: inline-block;
+	[class*="MuiPaper-root"] {
+		position: relative;
+			width: 100%;
+	}
+	hr {
+		margin: 0;
+		border: 0;
+		height: 0;
+		border-top: 1px solid  ${props => props.theme.palette.primary.keylines};
+	}
 `
 const Dialog = styled(MuiDialog)`${dialog}`;
 
@@ -69,10 +70,20 @@ class Modal extends React.Component {
 			this.props.onClose ? this.props.onClose() : '';
 		});
 	};
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.open !== this.state.open) {
 
+			this.setState({ open: nextProps.open });
+		}
+	}
 	render() {
+		var containerStyle = { display: 'inline-block' };
+		if (this.props.containerStyle) {
+			containerStyle = this.props.containerStyle;
+		}
+
 		return (
-			<div>
+			<div style={containerStyle}>
 				<Action onClick={this.handleClickOpen} >
 					{this.props.action}
 				</Action>
