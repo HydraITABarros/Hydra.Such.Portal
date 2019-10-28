@@ -17,6 +17,16 @@ const styles = css`&& {
         fieldset {
             border-radius: ${props => { return props.theme.radius.primary }};
         }
+	&[class*="MuiOutlinedInput-disabled"] {
+		cursor: not-allowed;
+		* {
+			cursor: not-allowed;
+		}
+		fieldset {
+    			border-color: rgba(0, 0, 0, 0.23) ;
+			border-color:${props => props.theme.palette.primary.light};
+        	}
+	}
         [role="button"] {
             padding: 11px 35px 11px 15px;
         }
