@@ -10,7 +10,8 @@ const menuItemStyles = css`&& {
     font-size: 14px;
     line-height: 24px;
     color: ${props => props.color || props.theme.palette.primary.default};
-    padding-left: ${props => props.group ? '18px' : '23px'};
+    padding-left: ${props => props.group ? '18px' : '32px'};
+    padding-right: ${props => props.group ? '18px' : '32px'};
     ${'' /* background: ${props => props.group ? _theme.palette.primary.keylines : 'inherit'}; */}
     pointer-events: ${props => props.group ? 'none' : ''};
     opacity: ${props => props.group ? '.5' : '1'};
