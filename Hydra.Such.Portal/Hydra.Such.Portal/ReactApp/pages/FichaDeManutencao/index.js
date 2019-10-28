@@ -446,7 +446,7 @@ class FichaDeManutencao extends Component {
 										</Waypoint>
 									}
 									{this.state.planQuantity.length > 0 && this.state.planQuantityHtml}
-									<Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
+									<Wrapper padding="32px"><Text b>&nbsp;</Text></Wrapper>
 								</Wrapper>
 								<Wrapper padding="0" minHeight="164px" background={Color(this.props.theme.palette.secondary.default).alpha(0.2).toString()}>
 									<Wrapper padding="48px 16px 56px 50px">
@@ -616,7 +616,7 @@ class FichaDeManutencao extends Component {
 														</PlanRow>
 													);
 												})}
-												<Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
+												<Wrapper padding="32px"><Text b>&nbsp;</Text></Wrapper>
 											</Wrapper>
 										</Wrapper>
 										<Wrapper
