@@ -20,6 +20,8 @@ const sharedStyles = css`&& {
     &:hover {
         background: inherit;
     }
+    [disabled] {
+    }
 }
 `
 const buttonPrimary = css`&& {
@@ -94,6 +96,14 @@ const buttonRound = css`&& {
     }
     &:hover {
         background: inherit;
+    }
+    &[disabled] {
+	    pointer-events: all;
+	    cursor: not-allowed;
+	    * {
+	    	cursor: not-allowed;
+	    }
+	    color: ${props => props.theme.palette.primary.light}
     }
 }
 `
