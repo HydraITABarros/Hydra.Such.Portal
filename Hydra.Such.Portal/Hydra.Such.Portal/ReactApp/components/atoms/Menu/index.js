@@ -39,7 +39,7 @@ class MenuSelect extends Component {
 					open={Boolean(anchorEl)}
 					onClose={this.handleClose}
 				>
-					{
+					{this.props.children != null && (
 						this.props.children.count > 1 ?
 							this.props.children.map((item) => {
 								return (React.cloneElement(item, {
@@ -57,7 +57,7 @@ class MenuSelect extends Component {
 									this.handleClose();
 								}
 							})
-					}
+					)}
 				</Menu>
 			</div>
 		)
