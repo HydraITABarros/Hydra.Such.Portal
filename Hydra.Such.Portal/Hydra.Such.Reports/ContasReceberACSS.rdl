@@ -1372,7 +1372,7 @@
       <Width>28.7cm</Width>
       <Page>
         <PageHeader>
-          <Height>1.79917cm</Height>
+          <Height>2.39917cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1395,7 +1395,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>="Antiguidades de Contas a Receber a " + CStr(Parameters!Data.Value) + ", Região = " + CStr(Parameters!regiao.Label)</Value>
+                      <Value>="Antiguidades de Contas a Receber a " + CStr(Parameters!Data.Value)</Value>
                       <Style>
                         <FontSize>14pt</FontSize>
                         <FontWeight>Bold</FontWeight>
@@ -1411,8 +1411,81 @@
               <rd:DefaultName>Textbox39</rd:DefaultName>
               <Left>6.42938cm</Left>
               <Height>1.79917cm</Height>
-              <Width>22.27062cm</Width>
+              <Width>19.54541cm</Width>
               <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <VerticalAlign>Middle</VerticalAlign>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox41">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>IVA Incluído</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox39</rd:DefaultName>
+              <Top>1.79917cm</Top>
+              <Left>18.7cm</Left>
+              <Height>0.6cm</Height>
+              <Width>10cm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <VerticalAlign>Middle</VerticalAlign>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox42">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=IIF(CStr(Parameters!regiao.Label) = "Todas", "", UCase(CStr(Parameters!regiao.Label)))</Value>
+                      <Style>
+                        <FontSize>11pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Left</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox39</rd:DefaultName>
+              <Top>1.79917cm</Top>
+              <Height>0.6cm</Height>
+              <Width>10cm</Width>
+              <ZIndex>3</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1458,6 +1531,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
+              <Top>0cm</Top>
               <Height>0.6cm</Height>
               <Width>28.7cm</Width>
               <Style>

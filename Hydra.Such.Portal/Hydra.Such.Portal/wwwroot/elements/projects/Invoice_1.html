@@ -1380,8 +1380,11 @@
                         this.$.grid_dataprojlines_ajax.params = { "ProjGroup": Item.grupoFactura, "Faturada": !this.isBillingList };
                         this.$.grid_dataprojlines_ajax.body = JSON.stringify(Item.codProjeto);
                         this.$.grid_dataprojlines_ajax.generateRequest();
-                        this.$.dialog.open();
 
+                        var grid_el = $(this.$.grdProjectLines);
+                        grid_el.height(600);
+
+                        this.$.dialog.open();
                     }
                 },
                 _toArray: function (obj) {
