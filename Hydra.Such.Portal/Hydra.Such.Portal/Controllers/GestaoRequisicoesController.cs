@@ -26,6 +26,7 @@ using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.ViewModel.Approvals;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Encomendas;
+using Hydra.Such.Data.Logic.Viatura;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1397,6 +1398,15 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (linha.QuantityToRequire > 0)
                         {
+                            if (!string.IsNullOrEmpty(linha.Vehicle))
+                            {
+                                Viaturas Viatura = DBViatura.GetByMatricula(linha.Vehicle);
+                                if (Viatura != null)
+                                {
+                                    linha.ProjectNo = Viatura.NoProjeto;
+                                }
+                            }
+
                             if (!string.IsNullOrEmpty(linha.ProjectNo))
                             {
                                 NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(config.NAVDatabaseName, config.NAVCompanyName, linha.ProjectNo).FirstOrDefault();
