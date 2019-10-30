@@ -2580,7 +2580,8 @@ namespace Hydra.Such.Portal.Controllers
                             DataServPrestado = billingPeriod,
                             DataPedido = customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null,
                             DataPrestacaoServico = serviceDate > DateTime.MinValue ? serviceDate : (DateTime?)null,
-                            CodEnderecoEnvio = !string.IsNullOrEmpty(project.CódEndereçoEnvio) ? project.CódEndereçoEnvio : ""
+                            CodEnderecoEnvio = !string.IsNullOrEmpty(project.CódEndereçoEnvio) ? project.CódEndereçoEnvio : "",
+                            ValorAutorizado = authorizationTotal
                         };
 
                         //Atualizar apenas os campos relativos à autorização. Nos movimentos de projeto atualizar apenas os necessários à listagem/apresentação
@@ -3073,19 +3074,19 @@ namespace Hydra.Such.Portal.Controllers
                     if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CodCentroResponsabilidade));
 
-                    List<NAVClientsViewModel> clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Join(",", result.Select(r => r.CodCliente).ToList())).ToList();
-                    List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
+                    //List<NAVClientsViewModel> clients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Join(",", result.Select(r => r.CodCliente).ToList())).ToList();
+                    //List<MovimentosProjectoAutorizados> AllAuthorizedProjectMovements = DBAuthorizedProjectMovements.GetAll("");
 
-                    result.ForEach(x =>
-                    {
-                        var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto);
-                        if (movements != null)
-                        {
-                            x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
-                        }
+                    //result.ForEach(x =>
+                    //{
+                    //    var movements = AllAuthorizedProjectMovements.Where(y => y.GrupoFactura == x.GrupoFactura && y.CodProjeto == x.CodProjeto);
+                    //    if (movements != null)
+                    //    {
+                    //        x.ValorAutorizado = movements.Sum(y => y.PrecoTotal);
+                    //    }
 
-                        x.NomeCliente = !string.IsNullOrEmpty(x.CodCliente) ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() != null ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault().Name : "" : "";
-                    });
+                    //    x.NomeCliente = !string.IsNullOrEmpty(x.CodCliente) ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() != null ? clients.Where(y => y.No_ == x.CodCliente).FirstOrDefault().Name : "" : "";
+                    //});
                 }
                 return Json(result);
             }

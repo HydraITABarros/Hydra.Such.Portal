@@ -13,7 +13,7 @@ namespace Hydra.Such.Data.Database
 
         [NotMapped]
         public string NomeCliente { get; set; }
-
+        public decimal? ValorAutorizado { get; set; }
         public string CodRegiao { get; set; }
         public string CodAreaFuncional { get; set; }
         public string CodCentroResponsabilidade { get; set; }

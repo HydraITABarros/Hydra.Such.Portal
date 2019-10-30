@@ -7878,6 +7878,10 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ValorAutorizado)
+                    .HasColumnName("ValorAutorizado")
+                    .HasColumnType("decimal(38, 20)");
+
                 entity.Property(e => e.CodContrato)
                     .HasMaxLength(20)
                     .IsUnicode(false);

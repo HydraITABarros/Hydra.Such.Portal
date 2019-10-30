@@ -38,6 +38,8 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.GrupoFactura = item.GrupoFactura;
                 proj.Descricao = item.Descricao;
                 proj.CodCliente = item.CodCliente;
+                if (item.ValorAutorizado != null)
+                    proj.ValorAutorizado = (decimal)item.ValorAutorizado;
                 proj.CodRegiao = item.CodRegiao;
                 proj.CodAreaFuncional = item.CodAreaFuncional;
                 proj.CodCentroResponsabilidade = item.CodCentroResponsabilidade;
@@ -62,7 +64,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.SituacoesPendentes = item.SituacoesPendentes;
                 proj.CodMetodoPagamento = item.CodMetodoPagamento;
                 proj.Faturado = item.Faturado;
-                proj.ValorAutorizado = 0;//item.ValorAutorizado;
+                //proj.ValorAutorizado = 0;//item.ValorAutorizado;
 
                 return proj;
             }
@@ -88,6 +90,8 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.GrupoFactura = item.GrupoFactura;
                 proj.Descricao = item.Descricao;
                 proj.CodCliente = item.CodCliente;
+                if (item.ValorAutorizado != null)
+                    proj.ValorAutorizado = item.ValorAutorizado;
                 proj.CodRegiao = item.CodRegiao;
                 proj.CodAreaFuncional = item.CodAreaFuncional;
                 proj.CodCentroResponsabilidade = item.CodCentroResponsabilidade;
