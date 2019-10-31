@@ -805,6 +805,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.fatura.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fatura">Fatura</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fatura" />
+                </template>
+                <template>
+                    {{item.fatura}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createDateText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="createDateText">Data Criação</vaadin-grid-sorter>
@@ -976,6 +986,7 @@
                         "invoiceGroupDescription": { hidden: false, label: "Grupo Fatura Descrição" },
                         "authorizedBy": { hidden: false, label: "Autorizado Por" },
                         "serviceObject": { hidden: false, label: "Objeto Serviço" },
+                        "fatura": { hidden: false, label: "Fatura" },
                         "createDateText": { hidden: false, label: "Data Criação" },
                         "createHourText": { hidden: false, label: "Hora Criação" }
                     };

@@ -16,6 +16,7 @@ namespace Hydra.Such.Data.ViewModel.Approvals
         public decimal? ApprovalValue { get; set; }
         public string ApprovalUser { get; set; }
         public int? ApprovalGroup { get; set; }
+        public string ApprovalGroupText { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public string CreateUser { get; set; }

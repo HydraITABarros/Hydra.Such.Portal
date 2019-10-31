@@ -337,20 +337,70 @@ namespace Hydra.Such.Portal.Controllers
             //Get Project Numeration
             Configuração Cfg = DBConfigurations.GetById(1);
             int ProjectNumerationConfigurationId = Cfg.NumeraçãoProjetos.Value;
+            string result = string.Empty;
+            bool ok = false;
 
             ConfiguraçãoNumerações CfgNumeration = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
 
             //Validate if ProjectNo is valid
             if (!(data.ProjectNo == "" || data.ProjectNo == null) && !CfgNumeration.Manual.Value)
             {
-                return Json("A numeração configurada para projetos não permite inserção manual.");
+                //return Json("A numeração configurada para projetos não permite inserção manual.");
+                result = "A numeração configurada para projetos não permite inserção manual.";
             }
             else if (data.ProjectNo == "" && !CfgNumeration.Automático.Value)
             {
-                return Json("É obrigatório inserir o Nº de Projeto.");
+                //return Json("É obrigatório inserir o Nº de Projeto.");
+                result = "É obrigatório inserir o Nº de Projeto.";
             }
 
-            return Json("");
+            if (string.IsNullOrEmpty(result))
+            {
+                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, DateTime.Now);
+
+                int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
+                ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
+
+                if (ApprovalConfigurations != null && ApprovalConfigurations.Count > 0)
+                {
+                    //Create User ApprovalMovements
+                    List<string> UsersToNotify = new List<string>();
+                    //ApprovalConfigurations.ForEach(x =>
+                    //{
+                    var approvalConfiguration = ApprovalConfigurations[0];
+                    if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                    {
+                        if (approvalConfiguration.UtilizadorAprovação.ToLower() == User.Identity.Name.ToLower())
+                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(User.Identity.Name).SuperiorHierarquico;
+
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação.ToLower() != User.Identity.Name.ToLower())
+                        {
+                            ok = true;
+                        }
+                    }
+                    else if (approvalConfiguration.GrupoAprovação.HasValue)
+                    {
+                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                        if (GUsers.Exists(x => x.ToLower() == User.Identity.Name.ToLower()))
+                        {
+                            GUsers.RemoveAll(x => x.ToLower() == User.Identity.Name.ToLower());
+
+                            string SH = DBUserConfigurations.GetById(User.Identity.Name).SuperiorHierarquico;
+                            if (!string.IsNullOrEmpty(SH))
+                                GUsers.Add(SH);
+                        }
+                        GUsers = GUsers.Distinct().ToList();
+
+                        if (GUsers.Count > 0)
+                            ok = true;
+                    }
+                }
+
+                if (ok == false)
+                    result = "Não é possivel criar o projeto, por não existirem validadores para dimensões pretendidas.";
+            }
+
+            return Json(result);
         }
 
         [HttpPost]
@@ -2229,8 +2279,8 @@ namespace Hydra.Such.Portal.Controllers
                     MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "",
                     Utilizador = User.Identity.Name,
                     NameDB = _config.NAVDatabaseName,
-                    CompanyName = _config.NAVCompanyName
-
+                    CompanyName = _config.NAVCompanyName,
+                    Fatura = x.Fatura
                 }).ToList();
 
                 return Json(dp);
@@ -6936,6 +6986,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Objeto Serviço");
                     Col = Col + 1;
                 }
+                if (dp["fatura"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Fatura");
+                    Col = Col + 1;
+                }
                 if (dp["createDateText"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Criação");
@@ -7250,6 +7305,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceObject"]["hidden"].ToString() == "False")
                         {
                             //row.CreateCell(Col).SetCellValue(item.ServiceObject.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["fatura"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Fatura);
                             Col = Col + 1;
                         }
                         if (dp["createDateText"]["hidden"].ToString() == "False")

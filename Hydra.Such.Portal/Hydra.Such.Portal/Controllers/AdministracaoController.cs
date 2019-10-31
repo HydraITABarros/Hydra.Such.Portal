@@ -4660,6 +4660,16 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetApprovalConfig()
         {
             List<ApprovalConfigurationsViewModel> result = DBApprovalConfigurations.ParseToViewModel(DBApprovalConfigurations.GetAll());
+
+            List<GruposAprovação> AllAprovGroups = DBApprovalGroups.GetAll();
+            result.ForEach(x =>
+            {
+                if (x.ApprovalGroup > 0)
+                {
+                    x.ApprovalGroupText = AllAprovGroups.Where(y => y.Código == x.ApprovalGroup).FirstOrDefault().Descrição;
+                }
+            });
+
             return Json(result);
         }
 

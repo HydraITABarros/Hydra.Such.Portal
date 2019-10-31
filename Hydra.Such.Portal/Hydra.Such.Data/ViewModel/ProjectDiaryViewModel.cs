@@ -75,6 +75,7 @@ namespace Hydra.Such.Data.ViewModel
         //public Requisição NºRequisiçãoNavigation { get; set; }
         //public TiposRefeição TipoRefeiçãoNavigation { get; set; }
         public bool Selected { get; set; }
+        public string Fatura { get; set; }
         public string CreateUser { get; set; }
         public DateTime? CreateDate { get; set; }
         public string CreateDateText { get; set; }
