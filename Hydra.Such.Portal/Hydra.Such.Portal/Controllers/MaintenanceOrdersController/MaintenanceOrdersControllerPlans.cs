@@ -70,8 +70,10 @@ namespace Hydra.Such.Portal.Controllers
 				InstitutionName = o.InstitutionName,
 				isPreventive = o.isPreventive,
 				ResponsibleEmployee = o.ResponsibleEmployee,
-				MaintenanceResponsible = o.MaintenanceResponsible
-			}).FirstOrDefault();
+				MaintenanceResponsible = o.MaintenanceResponsible,
+                OrderType = o.OrderType,
+                Status = o.Status
+            }).FirstOrDefault();
 			if (order == null) { return NotFound(); }
 
 			var maintenanceOrderLine = evolutionWEBContext.MaintenanceOrderLine.Where(r => r.MoNo == order.No);
@@ -196,7 +198,7 @@ namespace Hydra.Such.Portal.Controllers
 					Versao = versao,
 					PlanMaintenance = planMaintenance,
 					PlanQuality = planQuality,
-					PlanQuantity = planQuantity,
+					PlanQuantity = planQuantity
 				}).ToList();
 			}
 			//validar premissoes
@@ -318,31 +320,16 @@ namespace Hydra.Such.Portal.Controllers
 					}
 				});
 
-				var planNoteReport = evolutionWEBContext.FichaManutencaoRelatorioObservacao.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao).OrderByDescending(o => o.Id).FirstOrDefault();
-				if (planNoteReport != null)
-				{
-					item.Observacao = planNoteReport.Observacao;
-				}
-				else
-				{
-					evolutionWEBContext.FichaManutencaoRelatorioObservacao.Add(new FichaManutencaoRelatorioObservacao
-					{
-						Om = order.No,
-						IdEquipamento = item.IdEquipamento,
-						Codigo = codigo,
-						Versao = versao,
-						IdUtilizador = evolutionLoggedUser.Id,
-						Data = DateTime.Now,
-						Observacao = ""
-					});
-					item.Observacao = "";
-				}
-
 				var planFinalStateReport = evolutionWEBContext.FichaManutencaoRelatorioRelatorio.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao).OrderByDescending(o => o.Id).FirstOrDefault();
 				if (planFinalStateReport != null)
 				{
 					item.EstadoFinal = planFinalStateReport.EstadoFinal;
-				}
+                    item.Observacao = planFinalStateReport.Observacao;
+                    item.AssinaturaCliente = planFinalStateReport.AssinaturaCliente;
+                    item.AssinaturaSie = planFinalStateReport.AssinaturaSie;
+                    item.AssinaturaTecnico = planFinalStateReport.AssinaturaTecnico;
+                    item.UtilizadorAssinaturaTecnico = evolutionWEBContext.Utilizador.Where(u => u.Id == planFinalStateReport.IdAssinaturaTecnico).FirstOrDefault();
+                }
 				else
 				{
 					evolutionWEBContext.FichaManutencaoRelatorioRelatorio.Add(new FichaManutencaoRelatorioRelatorio
@@ -351,16 +338,17 @@ namespace Hydra.Such.Portal.Controllers
 						IdEquipamento = item.IdEquipamento,
 						Codigo = codigo,
 						Versao = versao,
-						IdUtilizador = evolutionLoggedUser.Id,
 						Data = DateTime.Now,
 						EstadoFinal = 0,
-						Relatorio = ""
+						Relatorio = "",
+                        CriadoPor = evolutionLoggedUser.Id,
+                        CriadoEm = DateTime.Now,
+                        ActualizadoPor = evolutionLoggedUser.Id,
+                        ActualizadoEm = DateTime.Now
 
-					});
+                    });
 					item.EstadoFinal = 0;
 				}
-
-				//var planSignatureReport = evolutionWEBContext.FichaManutencaoRelatorioAssinatura.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao);
 
 				try { evolutionWEBContext.SaveChanges(); }
 				catch (Exception ex) { }
