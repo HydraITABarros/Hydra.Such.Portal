@@ -1,0 +1,166 @@
+@import "../../../themes/default";
+@import "../../../functions";
+
+.modal-report {
+	.content-disabled {
+		// opacity: .5;
+	}
+
+	label {
+		margin-bottom: 0;
+	}
+
+	user-select: none;
+}
+
+
+.padding-0 {
+	padding: 0;
+}
+
+.report {
+	width: 794px;
+	overflow: hidden;
+	border-right: 1px solid palette(primary, keylines);
+	border-left: 1px solid palette(primary, keylines);
+	margin: auto;
+
+	&__page {
+		height: 1123px;
+		width: 794px;
+		overflow: hidden;
+		line-height: 1.2em;
+		background: white;
+
+		&--master {
+			height: auto;
+		}
+	}
+
+	&__wrapper {
+		overflow: auto;
+		max-height: 65vh;
+		width: 794px;
+		border-left: 1px solid palette(primary, keylines);
+		position: relative;
+		display: inline-block;
+		width: 100%;
+		background: palette(bg, grey);
+	}
+
+	&__header {
+		padding: 20px;
+		background: palette(bg, grey);
+		border-bottom: 1px solid palette(primary, keylines);
+
+		img {
+			width: 220px;
+		}
+
+		&__title {
+			margin: 0;
+			font-size: 24px;
+		}
+
+		&__avatar {
+			height: 32px !important;
+			width: 32px !important;
+
+			h3 {
+				font-size: 13px;
+			}
+
+			&__wrapper {
+				white-space: nowrap;
+				color: palette(primary, medium);
+				font-size: 11px;
+				text-transform: uppercase;
+				text-align: right;
+
+				button {
+					margin-left: 10px;
+				}
+			}
+		}
+	}
+
+	&__page-counter {
+		display: inline-block;
+		position: absolute;
+		top: 25px;
+		right: 25px;
+	}
+
+	&__hr {
+		border-bottom: 1px solid palette(primary, keylines);
+	}
+
+	&__title {
+		border-bottom: 1px solid palette(primary, keylines);
+		text-align: center;
+		padding: 25px 25px 15px;
+		position: relative;
+
+		p {
+			font-size: 20px;
+		}
+
+		.icon-preventiva {
+			font-size: 48px;
+			margin-right: 10px;
+			position: relative;
+			top: -3px;
+		}
+	}
+
+	&__body {
+		text-align: left;
+		padding: 0 35px;
+	}
+
+	&__spacer {
+		height: 40px;
+
+		&--40 {
+			height: 40px;
+		}
+
+		&--45 {
+			height: 45px;
+		}
+
+		&--35 {
+			height: 35px;
+		}
+	}
+
+	&__label {
+		font-size: 12px;
+		text-transform: uppercase;
+		color: palette(primary, dark);
+	}
+
+	&__text {
+		font-size: 12px;
+	}
+
+	&__row {
+		padding: 10px 0;
+	}
+
+	&__blank {
+		height: 20px;
+		background: palette(primary, medium);
+	}
+
+	&__footer {
+		padding: 25px 35px;
+		background: palette(bg, grey);
+		text-align: left;
+	}
+
+	&__signature {
+		margin-top: -20px;
+		margin-bottom: -30px;
+	}
+}
