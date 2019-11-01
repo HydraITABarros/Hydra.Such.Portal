@@ -6,6 +6,7 @@ import Text from '../Text';
 import Color from 'color';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import './index.scss';
 
 const buttonTextPadding = {
 	padding: '8px 24px',
@@ -20,14 +21,14 @@ const sharedStyles = css`&& {
     &:hover {
         background: inherit;
     }
-    &[disabled] {
+    ${'' /* &[disabled] {
 	    pointer-events: all;
 	    cursor: not-allowed;
 	    * {
 	    	cursor: not-allowed;
 	    }
 	    color: ${props => props.theme.palette.primary.light}
-    }
+    } */}
 }
 `
 const buttonPrimary = css`&& {
@@ -60,12 +61,12 @@ const buttonIcon = css`&& {
     &:hover {
         background-color: ${_theme.palette.white};
     }
-    &[disabled] {
+    ${'' /* &[disabled] {
     	background-color: ${_theme.palette.white};
 	&:hover {
 		background-color: ${_theme.palette.white};
 	}
-    }
+    } */}
 
 }
 `
@@ -109,14 +110,14 @@ const buttonRound = css`&& {
     &:hover {
         background: inherit;
     }
-    &[disabled] {
+    ${'' /* &[disabled] {
 	    pointer-events: all;
 	    cursor: not-allowed;
 	    * {
 	    	cursor: not-allowed;
 	    }
 	    color: ${props => props.theme.palette.primary.light}
-    }
+    } */}
 }
 `
 const buttonSolo = css`&& {   
@@ -196,6 +197,7 @@ const Button = ({ ...props }) => {
 		return (
 			<ButtonPrimary
 				variant="contained"
+				className={props.disabled ? "disabled" : ""}
 				//color="primary"
 				{..._.omit(props, ['primary', 'color'])}
 			><Text b>{props.children}</Text>
@@ -205,6 +207,7 @@ const Button = ({ ...props }) => {
 		return (
 			<ButtonDefault
 				variant="contained"
+				className={props.disabled ? "disabled" : ""}
 				{..._.omit(props, ['default', 'color'])}
 			><Text b>{props.children}</Text>
 			</ButtonDefault>
@@ -212,6 +215,7 @@ const Button = ({ ...props }) => {
 	} else if (props.picker) {
 		return (
 			<Picker
+				className={props.disabled ? "disabled" : ""}
 				{..._.omit(props, ['picker', 'color'])}
 			>{props.icon}{"\u00a0"}<Text p>{props.children}</Text>
 			</Picker>
@@ -220,6 +224,7 @@ const Button = ({ ...props }) => {
 		return (
 			<ButtonIcon
 				variant="contained"
+				className={props.disabled ? "disabled" : ""}
 				{..._.omit(props, ['icon', 'color'])}
 			>{props.icon}{props.children && "\u00a0"}<Text b>{props.children}</Text>
 			</ButtonIcon>
@@ -228,6 +233,7 @@ const Button = ({ ...props }) => {
 		return (
 			<ButtonIconPrimary
 				variant="contained"
+				className={props.disabled ? "disabled" : ""}
 				{..._.omit(props, ['iconPrimary', 'color'])}
 			>{props.iconPrimary}{"\u00a0"}<Text b>{props.children}</Text>
 			</ButtonIconPrimary>
@@ -235,6 +241,7 @@ const Button = ({ ...props }) => {
 	} else if (props.link) {
 		return (
 			<Link src="javascript:void(0)"
+				className={props.disabled ? "disabled" : ""}
 				{..._.omit(props, ['link', 'color'])}
 			><Text b>{props.children}</Text>
 			</Link>
@@ -242,6 +249,7 @@ const Button = ({ ...props }) => {
 	} else if (props.linklight) {
 		return (
 			<Link src="javascript:void(0)"
+				className={props.disabled ? "disabled" : ""}
 				{..._.omit(props, ['link', 'color'])}
 			><Text span>{props.children}</Text>
 			</Link>
@@ -249,12 +257,14 @@ const Button = ({ ...props }) => {
 	} else if (props.round) {
 		return (
 			<ButtonRound
+				className={props.disabled ? "disabled" : ""}
 				{..._.omit(props, ['round', 'color'])}
 			/>
 		)
 	} else if (props.iconSolo) {
 		return (
 			<ButtonSolo
+				className={props.disabled ? "disabled" : ""}
 				{..._.omit(props, ['iconSolo', 'color'])}
 			>
 			</ButtonSolo>
@@ -262,13 +272,16 @@ const Button = ({ ...props }) => {
 	} else if (props.outline) {
 		return (
 			<ButtonOutline
+				className={props.disabled ? "disabled" : ""}
 				variant="contained"
 				{..._.omit(props, ['outline', 'color'])}
 			><Text b>{props.children}</Text>
 			</ButtonOutline>
 		)
 	}
-	return <ButtonPrimary {..._.omit(props, ['color'])} />
+	return <ButtonPrimary
+		className={props.disabled ? "disabled" : ""}
+		{..._.omit(props, ['color'])} />
 }
 
 Button.propTypes = {
