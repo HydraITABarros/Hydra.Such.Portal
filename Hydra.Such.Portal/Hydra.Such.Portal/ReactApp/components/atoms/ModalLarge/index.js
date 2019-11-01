@@ -55,7 +55,9 @@ class ModalLarge extends React.Component {
 	}
 
 	handleClickOpen = () => {
-
+		if (this.props.action.props.disabled) {
+			return;
+		}
 		this.setState({
 			open: true,
 		}, () => {
