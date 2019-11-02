@@ -1,5 +1,3 @@
-// https://github.com/diegohaz/arc/wiki/Atomic-Design
-/*react-styleguide: ignore*/
 import React, { Component } from 'react';
 import _theme from '../../themes/default';
 import MuiTabs from '@material-ui/core/Tabs';
@@ -73,6 +71,9 @@ class Options extends Component {
 		return (
 			<ModalLarge
 				onOpen={() => {
+					if (this.props.children.props.disabled) {
+						return this.setState({ open: false });
+					}
 					this.setState({ open: true });
 				}}
 				onClose={() => {
