@@ -63,31 +63,31 @@ var canvasWidth = window.innerWidth;
 class Options extends Component {
 	state = {
 		open: false,
-		tab: 0,
 		clientSignaturePadOpen: false,
 		clientSignaturePadPng: null,
 		technicalSignaturePadOpen: false,
 		technicalSignaturePadPng: null,
 		sieSignaturePadOpen: false,
 		sieSignaturePadPng: null,
+		selectedEquipments: []
 	}
 	constructor(props) {
 		super(props);
 		this.handleChange = this.handleChange.bind(this);
+		this.handleClose = this.handleClose.bind(this);
 	}
 	handleChange(e, value) {
-		this.setState({
-			tab: value,
-		});
 	}
-
+	handleClose() {
+		this.setState({ open: false });
+	}
 	render() {
 
 		canvasWidth = window.innerWidth;
-		console.log(canvasWidth);
+
 		return (
 			<ModalLarge
-				onClose={() => this.setState({ open: false })}
+				onClose={this.handleClose}
 				onOpen={() => this.setState({ open: true })}
 				open={this.state.open}
 				action={this.props.children} children={
@@ -100,14 +100,27 @@ class Options extends Component {
 							{/* <DialogContent></DialogContent> */}
 							<Grid item xs={12} md={4} lg={3} style={{ borderRight: '1px solid #E4E7EB', borderBottom: '1px solid #E4E7EB' }}>
 								<DialogContent>
-									<Text b>{this.props.equipmentType} ({this.props.$equipments && this.props.$equipments.value.length})</Text>
-									<br /><br />
-									{this.props.$equipments && this.props.$equipments.value.map((e, i) => {
-										return <div key={i} style={{ lineHeight: '32px' }}><Text b style={{ width: '45px', display: 'inline-block' }}>#{i + 1}</Text> &nbsp;&nbsp;<Text span>{e.numEquipamento}</Text></div>
+									<div className="col-xs-10 p-l-0 p-r-0">
+										<Text b className="ws-nowrap to-ellipsis">{this.props.equipmentType}</Text>
+									</div>
+									<div className="col-xs-2 p-l-0 p-r-0">
+										<Text b>({this.props.$equipments && this.props.$equipments.value.length})</Text>
+									</div>
+									<div className="clearfix"></div>
+									{/* <div>debug selected count: {this.state.selectedEquipments.length}</div> */}
+									{this.props.$equipments && this.props.$equipments.value.map((equipment, i) => {
+										return (
+											<div key={i} style={{ lineHeight: '32px' }}>
+
+												<div className="w-auto ws-nowrap to-ellipsis v-a-m">
+													<Text b className="w-20">#{i + 1}</Text> &nbsp;<Text span>{equipment.numEquipamento}</Text>
+												</div>
+											</div>
+										)
 									})}
 								</DialogContent>
 							</Grid>
-							<Grid item xs={12} md={4} lg={4} style={{ borderRight: '1px solid #E4E7EB', borderBottom: '1px solid #E4E7EB' }}>
+							<Grid item xs={12} md={4} lg={4} className={(this.props.$equipments && this.props.$equipments.value.length < 1) ? "content-disabled" : ""} style={{ borderRight: '1px solid #E4E7EB', borderBottom: '1px solid #E4E7EB' }}>
 								<DialogContent>
 									<Text h2 >1<sup>a</sup> Fase</Text>
 									<br />
@@ -150,7 +163,7 @@ class Options extends Component {
 									<CheckBox /> <Text span>Assinatura é igual à do cliente</Text>
 								</DialogContent>
 							</Grid>
-							<Grid item xs={12} md={4} lg={4} >
+							<Grid item xs={12} md={4} lg={4} className={(this.props.$equipments && this.props.$equipments.value.length < 1) ? "content-disabled" : ""}>
 								<DialogContent>
 									<Text h2>2<sup>a</sup> Fase</Text>
 									<br />
@@ -180,7 +193,7 @@ class Options extends Component {
 						</Grid>
 						<hr />
 						<DialogActions>
-							<Button primary onClick={() => this.setState({ open: false })} color="primary">Finalizar</Button>
+							<Button primary onClose={this.handleClose} color="primary">Finalizar</Button>
 						</DialogActions>
 						{this.state.clientSignaturePadOpen &&
 							<div className={"signature-pad__wrapper signature-pad__wrapper--open"}>
@@ -192,8 +205,13 @@ class Options extends Component {
 								<div className="signature-pad__actions">
 									<Button default onClick={() => this.clientSignaturePad.clear()} color="primary">Apagar</Button>
 									<Button primary onClick={() => {
-										this.setState({ clientSignaturePadPng: this.clientSignaturePad.toDataURL() });
-										this.setState({ clientSignaturePadOpen: false });
+										var image = this.clientSignaturePad.toDataURL();
+										if (this.props.$equipments) {
+											this.props.$equipments.value.map((s) => {
+												s.$assinaturaTecnico.value = image;
+											});
+										}
+										this.setState({ clientSignaturePadPng: image, clientSignaturePadOpen: false });
 									}} color="primary">Guardar</Button>
 								</div>
 							</div>
@@ -208,8 +226,13 @@ class Options extends Component {
 								<div className="signature-pad__actions">
 									<Button default onClick={() => this.sieSignaturePad.clear()} color="primary">Apagar</Button>
 									<Button primary onClick={() => {
-										this.setState({ sieSignaturePadPng: this.sieSignaturePad.toDataURL() });
-										this.setState({ sieSignaturePadOpen: false });
+										var image = this.sieSignaturePad.toDataURL();
+										if (this.props.$equipments) {
+											this.props.$equipments.value.map((s) => {
+												s.$assinaturaSie.value = image;
+											});
+										}
+										this.setState({ sieSignaturePadPng: image, sieSignaturePadOpen: false });
 									}} color="primary">Guardar</Button>
 								</div>
 							</div>
@@ -224,8 +247,13 @@ class Options extends Component {
 								<div className="signature-pad__actions">
 									<Button default onClick={() => this.technicalSignaturePad.clear()} color="primary">Apagar</Button>
 									<Button primary onClick={() => {
-										this.setState({ technicalSignaturePadPng: this.technicalSignaturePad.toDataURL() });
-										this.setState({ technicalSignaturePadOpen: false });
+										var image = this.technicalSignaturePad.toDataURL();
+										if (this.props.$equipments) {
+											this.props.$equipments.value.map((s) => {
+												s.$assinaturaTecnico.value = image;
+											});
+										}
+										this.setState({ technicalSignaturePadPng: image, technicalSignaturePadOpen: false });
 									}} color="primary">Guardar</Button>
 								</div>
 							</div>
