@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Text as eText, Icon, Wrapper, Spacer, Button, Avatars, Select, MenuItem } from 'components';
+import { Text as eText, Icon, Wrapper, Spacer, Button, Avatars, Select, MenuItem, Menu } from 'components';
 import Functions from '../../helpers/functions';
 import MuiGrid from '@material-ui/core/Grid';
 import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
@@ -11,6 +11,7 @@ import functions from '../../helpers/functions';
 import mOptions from './modalOptions';
 import mEquipments from './modalEquipments';
 import mAssinatura from './ModalSignature';
+import ModalReport from './ModalReport'
 import _theme from '../../themes/default';
 
 const muiTheme = createMuiTheme();
@@ -96,6 +97,7 @@ class HTitle extends Component {
 	state = {
 		isLoading: true,
 		title: null,
+		isModalReportOpen: false
 	}
 
 	constructor(props) {
@@ -108,6 +110,10 @@ class HTitle extends Component {
 
 		if (props.title !== this.state.title) {
 			newState.title = props.title;
+		}
+
+		if (props.order !== this.props.order) {
+			return true;
 		}
 
 		if (Object.keys(newState).length > 0) {
@@ -124,6 +130,18 @@ class HTitle extends Component {
 
 	//const[state, setState] = React.useState({});
 	render() {
+		var completed = false;
+		if (this.props.$equipments) {
+			this.props.$equipments.value.map((e) => {
+				if (e.$estadoFinal.value > 0) {
+					completed = true;
+					return;
+				}
+				completed = false;
+			});
+		}
+		completed = true;
+		ModalReport.open = ModalReport.open || false;
 		return (
 			<RootTitle width="100%" className={this.props.className}>
 				<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>
@@ -135,18 +153,47 @@ class HTitle extends Component {
 							<ModalOptions >
 								<Button icon={<Icon options />}
 									style={{ lineHeight: '14px', verticalAlign: 'middle', padding: 0, width: '40px', minWidth: '40px', textAlign: 'center', marginRight: '15px' }}
+									disabled
 								></Button>
 							</ModalOptions>
 
-							<Button iconPrimary={<Icon report />} style={{ marginRight: '15px' }}
-								onClick={() => {
-									window.location.href = window.location.origin + '/images/certificados.pdf';
-									//this.props.history.push(`/images/certificado.pdf`);
-								}}
-							>Relatórios <Icon arrow-down style={{ lineHeight: '14px', verticalAlign: 'middle' }} /></Button>
+							<Menu
+								containerStyle={{ marginRight: '15px', display: 'inline-block' }}
+								action={
+									<Button disabled={!completed}
+										iconPrimary={<Icon report />}
+										onClick={() => {
+											//window.location.href = window.location.origin + '/images/certificados.pdf';
+											//this.props.history.push(`/images/certificado.pdf`);
+										}}
+									> Relatórios <Icon arrow-down style={{ lineHeight: '14px', verticalAlign: 'middle' }} />
+									</Button>
+								}
+							>
+								<MenuItem onClick={() => {
+									this.state.isModalReportOpen = true;
+									this.setState({});
+								}}>
+									Relatório de Manutenção
+								</MenuItem>
+
+								<MenuItem onClick={() => { }}>
+									Relatório de Conformidade
+								</MenuItem>
+							</Menu>
+
+							<ModalReport
+								open={this.state.isModalReportOpen || false}
+								order={this.props.order}
+								equipmentType={this.props.title}
+								$equipments={this.props.$equipments}
+								onClose={() => { item.open = false; this.setState({ toUpdate: this.state.toUpdate + 1 }); }}>
+							</ModalReport>
 
 							<ModalAssinatura equipmentType={this.props.title} $equipments={this.props.$equipments}>
-								<Button icon={<Icon signature />}>Assinar</Button>
+								<Button
+									disabled={!completed}
+									icon={<Icon signature />}>Assinar</Button>
 							</ModalAssinatura>
 
 						</div>
@@ -211,9 +258,9 @@ class HDescription extends Component {
 			this.setState(newState, () => {/*console.log(this.state)*/ });
 		}
 	}
+
 	//const[state, setState] = React.useState({});
 	render() {
-
 		return (
 			<RootDescription width="100%" >
 				<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>

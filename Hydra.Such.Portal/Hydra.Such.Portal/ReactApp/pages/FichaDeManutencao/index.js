@@ -263,6 +263,8 @@ class FichaDeManutencao extends Component {
 
 				addLinkedPropsToObject(state, this);
 
+				console.log(state);
+
 				state.planMaintenanceHtml = data.planMaintenance.map((item, index) => {
 					return (
 						<PlanRow odd={index % 2 == 0} key={index} text>
@@ -362,6 +364,7 @@ class FichaDeManutencao extends Component {
 						<Sticky scrollElement=".scrollarea" style={{ zIndex: 11 }} >
 							<HeaderTitle
 								title={this.state.title}
+								order={this.state.order}
 								onRef={el => this.headerTitleWrapper = el}
 								$equipments={this.state.$equipments}
 								onEquipmentsChange={
@@ -634,6 +637,9 @@ class FichaDeManutencao extends Component {
 																<FinalState
 																	$value={equipment.$estadoFinal}
 																	$message={equipment.$observacao}
+																	onChange={() => {
+																		this.setState({ toUpdate: this.state.toUpdate + 1 });
+																	}}
 																	brand={equipment.marcaText} model={equipment.modeloText} serialNumber={equipment.numSerie} inventoryNumber={equipment.numInventario} />
 															</Wrapper>
 														</PlanEquipmentsItem>
