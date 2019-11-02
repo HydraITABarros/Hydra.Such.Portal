@@ -48,8 +48,7 @@ class MenuSelect extends Component {
 					onClose={this.handleClose}
 					ref={(el) => this.menuEl = el}
 					transition
-					//placement="bottom-start"
-					style={{ zIndex: 1 }}
+				//placement="bottom-start"
 				>
 					{({ TransitionProps, placement }) => (
 						<Grow
