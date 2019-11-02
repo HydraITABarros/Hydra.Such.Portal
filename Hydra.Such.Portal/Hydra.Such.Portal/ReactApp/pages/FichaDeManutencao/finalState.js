@@ -139,6 +139,11 @@ class FinalState extends Component {
 						onChange={(e) => {
 							var value = e.target.value;
 							props.$value.value = value;
+
+							if (typeof this.props.onChange == 'function') {
+								this.props.onChange(e);
+							}
+
 							this.setState({}, () => {
 								if (value >= 2) {
 									this.setState({ open: true });
