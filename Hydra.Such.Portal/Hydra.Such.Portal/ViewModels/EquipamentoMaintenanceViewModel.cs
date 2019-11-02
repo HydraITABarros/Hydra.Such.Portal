@@ -35,6 +35,10 @@ namespace Hydra.Such.Portal.ViewModels
         public List<FichaManutencaoTestesQuantitativosViewModel> PlanQuantity { get; set; }
         public string Observacao { get; set; }
         public int? EstadoFinal { get; set; }
+        public string AssinaturaTecnico { get; set; }
+        public string AssinaturaCliente { get; set; }
+        public string AssinaturaSie { get; set; }
+        public Utilizador UtilizadorAssinaturaTecnico { get; set; }
     }
 
 }
