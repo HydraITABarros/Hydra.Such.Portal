@@ -290,7 +290,7 @@ class ModalReport extends Component {
 															<div className="col-xs-7"><Text b className="report__label">Manutenção</Text></div>
 															{this.state.selectedEquipments.map((equipments, index) => {
 																return (
-																	<div className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+																	<div key={index} className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
 																		<Text b className="report__label">#{index + 1}</Text>
 																	</div>
 																)
@@ -299,15 +299,15 @@ class ModalReport extends Component {
 														</div>
 														{maintenance.map((item, index) => {
 															return (
-																<div>
+																<div key={index}>
 																	<div className="report__hr"></div>
 																	<div className="report__row">
 																		<div className="col-xs-7">
 																			<Text p className="report__text">{item.descricao}</Text>
 																		</div>
-																		{this.state.selectedEquipments.map((equipments, index) => {
+																		{this.state.selectedEquipments.map((equipment, i) => {
 																			return (
-																				<div className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+																				<div key={index + "" + i} className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
 																					<Text p className="report__text"><Icon approved /></Text>
 																				</div>
 																			)
@@ -374,30 +374,30 @@ class ModalReport extends Component {
 												</div> */}
 
 												<div className="report__spacer"></div>
-												{maintenance &&
+												{quality &&
 													<div>
 														<div className="report__row">
-															<div className="col-xs-7"><Text b className="report__label">Manutenção</Text></div>
+															<div className="col-xs-7"><Text b className="report__label">Qualitativos</Text></div>
 															{this.state.selectedEquipments.map((equipments, index) => {
 																return (
-																	<div className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+																	<div key={index} className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
 																		<Text b className="report__label">#{index + 1}</Text>
 																	</div>
 																)
 															})}
 															<div className="clearfix"></div>
 														</div>
-														{maintenance.map((item, index) => {
+														{quality.map((item, index) => {
 															return (
-																<div>
+																<div key={index}>
 																	<div className="report__hr"></div>
 																	<div className="report__row">
 																		<div className="col-xs-7">
 																			<Text p className="report__text">{item.descricao}</Text>
 																		</div>
-																		{this.state.selectedEquipments.map((equipments, index) => {
+																		{this.state.selectedEquipments.map((equipment, i) => {
 																			return (
-																				<div className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+																				<div key={index + "" + 1} className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
 																					<Text p className="report__text"><Icon approved /></Text>
 																				</div>
 																			)
@@ -411,120 +411,47 @@ class ModalReport extends Component {
 													</div>
 												}
 
-												<div className="report__row">
-													<div className="col-xs-7"><Text b className="report__label">Qualitativos</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#1</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#2</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#3</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#4</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#5</Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-												<div className="report__hr"></div>
-												<div className="report__row">
-													<div className="col-xs-7"><Text p className="report__text">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-												<div className="report__hr"></div>
-												<div className="report__row">
-													<div className="col-xs-7"><Text p className="report__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut ab sequi impedit, optio officia quis magni quisquam.</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-												<div className="report__hr"></div>
-												<div className="report__row">
-													<div className="col-xs-7"><Text p className="report__text">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-												<div className="report__hr"></div>
-												<div className="report__row">
-													<div className="col-xs-7"><Text p className="report__text">Dolor ab laboriosam vero exercitationem quis.</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text"><Icon approved /></Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-
 												<div className="report__spacer"></div>
-												<div className="report__row">
-													<div className="col-xs-6"><Text b className="report__label">Quantitativos</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label"></Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#1</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#2</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#3</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#4</Text></div>
-													<div className="col-xs-1 text-center"><Text b className="report__label">#5</Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-												<div className="report__hr"></div>
-												<div className="report__row">
-													<div className="col-xs-6"><Text p className="report__text">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">Joule</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">33,018</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">33,018</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">33,018</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">33,018</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">33,018</Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-												<div className="report__hr"></div>
-												<div className="report__row">
-													<div className="col-xs-6"><Text p className="report__text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut ab sequi impedit, optio officia quis magni quisquam.</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">Joule</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">23</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">23</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">23</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">23</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">23</Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-												<div className="report__hr"></div>
-												<div className="report__row">
-													<div className="col-xs-6"><Text p className="report__text">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">Joule</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12.5</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12.5</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12.5</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12.5</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12.5</Text></div>
-													<div className="clearfix"></div>
-												</div>
-
-												<div className="report__hr"></div>
-												<div className="report__row">
-													<div className="col-xs-6"><Text p className="report__text">Dolor ab laboriosam vero exercitationem quis.</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">Joule</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12</Text></div>
-													<div className="col-xs-1 text-center"><Text p className="report__text">12</Text></div>
-													<div className="clearfix"></div>
-												</div>
+												{quantity &&
+													<div>
+														<div className="report__row">
+															<div className="col-xs-6"><Text b className="report__label">Quantitativos</Text></div>
+															<div className="col-xs-1 text-center"><Text b className="report__label"></Text></div>
+															{this.state.selectedEquipments.map((equipments, index) => {
+																return (
+																	<div key={index} className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+																		<Text b className="report__label">#{index + 1}</Text>
+																	</div>
+																)
+															})}
+															<div className="clearfix"></div>
+														</div>
+														{quantity.map((item, index) => {
+															return (
+																<div key={index}>
+																	<div className="report__hr"></div>
+																	<div className="report__row">
+																		<div className="col-xs-6">
+																			<Text p className="report__text">{item.descricao}</Text>
+																		</div>
+																		<div className="col-xs-1 text-center">
+																			<Text p className="report__text">{item.unidadeCampo1}</Text>
+																		</div>
+																		{this.state.selectedEquipments.map((equipment, i) => {
+																			return (
+																				<div key={index + "" + i} className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+																					<Text p className="report__text">{equipment.planQuantity[index].resultado}</Text>
+																				</div>
+																			)
+																		})}
+																		<div className="clearfix"></div>
+																	</div>
+																</div>
+															)
+														})}
+														<div className="clearfix"></div>
+													</div>
+												}
 
 												<div className="report__spacer"></div>
 												<div className="report__row">
@@ -533,30 +460,157 @@ class ModalReport extends Component {
 												</div>
 												<div className="report__hr"></div>
 												<div className="report__row">
-													<div className="col-xs-12"><Text b className="report__text m-b-5">Substituição dos vedantes (se aplicável)</Text> </div>
 
-													<div className="col-xs-1"><Text p className="report__text">#1</Text></div>
-													<div className="col-xs-11"><Text p className="report__text">Vedante substituido muito danificado</Text></div>
+													{this.state.selectedEquipments.map((equipment, i) => {
+														var printed = false;
+														if (equipment.observacao && equipment.observacao.length) {
+															return (
+																<div key={i}>
+																	{(!printed) &&
+																		(printed = true) &&
+																		<div className="col-xs-12"><Text b className="report__text m-b-5">Geral</Text> </div>
+																	}
+																	<div className="col-xs-1">
+																		<Text p className="report__text">#{i + 1}</Text>
+																	</div>
+																	<div className="col-xs-11">
+																		<Text p className="report__text">{equipment.observacao}</Text>
+																	</div>
+																	<div className="clearfix"></div>
+																</div>
+															)
+														}
+														return;
+													})}
 
-													<div className="col-xs-1"><Text p className="report__text">#2</Text></div>
-													<div className="col-xs-11"><Text p className="report__text">Vedante substituido muito danificado</Text></div>
-													<div className="clearfix"></div>
 												</div>
-
 												<div className="report__row">
-													<div className="col-xs-12"><Text b className="report__text m-b-5">Substituição dos vedantes (se aplicável)</Text> </div>
 
-													<div className="col-xs-1"><Text p className="report__text">#1</Text></div>
-													<div className="col-xs-11"><Text p className="report__text">Vedante substituido muito danificado</Text></div>
+													{maintenance &&
+														<div>
+															{maintenance.map((item, index) => {
+																var printed = false;
+																return (
+																	<div key={index}>
+																		{this.state.selectedEquipments.map((equipment, i) => {
+																			return (
+																				<div key={index + "" + i}>
+																					{(equipment.planMaintenance[index].observacoes && equipment.planMaintenance[index].observacoes != "") &&
+																						<div>
+																							{!printed && (() => {
+																								printed = true;
+																								return (
+																									<div className="col-xs-12">
+																										<Text b className="report__text m-b-5">
+																											{item.descricao}
+																										</Text>
+																									</div>
+																								)
+																							})()}
+																							<div className="col-xs-1">
+																								<Text p className="report__text">#{i + 1}</Text>
+																							</div>
+																							<div className="col-xs-11">
+																								<Text p className="report__text">{equipment.planMaintenance[index].observacoes}</Text>
+																							</div>
+																							<div className="clearfix"></div>
+																						</div>
+																					}
+																				</div>
+																			)
+																		})}
+																	</div>
+																)
+															})}
+														</div>
+													}
 
-													<div className="col-xs-1"><Text p className="report__text">#2</Text></div>
-													<div className="col-xs-11"><Text p className="report__text">Vedante substituido muito danificado</Text></div>
-
-													<div className="col-xs-1"><Text p className="report__text">#2</Text></div>
-													<div className="col-xs-11"><Text p className="report__text">Vedante substituido muito danificado</Text></div>
-
-													<div className="clearfix"></div>
 												</div>
+												<div className="report__row">
+
+													{quality &&
+														<div>
+															{quality.map((item, index) => {
+																var printed = false;
+																return (
+																	<div key={index}>
+																		{this.state.selectedEquipments.map((equipment, i) => {
+																			return (
+																				<div key={index + "" + i}>
+																					{(equipment.planQuality[index].observacoes && equipment.planQuality[index].observacoes != "") &&
+																						<div>
+																							{!printed && (() => {
+																								printed = true;
+																								return (
+																									<div className="col-xs-12">
+																										<Text b className="report__text m-b-5">
+																											{item.descricao}
+																										</Text>
+																									</div>
+																								)
+																							})()}
+																							<div className="col-xs-1">
+																								<Text p className="report__text">#{i + 1}</Text>
+																							</div>
+																							<div className="col-xs-11">
+																								<Text p className="report__text">{equipment.planQuality[index].observacoes}</Text>
+																							</div>
+																							<div className="clearfix"></div>
+																						</div>
+																					}
+																				</div>
+																			)
+																		})}
+																	</div>
+																)
+															})}
+														</div>
+													}
+
+												</div>
+												<div className="report__row">
+
+													{quantity &&
+														<div>
+															{quantity.map((item, index) => {
+																var printed = false;
+																return (
+																	<div key={index}>
+																		{this.state.selectedEquipments.map((equipment, i) => {
+																			return (
+																				<div key={index + "" + i}>
+																					{(equipment.planQuantity[index].observacoes && equipment.planQuantity[index].observacoes != "") &&
+																						<div>
+																							{!printed && (() => {
+																								printed = true;
+																								return (
+																									<div className="col-xs-12">
+																										<Text b className="report__text m-b-5">
+																											{item.descricao}
+																										</Text>
+																									</div>
+																								)
+																							})()}
+																							<div className="col-xs-1">
+																								<Text p className="report__text">#{i + 1}</Text>
+																							</div>
+																							<div className="col-xs-11">
+																								<Text p className="report__text">{equipment.planQuantity[index].observacoes}</Text>
+																							</div>
+																							<div className="clearfix"></div>
+																						</div>
+																					}
+																				</div>
+																			)
+																		})}
+																	</div>
+																)
+															})}
+														</div>
+													}
+
+												</div>
+
 												<div className="report__spacer--35"></div>
 												<div className="report__spacer--35"></div>
 											</div>
