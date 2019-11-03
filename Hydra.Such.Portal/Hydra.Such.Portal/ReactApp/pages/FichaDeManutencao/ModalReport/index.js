@@ -459,157 +459,138 @@ class ModalReport extends Component {
 													<div className="clearfix"></div>
 												</div>
 												<div className="report__hr"></div>
-												<div className="report__row">
-
-													{this.state.selectedEquipments.map((equipment, i) => {
+												{this.state.selectedEquipments.length > 0 &&
+													this.state.selectedEquipments.map((equipment, i) => {
 														var printed = false;
-														if (equipment.observacao && equipment.observacao.length) {
-															return (
-																<div key={i}>
-																	{(!printed) &&
-																		(printed = true) &&
-																		<div className="col-xs-12"><Text b className="report__text m-b-5">Geral</Text> </div>
-																	}
-																	<div className="col-xs-1">
-																		<Text p className="report__text">#{i + 1}</Text>
-																	</div>
-																	<div className="col-xs-11">
-																		<Text p className="report__text">{equipment.observacao}</Text>
-																	</div>
-																	<div className="clearfix"></div>
-																</div>
-															)
-														}
-														return;
-													})}
-
-												</div>
-												<div className="report__row">
-
-													{maintenance &&
-														<div>
-															{maintenance.map((item, index) => {
-																var printed = false;
-																return (
-																	<div key={index}>
-																		{this.state.selectedEquipments.map((equipment, i) => {
-																			return (
-																				<div key={index + "" + i}>
-																					{(equipment.planMaintenance[index].observacoes && equipment.planMaintenance[index].observacoes != "") &&
-																						<div>
-																							{!printed && (() => {
-																								printed = true;
-																								return (
-																									<div className="col-xs-12">
-																										<Text b className="report__text m-b-5">
-																											{item.descricao}
-																										</Text>
-																									</div>
-																								)
-																							})()}
-																							<div className="col-xs-1">
-																								<Text p className="report__text">#{i + 1}</Text>
+														return (
+															<div key={i}>
+																{(equipment.observacao && equipment.observacao != "") &&
+																	<div >
+																		{(!printed) &&
+																			(printed = true) &&
+																			<div className="col-xs-12 p-t-10"><Text b className="report__text m-b-5">Geral</Text> </div>
+																		}
+																		<div className="col-xs-1">
+																			<Text p className="report__text">#{i + 1}</Text>
+																		</div>
+																		<div className="col-xs-11">
+																			<Text p className="report__text">{equipment.observacao}</Text>
+																		</div>
+																		<div className="clearfix"></div>
+																	</div>}
+															</div>
+														)
+													})
+												}
+												{(maintenance) &&
+													maintenance.map((item, index) => {
+														var printed = false;
+														return (
+															<div key={index}>
+																{this.state.selectedEquipments.map((equipment, i) => {
+																	return (
+																		<div key={index + "" + i}>
+																			{(equipment.planMaintenance[index].observacoes && equipment.planMaintenance[index].observacoes != "") &&
+																				<div>
+																					{!printed && (() => {
+																						printed = true;
+																						return (
+																							<div className="col-xs-12">
+																								<Text b className="report__text m-b-5">
+																									{item.descricao}
+																								</Text>
 																							</div>
-																							<div className="col-xs-11">
-																								<Text p className="report__text">{equipment.planMaintenance[index].observacoes}</Text>
-																							</div>
-																							<div className="clearfix"></div>
-																						</div>
-																					}
+																						)
+																					})()}
+																					<div className="col-xs-1">
+																						<Text p className="report__text">#{i + 1}</Text>
+																					</div>
+																					<div className="col-xs-11">
+																						<Text p className="report__text">{equipment.planMaintenance[index].observacoes}</Text>
+																					</div>
+																					<div className="clearfix"></div>
 																				</div>
-																			)
-																		})}
-																	</div>
-																)
-															})}
-														</div>
-													}
+																			}
+																		</div>
+																	)
+																})}
+															</div>
+														)
+													})
+												}
 
-												</div>
-												<div className="report__row">
+												{(quality) &&
+													quality.map((item, index) => {
+														var printed = false;
+														return (
+															<div key={index}>
+																{this.state.selectedEquipments.map((equipment, i) => {
+																	return (
+																		<div key={index + "" + i}>
+																			{(equipment.planQuality[index].observacoes && equipment.planQuality[index].observacoes != "") &&
+																				<div>
+																					{!printed && (() => {
+																						printed = true;
+																						return (
+																							<div className="col-xs-12">
+																								<Text b className="report__text m-b-5">
+																									{item.descricao}
+																								</Text>
+																							</div>
+																						)
+																					})()}
+																					<div className="col-xs-1">
+																						<Text p className="report__text">#{i + 1}</Text>
+																					</div>
+																					<div className="col-xs-11">
+																						<Text p className="report__text">{equipment.planQuality[index].observacoes}</Text>
+																					</div>
+																					<div className="clearfix"></div>
+																				</div>}
+																		</div>
+																	)
+																})}
+															</div>
+														)
+													})
+												}
 
-													{quality &&
-														<div>
-															{quality.map((item, index) => {
-																var printed = false;
-																return (
-																	<div key={index}>
-																		{this.state.selectedEquipments.map((equipment, i) => {
-																			return (
-																				<div key={index + "" + i}>
-																					{(equipment.planQuality[index].observacoes && equipment.planQuality[index].observacoes != "") &&
-																						<div>
-																							{!printed && (() => {
-																								printed = true;
-																								return (
-																									<div className="col-xs-12">
-																										<Text b className="report__text m-b-5">
-																											{item.descricao}
-																										</Text>
-																									</div>
-																								)
-																							})()}
-																							<div className="col-xs-1">
-																								<Text p className="report__text">#{i + 1}</Text>
+												{(quantity) &&
+													quantity.map((item, index) => {
+														var printed = false;
+														return (
+															<div key={index}>
+																{this.state.selectedEquipments.map((equipment, i) => {
+																	return (
+																		<div key={index + "" + i}>
+																			{(equipment.planQuantity[index].observacoes && equipment.planQuantity[index].observacoes != "") &&
+																				<div index={index + "" + i}>
+																					{!printed && (() => {
+																						printed = true;
+																						return (
+																							<div className="col-xs-12">
+																								<Text b className="report__text m-b-5">
+																									{item.descricao}
+																								</Text>
 																							</div>
-																							<div className="col-xs-11">
-																								<Text p className="report__text">{equipment.planQuality[index].observacoes}</Text>
-																							</div>
-																							<div className="clearfix"></div>
-																						</div>
-																					}
+																						)
+																					})()}
+																					<div className="col-xs-1">
+																						<Text p className="report__text">#{i + 1}</Text>
+																					</div>
+																					<div className="col-xs-11">
+																						<Text p className="report__text">{equipment.planQuantity[index].observacoes}</Text>
+																					</div>
+																					<div className="clearfix"></div>
 																				</div>
-																			)
-																		})}
-																	</div>
-																)
-															})}
-														</div>
-													}
-
-												</div>
-												<div className="report__row">
-
-													{quantity &&
-														<div>
-															{quantity.map((item, index) => {
-																var printed = false;
-																return (
-																	<div key={index}>
-																		{this.state.selectedEquipments.map((equipment, i) => {
-																			return (
-																				<div key={index + "" + i}>
-																					{(equipment.planQuantity[index].observacoes && equipment.planQuantity[index].observacoes != "") &&
-																						<div>
-																							{!printed && (() => {
-																								printed = true;
-																								return (
-																									<div className="col-xs-12">
-																										<Text b className="report__text m-b-5">
-																											{item.descricao}
-																										</Text>
-																									</div>
-																								)
-																							})()}
-																							<div className="col-xs-1">
-																								<Text p className="report__text">#{i + 1}</Text>
-																							</div>
-																							<div className="col-xs-11">
-																								<Text p className="report__text">{equipment.planQuantity[index].observacoes}</Text>
-																							</div>
-																							<div className="clearfix"></div>
-																						</div>
-																					}
-																				</div>
-																			)
-																		})}
-																	</div>
-																)
-															})}
-														</div>
-													}
-
-												</div>
+																			}
+																		</div>
+																	)
+																})}
+															</div>
+														)
+													})
+												}
 
 												<div className="report__spacer--35"></div>
 												<div className="report__spacer--35"></div>
@@ -652,11 +633,14 @@ class ModalReport extends Component {
 													</div>
 													<div className="col-xs-5 p-l-0 p-r-0">
 														<div className="text-left m-t-10 m-b-5 f-s-12">
-															<Text b className="f-s-12 text-uppercase l-h-1">Serviço <br /> Assinatura</Text>
+															<Text b className="f-s-12 text-uppercase l-h-1"> Assinatura</Text>
 														</div>
 													</div>
 													<div className="col-xs-5 p-l-0 p-r-0">
-														<img src={this.props.$equipments && this.props.$equipments.value[0].assinaturaTecnico} className="report__signature img-responsive" />
+														<img src={
+															this.state.selectedEquipments[this.state.selectedEquipments.length - 1] &&
+															this.state.selectedEquipments[this.state.selectedEquipments.length - 1].assinaturaCliente
+														} className="report__signature img-responsive" />
 													</div>
 													<div className="col-xs-2 p-l-0 p-r-0">
 													</div>
@@ -667,7 +651,10 @@ class ModalReport extends Component {
 														</div>
 													</div>
 													<div className="col-xs-5 p-l-0 p-r-0">
-														<img src={this.props.$equipments && this.props.$equipments.value[0].assinaturaTecnico} className="report__signature img-responsive" />
+														<img src={
+															this.state.selectedEquipments[this.state.selectedEquipments.length - 1] &&
+															this.state.selectedEquipments[this.state.selectedEquipments.length - 1].assinaturaSie
+														} className="report__signature img-responsive" />
 													</div>
 													<div className="col-xs-2 p-l-0 p-r-0">
 													</div>
