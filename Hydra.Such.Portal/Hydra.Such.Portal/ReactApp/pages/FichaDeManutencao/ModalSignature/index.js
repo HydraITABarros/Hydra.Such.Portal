@@ -250,7 +250,7 @@ class Options extends Component {
 										var image = this.technicalSignaturePad.toDataURL();
 										if (this.props.$equipments) {
 											this.props.$equipments.value.map((s) => {
-												s.$assinaturaTecnico.value = image;
+												s.$assinaturaCliente.value = image;
 											});
 										}
 										this.setState({ technicalSignaturePadPng: image, technicalSignaturePadOpen: false });
