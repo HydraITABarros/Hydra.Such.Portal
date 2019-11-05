@@ -33,12 +33,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly GeneralConfigurations _generalConfig;
 
         public EncomendasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
             this._hostingEnvironment = _hostingEnvironment;
+            _generalConfig = appSettingsGeneral.Value;
         }
 
         [HttpGet]
@@ -143,7 +145,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Encomendas\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -217,8 +219,9 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ExportToExcelDownload_Encomendas(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Encomendas.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Encomendas\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Encomendas.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         #region PedidoPagamento
@@ -1103,7 +1106,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Encomendas\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -1183,8 +1186,9 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ExportToExcelDownload_PedidosPagamento(string FileName)
         {
-            FileName = @"/Upload/temp/" + FileName;
-            return File(FileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Pagamento.xlsx");
+            FileName = _generalConfig.FileUploadFolder + "Encomendas\\" + "tmp\\" + FileName;
+            //return File(FileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Pagamento.xlsx");
+            return new FileStreamResult(new FileStream(FileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         #endregion

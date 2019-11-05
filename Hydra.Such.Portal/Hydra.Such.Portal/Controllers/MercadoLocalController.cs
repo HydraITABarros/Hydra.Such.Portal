@@ -28,12 +28,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly GeneralConfigurations _generalConfig;
 
         public MercadoLocalController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
             this._hostingEnvironment = _hostingEnvironment;
+            _generalConfig = appSettingsGeneral.Value;
         }
 
         public IActionResult MercadoLocalList()
@@ -475,7 +477,7 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_MercadoLocal([FromBody] List<ComprasViewModel> Compras)
         {
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "MercadoLocal\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -555,8 +557,9 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult ExportToExcelDownload_MercadoLocal(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Mercado Local.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "MercadoLocal\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Mercado Local.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
     }

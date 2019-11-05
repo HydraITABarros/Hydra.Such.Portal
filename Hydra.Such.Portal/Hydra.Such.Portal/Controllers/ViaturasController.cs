@@ -32,12 +32,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly GeneralConfigurations _generalConfig;
 
-        public ViaturasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
+        public ViaturasController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment, IOptions<GeneralConfigurations> appSettingsGeneral)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
             this._hostingEnvironment = _hostingEnvironment;
+            _generalConfig = appSettingsGeneral.Value;
         }
 
         public IActionResult Viaturas()
@@ -260,7 +262,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Viaturas\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -450,8 +452,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_Viaturas(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Viaturas.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Viaturas\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Viaturas.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
     }

@@ -686,7 +686,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Faturacao\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -996,8 +996,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_RececaoFaturas(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Receção de Faturas.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Faturacao\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Receção de Faturas.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         [HttpPost]
         public JsonResult Existlink([FromBody] string sFileName)
@@ -1021,7 +1022,7 @@ namespace Hydra.Such.Portal.Controllers
         public FileStreamResult OpenLinkAttached(string id)
         {
 
-            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + id, FileMode.Open), "application/xlsx");
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + "Faturacao\\" + id, FileMode.Open), "application/xlsx");
         }
 
      
@@ -1141,7 +1142,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     string fileName = string.Format("{0}_{1}{2}", fileNameWithoutExtension, dateToken, extension);
 
-                    var path = Path.Combine(_generalConfig.FileUploadFolder, fileName);
+                    var path = Path.Combine(_generalConfig.FileUploadFolder + "Faturacao\\", fileName);
                     if (System.IO.File.Exists(path))
                     {
                         result.eReasonCode = 2;
@@ -1174,7 +1175,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     foreach (var file in workflow.Attached)
                     {
-                        var path = Path.Combine(_generalConfig.FileUploadFolder, file.File);
+                        var path = Path.Combine(_generalConfig.FileUploadFolder + "Faturacao\\", file.File);
                         if (!System.IO.File.Exists(path))
                         {
                             try

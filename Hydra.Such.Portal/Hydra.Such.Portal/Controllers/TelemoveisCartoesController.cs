@@ -14,16 +14,20 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Hydra.Such.Portal.Configurations;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class TelemoveisCartoesController : Controller
     {
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly GeneralConfigurations _generalConfig;
 
-        public TelemoveisCartoesController(IHostingEnvironment _hostingEnvironment)
+        public TelemoveisCartoesController(IHostingEnvironment _hostingEnvironment, IOptions<GeneralConfigurations> appSettingsGeneral)
         {
             this._hostingEnvironment = _hostingEnvironment;
+            _generalConfig = appSettingsGeneral.Value;
         }
 
         public IActionResult TelemoveisCartoes()
@@ -293,7 +297,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "TelemoveisCartoes\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -403,8 +407,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_TelemoveisCartoes(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Telemóveis Cartões.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "TelemoveisCartoes\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Telemóveis Cartões.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
     }

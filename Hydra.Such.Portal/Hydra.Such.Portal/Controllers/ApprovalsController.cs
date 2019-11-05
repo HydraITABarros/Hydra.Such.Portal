@@ -36,12 +36,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly ISession session;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly NAVWSConfigurations configws;
+        private readonly GeneralConfigurations _generalConfig;
 
-        public ApprovalsController(IHttpContextAccessor httpContextAccessor, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment)
+        public ApprovalsController(IHttpContextAccessor httpContextAccessor, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment, IOptions<GeneralConfigurations> appSettingsGeneral)
         {
             this.session = httpContextAccessor.HttpContext.Session;
             this._hostingEnvironment = _hostingEnvironment;
             configws = NAVWSConfigs.Value;
+            _generalConfig = appSettingsGeneral.Value;
         }
 
         public IActionResult Index()
@@ -1450,7 +1452,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Aprovacoes\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -1720,8 +1722,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_Approvals(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Aprovação.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Aprovacoes\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Aprovação.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
     }

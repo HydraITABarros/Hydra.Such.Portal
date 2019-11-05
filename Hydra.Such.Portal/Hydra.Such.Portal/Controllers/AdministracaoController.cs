@@ -2386,7 +2386,7 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Administracao/DownloadPrecoVendaRecursoFH/{FileName}")]
         public FileStreamResult DownloadPrecoVendaRecursoFHTemplate(string FileName)
         {
-            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + "Administracao\\" + FileName, FileMode.Open), "application /xlsx");
         }
 
         //1
@@ -2394,7 +2394,7 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_PrecosVendaRecursosCliente([FromBody] List<PrecoVendaRecursoFHViewModel> dp)
         {
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -2449,8 +2449,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_PrecosVendaRecursosCliente(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Preços Venda Recursos Cliente.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Preços Venda Recursos Cliente.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         //3
         [HttpPost]
@@ -2463,7 +2464,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 IFormFile file = files[i];
                 string folderName = "Upload";
-                string webRootPath = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string webRootPath = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
                 string newPath = Path.Combine(webRootPath, folderName);
                 StringBuilder sb = new StringBuilder();
                 if (!Directory.Exists(newPath))
@@ -2628,7 +2629,7 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_AcordoPrecos([FromBody] AcordoPrecosModelView dp)
         {
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -2715,8 +2716,9 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public IActionResult ExportToExcelDownload_AcordoPrecos(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Acordo de Preços.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Acordo de Preços.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         //3
         [HttpPost]
@@ -2730,7 +2732,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 IFormFile file = files[i];
                 string folderName = "Upload";
-                string webRootPath = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string webRootPath = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
                 string newPath = Path.Combine(webRootPath, folderName);
                 StringBuilder sb = new StringBuilder();
                 if (!Directory.Exists(newPath))
@@ -2995,7 +2997,7 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_EmpregadoRecursos([FromBody] List<RHRecursosViewModel> dp)
         {
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -3039,8 +3041,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_EmpregadoRecursos(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "FH Empregado Recursos.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "FH Empregado Recursos.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         //3
         [HttpPost]
@@ -3053,7 +3056,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 IFormFile file = files[i];
                 string folderName = "Upload";
-                string webRootPath = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string webRootPath = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
                 string newPath = Path.Combine(webRootPath, folderName);
                 StringBuilder sb = new StringBuilder();
                 if (!Directory.Exists(newPath))
@@ -3216,7 +3219,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     string name = Path.GetFileNameWithoutExtension(file.FileName);
                     string filename = Path.GetFileName(file.FileName);
-                    var full_path = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename);
+                    var full_path = Path.Combine(_generalConfig.FileUploadFolder + "Administracao\\", User.Identity.Name + "_" + filename);
                     if (System.IO.File.Exists(full_path))
                         System.IO.File.Delete(full_path);
                     FileStream dd = new FileStream(full_path, FileMode.CreateNew);
@@ -3225,7 +3228,7 @@ namespace Hydra.Such.Portal.Controllers
                     var existingFile = new FileInfo(full_path);
 
                     string filename_result = name + "_Resultado.xlsx";
-                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename_result);
+                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder + "Administracao\\", User.Identity.Name + "_" + filename_result);
                     if (System.IO.File.Exists(full_path_result))
                         System.IO.File.Delete(full_path_result);
                     var existingFile_result = new FileInfo(full_path_result);
@@ -3704,7 +3707,7 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Administracao/DownloadRHRecursosFHTemplate/{FileName}")]
         public FileStreamResult DownloadRHRecursosFHTemplate(string FileName)
         {
-            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + "Administracao\\" + FileName, FileMode.Open), "application /xlsx");
         }
 
         [HttpPost]
@@ -3720,7 +3723,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     string name = Path.GetFileNameWithoutExtension(file.FileName);
                     string filename = Path.GetFileName(file.FileName);
-                    var full_path = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename);
+                    var full_path = Path.Combine(_generalConfig.FileUploadFolder + "Administracao\\", User.Identity.Name + "_" + filename);
                     if (System.IO.File.Exists(full_path))
                         System.IO.File.Delete(full_path);
                     FileStream dd = new FileStream(full_path, FileMode.CreateNew);
@@ -3729,7 +3732,7 @@ namespace Hydra.Such.Portal.Controllers
                     var existingFile = new FileInfo(full_path);
 
                     string filename_result = name + "_Resultado.xlsx";
-                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename_result);
+                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder + "Administracao\\", User.Identity.Name + "_" + filename_result);
                     if (System.IO.File.Exists(full_path_result))
                         System.IO.File.Delete(full_path_result);
                     var existingFile_result = new FileInfo(full_path_result);
@@ -5650,7 +5653,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     string name = Path.GetFileNameWithoutExtension(file.FileName);
                     string filename = Path.GetFileName(file.FileName);
-                    var full_path = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename);
+                    var full_path = Path.Combine(_generalConfig.FileUploadFolder + "Administracao\\", User.Identity.Name + "_" + filename);
                     if (System.IO.File.Exists(full_path))
                         System.IO.File.Delete(full_path);
                     FileStream dd = new FileStream(full_path, FileMode.CreateNew);
@@ -5659,7 +5662,7 @@ namespace Hydra.Such.Portal.Controllers
                     var existingFile = new FileInfo(full_path);
 
                     string filename_result = name + "_Resultado.xlsx";
-                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder, User.Identity.Name + "_" + filename_result);
+                    var full_path_result = Path.Combine(_generalConfig.FileUploadFolder + "Administracao\\", User.Identity.Name + "_" + filename_result);
                     if (System.IO.File.Exists(full_path_result))
                         System.IO.File.Delete(full_path_result);
                     var existingFile_result = new FileInfo(full_path_result);
@@ -6108,7 +6111,7 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Administracao/DownloadAcordoPrecosTemplate/{FileName}")]
         public FileStreamResult DownloadAcordoPrecosTemplate(string FileName)
         {
-            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + FileName, FileMode.Open), "application /xlsx");
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + "Administracao\\" + FileName, FileMode.Open), "application /xlsx");
         }
 
 
@@ -6142,7 +6145,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -6221,8 +6224,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_LinhasAcordoPrecos(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas dos Acordos de Preços.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas dos Acordos de Preços.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
 
@@ -7519,7 +7523,7 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_LinhasEncFornecedor([FromBody] List<ConfigLinhasEncFornecedor> dp)
         {
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -7576,8 +7580,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_LinhasEncFornecedor(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas Encomenda Fornecedor.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas Encomenda Fornecedor.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         #endregion
 

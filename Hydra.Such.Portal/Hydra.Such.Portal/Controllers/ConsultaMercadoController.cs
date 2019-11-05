@@ -1265,7 +1265,7 @@ namespace Hydra.Such.Portal.Controllers
                 string Consulta = data.NumConsultaMercado;
                 string Cod = fornecedor.CodFornecedor;
 
-                string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+                string sWebRootFolder = _generalConfig.FileUploadFolder + "ConsultasMercado\\" + "tmp\\";
                 string sFileName = @Consulta + "_" + Cod + ".pdf";
 
                 //var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
@@ -1339,6 +1339,8 @@ namespace Hydra.Such.Portal.Controllers
                 fornecedor.UtilizadorEnvio = User.Identity.Name;
                 DBConsultaMercado.Update(DBConsultaMercado.CastSeleccaoEntidadesViewToDB(fornecedor));
 
+                //Apaga o anexo criado no disco
+                System.IO.File.Delete(Path.Combine(sWebRootFolder, sFileName));
             }
 
             return Json(data);
@@ -1359,7 +1361,7 @@ namespace Hydra.Such.Portal.Controllers
             data.eMessage = "Email não enviado!";
 
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "ConsultasMercado\\" + "tmp\\";
             string sFileName = @Consulta + "_" + Cod + ".pdf";
 
             //var theURL = (_config.ReportServerURL + "ConsultaMercado&rs:Command=Render&rs:format=PDF&CM=" + Consulta + "&Fornecedor=" + Cod);
@@ -1426,6 +1428,9 @@ namespace Hydra.Such.Portal.Controllers
             fornecedor.DataEnvioAoFornecedor = DateTime.Now;
             fornecedor.UtilizadorEnvio = User.Identity.Name;
             DBConsultaMercado.Update(DBConsultaMercado.CastSeleccaoEntidadesViewToDB(fornecedor));
+
+            //Apaga o anexo criado no disco
+            System.IO.File.Delete(Path.Combine(sWebRootFolder, sFileName));
 
             return Json(data);
         }
@@ -1893,9 +1898,8 @@ namespace Hydra.Such.Portal.Controllers
                         string filename = Path.GetFileName(file.FileName);
                         //full_filename = id + "_" + filename;
                         full_filename = id + "_" + filename;
-                        //var path = Path.Combine(_generalConfig.FileUploadFolder, full_filename);
-                        var path = Path.Combine("E:\\Data\\eSUCH\\ConsultasMercado\\", full_filename);
-                        //var path = Path.Combine("N:\\", full_filename);
+                        var path = Path.Combine(_generalConfig.FileUploadFolder + "ConsultasMercado\\", full_filename);
+                        //var path = Path.Combine("E:\\Data\\eSUCH\\ConsultasMercado\\", full_filename);
                         using (FileStream dd = new FileStream(path, FileMode.CreateNew))
                         {
                             file.CopyTo(dd);
@@ -1945,9 +1949,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpGet]
         public FileStreamResult DownloadFile(string id)
         {
-            //return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + id, FileMode.Open), "application/xlsx");
-            return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\ConsultasMercado\\" + id, FileMode.Open), "application/xlsx");
-            //return new FileStreamResult(new FileStream("N:\\" + id, FileMode.Open), "application/xlsx");
+            return new FileStreamResult(new FileStream(_generalConfig.FileUploadFolder + "ConsultasMercado\\" + id, FileMode.Open), "application/xlsx");
+            //return new FileStreamResult(new FileStream("E:\\Data\\eSUCH\\ConsultasMercado\\" + id, FileMode.Open), "application/xlsx");
         }
 
         [HttpPost]
@@ -1955,9 +1958,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             try
             {
-                //System.IO.File.Delete(_generalConfig.FileUploadFolder + requestParams.Url);
-                System.IO.File.Delete("E:\\Data\\eSUCH\\ConsultasMercado\\" + requestParams.Url);
-                //System.IO.File.Delete("N:\\" + requestParams.Url);
+                System.IO.File.Delete(_generalConfig.FileUploadFolder + "ConsultasMercado\\" + requestParams.Url);
+                //System.IO.File.Delete("E:\\Data\\eSUCH\\ConsultasMercado\\" + requestParams.Url);
                 DBAttachments.Delete(DBAttachments.ParseToDB(requestParams));
                 requestParams.eReasonCode = 1;
 
@@ -1980,7 +1982,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "ConsultasMercado\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -2110,8 +2112,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_ConsultaMercado(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Cotação.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "ConsultasMercado\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pedidos de Cotação.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         //1
@@ -2121,7 +2124,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "ConsultasMercado\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -2211,8 +2214,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_ConsultasPorFornecedor(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Consultas por Fornecedor.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "ConsultasMercado\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Consultas por Fornecedor.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         #endregion
 

@@ -316,7 +316,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -408,8 +408,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_Clientes(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Clientes.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Clientes.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
 
@@ -483,7 +484,7 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> InvoiceDetailsExportToExcel([FromBody] List<NAVClientesInvoicesDetailsViewModel> list)
         {
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -568,7 +569,7 @@ namespace Hydra.Such.Portal.Controllers
 
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -665,20 +666,22 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult InvoiceDetailsExportToExcel(string fileName, string tipo)
 
         {
-            fileName = @"/Upload/temp/" + fileName;
+            fileName = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\" + fileName;
 
             string fileExportName = tipo == "Fatura" ? "Detalhe Fatura" : "Detalhe Nota de Crédito";
 
-            return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+            //return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+            return new FileStreamResult(new FileStream(fileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         public IActionResult InvoiceListExportToExcel(string fileName)
         {
-            fileName = @"/Upload/temp/" + fileName;
+            fileName = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\" + fileName;
 
             string fileExportName = "Faturas / Notas de Crédito";
 
-            return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+            //return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+            return new FileStreamResult(new FileStream(fileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         [HttpPost]
@@ -689,7 +692,7 @@ namespace Hydra.Such.Portal.Controllers
 
             var list = (dynamic)form.GetValue("list");
 
-            string sWebRootFolder = _hostingEnvironment.WebRootPath + "\\Upload\\temp";
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
             user = user.Replace(".", "_");
@@ -885,11 +888,12 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult BalancesExportToExcel(string fileName, string tipo)
         {
-            fileName = @"/Upload/temp/" + fileName;
+            fileName = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\" + fileName;
 
             string fileExportName = "ControloConciliacaoSaldos";
 
-            return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+            //return File(fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileExportName + ".xlsx");
+            return new FileStreamResult(new FileStream(fileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
     }
