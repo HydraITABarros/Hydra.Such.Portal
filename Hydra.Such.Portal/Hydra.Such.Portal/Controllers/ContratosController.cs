@@ -5624,8 +5624,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_Oportunidades(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Oportunidades.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Oportunidades.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         //1
@@ -5716,8 +5717,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_Propostas(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Propostas.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Propostas.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         //1
@@ -5897,8 +5899,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_Contratos(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         //1
@@ -6001,8 +6004,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_ContratosLinhas(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas de Contratos.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas de Contratos.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         //1
@@ -6105,8 +6109,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_ContratosInternosLinhas(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas de Contratos Internos.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Linhas de Contratos Internos.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         //1
@@ -6276,8 +6281,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_ContratosQuotas(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         //1
@@ -6447,8 +6453,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_ContratosInternos(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         
         //1
@@ -6708,8 +6715,9 @@ namespace Hydra.Such.Portal.Controllers
         //2
         public IActionResult ExportToExcelDownload_AvencaFixa(string sFileName)
         {
-            sFileName = @"/Upload/temp/" + sFileName;
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Avença Fixa.xlsx");
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Avença Fixa.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
         #region ANEXOS
