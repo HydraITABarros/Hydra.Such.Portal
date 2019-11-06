@@ -2831,7 +2831,7 @@ namespace Hydra.Such.Portal.Controllers
                         catch (Exception ex)
                         {
                             result.eReasonCode = 2;
-                            result.eMessage = "Ocorreu um erro ao atualizar os Movimentos de Projeto na tabela.";
+                            result.eMessage = "Ocorreu um erro ao atualizar os Movimentos de Projeto.";
                             return Json(result);
                         }
 
@@ -2845,7 +2845,7 @@ namespace Hydra.Such.Portal.Controllers
                         catch (Exception ex)
                         {
                             result.eReasonCode = 2;
-                            result.eMessage = "Ocorreu um erro ao adicionar os Movimentos de Projeto Autorizados na tabela.";
+                            result.eMessage = "Ocorreu um erro ao adicionar os Movimentos na Tabela Movimentos de Projeto Autorizados.";
                             return Json(result);
                         }
                     }
