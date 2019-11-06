@@ -261,7 +261,8 @@ namespace Hydra.Such.Portal.Controllers
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
                         ObservacoesAutorizarFaturacao = "",
-                        FaturaPrecosIvaIncluido = cProject.FaturaPrecosIvaIncluido
+                        FaturaPrecosIvaIncluido = cProject.FaturaPrecosIvaIncluido,
+                        FechoAutomatico = cProject.FechoAutomatico
                     };
 
                     string TextoFatura = "";
@@ -4210,9 +4211,20 @@ namespace Hydra.Such.Portal.Controllers
                                             itemsToInvoice.ForEach(key =>
                                             {
                                                 var authorizedProjects = ctx.ProjectosAutorizados
-                                                .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
-                                                .ToList();
+                                                        .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
+                                                        .ToList();
                                                 //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+
+                                                //Fecho Automático
+                                                authorizedProjects.Distinct().ToList().ForEach(x =>
+                                                {
+                                                    ProjectDetailsViewModel projFA = DBProjects.GetById(x.CodProjeto).ParseToViewModel();
+                                                    if (projFA.FechoAutomatico == true && projFA.Status != (EstadoProjecto)2)
+                                                    {
+                                                        JsonResult resultFA;
+                                                        resultFA = TerminarProject(projFA);
+                                                    }
+                                                });
 
                                                 var projectMovements = ctx.MovimentosDeProjeto
                                                     .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
@@ -4252,19 +4264,30 @@ namespace Hydra.Such.Portal.Controllers
                                                 var authorizedProjects = ctx.ProjectosAutorizados
                                                 .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
                                                 .ToList();
-                                            //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+                                                //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
 
-                                            var projectMovements = ctx.MovimentosDeProjeto
+                                                //Fecho Automático
+                                                authorizedProjects.Distinct().ToList().ForEach(x =>
+                                                {
+                                                    ProjectDetailsViewModel projFA = DBProjects.GetById(x.CodProjeto).ParseToViewModel();
+                                                    if (projFA.FechoAutomatico == true && projFA.Status != (EstadoProjecto)2)
+                                                    {
+                                                        JsonResult resultFA;
+                                                        resultFA = TerminarProject(projFA);
+                                                    }
+                                                });
+
+                                                var projectMovements = ctx.MovimentosDeProjeto
                                                     .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
                                                     .ToList();
 
                                                 authorizedProjects.ForEach(x => x.Faturado = true);
-                                            //authorizedProjectMovements.ForEach(x => x.Faturada = true);
-                                            projectMovements.ForEach(x => x.Faturada = true);
+                                                //authorizedProjectMovements.ForEach(x => x.Faturada = true);
+                                                projectMovements.ForEach(x => x.Faturada = true);
 
                                                 ctx.ProjectosAutorizados.UpdateRange(authorizedProjects);
-                                            //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
-                                            ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                                                //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
+                                                ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
                                             });
 
                                             ctx.SaveChanges();
@@ -4315,6 +4338,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 2;
                 result.eMessage = "Não é possivel faturar projetos iguais de grupos diferentes.";
             }
+
             return Json(result);
         }
 
