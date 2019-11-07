@@ -357,6 +357,17 @@ namespace Hydra.Such.Portal.Controllers
                 result = "É obrigatório inserir o Nº de Projeto.";
             }
 
+            //Se o estado atual for deferente da Base Dados não grava
+            if (data != null && !string.IsNullOrEmpty(data.ProjectNo))
+            {
+                Projetos DBProj = DBProjects.GetById(data.ProjectNo);
+                if (DBProj != null && DBProj.Estado != data.Status)
+                {
+                    result = "Não é possivel guardar o Projeto, atualize a página para oter a última versão.";
+                }
+            }
+
+            //Verificar se existem validadores para o projeto
             if (string.IsNullOrEmpty(result))
             {
                 List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, DateTime.Now);
@@ -366,10 +377,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (ApprovalConfigurations != null && ApprovalConfigurations.Count > 0)
                 {
-                    //Create User ApprovalMovements
                     List<string> UsersToNotify = new List<string>();
-                    //ApprovalConfigurations.ForEach(x =>
-                    //{
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
