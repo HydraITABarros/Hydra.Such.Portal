@@ -2306,7 +2306,7 @@ namespace Hydra.Such.Portal.Controllers
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
                         Fatura = x.Fatura
-                    }).ToList();
+                    }).OrderByDescending(x => x.Date).ToList();
                 }
                 else
                 {
@@ -2391,7 +2391,7 @@ namespace Hydra.Such.Portal.Controllers
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
                         Fatura = x.Fatura
-                    }).ToList();
+                    }).OrderByDescending(x => x.Date).ToList();
                 }
 
                 return Json(dp);
