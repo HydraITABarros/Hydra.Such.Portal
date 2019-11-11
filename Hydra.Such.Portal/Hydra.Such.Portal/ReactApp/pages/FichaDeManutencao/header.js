@@ -200,6 +200,7 @@ class HTitle extends Component {
                                 order={this.props.order}
                                 equipmentType={this.props.title}
                                 $equipments={this.props.$equipments}
+                                $currentUser={this.props.$currentUser}
                                 onClose={() => {
                                     //item.open = false;
                                     this.setState({toUpdate: this.state.toUpdate + 1});
