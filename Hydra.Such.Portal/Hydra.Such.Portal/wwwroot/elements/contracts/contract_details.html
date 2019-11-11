@@ -2837,14 +2837,33 @@
                     window.location.href = "/Contratos/DetalhesContrato/" + this.data.contractNo + "?version=" + this.data.versionNo + "&" + "isHistoric=" + false;
                 },
                 _deleteClientRequisition: function (data) {
-                    this.$.delete_requisition_ajax.body = JSON.stringify(data.model.item);
-                    this.$.delete_requisition_ajax.generateRequest();
+                    var self = this;
 
-                    var index = this.data.clientRequisitions.indexOf(data.model.item);
-                    if (index >= 0) {
-                        this.data.clientRequisitions.splice(index, 1);
-                        this.$.grid_ClientRequisitions.clearCache();
-                    }
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende remover a Requisição de Cliente?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                self.$.delete_requisition_ajax.body = JSON.stringify(data.model.item);
+                                self.$.delete_requisition_ajax.generateRequest();
+
+                                var index = self.data.clientRequisitions.indexOf(data.model.item);
+                                if (index >= 0) {
+                                    self.data.clientRequisitions.splice(index, 1);
+                                    self.$.grid_ClientRequisitions.clearCache();
+                                }
+                            }
+                        }
+                    });
                 },
                 _onDeleteReqResponse: function (data) {
                     if (data.detail.status === 200) {
@@ -3475,13 +3494,13 @@
                     if (this.$.mPaymentTerms.value == null && this.$.mPaymentTerms.value == "") {
                         messageErro += "Os termos de pagamento de estar preenchido \n";
                     }
-                    if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
-                        messageErro += "Data Fim Versão não pode ser menor que a Data início Contrato \n";
+                    //if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
+                    //    messageErro += "Data Fim Versão não pode ser menor que a Data início Contrato \n";
 
-                    if (this.$.dueDate.value != null && this.$.dueDate.value != "" &&
-                        this.$.contractEndDate.value != null && this.$.contractEndDate.value != "" &&
-                        this.$.dueDate.value > this.$.contractEndDate.value)
-                        messageErro += "Data Fim Versão não pode ser maior que a Data Final Contrato \n";
+                    //if (this.$.dueDate.value != null && this.$.dueDate.value != "" &&
+                    //    this.$.contractEndDate.value != null && this.$.contractEndDate.value != "" &&
+                    //    this.$.dueDate.value > this.$.contractEndDate.value)
+                    //    messageErro += "Data Fim Versão não pode ser maior que a Data Final Contrato \n";
 
                     if (this.dataLines != null) {
                         var exist = false;

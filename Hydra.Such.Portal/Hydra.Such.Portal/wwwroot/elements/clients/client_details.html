@@ -110,6 +110,7 @@
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" last-response="{{LPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPaymentForms" last-response="{{LPaymentMethodCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" last-response="{{LFornecedorAssoc}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetNAVCountry" last-response="{{LCountry}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
 
@@ -307,14 +308,12 @@
                                                             <vaadin-text-field value="{{data.county}}" maxlength="30" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                                         </div>
                                                         <div class="col-lg-3">
-                                                            <vaadin-combo-box items='[{"value":"PT"}]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{data.country_Region_Code}}" required error-message="Este campo é obrigatório">
+                                                            <vaadin-combo-box items='[[ LCountry ]]' id="country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.country_Region_Code}}" required error-message="Este campo é obrigatório">
                                                                 <template>
-                                                                    &nbsp;[[item.value]]&nbsp;
+                                                                    &nbsp;[[item.id]] - [[item.value]]&nbsp;
                                                                 </template>
                                                             </vaadin-combo-box>
                                                         </div>
-
-
                                                     </div>
 
                                                     <div class="row break_clear">
@@ -643,14 +642,14 @@
                                                         <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="grid break_clear" multi-sort="true" active-item="{{_SelectedBalance}}">
 
                                                             <!--<vaadin-grid-column width="100px" resizable>
-                                                                <template class="header">
-                                                                    <vaadin-grid-sorter path="entryNo">entryNo</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="entryNo" />
-                                                                </template>
-                                                                <template>
-                                                                    {{item.entryNo}}
-                                                                </template>
-                                                            </vaadin-grid-column>-->
+                                                            <template class="header">
+                                                                <vaadin-grid-sorter path="entryNo">entryNo</vaadin-grid-sorter>
+                                                                <vaadin-grid-filter path="entryNo" />
+                                                            </template>
+                                                            <template>
+                                                                {{item.entryNo}}
+                                                            </template>
+                                                        </vaadin-grid-column>-->
 
                                                             <vaadin-grid-column width="100px" resizable>
                                                                 <template class="header">
@@ -888,9 +887,9 @@
                                             </div>
 
                                             <div class="col-lg-3">
-                                                <vaadin-combo-box items='[{"value":"PT"}]' id="shippingData.country_Region_Code" name="shippingData.country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{shippingData.country_Region_Code}}">
+                                                <vaadin-combo-box items='[[ LCountry ]]' id="shippingData.country_Region_Code" name="shippingData.country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{shippingData.country_Region_Code}}">
                                                     <template>
-                                                        &nbsp;[[item.value]]&nbsp;
+                                                        &nbsp;[[item.id]] - [[item.value]]&nbsp;
                                                     </template>
                                                 </vaadin-combo-box>
                                             </div>

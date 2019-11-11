@@ -125,6 +125,39 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<NAVCountry> GetCountry(string NAVDatabaseName, string NAVCompanyName)
+        {
+            try
+            {
+                List<NAVCountry> result = new List<NAVCountry>();
+
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                    new SqlParameter("@DBName", NAVDatabaseName),
+                    new SqlParameter("@CompanyName", NAVCompanyName)
+                };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Country @DBName, @CompanyName", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVCountry()
+                        {
+                            Code = (string)temp.Code,
+                            Country = (string)temp.Value
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static string GetClientVATByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
             {
                 try
