@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css, theme } from 'styled-components';
+import styled, {css, theme} from 'styled-components';
 import MuiButton from '@material-ui/core/Button';
 import _theme from '../../../themes/default';
 import Text from '../Text';
@@ -9,7 +9,7 @@ import _ from 'lodash';
 import './index.scss';
 
 const buttonTextPadding = {
-	padding: '8px 24px',
+    padding: '8px 24px',
 }
 
 const sharedStyles = css`&& {
@@ -44,9 +44,9 @@ const buttonPrimary = css`&& {
 `
 const buttonDefault = css`&& {
     background-color: ${_theme.palette.white};
-    color: ${_theme.palette.primary.medium};
+    color: ${_theme.palette.primary.dark};
     b {
-        color: ${_theme.palette.primary.medium};
+        color: ${_theme.palette.primary.dark};
     }
 }
 `
@@ -54,9 +54,9 @@ const buttonIcon = css`&& {
     height: 40px;
     line-height: 14px;
     background-color: ${_theme.palette.white};
-    color: ${_theme.palette.primary.medium};
+    color: ${_theme.palette.primary.dark};
     b {
-        color: ${_theme.palette.primary.medium};
+        color: ${_theme.palette.primary.dark};
     }
     &:hover {
         background-color: ${_theme.palette.white};
@@ -85,10 +85,10 @@ const Link = styled.a`
     color: ${_theme.palette.primary.default};
     box-shadow: none;
     padding: ${_theme.padding[8]};
-    text-decoration: underline;
 	cursor: pointer;
     b {
         color: ${_theme.palette.primary.default};
+    	text-decoration: underline;
 	}
 `
 
@@ -102,9 +102,9 @@ const buttonRound = css`&& {
     box-shadow: ${props => props.boxShadow || `1px 1px 2px 0px ${Color(_theme.palette.primary.default).alpha(0.3).toString()}`}; 
     border-radius: ${_theme.radius.round};
     background-color: ${_theme.palette.white};
-    color: ${_theme.palette.primary.medium};
+    color: ${_theme.palette.primary.dark};
     b {
-        color: ${_theme.palette.primary.medium};
+        color: ${_theme.palette.primary.dark};
         line-height: 14px;
     }
     &:hover {
@@ -128,7 +128,7 @@ const buttonSolo = css`&& {
     padding: 0;     
     text-transform: none; 
     border-radius: ${_theme.radius.round};
-    color: ${_theme.palette.primary.medium};
+    color: ${_theme.palette.primary.dark};
 }
 `
 const buttonOutline = css`&& {
@@ -172,128 +172,128 @@ const ButtonOutline = styled(MuiButton)`${buttonOutline}`;
 const Picker = styled(MuiButton)`${picker}`;
 
 const removePropertyFromObject = (obj, propertyName) => {
-	let rest = {};
-	Object.keys(obj).forEach((key, index) => {
-		if (!(key == propertyName)) {
-			rest[key] = obj[key];
-		}
-	});
-	return rest;
+    let rest = {};
+    Object.keys(obj).forEach((key, index) => {
+        if (!(key == propertyName)) {
+            rest[key] = obj[key];
+        }
+    });
+    return rest;
 }
 
 
 const removeDefaultPropertiesFromComponentProps = (props, component) => {
-	let rest = {};
-	Object.keys(props).forEach((key, index) => {
-		if (!(key in component.defaultProps)) {
-			rest[key] = props[key];
-		}
-	});
-	return rest;
+    let rest = {};
+    Object.keys(props).forEach((key, index) => {
+        if (!(key in component.defaultProps)) {
+            rest[key] = props[key];
+        }
+    });
+    return rest;
 }
 
-const Button = ({ ...props }) => {
-	if (props.primary) {
-		return (
-			<ButtonPrimary
-				variant="contained"
-				className={props.disabled ? "disabled" : ""}
-				//color="primary"
-				{..._.omit(props, ['primary', 'color'])}
-			><Text b>{props.children}</Text>
-			</ButtonPrimary>
-		)
-	} else if (props.default) {
-		return (
-			<ButtonDefault
-				variant="contained"
-				className={props.disabled ? "disabled" : ""}
-				{..._.omit(props, ['default', 'color'])}
-			><Text b>{props.children}</Text>
-			</ButtonDefault>
-		)
-	} else if (props.picker) {
-		return (
-			<Picker
-				className={props.disabled ? "disabled" : ""}
-				{..._.omit(props, ['picker', 'color'])}
-			>{props.icon}{"\u00a0"}<Text p>{props.children}</Text>
-			</Picker>
-		)
-	} else if (props.icon) {
-		return (
-			<ButtonIcon
-				variant="contained"
-				className={props.disabled ? "disabled" : ""}
-				{..._.omit(props, ['icon', 'color'])}
-			>{props.icon}{props.children && "\u00a0"}<Text b>{props.children}</Text>
-			</ButtonIcon>
-		)
-	} else if (props.iconPrimary) {
-		return (
-			<ButtonIconPrimary
-				variant="contained"
-				className={props.disabled ? "disabled" : ""}
-				{..._.omit(props, ['iconPrimary', 'color'])}
-			>{props.iconPrimary}{"\u00a0"}<Text b>{props.children}</Text>
-			</ButtonIconPrimary>
-		)
-	} else if (props.link) {
-		return (
-			<Link src="javascript:void(0)"
-				className={props.disabled ? "disabled" : ""}
-				{..._.omit(props, ['link', 'color'])}
-			><Text b>{props.children}</Text>
-			</Link>
-		)
-	} else if (props.linklight) {
-		return (
-			<Link src="javascript:void(0)"
-				className={props.disabled ? "disabled" : ""}
-				{..._.omit(props, ['link', 'color'])}
-			><Text span>{props.children}</Text>
-			</Link>
-		)
-	} else if (props.round) {
-		return (
-			<ButtonRound
-				className={props.disabled ? "disabled" : ""}
-				{..._.omit(props, ['round', 'color'])}
-			/>
-		)
-	} else if (props.iconSolo) {
-		return (
-			<ButtonSolo
-				className={props.disabled ? "disabled" : ""}
-				{..._.omit(props, ['iconSolo', 'color'])}
-			>
-			</ButtonSolo>
-		)
-	} else if (props.outline) {
-		return (
-			<ButtonOutline
-				className={props.disabled ? "disabled" : ""}
-				variant="contained"
-				{..._.omit(props, ['outline', 'color'])}
-			><Text b>{props.children}</Text>
-			</ButtonOutline>
-		)
-	}
-	return <ButtonPrimary
-		className={props.disabled ? "disabled" : ""}
-		{..._.omit(props, ['color'])} />
+const Button = ({...props}) => {
+    if (props.primary) {
+        return (
+            <ButtonPrimary
+                variant="contained"
+                className={props.disabled ? "disabled" : ""}
+                //color="primary"
+                {..._.omit(props, ['primary', 'color'])}
+            ><Text b>{props.children}</Text>
+            </ButtonPrimary>
+        )
+    } else if (props.default) {
+        return (
+            <ButtonDefault
+                variant="contained"
+                className={props.disabled ? "disabled" : ""}
+                {..._.omit(props, ['default', 'color'])}
+            ><Text b>{props.children}</Text>
+            </ButtonDefault>
+        )
+    } else if (props.picker) {
+        return (
+            <Picker
+                className={props.disabled ? "disabled" : ""}
+                {..._.omit(props, ['picker', 'color'])}
+            >{props.icon}{"\u00a0"}<Text p>{props.children}</Text>
+            </Picker>
+        )
+    } else if (props.link) {
+        return (
+            <Link src="javascript:void(0)"
+                  className={props.disabled ? "disabled" : ""}
+                  {..._.omit(props, ['link', 'color'])}
+            >{props.icon} <Text b>{props.children}</Text>
+            </Link>
+        )
+    } else if (props.icon) {
+        return (
+            <ButtonIcon
+                variant="contained"
+                className={props.disabled ? "disabled" : ""}
+                {..._.omit(props, ['icon', 'color'])}
+            >{props.icon}{props.children && "\u00a0"}<Text b>{props.children}</Text>
+            </ButtonIcon>
+        )
+    } else if (props.iconPrimary) {
+        return (
+            <ButtonIconPrimary
+                variant="contained"
+                className={props.disabled ? "disabled" : ""}
+                {..._.omit(props, ['iconPrimary', 'color'])}
+            >{props.iconPrimary}{"\u00a0"}<Text b>{props.children}</Text>
+            </ButtonIconPrimary>
+        )
+    } else if (props.linklight) {
+        return (
+            <Link src="javascript:void(0)"
+                  className={props.disabled ? "disabled" : ""}
+                  {..._.omit(props, ['link', 'color'])}
+            >{props.icon} <Text span>{props.children}</Text>
+            </Link>
+        )
+    } else if (props.round) {
+        return (
+            <ButtonRound
+                className={props.disabled ? "disabled" : ""}
+                {..._.omit(props, ['round', 'color'])}
+            />
+        )
+    } else if (props.iconSolo) {
+        return (
+            <ButtonSolo
+                className={props.disabled ? "disabled" : ""}
+                {..._.omit(props, ['iconSolo', 'color'])}
+            >
+            </ButtonSolo>
+        )
+    } else if (props.outline) {
+        return (
+            <ButtonOutline
+                className={props.disabled ? "disabled" : ""}
+                variant="contained"
+                {..._.omit(props, ['outline', 'color'])}
+            ><Text b>{props.children}</Text>
+            </ButtonOutline>
+        )
+    }
+    return <ButtonPrimary
+        className={props.disabled ? "disabled" : ""}
+        {..._.omit(props, ['color'])} />
 }
 
 Button.propTypes = {
-	primary: PropTypes.bool,
-	default: PropTypes.bool,
-	picker: PropTypes.bool,
-	icon: PropTypes.object,
-	iconPrimary: PropTypes.object,
-	link: PropTypes.bool,
-	round: PropTypes.bool,
-	iconSolo: PropTypes.bool,
-	outline: PropTypes.bool
+    primary: PropTypes.bool,
+    default: PropTypes.bool,
+    picker: PropTypes.bool,
+    icon: PropTypes.object,
+    iconPrimary: PropTypes.object,
+    link: PropTypes.bool,
+    round: PropTypes.bool,
+    iconSolo: PropTypes.bool,
+    outline: PropTypes.bool
 };
 
 export default Button;
