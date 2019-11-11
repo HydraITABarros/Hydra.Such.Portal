@@ -61,11 +61,11 @@ class Report extends Component {
     }
 
     componentDidMount() {
-        this.resetRefs();
+        //this.resetRefs();
         this.state.selectedEquipments = this.props.selectedEquipments;
-        setTimeout(() => {
-            this.setState({splited: true});
-        }, 100);
+
+        this.setState({splited: true});
+
     }
 
     componentDidUpdate() {
@@ -94,9 +94,6 @@ class Report extends Component {
             state.selectedEquipments = nextProps.selectedEquipments;
             //state.splited = false;
             this.setState(state);
-            // setTimeout(() => {
-            //     this.setState({splited: true});
-            // }, 0);
         }
     }
 
@@ -726,8 +723,6 @@ window.makePDF = function (pageTotal, fileName) {
     }).then((canvas) => {
         //! MAKE YOUR PDF
         var pdf = new jsPDF('p', 'pt', 'a4');
-
-        console.log(quotes.clientHeight - 15);
 
         for (var i = 0; i <= pageTotal; i++) {
             //! This is all just html2canvas stuff

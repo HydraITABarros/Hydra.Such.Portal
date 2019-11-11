@@ -22,6 +22,7 @@ import functions from '../../../helpers/functions';
 import _theme from '../../../themes/default';
 import ReactDOM from 'react-dom';
 import Report from './Report';
+import Signature from './Signature';
 import './index.scss';
 
 const {DialogTitle, DialogContent, DialogActions} = ModalLarge;
@@ -32,6 +33,7 @@ var refAux = 0;
 class ModalReport extends Component {
     state = {
         open: false,
+        reportMode: true,
         selectedEquipments: [],
         report: [],
         refsHeader: [],
@@ -103,7 +105,7 @@ class ModalReport extends Component {
                 });
             }
         }
-        console.log('selectedEquipments', this.state.selectedEquipments)
+
     }
 
     render() {
@@ -143,7 +145,8 @@ class ModalReport extends Component {
                     <hr/>
 
                     <Grid container direction="row" justify="space-between" alignitems="top" spacing={0}
-                          maxwidth={'100%'} margin={0}>
+                          maxwidth={'100%'} margin={0}
+                          className={"modal-container"}>
                         <Grid item xs={12} md={4} lg={3} style={{borderBottom: '1px solid #E4E7EB'}}>
                             <DialogContent>
                                 <div className="col-xs-10 p-l-0 p-r-0">
@@ -154,46 +157,61 @@ class ModalReport extends Component {
                                 </div>
                                 <div className="clearfix"></div>
                                 {/* <div>debug selected count: {this.state.selectedEquipments.length}</div> */}
-                                {this.props.$equipments && this.props.$equipments.value.map((equipment, i) => {
-                                    return (
-                                        <div key={i} style={{lineHeight: '32px'}}>
-                                            <div className="w-30 v-a-m">
-                                                <CheckBox id={"report-checkbox-" + i}
-                                                          className="p-t-0 p-l-0 p-r-0 p-b-0"
-                                                          checked={equipment.checked}
-                                                          onChange={(event) => {
+                                {this.state.reportMode ?
 
-                                                              this.resetRefs();
+                                    this.props.$equipments && this.props.$equipments.value.map((equipment, i) => {
+                                        return (
+                                            <div key={i} style={{lineHeight: '32px'}}>
+                                                <div className="w-30 v-a-m">
+                                                    <CheckBox id={"report-checkbox-" + i}
+                                                              className="p-t-0 p-l-0 p-r-0 p-b-0"
+                                                              checked={equipment.checked}
+                                                              onChange={(event) => {
 
-                                                              setTimeout(() => {
-                                                                  this.setState({});
-                                                              }, 10)
+                                                                  this.resetRefs();
 
-                                                              if (event.target.checked) {
-                                                                  this.state.selectedEquipments = this.state.selectedEquipments.filter((selected) => {
-                                                                      return selected.idEquipamento != e.idEquipamento;
-                                                                  });
-                                                                  equipment.checked = true;
-                                                                  this.state.selectedEquipments.push(equipment);
-                                                                  this.setState({selectedEquipments: this.state.selectedEquipments});
-                                                              } else {
-                                                                  this.state.selectedEquipments = this.state.selectedEquipments.filter((selected) => {
-                                                                      return selected.idEquipamento != equipment.idEquipamento;
-                                                                  });
-                                                                  equipment.checked = false;
-                                                                  this.setState({selectedEquipments: this.state.selectedEquipments || []});
-                                                              }
-                                                          }}/>
+                                                                  setTimeout(() => {
+                                                                      this.setState({});
+                                                                  }, 10)
+
+                                                                  if (event.target.checked) {
+                                                                      this.state.selectedEquipments = this.state.selectedEquipments.filter((selected) => {
+                                                                          return selected.idEquipamento != e.idEquipamento;
+                                                                      });
+                                                                      equipment.checked = true;
+                                                                      this.state.selectedEquipments.push(equipment);
+                                                                      this.setState({selectedEquipments: this.state.selectedEquipments});
+                                                                  } else {
+                                                                      this.state.selectedEquipments = this.state.selectedEquipments.filter((selected) => {
+                                                                          return selected.idEquipamento != equipment.idEquipamento;
+                                                                      });
+                                                                      equipment.checked = false;
+                                                                      this.setState({selectedEquipments: this.state.selectedEquipments || []});
+                                                                  }
+                                                              }}/>
+                                                </div>
+                                                <div className="w-auto ws-nowrap to-ellipsis v-a-m">
+                                                    <label htmlFor={"report-checkbox-" + i}>
+                                                        <Text b className="w-20">#{i + 1}</Text> &nbsp;<Text
+                                                        span>{equipment.numEquipamento}</Text>
+                                                    </label>
+                                                </div>
                                             </div>
-                                            <div className="w-auto ws-nowrap to-ellipsis v-a-m">
-                                                <label htmlFor={"report-checkbox-" + i}>
+                                        )
+                                    })
+                                    :
+                                    this.props.$equipments && this.props.$equipments.value.map((equipment, i) => {
+                                        return (
+                                            <div key={i} style={{lineHeight: '32px'}}>
+
+                                                <div className="w-auto ws-nowrap to-ellipsis v-a-m">
                                                     <Text b className="w-20">#{i + 1}</Text> &nbsp;<Text
                                                     span>{equipment.numEquipamento}</Text>
-                                                </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                })}
+                                        )
+                                    })
+                                }
                             </DialogContent>
                         </Grid>
                         <Grid item xs={12} md={8} lg={9}
@@ -206,22 +224,37 @@ class ModalReport extends Component {
                                   textAlign: 'center'
                               }}
                               className={"report__container " + (this.state.selectedEquipments.length > 0 ? "" : "content-disabled")}>
-
-                            <Report
-                                selectedEquipments={this.state.selectedEquipments}
-                                order={this.props.order}
-                                equipmentType={this.props.equipmentType}
-                                $equipments={this.props.$equipments}
-                            />
+                            {this.state.reportMode ?
+                                <Report
+                                    selectedEquipments={this.state.selectedEquipments}
+                                    order={this.props.order}
+                                    equipmentType={this.props.equipmentType}
+                                    $equipments={this.props.$equipments}
+                                /> :
+                                <Signature $equipments={this.props.$equipments} $currentUser={this.props.$currentUser}/>
+                            }
 
                         </Grid>
                     </Grid>
 
                     <hr/>
                     <DialogActions>
-                        <Button onClick={() => this.setState({open: false})} icon={<Icon signature/>}
-                                color="primary">Assinar</Button>
-                        <Button onClick={() => this.setState({open: false})} primary color="primary">Finalizar</Button>
+                        <div className={'flex-grow-1'}>
+                            <Button icon={<Icon download/>}
+                                    className={"box-shadow-none p-l-10 p-r-10 color-primary-dark"}></Button>
+                        </div>
+                        {this.state.reportMode &&
+                        <React.Fragment>
+                            <Button onClick={() => this.setState({reportMode: false})} icon={<Icon signature/>}
+                                    color="primary">Assinar</Button>
+                        </React.Fragment>
+                        }
+                        {!this.state.reportMode &&
+                        <Button link onClick={() => this.setState({reportMode: true})}
+                                className={"text-decoration-none"} icon={<Icon voltar/>} link>Voltar</Button>
+                        }
+                        <Button onClick={() => this.setState({open: false})} primary
+                                color="primary" className={'m-l-15'}>Fechar</Button>
                     </DialogActions>
                 </div>
             } open={this.state.open}/>
@@ -238,8 +271,6 @@ window.makePDF = function (pageTotal, fileName) {
     }).then((canvas) => {
         //! MAKE YOUR PDF
         var pdf = new jsPDF('p', 'pt', 'a4');
-
-        console.log(quotes.clientHeight - 15);
 
         for (var i = 0; i <= pageTotal; i++) {
             //! This is all just html2canvas stuff
