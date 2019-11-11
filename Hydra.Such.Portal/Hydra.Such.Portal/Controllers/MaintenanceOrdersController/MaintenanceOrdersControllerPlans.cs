@@ -379,8 +379,9 @@ namespace Hydra.Such.Portal.Controllers
 				equipments,
 				planMaintenance,
 				planQuality,
-				planQuantity
-			});
+				planQuantity,
+                currentUser = evolutionLoggedUser
+            });
 		}
 	}
 }
