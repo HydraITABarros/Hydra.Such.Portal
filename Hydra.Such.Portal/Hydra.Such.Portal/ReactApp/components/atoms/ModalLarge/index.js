@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css, theme } from 'styled-components';
+import styled, {css, theme} from 'styled-components';
 // import { Text, Button, Icon } from 'components';
 import Text from '../Text';
 import Button from '../Button';
@@ -40,61 +40,61 @@ const dialog = css`
 `
 const Dialog = styled(MuiDialog)`${dialog}`;
 
-const Action = ({ ...props }) => {
-	return <ActionDiv {...props}>{props.children}</ActionDiv>
+const Action = ({...props}) => {
+    return <ActionDiv {...props}>{props.children}</ActionDiv>
 }
 
 class ModalLarge extends React.Component {
-	state = {
-		open: false,
-	}
+    state = {
+        open: false,
+    }
 
-	constructor(props) {
-		super(props);
-		this.handleClickOpen = this.handleClickOpen.bind(this);
-	}
+    constructor(props) {
+        super(props);
+        this.handleClickOpen = this.handleClickOpen.bind(this);
+    }
 
-	handleClickOpen = () => {
-		if (this.props.action.props.disabled) {
-			return;
-		}
-		this.setState({
-			open: true,
-		}, () => {
-			this.props.onOpen ? this.props.onOpen() : '';
-		});
-	};
+    handleClickOpen = () => {
+        if (this.props.action.props.disabled) {
+            return;
+        }
+        this.setState({
+            open: true,
+        }, () => {
+            this.props.onOpen ? this.props.onOpen() : '';
+        });
+    };
 
-	handleClose = () => {
-		this.setState({ open: false }, () => {
-			this.props.onClose ? this.props.onClose() : '';
-		});
-	};
+    handleClose = () => {
+        this.setState({open: false}, () => {
+            this.props.onClose ? this.props.onClose() : '';
+        });
+    };
 
-	componentWillReceiveProps(props) {
-		if (this.state.open != props.open) {
-			this.setState({ open: props.open });
-		}
-	}
+    componentWillReceiveProps(props) {
+        if (this.state.open != props.open) {
+            this.setState({open: props.open});
+        }
+    }
 
-	render() {
-		return (
-			<span>
-				<Action onClick={this.handleClickOpen} >
+    render() {
+        return (
+            <span>
+				<Action onClick={this.handleClickOpen}>
 					{this.props.action}
 				</Action>
 				<Dialog onClose={this.handleClose}
-					aria-labelledby="customized-dialog-title"
-					open={this.props.open || this.state.open}
-					fullWidth={true}
-					maxWidth={'lg'}>
-					<CloseIcon iconSolo onClick={this.handleClose}><Icon decline /></CloseIcon>
-					{this.props.children}
+                        aria-labelledby="customized-dialog-title"
+                        open={this.props.open || this.state.open}
+                        fullWidth={true}
+                        maxWidth={'lg'}>
+					<CloseIcon iconSolo onClick={this.handleClose}><Icon decline/></CloseIcon>
+                    {this.props.children}
 				</Dialog>
 			</span>
 
-		);
-	}
+        );
+    }
 }
 
 const styles = css`&& {
@@ -107,7 +107,7 @@ const styles = css`&& {
     }
     
     &[class*="MuiDialogActions-root"]{
-        padding: 16px 35px 40px 35px;
+        padding: 20px 35px 35px 35px;
         margin: 0;
     }
 }
