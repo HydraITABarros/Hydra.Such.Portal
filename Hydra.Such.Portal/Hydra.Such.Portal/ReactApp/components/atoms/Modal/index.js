@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css, theme } from 'styled-components';
+import styled, {css, theme} from 'styled-components';
 // import { Text, Button, Icon } from 'components';
 import Text from '../Text';
 import Button from '../Button';
@@ -42,59 +42,62 @@ const dialog = css`
 `
 const Dialog = styled(MuiDialog)`${dialog}`;
 
-const Action = ({ ...props }) => {
-	return <ActionDiv {...props}>{props.children}</ActionDiv>
+const Action = ({...props}) => {
+    return <ActionDiv {...props}>{props.children}</ActionDiv>
 }
 
 class Modal extends React.Component {
-	state = {
-		open: false,
-	}
+    state = {
+        open: false,
+    }
 
-	constructor(props) {
-		super(props);
-		this.handleClickOpen = this.handleClickOpen.bind(this);
-	}
+    constructor(props) {
+        super(props);
+        this.handleClickOpen = this.handleClickOpen.bind(this);
+    }
 
-	handleClickOpen = () => {
+    handleClickOpen = () => {
 
-		this.setState({
-			open: true,
-		}, () => {
-			this.props.onOpen ? this.props.onOpen() : '';
-		});
-	};
+        this.setState({
+            open: true,
+        }, () => {
+            this.props.onOpen ? this.props.onOpen() : '';
+        });
+    };
 
-	handleClose = () => {
-		this.setState({ open: false }, () => {
-			this.props.onClose ? this.props.onClose() : '';
-		});
-	};
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.open !== this.state.open) {
+    handleClose = () => {
+        this.setState({open: false}, () => {
+            this.props.onClose ? this.props.onClose() : '';
+        });
+    };
 
-			this.setState({ open: nextProps.open });
-		}
-	}
-	render() {
-		var containerStyle = { display: 'inline-block' };
-		if (this.props.containerStyle) {
-			containerStyle = this.props.containerStyle;
-		}
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.open !== this.state.open) {
 
-		return (
-			<div style={containerStyle}>
-				<Action onClick={this.handleClickOpen} >
-					{this.props.action}
-				</Action>
-				<Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.props.open || this.state.open} >
-					<CloseIcon iconSolo onClick={this.handleClose}><Icon decline /></CloseIcon>
-					{this.props.children}
-				</Dialog>
-			</div>
+            this.setState({open: nextProps.open});
+        }
+    }
 
-		);
-	}
+    render() {
+        var containerStyle = {display: 'inline-block'};
+        if (this.props.containerStyle) {
+            containerStyle = this.props.containerStyle;
+        }
+
+        return (
+            <div style={containerStyle}>
+                <Action onClick={this.handleClickOpen}>
+                    {this.props.action}
+                </Action>
+                <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title"
+                        open={this.props.open || this.state.open}>
+                    <CloseIcon iconSolo onClick={this.handleClose}><Icon decline/></CloseIcon>
+                    {this.props.children}
+                </Dialog>
+            </div>
+
+        );
+    }
 }
 
 const styles = css`&& {
@@ -107,7 +110,7 @@ const styles = css`&& {
     }
     
     &[class*="MuiDialogActions-root"]{
-        padding: 16px 35px 35px 35px;
+        padding: 20px 35px 35px 35px;
         margin: 0;
     }
 }
