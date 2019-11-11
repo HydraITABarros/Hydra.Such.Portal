@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { Text as eText, Icon, Wrapper, Spacer, Button, Avatars, Select, MenuItem, Menu } from 'components';
+import {Text as eText, Icon, Wrapper, Spacer, Button, Avatars, Select, MenuItem, Menu} from 'components';
 import Functions from '../../helpers/functions';
 import MuiGrid from '@material-ui/core/Grid';
-import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { createMuiTheme } from '@material-ui/core/styles';
+import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
+import {createMuiTheme} from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
 import functions from '../../helpers/functions';
 import mOptions from './modalOptions';
 import mEquipments from './modalEquipments';
@@ -86,282 +86,320 @@ const CustomIcon = styled(Icon)` && {
 }`;
 
 const avatarColors = [
-	"#990000",
-	"#33DDEE",
-	"#5533DD",
-	"#339900",
-	"#cc00cc"
+    "#990000",
+    "#33DDEE",
+    "#5533DD",
+    "#339900",
+    "#cc00cc"
 ];
 
 class HTitle extends Component {
-	state = {
-		isLoading: true,
-		title: null,
-		isModalReportOpen: false
-	}
+    state = {
+        isLoading: true,
+        title: null,
+        isModalReportOpen: false
+    }
 
-	constructor(props) {
-		super(props);
-		this.state = { ...props };
-	}
+    constructor(props) {
+        super(props);
+        this.state = {...props};
+    }
 
-	componentDidUpdate(props) {
-		var newState = {};
+    componentDidUpdate(props) {
+        var newState = {};
 
-		if (props.title !== this.state.title) {
-			newState.title = props.title;
-		}
+        if (props.title !== this.state.title) {
+            newState.title = props.title;
+        }
 
-		if (props.order !== this.props.order) {
-			return true;
-		}
+        if (props.order !== this.props.order) {
+            return true;
+        }
 
-		if (Object.keys(newState).length > 0) {
-			this.setState(newState, () => {/* console.log(this.state)*/ });
-		}
-	}
-	componentDidMount() {
-		typeof this.props.onRef == 'function' ? this.props.onRef(this) : '';
-	}
+        if (Object.keys(newState).length > 0) {
+            this.setState(newState, () => {/* console.log(this.state)*/
+            });
+        }
+    }
 
-	componentWillUnmount() {
-		typeof this.props.onRef == 'function' ? this.props.onRef(undefined) : '';
-	}
+    componentDidMount() {
+        typeof this.props.onRef == 'function' ? this.props.onRef(this) : '';
+    }
 
-	//const[state, setState] = React.useState({});
-	render() {
-		var completed = false;
-		if (this.props.$equipments) {
-			this.props.$equipments.value.map((e) => {
-				if (e.$estadoFinal.value > 0) {
-					completed = true;
-					return;
-				}
-				completed = false;
-			});
-		}
-		completed = true;
-		ModalReport.open = ModalReport.open || false;
-		return (
-			<RootTitle width="100%" className={this.props.className}>
-				<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>
-					<Grid item xs={12} sm={6} md={6} lg={7} padding="15px">
-						<Title h1 data-tip={this.state.title} >{this.state.title}</Title>
-					</Grid>
-					<Grid item xs={12} sm={6} md={6} lg={5} padding="15px">
-						<div style={{ textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left' }}>
-							<ModalOptions >
-								<Button icon={<Icon options />}
-									style={{ lineHeight: '14px', verticalAlign: 'middle', padding: 0, width: '40px', minWidth: '40px', textAlign: 'center', marginRight: '15px' }}
-									disabled
-								></Button>
-							</ModalOptions>
+    componentWillUnmount() {
+        typeof this.props.onRef == 'function' ? this.props.onRef(undefined) : '';
+    }
 
-							<Menu
-								containerStyle={{ marginRight: '15px', display: 'inline-block' }}
-								action={
-									<Button disabled={!completed}
-										iconPrimary={<Icon report />}
-										onClick={() => {
-											//window.location.href = window.location.origin + '/images/certificados.pdf';
-											//this.props.history.push(`/images/certificado.pdf`);
-										}}
-									> Relatórios <Icon arrow-down style={{ lineHeight: '14px', verticalAlign: 'middle' }} />
-									</Button>
-								}
-							>
-								<MenuItem onClick={() => {
-									this.state.isModalReportOpen = true;
-									this.setState({});
-								}}>
-									Relatório de Manutenção
-								</MenuItem>
+    //const[state, setState] = React.useState({});
+    render() {
+        var completed = false;
+        if (this.props.$equipments) {
+            this.props.$equipments.value.map((e) => {
+                if (e.$estadoFinal.value > 0) {
+                    completed = true;
+                    return;
+                }
+                completed = false;
+            });
+        }
+        completed = true;
+        ModalReport.open = ModalReport.open || false;
+        return (
+            <RootTitle width="100%" className={this.props.className}>
+                <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
+                      maxwidth={'100%'} margin={0}>
+                    <Grid item xs={12} sm={6} md={6} lg={7} padding="15px">
+                        <Title h1 data-tip={this.state.title}>{this.state.title}</Title>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={6} lg={5} padding="15px">
+                        <div style={{textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left'}}>
+                            <ModalOptions>
+                                <Button icon={<Icon options/>}
+                                        style={{
+                                            lineHeight: '14px',
+                                            verticalAlign: 'middle',
+                                            padding: 0,
+                                            width: '40px',
+                                            minWidth: '40px',
+                                            textAlign: 'center',
+                                            marginRight: '15px'
+                                        }}
+                                        disabled
+                                ></Button>
+                            </ModalOptions>
 
-								<MenuItem onClick={() => { }}>
-									Relatório de Conformidade
-								</MenuItem>
-							</Menu>
+                            <Menu
+                                containerStyle={{marginRight: '15px', display: 'inline-block'}}
+                                action={
+                                    <Button disabled={!completed}
+                                            iconPrimary={<Icon report/>}
+                                            onClick={() => {
+                                                //window.location.href = window.location.origin + '/images/certificados.pdf';
+                                                //this.props.history.push(`/images/certificado.pdf`);
+                                            }}
+                                    > Relatórios <Icon arrow-down
+                                                       style={{lineHeight: '14px', verticalAlign: 'middle'}}/>
+                                    </Button>
+                                }
+                            >
+                                <MenuItem onClick={() => {
+                                    this.state.isModalReportOpen = true;
+                                    this.setState({});
+                                }}>
+                                    Relatório de Manutenção
+                                </MenuItem>
 
-							<ModalReport
-								open={this.state.isModalReportOpen || false}
-								order={this.props.order}
-								equipmentType={this.props.title}
-								$equipments={this.props.$equipments}
-								onClose={() => { item.open = false; this.setState({ toUpdate: this.state.toUpdate + 1 }); }}>
-							</ModalReport>
+                                <MenuItem onClick={() => {
+                                }} className={"disabled"}>
+                                    Relatório de Conformidade
+                                </MenuItem>
+                            </Menu>
 
-							<ModalAssinatura equipmentType={this.props.title} $equipments={this.props.$equipments}>
-								<Button
-									disabled={!completed}
-									icon={<Icon signature />}>Assinar</Button>
-							</ModalAssinatura>
+                            <ModalReport
+                                open={this.state.isModalReportOpen || false}
+                                order={this.props.order}
+                                equipmentType={this.props.title}
+                                $equipments={this.props.$equipments}
+                                onClose={() => {
+                                    //item.open = false;
+                                    this.setState({toUpdate: this.state.toUpdate + 1});
+                                }}>
+                            </ModalReport>
 
-						</div>
-					</Grid>
-					<Grid item xs={12} >
-						<Spacer height="5px" />
-						<Hidden smUp>
-							<Spacer height="15px" />
-						</Hidden>
-					</Grid>
-				</Grid>
-			</RootTitle>
-		)
-	}
+                            {/*<ModalAssinatura*/}
+                            {/*    equipmentType={this.props.title}*/}
+                            {/*    $equipments={this.props.$equipments}*/}
+                            {/*    $currentUser={this.props.$currentUser}*/}
+                            {/*>*/}
+                            {/*    <Button*/}
+                            {/*        disabled={!completed}*/}
+                            {/*        icon={<Icon signature/>}>Assinar</Button>*/}
+                            {/*</ModalAssinatura>*/}
+
+                        </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Spacer height="5px"/>
+                        <Hidden smUp>
+                            <Spacer height="15px"/>
+                        </Hidden>
+                    </Grid>
+                </Grid>
+            </RootTitle>
+        )
+    }
 };
 
 class HDescription extends Component {
-	state = {
-		isLoading: true,
-		service: null,
-		room: null,
-		equipments: [],
-		equipmentsCount: 0,
-	}
+    state = {
+        isLoading: true,
+        service: null,
+        room: null,
+        equipments: [],
+        equipmentsCount: 0,
+    }
 
-	constructor(props) {
-		super(props);
-		this.state = { ...props };
-	}
+    constructor(props) {
+        super(props);
+        this.state = {...props};
+    }
 
-	componentDidUpdate(props) {
-		var newState = {};
+    componentDidUpdate(props) {
+        var newState = {};
 
-		if (props.isLoading !== this.state.isLoading) {
-			newState.isLoading = props.isLoading;
-		}
-		if (props.orderId !== this.state.orderId) {
-			newState.orderId = props.orderId;
-		}
-		if (props.order !== this.state.order) {
-			newState.order = props.order;
-		}
-		if (props.service !== this.state.service) {
-			newState.service = props.service;
-		}
-		if (props.room !== this.state.room) {
-			newState.room = props.room;
-		}
-		if (props.equipments !== this.state.equipments) {
-			newState.equipments = props.equipments;
-		}
-		if (props.$equipments !== this.state.$equipments) {
-			newState.$equipments = props.$equipments;
-		}
-		if (props.equipmentsCount !== this.state.equipmentsCount) {
-			newState.equipmentsCount = props.equipmentsCount;
-		}
-		if (props.$equipmentsCount !== this.state.$equipmentsCount) {
-			newState.$equipmentsCount = props.$equipmentsCount;
-		}
-		if (Object.keys(newState).length > 0) {
-			this.setState(newState, () => {/*console.log(this.state)*/ });
-		}
-	}
+        if (props.isLoading !== this.state.isLoading) {
+            newState.isLoading = props.isLoading;
+        }
+        if (props.orderId !== this.state.orderId) {
+            newState.orderId = props.orderId;
+        }
+        if (props.order !== this.state.order) {
+            newState.order = props.order;
+        }
+        if (props.service !== this.state.service) {
+            newState.service = props.service;
+        }
+        if (props.room !== this.state.room) {
+            newState.room = props.room;
+        }
+        if (props.equipments !== this.state.equipments) {
+            newState.equipments = props.equipments;
+        }
+        if (props.$equipments !== this.state.$equipments) {
+            newState.$equipments = props.$equipments;
+        }
+        if (props.equipmentsCount !== this.state.equipmentsCount) {
+            newState.equipmentsCount = props.equipmentsCount;
+        }
+        if (props.$equipmentsCount !== this.state.$equipmentsCount) {
+            newState.$equipmentsCount = props.$equipmentsCount;
+        }
+        if (Object.keys(newState).length > 0) {
+            this.setState(newState, () => {/*console.log(this.state)*/
+            });
+        }
+    }
 
-	//const[state, setState] = React.useState({});
-	render() {
-		return (
-			<RootDescription width="100%" >
-				<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>
-					<Grid item xs={12} sm={6} md={5} padding="0">
-						<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0} >
-							<Grid item xs={12} md={2} ></Grid>
-							<Grid item xs={12} md={10} padding="0">
-								<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0} style={{ lineHeight: '32px' }}>
-									<Grid item xs={3} sm={4} md={3} >
-										{this.state.room && <Text span data-tip={'Piso, Sala'}>Piso, Sala</Text>}
-									</Grid>
-									<Grid item xs={9} sm={8} md={9} >
-										{this.state.room && <Text b data-tip={this.state.room}>{this.state.room}</Text>}
-									</Grid>
-									<Grid item xs={4} sm={3} >
-										<Text span data-tip={'Serviço'}>Serviço</Text>
-									</Grid>
-									<Grid item xs={8} sm={9} >
-										<Text b data-tip={this.state.service}>{this.state.service}</Text>
-									</Grid>
+    //const[state, setState] = React.useState({});
+    render() {
+        return (
+            <RootDescription width="100%">
+                <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
+                      maxwidth={'100%'} margin={0}>
+                    <Grid item xs={12} sm={6} md={5} padding="0">
+                        <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
+                              maxwidth={'100%'} margin={0}>
+                            <Grid item xs={12} md={2}></Grid>
+                            <Grid item xs={12} md={10} padding="0">
+                                <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
+                                      maxwidth={'100%'} margin={0} style={{lineHeight: '32px'}}>
+                                    <Grid item xs={3} sm={4} md={3}>
+                                        {this.state.room && <Text span data-tip={'Piso, Sala'}>Piso, Sala</Text>}
+                                    </Grid>
+                                    <Grid item xs={9} sm={8} md={9}>
+                                        {this.state.room && <Text b data-tip={this.state.room}>{this.state.room}</Text>}
+                                    </Grid>
+                                    <Grid item xs={4} sm={3}>
+                                        <Text span data-tip={'Serviço'}>Serviço</Text>
+                                    </Grid>
+                                    <Grid item xs={8} sm={9}>
+                                        <Text b data-tip={this.state.service}>{this.state.service}</Text>
+                                    </Grid>
 
-									<Grid item xs={4} sm={3} >
-										<Text span data-tip={'Tipo tarefa'}>Tipo tarefa</Text>
-									</Grid>
-									<Grid item xs={8} sm={9} >
-										<span style={{ color: this.props.theme.palette.primary.default }}>
-											<Icon eye />&nbsp;&nbsp;&nbsp;<Icon tool />&nbsp;&nbsp;&nbsp;<Icon meter />&nbsp;&nbsp;&nbsp;<Icon material />
+                                    <Grid item xs={4} sm={3}>
+                                        <Text span data-tip={'Tipo tarefa'}>Tipo tarefa</Text>
+                                    </Grid>
+                                    <Grid item xs={8} sm={9}>
+										<span style={{color: this.props.theme.palette.primary.default}}>
+											<Icon eye/>&nbsp;&nbsp;&nbsp;<Icon tool/>&nbsp;&nbsp;&nbsp;<Icon
+                                            meter/>&nbsp;&nbsp;&nbsp;<Icon material/>
 										</span>
-									</Grid>
-									<Grid item xs={12} >
-										<Spacer height="10px" />
-									</Grid>
-									<Grid container >
-										<Grid item xs={4} sm={3} >
-											<Spacer height="7px" />
-											<Text span data-tip={'Técnicos'}>Técnicos</Text>
-										</Grid>
-										<Grid item xs={8} sm={9} >
-											{this.state.order && this.state.order.technicals.map((_item, i) => (<Avatars.Avatars key={i} letter color={avatarColors[i]} data-tip={_item.nome} >{functions.getInitials(_item.nome)}</Avatars.Avatars>))}
-										</Grid>
-									</Grid>
-									<Grid item xs={12} >
-										<Spacer height="20px" />
-									</Grid>
-								</Grid>
-							</Grid>
-						</Grid>
-					</Grid>
-					<Hidden lgDown>
-						<Grid item xs={12} md={1} ></Grid>
-					</Hidden>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Spacer height="10px"/>
+                                    </Grid>
+                                    <Grid container>
+                                        <Grid item xs={4} sm={3}>
+                                            <Spacer height="7px"/>
+                                            <Text span data-tip={'Técnicos'}>Técnicos</Text>
+                                        </Grid>
+                                        <Grid item xs={8} sm={9}>
+                                            {this.state.order && this.state.order.technicals.map((_item, i) => (
+                                                <Avatars.Avatars key={i} letter color={avatarColors[i]}
+                                                                 data-tip={_item.nome}>{functions.getInitials(_item.nome)}</Avatars.Avatars>))}
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Spacer height="20px"/>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Hidden lgDown>
+                        <Grid item xs={12} md={1}></Grid>
+                    </Hidden>
 
-					<Grid item xs={12} sm={6} md={5} padding="0" >
-						<Grid container direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0} >
-							<Grid item xs={3} ><Text label data-tip={'Marca'}>#&nbsp;&nbsp;Marca</Text></Grid>
-							<Grid item xs={3} ><Text label data-tip={'Modelo'}>Modelo</Text></Grid>
-							<Grid item xs={3} ><Text label data-tip={'Nº Equip.'}>Nº Equip.</Text></Grid>
-							<Grid item xs={3} ><Text label data-tip={'Nº Série'}>Nº Série</Text></Grid>
-							{this.state.equipments.slice(0, 5).map((item, index) => {
-								return (<Grid container key={index} direction="row" justify="space-between" alignitems="middle" spacing={0} maxwidth={'100%'} margin={0} >
-									<Grid item xs={3} ><Text span data-tip={item.marcaText}>{index + 1}&nbsp;&nbsp;{item.marcaText}</Text></Grid>
-									<Grid item xs={3} ><Text span data-tip={item.modeloText}>{item.modeloText}</Text></Grid>
-									<Grid item xs={3} ><Text span data-tip={item.numEquipamento}>{item.numEquipamento}</Text></Grid>
-									<Grid item xs={3} ><Text span data-tip={item.numSerie}>{item.numSerie}</Text></Grid>
-								</Grid>)
-							})}
+                    <Grid item xs={12} sm={6} md={5} padding="0">
+                        <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
+                              maxwidth={'100%'} margin={0}>
+                            <Grid item xs={3}><Text label data-tip={'Marca'}>#&nbsp;&nbsp;Marca</Text></Grid>
+                            <Grid item xs={3}><Text label data-tip={'Modelo'}>Modelo</Text></Grid>
+                            <Grid item xs={3}><Text label data-tip={'Nº Equip.'}>Nº Equip.</Text></Grid>
+                            <Grid item xs={3}><Text label data-tip={'Nº Série'}>Nº Série</Text></Grid>
+                            {this.state.equipments.slice(0, 5).map((item, index) => {
+                                return (<Grid container key={index} direction="row" justify="space-between"
+                                              alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>
+                                    <Grid item xs={3}><Text span
+                                                            data-tip={item.marcaText}>{index + 1}&nbsp;&nbsp;{item.marcaText}</Text></Grid>
+                                    <Grid item xs={3}><Text span
+                                                            data-tip={item.modeloText}>{item.modeloText}</Text></Grid>
+                                    <Grid item xs={3}><Text span
+                                                            data-tip={item.numEquipamento}>{item.numEquipamento}</Text></Grid>
+                                    <Grid item xs={3}><Text span data-tip={item.numSerie}>{item.numSerie}</Text></Grid>
+                                </Grid>)
+                            })}
 
-							<Grid item xs={7} >
-								{this.state.equipments.length > 5 &&
-									<span>+
-										<ModalEquipments $equipmentsCount={this.state.$equipmentsCount} $equipments={this.state.$equipments} title={this.props.title} categoryId={this.props.categoryId} orderId={this.props.orderId} onChange={this.props.onEquipmentsChange}>
-											<Button link style={{ cursor: 'pointer' }}>
+                            <Grid item xs={7}>
+                                {this.state.equipments.length > 5 &&
+                                <span>+
+										<ModalEquipments $equipmentsCount={this.state.$equipmentsCount}
+                                                         $equipments={this.state.$equipments} title={this.props.title}
+                                                         categoryId={this.props.categoryId} orderId={this.props.orderId}
+                                                         onChange={this.props.onEquipmentsChange}>
+											<Button link style={{cursor: 'pointer'}}>
 												{this.state.equipments.length > 5 && (this.state.equipments.length - (this.state.equipments.slice(0, 5).length))}
 											</Button>
 										</ModalEquipments>
-										&nbsp;&nbsp;
+                                    &nbsp;&nbsp;
 									</span>
-								}
-								<ModalEquipments $equipmentsCount={this.state.$equipmentsCount} $equipments={this.state.$equipments} title={this.props.title} categoryId={this.props.categoryId} orderId={this.props.orderId} onChange={this.props.onEquipmentsChange}>
-									<Button link style={{ cursor: 'pointer' }}>
-										Adicionar Equip.
-									</Button>
-								</ModalEquipments>
-							</Grid>
-							<Grid item xs={5} ></Grid>
+                                }
+                                <ModalEquipments $equipmentsCount={this.state.$equipmentsCount}
+                                                 $equipments={this.state.$equipments} title={this.props.title}
+                                                 categoryId={this.props.categoryId} orderId={this.props.orderId}
+                                                 onChange={this.props.onEquipmentsChange}>
+                                    <Button link style={{cursor: 'pointer'}}>
+                                        Adicionar Equip.
+                                    </Button>
+                                </ModalEquipments>
+                            </Grid>
+                            <Grid item xs={5}></Grid>
 
-						</Grid>
-					</Grid>
-					<Grid item xs={12} md={1} ></Grid>
-				</Grid>
-				<Spacer height={'24px'} />
-			</RootDescription>
-		)
-	}
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12} md={1}></Grid>
+                </Grid>
+                <Spacer height={'24px'}/>
+            </RootDescription>
+        )
+    }
 };
 const HeaderTitle = withRouter(withTheme(HTitle));
 const HeaderDescription = withRouter(withTheme(HDescription));
 
 const Header = {
-	HeaderTitle,
-	HeaderDescription
+    HeaderTitle,
+    HeaderDescription
 }
 
 export default Header;
