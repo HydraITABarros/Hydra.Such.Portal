@@ -59,6 +59,14 @@ $section-value in $colors {
     padding-top: $dim+px;
   }
 
+  .p-l-#{$dim} {
+    padding-left: $dim+px !important;
+  }
+
+  .p-r-#{$dim} {
+    padding-right: $dim+px !important;
+  }
+
 }
 
 @each $dim in (10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, auto) {
@@ -208,4 +216,16 @@ mark,
 
 .inline-block {
   display: inline-block;
+}
+
+.text-decoration-none {
+  text-decoration: none;
+}
+
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+.box-shadow-none {
+  box-shadow: none !important;
 }
