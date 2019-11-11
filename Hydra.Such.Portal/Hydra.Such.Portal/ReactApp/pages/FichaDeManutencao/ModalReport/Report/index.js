@@ -707,6 +707,11 @@ class Report extends Component {
                     refsFooter={this.state.refsFooter}
                     equipmentType={this.props.equipmentType}
                     date={date}
+                    onReportSplit={(totalPages) => {
+                        if (this.props.onReportSplit) {
+                            this.props.onReportSplit(totalPages);
+                        }
+                    }}
                 />
                 }
             </div>

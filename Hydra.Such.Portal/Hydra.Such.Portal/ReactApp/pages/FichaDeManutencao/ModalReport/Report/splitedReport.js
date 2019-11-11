@@ -93,7 +93,6 @@ class SplitedReport extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('IMP', nextProps);
         var state = {};
         state.refsHeader = nextProps.refsHeader;
         state.refsMaintenance = nextProps.refsMaintenance;
@@ -135,7 +134,7 @@ class SplitedReport extends Component {
             report[currentPage - 1][partial].push(
                 <div key={i} dangerouslySetInnerHTML={{__html: ReactDOM.findDOMNode(el).cloneNode(true).innerHTML}}/>
             );
-            console.log(partial, currentHeight);
+
         };
 
         this.state.refsHeader.map((el, i) => {
@@ -157,7 +156,9 @@ class SplitedReport extends Component {
             pushToReport(el, 'footer', i);
         });
 
-        console.log('REPORT 123', report);
+        if (this.props.onReportSplit) {
+            this.props.onReportSplit(report.length);
+        }
 
         return (
             <div className="report__wrapper">

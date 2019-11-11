@@ -1,26 +1,12 @@
 import React, {Component} from 'react';
-import MuiTabs from '@material-ui/core/Tabs';
-import MuiTab from '@material-ui/core/Tab';
-import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
 import {
     Button,
     Text,
     Icon,
-    Circle,
-    Wrapper,
-    OmDatePicker,
     CheckBox,
-    Input,
-    Avatars,
     ModalLarge,
-    Tooltip,
-    Spacer
 } from 'components';
-import AppBar from '@material-ui/core/AppBar';
 import {Grid} from '@material-ui/core';
-import functions from '../../../helpers/functions';
-import _theme from '../../../themes/default';
-import ReactDOM from 'react-dom';
 import Report from './Report';
 import Signature from './Signature';
 import './index.scss';
@@ -28,60 +14,28 @@ import './index.scss';
 const {DialogTitle, DialogContent, DialogActions} = ModalLarge;
 
 var timeout = 0;
-var refAux = 0;
 
 class ModalReport extends Component {
     state = {
         open: false,
         reportMode: true,
-        selectedEquipments: [],
-        report: [],
-        refsHeader: [],
-        refsMaintenance: [],
-        refsQuality: [],
-        refsQuantity: [],
-        refsComments: [],
-        refsFooter: []
+        selectedEquipments: []
     }
 
     constructor(props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
-        this.resetRefs = this.resetRefs.bind(this);
-    }
-
-    resetRefs() {
-        this.state.refsHeader = [];
-        this.state.refsMaintenance = [];
-        this.state.refsQuality = [];
-        this.state.refsQuantity = [];
-        this.state.refsComments = [];
-        this.state.refsFooter = [];
-    }
-
-    handleChange(e, value) {
-        this.setState({});
     }
 
     componentDidMount() {
-        this.resetRefs();
         var selectedEquipments = [];
     }
 
     componentDidUpdate() {
-        refAux = 0;
-        this.resetRefs();
-    }
-
-    buildReportWidthPagination() {
-
     }
 
     componentWillUnmount() {
         this.state.selectedEquipments = [];
-        this.resetRefs();
     }
-
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.open !== this.state.open) {
@@ -108,9 +62,65 @@ class ModalReport extends Component {
 
     }
 
-    render() {
+    makePDF(pageTotal, fileName) {
+        var quotes = document.getElementById('report');
+        quotes.parentNode.scrollTop = 0;
+        pageTotal = pageTotal - 1;
+        html2canvas(quotes, {
+            scale: 1,
+            dpi: 300
+        }).then((canvas) => {
+            //! MAKE YOUR PDF
+            var pdf = new jsPDF('p', 'pt', 'a4');
 
-        refAux = 0;
+            for (var i = 0; i <= pageTotal; i++) {
+                //! This is all just html2canvas stuff
+                var srcImg = canvas;
+                var sX = 0;
+                var sY = 1123 * i; // start 980 pixels down for every new page
+                var sWidth = 794;
+                var sHeight = 1123;
+                var dX = 0;
+                var dY = 0;
+                var dWidth = 794;
+                var dHeight = 1123;
+
+                window.onePageCanvas = document.createElement("canvas");
+                //resolution
+                onePageCanvas.setAttribute('width', 794);
+                onePageCanvas.setAttribute('height', 1123);
+                var ctx = onePageCanvas.getContext('2d');
+                // details on this usage of this function:
+                // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
+                ctx.drawImage(srcImg, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
+
+                // document.body.appendChild(canvas);
+                var canvasDataURL = onePageCanvas.toDataURL("image/png", .5);
+
+                var width = onePageCanvas.width;
+                var height = onePageCanvas.clientHeight;
+
+                //! If we're on anything other than the first page,
+                // add another page
+                if (i > 0) {
+                    //pdf.addPage(612, 791); //8.5" x 11" in pts (in*72)
+                    pdf.addPage(595, 842); //8.5" x 11" in pts (in*72)
+                    //pdf.addPage(794, 1123); //8.5" x 11" in pts (in*72)
+                    //pdf.addPage(1240, 1754); //8.5" x 11" in pts (in*72)
+                }
+                //! now we declare that we're working on that page
+                pdf.setPage(i + 1);
+                //! now we add content to that page!
+                pdf.addImage(canvasDataURL, 'PNG', 0, 0, (width * .75), (height * .75), null, 'SLOW');
+
+            }
+            //! after the for loop is finished running, we save the pdf.
+            pdf.output('dataurlnewwindow');
+            //pdf.save(fileName + '.pdf' || 'File.pdf');
+        });
+    }
+
+    render() {
 
         var order = this.props.order || {};
         var maintenance, quality, quantity;
@@ -147,7 +157,7 @@ class ModalReport extends Component {
                     <Grid container direction="row" justify="space-between" alignitems="top" spacing={0}
                           maxwidth={'100%'} margin={0}
                           className={"modal-container"}>
-                        <Grid item xs={12} md={4} lg={3} style={{borderBottom: '1px solid #E4E7EB'}}>
+                        <Grid item xs={12} md={3} lg={3} style={{borderBottom: '1px solid #E4E7EB'}}>
                             <DialogContent>
                                 <div className="col-xs-10 p-l-0 p-r-0">
                                     <Text b className="ws-nowrap to-ellipsis">{this.props.equipmentType}</Text>
@@ -214,7 +224,7 @@ class ModalReport extends Component {
                                 }
                             </DialogContent>
                         </Grid>
-                        <Grid item xs={12} md={8} lg={9}
+                        <Grid item xs={12} md={9} lg={9}
                               style={{
                                   lineHeight: 0,
                                   overflow: 'auto',
@@ -230,6 +240,9 @@ class ModalReport extends Component {
                                     order={this.props.order}
                                     equipmentType={this.props.equipmentType}
                                     $equipments={this.props.$equipments}
+                                    onReportSplit={(totalPages) => {
+                                        this.state.totalPages = totalPages;
+                                    }}
                                 /> :
                                 <Signature $equipments={this.props.$equipments} $currentUser={this.props.$currentUser}/>
                             }
@@ -239,12 +252,16 @@ class ModalReport extends Component {
 
                     <hr/>
                     <DialogActions>
-                        <div className={'flex-grow-1'}>
-                            <Button icon={<Icon download/>}
-                                    className={"box-shadow-none p-l-10 p-r-10 color-primary-dark"}></Button>
-                        </div>
+
                         {this.state.reportMode &&
                         <React.Fragment>
+                            <div className={'flex-grow-1'}>
+                                <Button icon={<Icon download/>}
+                                        className={"box-shadow-none p-l-10 p-r-10 color-primary-dark"}
+                                        onClick={() => {
+                                            this.makePDF(this.state.totalPages);
+                                        }}></Button>
+                            </div>
                             <Button onClick={() => this.setState({reportMode: false})} icon={<Icon signature/>}
                                     color="primary">Assinar</Button>
                         </React.Fragment>
@@ -260,62 +277,6 @@ class ModalReport extends Component {
             } open={this.state.open}/>
         )
     }
-}
-
-window.makePDF = function (pageTotal, fileName) {
-    var quotes = document.getElementById('report');
-    pageTotal = pageTotal - 1;
-    html2canvas(quotes, {
-        scale: 1,
-        dpi: 300
-    }).then((canvas) => {
-        //! MAKE YOUR PDF
-        var pdf = new jsPDF('p', 'pt', 'a4');
-
-        for (var i = 0; i <= pageTotal; i++) {
-            //! This is all just html2canvas stuff
-            var srcImg = canvas;
-            var sX = 0;
-            var sY = 1123 * i; // start 980 pixels down for every new page
-            var sWidth = 794;
-            var sHeight = 1123;
-            var dX = 0;
-            var dY = 0;
-            var dWidth = 794;
-            var dHeight = 1123;
-
-            window.onePageCanvas = document.createElement("canvas");
-            //resolution
-            onePageCanvas.setAttribute('width', 794);
-            onePageCanvas.setAttribute('height', 1123);
-            var ctx = onePageCanvas.getContext('2d');
-            // details on this usage of this function:
-            // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
-            ctx.drawImage(srcImg, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
-
-            // document.body.appendChild(canvas);
-            var canvasDataURL = onePageCanvas.toDataURL("image/png", .5);
-
-            var width = onePageCanvas.width;
-            var height = onePageCanvas.clientHeight;
-
-            //! If we're on anything other than the first page,
-            // add another page
-            if (i > 0) {
-                //pdf.addPage(612, 791); //8.5" x 11" in pts (in*72)
-                pdf.addPage(595, 842); //8.5" x 11" in pts (in*72)
-                //pdf.addPage(794, 1123); //8.5" x 11" in pts (in*72)
-                //pdf.addPage(1240, 1754); //8.5" x 11" in pts (in*72)
-            }
-            //! now we declare that we're working on that page
-            pdf.setPage(i + 1);
-            //! now we add content to that page!
-            pdf.addImage(canvasDataURL, 'PNG', 0, 0, (width * .75), (height * .75), null, 'SLOW');
-
-        }
-        //! after the for loop is finished running, we save the pdf.
-        pdf.save(fileName + '.pdf' || 'File.pdf');
-    });
 }
 
 export default ModalReport;
