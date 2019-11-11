@@ -5,202 +5,207 @@
 @each $section-key,
 $section-value in $colors {
 
-	@each $color-key,
-	$color-value in $section-value {
+  @each $color-key,
+  $color-value in $section-value {
 
-		.bg-#{$section-key}-#{$color-key} {
-			background-color: $color-value !important;
-		}
+    .bg-#{$section-key}-#{$color-key} {
+      background-color: $color-value !important;
+    }
 
-		.color-#{$section-key}-#{$color-key} {
-			color: $color-value !important;
-		}
-	}
+    .color-#{$section-key}-#{$color-key} {
+      color: $color-value !important;
+    }
+  }
 }
 
 @each $dim in (0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50) {
-	.m-b-#{$dim} {
-		&span {
-			display: inline-block;
-		}
+  .m-b-#{$dim} {
+    &span {
+      display: inline-block;
+    }
 
-		margin-bottom: $dim+px !important;
-	}
+    margin-bottom: $dim+px !important;
+  }
 
-	.m-t-#{$dim} {
-		&span {
-			display: inline-block;
-		}
+  .m-t-#{$dim} {
+    &span {
+      display: inline-block;
+    }
 
-		margin-top: $dim+px !important;
-	}
+    margin-top: $dim+px !important;
+  }
 
-	.m-l-#{$dim} {
-		&span {
-			display: inline-block;
-		}
+  .m-l-#{$dim} {
+    &span {
+      display: inline-block;
+    }
 
-		margin-left: $dim+px !important;
-	}
+    margin-left: $dim+px !important;
+  }
 
-	.m-r-#{$dim} {
-		&span {
-			display: inline-block;
-		}
+  .m-r-#{$dim} {
+    &span {
+      display: inline-block;
+    }
 
-		margin-right: $dim+px !important;
-	}
+    margin-right: $dim+px !important;
+  }
 
-	.p-b-#{$dim} {
-		padding-bottom: $dim+px;
-	}
+  .p-b-#{$dim} {
+    padding-bottom: $dim+px;
+  }
 
-	.p-t-#{$dim} {
-		padding-top: $dim+px;
-	}
+  .p-t-#{$dim} {
+    padding-top: $dim+px;
+  }
 
 }
 
 @each $dim in (10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, auto) {
-	.w-#{$dim} {
-		display: inline-block;
-		width: $dim+px;
-	}
+  .w-#{$dim} {
+    display: inline-block;
+    width: $dim+px;
+  }
 }
 
 @each $dim in (0, 10, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52) {
-	.f-s-#{$dim} {
-		font-size: $dim+px !important;
-	}
+  .f-s-#{$dim} {
+    font-size: $dim+px !important;
+  }
 }
 
 .v-a-m {
-	vertical-align: middle;
+  vertical-align: middle;
 }
 
 .l-h-1 {
-	line-height: 1;
+  line-height: 1;
+}
+
+
+.l-h-0 {
+  line-height: 0;
 }
 
 .content-disabled {
-	position: relative;
+  position: relative;
 
-	&:before {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		opacity: .4;
-		z-index: 1000;
-		background: white;
-		cursor: not-allowed;
-	}
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: .4;
+    z-index: 1000;
+    background: white;
+    cursor: not-allowed;
+  }
 }
 
 .ws-nowrap {
-	white-space: nowrap;
+  white-space: nowrap;
 }
 
 .to-ellipsis {
-	text-overflow: ellipsis;
-	display: inline-block;
-	overflow: hidden;
-	max-width: 100%;
+  text-overflow: ellipsis;
+  display: inline-block;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .text-normal {
-	text-transform: none;
+  text-transform: none;
 }
 
 body {
-	background-color: palette(bg, white);
+  background-color: palette(bg, white);
 }
 
 #app-main {
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 60px;
-	//height: 100%;
-	overflow: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 60px;
+  //height: 100%;
+  overflow: auto;
 }
 
 #basicreactcomponent {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	overflow: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: auto;
 }
 
 .overflow {
-	&--hidden {
-		overflow: hidden !important;
-	}
+  &--hidden {
+    overflow: hidden !important;
+  }
 }
 
 .navbar-container,
 .navbar-header {
-	background-color: palette(secondary, default)
+  background-color: palette(secondary, default)
 }
 
 .app-main {
-	.row {
-		margin: 0;
-	}
+  .row {
+    margin: 0;
+  }
 
-	.wrap {
-		padding: 0;
-	}
+  .wrap {
+    padding: 0;
+  }
 }
 
 @keyframes fade {
-	from {
-		opacity: 1.0;
-	}
+  from {
+    opacity: 1.0;
+  }
 
-	50% {
-		opacity: 0.5;
-	}
+  50% {
+    opacity: 0.5;
+  }
 
-	to {
-		opacity: 1.0;
-	}
+  to {
+    opacity: 1.0;
+  }
 }
 
 @-webkit-keyframes fade {
-	from {
-		opacity: 1.0;
-	}
+  from {
+    opacity: 1.0;
+  }
 
-	50% {
-		opacity: 0.5;
-	}
+  50% {
+    opacity: 0.5;
+  }
 
-	to {
-		opacity: 1.0;
-	}
+  to {
+    opacity: 1.0;
+  }
 }
 
 .blink {
-	animation: fade 1000ms infinite;
-	-webkit-animation: fade 1000ms infinite;
+  animation: fade 1000ms infinite;
+  -webkit-animation: fade 1000ms infinite;
 }
 
 mark,
 .mark {
-	background-color: palette(search, default);
-	padding: 0;
+  background-color: palette(search, default);
+  padding: 0;
 }
 
 .pointer {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .inline-block {
-	display: inline-block;
+  display: inline-block;
 }
