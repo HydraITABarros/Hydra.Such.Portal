@@ -40,7 +40,7 @@ class Signature extends Component {
             <Grid container direction="row" justify="space-between" alignitems="top" spacing={0}
                   maxwidth={'100%'} margin={0} className={'signature'}>
 
-                <Grid item xs={12} md={6} lg={5}
+                <Grid item xs={12} md={6} lg={6} xl={5}
                       className={(this.props.$equipments && this.props.$equipments.value.length < 1) ? "content-disabled" : ""}
                       style={{borderRight: '1px solid #E4E7EB'}}>
                     <DialogContent>
@@ -89,7 +89,7 @@ class Signature extends Component {
 
                     </DialogContent>
                 </Grid>
-                <Grid item xs={12} md={6} lg={5}
+                <Grid item xs={12} md={6} lg={6} xl={5}
                       className={(this.props.$equipments && this.props.$equipments.value.length < 1) ? "content-disabled" : ""}>
                     <DialogContent>
                         <Text h2>2<sup>a</sup> Fase</Text>
@@ -117,7 +117,7 @@ class Signature extends Component {
                         span>Assinatura manual</Text></label>
                     </DialogContent>
                 </Grid>
-                <Grid item xs={12} lg={2}>
+                <Grid item xs={12} lg={0} xl={2}>
                 </Grid>
                 {this.state.clientSignaturePadOpen &&
                 <div className={"signature-pad__wrapper signature-pad__wrapper--open"}>
