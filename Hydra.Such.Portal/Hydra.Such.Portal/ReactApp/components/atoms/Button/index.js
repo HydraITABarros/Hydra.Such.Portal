@@ -61,6 +61,9 @@ const buttonIcon = css`&& {
     &:hover {
         background-color: ${_theme.palette.white};
     }
+    &.Mui-disabled {
+        color: ${_theme.palette.primary.dark};
+    }
     ${'' /* &[disabled] {
     	background-color: ${_theme.palette.white};
 	&:hover {
@@ -84,7 +87,7 @@ const buttonIconPrimary = css`${buttonPrimary} && {
 const Link = styled.a`
     color: ${_theme.palette.primary.default};
     box-shadow: none;
-    padding: ${_theme.padding[8]};
+    padding: ${_theme.padding[0]};
 	cursor: pointer;
     b {
         color: ${_theme.palette.primary.default};
@@ -109,6 +112,11 @@ const buttonRound = css`&& {
     }
     &:hover {
         background: inherit;
+    }
+    &.Mui-disabled {
+        color: ${_theme.palette.primary.dark};
+        cursor: not-allowed;
+        pointer-events: all;
     }
     ${'' /* &[disabled] {
 	    pointer-events: all;
