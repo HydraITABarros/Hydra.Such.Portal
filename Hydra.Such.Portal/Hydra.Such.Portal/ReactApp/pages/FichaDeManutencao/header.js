@@ -203,7 +203,8 @@ class HTitle extends Component {
                                 $currentUser={this.props.$currentUser}
                                 onClose={() => {
                                     //item.open = false;
-                                    this.setState({toUpdate: this.state.toUpdate + 1});
+                                    console.log(123)
+                                    this.setState({toUpdate: this.state.toUpdate + 1, isModalReportOpen: false});
                                 }}>
                             </ModalReport>
 
