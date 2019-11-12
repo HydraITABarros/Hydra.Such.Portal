@@ -1,5 +1,25 @@
 .pivot-table {
-	&__text-field {
-		&& {}
-	}
+  &__text-field {
+
+  }
+
+  .sorting-blocked {
+    &:hover {
+      .MuiTableSortLabel-icon {
+        opacity: 0 !important;
+      }
+    }
+
+    .MuiTableSortLabel-root:hover {
+      .MuiTableSortLabel-icon {
+        opacity: 0 !important;
+      }
+    }
+  }
+
+  .MuiTableSortLabel-root:hover {
+    &:before {
+      opacity: 0 !important;
+    }
+  }
 }
