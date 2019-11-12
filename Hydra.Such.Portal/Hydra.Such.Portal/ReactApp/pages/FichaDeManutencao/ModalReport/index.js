@@ -122,20 +122,6 @@ class ModalReport extends Component {
 
     render() {
 
-        var order = this.props.order || {};
-        var maintenance, quality, quantity;
-        if (this.props.$equipments && this.props.$equipments.value[0]) {
-            maintenance = this.props.$equipments.value[0].planMaintenance;
-            quality = this.props.$equipments.value[0].planQuality;
-            quantity = this.props.$equipments.value[0].planQuantity;
-        }
-
-        var date = (this.state.selectedEquipments[this.state.selectedEquipments.length - 1] &&
-            this.state.selectedEquipments[this.state.selectedEquipments.length - 1].dataRelatorio) &&
-            this.state.selectedEquipments[this.state.selectedEquipments.length - 1].dataRelatorio;
-
-        var maintenanceResponsible = (this.props.order && this.props.order.maintenanceResponsibleObj && this.props.order.maintenanceResponsibleObj.nome);
-        var responsibleEmployee = (this.props.order && this.props.order.responsibleEmployeeObj && this.props.order.responsibleEmployeeObj.nome);
         return (
             <ModalLarge
                 onOpen={() => {
@@ -145,12 +131,22 @@ class ModalReport extends Component {
                     this.setState({open: true});
                 }}
                 onClose={() => {
+                    console.log('close')
                     this.setState({open: false});
+                    if (this.props.onClose) {
+                        this.props.onClose();
+                    }
                 }}
                 action={this.props.children} children={
                 <div className="modal-report">
                     <DialogTitle>
+                        {this.state.reportMode &&
                         <Text h2><Icon report/> Relatório de Manutenção</Text>
+                        }
+                        {!this.state.reportMode &&
+                        <Text h2><Icon report/> Assinar</Text>
+                        }
+
                     </DialogTitle>
                     <hr/>
 
@@ -177,8 +173,6 @@ class ModalReport extends Component {
                                                               className="p-t-0 p-l-0 p-r-0 p-b-0"
                                                               checked={equipment.checked}
                                                               onChange={(event) => {
-
-                                                                  this.resetRefs();
 
                                                                   setTimeout(() => {
                                                                       this.setState({});
@@ -250,7 +244,6 @@ class ModalReport extends Component {
                         </Grid>
                     </Grid>
 
-                    <hr/>
                     <DialogActions>
 
                         {this.state.reportMode &&
@@ -268,7 +261,7 @@ class ModalReport extends Component {
                         }
                         {!this.state.reportMode &&
                         <Button link onClick={() => this.setState({reportMode: true})}
-                                className={"text-decoration-none"} icon={<Icon voltar/>} link>Voltar</Button>
+                                className={"text-decoration-none p-r-25"} icon={<Icon voltar/>} link>Voltar</Button>
                         }
                         <Button onClick={() => this.setState({open: false})} primary
                                 color="primary" className={'m-l-15'}>Fechar</Button>
