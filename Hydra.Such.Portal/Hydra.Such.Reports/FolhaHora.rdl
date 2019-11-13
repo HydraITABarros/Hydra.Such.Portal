@@ -6947,11 +6947,21 @@
   <ReportParameters>
     <ReportParameter Name="FH">
       <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>FH022824</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>FH</Prompt>
       <Hidden>true</Hidden>
     </ReportParameter>
     <ReportParameter Name="Utilizador">
       <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>ARomao@such.pt</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>Utilizador</Prompt>
       <Hidden>true</Hidden>
     </ReportParameter>

@@ -2088,7 +2088,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
                         MaoDeObra.PreçoDeCusto = PrecoVendaRecurso.CustoUnitario;
-                        MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.PrecoUnitario;
+                        MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.CustoUnitario;   //PrecoUnitario; Alterado no dia 13/11/2019 a pedido do Marco Marcelo
                     }
                     else
                     {
@@ -2480,7 +2480,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
                         MaoDeObra.PreçoDeCusto = PrecoVendaRecurso.CustoUnitario;
-                        MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.PrecoUnitario;
+                        MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.CustoUnitario;   //PrecoUnitario; Alterado no dia 13/11/2019 a pedido do Marco Marcelo
                     }
 
                     //CALCULAR PRECO TOTAL
