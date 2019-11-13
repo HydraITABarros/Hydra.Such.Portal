@@ -440,7 +440,9 @@
                                                     <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}" required error-message="Campo obrigatório"></vaadin-text-field>
+                                                    <!-- zpgm.12112019 -->
+                                                    <!--<vaadin-text-field id="nifCliente" name="nifCliente" label="No. Contribuinte" value="{{ data.nifCliente }}" required error-message="Campo obrigatório"></vaadin-text-field>-->
+                                                    <vaadin-text-field id="vatRegistrationNo" name="vatRegistrationNo" label="No. Contribuinte" value="{{ data.vatRegistrationNo }}" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                             </div>
                                             <div class="row break_clear">
@@ -1327,6 +1329,7 @@
                 },
 
                 _update: function () {
+                    debugger;;
 
                     this.data.vatRegistrationNo = this.data.vatRegistrationNo == null ? "" : this.data.vatRegistrationNo;
 
@@ -1344,6 +1347,8 @@
                 },
 
                 _updateGuiaResponse: function (e) {
+                    debugger;;
+
                     if (this.guiaUpdated) {
                         if (this.$.tipoGuia.value == "") {
                             this.data.tipo = 0;
@@ -1413,8 +1418,8 @@
                         this.$.localDescarga.valueText = "";
 
                         this.data.nifCliente = "";
-                        this.$.nifCliente.value = "";
-                        this.$.nifCliente.valueText = "";
+                        //this.$.nifCliente.value = "";
+                        //this.$.nifCliente.valueText = "";
 
                         this.data.telefone = "";
 
@@ -1556,9 +1561,13 @@
 
                         this.data.nifCliente = details.vatRegistrationNo;
                         this.data.vatRegistrationNo = details.vatRegistrationNo;
-                        this.$.nifCliente.value = details.vatRegistrationNo;
-                        this.$.nifCliente.valueText = details.vatRegistrationNo;
-
+                        // zpgm.12112019.b
+                        this.$.vatRegistrationNo.value = details.vatRegistrationNo;
+                        this.$.vatRegistrationNo.valueText = details.vatRegistrationNo;
+                        
+                        //this.$.nifCliente.value = details.vatRegistrationNo;
+                        //this.$.nifCliente.valueText = details.vatRegistrationNo;
+                        // zpgm.12112019.e
 
                         this.data.telefone = details.phoneNo;
 
@@ -1598,7 +1607,7 @@
                     }
                     else {
                         if (this.data != undefined)
-                        _self.$.codEnvio.disabled = this.data.tipo != 0;
+                            _self.$.codEnvio.disabled = this.data.tipo != 0;
 
                         if (this.data.noCliente == "") {
                             this.data.noCliente = "";
@@ -1637,8 +1646,10 @@
 
                         this.data.nifCliente = "";
                         this.data.vatRegistrationNo = "";
-                        this.$.nifCliente.value = "";
-                        this.$.nifCliente.valueText = "";
+                        // zpgm.12112019.b
+                        //this.$.nifCliente.value = "";
+                        //this.$.nifCliente.valueText = "";
+                         // zpgm.12112019.e
 
                         this.data.telefone = "";
 

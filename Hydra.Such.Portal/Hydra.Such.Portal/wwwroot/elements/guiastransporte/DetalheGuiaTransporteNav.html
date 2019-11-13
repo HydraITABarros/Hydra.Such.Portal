@@ -26,6 +26,7 @@
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <dom-module id="x-detailguiatransportenav">
     <template>
@@ -155,7 +156,7 @@
         </iron-ajax>
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-
+            <such-dropdown-menu id="actionsButton" on-value-changed="_menuActionsItemSelected" title=" Funções " items="[[_menuActionsItems]]"></such-dropdown-menu>
             <template is="dom-if" if="{{ _history }}">
                 <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
             </template>
@@ -579,7 +580,15 @@
                     selected: {
                         type: Number,
                         value: 0
+                    },
+                    _menuActionsItems: {
+                        type: Array,
+                        value: [
+                            { value: 1, description: "Forçar Registo AT" },
+                            {value: 2, description: "Anular Guia na AT"}
+                        ],
                     }
+     
                 },
 
                 _openToast: function (message) {
@@ -614,7 +623,7 @@
                 },
 
                 _goBack: function (e) {
-                    window.history.back();
+                    window.location.href = "/GuiasTransporteNav";
                 },
 
                 ready: function () {
@@ -629,14 +638,12 @@
                     if (data.detail.status === 200) {
                         //this._openToast(this.data.noGuiaTransporte);
                         if (this.data.fiscalCommunicationLog.documentCodeId == null || this.data.fiscalCommunicationLog.documentCodeId == "") {
-                            $(this.$.btnRegister).removeClass('hidden');
-
                             //debugger;;
                             // zpgm.16092019_1400.e
                             setTimeout(
                                 function () {
                                     window.location.reload();
-                                }, 60000);
+                                }, 30000);
                             // zpgm.16092019_1400.e
                         }
                     } else {
@@ -645,6 +652,14 @@
                 },
 
                 _registerDocument: function (e) {
+
+                    var fiscalDocCodeId = this.data.fiscalCommunicationLog.documentCodeId;
+
+                    if (fiscalDocCodeId != undefined && fiscalDocCodeId != null && fiscalDocCodeId != "") {
+                        debugger;;
+                        this._openToastError("Guia de Transporte " + this.data.noGuiaTransporte + " já foi registada (" + fiscalDocCodeId + ")");
+                        return;
+                    }
 
                     var ajax_request = this.$.force_registry_guia_ajax;
 
@@ -686,7 +701,7 @@
                     }
 
                     if (this.registryReturnCode === -30) {
-                        this._openToastError(errorMsg + "Falha ao obter o código da AT!");
+                        this._openToastError(errorMsg + "Guia já registada!");
                         return;
                     }
 
@@ -697,6 +712,24 @@
                         return;
                     }
                     
+                },
+
+                _menuActionsItemSelected: function (e) {
+                    debugger;;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    switch (item.value) {
+                        case 1:
+                            this._registerDocument();
+                            //window.alert(item.description);
+                            break;
+                        case 2:
+                            window.alert(item.description);
+                            break;
+                    }
                 },
 
                 _printE: function () {
