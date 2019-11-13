@@ -188,6 +188,9 @@ namespace Hydra.Such.Data.Logic
                         CodPostal = data.CodPostal.Equals(DBNull.Value) ? "" : (string)data.CodPostal,
                         CodEnvio = data.CodEnvio.Equals(DBNull.Value) ? "" : (string)data.CodEnvio,
                         NifCliente = data.VatRegistrationNo.Equals(DBNull.Value) ? "" : (string)data.VatRegistrationNo,
+                        // zpgm.12112019.b
+                        VatRegistrationNo = data.VatRegistrationNo.Equals(DBNull.Value) ? "" : (string)data.VatRegistrationNo,
+                        // zpgm.12112019.e
                         SourceCode = data.SourceCode.Equals(DBNull.Value) ? "" : (string)data.SourceCode,
                         NoRequisicao = data.NoRequisicao.Equals(DBNull.Value) ? "" : (string)data.NoRequisicao,
                         DataGuia = data.DataGuia.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : (DateTime)data.DataGuia,
@@ -922,7 +925,7 @@ namespace Hydra.Such.Data.Logic
                     TipoDescription = guia.TipoDescription,
                     UserObservacoesAdicionai = guia.UserObservacoesAdicionai,
                     Utilizador = guia.Utilizador,
-                    VATRegistrationNo = guia.VATRegistrationNo,
+                    VATRegistrationNo = guia.VatRegistrationNo,
                     Viatura = guia.Viatura
                 };
 

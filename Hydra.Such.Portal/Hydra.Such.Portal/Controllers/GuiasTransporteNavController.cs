@@ -314,8 +314,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UpdateGuia([FromBody] GuiaTransporteNavViewModel data)
         {
             
-            if (data.NifCliente != "" && (data.VATRegistrationNo == null || data.VATRegistrationNo == ""))
-                data.VATRegistrationNo = data.NifCliente;
+            //if (data.NifCliente != "" && (data.VATRegistrationNo == null || data.VATRegistrationNo == ""))
+            //    data.VATRegistrationNo = data.NifCliente;
 
             data.CastDateTimeStringPropertiesToDateTime();
                                           

@@ -86,7 +86,7 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
         public string TipoDescription { get; set; }
         public string UserObservacoesAdicionai { get; set; }
         public string Utilizador { get; set; }
-        public string VATRegistrationNo { get; set; }
+        public string VatRegistrationNo { get; set; }
 
         public string Viatura { get; set; }
 
