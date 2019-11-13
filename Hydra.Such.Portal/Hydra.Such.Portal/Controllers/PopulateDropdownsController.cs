@@ -2531,6 +2531,17 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> result = items.Select(x => new EnumData { Id = x.Key, Value = x.Value }).ToList();
             return Json(result);
         }
+
+        public JsonResult GetNAVCountry()
+        {
+            List<DDMessageString> result = DBNAV2017Clients.GetCountry(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Country
+            }).ToList();
+            return Json(result);
+        }
+
         [HttpPost]
         public JsonResult GetOrders([FromBody] string supplierId)
         {

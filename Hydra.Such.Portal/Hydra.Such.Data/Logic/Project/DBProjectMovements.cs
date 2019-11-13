@@ -316,6 +316,21 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
+        public static List<MovimentosDeProjeto> GetRegisteredDiaryByDate(string ProjectNo, DateTime date)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosDeProjeto.Where(x => x.NºProjeto == ProjectNo && x.Data >= date).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<MovimentosDeProjeto> GetRegisteredDiaryDp(string ProjectNo, string user, bool AllProjs)
         {
             try

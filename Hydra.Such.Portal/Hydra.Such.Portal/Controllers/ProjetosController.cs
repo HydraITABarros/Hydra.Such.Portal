@@ -261,7 +261,8 @@ namespace Hydra.Such.Portal.Controllers
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
                         ObservacoesAutorizarFaturacao = "",
-                        FaturaPrecosIvaIncluido = cProject.FaturaPrecosIvaIncluido
+                        FaturaPrecosIvaIncluido = cProject.FaturaPrecosIvaIncluido,
+                        FechoAutomatico = cProject.FechoAutomatico
                     };
 
                     string TextoFatura = "";
@@ -356,6 +357,17 @@ namespace Hydra.Such.Portal.Controllers
                 result = "É obrigatório inserir o Nº de Projeto.";
             }
 
+            //Se o estado atual for deferente da Base Dados não grava
+            if (data != null && !string.IsNullOrEmpty(data.ProjectNo))
+            {
+                Projetos DBProj = DBProjects.GetById(data.ProjectNo);
+                if (DBProj != null && DBProj.Estado != data.Status)
+                {
+                    result = "Não é possivel guardar o Projeto, atualize a página para oter a última versão.";
+                }
+            }
+
+            //Verificar se existem validadores para o projeto
             if (string.IsNullOrEmpty(result))
             {
                 List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, DateTime.Now);
@@ -365,10 +377,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (ApprovalConfigurations != null && ApprovalConfigurations.Count > 0)
                 {
-                    //Create User ApprovalMovements
                     List<string> UsersToNotify = new List<string>();
-                    //ApprovalConfigurations.ForEach(x =>
-                    //{
                     var approvalConfiguration = ApprovalConfigurations[0];
                     if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                     {
@@ -2178,7 +2187,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (id != null)
                 {
+                    DateTime data = DateTime.Now.AddMonths(-3);
+                    string ano = data.Year.ToString();
+                    string mes = data.Month < 10 ? "0" + data.Month.ToString() : data.Month.ToString();
+                    string dia = data.Day < 10 ? "0" + data.Day.ToString() : data.Day.ToString();
+
                     ViewBag.ProjectNo = id ?? "";
+                    ViewBag.PesquisaDate = ano + "-" + mes + "-" + dia;
                     ViewBag.reportServerURL = _config.ReportServerURL;
                     return View();
                 }
@@ -2194,96 +2209,190 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProjectMovements([FromBody] string ProjectNo)
+        //public JsonResult GetProjectMovements([FromBody] string ProjectNo, string pesquisaData)
+        public JsonResult GetProjectMovements([FromBody] JObject requestParams)
         {
+            string ProjectNo = (string)requestParams.GetValue("projectno");
+            string pesquisaData = (string)requestParams.GetValue("pesquisadata");
+
+
             List<NAVMeasureUnitViewModel> MeasurementUnitList = DBNAV2017MeasureUnit.GetAllMeasureUnit(_config.NAVDatabaseName, _config.NAVCompanyName);
             List<NAVLocationsViewModel> LocationList = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
             List<NAVClientsViewModel> ClientsList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<TiposRefeição> MealList = DBMealTypes.GetAll();
             List<ClientServicesViewModel> AllServiceGroup = DBClientServices.GetAllServiceGroup(string.Empty, true);
+            List<ProjectDiaryViewModel> dp = new List<ProjectDiaryViewModel>();
 
             try
             {
-                List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
+                if (string.IsNullOrEmpty(pesquisaData))
                 {
-                    LineNo = x.NºLinha,
-                    ProjectNo = x.NºProjeto,
-                    Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
-                    MovementType = x.TipoMovimento,
-                    MovementTypeText = x.TipoMovimento != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault() != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault().Value : "" : "",
-                    DocumentNo = x.NºDocumento,
-                    Type = x.Tipo,
-                    TypeText = x.Tipo != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault() != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "" : "",
-                    Code = x.Código,
-                    Description = x.Descrição,
-                    Quantity = x.Quantidade,
-                    MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
-                    LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "",
-                    ProjectContabGroup = x.GrupoContabProjeto,
-                    RegionCode = x.CódigoRegião,
-                    FunctionalAreaCode = x.CódigoÁreaFuncional,
-                    ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
-                    User = x.Utilizador,
-                    UnitCost = x.CustoUnitário,
-                    TotalCost = x.CustoTotal,
-                    UnitPrice = x.PreçoUnitário,
-                    TotalPrice = x.PreçoTotal,
-                    Billable = x.Faturável,
-                    BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
-                    ResidueGuideNo = x.NºGuiaResíduos,
-                    ExternalGuideNo = x.NºGuiaExterna,
-                    InvoiceToClientNo = x.FaturaANºCliente,
-                    RequestNo = x.NºRequisição,
-                    RequestLineNo = x.NºLinhaRequisição,
-                    Driver = x.Motorista,
-                    MealType = x.TipoRefeição,
-                    ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
-                    OriginalDocument = x.DocumentoOriginal,
-                    AdjustedDocument = x.DocumentoCorrigido,
-                    AdjustedPrice = x.AcertoDePreços,
-                    AdjustedPriceText = x.AcertoDePreços.HasValue ? x.AcertoDePreços == true ? "Sim" : "Não" : "Não",
-                    AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
-                    AutorizatedInvoice = x.FaturaçãoAutorizada,
-                    AutorizatedInvoiceText = x.FaturaçãoAutorizada.HasValue ? x.FaturaçãoAutorizada == true ? "Sim" : "Não" : "Não",
-                    AutorizatedInvoice2 = x.FaturaçãoAutorizada2,
-                    AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
-                    AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
-                    ServiceGroupCode = x.CódGrupoServiço,
-                    ServiceGroupCodeDescription = AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "",
-                    ResourceType = x.TipoRecurso,
-                    FolhaHoras = x.NºFolhaHoras,
-                    InternalRequest = x.RequisiçãoInterna,
-                    EmployeeNo = x.NºFuncionário,
-                    QuantityReturned = Convert.ToDecimal(x.QuantidadeDevolvida),
-                    ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
-                    CreateDate = x.DataHoraCriação,
-                    CreateDateText = x.DataHoraCriação.HasValue ? Convert.ToDateTime(x.DataHoraCriação).ToShortDateString() : "",
-                    CreateHourText = x.DataHoraCriação.HasValue ? Convert.ToDateTime(x.DataHoraCriação).ToShortTimeString() : "",
-                    UpdateDate = x.DataHoraModificação,
-                    CreateUser = x.UtilizadorCriação,
-                    UpdateUser = x.UtilizadorModificação,
-                    Registered = x.Registado,
-                    RegisteredText = x.Registado.HasValue ? x.Registado == true ? "Sim" : "Não" : "Não",
-                    Billed = Convert.ToBoolean(x.Faturada),
-                    BilledText = x.Faturada.HasValue ? x.Faturada == true ? "Sim" : "Não" : "Não",
-                    Coin = x.Moeda,
-                    UnitValueToInvoice = x.ValorUnitárioAFaturar,
-                    ServiceClientCode = x.CódServiçoCliente,
-                    ClientRequest = x.CodCliente,
-                    LicensePlate = x.Matricula,
-                    ReadingCode = x.CodigoLer,
-                    Group = x.Grupo,
-                    Operation = x.Operacao,
-                    InvoiceGroup = x.GrupoFatura,
-                    InvoiceGroupDescription = x.GrupoFaturaDescricao,
-                    AuthorizedBy = x.AutorizadoPor,
-                    ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "",
-                    MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "",
-                    Utilizador = User.Identity.Name,
-                    NameDB = _config.NAVDatabaseName,
-                    CompanyName = _config.NAVCompanyName,
-                    Fatura = x.Fatura
-                }).ToList();
+                    dp = DBProjectMovements.GetRegisteredDiary(ProjectNo).Select(x => new ProjectDiaryViewModel()
+                    {
+                        LineNo = x.NºLinha,
+                        ProjectNo = x.NºProjeto,
+                        Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                        MovementType = x.TipoMovimento,
+                        MovementTypeText = x.TipoMovimento != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault() != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault().Value : "" : "",
+                        DocumentNo = x.NºDocumento,
+                        Type = x.Tipo,
+                        TypeText = x.Tipo != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault() != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "" : "",
+                        Code = x.Código,
+                        Description = x.Descrição,
+                        Quantity = x.Quantidade,
+                        MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
+                        LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "",
+                        ProjectContabGroup = x.GrupoContabProjeto,
+                        RegionCode = x.CódigoRegião,
+                        FunctionalAreaCode = x.CódigoÁreaFuncional,
+                        ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                        User = x.Utilizador,
+                        UnitCost = x.CustoUnitário,
+                        TotalCost = x.CustoTotal,
+                        UnitPrice = x.PreçoUnitário,
+                        TotalPrice = x.PreçoTotal,
+                        Billable = x.Faturável,
+                        BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
+                        ResidueGuideNo = x.NºGuiaResíduos,
+                        ExternalGuideNo = x.NºGuiaExterna,
+                        InvoiceToClientNo = x.FaturaANºCliente,
+                        RequestNo = x.NºRequisição,
+                        RequestLineNo = x.NºLinhaRequisição,
+                        Driver = x.Motorista,
+                        MealType = x.TipoRefeição,
+                        ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                        OriginalDocument = x.DocumentoOriginal,
+                        AdjustedDocument = x.DocumentoCorrigido,
+                        AdjustedPrice = x.AcertoDePreços,
+                        AdjustedPriceText = x.AcertoDePreços.HasValue ? x.AcertoDePreços == true ? "Sim" : "Não" : "Não",
+                        AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
+                        AutorizatedInvoice = x.FaturaçãoAutorizada,
+                        AutorizatedInvoiceText = x.FaturaçãoAutorizada.HasValue ? x.FaturaçãoAutorizada == true ? "Sim" : "Não" : "Não",
+                        AutorizatedInvoice2 = x.FaturaçãoAutorizada2,
+                        AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
+                        AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
+                        ServiceGroupCode = x.CódGrupoServiço,
+                        ServiceGroupCodeDescription = AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "",
+                        ResourceType = x.TipoRecurso,
+                        FolhaHoras = x.NºFolhaHoras,
+                        InternalRequest = x.RequisiçãoInterna,
+                        EmployeeNo = x.NºFuncionário,
+                        QuantityReturned = Convert.ToDecimal(x.QuantidadeDevolvida),
+                        ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
+                        CreateDate = x.DataHoraCriação,
+                        CreateDateText = x.DataHoraCriação.HasValue ? Convert.ToDateTime(x.DataHoraCriação).ToShortDateString() : "",
+                        CreateHourText = x.DataHoraCriação.HasValue ? Convert.ToDateTime(x.DataHoraCriação).ToShortTimeString() : "",
+                        UpdateDate = x.DataHoraModificação,
+                        CreateUser = x.UtilizadorCriação,
+                        UpdateUser = x.UtilizadorModificação,
+                        Registered = x.Registado,
+                        RegisteredText = x.Registado.HasValue ? x.Registado == true ? "Sim" : "Não" : "Não",
+                        Billed = Convert.ToBoolean(x.Faturada),
+                        BilledText = x.Faturada.HasValue ? x.Faturada == true ? "Sim" : "Não" : "Não",
+                        Coin = x.Moeda,
+                        UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                        ServiceClientCode = x.CódServiçoCliente,
+                        ClientRequest = x.CodCliente,
+                        LicensePlate = x.Matricula,
+                        ReadingCode = x.CodigoLer,
+                        Group = x.Grupo,
+                        Operation = x.Operacao,
+                        InvoiceGroup = x.GrupoFatura,
+                        InvoiceGroupDescription = x.GrupoFaturaDescricao,
+                        AuthorizedBy = x.AutorizadoPor,
+                        ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "",
+                        MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "",
+                        Utilizador = User.Identity.Name,
+                        NameDB = _config.NAVDatabaseName,
+                        CompanyName = _config.NAVCompanyName,
+                        Fatura = x.Fatura
+                    }).OrderByDescending(x => x.Date).ToList();
+                }
+                else
+                {
+                    DateTime data = Convert.ToDateTime(pesquisaData);
+
+                    dp = DBProjectMovements.GetRegisteredDiaryByDate(ProjectNo, data).Select(x => new ProjectDiaryViewModel()
+                    {
+                        LineNo = x.NºLinha,
+                        ProjectNo = x.NºProjeto,
+                        Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
+                        MovementType = x.TipoMovimento,
+                        MovementTypeText = x.TipoMovimento != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault() != null ? EnumerablesFixed.ProjectDiaryMovements.Where(y => y.Id == x.TipoMovimento).FirstOrDefault().Value : "" : "",
+                        DocumentNo = x.NºDocumento,
+                        Type = x.Tipo,
+                        TypeText = x.Tipo != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault() != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "" : "",
+                        Code = x.Código,
+                        Description = x.Descrição,
+                        Quantity = x.Quantidade,
+                        MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
+                        LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "",
+                        ProjectContabGroup = x.GrupoContabProjeto,
+                        RegionCode = x.CódigoRegião,
+                        FunctionalAreaCode = x.CódigoÁreaFuncional,
+                        ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
+                        User = x.Utilizador,
+                        UnitCost = x.CustoUnitário,
+                        TotalCost = x.CustoTotal,
+                        UnitPrice = x.PreçoUnitário,
+                        TotalPrice = x.PreçoTotal,
+                        Billable = x.Faturável,
+                        BillableText = x.Faturável.HasValue ? x.Faturável == true ? "Sim" : "Não" : "Não",
+                        ResidueGuideNo = x.NºGuiaResíduos,
+                        ExternalGuideNo = x.NºGuiaExterna,
+                        InvoiceToClientNo = x.FaturaANºCliente,
+                        RequestNo = x.NºRequisição,
+                        RequestLineNo = x.NºLinhaRequisição,
+                        Driver = x.Motorista,
+                        MealType = x.TipoRefeição,
+                        ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
+                        OriginalDocument = x.DocumentoOriginal,
+                        AdjustedDocument = x.DocumentoCorrigido,
+                        AdjustedPrice = x.AcertoDePreços,
+                        AdjustedPriceText = x.AcertoDePreços.HasValue ? x.AcertoDePreços == true ? "Sim" : "Não" : "Não",
+                        AdjustedDocumentData = x.DataDocumentoCorrigido?.ToString("yyyy-MM-dd"),
+                        AutorizatedInvoice = x.FaturaçãoAutorizada,
+                        AutorizatedInvoiceText = x.FaturaçãoAutorizada.HasValue ? x.FaturaçãoAutorizada == true ? "Sim" : "Não" : "Não",
+                        AutorizatedInvoice2 = x.FaturaçãoAutorizada2,
+                        AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
+                        AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
+                        ServiceGroupCode = x.CódGrupoServiço,
+                        ServiceGroupCodeDescription = AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "",
+                        ResourceType = x.TipoRecurso,
+                        FolhaHoras = x.NºFolhaHoras,
+                        InternalRequest = x.RequisiçãoInterna,
+                        EmployeeNo = x.NºFuncionário,
+                        QuantityReturned = Convert.ToDecimal(x.QuantidadeDevolvida),
+                        ConsumptionDate = x.DataConsumo?.ToString("yyyy-MM-dd"),
+                        CreateDate = x.DataHoraCriação,
+                        CreateDateText = x.DataHoraCriação.HasValue ? Convert.ToDateTime(x.DataHoraCriação).ToShortDateString() : "",
+                        CreateHourText = x.DataHoraCriação.HasValue ? Convert.ToDateTime(x.DataHoraCriação).ToShortTimeString() : "",
+                        UpdateDate = x.DataHoraModificação,
+                        CreateUser = x.UtilizadorCriação,
+                        UpdateUser = x.UtilizadorModificação,
+                        Registered = x.Registado,
+                        RegisteredText = x.Registado.HasValue ? x.Registado == true ? "Sim" : "Não" : "Não",
+                        Billed = Convert.ToBoolean(x.Faturada),
+                        BilledText = x.Faturada.HasValue ? x.Faturada == true ? "Sim" : "Não" : "Não",
+                        Coin = x.Moeda,
+                        UnitValueToInvoice = x.ValorUnitárioAFaturar,
+                        ServiceClientCode = x.CódServiçoCliente,
+                        ClientRequest = x.CodCliente,
+                        LicensePlate = x.Matricula,
+                        ReadingCode = x.CodigoLer,
+                        Group = x.Grupo,
+                        Operation = x.Operacao,
+                        InvoiceGroup = x.GrupoFatura,
+                        InvoiceGroupDescription = x.GrupoFaturaDescricao,
+                        AuthorizedBy = x.AutorizadoPor,
+                        ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "",
+                        MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "",
+                        Utilizador = User.Identity.Name,
+                        NameDB = _config.NAVDatabaseName,
+                        CompanyName = _config.NAVCompanyName,
+                        Fatura = x.Fatura
+                    }).OrderByDescending(x => x.Date).ToList();
+                }
 
                 return Json(dp);
             }
@@ -2711,9 +2820,30 @@ namespace Hydra.Such.Portal.Controllers
                         });
 
                         ctx.ProjectosAutorizados.Add(authorizedProject);
-                        ctx.MovimentosDeProjeto.UpdateRange(unchangedProjectMovements);
-                        ctx.MovimentosProjectoAutorizados.AddRange(authorizedProjMovements);
+                        try
+                        {
+                            ctx.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "Ocorreu um erro ao adicionar o Projeto na Tabela dos Projetos Autorizados.";
+                            return Json(result);
+                        }
 
+                        ctx.MovimentosDeProjeto.UpdateRange(unchangedProjectMovements);
+                        try
+                        {
+                            ctx.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "Ocorreu um erro ao atualizar os Movimentos de Projeto.";
+                            return Json(result);
+                        }
+
+                        ctx.MovimentosProjectoAutorizados.AddRange(authorizedProjMovements);
                         try
                         {
                             ctx.SaveChanges();
@@ -2723,7 +2853,8 @@ namespace Hydra.Such.Portal.Controllers
                         catch (Exception ex)
                         {
                             result.eReasonCode = 2;
-                            result.eMessage = "Ocorreu um erro ao tentar autorizar os movimentos.";
+                            result.eMessage = "Ocorreu um erro ao adicionar os Movimentos na Tabela Movimentos de Projeto Autorizados.";
+                            return Json(result);
                         }
                     }
                 }
@@ -2731,12 +2862,14 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     result.eReasonCode = 2;
                     result.eMessage = "Não foi possivel obter o projeto.";
+                    return Json(result);
                 }
             }
             catch (Exception ex)
             {
                 result.eReasonCode = 2;
                 result.eMessage = "Ocorreu um erro ao autorizar.";
+                return Json(result);
             }
             return Json(result);
         }
@@ -4086,9 +4219,20 @@ namespace Hydra.Such.Portal.Controllers
                                             itemsToInvoice.ForEach(key =>
                                             {
                                                 var authorizedProjects = ctx.ProjectosAutorizados
-                                                .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
-                                                .ToList();
+                                                        .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
+                                                        .ToList();
                                                 //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+
+                                                //Fecho Automático
+                                                authorizedProjects.Distinct().ToList().ForEach(x =>
+                                                {
+                                                    ProjectDetailsViewModel projFA = DBProjects.GetById(x.CodProjeto).ParseToViewModel();
+                                                    if (projFA.FechoAutomatico == true && projFA.Status != (EstadoProjecto)2)
+                                                    {
+                                                        JsonResult resultFA;
+                                                        resultFA = TerminarProject(projFA);
+                                                    }
+                                                });
 
                                                 var projectMovements = ctx.MovimentosDeProjeto
                                                     .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
@@ -4128,19 +4272,30 @@ namespace Hydra.Such.Portal.Controllers
                                                 var authorizedProjects = ctx.ProjectosAutorizados
                                                 .Where(x => x.CodProjeto == key.Item1 && x.GrupoFactura == key.Item2)
                                                 .ToList();
-                                            //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
+                                                //var authorizedProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.CodProjeto == projectNo && x.GrupoFactura == invoiceGroup);
 
-                                            var projectMovements = ctx.MovimentosDeProjeto
+                                                //Fecho Automático
+                                                authorizedProjects.Distinct().ToList().ForEach(x =>
+                                                {
+                                                    ProjectDetailsViewModel projFA = DBProjects.GetById(x.CodProjeto).ParseToViewModel();
+                                                    if (projFA.FechoAutomatico == true && projFA.Status != (EstadoProjecto)2)
+                                                    {
+                                                        JsonResult resultFA;
+                                                        resultFA = TerminarProject(projFA);
+                                                    }
+                                                });
+
+                                                var projectMovements = ctx.MovimentosDeProjeto
                                                     .Where(x => x.NºProjeto == key.Item1 && x.GrupoFatura == key.Item2)
                                                     .ToList();
 
                                                 authorizedProjects.ForEach(x => x.Faturado = true);
-                                            //authorizedProjectMovements.ForEach(x => x.Faturada = true);
-                                            projectMovements.ForEach(x => x.Faturada = true);
+                                                //authorizedProjectMovements.ForEach(x => x.Faturada = true);
+                                                projectMovements.ForEach(x => x.Faturada = true);
 
                                                 ctx.ProjectosAutorizados.UpdateRange(authorizedProjects);
-                                            //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
-                                            ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
+                                                //ctx.MovimentosProjetoAutorizados.UpdateRange(authorizedProjectMovements);
+                                                ctx.MovimentosDeProjeto.UpdateRange(projectMovements);
                                             });
 
                                             ctx.SaveChanges();
@@ -4191,6 +4346,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.eReasonCode = 2;
                 result.eMessage = "Não é possivel faturar projetos iguais de grupos diferentes.";
             }
+
             return Json(result);
         }
 

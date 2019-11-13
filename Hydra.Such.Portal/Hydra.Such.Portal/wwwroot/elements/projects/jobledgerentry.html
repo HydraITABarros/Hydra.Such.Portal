@@ -14,7 +14,7 @@
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
-<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -32,6 +32,11 @@
 <link rel="import" href="/lib/neon-animation/web-animations.html">
 <link rel="import" href="~/lib/datetime-picker-master/time-element.html" />
 <link rel="import" href="~/lib/datetime-picker-master/time-picker.html" />
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -43,14 +48,67 @@
 
 <dom-module id="x-jobledgerentry">
     <template>
-
-        <!--<h1 class="title">Movimentos do projeto {{paramprojno}}</h1>-->
-
-
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+
+                .panel-heading {
+                    padding: 0 !important;
+                }
+            </style>
+        </custom-style>
 
         <iron-ajax url="/Projetos/GetProjectMovements"
                    last-response="{{result}}"
@@ -59,49 +117,6 @@
                    id="grid_databound_ajax"
                    on-response="_gridListResponse"
                    content-type="application/json"></iron-ajax>
-
-        <!--<iron-ajax url="/PopulateDropdowns/GetProjectDiaryMovements"
-           last-response="{{response2}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>-->
-        <!--<iron-ajax url="/PopulateDropdowns/GetProjectDiaryTypes"
-           last-response="{{response3}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>-->
-        <!--<iron-ajax url="/PopulateDropdowns/GetMeasureUnits"
-           last-response="{{MeasureUnit}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>-->
-        <!--<iron-ajax url="/PopulateDropdowns/GetLocations"
-           last-response="{{Locations}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>-->
-        <!--<iron-ajax url="/PopulateDropdowns/GetRegionCode"
-           last-response="{{RegionData}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>-->
-        <!--<iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode"
-           last-response="{{FunctionalAreaCodeData}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>-->
-        <!--<iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode"
-           last-response="{{ResponsabilityCenterData}}"
-           auto
-           method="post"
-           handle-as="json"
-           content-type="application/json"></iron-ajax>-->
 
         <iron-ajax url="/Projetos/ExportToExcel_MovimentosProjetos"
                    last-response="{{export}}"
@@ -112,28 +127,51 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button id="btn_imprimirMovimentos" class="tablinks" on-tap="_printMovimentos" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
-            <paper-button id="btn_imprimirMovimentosFaturados" class="tablinks" on-tap="_printMovimentosFaturados" title="Imprimir Movimentos Faturados"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Movimentos Faturados</paper-button>
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+        <paper-collapse-item class="panel-heading" header="Filtros" opened>
+            <div class="grid-header" id="gridheader">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <vaadin-date-picker id="pesquisaData" name="pesquisaData" label="Filtrar a partir de:" on-blur="" title="Filtrar a partir de:"></vaadin-date-picker>
+                        </div>
+                        <div class="col-sm-7">
+                        </div>
 
-            <!--start ColumnToggle-->
-            <paper-menu-button class="column-toggle" no-animations>
-                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
-                <div class="list-group" slot="dropdown-content">
-                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
-                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
-                            {{ item.value.label }}
-                        </a>
-                        <hr />
-                    </template>
+                        <div class="col-sm-2 alignPoga text-right">
+                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                        </div>
+                    </div>
                 </div>
-            </paper-menu-button>
-            <!--end ColumnToggle-->
+            </div>
+        </paper-collapse-item>
+
+        <div class="subMenu">
+            <template is="dom-if" if="{{loaded}}">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+                <paper-button id="btn_imprimirMovimentos" class="tablinks" on-tap="_printMovimentos" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir</paper-button>
+                <paper-button id="btn_imprimirMovimentosFaturados" class="tablinks" on-tap="_printMovimentosFaturados" title="Imprimir Movimentos Faturados"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Movimentos Faturados</paper-button>
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                <!--start ColumnToggle-->
+                <paper-menu-button class="column-toggle" no-animations>
+                    <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                    <div class="list-group" slot="dropdown-content">
+                        <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                            <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                                {{ item.value.label }}
+                            </a>
+                            <hr />
+                        </template>
+                    </div>
+                </paper-menu-button>
+                <!--end ColumnToggle-->
+            </template>
+            <template is="dom-if" if="[[!loaded]]">
+                <span style="display: inline-block;height:25px;"></span>
+            </template>
         </div>
 
-        <vaadin-grid column-reordering-allowed aria-label="Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="editGrid">
+        <vaadin-grid column-reordering-allowed aria-label="Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="grid hide" multi-sort="true">
             <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.lineNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="lineNo">Nº Linha</vaadin-grid-sorter>
@@ -172,14 +210,14 @@
                 <template>
                     {{item.movementTypeText}}
                     <!--<vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -201,14 +239,14 @@
                 <template>
                     {{item.typeText}}
                     <!--<vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -252,14 +290,14 @@
                 <template>
                     {{item.measurementUnitCode}}
                     <!--<vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -271,14 +309,14 @@
                 <template>
                     {{item.locationCode}}
                     <!--<vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -300,14 +338,14 @@
                 <template>
                     {{item.regionCode}}
                     <!--<vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -319,14 +357,14 @@
                 <template>
                     {{item.functionalAreaCode}}
                     <!--<vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -338,14 +376,14 @@
                 <template>
                     {{item.responsabilityCenterCode}}
                     <!--<vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
-                <template>
-                    <paper-icon-item>
-                        <paper-item-body two-line>
-                            <div>[[item.value]]</div>
-                        </paper-item-body>
-                    </paper-icon-item>
-                </template>
-            </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -859,8 +897,20 @@
                         type: String,
                         value: ""
                     },
+                    pesquisadate: {
+                        type: String,
+                        value: ""
+                    },
                     _reportserverurl: {
                         type: String,
+                    },
+                    loaded: {
+                        type: Boolean,
+                        value: false
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: true
                     },
                     _columns: {
                         type: Object,
@@ -871,28 +921,39 @@
                 },
 
                 ready: function () {
+                    debugger;
                     if (this.paramprojno != "") {
-                        this.$.grid_databound_ajax.body = JSON.stringify(this.paramprojno);
+                        this.$.pesquisaData.value = this.pesquisadate;
+
+                        this.$.grid_databound_ajax.body = JSON.stringify({ projectno: this.paramprojno, pesquisadata: this.$.pesquisaData.value });
                         this.$.grid_databound_ajax.generateRequest();
-                        this.$.projectMovementTable.clearCache();
+                        $(this.$.projectMovementTable).removeClass('hide');
+                        this.$.projectMovementTable._loading = true;
                     }
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
 
                     var _this = this;
+                    var gridToBottomTimeout;
                     $(window).resize(function () {
-                        _this.fixGridToBottom();
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
                     });
                     $(window).trigger('resize');
                 },
 
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.projectMovementTable);
-                    var parentHeight = $(this).offsetParent().height();
-                    var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop;
-                    grid_el.height(height);
+                    var _this = this;
+                    setTimeout(function () {
+                        var grid_el = $(_this.$.projectMovementTable);
+                        var parentHeight = $(_this).offsetParent().height();
+                        var windowHeight = $(window).height();
+                        var paddingTop = $(_this).offsetParent().css('padding-top').replace("px", "");
+                        var offsetTop = $(_this).offset().top;
+                        var height = windowHeight - offsetTop - paddingTop + 100;
+                        $(_this.$.projectMovementTable).height(height - $(_this.$.gridheader).height());
+                    }, 3600);
                 },
 
                 openToastSuccess: function (message) {
@@ -904,11 +965,20 @@
                     this.$.ToastMessageError.open();
                 },
 
+                _search: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ projectno: this.paramprojno, pesquisadata: this.$.pesquisaData.value });
+                    this.$.grid_databound_ajax.generateRequest();
+                    $(this.$.projectMovementTable).removeClass('hide');
+                    this.$.projectMovementTable._loading = true;
+                },
+
                 _gridListResponse: function () {
                     if (this.result == null || this.result == undefined || this.result.length == 0) {
-                        this.openToastError("Não existem movimentos associados a este projeto.");
+                        this.openToastError("Não existem movimentos associados a este projeto para o período em questão.");
                     }
-
+                    else {
+                        this.loaded = true;
+                    }
                 },
 
                 _exportEXCEL: function () {

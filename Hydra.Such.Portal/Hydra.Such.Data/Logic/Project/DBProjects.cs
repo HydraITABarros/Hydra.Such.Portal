@@ -276,7 +276,8 @@ namespace Hydra.Such.Data.Logic.Project
                     CreateDate = item.DataHoraCriação,
                     UpdateUser = item.UtilizadorModificação,
                     UpdateDate = item.DataHoraModificação,
-                    FaturaPrecosIvaIncluido = item.FaturaPrecosIvaIncluido
+                    FaturaPrecosIvaIncluido = item.FaturaPrecosIvaIncluido,
+                    FechoAutomatico = item.FechoAutomatico
                 };
             }
             return null;
@@ -334,7 +335,8 @@ namespace Hydra.Such.Data.Logic.Project
                     DataHoraCriação = item.CreateDate,
                     UtilizadorModificação = item.UpdateUser,
                     DataHoraModificação = item.UpdateDate,
-                    FaturaPrecosIvaIncluido = item.FaturaPrecosIvaIncluido
+                    FaturaPrecosIvaIncluido = item.FaturaPrecosIvaIncluido,
+                    FechoAutomatico = item.FechoAutomatico
                 };
             }
             return null;

@@ -731,7 +731,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult UnidadeMedidaProduto(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.DiárioProjeto); //3, 19);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral); //3, 19);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id ?? "";

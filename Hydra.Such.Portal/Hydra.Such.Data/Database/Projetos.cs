@@ -65,6 +65,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
         public bool? FaturaPrecosIvaIncluido { get; set; }
+        public bool? FechoAutomatico { get; set; }
 
 
         public TipoDeProjeto CódTipoProjetoNavigation { get; set; }

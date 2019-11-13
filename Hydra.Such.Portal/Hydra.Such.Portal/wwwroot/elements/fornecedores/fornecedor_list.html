@@ -67,11 +67,11 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <!--<template is="dom-if" if="{{ _permissions.create }}">
+            <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
                     <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
                 </template>
-            </template>-->
+            </template>
 
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
@@ -259,6 +259,10 @@
                         type: Number,
                         notify: true,
                         value: 0
+                    },
+                    _disabledCreate: {
+                        type: Boolean,
+                        value: false
                     },
                     _columns: {
                         type: Object,

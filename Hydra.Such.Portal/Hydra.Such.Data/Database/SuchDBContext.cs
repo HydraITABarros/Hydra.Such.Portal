@@ -8088,6 +8088,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.FaturaPrecosIvaIncluido).HasColumnName("FaturaPrecosIvaIncluido");
 
+                entity.Property(e => e.FechoAutomatico).HasColumnName("FechoAutomatico");
+
                 entity.HasOne(d => d.CódTipoProjetoNavigation)
                     .WithMany(p => p.Projetos)
                     .HasForeignKey(d => d.CódTipoProjeto)

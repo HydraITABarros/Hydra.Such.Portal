@@ -1356,6 +1356,21 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             }
         }
 
+        public static List<SeleccaoEntidades> GetAllSeleccaoEntidadesByHistoric(bool historic)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.SeleccaoEntidades.Where(x => ctx.ConsultaMercado.Where(y => y.NumConsultaMercado == x.NumConsultaMercado).FirstOrDefault().Historico == historic).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static SeleccaoEntidades GetSeleccaoEntidadesID(int _ID)
         {
             try
@@ -1485,18 +1500,18 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
         public static SeleccaoEntidadesView CastSeleccaoEntidadesToView(SeleccaoEntidades ObjectToTransform)
         {
-            SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades();
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    seleccaoEntidades = ctx.SeleccaoEntidades.Where(p => p.IdSeleccaoEntidades == ObjectToTransform.IdSeleccaoEntidades).FirstOrDefault();
-                }
-            }
-            catch (Exception e)
-            {
+            //SeleccaoEntidades seleccaoEntidades = new SeleccaoEntidades();
+            //try
+            //{
+            //    using (var ctx = new SuchDBContext())
+            //    {
+            //        seleccaoEntidades = ctx.SeleccaoEntidades.Where(p => p.IdSeleccaoEntidades == ObjectToTransform.IdSeleccaoEntidades).FirstOrDefault();
+            //    }
+            //}
+            //catch (Exception e)
+            //{
 
-            }
+            //}
 
             SeleccaoEntidadesView view = new SeleccaoEntidadesView()
             {
@@ -1536,6 +1551,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 Selecionado_Show = ObjectToTransform.Selecionado.HasValue ? ObjectToTransform.Selecionado == true ? "Sim" : "Não" : "Não",
                 Preferencial_Show = ObjectToTransform.Preferencial.HasValue ? ObjectToTransform.Preferencial == true ? "Sim" : "Não" : "Não",
                 NaoRespostaDoFornecedor_Show = ObjectToTransform.NaoRespostaDoFornecedor.HasValue ? ObjectToTransform.NaoRespostaDoFornecedor == true ? "Sim" : "Não" : "Não",
+                
             };
 
             return view;

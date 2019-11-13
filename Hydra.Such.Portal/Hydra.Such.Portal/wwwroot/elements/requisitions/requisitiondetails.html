@@ -1105,16 +1105,6 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<vaadin-combo-box items="[[UnitsOfMmeasure]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                            <template>
-                                                <table width="200px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
                                                             items="[[UnitsOfMmeasure]]"
                                                             text-path="id"
@@ -1440,15 +1430,6 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.name]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1479,15 +1460,6 @@
                                                             value-path="no"
                                                             fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
                                             </such-selectbox>
-                                            <!--<vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
-                                            <template>
-                                                <paper-icon-item>
-                                                    <paper-item-body two-line>
-                                                        <div>[[item.no]]</div>
-                                                    </paper-item-body>
-                                                </paper-icon-item>
-                                            </template>
-                                        </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.projectNo}}
@@ -1621,7 +1593,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[VATBusinessPostingGroups]]" id="cmbVATBusinessPostingGroups" item-value-path="id" item-label-path="value" value="{{item.vatBusinessPostingGroup}}" disabled="{{ _permissionsCreate }}" on-blur="_updateRequisitionLinesNew">
+                                            <vaadin-combo-box items="[[VATBusinessPostingGroups]]" id="cmbVATBusinessPostingGroups" item-value-path="id" item-label-path="value" value="{{item.vatBusinessPostingGroup}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="220px">
                                                         <tr>
@@ -1645,7 +1617,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[VATProductsPostingGroups]]" id="cmbVATProductsPostingGroups" item-value-path="id" item-label-path="value" value="{{item.vatProductPostingGroup}}" disabled="{{ _permissionsCreate }}" on-blur="_updateRequisitionLinesNew">
+                                            <vaadin-combo-box items="[[VATProductsPostingGroups]]" id="cmbVATProductsPostingGroups" item-value-path="id" item-label-path="value" value="{{item.vatProductPostingGroup}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLinesNew">
                                                 <template>
                                                     <table width="220px">
                                                         <tr>
@@ -1669,7 +1641,7 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field id="cmbDiscountPercentage" on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" on-blur="_updateRequisitionLinesNew"></vaadin-text-field>
+                                            <vaadin-text-field id="cmbDiscountPercentage" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" required error-message="Valor inválido" on-blur="_updateRequisitionLinesNew"></vaadin-text-field>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ item.discountPercentage ]]
@@ -1742,7 +1714,7 @@
 
         <paper-dialog id="dlgMessageSuccess" class="dialgoBox" modal style="height:150px">
             <div>
-                <vaadin-text-field id="dlgToastMessageSuccess" horizontalAlign="left" class="toastSuccess" disabled></vaadin-text-field>
+                <vaadin-text-field id="dlgToastMessageSuccess" horizontalAlign="left" class="toastSuccess" disabled><i class="fa fa-check fa-lg" aria-hidden="true"></i></vaadin-text-field>
             </div>
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeDlMessageSuccess"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
@@ -1750,7 +1722,7 @@
         </paper-dialog>
         <paper-dialog id="dlgMessageError" class="dialgoBox" modal style="height:150px">
             <div style="font-size:larger">
-                <vaadin-text-field id="dlgToastMessageError" horizontalAlign="left" class="toastError" disabled></vaadin-text-field>
+                <vaadin-text-field id="dlgToastMessageError" horizontalAlign="left" class="toastError" disabled><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></vaadin-text-field>
             </div>
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeDlgMessageError"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>

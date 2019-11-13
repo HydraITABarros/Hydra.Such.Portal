@@ -296,15 +296,15 @@
                 </template>
                 <template>
                     <!--<vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
-                {{item.moveTypeText}}
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
+                    {{item.moveTypeText}}
                 </template>
             </vaadin-grid-column>
 
@@ -315,14 +315,14 @@
                 </template>
                 <template>
                     <!--<vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                     {{item.typeText}}
                 </template>
             </vaadin-grid-column>
@@ -352,14 +352,14 @@
                 </template>
                 <template>
                     <!--<vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                     {{item.measurementUnitCodeText}}
                 </template>
             </vaadin-grid-column>
@@ -447,14 +447,14 @@
                 </template>
                 <template>
                     <!--<vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                     {{item.locationCodeText}}
                 </template>
             </vaadin-grid-column>
@@ -473,15 +473,16 @@
                     <vaadin-grid-filter path="regionCodeText" />
                 </template>
                 <template>
+
                     <!--<vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                     {{item.regionCodeText}}
                 </template>
             </vaadin-grid-column>
@@ -492,14 +493,14 @@
                 </template>
                 <template>
                     <!--<vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                     {{item.functionalAreaCodeText}}
                 </template>
             </vaadin-grid-column>
@@ -510,14 +511,14 @@
                 </template>
                 <template>
                     <!--<vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
-                        <template>
-                            <paper-icon-item>
-                                <paper-item-body two-line>
-                                    <div>[[item.value]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>-->
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>-->
                     {{item.responsabilityCenterCodeText}}
                 </template>
             </vaadin-grid-column>
@@ -627,14 +628,31 @@
             </div>
         </paper-dialog>
 
-        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
-
         <paper-dialog id="rptDialog" class="dialgoBox" modal>
             <div class="buttons">
                 <paper-button class="btnRemove" on-tap="_closeRptDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
             </div>
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
+        </paper-dialog>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+        <paper-dialog id="dlgMessageSuccess" class="dialgoBox" modal style="height:150px">
+            <div>
+                <vaadin-text-field id="dlgToastMessageSuccess" horizontalAlign="left" class="toastSuccess" disabled><i class="fa fa-check fa-lg" aria-hidden="true"></i></vaadin-text-field>
+            </div>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeDlMessageSuccess"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+        <paper-dialog id="dlgMessageError" class="dialgoBox" modal style="height:150px">
+            <div style="font-size:larger">
+                <vaadin-text-field id="dlgToastMessageError" horizontalAlign="left" class="toastError" disabled><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></vaadin-text-field>
+            </div>
+            <div class="buttons">
+                <paper-button class="btnRemove" on-tap="_closeDlgMessageError"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
         </paper-dialog>
     </template>
     <script>
@@ -711,10 +729,14 @@
                 openToastSuccess: function (message) {
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
+                    //this.$.dlgToastMessageSuccess.value = message;
+                    //this.$.dlgMessageSuccess.open();
                 },
                 openToastError: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
+                    //this.$.ToastMessageError.text = message;
+                    //this.$.ToastMessageError.open();
+                    this.$.dlgToastMessageError.value = message;
+                    this.$.dlgMessageError.open();
                 },
                 _registerPreMov: function () {
                     this.$.dlg_registerPreMov.open();
@@ -925,6 +947,16 @@
                         }
                     }
                 },
+
+                _closeDlMessageSuccess: function () {
+                    this.$.dlgMessageSuccess.close();
+                    location.reload();
+                },
+                _closeDlgMessageError: function () {
+                    this.$.dlgMessageError.close();
+                    location.reload();
+                },
+
             });
         });
     </script>

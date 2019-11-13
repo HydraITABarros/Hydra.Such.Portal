@@ -118,61 +118,66 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllConsultasPorFornecedor([FromBody] JObject requestParams)
         {
-            int Historic = 0;
-            if (requestParams["Historic"] != null)
-                Historic = int.Parse(requestParams["Historic"].ToString());
-
-            List<SeleccaoEntidadesView> result = new List<SeleccaoEntidadesView>();
-            List<SeleccaoEntidades> list = DBConsultaMercado.GetAllSeleccaoEntidades();
-
-            foreach (SeleccaoEntidades selecao in list)
+            try
             {
-                result.Add(DBConsultaMercado.CastSeleccaoEntidadesToView(selecao));
+                bool Historic = false;
+                if (requestParams["Historic"] != null)
+                {
+                    if (requestParams["Historic"].ToString() == "0")
+                        Historic = false;
+                    else
+                        Historic = true;
+                }
+
+                List<SeleccaoEntidadesView> result = new List<SeleccaoEntidadesView>();
+                List<RegistoDePropostas> AllRegistoDePropostas = new List<RegistoDePropostas>();
+                List<LinhasConsultaMercado> AllLinhasConsultaMercado = new List<LinhasConsultaMercado>();
+
+                List<SeleccaoEntidades> list = DBConsultaMercado.GetAllSeleccaoEntidadesByHistoric(Historic);
+                List<ConsultaMercado> AllConsultaMercado = DBConsultaMercado.GetAllConsultaMercadoToList();
+                using (var ctx = new SuchDBContext())
+                {
+                    AllRegistoDePropostas = ctx.RegistoDePropostas.ToList();
+                    AllLinhasConsultaMercado = ctx.LinhasConsultaMercado.ToList();
+                }
+
+                foreach (SeleccaoEntidades selecao in list)
+                {
+                    result.Add(DBConsultaMercado.CastSeleccaoEntidadesToView(selecao));
+                }
+
+                foreach (SeleccaoEntidadesView selecao in result)
+                {
+                    selecao.NotaEncomenda_Show = "Não";
+                    RegistoDePropostas REG = AllRegistoDePropostas.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault();
+                    if (REG != null && REG.Fornecedor1Code == selecao.CodFornecedor && REG.Fornecedor1Select == true)
+                        selecao.NotaEncomenda_Show = "Sim";
+                    if (REG != null && REG.Fornecedor2Code == selecao.CodFornecedor && REG.Fornecedor2Select == true)
+                        selecao.NotaEncomenda_Show = "Sim";
+                    if (REG != null && REG.Fornecedor3Code == selecao.CodFornecedor && REG.Fornecedor3Select == true)
+                        selecao.NotaEncomenda_Show = "Sim";
+                    if (REG != null && REG.Fornecedor4Code == selecao.CodFornecedor && REG.Fornecedor4Select == true)
+                        selecao.NotaEncomenda_Show = "Sim";
+                    if (REG != null && REG.Fornecedor5Code == selecao.CodFornecedor && REG.Fornecedor5Select == true)
+                        selecao.NotaEncomenda_Show = "Sim";
+                    if (REG != null && REG.Fornecedor6Code == selecao.CodFornecedor && REG.Fornecedor6Select == true)
+                        selecao.NotaEncomenda_Show = "Sim";
+
+                    selecao.CustoTotalPrevisto = (decimal)AllLinhasConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).Sum(x => x.CustoTotalPrevisto);
+                    selecao.NoRequisicao = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().NumRequisicao;
+                    selecao.CodRegiao = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().CodRegiao;
+                    selecao.CodArea = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().CodAreaFuncional;
+                    selecao.CodCresp = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().CodCentroResponsabilidade;
+                    selecao.DataPedidoCotacaoCriadoEm_Show = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd");
+                    selecao.Historico_Show = Historic == false ? "Não" : "Sim; ";
+                }
+
+                return Json(result.OrderByDescending(x => x.NumConsultaMercado));
             }
-
-            List<ConsultaMercado> AllConsultaMercado = DBConsultaMercado.GetAllConsultaMercadoToList();
-
-            List<RegistoDePropostas> AllRegistoDePropostas = new List<RegistoDePropostas>();
-            List<LinhasConsultaMercado> AllLinhasConsultaMercado = new List<LinhasConsultaMercado>();
-            using (var ctx = new SuchDBContext())
+            catch (Exception e)
             {
-                AllRegistoDePropostas = ctx.RegistoDePropostas.ToList();
-                AllLinhasConsultaMercado = ctx.LinhasConsultaMercado.ToList();
+                return Json(null);
             }
-
-
-            foreach (SeleccaoEntidadesView selecao in result)
-            {
-                selecao.NotaEncomenda_Show = "Não";
-                RegistoDePropostas REG = AllRegistoDePropostas.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault();
-                if (REG != null && REG.Fornecedor1Code == selecao.CodFornecedor && REG.Fornecedor1Select == true)
-                    selecao.NotaEncomenda_Show = "Sim";
-                if (REG != null && REG.Fornecedor2Code == selecao.CodFornecedor && REG.Fornecedor2Select == true)
-                    selecao.NotaEncomenda_Show = "Sim";
-                if (REG != null && REG.Fornecedor3Code == selecao.CodFornecedor && REG.Fornecedor3Select == true)
-                    selecao.NotaEncomenda_Show = "Sim";
-                if (REG != null && REG.Fornecedor4Code == selecao.CodFornecedor && REG.Fornecedor4Select == true)
-                    selecao.NotaEncomenda_Show = "Sim";
-                if (REG != null && REG.Fornecedor5Code == selecao.CodFornecedor && REG.Fornecedor5Select == true)
-                    selecao.NotaEncomenda_Show = "Sim";
-                if (REG != null && REG.Fornecedor6Code == selecao.CodFornecedor && REG.Fornecedor6Select == true)
-                    selecao.NotaEncomenda_Show = "Sim";
-
-                selecao.CustoTotalPrevisto = (decimal)AllLinhasConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).Sum(x => x.CustoTotalPrevisto);
-                selecao.NoRequisicao = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().NumRequisicao;
-                selecao.CodRegiao = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().CodRegiao;
-                selecao.CodArea = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().CodAreaFuncional;
-                selecao.CodCresp = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().CodCentroResponsabilidade;
-                selecao.DataPedidoCotacaoCriadoEm_Show = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd");
-                selecao.Historico_Show = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault() == null ? "" : AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault().Historico == true ? "Sim" : "Não";
-            }
-
-            if (Historic == 0)
-                result.RemoveAll(x => x.Historico_Show == "Sim");
-            else
-                result.RemoveAll(x => x.Historico_Show == "Não");
-
-            return Json(result.OrderByDescending(x => x.NumConsultaMercado));
         }
 
         public IActionResult DetalheConsultaMercado(string id, bool isHistoric = false)

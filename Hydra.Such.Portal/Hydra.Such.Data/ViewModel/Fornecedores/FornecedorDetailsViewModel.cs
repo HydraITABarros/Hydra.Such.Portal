@@ -23,11 +23,14 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
         public int? Blocked { get; set; }
         public string BlockedText { get; set; }
         public string Address { get; set; }
-        public string Address2 { get; set; }
+        public string Address_2 { get; set; }
         public string Distrito { get; set; }
         public int? Criticidade { get; set; }
         public string CriticidadeText { get; set; }
         public string Observacoes { get; set; }
+        public string Utilizador_Alteracao_eSUCH { get; set; }
+
+
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
