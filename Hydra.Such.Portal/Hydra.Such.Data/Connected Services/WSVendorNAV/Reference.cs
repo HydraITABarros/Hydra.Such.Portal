@@ -7,58 +7,58 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WSVendor
+namespace WSVendorNAV
 {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", ConfigurationName="WSVendor.WSVendor_Port")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", ConfigurationName="WSVendorNAV.WSVendor_Port")]
     public interface WSVendor_Port
     {
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:Read", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.Read_Result> ReadAsync(WSVendor.Read request);
+        System.Threading.Tasks.Task<WSVendorNAV.Read_Result> ReadAsync(WSVendorNAV.Read request);
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:ReadByRecId", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.ReadByRecId_Result> ReadByRecIdAsync(WSVendor.ReadByRecId request);
+        System.Threading.Tasks.Task<WSVendorNAV.ReadByRecId_Result> ReadByRecIdAsync(WSVendorNAV.ReadByRecId request);
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:ReadMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.ReadMultiple_Result> ReadMultipleAsync(WSVendor.ReadMultiple request);
+        System.Threading.Tasks.Task<WSVendorNAV.ReadMultiple_Result> ReadMultipleAsync(WSVendorNAV.ReadMultiple request);
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:IsUpdated", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.IsUpdated_Result> IsUpdatedAsync(WSVendor.IsUpdated request);
+        System.Threading.Tasks.Task<WSVendorNAV.IsUpdated_Result> IsUpdatedAsync(WSVendorNAV.IsUpdated request);
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:GetRecIdFromKey", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.GetRecIdFromKey_Result> GetRecIdFromKeyAsync(WSVendor.GetRecIdFromKey request);
+        System.Threading.Tasks.Task<WSVendorNAV.GetRecIdFromKey_Result> GetRecIdFromKeyAsync(WSVendorNAV.GetRecIdFromKey request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:Create", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.Create_Result> CreateAsync(WSVendor.Create request);
+        System.Threading.Tasks.Task<WSVendorNAV.Create_Result> CreateAsync(WSVendorNAV.Create request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:CreateMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.CreateMultiple_Result> CreateMultipleAsync(WSVendor.CreateMultiple request);
+        System.Threading.Tasks.Task<WSVendorNAV.CreateMultiple_Result> CreateMultipleAsync(WSVendorNAV.CreateMultiple request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:Update", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.Update_Result> UpdateAsync(WSVendor.Update request);
+        System.Threading.Tasks.Task<WSVendorNAV.Update_Result> UpdateAsync(WSVendorNAV.Update request);
         
         // CODEGEN: Generating message contract since the operation has multiple return values.
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:UpdateMultiple", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.UpdateMultiple_Result> UpdateMultipleAsync(WSVendor.UpdateMultiple request);
+        System.Threading.Tasks.Task<WSVendorNAV.UpdateMultiple_Result> UpdateMultipleAsync(WSVendorNAV.UpdateMultiple request);
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/page/wsvendor:Delete", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Threading.Tasks.Task<WSVendor.Delete_Result> DeleteAsync(WSVendor.Delete request);
+        System.Threading.Tasks.Task<WSVendorNAV.Delete_Result> DeleteAsync(WSVendorNAV.Delete request);
     }
     
     /// <remarks/>
@@ -143,6 +143,8 @@ namespace WSVendor
         private bool bloqueado_Falta_PagamentoField;
         
         private bool bloqueado_Falta_PagamentoFieldSpecified;
+        
+        private string utilizador_Alteracao_eSUCHField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
@@ -675,6 +677,20 @@ namespace WSVendor
                 this.bloqueado_Falta_PagamentoFieldSpecified = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
+        public string Utilizador_Alteracao_eSUCH
+        {
+            get
+            {
+                return this.utilizador_Alteracao_eSUCHField;
+            }
+            set
+            {
+                this.utilizador_Alteracao_eSUCHField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -879,6 +895,9 @@ namespace WSVendor
         
         /// <remarks/>
         Bloqueado_Falta_Pagamento,
+        
+        /// <remarks/>
+        Utilizador_Alteracao_eSUCH,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -909,13 +928,13 @@ namespace WSVendor
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
-        public WSVendor.WSVendor WSVendor;
+        public WSVendorNAV.WSVendor WSVendor;
         
         public Read_Result()
         {
         }
         
-        public Read_Result(WSVendor.WSVendor WSVendor)
+        public Read_Result(WSVendorNAV.WSVendor WSVendor)
         {
             this.WSVendor = WSVendor;
         }
@@ -949,13 +968,13 @@ namespace WSVendor
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
-        public WSVendor.WSVendor WSVendor;
+        public WSVendorNAV.WSVendor WSVendor;
         
         public ReadByRecId_Result()
         {
         }
         
-        public ReadByRecId_Result(WSVendor.WSVendor WSVendor)
+        public ReadByRecId_Result(WSVendorNAV.WSVendor WSVendor)
         {
             this.WSVendor = WSVendor;
         }
@@ -970,7 +989,7 @@ namespace WSVendor
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute("filter")]
-        public WSVendor.WSVendor_Filter[] filter;
+        public WSVendorNAV.WSVendor_Filter[] filter;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=1)]
         public string bookmarkKey;
@@ -982,7 +1001,7 @@ namespace WSVendor
         {
         }
         
-        public ReadMultiple(WSVendor.WSVendor_Filter[] filter, string bookmarkKey, int setSize)
+        public ReadMultiple(WSVendorNAV.WSVendor_Filter[] filter, string bookmarkKey, int setSize)
         {
             this.filter = filter;
             this.bookmarkKey = bookmarkKey;
@@ -999,13 +1018,13 @@ namespace WSVendor
         
         [System.ServiceModel.MessageBodyMemberAttribute(Name="ReadMultiple_Result", Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSVendor.WSVendor[] ReadMultiple_Result1;
+        public WSVendorNAV.WSVendor[] ReadMultiple_Result1;
         
         public ReadMultiple_Result()
         {
         }
         
-        public ReadMultiple_Result(WSVendor.WSVendor[] ReadMultiple_Result1)
+        public ReadMultiple_Result(WSVendorNAV.WSVendor[] ReadMultiple_Result1)
         {
             this.ReadMultiple_Result1 = ReadMultiple_Result1;
         }
@@ -1098,13 +1117,13 @@ namespace WSVendor
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
-        public WSVendor.WSVendor WSVendor;
+        public WSVendorNAV.WSVendor WSVendor;
         
         public Create()
         {
         }
         
-        public Create(WSVendor.WSVendor WSVendor)
+        public Create(WSVendorNAV.WSVendor WSVendor)
         {
             this.WSVendor = WSVendor;
         }
@@ -1117,13 +1136,13 @@ namespace WSVendor
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
-        public WSVendor.WSVendor WSVendor;
+        public WSVendorNAV.WSVendor WSVendor;
         
         public Create_Result()
         {
         }
         
-        public Create_Result(WSVendor.WSVendor WSVendor)
+        public Create_Result(WSVendorNAV.WSVendor WSVendor)
         {
             this.WSVendor = WSVendor;
         }
@@ -1137,13 +1156,13 @@ namespace WSVendor
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSVendor.WSVendor[] WSVendor_List;
+        public WSVendorNAV.WSVendor[] WSVendor_List;
         
         public CreateMultiple()
         {
         }
         
-        public CreateMultiple(WSVendor.WSVendor[] WSVendor_List)
+        public CreateMultiple(WSVendorNAV.WSVendor[] WSVendor_List)
         {
             this.WSVendor_List = WSVendor_List;
         }
@@ -1157,13 +1176,13 @@ namespace WSVendor
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSVendor.WSVendor[] WSVendor_List;
+        public WSVendorNAV.WSVendor[] WSVendor_List;
         
         public CreateMultiple_Result()
         {
         }
         
-        public CreateMultiple_Result(WSVendor.WSVendor[] WSVendor_List)
+        public CreateMultiple_Result(WSVendorNAV.WSVendor[] WSVendor_List)
         {
             this.WSVendor_List = WSVendor_List;
         }
@@ -1176,13 +1195,13 @@ namespace WSVendor
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
-        public WSVendor.WSVendor WSVendor;
+        public WSVendorNAV.WSVendor WSVendor;
         
         public Update()
         {
         }
         
-        public Update(WSVendor.WSVendor WSVendor)
+        public Update(WSVendorNAV.WSVendor WSVendor)
         {
             this.WSVendor = WSVendor;
         }
@@ -1195,13 +1214,13 @@ namespace WSVendor
     {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
-        public WSVendor.WSVendor WSVendor;
+        public WSVendorNAV.WSVendor WSVendor;
         
         public Update_Result()
         {
         }
         
-        public Update_Result(WSVendor.WSVendor WSVendor)
+        public Update_Result(WSVendorNAV.WSVendor WSVendor)
         {
             this.WSVendor = WSVendor;
         }
@@ -1215,13 +1234,13 @@ namespace WSVendor
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSVendor.WSVendor[] WSVendor_List;
+        public WSVendorNAV.WSVendor[] WSVendor_List;
         
         public UpdateMultiple()
         {
         }
         
-        public UpdateMultiple(WSVendor.WSVendor[] WSVendor_List)
+        public UpdateMultiple(WSVendorNAV.WSVendor[] WSVendor_List)
         {
             this.WSVendor_List = WSVendor_List;
         }
@@ -1235,13 +1254,13 @@ namespace WSVendor
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wsvendor", Order=0)]
         [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public WSVendor.WSVendor[] WSVendor_List;
+        public WSVendorNAV.WSVendor[] WSVendor_List;
         
         public UpdateMultiple_Result()
         {
         }
         
-        public UpdateMultiple_Result(WSVendor.WSVendor[] WSVendor_List)
+        public UpdateMultiple_Result(WSVendorNAV.WSVendor[] WSVendor_List)
         {
             this.WSVendor_List = WSVendor_List;
         }
@@ -1288,13 +1307,13 @@ namespace WSVendor
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
-    public interface WSVendor_PortChannel : WSVendor.WSVendor_Port, System.ServiceModel.IClientChannel
+    public interface WSVendor_PortChannel : WSVendorNAV.WSVendor_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
-    public partial class WSVendor_PortClient : System.ServiceModel.ClientBase<WSVendor.WSVendor_Port>, WSVendor.WSVendor_Port
+    public partial class WSVendor_PortClient : System.ServiceModel.ClientBase<WSVendorNAV.WSVendor_Port>, WSVendorNAV.WSVendor_Port
     {
         
     /// <summary>
@@ -1338,103 +1357,103 @@ namespace WSVendor
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSVendor.Read_Result> WSVendor.WSVendor_Port.ReadAsync(WSVendor.Read request)
+        System.Threading.Tasks.Task<WSVendorNAV.Read_Result> WSVendorNAV.WSVendor_Port.ReadAsync(WSVendorNAV.Read request)
         {
             return base.Channel.ReadAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.Read_Result> ReadAsync(string No)
+        public System.Threading.Tasks.Task<WSVendorNAV.Read_Result> ReadAsync(string No)
         {
-            WSVendor.Read inValue = new WSVendor.Read();
+            WSVendorNAV.Read inValue = new WSVendorNAV.Read();
             inValue.No = No;
-            return ((WSVendor.WSVendor_Port)(this)).ReadAsync(inValue);
+            return ((WSVendorNAV.WSVendor_Port)(this)).ReadAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSVendor.ReadByRecId_Result> WSVendor.WSVendor_Port.ReadByRecIdAsync(WSVendor.ReadByRecId request)
+        System.Threading.Tasks.Task<WSVendorNAV.ReadByRecId_Result> WSVendorNAV.WSVendor_Port.ReadByRecIdAsync(WSVendorNAV.ReadByRecId request)
         {
             return base.Channel.ReadByRecIdAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.ReadByRecId_Result> ReadByRecIdAsync(string recId)
+        public System.Threading.Tasks.Task<WSVendorNAV.ReadByRecId_Result> ReadByRecIdAsync(string recId)
         {
-            WSVendor.ReadByRecId inValue = new WSVendor.ReadByRecId();
+            WSVendorNAV.ReadByRecId inValue = new WSVendorNAV.ReadByRecId();
             inValue.recId = recId;
-            return ((WSVendor.WSVendor_Port)(this)).ReadByRecIdAsync(inValue);
+            return ((WSVendorNAV.WSVendor_Port)(this)).ReadByRecIdAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSVendor.ReadMultiple_Result> WSVendor.WSVendor_Port.ReadMultipleAsync(WSVendor.ReadMultiple request)
+        System.Threading.Tasks.Task<WSVendorNAV.ReadMultiple_Result> WSVendorNAV.WSVendor_Port.ReadMultipleAsync(WSVendorNAV.ReadMultiple request)
         {
             return base.Channel.ReadMultipleAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.ReadMultiple_Result> ReadMultipleAsync(WSVendor.WSVendor_Filter[] filter, string bookmarkKey, int setSize)
+        public System.Threading.Tasks.Task<WSVendorNAV.ReadMultiple_Result> ReadMultipleAsync(WSVendorNAV.WSVendor_Filter[] filter, string bookmarkKey, int setSize)
         {
-            WSVendor.ReadMultiple inValue = new WSVendor.ReadMultiple();
+            WSVendorNAV.ReadMultiple inValue = new WSVendorNAV.ReadMultiple();
             inValue.filter = filter;
             inValue.bookmarkKey = bookmarkKey;
             inValue.setSize = setSize;
-            return ((WSVendor.WSVendor_Port)(this)).ReadMultipleAsync(inValue);
+            return ((WSVendorNAV.WSVendor_Port)(this)).ReadMultipleAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSVendor.IsUpdated_Result> WSVendor.WSVendor_Port.IsUpdatedAsync(WSVendor.IsUpdated request)
+        System.Threading.Tasks.Task<WSVendorNAV.IsUpdated_Result> WSVendorNAV.WSVendor_Port.IsUpdatedAsync(WSVendorNAV.IsUpdated request)
         {
             return base.Channel.IsUpdatedAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.IsUpdated_Result> IsUpdatedAsync(string Key)
+        public System.Threading.Tasks.Task<WSVendorNAV.IsUpdated_Result> IsUpdatedAsync(string Key)
         {
-            WSVendor.IsUpdated inValue = new WSVendor.IsUpdated();
+            WSVendorNAV.IsUpdated inValue = new WSVendorNAV.IsUpdated();
             inValue.Key = Key;
-            return ((WSVendor.WSVendor_Port)(this)).IsUpdatedAsync(inValue);
+            return ((WSVendorNAV.WSVendor_Port)(this)).IsUpdatedAsync(inValue);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSVendor.GetRecIdFromKey_Result> WSVendor.WSVendor_Port.GetRecIdFromKeyAsync(WSVendor.GetRecIdFromKey request)
+        System.Threading.Tasks.Task<WSVendorNAV.GetRecIdFromKey_Result> WSVendorNAV.WSVendor_Port.GetRecIdFromKeyAsync(WSVendorNAV.GetRecIdFromKey request)
         {
             return base.Channel.GetRecIdFromKeyAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.GetRecIdFromKey_Result> GetRecIdFromKeyAsync(string Key)
+        public System.Threading.Tasks.Task<WSVendorNAV.GetRecIdFromKey_Result> GetRecIdFromKeyAsync(string Key)
         {
-            WSVendor.GetRecIdFromKey inValue = new WSVendor.GetRecIdFromKey();
+            WSVendorNAV.GetRecIdFromKey inValue = new WSVendorNAV.GetRecIdFromKey();
             inValue.Key = Key;
-            return ((WSVendor.WSVendor_Port)(this)).GetRecIdFromKeyAsync(inValue);
+            return ((WSVendorNAV.WSVendor_Port)(this)).GetRecIdFromKeyAsync(inValue);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.Create_Result> CreateAsync(WSVendor.Create request)
+        public System.Threading.Tasks.Task<WSVendorNAV.Create_Result> CreateAsync(WSVendorNAV.Create request)
         {
             return base.Channel.CreateAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.CreateMultiple_Result> CreateMultipleAsync(WSVendor.CreateMultiple request)
+        public System.Threading.Tasks.Task<WSVendorNAV.CreateMultiple_Result> CreateMultipleAsync(WSVendorNAV.CreateMultiple request)
         {
             return base.Channel.CreateMultipleAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.Update_Result> UpdateAsync(WSVendor.Update request)
+        public System.Threading.Tasks.Task<WSVendorNAV.Update_Result> UpdateAsync(WSVendorNAV.Update request)
         {
             return base.Channel.UpdateAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.UpdateMultiple_Result> UpdateMultipleAsync(WSVendor.UpdateMultiple request)
+        public System.Threading.Tasks.Task<WSVendorNAV.UpdateMultiple_Result> UpdateMultipleAsync(WSVendorNAV.UpdateMultiple request)
         {
             return base.Channel.UpdateMultipleAsync(request);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<WSVendor.Delete_Result> WSVendor.WSVendor_Port.DeleteAsync(WSVendor.Delete request)
+        System.Threading.Tasks.Task<WSVendorNAV.Delete_Result> WSVendorNAV.WSVendor_Port.DeleteAsync(WSVendorNAV.Delete request)
         {
             return base.Channel.DeleteAsync(request);
         }
         
-        public System.Threading.Tasks.Task<WSVendor.Delete_Result> DeleteAsync(string Key)
+        public System.Threading.Tasks.Task<WSVendorNAV.Delete_Result> DeleteAsync(string Key)
         {
-            WSVendor.Delete inValue = new WSVendor.Delete();
+            WSVendorNAV.Delete inValue = new WSVendorNAV.Delete();
             inValue.Key = Key;
-            return ((WSVendor.WSVendor_Port)(this)).DeleteAsync(inValue);
+            return ((WSVendorNAV.WSVendor_Port)(this)).DeleteAsync(inValue);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

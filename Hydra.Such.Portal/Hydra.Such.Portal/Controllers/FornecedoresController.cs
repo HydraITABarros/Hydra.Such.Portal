@@ -97,7 +97,7 @@ namespace Hydra.Such.Portal.Controllers
                      Blocked = c.Blocked,
                      BlockedText = c.BlockedText,
                      Address = c.Address,
-                     Address2 = c.Address2,
+                     Address_2 = c.Address2,
                      Distrito = c.Distrito,
                      Criticidade = c.Criticidade,
                      CriticidadeText = c.CriticidadeText,
@@ -209,43 +209,161 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (data != null && data.No != null)
             {
-                FornecedorDetailsViewModel result = new FornecedorDetailsViewModel();
-                result = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, data.No).Select(c =>
-                     new FornecedorDetailsViewModel()
-                     {
-                         No = c.No,
-                         Name = c.Name,
-                         FullAddress = c.FullAddress,
-                         PostCode = c.PostCode,
-                         City = c.City,
-                         Country = c.Country,
-                         Phone = c.Phone,
-                         Email = c.Email,
-                         Fax = c.Fax,
-                         HomePage = c.HomePage,
-                         VATRegistrationNo = c.VATRegistrationNo,
-                         PaymentTermsCode = c.PaymentTermsCode,
-                         PaymentMethodCode = c.PaymentMethodCode,
-                         NoClienteAssociado = c.NoClienteAssociado,
-                         Blocked = c.Blocked,
-                         BlockedText = c.BlockedText,
-                         Address = c.Address,
-                         Address2 = c.Address2,
-                         Distrito = c.Distrito,
-                         Criticidade = c.Criticidade,
-                         CriticidadeText = c.CriticidadeText,
-                         Observacoes = c.Observacoes
+                var getVendorTask = WSVendorService.GetByNoAsync(data.No, _configws);
+                try
+                {
+                    getVendorTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro a obter o fornecedor no NAV.";
+                    data.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                    return Json(data);
+                }
 
-                     }
-                ).FirstOrDefault();
+                FornecedorDetailsViewModel vendor = getVendorTask.Result;
+                if (vendor != null)
+                {
+                    return Json(vendor);
+                }
 
-                return Json(result);
             }
             return Json(false);
         }
 
+        [HttpPost]
+        public JsonResult Create([FromBody] FornecedorDetailsViewModel data)
+        {
+            if (data != null)
+            {
+                if (string.IsNullOrEmpty(data.No)) data.No = "";
+                if (string.IsNullOrEmpty(data.Name)) data.Name = "";
+                if (string.IsNullOrEmpty(data.PostCode)) data.PostCode = "";
+                if (string.IsNullOrEmpty(data.City)) data.City = "";
+                if (string.IsNullOrEmpty(data.Country)) data.Country = "";
+                if (string.IsNullOrEmpty(data.Phone)) data.Phone = "";
+                if (string.IsNullOrEmpty(data.Email)) data.Email = "";
+                if (string.IsNullOrEmpty(data.Fax)) data.Fax = "";
+                if (string.IsNullOrEmpty(data.HomePage)) data.HomePage = "";
+                if (string.IsNullOrEmpty(data.VATRegistrationNo)) data.VATRegistrationNo = "";
+                if (string.IsNullOrEmpty(data.PaymentTermsCode)) data.PaymentTermsCode = "";
+                if (string.IsNullOrEmpty(data.PaymentMethodCode)) data.PaymentMethodCode = "";
+                if (string.IsNullOrEmpty(data.NoClienteAssociado)) data.NoClienteAssociado = "";
+                if (data.Blocked == null) data.Blocked = 0;
+                if (string.IsNullOrEmpty(data.Address)) data.Address = "";
+                if (string.IsNullOrEmpty(data.Address_2)) data.Address_2 = "";
+                if (string.IsNullOrEmpty(data.Distrito)) data.Distrito = "";
+                if (data.Criticidade == null) data.Criticidade = 0;
+                if (string.IsNullOrEmpty(data.Observacoes)) data.Observacoes = "";
 
 
+
+                data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
+                var createVendorTask = WSVendorService.CreateAsync(data, _configws);
+                try
+                {
+                    createVendorTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro ao criar o fornecedor no NAV.";
+                    data.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                    return Json(data);
+                }
+
+                var result = createVendorTask.Result;
+                if (result == null)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro ao criar o fornecedor no NAV.";
+                    return Json(data);
+                }
+
+                data.eReasonCode = 1;
+
+                var vendor = WSVendorService.MapVendorNAVToVendorModel(result.WSVendor);
+                if (vendor != null)
+                {
+                    vendor.eReasonCode = 1;
+                    return Json(vendor);
+                }
+
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult Update([FromBody] FornecedorDetailsViewModel data)
+        {
+            if (data != null)
+            {
+                data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
+                var updateVendorTask = WSVendorService.UpdateAsync(data, _configws);
+                try
+                {
+                    updateVendorTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro ao atualizar o fornecedor no NAV.";
+                    data.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                    return Json(data);
+                }
+
+                var result = updateVendorTask.Result;
+                if (result == null)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro ao atualizar o fornecedor no NAV.";
+                    return Json(data);
+                }
+
+                var vendor = WSVendorService.MapVendorNAVToVendorModel(result.WSVendor);
+                if (vendor != null)
+                {
+                    vendor.eReasonCode = 1;
+                    return Json(vendor);
+                }
+
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult Delete([FromBody] FornecedorDetailsViewModel data)
+        {
+            if (data != null && data.No != null)
+            {
+                data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
+                var deleteVendorTask = WSVendorService.DeleteAsync(data.No, _configws);
+                try
+                {
+                    deleteVendorTask.Wait();
+                }
+                catch (Exception ex)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Ocorreu um erro a apagar o fornecedor no NAV.";
+                    data.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                    return Json(data);
+                }
+
+                var result = deleteVendorTask.Result;
+                if (result != null)
+                {
+                    return Json(new ErrorHandler()
+                    {
+                        eReasonCode = 0,
+                        eMessage = "Fornecedor removido com sucesso."
+                    });
+                }
+
+            }
+            return Json(false);
+        }
 
 
 
