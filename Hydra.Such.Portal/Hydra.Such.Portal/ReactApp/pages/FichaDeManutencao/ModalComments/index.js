@@ -18,9 +18,7 @@ const {DialogTitle, DialogContent, DialogActions} = Modal;
 class Comments extends Component {
     state = {
         equipments: [],
-        comments: [
-            {equipment: null}
-        ],
+        comments: [],
         open: false
     }
 
@@ -29,6 +27,18 @@ class Comments extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.state.equipments = this.props.$equipments.value;
         this.state.open = !!props.open;
+
+        console.log('IMP', props.item);
+        this.state.equipments.map((equipment) => {
+            var observacao = equipment[this.props.category][this.props.itemIndex].$observacoes.value
+            if (observacao) {
+                this.state.comments.push({equipment: equipment});
+            }
+        });
+
+        if (this.state.comments.length < 1) {
+            this.state.comments = [{equipment: null}];
+        }
     }
 
     handleChange(e, value) {
