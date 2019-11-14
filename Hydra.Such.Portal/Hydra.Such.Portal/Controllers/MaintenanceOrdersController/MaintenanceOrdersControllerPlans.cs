@@ -1,34 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Hydra.Such.Data.Database;
-using Hydra.Such.Data.ViewModel.Projects;
-using Hydra.Such.Data.NAV;
-using Hydra.Such.Data.Logic;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Hydra.Such.Data.Evolution;
-using Hydra.Such.Data.Evolution.Repositories;
-using SharpRepository.Repository;
-using SharpRepository.Repository.Queries;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Query;
-using Microsoft.AspNet.OData.Extensions;
-using NJsonSchema;
-using NJsonSchema.Generation;
-using Manatee.Json.Schema;
-using System.Text.RegularExpressions;
-using Hydra.Such.Data.ViewModel;
-using Hydra.Such.Data;
 using Hydra.Such.Portal.Filters;
 using Hydra.Such.Data.Evolution.DatabaseReference;
-using StackExchange.Redis;
 using Hydra.Such.Portal.ViewModels;
-using System.Reflection;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -230,128 +207,140 @@ namespace Hydra.Such.Portal.Controllers
 				}
 
 				//todo get rotina (A or B)
-				var rotina = "A";
-
-				var planMaintenanceReport = evolutionWEBContext.FichaManutencaoRelatorioManutencao.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento);
-				item.PlanMaintenance.ForEach(i =>
+				var rotina = "1";
+				item.Rotina = rotina;
+				
+				var planReport = evolutionWEBContext.FichaManutencaoRelatorio
+					.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao)
+					.OrderByDescending(o => o.Id).FirstOrDefault();
+				if (planReport != null)
 				{
-					int IdManutencao;
-					int.TryParse(i.IdManutencao.ToString(), out IdManutencao);
-
-					var maintenanceReportLine = planMaintenanceReport.FirstOrDefault(r => r.RotinaTipo == rotina && r.IdManutencao == IdManutencao);
-					if (maintenanceReportLine == null)
-					{
-						evolutionWEBContext.FichaManutencaoRelatorioManutencao.Add(new FichaManutencaoRelatorioManutencao
-						{
-							Om = order.No,
-							IdEquipamento = item.IdEquipamento,
-							Codigo = i.Codigo,
-							Versao = i.Versao,
-							IdUtilizador = evolutionLoggedUser.Id,
-							Data = DateTime.Now,
-							IdManutencao = IdManutencao,
-							RotinaTipo = rotina,
-							ResultadoRotina = 0
-						});
-						i.Resultado = 0;
-					}
-					else
-					{
-						i.Resultado = maintenanceReportLine.ResultadoRotina;
-					}
-				});
-
-				var planQualityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQualitativos.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao);
-				item.PlanQuality.ForEach(i =>
-				{
-					int IdTesteQualitativos;
-					int.TryParse(i.IdTesteQualitativos.ToString(), out IdTesteQualitativos);
-
-					var planQualityReportLine = planQualityReport.FirstOrDefault(r => r.RotinaTipo == rotina && r.IdTesteQualitativos == IdTesteQualitativos);
-					if (planQualityReportLine == null)
-					{
-						evolutionWEBContext.FichaManutencaoRelatorioTestesQualitativos.Add(new FichaManutencaoRelatorioTestesQualitativos
-						{
-							Om = order.No,
-							IdEquipamento = item.IdEquipamento,
-							Codigo = codigo,
-							Versao = versao,
-							IdUtilizador = evolutionLoggedUser.Id,
-							Data = DateTime.Now,
-							IdTesteQualitativos = IdTesteQualitativos,
-							RotinaTipo = rotina,
-							ResultadoRotina = 0
-						});
-						i.Resultado = 0;
-					}
-					else
-					{
-						i.Resultado = planQualityReportLine.ResultadoRotina;
-					}
-				});
-
-				var planQuantityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao);
-				item.PlanQuantity.ForEach(i =>
-				{
-					int IdTestesQuantitativos;
-					int.TryParse(i.IdTestesQuantitativos.ToString(), out IdTestesQuantitativos);
-
-					var planQuantityReportLine = planQuantityReport.FirstOrDefault(r => r.RotinaTipo == rotina && r.IdTestesQuantitativos == IdTestesQuantitativos);
-					if (planQuantityReportLine == null)
-					{
-						evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos.Add(new FichaManutencaoRelatorioTestesQuantitativos
-						{
-							Om = order.No,
-							IdEquipamento = item.IdEquipamento,
-							Codigo = codigo,
-							Versao = versao,
-							IdUtilizador = evolutionLoggedUser.Id,
-							Data = DateTime.Now,
-							IdTestesQuantitativos = IdTestesQuantitativos,
-							RotinaTipo = rotina,
-							//ResultadoRotina = true,
-							ResultadoCampo1 = ""
-						});
-						i.Resultado = "";
-					}
-					else
-					{
-						i.Resultado = planQuantityReportLine.ResultadoCampo1;
-					}
-				});
-
-				var planFinalStateReport = evolutionWEBContext.FichaManutencaoRelatorioRelatorio.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao).OrderByDescending(o => o.Id).FirstOrDefault();
-				if (planFinalStateReport != null)
-				{
-					item.EstadoFinal = planFinalStateReport.EstadoFinal;
-                    item.Observacao = planFinalStateReport.Observacao;
-                    item.AssinaturaCliente = planFinalStateReport.AssinaturaCliente;
-                    item.AssinaturaSie = planFinalStateReport.AssinaturaSie;
-                    item.AssinaturaTecnico = planFinalStateReport.AssinaturaTecnico;
-                    item.UtilizadorAssinaturaTecnico = evolutionWEBContext.Utilizador.Where(u => u.Id == planFinalStateReport.IdAssinaturaTecnico).FirstOrDefault();
-                }
+					item.EstadoFinal = planReport.EstadoFinal;
+					item.Observacao = planReport.Observacao;
+					item.AssinaturaCliente = planReport.AssinaturaCliente;
+					item.AssinaturaSie = planReport.AssinaturaSie;
+					item.AssinaturaTecnico = planReport.AssinaturaTecnico;
+					item.UtilizadorAssinaturaTecnico = evolutionWEBContext.Utilizador.Where(u => u.Id == planReport.IdAssinaturaTecnico).FirstOrDefault();
+					item.Rotina = planReport.RotinaTipo;
+				}
 				else
 				{
-					evolutionWEBContext.FichaManutencaoRelatorioRelatorio.Add(new FichaManutencaoRelatorioRelatorio
+					evolutionWEBContext.FichaManutencaoRelatorio.Add(new FichaManutencaoRelatorio
 					{
 						Om = order.No,
 						IdEquipamento = item.IdEquipamento,
 						Codigo = codigo,
 						Versao = versao,
-						Data = DateTime.Now,
 						EstadoFinal = 0,
-						Relatorio = "",
-                        CriadoPor = evolutionLoggedUser.Id,
-                        CriadoEm = DateTime.Now,
-                        ActualizadoPor = evolutionLoggedUser.Id,
-                        ActualizadoEm = DateTime.Now
+						CriadoPor = evolutionLoggedUser.Id,
+						CriadoEm = DateTime.Now,
+						ActualizadoPor = evolutionLoggedUser.Id,
+						ActualizadoEm = DateTime.Now,
+						RotinaTipo = rotina
 
-                    });
+					});
 					item.EstadoFinal = 0;
 				}
+				
+				try
+				{
+					evolutionWEBContext.SaveChanges();
+				}
+				catch (Exception ex)
+				{
+					var debug = ex;
+				}
+				
 
-				try { evolutionWEBContext.SaveChanges(); }
-				catch (Exception ex) { }
+				var planMaintenanceReport = evolutionWEBContext.FichaManutencaoRelatorioManutencao
+					.Where(r => r.IdRelatorio == planReport.Id);
+				item.PlanMaintenance.ForEach(i =>
+				{
+					int IdManutencao;
+					int.TryParse(i.IdManutencao.ToString(), out IdManutencao);
+
+					var maintenanceReportLine = planMaintenanceReport
+						.FirstOrDefault(r => r.IdManutencao == IdManutencao && r.IdRelatorio == planReport.Id);
+					if (maintenanceReportLine == null)
+					{
+						evolutionWEBContext.FichaManutencaoRelatorioManutencao.Add(new FichaManutencaoRelatorioManutencao
+						{
+							IdRelatorio = planReport.Id,
+							Observacoes = "",
+							IdManutencao = IdManutencao,
+							ResultadoRotina = 1
+						});
+						i.Resultado = 1;
+					}
+					else
+					{
+						i.Resultado = maintenanceReportLine.ResultadoRotina;
+						i.Observacoes = maintenanceReportLine.Observacoes;
+					}
+				});
+
+				var planQualityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQualitativos
+					.Where(r => r.IdRelatorio == planReport.Id);
+				item.PlanQuality.ForEach(i =>
+				{
+					int IdTesteQualitativos;
+					int.TryParse(i.IdTesteQualitativos.ToString(), out IdTesteQualitativos);
+
+					var planQualityReportLine = planQualityReport
+						.FirstOrDefault(r => r.IdRelatorio == planReport.Id && r.IdTesteQualitativos == IdTesteQualitativos);
+					if (planQualityReportLine == null)
+					{
+						evolutionWEBContext.FichaManutencaoRelatorioTestesQualitativos.Add(new FichaManutencaoRelatorioTestesQualitativos
+						{
+							IdRelatorio = planReport.Id,
+							Observacoes = "",
+							IdTesteQualitativos = IdTesteQualitativos,
+							ResultadoRotina = 1
+						});
+						i.Resultado = 1;
+					}
+					else
+					{
+						i.Resultado = planQualityReportLine.ResultadoRotina;
+						i.Observacoes = planQualityReportLine.Observacoes;
+					}
+				});
+
+				var planQuantityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos
+					.Where(r => r.IdRelatorio == planReport.Id);
+				item.PlanQuantity.ForEach(i =>
+				{
+					int IdTestesQuantitativos;
+					int.TryParse(i.IdTestesQuantitativos.ToString(), out IdTestesQuantitativos);
+
+					var planQuantityReportLine = planQuantityReport
+						.FirstOrDefault(r => r.IdRelatorio == planReport.Id && r.IdTestesQuantitativos == IdTestesQuantitativos);
+					if (planQuantityReportLine == null)
+					{
+						evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos.Add(new FichaManutencaoRelatorioTestesQuantitativos
+						{
+							IdRelatorio = planReport.Id,
+							Observacoes = "",
+							IdTestesQuantitativos = IdTestesQuantitativos,
+							ResultadoRotina = ""
+						});
+						i.Resultado = "";
+					}
+					else
+					{
+						i.Resultado = planQuantityReportLine.ResultadoRotina;
+						i.Observacoes = planQuantityReportLine.Observacoes;
+					}
+				});
+
+				try
+				{
+					evolutionWEBContext.SaveChanges();
+				}
+				catch (Exception ex)
+				{
+					var debug = ex;
+				}
 
 			});
 
@@ -383,6 +372,170 @@ namespace Hydra.Such.Portal.Controllers
                 currentUser = evolutionLoggedUser
             });
 		}
+
+		[Route("/ordens-de-manutencao/ficha-de-manutencao"), HttpPost, AcceptHeader("application/json")]
+		//[ResponseCache(Duration = 86400)]
+		public ActionResult PostMaintenancePlans([FromBody] List<EquipamentMaintenancePlanViewModel> plans, string orderId)
+		{
+			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
+
+			if (loggedUser == null) { return NotFound(); }
+
+			var loggedUserCresps = suchDBContext.AcessosDimensões.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).ToList();
+
+			var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
+
+			if (evolutionLoggedUser == null) { return NotFound(); }
+
+			if (string.IsNullOrEmpty(orderId)) { return NotFound(); }
+
+			var order = evolutionWEBContext.MaintenanceOrder.Where(m => m.No == orderId).FirstOrDefault();
+			if (order == null) { return NotFound(); }
+
+			if (plans == null) { return NotFound(); }
+
+			var Now = DateTime.Now;
+			
+			plans.ForEach((item) =>
+			{
+				
+				var planReport = evolutionWEBContext.FichaManutencaoRelatorio
+					.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && 
+					            r.Codigo == item.Codigo && r.Versao == item.Versao)
+					.OrderByDescending(o => o.Id).FirstOrDefault();
+				if (planReport != null)
+				{
+					planReport.EstadoFinal = item.EstadoFinal;
+					planReport.Observacao = item.Observacao;
+					planReport.AssinaturaCliente = item.AssinaturaCliente;
+					planReport.AssinaturaSie = item.AssinaturaSie;
+					planReport.AssinaturaTecnico = item.AssinaturaTecnico;
+					planReport.IdAssinaturaTecnico = item.UtilizadorAssinaturaTecnico!= null ?item.UtilizadorAssinaturaTecnico.Id : 0;
+					planReport.CriadoPor = evolutionLoggedUser.Id;
+					planReport.CriadoEm = Now;
+					planReport.ActualizadoPor = evolutionLoggedUser.Id;
+					planReport.ActualizadoEm = Now;
+					planReport.RotinaTipo = item.Rotina;
+				}
+				else
+				{
+					evolutionWEBContext.FichaManutencaoRelatorio.Add(new FichaManutencaoRelatorio
+					{
+						Om = order.No,
+						IdEquipamento = item.IdEquipamento,
+						Codigo = item.Codigo,
+						Versao = item.Versao,
+						EstadoFinal = item.EstadoFinal,						
+						CriadoPor = evolutionLoggedUser.Id,
+						CriadoEm = Now,
+						ActualizadoPor = evolutionLoggedUser.Id,
+						ActualizadoEm = Now,
+						AssinaturaCliente = item.AssinaturaCliente,
+						AssinaturaSie = item.AssinaturaSie,
+						AssinaturaTecnico = item.AssinaturaTecnico,
+						IdAssinaturaTecnico = item.UtilizadorAssinaturaTecnico!= null ?item.UtilizadorAssinaturaTecnico.Id : 0,
+						RotinaTipo = item.Rotina
+					});
+				}
+				
+				var planMaintenanceReport = evolutionWEBContext.FichaManutencaoRelatorioManutencao
+					.Where(r =>  r.IdRelatorio == planReport.Id 
+                );
+				item.PlanMaintenance.ForEach(i =>
+				{
+					int IdManutencao;
+					int.TryParse(i.IdManutencao.ToString(), out IdManutencao);
+
+					var maintenanceReportLine = planMaintenanceReport
+						.FirstOrDefault(r => r.IdRelatorio == planReport.Id && r.IdManutencao == IdManutencao);
+					if (maintenanceReportLine == null)
+					{
+						evolutionWEBContext.FichaManutencaoRelatorioManutencao.Add(new FichaManutencaoRelatorioManutencao
+						{       
+							IdRelatorio = planReport.Id,
+							IdManutencao = IdManutencao,
+							ResultadoRotina = i.Resultado,
+							Observacoes = i.Observacoes
+						});
+					}
+					else
+					{
+						maintenanceReportLine.ResultadoRotina = i.Resultado;
+						maintenanceReportLine.Observacoes = i.Observacoes;
+					}
+				});
+
+				var planQualityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQualitativos
+					.Where(r => r.IdRelatorio == planReport.Id 
+				);
+				item.PlanQuality.ForEach(i =>
+				{
+					int IdTesteQualitativos;
+					int.TryParse(i.IdTesteQualitativos.ToString(), out IdTesteQualitativos);
+
+					var planQualityReportLine = planQualityReport
+						.FirstOrDefault(r => r.IdRelatorio == planReport.Id && r.IdTesteQualitativos == IdTesteQualitativos);
+					if (planQualityReportLine == null)
+					{
+						evolutionWEBContext.FichaManutencaoRelatorioTestesQualitativos.Add(new FichaManutencaoRelatorioTestesQualitativos
+						{
+							IdTesteQualitativos = IdTesteQualitativos,
+							IdRelatorio = planReport.Id,
+							ResultadoRotina = i.Resultado,
+							Observacoes = i.Observacoes
+						});
+					}
+					else
+					{
+						planQualityReportLine.ResultadoRotina = i.Resultado;
+						planQualityReportLine.Observacoes = i.Observacoes;
+					}
+				});
+
+
+				var planQuantityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos
+					.Where(r => r.IdRelatorio == planReport.Id 
+                );
+				item.PlanQuantity.ForEach(i =>
+				{
+					int IdTestesQuantitativos;
+					int.TryParse(i.IdTestesQuantitativos.ToString(), out IdTestesQuantitativos);
+
+					var planQuantityReportLine = planQuantityReport.FirstOrDefault(r => 
+						r.IdRelatorio == planReport.Id && r.IdTestesQuantitativos == IdTestesQuantitativos);
+					if (planQuantityReportLine == null)
+					{
+						evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos.Add(new FichaManutencaoRelatorioTestesQuantitativos
+						{
+							IdTestesQuantitativos = IdTestesQuantitativos,
+							IdRelatorio = planReport.Id,
+							ResultadoRotina = i.Resultado,
+							Observacoes = i.Observacoes
+						});
+					}
+					else
+					{
+						planQuantityReportLine.ResultadoRotina = i.Resultado;
+						planQuantityReportLine.Observacoes = i.Observacoes;
+					}
+				});
+				
+			});
+			
+			try
+			{
+				evolutionWEBContext.SaveChanges();
+			}
+			catch (Exception ex)
+			{
+
+				var teste = ex;
+
+			}
+
+			return Json(true);
+		}
 	}
+	
 }
 
