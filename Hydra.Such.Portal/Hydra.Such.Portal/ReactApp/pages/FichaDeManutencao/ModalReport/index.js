@@ -9,6 +9,8 @@ import {
 import {Grid} from '@material-ui/core';
 import Report from './Report';
 import Signature from './Signature';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import './index.scss';
 
 const {DialogTitle, DialogContent, DialogActions} = ModalLarge;
@@ -132,7 +134,7 @@ class ModalReport extends Component {
                 }}
                 onClose={() => {
                     console.log('close')
-                    this.setState({open: false});
+                    this.setState({open: false, reportMode: true});
                     if (this.props.onClose) {
                         this.props.onClose();
                     }
