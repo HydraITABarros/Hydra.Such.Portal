@@ -22,8 +22,6 @@ import _theme from '../../themes/default';
 import Color from 'color';
 import _ from 'lodash';
 import Functions from '../../helpers/functions';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import './index.scss';
 
 const addLinkedPropsToObject = Functions.addLinkedPropsToObject;
@@ -177,8 +175,7 @@ class FichaDeManutencao extends Component {
         this.waipointQualitativoHandlerLeave = this.waipointQualitativoHandlerLeave.bind(this);
         this.waipointQuantitativoHandlerLeave = this.waipointQuantitativoHandlerLeave.bind(this);
         this.handleScrollTo = this.handleScrollTo.bind(this);
-        window.html2canvas = html2canvas;
-        window.jsPDF = jsPDF;
+
         this.fetch();
     }
 
@@ -354,6 +351,26 @@ class FichaDeManutencao extends Component {
         el.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
+        });
+    }
+
+    postPlans() {
+        console.log(this.state.equipments);
+
+        var url = `/ordens-de-manutencao/ficha-de-manutencao`;
+
+        axios.post(url + "?orderId=" + this.state.orderId,
+            this.state.equipments.map((item) => {
+                var retval = {};
+                Object.keys(item).map(k => {
+                    if (k.indexOf('$') > -1) {
+                        return;
+                    }
+                    retval[k] = item[k];
+                })
+                return retval;
+            })
+        ).then((result) => {
         });
     }
 
@@ -626,6 +643,7 @@ class FichaDeManutencao extends Component {
                                                                            description={item.descricao}
                                                                            $equipments={this.state.$equipments}
                                                                            category={'planQuality'} itemIndex={index}
+                                                                           item={item}
                                                                            onClose={() => {
                                                                                item.open = false;
                                                                                this.setState({toUpdate: this.state.toUpdate + 1});
@@ -675,6 +693,7 @@ class FichaDeManutencao extends Component {
                                                                            description={item.descricao}
                                                                            $equipments={this.state.$equipments}
                                                                            category={'planQuantity'} itemIndex={index}
+                                                                           item={item}
                                                                            onClose={() => {
                                                                                item.open = false;
                                                                                this.setState({toUpdate: this.state.toUpdate + 1});
@@ -716,6 +735,9 @@ class FichaDeManutencao extends Component {
                                                                     model={equipment.modeloText}
                                                                     serialNumber={equipment.numSerie}
                                                                     inventoryNumber={equipment.numInventario}/>
+                                                                <Button default onClick={() => {
+                                                                    this.postPlans();
+                                                                }}>Gravar</Button>
                                                             </Wrapper>
                                                         </PlanEquipmentsItem>
                                                     )
