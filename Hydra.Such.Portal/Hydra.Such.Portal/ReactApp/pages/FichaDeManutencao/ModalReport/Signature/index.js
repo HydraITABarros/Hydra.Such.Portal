@@ -30,7 +30,11 @@ class Signature extends Component {
 
     constructor(props) {
         super(props);
-        this.selectedEquipments = this.props.$equipments.value;
+        this.state.selectedEquipments = this.props.$equipments.value;
+
+        this.state.clientSignaturePadPng = this.state.selectedEquipments && this.state.selectedEquipments[0] ? this.state.selectedEquipments[0].assinaturaCliente : null;
+        this.state.technicalSignaturePadPng = this.state.selectedEquipments && this.state.selectedEquipments[0] ? this.state.selectedEquipments[0].assinaturaTecnico : null;
+        this.state.sieSignaturePadPng = this.state.selectedEquipments && this.state.selectedEquipments[0] ? this.state.selectedEquipments[0].assinaturaSie : null;
     }
 
     render() {
@@ -116,8 +120,6 @@ class Signature extends Component {
                         <CheckBox id="assinaturamanual"/> <label htmlFor="assinaturamanual" className="pointer"><Text
                         span>Assinatura manual</Text></label>
                     </DialogContent>
-                </Grid>
-                <Grid item xs={12} lg={0} xl={2}>
                 </Grid>
                 {this.state.clientSignaturePadOpen &&
                 <div className={"signature-pad__wrapper signature-pad__wrapper--open"}>
