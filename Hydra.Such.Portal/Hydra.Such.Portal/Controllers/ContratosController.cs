@@ -4660,14 +4660,20 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (!hasErrors)
-                                        hasErrors = true;
+                                    if (!errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    {
+                                        if (!hasErrors)
+                                            hasErrors = true;
 
-                                    execDetails += " Erro ao criar as linhas: ";
-                                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                    result.eReasonCode = 2;
-                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
-                             
+                                        execDetails += " Erro ao criar as linhas: ";
+                                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                        result.eReasonCode = 2;
+                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    }
+                                    else
+                                    {
+                                        registado = true;
+                                    }
                                 }
                             }
 
@@ -4915,14 +4921,20 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (!hasErrors)
-                                        hasErrors = true;
+                                    if (!errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    {
+                                        if (!hasErrors)
+                                            hasErrors = true;
 
-                                    execDetails += " Erro ao criar as linhas: ";
-                                    result.eReasonCode = 2;
-                                    errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
-                                    
+                                        execDetails += " Erro ao criar as linhas: ";
+                                        errorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                                        result.eReasonCode = 2;
+                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, execDetails + errorMessage));
+                                    }
+                                    else
+                                    {
+                                        registado = true;
+                                    }
                                 }
                             }
 
