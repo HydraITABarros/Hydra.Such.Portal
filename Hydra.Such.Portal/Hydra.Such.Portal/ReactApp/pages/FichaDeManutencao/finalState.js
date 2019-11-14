@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
-import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, Tooltip, Button, Text as EText, Select, MenuItem, Modal, Input, Icon } from 'components';
+import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
+import {Wrapper, Tooltip, Button, Text as EText, Select, MenuItem, Modal, Input, Icon} from 'components';
 import MuiGrid from '@material-ui/core/Grid';
-import { observable } from 'mobx';
-import { observer } from 'mobx-react';
+import {observable} from 'mobx';
+import {observer} from 'mobx-react';
 import _theme from '../../themes/default';
-const { DialogTitle, DialogContent, DialogActions } = Modal;
+
+const {DialogTitle, DialogContent, DialogActions} = Modal;
 
 const Root = styled.div`
 	display: block;
@@ -119,120 +120,128 @@ const Spacer = styled.div`
 `;
 
 class FinalState extends Component {
-	state = {
-		open: false
-	}
+    state = {
+        open: false
+    }
 
-	constructor(props) {
-		super(props);
-	}
+    constructor(props) {
+        super(props);
 
-	render() {
-		let props = this.props;
-		let state = this.state;
+        console.log('12312', props.$value);
 
-		return (
-			<Root>
-				<ActionWrapper container className={props.$value.value == 0 ? 'fs-grey' : props.$value.value == 3 ? 'fs-red' : 'fs-green'}>
-					<Select
-						input={<FinalInput value={props.$value.value} />}
-						onChange={(e) => {
-							var value = e.target.value;
-							props.$value.value = value;
+    }
 
-							if (typeof this.props.onChange == 'function') {
-								this.props.onChange(e);
-							}
+    render() {
+        let props = this.props;
+        let state = this.state;
 
-							this.setState({}, () => {
-								if (value >= 2) {
-									this.setState({ open: true });
-								}
-							});
-						}}
-					>
-						<MenuItem value={0} style={{ padding: '11px', textAlign: 'center' }}>
-							<div style={{ textAlign: 'center', width: '100%' }}>
-								<span className={'va-m'}>0 &nbsp;&nbsp;</span><Icon remove className={'s-20'} />
-							</div>
-						</MenuItem>
-						<MenuItem value={1} style={{ padding: '11px' }}>
-							<div style={{ textAlign: 'center', width: '100%' }}>
-								<span className={'va-m'}>1 &nbsp;&nbsp;</span><Icon approved className={'s-18'} />
-							</div>
-						</MenuItem>
-						<MenuItem value={2} style={{ padding: '11px', textAlign: 'center' }}>
-							<div style={{ textAlign: 'center', width: '100%' }}>
-								<span className={'va-m'}>2 &nbsp;&nbsp;</span><Icon comments className={'s-18'} />
-							</div>
-						</MenuItem>
-						<MenuItem value={3} style={{ padding: '11px', textAlign: 'center' }}>
-							<div style={{ textAlign: 'center', width: '100%' }}>
-								<span className={'va-m'}>3 &nbsp;&nbsp;</span><Icon decline className={'s-18'} />
-							</div>
-						</MenuItem>
-					</Select>
-					{/* <Button icon={<Icon remove />} style={{ maxWidth: '100%' }}></Button> */}
+        return (
+            <Root>
+                <ActionWrapper container
+                               className={props.$value.value == 0 ? 'fs-grey' : props.$value.value == 3 ? 'fs-red' : 'fs-green'}>
+                    <Select
+                        input={<FinalInput value={props.$value.value}/>}
+                        onChange={(e) => {
+                            var value = e.target.value;
+                            props.$value.value = value;
 
-					<Modal open={this.state.open} onClose={() => this.setState({ open: false })} children={
-						<div>
-							<DialogTitle><EText h2>Estado Final</EText></DialogTitle>
-							<hr />
-							<DialogContent>
-								<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} >
-									<Grid item md={9} >
-										<Grid container direction="row" justify="space-between" alignitems="top" spacing={0} maxwidth={'100%'} margin={0} >
-											<Grid item xs={3} >
-												<div>
-													<EText b> Marca</EText>
-												</div>
-												<div>
-													<EText b> Modelo</EText>
-												</div>
-												<div>
-													<EText b> Nº Série</EText>
-												</div>
-												<div>
-													<EText b> Nº Inv.</EText>
-												</div>
-											</Grid>
-											<Grid item xs={9} >
-												<div>
-													<EText span> {props.brand}</EText>
-												</div>
-												<div>
-													<EText span> {props.model}</EText>
-												</div>
-												<div>
-													<EText span> {props.serialNumber}</EText>
-												</div>
-												<div>
-													<EText span> {props.inventoryNumber}</EText>
-												</div>
-											</Grid>
-										</Grid>
-										<Spacer /><Spacer />
-										{/* <Input $value={props.$value} placeholder={'Definir notificação interna'} />
+                            if (typeof this.props.onChange == 'function') {
+                                this.props.onChange(e);
+                            }
+
+                            this.setState({}, () => {
+                                if (value >= 2) {
+                                    this.setState({open: true});
+                                }
+                            });
+                        }}
+                        value={this.props.$value.value}
+                    >
+                        <MenuItem value={0} style={{padding: '11px', textAlign: 'center'}}>
+                            <div style={{textAlign: 'center', width: '100%'}}>
+                                <span className={'va-m'}>0 &nbsp;&nbsp;</span><Icon remove className={'s-20'}/>
+                            </div>
+                        </MenuItem>
+                        <MenuItem value={1} style={{padding: '11px'}}>
+                            <div style={{textAlign: 'center', width: '100%'}}>
+                                <span className={'va-m'}>1 &nbsp;&nbsp;</span><Icon approved className={'s-18'}/>
+                            </div>
+                        </MenuItem>
+                        <MenuItem value={2} style={{padding: '11px', textAlign: 'center'}}>
+                            <div style={{textAlign: 'center', width: '100%'}}>
+                                <span className={'va-m'}>2 &nbsp;&nbsp;</span><Icon comments className={'s-18'}/>
+                            </div>
+                        </MenuItem>
+                        <MenuItem value={3} style={{padding: '11px', textAlign: 'center'}}>
+                            <div style={{textAlign: 'center', width: '100%'}}>
+                                <span className={'va-m'}>3 &nbsp;&nbsp;</span><Icon decline className={'s-18'}/>
+                            </div>
+                        </MenuItem>
+                    </Select>
+                    {/* <Button icon={<Icon remove />} style={{ maxWidth: '100%' }}></Button> */}
+
+                    <Modal open={this.state.open} onClose={() => this.setState({open: false})} children={
+                        <div>
+                            <DialogTitle><EText h2>Estado Final</EText></DialogTitle>
+                            <hr/>
+                            <DialogContent>
+                                <Grid container direction="row" justify="space-between" alignitems="top" spacing={0}
+                                      maxwidth={'100%'} margin={0}>
+                                    <Grid item md={9}>
+                                        <Grid container direction="row" justify="space-between" alignitems="top"
+                                              spacing={0} maxwidth={'100%'} margin={0}>
+                                            <Grid item xs={3}>
+                                                <div>
+                                                    <EText b> Marca</EText>
+                                                </div>
+                                                <div>
+                                                    <EText b> Modelo</EText>
+                                                </div>
+                                                <div>
+                                                    <EText b> Nº Série</EText>
+                                                </div>
+                                                <div>
+                                                    <EText b> Nº Inv.</EText>
+                                                </div>
+                                            </Grid>
+                                            <Grid item xs={9}>
+                                                <div>
+                                                    <EText span> {props.brand}</EText>
+                                                </div>
+                                                <div>
+                                                    <EText span> {props.model}</EText>
+                                                </div>
+                                                <div>
+                                                    <EText span> {props.serialNumber}</EText>
+                                                </div>
+                                                <div>
+                                                    <EText span> {props.inventoryNumber}</EText>
+                                                </div>
+                                            </Grid>
+                                        </Grid>
+                                        <Spacer/><Spacer/>
+                                        {/* <Input $value={props.$value} placeholder={'Definir notificação interna'} />
 										<Spacer /><Spacer /> */}
-										<Input multiline rowsMax="6" rows="6" $value={props.$message} placeholder={'Inserir observação geral'} />
-										<Spacer /><Spacer />
-										<Button icon={<Icon attach />}>Anexar Fotos</Button>
-										<Spacer /><Spacer />
-									</Grid>
-								</Grid>
-							</DialogContent>
-							<hr />
-							<DialogActions>
-								<Button primary color="primary" onClick={() => {
-									this.setState({ open: false });
-								}}>Guardar</Button>
-							</DialogActions>
-						</div>
-					} />
-				</ActionWrapper>
-			</Root>
-		);
-	}
+                                        <Input multiline rowsMax="6" rows="6" $value={props.$message}
+                                               placeholder={'Inserir observação geral'}/>
+                                        <Spacer/><Spacer/>
+                                        <Button icon={<Icon attach/>}>Anexar Fotos</Button>
+                                        <Spacer/><Spacer/>
+                                    </Grid>
+                                </Grid>
+                            </DialogContent>
+                            <hr/>
+                            <DialogActions>
+                                <Button primary color="primary" onClick={() => {
+                                    this.setState({open: false});
+                                }}>Guardar</Button>
+                            </DialogActions>
+                        </div>
+                    }/>
+                </ActionWrapper>
+            </Root>
+        );
+    }
 };
 
 export default FinalState;
