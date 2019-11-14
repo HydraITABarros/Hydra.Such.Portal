@@ -4660,7 +4660,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (!errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    if (!ex.Message.ToLower().Contains("maximum message size quota".ToLower()))
                                     {
                                         if (!hasErrors)
                                             hasErrors = true;
@@ -4921,7 +4921,7 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    if (!errorMessage.ToLower().Contains("maximum message size quota".ToLower()))
+                                    if (!ex.Message.ToLower().Contains("maximum message size quota".ToLower()))
                                     {
                                         if (!hasErrors)
                                             hasErrors = true;
