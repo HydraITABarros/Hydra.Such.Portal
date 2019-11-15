@@ -1595,7 +1595,7 @@ namespace Hydra.Such.Portal.Controllers
                                             Descrição = pjD.Description,
                                             Quantidade = pjD.Quantity,
                                             CódUnidadeMedida = pjD.MeasurementUnitCode,
-                                            CódLocalização = pjD.LocationCode,
+                                            CódLocalização = null, // pjD.LocationCode, Pedido do Marco Marcelo Dia 15/11/2019
                                             GrupoContabProjeto = pjD.ProjectContabGroup,
                                             CódigoRegião = projecto.CódigoRegião,
                                             CódigoÁreaFuncional = projecto.CódigoÁreaFuncional,
@@ -1697,7 +1697,7 @@ namespace Hydra.Such.Portal.Controllers
                             Descrição = x.Description,
                             Quantidade = x.Quantity,
                             CódUnidadeMedida = x.MeasurementUnitCode,
-                            CódLocalização = x.LocationCode,
+                            CódLocalização = null, // x.LocationCode, Pedido do Marco Marcelo Dia 15/11/2019
                             GrupoContabProjeto = x.ProjectContabGroup,
                             CódigoRegião = projecto.CódigoRegião,
                             CódigoÁreaFuncional = projecto.CódigoÁreaFuncional,
@@ -3332,42 +3332,68 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetProjMovementsLines([FromBody] string ProjNo, int? ProjGroup, bool Faturada = false)
         {
             //TODO: substituir GetMovimentosFaturacao         
-            List<ProjectMovementViewModel> projectMovements = new List<ProjectMovementViewModel>();
+            List<MovementAuthorizedProjectViewModel> AuthorizedProjectMovements = new List<MovementAuthorizedProjectViewModel>();
             try
             {
-                projectMovements = DBProjectMovements.GetProjMovementsById(ProjNo, ProjGroup, Faturada)
-               .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
-               .OrderBy(x => x.ClientName).ToList();
+                AuthorizedProjectMovements = DBAuthorizedProjectMovements.GetMovementById((int)ProjGroup, ProjNo)
+                    .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
 
-                if (projectMovements.Count > 0)
+                if (AuthorizedProjectMovements.Count > 0)
                 {
                     var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                    foreach (var lst in projectMovements)
+                    List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                    foreach (var lst in AuthorizedProjectMovements)
                     {
-                        if (lst.MovementType == 3)
-                        {
-                            lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
-                        }
-
-                        if (!String.IsNullOrEmpty(lst.Currency))
-                        {
-                            lst.UnitPrice = lst.UnitValueToInvoice;
-                        }
+                        lst.ClientName = !string.IsNullOrEmpty(lst.CodClient) ? AllClients.Where(x => x.No_ == lst.CodClient).FirstOrDefault().Name : "";
                     }
                     List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
                     if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
-                        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                        AuthorizedProjectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
                     if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
-                        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                        AuthorizedProjectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
                     if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
+                        AuthorizedProjectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
                 }
+
+                //List<ProjectMovementViewModel> projectMovements = new List<ProjectMovementViewModel>();
+
+                //projectMovements = DBProjectMovements.GetProjMovementsById(ProjNo, ProjGroup, Faturada)
+                //    .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
+                //    .OrderBy(x => x.ClientName).ToList();
+
+                //if (projectMovements.Count > 0)
+                //{
+                //    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //    foreach (var lst in projectMovements)
+                //    {
+                //        if (lst.MovementType == 3)
+                //        {
+                //            lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
+                //        }
+
+                //        if (!String.IsNullOrEmpty(lst.Currency))
+                //        {
+                //            lst.UnitPrice = lst.UnitValueToInvoice;
+                //        }
+                //    }
+                //    List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
+                //    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
+                //        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
+                //    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
+                //        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
+                //    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                //        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
+                //}
             }
             catch (Exception ex)
             {
-                projectMovements = new List<ProjectMovementViewModel>();
+                //projectMovements = new List<ProjectMovementViewModel>();
+
+                AuthorizedProjectMovements = new List<MovementAuthorizedProjectViewModel>();
             }
-            return Json(projectMovements);
+            //return Json(projectMovements);
+
+            return Json(AuthorizedProjectMovements.OrderBy(x => x.ClientName));
         }
 
         [HttpPost]
@@ -6723,7 +6749,7 @@ namespace Hydra.Such.Portal.Controllers
         //1
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
-        public async Task<JsonResult> ExportToExcel_DetalhesAutorizacao([FromBody] List<ProjectMovementViewModel> Lista)
+        public async Task<JsonResult> ExportToExcel_DetalhesAutorizacao([FromBody] List<MovementAuthorizedProjectViewModel> Lista)
         {
             string sWebRootFolder = _generalConfig.FileUploadFolder + "Projetos\\" + "tmp\\";
             string user = User.Identity.Name;
@@ -6741,75 +6767,75 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
 
                 row.CreateCell(0).SetCellValue("Data");
-                row.CreateCell(1).SetCellValue("Tipo Movimento");
-                row.CreateCell(2).SetCellValue("Tipo");
-                row.CreateCell(3).SetCellValue("Código");
-                row.CreateCell(4).SetCellValue("Descrição");
-                row.CreateCell(5).SetCellValue("Quantidade");
-                row.CreateCell(6).SetCellValue("Cód. Unidade Medida");
-                row.CreateCell(7).SetCellValue("Preço Unitário");
-                row.CreateCell(8).SetCellValue("Preço Total");
-                row.CreateCell(9).SetCellValue("Faturável");
-                row.CreateCell(10).SetCellValue("Tipo de Recurso");
-                row.CreateCell(11).SetCellValue("Código Serviço");
-                row.CreateCell(12).SetCellValue("Descrição Serviço");
-                row.CreateCell(13).SetCellValue("Grupo Serviços");
-                row.CreateCell(14).SetCellValue("Nº Guia Externa");
-                row.CreateCell(15).SetCellValue("Data Consumo Guia");
-                row.CreateCell(16).SetCellValue("Nº Guia de Residuos");
-                row.CreateCell(17).SetCellValue("Nº Guia Corrigida");
-                row.CreateCell(18).SetCellValue("Data Consumo Guia Corrigida");
-                row.CreateCell(19).SetCellValue("Destino Final Residuos");
-                row.CreateCell(20).SetCellValue("Tipo Refeição");
-                row.CreateCell(21).SetCellValue("Nº Documento");
-                row.CreateCell(22).SetCellValue("Localização");
-                row.CreateCell(23).SetCellValue("Custo Unitário");
-                row.CreateCell(24).SetCellValue("Custo Total");
-                row.CreateCell(25).SetCellValue("Região");
-                row.CreateCell(26).SetCellValue("Área Funcional");
-                row.CreateCell(27).SetCellValue("Centro Responsabilidade");
-                row.CreateCell(28).SetCellValue("Nº Projeto");
-                row.CreateCell(29).SetCellValue("Nº Movimento");
-                row.CreateCell(30).SetCellValue("Fatura-a Nº Cliente");
-                row.CreateCell(31).SetCellValue("Nome Cliente");
+                //row.CreateCell(1).SetCellValue("Tipo Movimento");
+                row.CreateCell(1).SetCellValue("Tipo");
+                row.CreateCell(2).SetCellValue("Código");
+                row.CreateCell(3).SetCellValue("Descrição");
+                row.CreateCell(4).SetCellValue("Quantidade");
+                row.CreateCell(5).SetCellValue("Cód. Unidade Medida");
+                row.CreateCell(6).SetCellValue("Preço Unitário");
+                row.CreateCell(7).SetCellValue("Preço Total");
+                //row.CreateCell(9).SetCellValue("Faturável");
+                row.CreateCell(8).SetCellValue("Tipo de Recurso");
+                row.CreateCell(9).SetCellValue("Código Serviço");
+                row.CreateCell(10).SetCellValue("Descrição Serviço");
+                row.CreateCell(11).SetCellValue("Grupo Serviços");
+                row.CreateCell(12).SetCellValue("Nº Guia Externa");
+                row.CreateCell(13).SetCellValue("Data Consumo Guia");
+                row.CreateCell(14).SetCellValue("Nº Guia de Residuos");
+                //row.CreateCell(17).SetCellValue("Nº Guia Corrigida");
+                //row.CreateCell(18).SetCellValue("Data Consumo Guia Corrigida");
+                //row.CreateCell(19).SetCellValue("Destino Final Residuos");
+                row.CreateCell(15).SetCellValue("Tipo Refeição");
+                row.CreateCell(16).SetCellValue("Nº Documento");
+                //row.CreateCell(22).SetCellValue("Localização");
+                row.CreateCell(17).SetCellValue("Custo Unitário");
+                row.CreateCell(18).SetCellValue("Custo Total");
+                row.CreateCell(19).SetCellValue("Região");
+                row.CreateCell(20).SetCellValue("Área Funcional");
+                row.CreateCell(21).SetCellValue("Centro Responsabilidade");
+                row.CreateCell(22).SetCellValue("Nº Projeto");
+                row.CreateCell(23).SetCellValue("Nº Movimento");
+                row.CreateCell(24).SetCellValue("Fatura-a Nº Cliente");
+                row.CreateCell(25).SetCellValue("Nome Cliente");
 
                 int count = 1;
-                foreach (ProjectMovementViewModel item in Lista)
+                foreach (MovementAuthorizedProjectViewModel item in Lista)
                 {
                     row = excelSheet.CreateRow(count);
 
                     row.CreateCell(0).SetCellValue(item.Date);
-                    row.CreateCell(1).SetCellValue(item.MovementType.ToString());
-                    row.CreateCell(2).SetCellValue(item.Type.ToString());
-                    row.CreateCell(3).SetCellValue(item.Code);
-                    row.CreateCell(4).SetCellValue(item.Description);
-                    if (item.Quantity != null) row.CreateCell(5).SetCellValue((double)item.Quantity);
-                    row.CreateCell(6).SetCellValue(item.MeasurementUnitCode);
-                    if (item.UnitPrice != null) row.CreateCell(7).SetCellValue((double)item.UnitPrice);
-                    if (item.TotalPrice != null) row.CreateCell(8).SetCellValue((double)item.TotalPrice);
-                    row.CreateCell(9).SetCellValue(item.Billable.ToString());
-                    row.CreateCell(10).SetCellValue(item.ResourceType.ToString());
-                    row.CreateCell(11).SetCellValue(item.ServiceClientCode);
-                    row.CreateCell(12).SetCellValue(item.ServiceClientDescription);
-                    row.CreateCell(13).SetCellValue(item.ServiceGroupCode);
-                    row.CreateCell(14).SetCellValue(item.ExternalGuideNo);
-                    row.CreateCell(15).SetCellValue(item.ConsumptionDate);
-                    row.CreateCell(16).SetCellValue(item.ResidueGuideNo);
-                    row.CreateCell(17).SetCellValue(item.AdjustedDocument);
-                    row.CreateCell(18).SetCellValue(item.AdjustedDocumentDate);
-                    row.CreateCell(19).SetCellValue(item.ResidueFinalDestinyCode.ToString());
-                    row.CreateCell(20).SetCellValue(item.MealType.ToString());
-                    row.CreateCell(21).SetCellValue(item.DocumentNo);
-                    row.CreateCell(22).SetCellValue(item.LocationCode);
-                    if (item.UnitCost != null) row.CreateCell(23).SetCellValue((double)item.UnitCost);
-                    if (item.TotalCost != null) row.CreateCell(24).SetCellValue((double)item.TotalCost);
-                    row.CreateCell(25).SetCellValue(item.RegionCode);
-                    row.CreateCell(26).SetCellValue(item.FunctionalAreaCode);
-                    row.CreateCell(27).SetCellValue(item.ResponsabilityCenterCode);
-                    row.CreateCell(28).SetCellValue(item.ProjectNo);
-                    row.CreateCell(29).SetCellValue(item.LineNo);
-                    row.CreateCell(30).SetCellValue(item.InvoiceToClientNo);
-                    row.CreateCell(31).SetCellValue(item.ClientName);
+                    //row.CreateCell(1).SetCellValue(item.MovementType.ToString());
+                    row.CreateCell(1).SetCellValue(item.Type.ToString());
+                    row.CreateCell(2).SetCellValue(item.Code);
+                    row.CreateCell(3).SetCellValue(item.Description);
+                    if (item.Quantity != null) row.CreateCell(4).SetCellValue((double)item.Quantity);
+                    row.CreateCell(5).SetCellValue(item.UnitCode);
+                    if (item.SalesPrice != null) row.CreateCell(6).SetCellValue((double)item.SalesPrice);
+                    if (item.TotalPrice != null) row.CreateCell(7).SetCellValue((double)item.TotalPrice);
+                    //row.CreateCell(9).SetCellValue(item.Billable.ToString());
+                    row.CreateCell(8).SetCellValue(item.TypeResourse.ToString());
+                    row.CreateCell(9).SetCellValue(item.CodServClient);
+                    row.CreateCell(10).SetCellValue(item.DescServClient);
+                    row.CreateCell(11).SetCellValue(item.CodServiceGroup);
+                    row.CreateCell(12).SetCellValue(item.NumGuideExternal);
+                    row.CreateCell(13).SetCellValue(Convert.ToDateTime(item.DateConsume).ToShortDateString());
+                    row.CreateCell(14).SetCellValue(item.NumGuideResiduesGar);
+                    //row.CreateCell(17).SetCellValue(item.AdjustedDocument);
+                    //row.CreateCell(18).SetCellValue(item.AdjustedDocumentDate);
+                    //row.CreateCell(19).SetCellValue(item.ResidueFinalDestinyCode.ToString());
+                    row.CreateCell(15).SetCellValue(item.TypeMeal.ToString());
+                    row.CreateCell(16).SetCellValue(item.NumDocument);
+                    //row.CreateCell(22).SetCellValue(item.LocationCode);
+                    if (item.CostPrice != null) row.CreateCell(17).SetCellValue((double)item.CostPrice);
+                    if (item.CostTotal != null) row.CreateCell(18).SetCellValue((double)item.CostTotal);
+                    row.CreateCell(19).SetCellValue(item.RegionCode);
+                    row.CreateCell(20).SetCellValue(item.FunctionalAreaCode);
+                    row.CreateCell(21).SetCellValue(item.ResponsabilityCenterCode);
+                    row.CreateCell(22).SetCellValue(item.CodProject);
+                    row.CreateCell(23).SetCellValue(item.NoMovement);
+                    row.CreateCell(24).SetCellValue(item.CodClient);
+                    row.CreateCell(25).SetCellValue(item.ClientName);
 
                     count++;
                 }

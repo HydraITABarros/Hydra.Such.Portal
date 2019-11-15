@@ -32,6 +32,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public decimal? CostPrice { get; set; }
         public decimal? CostTotal { get; set; }
         public string CodClient { get; set; }
+        public string ClientName { get; set; }
         public int InvoiceGroup { get; set; }
     }
 }

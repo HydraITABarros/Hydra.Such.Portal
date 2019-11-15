@@ -11262,6 +11262,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Parametro")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.Descricao)
+                    .HasColumnName("Descricao")
+                    .HasMaxLength(500);
+
                 entity.Property(e => e.Valor)
                     .HasColumnName("Valor")
                     .HasMaxLength(50);

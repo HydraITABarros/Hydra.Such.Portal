@@ -1,5 +1,7 @@
 ﻿using Hydra.Such.Data;
+using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Fornecedores;
@@ -257,8 +259,6 @@ namespace Hydra.Such.Portal.Controllers
                 if (data.Criticidade == null) data.Criticidade = 0;
                 if (string.IsNullOrEmpty(data.Observacoes)) data.Observacoes = "";
 
-
-
                 data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
                 var createVendorTask = WSVendorService.CreateAsync(data, _configws);
                 try
@@ -286,12 +286,74 @@ namespace Hydra.Such.Portal.Controllers
                 var vendor = WSVendorService.MapVendorNAVToVendorModel(result.WSVendor);
                 if (vendor != null)
                 {
+                    //SUCESSO
                     vendor.eReasonCode = 1;
+
+                    //Envio de email
+                    ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetByParametro("AddFornecedorEmail");
+                    if (Parametro != null && !string.IsNullOrEmpty(Parametro.Valor))
+                    {
+                        SendEmailApprovals Email = new SendEmailApprovals();
+
+                        Email.DisplayName = "e-SUCH - Fornecedor";
+                        Email.From = User.Identity.Name;
+                        Email.To.Add(Parametro.Valor);
+                        Email.Subject = "e-SUCH - Foi criado um novo Fornecedor";
+                        Email.Body = MakeEmailBodyContent("Foi criado um novo Fornecedor " + vendor.Name + " como o código Nº " + vendor.No + " no e-SUCH.");
+                        Email.IsBodyHtml = true;
+
+                        Email.SendEmail_Simple();
+                    }
+
                     return Json(vendor);
                 }
 
             }
             return Json(data);
+        }
+
+        public static string MakeEmailBodyContent(string BodyText)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Caro (a)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
         }
 
         [HttpPost]
