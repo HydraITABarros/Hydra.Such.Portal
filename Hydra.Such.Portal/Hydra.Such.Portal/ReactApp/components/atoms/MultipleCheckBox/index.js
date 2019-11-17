@@ -41,7 +41,7 @@ class MultipleCheckBox extends Component {
                 this.props.onChange(value);
             }
             if (this.props.$value) {
-                this.props.$value.value = this.state.value;
+                this.props.$value.value = value;
             }
         });
     }
