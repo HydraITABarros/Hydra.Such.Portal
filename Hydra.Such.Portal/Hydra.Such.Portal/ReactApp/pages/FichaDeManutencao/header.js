@@ -9,14 +9,13 @@ import Hidden from '@material-ui/core/Hidden';
 import {withRouter} from 'react-router-dom';
 import functions from '../../helpers/functions';
 import mOptions from './modalOptions';
-import mEquipments from './modalEquipments';
+import mEquipments from './ModalEquipments';
 import mAssinatura from './ModalSignature';
 import ModalReport from './ModalReport'
 import _theme from '../../themes/default';
 
 const muiTheme = createMuiTheme();
 const breakpoints = muiTheme.breakpoints.values;
-
 
 const RootTitle = styled(Wrapper)` && {
 	padding: 20px 25px 0;
