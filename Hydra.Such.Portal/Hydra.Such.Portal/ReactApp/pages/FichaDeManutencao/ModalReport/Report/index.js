@@ -324,7 +324,7 @@ class Report extends Component {
                                             {this.state.selectedEquipments.map((equipments, index) => {
                                                 return (
                                                     <div key={index}
-                                                         className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+                                                         className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                         <Text b className="report__label">
                                                             #{index + 1}
                                                         </Text>
@@ -348,7 +348,7 @@ class Report extends Component {
                                                     {this.state.selectedEquipments.map((equipment, i) => {
                                                         return (
                                                             <div key={index + "" + i}
-                                                                 className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+                                                                 className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                                 <Text p className="report__text">
                                                                     {equipment.planMaintenance[index].$resultado.value == 1 &&
                                                                     <Icon approved/>}
@@ -384,7 +384,7 @@ class Report extends Component {
                                             {this.state.selectedEquipments.map((equipments, index) => {
                                                 return (
                                                     <div key={index}
-                                                         className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+                                                         className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                         <Text b className="report__label">
                                                             #{index + 1}
                                                         </Text>
@@ -408,7 +408,7 @@ class Report extends Component {
                                                     {this.state.selectedEquipments.map((equipment, i) => {
                                                         return (
                                                             <div key={index + "" + 1}
-                                                                 className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+                                                                 className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                                 <Text p className="report__text">
                                                                     {equipment.planQuality[index].$resultado.value == 1 &&
                                                                     <Icon approved/>}
@@ -447,7 +447,7 @@ class Report extends Component {
                                             {this.state.selectedEquipments.map((equipments, index) => {
                                                 return (
                                                     <div key={index}
-                                                         className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+                                                         className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                         <Text b className="report__label">
                                                             #{index + 1}
                                                         </Text>
@@ -478,7 +478,7 @@ class Report extends Component {
                                                     {this.state.selectedEquipments.map((equipment, i) => {
                                                         return (
                                                             <div key={index + "" + i}
-                                                                 className={"col-xs-" + (this.state.selectedEquipments.length / 5) + " text-center"}>
+                                                                 className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                                 <Text p className="report__text">
                                                                     {equipment.planQuantity[index].resultado}
                                                                 </Text>
@@ -717,62 +717,6 @@ class Report extends Component {
             </div>
         )
     }
-}
-
-window.makePDF = function (pageTotal, fileName) {
-    var quotes = document.getElementById('report');
-    pageTotal = pageTotal - 1;
-    html2canvas(quotes, {
-        scale: 1,
-        dpi: 300
-    }).then((canvas) => {
-        //! MAKE YOUR PDF
-        var pdf = new jsPDF('p', 'pt', 'a4');
-
-        for (var i = 0; i <= pageTotal; i++) {
-            //! This is all just html2canvas stuff
-            var srcImg = canvas;
-            var sX = 0;
-            var sY = 1123 * i; // start 980 pixels down for every new page
-            var sWidth = 794;
-            var sHeight = 1123;
-            var dX = 0;
-            var dY = 0;
-            var dWidth = 794;
-            var dHeight = 1123;
-
-            window.onePageCanvas = document.createElement("canvas");
-            //resolution
-            onePageCanvas.setAttribute('width', 794);
-            onePageCanvas.setAttribute('height', 1123);
-            var ctx = onePageCanvas.getContext('2d');
-            // details on this usage of this function:
-            // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
-            ctx.drawImage(srcImg, sX, sY, sWidth, sHeight, dX, dY, dWidth, dHeight);
-
-            // document.body.appendChild(canvas);
-            var canvasDataURL = onePageCanvas.toDataURL("image/png", .5);
-
-            var width = onePageCanvas.width;
-            var height = onePageCanvas.clientHeight;
-
-            //! If we're on anything other than the first page,
-            // add another page
-            if (i > 0) {
-                //pdf.addPage(612, 791); //8.5" x 11" in pts (in*72)
-                pdf.addPage(595, 842); //8.5" x 11" in pts (in*72)
-                //pdf.addPage(794, 1123); //8.5" x 11" in pts (in*72)
-                //pdf.addPage(1240, 1754); //8.5" x 11" in pts (in*72)
-            }
-            //! now we declare that we're working on that page
-            pdf.setPage(i + 1);
-            //! now we add content to that page!
-            pdf.addImage(canvasDataURL, 'PNG', 0, 0, (width * .75), (height * .75), null, 'SLOW');
-
-        }
-        //! after the for loop is finished running, we save the pdf.
-        pdf.save(fileName + '.pdf' || 'File.pdf');
-    });
 }
 
 export default Report;
