@@ -20,7 +20,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public int IdEquipamento { get; set; }
         public string Nome { get; set; }
         public int Marca { get; set; }
+        public string MarcaText { get; set; }
         public int Modelo { get; set; }
+        public string ModeloText { get; set; }
         public int Categoria { get; set; }
         public string NumSerie { get; set; }
         public string NumInventario { get; set; }
