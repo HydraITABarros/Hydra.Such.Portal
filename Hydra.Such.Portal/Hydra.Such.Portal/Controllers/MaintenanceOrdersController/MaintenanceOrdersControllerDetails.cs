@@ -36,7 +36,7 @@ namespace Hydra.Such.Portal.Controllers
 	{
 
 		[Route("{orderId}"), HttpGet, AcceptHeader("application/json")]
-		[ResponseCache(Duration = 86400, VaryByHeader = "Cache")]
+		[ResponseCache(Duration = 1800, VaryByHeader = "Cache")]
 		public ActionResult GetOrderDetails(string orderId, ODataQueryOptions<Equipamento> queryOptions, string v)
 		{
 			if (orderId == null) { return NotFound(); }
@@ -112,6 +112,8 @@ namespace Hydra.Such.Portal.Controllers
 			{
 				Nome = e.Nome,
 				Marca = e.Marca,
+				MarcaText = e.MarcaText,
+				ModeloText = e.ModeloText,
 				IdEquipamento = e.IdEquipamento,
 				Categoria = e.Categoria,
 				NumSerie = e.NumSerie,
@@ -169,7 +171,12 @@ namespace Hydra.Such.Portal.Controllers
 				var marca = marcas.FirstOrDefault(m => m.IdMarca == item.Marca);
 				var servico = servicos.FirstOrDefault(m => m.IdServico == item.IdServico);
 				item.CategoriaText = categoria != null ? categoria.Nome : "";
-				item.MarcaText = marca != null ? marca.Nome : "";
+
+				if (item.Marca != 1 && (item.MarcaText == null || item.MarcaText.Length == 0))
+				{
+					item.MarcaText = marca != null ? marca.Nome : "";
+				} 
+
 				item.ServicoText = servico != null ? servico.Nome : "";
 				item.haveCurative = evolutionWEBContext.MaintenanceOrder.Where(c => c.IdServicoEvolution == item.IdServico).Select(c => c.No).FirstOrDefault();
 			});
