@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Hydra.Such.Portal.Filters;
 using Hydra.Such.Data.Evolution.DatabaseReference;
 using Hydra.Such.Portal.ViewModels;
+using Hydra.Such.Portal.Extensions;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
 
 namespace Hydra.Such.Portal.Controllers
@@ -119,16 +120,17 @@ namespace Hydra.Such.Portal.Controllers
 					Categoria = e.Categoria,
 					Marca = e.Marca,
 					Modelo = e.Modelo,
+					MarcaText = e.MarcaText,
+					ModeloText = e.ModeloText,
 					NumSerie = e.NumSerie,
 					NumInventario = e.NumInventario,
 					NumEquipamento = e.NumEquipamento,
 					Codigo = codigo,
 					Versao = versao,
-					PlanMaintenance = planMaintenance,
-					PlanQuality = planQuality,
-					PlanQuantity = planQuantity,
-
-
+					PlanMaintenance = planMaintenance.Select(s=>s.Clone()).ToList(),
+					PlanQuality = planQuality.Select(s=>s.Clone()).ToList(),
+					PlanQuantity = planQuantity.Select(s=>s.Clone()).ToList()
+					
 				}).ToList();
 			}
 			else
@@ -167,15 +169,17 @@ namespace Hydra.Such.Portal.Controllers
 					IdCliente = e.IdCliente,
 					Categoria = e.Categoria,
 					Marca = e.Marca,
+					MarcaText = e.MarcaText,
+					ModeloText = e.ModeloText,
 					Modelo = e.Modelo,
 					NumSerie = e.NumSerie,
 					NumInventario = e.NumInventario,
 					NumEquipamento = e.NumEquipamento,
 					Codigo = codigo,
 					Versao = versao,
-					PlanMaintenance = planMaintenance,
-					PlanQuality = planQuality,
-					PlanQuantity = planQuantity
+					PlanMaintenance = planMaintenance.Select(s=>s.Clone()).ToList(),
+					PlanQuality = planQuality.Select(s=>s.Clone()).ToList(),
+					PlanQuantity = planQuantity.Select(s=>s.Clone()).ToList()
 				}).ToList();
 			}
 			//validar premissoes
@@ -185,13 +189,22 @@ namespace Hydra.Such.Portal.Controllers
 
 			equipments.ForEach((item) =>
 			{
-				var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == item.Marca);
-				if (marca != null) { item.MarcaText = marca.Nome; }
-
-				int? modeloType = evolutionWEBContext.EquipModelo.Where(m => m.IdModelo == item.Modelo).Select(m => m.IdModelos).FirstOrDefault();
-				if (modeloType != null)
+				if (item.Marca != 1 && (item.MarcaText == null || item.MarcaText.Length == 0))
 				{
-					item.ModeloText = evolutionWEBContext.Modelos.Where(m => m.IdModelos == modeloType).Select(n => n.Nome).FirstOrDefault();
+					var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == item.Marca);
+					if (marca != null)
+					{
+						item.MarcaText = marca.Nome;
+					}
+				}
+
+				if (item.Modelo != 1 && (item.ModeloText == null || item.ModeloText.Length == 0))
+				{
+					int? modeloType = evolutionWEBContext.EquipModelo.Where(m => m.IdModelo == item.Modelo).Select(m => m.IdModelos).FirstOrDefault();
+					if (modeloType != null)
+					{
+						item.ModeloText = evolutionWEBContext.Modelos.Where(m => m.IdModelos == modeloType).Select(n => n.Nome).FirstOrDefault();
+					}
 				}
 
 				var servico = evolutionWEBContext.Servico.Where(s => s.IdServico == item.IdServico).FirstOrDefault();
@@ -213,6 +226,7 @@ namespace Hydra.Such.Portal.Controllers
 				var planReport = evolutionWEBContext.FichaManutencaoRelatorio
 					.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao)
 					.OrderByDescending(o => o.Id).FirstOrDefault();
+				
 				if (planReport != null)
 				{
 					item.EstadoFinal = planReport.EstadoFinal;
@@ -225,7 +239,7 @@ namespace Hydra.Such.Portal.Controllers
 				}
 				else
 				{
-					evolutionWEBContext.FichaManutencaoRelatorio.Add(new FichaManutencaoRelatorio
+					planReport = new FichaManutencaoRelatorio
 					{
 						Om = order.No,
 						IdEquipamento = item.IdEquipamento,
@@ -238,7 +252,8 @@ namespace Hydra.Such.Portal.Controllers
 						ActualizadoEm = DateTime.Now,
 						RotinaTipo = rotina
 
-					});
+					};
+					evolutionWEBContext.FichaManutencaoRelatorio.Add(planReport);
 					item.EstadoFinal = 0;
 				}
 				
@@ -253,14 +268,17 @@ namespace Hydra.Such.Portal.Controllers
 				
 
 				var planMaintenanceReport = evolutionWEBContext.FichaManutencaoRelatorioManutencao
-					.Where(r => r.IdRelatorio == planReport.Id);
+					.Where(r => r.IdRelatorio == planReport.Id).ToList();
 				item.PlanMaintenance.ForEach(i =>
 				{
 					int IdManutencao;
 					int.TryParse(i.IdManutencao.ToString(), out IdManutencao);
-
-					var maintenanceReportLine = planMaintenanceReport
-						.FirstOrDefault(r => r.IdManutencao == IdManutencao && r.IdRelatorio == planReport.Id);
+					
+					FichaManutencaoRelatorioManutencao maintenanceReportLine = null;
+					if(planMaintenanceReport != null) {
+						maintenanceReportLine = planMaintenanceReport
+											.FirstOrDefault(r => r.IdManutencao == IdManutencao && r.IdRelatorio == planReport.Id);
+					}
 					if (maintenanceReportLine == null)
 					{
 						evolutionWEBContext.FichaManutencaoRelatorioManutencao.Add(new FichaManutencaoRelatorioManutencao
@@ -280,14 +298,20 @@ namespace Hydra.Such.Portal.Controllers
 				});
 
 				var planQualityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQualitativos
-					.Where(r => r.IdRelatorio == planReport.Id);
+					.Where(r => r.IdRelatorio == planReport.Id).ToList();
 				item.PlanQuality.ForEach(i =>
 				{
 					int IdTesteQualitativos;
 					int.TryParse(i.IdTesteQualitativos.ToString(), out IdTesteQualitativos);
 
-					var planQualityReportLine = planQualityReport
-						.FirstOrDefault(r => r.IdRelatorio == planReport.Id && r.IdTesteQualitativos == IdTesteQualitativos);
+					FichaManutencaoRelatorioTestesQualitativos planQualityReportLine = null;
+					if (planQualityReport != null)
+					{
+						planQualityReportLine = planQualityReport
+							.FirstOrDefault(r =>
+								r.IdRelatorio == planReport.Id && r.IdTesteQualitativos == IdTesteQualitativos);
+					}
+
 					if (planQualityReportLine == null)
 					{
 						evolutionWEBContext.FichaManutencaoRelatorioTestesQualitativos.Add(new FichaManutencaoRelatorioTestesQualitativos
@@ -307,14 +331,18 @@ namespace Hydra.Such.Portal.Controllers
 				});
 
 				var planQuantityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos
-					.Where(r => r.IdRelatorio == planReport.Id);
+					.Where(r => r.IdRelatorio == planReport.Id).ToList();
 				item.PlanQuantity.ForEach(i =>
 				{
 					int IdTestesQuantitativos;
 					int.TryParse(i.IdTestesQuantitativos.ToString(), out IdTestesQuantitativos);
 
-					var planQuantityReportLine = planQuantityReport
+					FichaManutencaoRelatorioTestesQuantitativos planQuantityReportLine = null;
+					if (planQuantityReport != null)
+					{
+						planQuantityReportLine = planQuantityReport
 						.FirstOrDefault(r => r.IdRelatorio == planReport.Id && r.IdTestesQuantitativos == IdTestesQuantitativos);
+					}
 					if (planQuantityReportLine == null)
 					{
 						evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos.Add(new FichaManutencaoRelatorioTestesQuantitativos
@@ -454,13 +482,13 @@ namespace Hydra.Such.Portal.Controllers
 						{       
 							IdRelatorio = planReport.Id,
 							IdManutencao = IdManutencao,
-							ResultadoRotina = i.Resultado,
+							ResultadoRotina = i.Resultado== null ? 0 : (int)i.Resultado,
 							Observacoes = i.Observacoes
 						});
 					}
 					else
 					{
-						maintenanceReportLine.ResultadoRotina = i.Resultado;
+						maintenanceReportLine.ResultadoRotina = i.Resultado== null ? 0 : (int)i.Resultado;
 						maintenanceReportLine.Observacoes = i.Observacoes;
 					}
 				});
@@ -481,13 +509,13 @@ namespace Hydra.Such.Portal.Controllers
 						{
 							IdTesteQualitativos = IdTesteQualitativos,
 							IdRelatorio = planReport.Id,
-							ResultadoRotina = i.Resultado,
+							ResultadoRotina = i.Resultado == null ? 0 : (int)i.Resultado,
 							Observacoes = i.Observacoes
 						});
 					}
 					else
 					{
-						planQualityReportLine.ResultadoRotina = i.Resultado;
+						planQualityReportLine.ResultadoRotina = i.Resultado== null ? 0 : (int)i.Resultado;
 						planQualityReportLine.Observacoes = i.Observacoes;
 					}
 				});
