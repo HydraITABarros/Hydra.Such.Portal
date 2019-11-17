@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
-import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, Tooltip, Button, Text } from 'components';
+import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
+import {Wrapper, Tooltip, Button, Text} from 'components';
 import MuiGrid from '@material-ui/core/Grid';
 import PlanEquipmentsItem from './planEquipmentsItem';
 
@@ -29,22 +29,22 @@ const Container = styled.div`
 
 const PlanEquipmentsHeader = (props) => {
 
-	return (
-		<Root>
-			{props.equipments.map((item, index) => {
-				return (
-					<Container key={index}>
-						<PlanEquipmentsItem>
+    return (
+        <Root>
+            {props.equipments.map((item, index) => {
+                return (
+                    <Container key={index}>
+                        <PlanEquipmentsItem>
 							<span>
 								<Index p>{index + 1}</Index>
-								<Num p><small>{item.numEquipamento}</small></Num>
+								<Num p><small>&nbsp;{item.numEquipamento}&nbsp;</small></Num>
 							</span>
-						</PlanEquipmentsItem>
-					</Container>
-				);
-			})}
-		</Root>
-	);
+                        </PlanEquipmentsItem>
+                    </Container>
+                );
+            })}
+        </Root>
+    );
 }
 
 export default PlanEquipmentsHeader;
