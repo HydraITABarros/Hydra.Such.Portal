@@ -180,12 +180,16 @@ class FichaDeManutencao extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+
         if (nextState.toUpdate != this.state.toUpdate) {
             return true;
         }
         if (nextState.$equipmentsCount && nextState.$equipmentsCount.value != this.state.equipmentsCount) {
             nextState.equipmentsCount = nextState.$equipmentsCount.value;
-
+            return true;
+        }
+        if (this.state.equipmentsHeaderScroll.innerWidth != nextState.equipmentsHeaderScroll.innerWidth) {
+            return true;
         }
         return nextState.isLoading !== this.state.isLoading || nextState.order !== this.state.order || nextState.equipmentsCount != this.state.equipmentsCount;
     }
@@ -217,6 +221,15 @@ class FichaDeManutencao extends Component {
 
             startClientY = e.changedTouches[0].clientY;
         };
+
+        setTimeout(() => {
+            this.state.equipmentsHeaderScroll = {
+                outerWidth: ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).offsetWidth,
+                innerWidth: ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollWidth,
+                scrollLeft: 0
+            };
+            this.setState({});
+        }, 500)
 
     }
 
@@ -388,24 +401,7 @@ class FichaDeManutencao extends Component {
                                 onRef={el => this.headerTitleWrapper = el}
                                 $equipments={this.state.$equipments}
                                 $currentUser={this.state.$currentUser}
-                                onEquipmentsChange={
-                                    () => {
-                                        this.setState({
-                                            isLoading: false,
-                                            equipmentsHeaderScroll: {
-                                                outerWidth: ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).offsetWidth,
-                                                innerWidth: ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollWidth,
-                                                scrollLeft: 0
-                                            }
-                                        });
-                                        //this.setPlanHeight();
-                                        setTimeout(() => {
-                                            this.setState({tooltipReady: true});
-                                            Tooltip.Hidden.hide();
-                                            Tooltip.Hidden.rebuild();
-                                        }, 1200);
-                                    }
-                                }
+
                             />
                         </Sticky>
                         <HeaderDescription
@@ -416,6 +412,31 @@ class FichaDeManutencao extends Component {
                             title={this.state.title}
                             orderId={this.state.orderId}
                             categoryId={this.state.categoryId}
+                            onEquipmentsChange={
+                                () => {
+                                    this.setState({
+                                        toUpdate: this.state.toUpdate++
+                                    });
+
+                                    setTimeout(() => {
+                                        this.setState({
+                                            isLoading: false,
+                                            equipmentsHeaderScroll: {
+                                                outerWidth: ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).offsetWidth,
+                                                innerWidth: ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollWidth,
+                                                scrollLeft: 0
+                                            }
+                                        });
+                                    }, 300);
+
+                                    //this.setPlanHeight();
+                                    setTimeout(() => {
+                                        this.setState({tooltipReady: true});
+                                        Tooltip.Hidden.hide();
+                                        Tooltip.Hidden.rebuild();
+                                    }, 1200);
+                                }
+                            }
                         />
                         <Grid container direction="row" justify="space-between" alignitems="top" spacing={0}
                               maxwidth={'100%'} margin={0}>
