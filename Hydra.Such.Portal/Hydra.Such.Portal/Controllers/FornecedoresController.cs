@@ -298,8 +298,10 @@ namespace Hydra.Such.Portal.Controllers
                         Email.DisplayName = "e-SUCH - Fornecedor";
                         Email.From = User.Identity.Name;
                         Email.To.Add(Parametro.Valor);
-                        Email.Subject = "e-SUCH - Foi criado um novo Fornecedor";
-                        Email.Body = MakeEmailBodyContent("Foi criado um novo Fornecedor " + vendor.Name + " como o código Nº " + vendor.No + " no e-SUCH.");
+                        Email.BCC.Add("MMarcelo@such.pt");
+                        Email.BCC.Add("ARomao@esuch.pt");
+                        Email.Subject = "e-SUCH - Novo Fornecedor";
+                        Email.Body = MakeEmailBodyContent("Criado o Fornecedor:  " + vendor.No + " - " + vendor.Name);
                         Email.IsBodyHtml = true;
 
                         Email.SendEmail_Simple();

@@ -35,6 +35,7 @@ using Newtonsoft.Json.Serialization;
 using Hydra.Such.Data.ViewModel.Encomendas;
 using System.Data.SqlClient;
 using Hydra.Such.Data.ViewModel.FH;
+using Hydra.Such.Data.ViewModel.Viaturas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -1893,6 +1894,23 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Descrição
             }).ToList();
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturasForPreReq()
+        {
+            List<ViaturasViewModel> result = DBViatura.ParseListToViewModel(DBViatura.GetAllToList());
+            List<Marcas> AllMarcas = DBMarcas.GetAll();
+            List<Modelos> AllModelos = DBModelos.GetAll();
+
+            result.ForEach(x =>
+            {
+                x.EstadoDescricao = x.Estado != null ? EnumerablesFixed.ViaturasEstado.Where(y => y.Id == x.Estado).FirstOrDefault().Value : "";
+                x.MarcaDescricao = !string.IsNullOrEmpty(x.CodigoMarca) ? AllMarcas.Where(y => y.CódigoMarca == Convert.ToInt32(x.CodigoMarca)).FirstOrDefault().Descrição : "";
+                x.ModeloDescricao = !string.IsNullOrEmpty(x.CodigoModelo) ? AllModelos.Where(y => y.CódigoModelo == Convert.ToInt32(x.CodigoModelo)).FirstOrDefault().Descrição : "";
+            });
+
+            return Json(result.OrderBy(x => x.Estado).ToList());
         }
 
         [HttpPost]

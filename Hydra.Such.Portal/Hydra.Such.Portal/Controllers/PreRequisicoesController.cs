@@ -2985,6 +2985,39 @@ namespace Hydra.Such.Portal.Controllers
                 return Json("É obrigatório inserir o Nº Requisição.");
             }
 
+            if (!string.IsNullOrEmpty(data.Vehicle))
+            {
+                Viaturas viatura = DBViatura.GetByMatricula(data.Vehicle);
+                if (viatura != null && (viatura.Estado == 2 || viatura.Estado == 3)) //2 = Bloqueado 3 = Abatido
+                {
+                    return Json("Não pode utilizar a viatura " + data.Vehicle + " pois a mesma encontra-se Bloqueada ou Abatida.");
+                }
+
+                List<LinhasPréRequisição> PreLinhas = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
+                if (PreLinhas != null && PreLinhas.Count > 0)
+                {
+                    bool erro = false;
+                    PreLinhas.ForEach(x =>
+                    {
+                        if (erro == false)
+                        {
+                            if (!string.IsNullOrEmpty(x.Viatura))
+                            {
+                                viatura = DBViatura.GetByMatricula(x.Viatura);
+                                if (viatura != null && (viatura.Estado == 2 || viatura.Estado == 3)) //2 = Bloqueado 3 = Abatido
+                                {
+                                    erro = true;
+                                }
+                            }
+                        }
+                    });
+                    if (erro == true)
+                    {
+                        return Json("Nas Linhas, não pode utilizar a viatura " + viatura.Matrícula + " pois a mesma encontra-se Bloqueada ou Abatida.");
+                    }
+                }
+            }
+
             return Json("");
         }
 

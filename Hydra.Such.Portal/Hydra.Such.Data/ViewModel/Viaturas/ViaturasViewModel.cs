@@ -15,7 +15,9 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string CodigoTipoViatura { get; set; }
         public string TipoCombustivelDescricao { get; set; }
         public string CodigoMarca { get; set; }
+        public string MarcaDescricao { get; set; }
         public string CodigoModelo { get; set; }
+        public string ModeloDescricao { get; set; }
         public string CartaoCombustivel { get; set; }
         public string Apolice { get; set; }
         public int? PesoBruto { get; set; }

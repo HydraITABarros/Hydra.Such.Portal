@@ -1648,6 +1648,11 @@ namespace Hydra.Such.Portal.Configurations
             {
                 Id = 3,
                 Value = "Leasing"
+            },
+            new EnumData
+            {
+                Id = 4,
+                Value = "Alugado"
             }
         };
 
