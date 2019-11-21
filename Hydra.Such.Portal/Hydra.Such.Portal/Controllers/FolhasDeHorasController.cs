@@ -1317,13 +1317,13 @@ namespace Hydra.Such.Portal.Controllers
                 decimal CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", CodTipoCusto);
                 if (!string.IsNullOrEmpty(data.NoProjeto))
                 {
-                    NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault();
+                    NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault();
                     if (PROJ != null && !string.IsNullOrEmpty(PROJ.Description))
                         ProjetoDescricao = PROJ.Description;
 
                     if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
                     {
-                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, PROJ.CustomerNo);
+                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
                         if (Cliente != null && Cliente.ClienteInterno == true)
                         {
                             CodTipoCusto = "AJC0019";
@@ -1542,13 +1542,13 @@ namespace Hydra.Such.Portal.Controllers
                     decimal CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", CodTipoCusto);
                     if (!string.IsNullOrEmpty(data.NoProjeto))
                     {
-                        NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault();
+                        NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault();
                         if (PROJ != null && !string.IsNullOrEmpty(PROJ.Description))
                             ProjetoDescricao = PROJ.Description;
 
                         if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
                         {
-                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, PROJ.CustomerNo);
+                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
                             if (Cliente != null && Cliente.ClienteInterno == true)
                             {
                                 CodTipoCusto = "AJC0019";
@@ -1723,7 +1723,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         string ProjetoDescricao;
                         if (!string.IsNullOrEmpty(data.NoProjeto))
-                            ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
+                            ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault().Description : "";
                         else
                             ProjetoDescricao = "";
 
@@ -1869,14 +1869,14 @@ namespace Hydra.Such.Portal.Controllers
                     string RubricaSalarial = Ajuda.RubricaSalarial;
                     if (!string.IsNullOrEmpty(data.NoProjeto))
                     {
-                        NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault();
+                        NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault();
 
                         if (PROJ != null && !string.IsNullOrEmpty(PROJ.Description))
                             ProjetoDescricao = PROJ.Description;
 
                         if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
                         {
-                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, PROJ.CustomerNo);
+                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
                             if (Cliente != null && Cliente.ClienteInterno == true)
                             {
                                 if (CodTipoCusto == "AJC0001")
@@ -3094,11 +3094,11 @@ namespace Hydra.Such.Portal.Controllers
 
                                 if (!string.IsNullOrEmpty(data.ProjetoNo))
                                 {
-                                    NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.ProjetoNo).FirstOrDefault();
+                                    NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
 
                                     if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
                                     {
-                                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, PROJ.CustomerNo);
+                                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
                                         if (Cliente != null && Cliente.ClienteInterno == true)
                                         {
                                             if (CodRecurso == "AJC0001")
