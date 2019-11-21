@@ -291,17 +291,19 @@ namespace Hydra.Such.Portal.Controllers
 
                     //Envio de email
                     ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetByParametro("AddFornecedorEmail");
+                    ConfigUtilizadores UserEmail = DBUserConfigurations.GetById(User.Identity.Name);
+
                     if (Parametro != null && !string.IsNullOrEmpty(Parametro.Valor))
                     {
                         SendEmailApprovals Email = new SendEmailApprovals();
 
                         Email.DisplayName = "e-SUCH - Fornecedor";
-                        Email.From = User.Identity.Name;
+                        Email.From = "esuch@such.pt";
                         Email.To.Add(Parametro.Valor);
                         Email.BCC.Add("MMarcelo@such.pt");
                         Email.BCC.Add("ARomao@esuch.pt");
                         Email.Subject = "e-SUCH - Novo Fornecedor";
-                        Email.Body = MakeEmailBodyContent("Criado o Fornecedor:  " + vendor.No + " - " + vendor.Name);
+                        Email.Body = MakeEmailBodyContent("Criado o Fornecedor:  " + vendor.No + " - " + vendor.Name, UserEmail.Nome);
                         Email.IsBodyHtml = true;
 
                         Email.SendEmail_Simple();
@@ -314,7 +316,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
-        public static string MakeEmailBodyContent(string BodyText)
+        public static string MakeEmailBodyContent(string BodyText, string BodyAssinatura)
         {
             string Body = @"<html>" +
                                 "<head>" +
@@ -344,6 +346,11 @@ namespace Hydra.Such.Portal.Controllers
                                         "<tr>" +
                                             "<td>" +
                                                 "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyAssinatura +
                                             "</td>" +
                                         "</tr>" +
                                         "<tr>" +

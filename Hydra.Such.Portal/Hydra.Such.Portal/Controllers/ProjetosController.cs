@@ -4123,11 +4123,11 @@ namespace Hydra.Such.Portal.Controllers
                                                             .Select(y => new { ProjectNo = y.NºProjeto, ContractNo = y.NºContrato })
                                                             .FirstOrDefault(y => y.ProjectNo == x.ProjectNo)?.ContractNo;
 
-                                        //Para Nota de crédito passar o valor para positivo
-                                        if (header.MovementType == 4 && x.TotalPrice.HasValue && x.TotalPrice < 0)
-                                            x.TotalPrice = Math.Abs(x.TotalPrice.Value);
-                                        if (header.MovementType == 4 && x.Quantity.HasValue && x.Quantity < 0)
-                                            x.Quantity = Math.Abs(x.Quantity.Value);
+                                        //Para Nota de créditos inverter o sinal Marco Marcelo 20/11/2019
+                                        if (header.MovementType == 4 && x.TotalPrice.HasValue)
+                                            x.TotalPrice = -1 * x.TotalPrice.Value;
+                                        if (header.MovementType == 4 && x.Quantity.HasValue)
+                                            x.Quantity = -1 * x.Quantity.Value;
                                     });
 
                                     List<NAVResourcesViewModel> resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
