@@ -25,10 +25,10 @@ class Comments extends Component {
     constructor(props) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
+        this.getOptions = this.getOptions.bind(this);
         this.state.equipments = this.props.$equipments.value;
         this.state.open = !!props.open;
 
-        console.log('IMP', props.item);
         this.state.equipments.map((equipment) => {
             var observacao = equipment[this.props.category][this.props.itemIndex].$observacoes.value
             if (observacao) {
@@ -52,17 +52,26 @@ class Comments extends Component {
         }
     }
 
-    render() {
+    getOptions() {
         var options = [];
         this.state.equipments.map((item, i) => {
             var val = {value: item, label: "#" + (i + 1) + " " + item.numEquipamento};
-            if ((this.state.comments.filter((i) => {
-                return i.equipment == item.idEquipamento;
-            }).length == 0)) {
-                options.push(val);
+            var alreadyCommented = this.state.comments.filter((_i) => {
+                return _i.equipment == item;
+            });
+            
+            if (alreadyCommented.length == 0) {
+                return options.push(val);
             }
-            ;
+            val.disabled = true;
+            options.push(val);
+
         });
+        return options;
+    }
+
+    render() {
+        var options = this.getOptions();
 
         return (
             <Modal
@@ -96,66 +105,69 @@ class Comments extends Component {
                                             <Select
                                                 onChange={(selected) => {
                                                     item.equipment = selected.target.value;
-
                                                     this.setState({comments: this.state.comments});
                                                 }}
                                                 placeholder="teste"
                                                 value={item.equipment ? item.equipment : ''}>
-
                                                 {options.map((o, j) => {
-                                                    return <MenuItem key={j} value={o.value}>{o.label}</MenuItem>
+                                                    return <MenuItem key={j} disabled={o.disabled}
+                                                                     value={o.value}>{o.label}</MenuItem>
                                                 })}
                                             </Select>
                                         </Grid>
                                         <Grid item xs={12} md={7}>
-                                            <Input multiline rows={3}
+                                            <Input
+                                                key={"_" + (new Date().getTime())}
+                                                multiline rows={3}
                                                    disabled={item.equipment == null}
                                                    $value={item.equipment ? item.equipment[this.props.category][this.props.itemIndex].$observacoes : null}
-                                                   value={item.equipment == null ? "" : undefined}
                                                    onBlur={() => {
-                                                       this.setState({});
+                                                       this.setState();
+                                                   }}
+                                                   onChange={() => {
+                                                       this.setState();
                                                    }}></Input>
                                         </Grid>
                                         <Grid item xs={12} md={1}>
-                                            {this.state.equipments.length > this.state.comments.length ?
-                                                <Button round
-                                                        disabled={
-                                                            item.equipment == null ||
-                                                            item.equipment[this.props.category][this.props.itemIndex].observacoes == null ||
-                                                            item.equipment[this.props.category][this.props.itemIndex].observacoes == ""
-                                                        }
-                                                        onClick={() => {
-                                                            if (this.state.comments.length > this.state.comments.length) {
-                                                                this.state.comments.push({equipment: null});
-                                                            }
-                                                            this.setState({});
-                                                        }}>
-                                                    <Icon add/>
-                                                </Button> :
+                                            {(i +1 ) == this.state.equipments.length ? <div></div> : i +1 == this.state.comments.length ?
                                                 <Button round
                                                         disabled={
                                                             item.equipment == null
                                                         }
                                                         onClick={() => {
-                                                            item.equipment[this.props.category][this.props.itemIndex].$observacoes.value = "";
-                                                            this.state.comments.splice(i, 1);
-                                                            if (this.state.comments.length == 0) {
+                                                            if (this.state.comments.length < this.state.equipments.length) {
                                                                 this.state.comments.push({equipment: null});
                                                             }
                                                             this.setState({});
-                                                        }}
-                                                >
-                                                    <Icon remove/>
-                                                </Button>
+                                                        }} ><Icon add/></Button>
+                                                :
+                                            <Button round
+                                                    disabled={
+                                                        item.equipment == null
+                                                    }
+                                                    onClick={() => {
+                                                        item.equipment[this.props.category][this.props.itemIndex].$observacoes.value = "";
+                                                        this.state.comments.splice(i, 1);
+                                                        if (this.state.comments.length == 0) {
+                                                            this.state.comments.push({equipment: null});
+                                                        }
+                                                        
+                                                        this.setState({}, ()=>{
+
+                                                            console.log('IMP', this.state.comments);
+                                                        });
+                                                        
+                                                        
+                                                    }}><Icon remove/></Button>
                                             }
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <br/>
+                                            <div className="p-t-40"></div>
+
                                         </Grid>
                                     </Grid>
                                 );
                             })}
                             <br/>
+                            <div className="p-t-50"></div>
                         </DialogContent>
                         <hr/>
                         <DialogActions>
