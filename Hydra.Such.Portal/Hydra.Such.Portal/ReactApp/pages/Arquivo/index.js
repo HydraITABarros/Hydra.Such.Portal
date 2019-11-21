@@ -1,23 +1,35 @@
 // https://github.com/diegohaz/arc/wiki/Atomic-Design
 /*react-styleguide: ignore*/
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
-import { PageTemplate } from 'components';
+import {PageTemplate} from 'components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import _theme from '../../themes/default';
 import MuiTabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
-import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
+import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
 import MuiGrid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { Button, Text, Icon, Circle, Wrapper, OmDatePicker, CheckBox, Input, Avatars, ModalLarge, Tooltip } from 'components';
+import {
+    Button,
+    Text,
+    Icon,
+    Circle,
+    Wrapper,
+    OmDatePicker,
+    CheckBox,
+    Input,
+    Avatars,
+    ModalLarge,
+    Tooltip
+} from 'components';
 import MuiDeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
 import Hidden from '@material-ui/core/Hidden';
-import { createMuiTheme } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import MuiTableCell from '@material-ui/core/TableCell';
@@ -25,23 +37,18 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import MuiAddIcon from '@material-ui/icons/Add';
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeList as ListWindow } from "react-window";
+import {FixedSizeList as ListWindow} from "react-window";
 import Color from 'color';
 import Highlighter from "react-highlight-words";
 import MuiTextField from '@material-ui/core/TextField';
 import MuiInput from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { renderToString } from 'react-dom/server';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
+import {renderToString} from 'react-dom/server';
+import {withRouter} from 'react-router';
+import {connect} from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
-import EMM from '../../pages/FichaDeManutencao/emm';
-import Material from '../../pages/FichaDeManutencao/material';
-import Upload from '../../pages/FichaDeManutencao/upload';
-import Documentos from '../../pages/FichaDeManutencao/documentos';
 
-
-const { DialogTitle, DialogContent, DialogActions } = ModalLarge;
+const {DialogTitle, DialogContent, DialogActions} = ModalLarge;
 
 const Tabs = styled(MuiTabs)`
     [class*="MuiTabs-scroller"]>span{
@@ -82,24 +89,26 @@ const Bar = styled(AppBar)`&&{
 `;
 
 class Arquivo extends Component {
-	state = {
-		open: false,
-		tab: 0,
-	}
-	constructor(props) {
-		super(props);
-		this.handleChange = this.handleChange.bind(this);
-	}
-	handleChange(e, value) {
-		this.setState({
-			tab: value,
-		});
-	}
+    state = {
+        open: false,
+        tab: 0,
+    }
 
-	render() {
-		return (
-			<div>
-				{/* <ModalLarge action={<Button primary >Open Modal</Button>} children={
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(e, value) {
+        this.setState({
+            tab: value,
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                {/* <ModalLarge action={<Button primary >Open Modal</Button>} children={
 					<div>
 						<DialogTitle>
 							<Bar position="static" color="default">
@@ -134,9 +143,9 @@ class Arquivo extends Component {
 						</DialogActions>
 					</div>
 				} /> */}
-			</div>
-		)
-	}
+            </div>
+        )
+    }
 }
 
 export default Arquivo;
