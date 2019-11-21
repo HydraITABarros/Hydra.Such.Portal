@@ -7180,6 +7180,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Fatura");
                     Col = Col + 1;
                 }
+                if (dp["createUser"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Utilizador Criação");
+                    Col = Col + 1;
+                }
                 if (dp["createDateText"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Data Criação");
@@ -7499,6 +7504,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["fatura"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Fatura);
+                            Col = Col + 1;
+                        }
+                        if (dp["createUser"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CreateUser);
                             Col = Col + 1;
                         }
                         if (dp["createDateText"]["hidden"].ToString() == "False")
