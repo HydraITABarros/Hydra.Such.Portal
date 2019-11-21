@@ -48,7 +48,11 @@ var timeout = 0;
 
 const Input = ({...props}) => {
     if (props.$value) {
+        
+        
+        var topOnChange = props.onChange;
         props.onChange = (e) => {
+            topOnChange ? topOnChange(e) : null;
             var val = e.target.value;
             clearTimeout(timeout);
             timeout = setTimeout(() => {
