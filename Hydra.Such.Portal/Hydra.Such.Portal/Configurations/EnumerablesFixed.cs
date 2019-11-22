@@ -971,17 +971,17 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 3,
-                Value = "Faturas"
+                Value = "Fatura / Débito Interno" 
             },
             new EnumData()
             {
                 Id = 2,
-                Value = "Notas de Débito"
+                Value = "Nota de Débito"
             },
             new EnumData()
             {
                 Id = 4,
-                Value = "Notas de Crédito"
+                Value = "Nota de Crédito"
             }
         };
 

@@ -1,10 +1,12 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.Contracts;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Contracts;
 using Hydra.Such.Data.ViewModel.Projects;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.ServiceModel;
@@ -150,9 +152,9 @@ namespace Hydra.Such.Data.NAV
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
             invoiceHeader.Date = billingHeader.Date;
-                    invoiceHeader.DataPedido = billingHeader.DataPedido;
-                    invoiceHeader.CommitmentNumber = billingHeader.CommitmentNumber;
-                    invoiceHeader.ClientRequest = billingHeader.ClientRequest;
+            invoiceHeader.DataPedido = billingHeader.DataPedido;
+            invoiceHeader.CommitmentNumber = billingHeader.CommitmentNumber;
+            invoiceHeader.ClientRequest = billingHeader.ClientRequest;
             invoiceHeader.ClientVATReg = billingHeader.ClientVATReg;
             invoiceHeader.ContractNo = billingHeader.ContractNo;
             invoiceHeader.Currency = billingHeader.Currency;
@@ -271,8 +273,35 @@ namespace Hydra.Such.Data.NAV
         public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations, string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento, bool PricesIncludingVAT, string Ship_to_Code)
         {
             DateTime now = DateTime.Now;
+            string PostingNoSeries = "";
+            string Observacoes = "";
+            string Mes = InvoiceBorrowed.Substring(0, InvoiceBorrowed.IndexOf("/"));
+            string Ano = InvoiceBorrowed.Substring(InvoiceBorrowed.IndexOf("/") + 1, 4);
             ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
+            Contratos Contrato = DBContracts.GetByIdLastVersion(CreateInvoice.NºContrato);
             WSCreatePreInvoice.Create_Result result = new WSCreatePreInvoice.Create_Result();
+
+
+            if (Contrato != null && Contrato.TipoContrato == 3 && Contrato.Tipo == 3) //Contrato Quotas
+            {
+                ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetByParametro("QuotasNoSeries");
+
+                if (Parametro != null && !string.IsNullOrEmpty(Parametro.Valor))
+                    PostingNoSeries = Parametro.Valor;
+
+                if (Contrato != null && !string.IsNullOrEmpty(Contrato.TextoFatura))
+                {
+                    Observacoes = Contrato.TextoFatura;
+                    Observacoes = Observacoes.Replace("<MES>", Mes);
+                    Observacoes = Observacoes.Replace("<ANO>", Mes);
+                }
+            }
+            else
+            {
+                PostingNoSeries = !string.IsNullOrEmpty(CUsers.NumSerieFaturas) ? CUsers.NumSerieFaturas : "";
+                Observacoes = !string.IsNullOrEmpty(CreateInvoice.Descrição) ? CreateInvoice.Descrição : "";
+            }
+
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice()
@@ -291,14 +320,14 @@ namespace Hydra.Such.Data.NAV
                     Periodo_de_Fact_Contrato = !string.IsNullOrEmpty(ContractInvoicePeriod) ? ContractInvoicePeriod : "",
                     Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
                     Responsibility_Center = !string.IsNullOrEmpty(CUsers.CentroDeResponsabilidade) ? CUsers.CentroDeResponsabilidade : "",
-                    Posting_No_Series = !string.IsNullOrEmpty(CUsers.NumSerieFaturas) ? CUsers.NumSerieFaturas : "",
 
+                    Posting_No_Series = PostingNoSeries,
                     Due_Date = (DateTime)CreateInvoice.DataDeExpiração,
                     Due_DateSpecified = true,
                     Payment_Terms_Code = CodTermosPagamento,
 
                     //Amaro
-                    Observacoes = !string.IsNullOrEmpty(CreateInvoice.Descrição) ? CreateInvoice.Descrição : "",
+                    Observacoes = Observacoes,
                     Contract_No = !string.IsNullOrEmpty(CreateInvoice.NºContrato) ? CreateInvoice.NºContrato : "",
                     Factura_CAF = true,
                     Factura_CAFSpecified = true,

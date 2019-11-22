@@ -2449,7 +2449,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
-                entity.Property(e => e.Matrícula).HasMaxLength(10);
+                entity.Property(e => e.Matrícula).HasMaxLength(20);
 
                 entity.Property(e => e.Recurso).HasMaxLength(20);
 
@@ -5030,7 +5030,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Valor Orçamento")
                     .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.Viatura).HasMaxLength(10);
+                entity.Property(e => e.Viatura).HasMaxLength(20);
 
                 entity.Property(e => e.SemEfeito).HasColumnName("SemEfeito");
 
@@ -5246,7 +5246,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Valor Orçamento")
                     .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.Viatura).HasMaxLength(10);
+                entity.Property(e => e.Viatura).HasMaxLength(20);
 
                 entity.HasOne(d => d.NºRequisiçãoNavigation)
                     .WithMany(p => p.LinhasRequisiçãoHist)
@@ -6270,7 +6270,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Localidade Posto Combustível")
                     .HasMaxLength(80);
 
-                entity.Property(e => e.Matrícula).HasMaxLength(10);
+                entity.Property(e => e.Matrícula).HasMaxLength(20);
 
                 entity.Property(e => e.Nd).HasColumnName("% ND");
 
@@ -7186,7 +7186,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
 
-                entity.Property(e => e.Viatura).HasMaxLength(10);
+                entity.Property(e => e.Viatura).HasMaxLength(20);
 
                 entity.HasOne(d => d.CódigoLocalEntregaNavigation)
                     .WithMany(p => p.PréRequisiçãoCódigoLocalEntregaNavigation)
@@ -8704,7 +8704,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Valor Estimado")
                     .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.Viatura).HasMaxLength(10);
+                entity.Property(e => e.Viatura).HasMaxLength(20);
 
                 entity.HasOne(d => d.NºProjetoNavigation)
                     .WithMany(p => p.Requisição)
@@ -8924,7 +8924,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Valor Estimado")
                     .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.Viatura).HasMaxLength(10);
+                entity.Property(e => e.Viatura).HasMaxLength(20);
             });
 
             modelBuilder.Entity<RequisiçõesClienteContrato>(entity =>
@@ -10571,7 +10571,7 @@ namespace Hydra.Such.Data.Database
                 entity.HasKey(e => e.Matrícula);
 
                 entity.Property(e => e.Matrícula)
-                    .HasMaxLength(10)
+                    .HasMaxLength(20)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Apólice).HasMaxLength(20);
@@ -10738,7 +10738,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Matricula)
                     .HasColumnName("Matrícula")
-                    .HasMaxLength(10)
+                    .HasMaxLength(20)
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Imagem)
