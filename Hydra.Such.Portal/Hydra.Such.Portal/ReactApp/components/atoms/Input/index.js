@@ -7,7 +7,8 @@ import {observer} from 'mobx-react';
 const styles = css`&& {
         input {
             padding: 11px 15px;
-            line-height: 13px;
+            line-height: 18px;
+            height: auto;
             font-family: Inter,Helvetica,sans-serif;
             font-style: normal;
             font-weight: 400;
