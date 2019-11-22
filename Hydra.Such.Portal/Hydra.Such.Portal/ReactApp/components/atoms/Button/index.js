@@ -230,7 +230,7 @@ const Button = ({...props}) => {
         )
     } else if (props.link) {
         return (
-            <Link src="javascript:void(0)"
+            <Link 
                   className={props.disabled ? "disabled" : ""}
                   {..._.omit(props, ['link', 'color'])}
             >{props.icon} <Text b>{props.children}</Text>
@@ -256,7 +256,7 @@ const Button = ({...props}) => {
         )
     } else if (props.linklight) {
         return (
-            <Link src="javascript:void(0)"
+            <Link
                   className={props.disabled ? "disabled" : ""}
                   {..._.omit(props, ['link', 'color'])}
             >{props.icon} <Text span>{props.children}</Text>
