@@ -647,8 +647,8 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     Type = 2,
                                     Code = item.ProductNo,
-                                    Description = !string.IsNullOrEmpty(item.Description) ? item.Description : "",
-                                    Description2 = !string.IsNullOrEmpty(item.Description2) ? item.Description2 : "",
+                                    Description = !string.IsNullOrEmpty(item.Description) ? item.Description.Length >= 100 ? item.Description.Substring(0, 100) : item.Description : "",
+                                    Description2 = !string.IsNullOrEmpty(item.Description2) ? item.Description2.Length >= 50 ? item.Description2.Substring(0, 50) : item.Description2 : "",
                                     UnitMeasureCode = item.UnitMeasureCode,
                                     QtyByUnitOfMeasure = item.QuantitybyUnitMeasure,
                                     QuantityToRequire = item.Quantity,
