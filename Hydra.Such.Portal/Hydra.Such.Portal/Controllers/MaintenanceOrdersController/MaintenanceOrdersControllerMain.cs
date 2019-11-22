@@ -32,7 +32,6 @@ using System.Reflection;
 
 namespace Hydra.Such.Portal.Controllers
 {
-	[Authorize]
 	[Route("ordens-de-manutencao")]
 	public partial class MaintenanceOrdersController : Controller
 	{
@@ -585,44 +584,7 @@ namespace Hydra.Such.Portal.Controllers
 				equipments
 			});
 		}
-
-
 		
-
-
-		[Route("emms"), HttpGet]
-		public ActionResult GetEmms()
-		{
-			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
-
-			if (loggedUser == null) { return NotFound(); }
-
-			var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name && u.Activo == true);
-
-			if (evolutionLoggedUser == null) { return NotFound(); }
-
-			var nivelAcesso = evolutionLoggedUser.NivelAcesso;
-
-			var emms = evolutionWEBContext.EmmEquipamentos.Where(c => c.Activo == true);
-
-			switch (nivelAcesso)
-			{
-				case 3:
-				case 4:
-					emms = emms.Where(c => c.IdRegiao == evolutionLoggedUser.Code1).ToList().AsQueryable();
-					break;
-				case 5:
-				case 6:
-				case 7:
-					emms = emms.Where(c => c.IdCresp == evolutionLoggedUser.Code3).ToList().AsQueryable();
-					break;
-				default:
-					break;
-			}
-
-			return Json(emms.ToList());
-		}
-
 
 		[Route("equipamentos/{equipmentId}/room"), HttpPut]
 		public ActionResult UpdateEquipmentRoom(int? equipmentId, string room)
