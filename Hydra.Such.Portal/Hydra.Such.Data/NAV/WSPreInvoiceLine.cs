@@ -110,7 +110,7 @@ namespace Hydra.Such.Data.NAV
                 {
                     TextoFatura = Contrato.TextoFatura;
                     TextoFatura = TextoFatura.Replace("<MES>", Mes);
-                    TextoFatura = TextoFatura.Replace("<ANO>", Mes);
+                    TextoFatura = TextoFatura.Replace("<ANO>", Ano);
                 }
             }
 

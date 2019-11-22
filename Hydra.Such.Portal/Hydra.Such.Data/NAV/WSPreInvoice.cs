@@ -293,7 +293,7 @@ namespace Hydra.Such.Data.NAV
                 {
                     Observacoes = Contrato.TextoFatura;
                     Observacoes = Observacoes.Replace("<MES>", Mes);
-                    Observacoes = Observacoes.Replace("<ANO>", Mes);
+                    Observacoes = Observacoes.Replace("<ANO>", Ano);
                 }
             }
             else
