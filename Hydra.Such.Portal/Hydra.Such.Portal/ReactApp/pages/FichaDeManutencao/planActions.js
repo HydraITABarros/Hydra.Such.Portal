@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import MuiTab from '@material-ui/core/Tab';
-import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { Wrapper, Tooltip, Button, Text as eText } from 'components';
+import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
+import {Wrapper, Tooltip, Button, Text as eText} from 'components';
 import MuiGrid from '@material-ui/core/Grid';
 
 const Root = styled.div`
@@ -44,48 +44,49 @@ const ActionItem = styled(Grid)`
 `;
 
 class PlanActions extends Component {
-	state = {
-		position: 0
-	}
-	constructor(props) {
-		super(props);
-		this.state.position = props.position;
-	}
+    state = {
+        position: 0
+    }
 
-	shouldComponentUpdate(nextProps, nextState) {
-		console.log(nextProps, nextState);
-		return true;
-	}
+    constructor(props) {
+        super(props);
+        this.state.position = props.position;
+    }
 
-	render() {
-		var props = this.props;
-		return (
-			<Root>
-				<ActionWrapper container>
-					{props.planMaintenance &&
-						<Text p className={this.state.position == 0 ? 'active' : ''} onClick={() => {
-							props.onSelect(0)
-						}}>
-							<b>Manutenção</b>
-							&nbsp;<small>{props.planMaintenance.length}</small>
-						</Text>
-					}
-					{props.planQuality &&
-						<Text p className={this.state.position == 1 ? 'active' : ''} onClick={() => props.onSelect(1)}>
-							<b>Qualitativo</b>
-							&nbsp;<small>{props.planQuality.length}</small>
-						</Text>
-					}
-					{props.planQuantity &&
-						<Text p className={this.state.position == 2 ? 'active' : ''} onClick={() => props.onSelect(2)}>
-							<b>Quantitativo</b>
-							&nbsp;<small>{props.planQuantity.length}</small>
-						</Text>
-					}
-				</ActionWrapper>
-			</Root>
-		);
-	}
+    shouldComponentUpdate(nextProps, nextState) {
+		
+        return true;
+    }
+
+    render() {
+        var props = this.props;
+        return (
+            <Root>
+                <ActionWrapper container>
+                    {props.planMaintenance &&
+                    <Text p className={this.state.position == 0 ? 'active' : ''} onClick={() => {
+                        props.onSelect(0)
+                    }}>
+                        <b>Manutenção</b>
+                        &nbsp;<small>{props.planMaintenance.length}</small>
+                    </Text>
+                    }
+                    {props.planQuality &&
+                    <Text p className={this.state.position == 1 ? 'active' : ''} onClick={() => props.onSelect(1)}>
+                        <b>Qualitativo</b>
+                        &nbsp;<small>{props.planQuality.length}</small>
+                    </Text>
+                    }
+                    {props.planQuantity &&
+                    <Text p className={this.state.position == 2 ? 'active' : ''} onClick={() => props.onSelect(2)}>
+                        <b>Quantitativo</b>
+                        &nbsp;<small>{props.planQuantity.length}</small>
+                    </Text>
+                    }
+                </ActionWrapper>
+            </Root>
+        );
+    }
 }
 
 export default PlanActions;
