@@ -20,11 +20,6 @@ import {
     Spacer
 } from 'components';
 import AppBar from '@material-ui/core/AppBar';
-import EMM from '../emm';
-import Material from '../material';
-import Upload from '../upload';
-import Documentos from '../documentos';
-import Fotografias from '../fotografias';
 import {Grid} from '@material-ui/core';
 import SignaturePad from 'react-signature-pad-wrapper'
 import "./index.scss";

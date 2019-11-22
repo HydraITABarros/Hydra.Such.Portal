@@ -331,7 +331,6 @@ class OrdensDeManutencaoLine extends Component {
                             {
                                 name: 'estado',
                                 title: ' ',
-                                sortingEnabled: false,
                                 selectionEnabled: false,
                                 width: 60,
                                 groupingEnabled: false,
@@ -370,7 +369,6 @@ class OrdensDeManutencaoLine extends Component {
                             {
                                 name: 'action',
                                 title: ' ',
-                                sortingEnabled: false,
                                 selectionEnabled: false,
                                 width: 60,
                                 groupingEnabled: false,

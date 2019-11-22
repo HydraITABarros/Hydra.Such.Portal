@@ -133,7 +133,6 @@ class ModalReport extends Component {
                     this.setState({open: true});
                 }}
                 onClose={() => {
-                    console.log('close')
                     this.setState({open: false, reportMode: true});
                     if (this.props.onClose) {
                         this.props.onClose();
