@@ -16,6 +16,7 @@ import MuiGrid from '@material-ui/core/Grid';
 import Select from 'react-select';
 import axios from 'axios';
 import Functions from '../../../helpers/functions';
+import SimpleReactValidator from 'simple-react-validator';
 
 const addLinkedPropsToObject = Functions.addLinkedPropsToObject;
 
@@ -37,8 +38,20 @@ injectGlobal`
 			z-index:1000 !important;			
 		}
 		&[class*="container"] {
-		line-height: 24px;	
+		    line-height: 28px !important;
 		}
+		&[class*="control"] {
+            &:hover {
+                border-color: ${_theme.palette.primary.default};
+            }
+		}
+        [aria-live="polite"]+[class*="control"] {
+            border-color: ${_theme.palette.secondary.default};  
+            box-shadow:0 0 0 1px ${_theme.palette.secondary.default};
+            &:hover {
+                border-color: ${_theme.palette.secondary.default};
+            }
+        }
 	}
 `
 const Grid = styled(MuiGrid)`&& {
@@ -73,11 +86,11 @@ class Index extends Component {
         search: true,
         selected: null,
         searchEquipments: [],
-        isLoading: false,
         marca: '',
         modelo: '',
         serie: '',
-        numero: ''
+        numero: '',
+        newEquipmentCount: 0
     }
 
     constructor(props) {
@@ -85,6 +98,8 @@ class Index extends Component {
         this.fetch = this.fetch.bind(this);
         this.addEquipmentHandler = this.addEquipmentHandler.bind(this);
         this.addNewEquipmentHandler = this.addNewEquipmentHandler.bind(this);
+        this.updateUrl = this.updateUrl.bind(this);
+        this.validator = new SimpleReactValidator();
         this.fetch();
     }
 
@@ -142,6 +157,7 @@ class Index extends Component {
                 this.state.selected = null;
                 this.setState({}, () => {
                     this.props.onChange ? this.props.onChange() : '';
+                    this.updateUrl();
                 });
 
             }).catch(function (error) {
@@ -153,6 +169,14 @@ class Index extends Component {
 
     addNewEquipmentHandler() {
         //add equipment to om
+        this.state.newEquipmentCount++;
+        if (!this.validator.allValid()) {
+            this.validator.showMessages();
+            this.forceUpdate();
+            return;
+        }
+        this.validator.hideMessages();
+        this.forceUpdate();
         var brand, model, serialNumber, orderId, previousEquipmentId, equipmentNumber;
         brand = this.state.marca;
         model = this.state.modelo;
@@ -160,7 +184,6 @@ class Index extends Component {
         equipmentNumber = this.state.numero;
         orderId = this.props.orderId;
         previousEquipmentId = this.props.$equipments.value[0].idEquipamento;
-        //console.log(this.state);
         //return;
 
         var url = `/ordens-de-manutencao/${orderId}/equipments`;
@@ -185,6 +208,7 @@ class Index extends Component {
                 this.state.selected = null;
                 this.setState({}, () => {
                     this.props.onChange ? this.props.onChange() : '';
+                    this.updateUrl();
                 });
 
             }).catch(function (error) {
@@ -192,6 +216,12 @@ class Index extends Component {
 
         }).catch(function (error) {
         });
+    }
+
+    updateUrl() {
+        var equipmentsIds = this.props.$equipments.value.map((e) => e.idEquipamento).join(',');
+        var newUrl = updateURLParameter(window.location.href, 'equipmentsIds', equipmentsIds);
+        window.history.pushState({}, "", newUrl);
     }
 
     componentDidUpdate(props) {
@@ -224,34 +254,51 @@ class Index extends Component {
 
                     <DialogContent>
                         {!this.state.search &&
-                        <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
-                              maxwidth={'100%'} margin={0}>
-                            <Grid item xs={12} sm={2} padding="4px">
-                                <Input placeholder={'Marca'}
-                                       onChange={(e) => this.setState({marca: e.target.value})}/>
+                        <form className="cmxform" id="commentForm" method="get" action="">
+                            <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
+                                  maxwidth={'100%'} margin={0}>
+                                <Grid item xs={12} sm={2} padding="4px">
+                                    <Input placeholder={'Marca'}
+                                           onChange={(e) => this.setState({marca: e.target.value})}
+                                           error={this.state.newEquipmentCount > 0 && !this.validator.fieldValid('Marca')}
+                                    />
+                                    <div className="hide">
+                                        {this.validator.message('Marca', this.state.marca, 'required')}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} sm={2} padding="4px">
+                                    <Input placeholder={'Modelo'} ref={el => this.modeloRef = el}
+                                           onChange={(e) => this.setState({modelo: e.target.value})}
+                                           error={this.state.newEquipmentCount > 0 && !this.validator.fieldValid('Modelo')}
+                                    />
+                                    <div className="hide">
+                                        {this.validator.message('Modelo', this.state.modelo, 'required')}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} sm={2} padding="4px">
+                                    <Input placeholder={'Nº Equip.'} ref={el => this.serieRef = el}
+                                           onChange={(e) => this.setState({numero: e.target.value})}
+                                           error={this.state.newEquipmentCount > 0 && !this.validator.fieldValid('Nº Equip.')}
+                                    />
+                                    <div className="hide">
+                                        {this.validator.message('Nº Equip.', this.state.numero, 'required')}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={12} sm={2} padding="4px">
+                                    <Input placeholder={'Nº Série'} ref={el => this.serieRef = el}
+                                           onChange={(e) => this.setState({serie: e.target.value})}/>
+                                </Grid>
+                                <Grid item xs={12} sm={2} padding="4px">
+                                    <Button default className={''}
+                                            onClick={this.addNewEquipmentHandler}>Adicionar</Button>
+                                </Grid>
+                                <Grid item xs={12} sm={2} padding="4px">
+                                    <Button link style={{display: 'block'}}
+                                            onClick={() => this.setState({search: true})}
+                                            className={'m-l-20 pull-right'}>Procurar</Button>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12} sm={2} padding="4px">
-                                <Input placeholder={'Modelo'} ref={el => this.modeloRef = el}
-                                       onChange={(e) => this.setState({modelo: e.target.value})}/>
-                            </Grid>
-                            <Grid item xs={12} sm={2} padding="4px">
-                                <Input placeholder={'Nº Equip.'} ref={el => this.serieRef = el}
-                                       onChange={(e) => this.setState({numero: e.target.value})}/>
-                            </Grid>
-                            <Grid item xs={12} sm={2} padding="4px">
-                                <Input placeholder={'Nº Série'} ref={el => this.serieRef = el}
-                                       onChange={(e) => this.setState({serie: e.target.value})}/>
-                            </Grid>
-                            <Grid item xs={12} sm={2} padding="4px">
-                                <Button link style={{display: 'block'}}
-                                        onClick={() => this.setState({search: true})}
-                                        className={'m-l-20'}>Procurar</Button>
-                            </Grid>
-                            <Grid item xs={12} sm={2} padding="4px">
-                                <Button default className={'pull-right'}
-                                        onClick={this.addNewEquipmentHandler}>Adicionar</Button>
-                            </Grid>
-                        </Grid>
+                        </form>
                         }
                         {this.state.search &&
                         <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
@@ -278,13 +325,15 @@ class Index extends Component {
                                 }
                             </Grid>
                             <Grid item xs={12} sm={2} padding="4px">
-                                <Button link style={{display: 'block'}}
-                                        onClick={() => this.setState({search: false})}
-                                        className={'m-l-20'}>Novo</Button>
+                                <Button default className={''}
+                                        onClick={this.addEquipmentHandler}>Adicionar</Button>
                             </Grid>
                             <Grid item xs={12} sm={2} padding="4px">
-                                <Button default className={'pull-right'}
-                                        onClick={this.addEquipmentHandler}>Adicionar</Button>
+                                <Button link style={{display: 'block'}}
+                                        onClick={() => {
+                                            this.setState({search: false, newEquipmentCount: 0})
+                                        }}
+                                        className={'m-l-20 pull-right'}>Criar Novo</Button>
                             </Grid>
                         </Grid>
                         }
@@ -386,5 +435,6 @@ function updateURLParameter(url, param, paramVal) {
     var rows_txt = temp + "" + param + "=" + paramVal;
     return baseURL + "?" + newAdditionalURL + rows_txt;
 }
+
 
 export default Index;
