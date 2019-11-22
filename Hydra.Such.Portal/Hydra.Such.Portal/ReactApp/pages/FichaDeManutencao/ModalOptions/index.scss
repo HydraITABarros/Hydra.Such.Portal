@@ -1,0 +1,56 @@
+@import "../../../themes/default";
+@import "../../../functions";
+
+#emm-modal {
+  .emm {
+
+    &__tabs {
+      [class*="MuiTabs-scroller"] > span {
+        background-color: palette(secondary, default);
+        height: 5px;
+        border-radius: 2.5px;
+        z-index: 2;
+      }
+
+      [class*="MuiTabs-fixed"] > span {
+        margin-left: 0px;
+      }
+
+      [class*="icon"] {
+        color: palette(primary, medium);
+      }
+
+      [aria-selected="true"] {
+        [class*="icon"] {
+          color: palette(secondary, default);
+        }
+      }
+    }
+
+    &__tab {
+      text-transform: capitalize;
+      text-align: left;
+      min-width: 0;
+
+      [class*="MuiTab-labelContainer"] {
+        padding: 6px 12px;
+      }
+    }
+
+    &__bar {
+      background-color: white;
+      box-shadow: none;
+      margin-bottom: 0px;
+      padding-left: 0;
+      padding-right: 0;
+
+      hr {
+        position: relative;
+        margin-top: -3px;
+        margin-left: -40px;
+        z-index: 1;
+      }
+    }
+
+  }
+}

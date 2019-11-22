@@ -1,0 +1,14 @@
+.input-width-button {
+  position: relative;
+  padding-right: 50px;
+
+  &__input {
+  }
+
+  &__button {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+
+  }
+}

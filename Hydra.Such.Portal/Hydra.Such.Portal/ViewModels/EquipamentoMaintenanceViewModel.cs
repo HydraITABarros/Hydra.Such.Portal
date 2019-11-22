@@ -33,6 +33,7 @@ namespace Hydra.Such.Portal.ViewModels
         public List<FichaManutencaoRelatorioManutencaoViewModel> PlanMaintenance { get; set; }
         public List<FichaManutencaoTestesQualitativosViewModel> PlanQuality { get; set; }
         public List<FichaManutencaoTestesQuantitativosViewModel> PlanQuantity { get; set; }
+        public List<FichaManutencaoEmmEquipamentosViewModel> Emms { get; set; }
         public string Observacao { get; set; }
         public int? EstadoFinal { get; set; }
         public string AssinaturaTecnico { get; set; }

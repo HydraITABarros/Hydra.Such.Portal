@@ -360,7 +360,39 @@ namespace Hydra.Such.Portal.Controllers
 						i.Observacoes = planQuantityReportLine.Observacoes;
 					}
 				});
+				if (item.Emms == null)
+				{
+					item.Emms = new List<FichaManutencaoEmmEquipamentosViewModel>();
+				}
+				var emms = evolutionWEBContext.FichaManutencaoRelatorioEquipamentosTeste
+					.Where(r => r.IdRelatorio == planReport.Id).ToList();
+				emms.ForEach(i =>
+				{
+					var emm = evolutionWEBContext.EmmEquipamentos.Where(e => e.Id == i.IdEquipTeste).Select(s=>new FichaManutencaoEmmEquipamentosViewModel()
+					{
+						Id = s.Id,
+						IdMarca = s.IdMarca,
+						IdModelo = s.IdModelo,
+						IdTipo = s.IdTipo,
+						MarcaText = "",
+						ModeloText = "",
+						NumSerie = s.NumSerie,
+						TipoDescricao = s.TipoDescricao
+					}).FirstOrDefault();
 
+					var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == emm.IdMarca);
+					
+					emm.MarcaText = marca != null ? marca.Nome : "";
+					
+					var modeloType = evolutionWEBContext.EquipModelo.FirstOrDefault(m => m.IdModelo == emm.IdModelo);
+					if(modeloType!= null) {
+						var modelo = evolutionWEBContext.Modelos.FirstOrDefault(m => m.IdModelos == modeloType.IdModelos);
+						emm.ModeloText = modelo != null ? modelo.Nome : "";
+					}
+					
+					item.Emms.Add(emm);
+				});
+				
 				try
 				{
 					evolutionWEBContext.SaveChanges();
@@ -426,7 +458,6 @@ namespace Hydra.Such.Portal.Controllers
 			
 			plans.ForEach((item) =>
 			{
-				
 				var planReport = evolutionWEBContext.FichaManutencaoRelatorio
 					.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && 
 					            r.Codigo == item.Codigo && r.Versao == item.Versao)
@@ -517,6 +548,29 @@ namespace Hydra.Such.Portal.Controllers
 					{
 						planQualityReportLine.ResultadoRotina = i.Resultado== null ? 0 : (int)i.Resultado;
 						planQualityReportLine.Observacoes = i.Observacoes;
+					}
+				});
+				
+				var planEmms = evolutionWEBContext.FichaManutencaoRelatorioEquipamentosTeste
+					.Where(r => r.IdRelatorio == planReport.Id);
+				item.Emms.ForEach(i =>
+				{
+					int IdEmm;
+					int.TryParse(i.Id.ToString(), out IdEmm);
+
+					var emmLine = planEmms
+						.FirstOrDefault(r => r.IdRelatorio == planReport.Id && r.IdEquipTeste == IdEmm);
+					if (emmLine == null)
+					{
+						evolutionWEBContext.FichaManutencaoRelatorioEquipamentosTeste.Add(new FichaManutencaoRelatorioEquipamentosTeste
+						{
+							IdEquipTeste = IdEmm,
+							IdRelatorio = planReport.Id
+						});
+					}
+					else
+					{
+						// update
 					}
 				});
 

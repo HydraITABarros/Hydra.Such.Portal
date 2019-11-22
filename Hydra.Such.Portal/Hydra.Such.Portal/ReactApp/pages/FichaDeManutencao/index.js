@@ -275,8 +275,6 @@ class FichaDeManutencao extends Component {
 
                 addLinkedPropsToObject(state, this);
 
-                console.log(state);
-
                 state.planMaintenanceHtml = data.planMaintenance.map((item, index) => {
                     return (
                         <PlanRow odd={index % 2 == 0} key={index} text>
@@ -368,21 +366,27 @@ class FichaDeManutencao extends Component {
     }
 
     postPlans() {
-        console.log(this.state.equipments);
 
         var url = `/ordens-de-manutencao/ficha-de-manutencao`;
 
+        var toPost = this.state.equipments.map((item) => {
+            var retval = {};
+            Object.keys(item).map(k => {
+                if (k.indexOf('$') > -1) {
+                    return;
+                }
+                retval[k] = item[k];
+            });
+            item.emms.map((emm) => {
+                emm.equipments = null;
+            });
+            return retval;
+        });
+
+        console.log('toPost', toPost);
+
         axios.post(url + "?orderId=" + this.state.orderId,
-            this.state.equipments.map((item) => {
-                var retval = {};
-                Object.keys(item).map(k => {
-                    if (k.indexOf('$') > -1) {
-                        return;
-                    }
-                    retval[k] = item[k];
-                })
-                return retval;
-            })
+            toPost
         ).then((result) => {
         });
     }
@@ -560,7 +564,7 @@ class FichaDeManutencao extends Component {
                                         onScroll={(e) => {
                                             ReactDOM.findDOMNode(this.planEquipmentsHeader).scrollLeft = e.target.scrollLeft;
                                             var className = ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className;
-                                            if (ee.target.scrollLeft > 0 && className.indexOf('left') == -1) {
+                                            if (e.target.scrollLeft > 0 && className.indexOf('left') == -1) {
                                                 ReactDOM.findDOMNode(this.equipmentsHeaderWrapper).className += ' left ';
                                             }
                                             if (e.target.scrollLeft == 0) {

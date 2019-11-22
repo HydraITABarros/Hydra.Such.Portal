@@ -1,20 +1,18 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import {Text as eText, Icon, Wrapper, Spacer, Button, Avatars, Select, MenuItem, Menu} from 'components';
-import Functions from '../../helpers/functions';
 import MuiGrid from '@material-ui/core/Grid';
 import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
 import {createMuiTheme} from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
 import {withRouter} from 'react-router-dom';
 import functions from '../../helpers/functions';
-import mOptions from './modalOptions';
 import mEquipments from './ModalEquipments';
 import mAssinatura from './ModalSignature';
-import ModalReport from './ModalReport'
-import _theme from '../../themes/default';
+import ModalReport from './ModalReport';
+import ModalOptions from './ModalOptions';
 
 const muiTheme = createMuiTheme();
+
 const breakpoints = muiTheme.breakpoints.values;
 
 const RootTitle = styled(Wrapper)` && {
@@ -30,10 +28,6 @@ const RootDescription = styled(Wrapper)` && {
 	background:  ${props => props.theme.palette.bg.grey};
 	min-height: 190px;
 	z-index: 1;
-}`
-
-const ModalOptions = styled(mOptions)` && {
-	display:  inline-block;
 }`
 
 const ModalEquipments = styled(mEquipments)` && {
@@ -152,7 +146,9 @@ class HTitle extends Component {
                     </Grid>
                     <Grid item xs={12} sm={6} md={6} lg={5} padding="15px">
                         <div style={{textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left'}}>
-                            <ModalOptions>
+                            <ModalOptions
+                                $equipments={this.props.$equipments}
+                            >
                                 <Button icon={<Icon options/>}
                                         style={{
                                             lineHeight: '14px',
@@ -163,7 +159,7 @@ class HTitle extends Component {
                                             textAlign: 'center',
                                             marginRight: '15px'
                                         }}
-                                        disabled
+                                        disabled={false}
                                 ></Button>
                             </ModalOptions>
 
@@ -202,7 +198,6 @@ class HTitle extends Component {
                                 $currentUser={this.props.$currentUser}
                                 onClose={() => {
                                     //item.open = false;
-                                    console.log(123)
                                     this.setState({toUpdate: this.state.toUpdate + 1, isModalReportOpen: false});
                                 }}>
                             </ModalReport>
@@ -238,11 +233,14 @@ class HDescription extends Component {
         room: null,
         equipments: [],
         equipmentsCount: 0,
+        $equipments: [],
+        $equipmentsCount: 0,
     }
 
     constructor(props) {
         super(props);
         this.state = {...props};
+        
     }
 
     componentDidUpdate(props) {
@@ -364,8 +362,8 @@ class HDescription extends Component {
                             <Grid item xs={7}>
                                 {this.state.equipments.length > 5 &&
                                 <span>+
-										<ModalEquipments $equipmentsCount={this.state.$equipmentsCount}
-                                                         $equipments={this.state.$equipments} title={this.props.title}
+										<ModalEquipments $equipmentsCount={this.props.$equipmentsCount}
+                                                         $equipments={this.props.$equipments} title={this.props.title}
                                                          categoryId={this.props.categoryId} orderId={this.props.orderId}
                                                          onChange={this.props.onEquipmentsChange}>
 											<Button link style={{cursor: 'pointer'}}>
@@ -375,8 +373,8 @@ class HDescription extends Component {
                                     &nbsp;&nbsp;
 									</span>
                                 }
-                                <ModalEquipments $equipmentsCount={this.state.$equipmentsCount}
-                                                 $equipments={this.state.$equipments} title={this.props.title}
+                                <ModalEquipments $equipmentsCount={this.props.$equipmentsCount}
+                                                 $equipments={this.props.$equipments} title={this.props.title}
                                                  categoryId={this.props.categoryId} orderId={this.props.orderId}
                                                  onChange={this.props.onEquipmentsChange}>
                                     <Button link style={{cursor: 'pointer'}}>
