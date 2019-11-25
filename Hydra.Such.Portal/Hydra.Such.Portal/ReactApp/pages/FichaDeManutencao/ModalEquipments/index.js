@@ -233,7 +233,7 @@ class Index extends Component {
             newState.$equipmentsCount = props.$equipmentsCount;
         }
         if (Object.keys(newState).length > 0) {
-            this.setState(newState, () => {/*console.log(this.state)*/
+            this.setState(newState, () => {
             });
         }
     }
