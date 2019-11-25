@@ -149,12 +149,21 @@
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Encomendas/TodosPedidosPagamentoPorEncomenda"
+                   last-response="{{PedidosPagamento}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_TodosPedidosPagamentoPorEncomenda"
+                   content-type="application/json"></iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
             <paper-button id="btn_imprimirE" class="tablinks" on-tap="_printE"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extracto</paper-button>
 
             <paper-button id="btn_CriarPedidoPagamento" class="tablinks" on-tap="_CriarPedidoPagamento"><i class="fa fa-plus" aria-hidden="true"></i> Criar Pedido</paper-button>
+
+            <paper-button class="tablinks" id="btnShowPedidosPagamento" on-tap="_showPedidosPagamentoDlg"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Pedidos Pagamento</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -385,6 +394,42 @@
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
 
+        <paper-dialog id="PedidosPagamentoDlg" class="dialgoBox" modal>
+            <vaadin-grid id="grdChangeLog" aria-label="ChangeLog" items="[[PedidosPagamento]]" class="grid">
+                
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="noPedido">Nº Pedido</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.noPedido}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="estadoText">Estado</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.estadoText}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.valor}} €
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" id="btnPedidosPagamentoDlg" on-tap="_closePedidosPagamentoDlg"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
@@ -436,6 +481,11 @@
                     } else {
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
+
+                    //Preencher o POP-UP dos Pedidos Pagamento
+                    debugger;
+                    this.$.ajax_TodosPedidosPagamentoPorEncomenda.body = JSON.stringify({ "no": this.data.details.no });
+                    this.$.ajax_TodosPedidosPagamentoPorEncomenda.generateRequest();
                 },
                 //Helpers
                 _executeRequest: function (url, data) {
@@ -500,6 +550,13 @@
                 _closeRptDialog: function () {
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
+                },
+
+                _showPedidosPagamentoDlg: function () {
+                    this.$.PedidosPagamentoDlg.open();;
+                },
+                _closePedidosPagamentoDlg: function () {
+                    this.$.PedidosPagamentoDlg.close();
                 },
 
             });

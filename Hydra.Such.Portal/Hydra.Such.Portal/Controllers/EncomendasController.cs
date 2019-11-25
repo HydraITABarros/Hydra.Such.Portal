@@ -102,8 +102,20 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (UPerm != null && UPerm.Read.Value)
                 {
+                    List<PedidosPagamento> AllPedidos = DBPedidoPagamento.GetAllPedidosPagamento();
                     List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
                     List<EncomendasViewModel> result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", from, to, fornecedor, requisitionNo);
+
+                    foreach (EncomendasViewModel item in result)
+                    {
+                        int NoPedidosPendentes = AllPedidos.Where(p => p.NoEncomenda == item.No && (p.Estado == 1 || p.Estado == 2 || p.Estado == 3 || p.Estado == 4)).Count();
+                        if (NoPedidosPendentes > 0)
+                            item.PedidosPagamentoPendentes = "Sim";
+                        else
+                            item.PedidosPagamentoPendentes = "Não";
+                    };
+
+
                     return Json(result);
                 }
                 else
@@ -176,6 +188,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
                 if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade"); Col = Col + 1; }
                 if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Adiantamento"); Col = Col + 1; }
+                if (dp["pedidosPagamentoPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedidos Pagamento Pendentes"); Col = Col + 1; }
 
 
                 if (dp != null)
@@ -202,6 +215,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaId); Col = Col + 1; }
                         if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RespCenterId); Col = Col + 1; }
                         if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.HasAnAdvance); Col = Col + 1; }
+                        if (dp["pedidosPagamentoPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedidosPagamentoPendentes); Col = Col + 1; }
 
 
                         count++;
@@ -1193,5 +1207,19 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        [HttpPost]
+        public JsonResult TodosPedidosPagamentoPorEncomenda([FromBody] EncomendasViewModel item)
+        {
+            List<PedidosPagamentoViewModel> result = new List<PedidosPagamentoViewModel>();
+
+            if (item != null)
+            {
+                if (!string.IsNullOrEmpty(item.No))
+                {
+                    result = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(item.No).ParseToViewModel().ToList();
+                }
+            }
+            return Json(result);
+        }
     }
 }
