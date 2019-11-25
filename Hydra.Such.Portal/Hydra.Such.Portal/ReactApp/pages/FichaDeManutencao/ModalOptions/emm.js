@@ -43,9 +43,7 @@ class Emm extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
 
-        console.log('prevProps', prevProps, 'props', this.props);
         if (prevProps.$equipments != this.props.$equipments && !!this.props.$equipments) {
-
             this.state.emms = fromEquipmentsPlanToEmms(this.props.$equipments.value, true);
             this.state.emms.push({selected: this.props.$equipments.value, emm: null});
         }
@@ -77,7 +75,7 @@ class Emm extends Component {
             this.state.emms.push({selected: this.props.$equipments.value, emm: null});
 
             this.setState({}, () => {
-                console.log("ADD", this.props.$equipments);
+
             });
         }).catch((err) => {
             emm.serialError = true;
@@ -87,8 +85,6 @@ class Emm extends Component {
 
 
     removeEmm(emm) {
-
-        console.log(emm);
 
         emm.selected.map((equipment, i) => {
             if (equipment.$emms) {
@@ -105,12 +101,11 @@ class Emm extends Component {
             emms = [{selected: this.props.$equipments.value, emm: null}];
         }
         this.setState({emms: emms}, () => {
-            console.log("remove", this.props.$equipments);
+
         });
     };
 
     render() {
-        console.log("IMP", this.state.emms);
         this.validator.purgeFields();
         return (
             <div>
@@ -128,13 +123,12 @@ class Emm extends Component {
                                                 emm.selected = e.target.value;
                                                 this.setState({});
                                             }}
-                                            data-toltip={"cenas"}
                                             error={!!this.validator.message('equipments_' + i, emm.selected, 'required')}
                                         >
                                             {/*<MenuItem key={""} value={0}>Todos</MenuItem>*/}
                                             {this.props.$equipments && this.props.$equipments.value.map((o, j) => {
                                                 return <MenuItem
-                                                    // disabled={!!emm.emm}
+                                                    disabled={!!emm.emm}
                                                     key={j}
                                                     value={o}>{"#" + (j + 1) + " " + o.numEquipamento}</MenuItem>
                                             })}
@@ -236,7 +230,7 @@ const fromEquipmentsPlanToEmms = (equipments, grouped) => {
             retval.push({selected: emm.equipments, emm});
         });
     }
-    console.log('TRANSFORM', retval);
+
     return retval;
 };
 
