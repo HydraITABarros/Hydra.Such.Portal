@@ -108,11 +108,21 @@ namespace Hydra.Such.Portal.Controllers
 
                     foreach (EncomendasViewModel item in result)
                     {
-                        int NoPedidosPendentes = AllPedidos.Where(p => p.NoEncomenda == item.No && (p.Estado == 1 || p.Estado == 2 || p.Estado == 3 || p.Estado == 4)).Count();
-                        if (NoPedidosPendentes > 0)
-                            item.PedidosPagamentoPendentes = "Sim";
-                        else
-                            item.PedidosPagamentoPendentes = "Não";
+                        item.PedidosPagamentoPendentes = "Não";
+                        item.NoPedidosPagamento = "";
+                        List<PedidosPagamento> AllPedidosForEncomenda = AllPedidos.Where(x => x.NoEncomenda == item.No).ToList();
+
+                        if (AllPedidosForEncomenda != null && AllPedidosForEncomenda.Count > 0)
+                        {
+                            int NoPedidosPendentes = AllPedidosForEncomenda.Where(p => p.Estado == 1 || p.Estado == 2 || p.Estado == 3 || p.Estado == 4).Count();
+                            if (NoPedidosPendentes > 0)
+                                item.PedidosPagamentoPendentes = "Sim";
+
+                            foreach (PedidosPagamento pedido in AllPedidosForEncomenda)
+                            {
+                                item.NoPedidosPagamento = item.NoPedidosPagamento + pedido.NoPedido.ToString() + " - ";
+                            };
+                        }
                     };
 
 
@@ -189,6 +199,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade"); Col = Col + 1; }
                 if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Adiantamento"); Col = Col + 1; }
                 if (dp["pedidosPagamentoPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedidos Pagamento Pendentes"); Col = Col + 1; }
+                if (dp["noPedidosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Pedido Pagamento"); Col = Col + 1; }
 
 
                 if (dp != null)
@@ -216,7 +227,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RespCenterId); Col = Col + 1; }
                         if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.HasAnAdvance); Col = Col + 1; }
                         if (dp["pedidosPagamentoPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedidosPagamentoPendentes); Col = Col + 1; }
-
+                        if (dp["noPedidosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoPedidosPagamento); Col = Col + 1; }
 
                         count++;
                     }

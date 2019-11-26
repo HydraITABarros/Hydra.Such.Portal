@@ -97,6 +97,20 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult Movimentos_List()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         #region Home
         [HttpPost]
         public JsonResult GetListProjectsByArea([FromBody] JObject requestParams)
@@ -6182,6 +6196,23 @@ namespace Hydra.Such.Portal.Controllers
             return Json(ListToCreate);
         }
         #endregion
+        #endregion
+
+        #region Movimentos_Lista
+
+        [HttpPost]
+        public JsonResult GetListMovimentos()
+        {
+            List<ProjectMovementViewModel> result = DBProjectMovements.GetAll().ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName);
+
+            return Json(result);
+        }
+
+
+
+
+
+
         #endregion
 
         //1

@@ -28,6 +28,21 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
+        public static List<MovimentosDeProjeto> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosDeProjeto.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<MovimentosDeProjeto> GetAllOpen(string user)
         {
             try

@@ -31,7 +31,7 @@
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
 
-<dom-module id="x-encomendaslist">
+<dom-module id="x-movimentoslist">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
@@ -87,13 +87,14 @@
                 .panel-body {
                     padding-top: 0px !important;
                 }
+
                 .panel-heading {
                     padding: 0 !important;
                 }
             </style>
         </custom-style>
 
-        <iron-ajax url="/Encomendas/GetList"
+        <iron-ajax url="/Projetos/GetListMovimentos"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
@@ -101,7 +102,7 @@
                    on-response="resultHandler"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Encomendas/ExportToExcel_ListaEncomendas"
+        <iron-ajax url="/Projetos/ExportToExcel_ListaMovimentos"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
@@ -111,75 +112,75 @@
         </iron-ajax>
 
         <!--Filters-->
-        <iron-ajax url="/PopulateDropdowns/GetEncomendasYearList" id="grid_years_ajax" last-response="{{years}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjetosYearList" id="grid_years_ajax" last-response="{{years}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendor" id="grid_fornecedor_ajax" last-response="{{forcecedores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-            <paper-collapse-item class="panel-heading" header="Filtros" opened>
-                <div class="grid-header" id="gridheader">
-                    <div class="panel-body">
-                        <div class="row break_clear">
-                            <div class="col-sm-3">
-                                <such-selectbox style="margin-top:11px;" id="selectbox-forcecedor"
-                                                label="Fornecedor"
-                                                value="{{forcecedor}}"
-                                                items="[[forcecedores]]"
-                                                text-path="value"
-                                                value-path="id"
-                                                fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
-                                </such-selectbox>
-                            </div>
-                            <div class="col-sm-3">
-                                <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{requisitionNo}}">  </vaadin-text-field>
-                            </div>
-
-                            <div class="col-sm-2">
-                                <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-sm-2">
-                                <vaadin-combo-box style="margin-top:11px;"
-                                                  items="[[months]]"
-                                                  item-value-path="id"
-                                                  item-label-path="value"
-                                                  value="{{month}}"
-                                                  label="Mês"
-                                                  id="monthSelect"
-                                                  disabled>
-                                    <template>
-                                        <paper-icon-item>
-                                            <paper-item-body two-line>
-                                                <div>[[item.value]]</div>
-                                            </paper-item-body>
-                                        </paper-icon-item>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-
-                            <div class="col-sm-2 alignPoga text-right">
-                                <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
-                            </div>
+        <paper-collapse-item class="panel-heading" header="Filtros" opened>
+            <div class="grid-header" id="gridheader">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-3">
+                            <such-selectbox style="margin-top:11px;" id="selectbox-forcecedor"
+                                            label="Fornecedor"
+                                            value="{{forcecedor}}"
+                                            items="[[forcecedores]]"
+                                            text-path="value"
+                                            value-path="id"
+                                            fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
+                            </such-selectbox>
+                        </div>
+                        <div class="col-sm-3">
+                            <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{requisitionNo}}">  </vaadin-text-field>
                         </div>
 
-                        <template is="dom-if" if="[[!loaded]]">
-                            <div class="clearfix"></div>
-                            <div class="col-xs-12 grey" style="padding: 5px 0 15px 0;">
-                                * <small><i>Defina a sua pesquisa.</i></small>
-                            </div>
-                            <div class="clearfix"></div>
-                        </template>
+                        <div class="col-sm-2">
+                            <vaadin-combo-box style="margin-top:11px;" items="[[years]]" item-value-path="id" item-label-path="value" value="{{year}}" label="Ano">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-combo-box style="margin-top:11px;"
+                                              items="[[months]]"
+                                              item-value-path="id"
+                                              item-label-path="value"
+                                              value="{{month}}"
+                                              label="Mês"
+                                              id="monthSelect"
+                                              disabled>
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-2 alignPoga text-right">
+                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                        </div>
                     </div>
 
+                    <template is="dom-if" if="[[!loaded]]">
+                        <div class="clearfix"></div>
+                        <div class="col-xs-12 grey" style="padding: 5px 0 15px 0;">
+                            * <small><i>Defina a sua pesquisa.</i></small>
+                        </div>
+                        <div class="clearfix"></div>
+                    </template>
                 </div>
 
-            </paper-collapse-item>
+            </div>
+
+        </paper-collapse-item>
 
         <div class="subMenu">
             <template is="dom-if" if="{{loaded}}">
@@ -203,7 +204,7 @@
             </template>
         </div>
 
-        <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid hide" active-item="{{activeItem}}">
+        <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid hide" active-item="{{activeItem}}" >
 
             <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
@@ -389,7 +390,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-encomendaslist',
+                is: 'x-movimentoslist',
                 properties: {
                     _permissions: {
                         type: Array
@@ -446,21 +447,21 @@
                         this.$.grid._filters.map(function (value, index) {
                             filters[value.path] = value.value;
                         });
-                        window.setGridFilter('encomendas-encomendaslist', filters || {});
+                        window.setGridFilter('projetos-movimentoslist', filters || {});
 
-                        window.location.href = "Encomendas/DetalhesEncomenda/" + item.no;
+                        window.location.href = "Projetos/DetalhesProjeto/" + item.no;
                     }
                 },
                 /*FILTROS*/
                 created: function () {
-                    this.filter = window.getGridFilter('encomendas-encomendaslist');
+                    this.filter = window.getGridFilter('projetos-movimentoslist');
                 },
                 ready: function () {
                     //this.$.grid_databound_ajax.generateRequest();
-                    window.handleGridListColumnsOrder(this.$.grid, 'encomendas');
+                    window.handleGridListColumnsOrder(this.$.grid, 'Projetos');
 
                     /*FILTROS*/
-                    window.handleGridListColumnsOrder(this.$.grid, 'encomendas-encomendaslist');
+                    window.handleGridListColumnsOrder(this.$.grid, 'projetos-movimentoslist');
                     window.grid = this.$.grid;
                     window._this = this;
 
@@ -489,9 +490,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //this.result[0].ColunasEXCEL = this._columns;
-                    //this.$.ajax_Export.body = JSON.stringify(this.$.grid._filter(this.$.grid.items));
-
                     var result = this.$.grid._filter(this.result);
                     result[0].ColunasEXCEL = this._columns;
 
@@ -501,7 +499,7 @@
 
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
-                    location.href = '../Encomendas/ExportToExcelDownload_Encomendas?sFileName=' + FileName;
+                    location.href = '../Projetos/ExportToExcelDownload_Movimentos?sFileName=' + FileName;
                 },
 
                 /*start - ColumnToggle*/
@@ -527,9 +525,9 @@
                         "noPedidosPagamento": { hidden: false, label: "Nº Pedido Pagamento" },
                     };
 
-                    if (localStorage["encomendaslist.ToggleColumn"]) {
+                    if (localStorage["movimentoslist.ToggleColumn"]) {
                         var keys = Object.keys(columns);
-                        var storedColumns = JSON.parse(localStorage["encomendaslist.ToggleColumn"]);
+                        var storedColumns = JSON.parse(localStorage["movimentoslist.ToggleColumn"]);
                         for (var i = 0; i < keys.length; i++) {
                             columns[keys[i]] = storedColumns[keys[i]];
                         }
@@ -541,7 +539,7 @@
                     event.path[0].classList.toggle("selected");
                     this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
                     if (typeof (Storage) !== "undefined") {
-                        localStorage["encomendaslist.ToggleColumn"] = JSON.stringify(this._columns);
+                        localStorage["movimentoslist.ToggleColumn"] = JSON.stringify(this._columns);
                     }
                 },
                 _getColumnItemClass: function (columnIndex) {
