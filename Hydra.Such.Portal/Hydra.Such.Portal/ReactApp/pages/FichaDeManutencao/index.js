@@ -369,7 +369,9 @@ class FichaDeManutencao extends Component {
 
         var url = `/ordens-de-manutencao/ficha-de-manutencao`;
 
-        var toPost = this.state.equipments.map((item) => {
+
+        var equipments = _.cloneDeep(this.state.equipments);
+        var toPost = equipments.map((item) => {
             var retval = {};
             Object.keys(item).map(k => {
                 if (k.indexOf('$') > -1) {
@@ -377,9 +379,17 @@ class FichaDeManutencao extends Component {
                 }
                 retval[k] = item[k];
             });
-            item.emms.map((emm) => {
-                emm.equipments = null;
+
+            retval.emms = item.emms.map((emm) => {
+                var _item = _.omit(emm, ['equipments']);
+                return _item;
             });
+
+            retval.materials = item.materials.map((material) => {
+                var _item = _.omit(material, ['equipments']);
+                return _item;
+            });
+
             return retval;
         });
 

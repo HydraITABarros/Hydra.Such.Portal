@@ -70,12 +70,15 @@ class Emm extends Component {
                     equipment.emms = [];
                 }
                 equipment.emms.push(emm.emm);
+
+                return equipment;
             });
+
+            this.state.emms[this.state.emms.length - 1].emm = emm.emm;
 
             this.state.emms.push({selected: this.props.$equipments.value, emm: null});
 
             this.setState({}, () => {
-
             });
         }).catch((err) => {
             emm.serialError = true;
@@ -87,21 +90,25 @@ class Emm extends Component {
     removeEmm(emm) {
 
         emm.selected.map((equipment, i) => {
-            if (equipment.$emms) {
-                equipment.$emms.value = equipment.$emms.value.filter((_emm, i) => {
-                    return _emm != emm.emm;
-                });
-            }
+
+            return equipment.emms = equipment.emms.filter((_emm, i) => {
+                return _emm.numSerie != emm.emm.numSerie;
+            });
+
         });
 
         var emms = this.state.emms.filter((item, i) => {
             return item.emm != emm.emm;
         });
+
         if (emms.length == 0) {
             emms = [{selected: this.props.$equipments.value, emm: null}];
         }
-        this.setState({emms: emms}, () => {
 
+        this.state.emms = emms;
+
+        console.log("IMPORTANT", this.props.$equipments.value);
+        this.setState({}, () => {
         });
     };
 
@@ -128,8 +135,8 @@ class Emm extends Component {
                                             {/*<MenuItem key={""} value={0}>Todos</MenuItem>*/}
                                             {this.props.$equipments && this.props.$equipments.value.map((o, j) => {
                                                 return <MenuItem
-                                                    disabled={!!emm.emm}
                                                     key={j}
+                                                    disabled={!!emm.emm}
                                                     value={o}>{"#" + (j + 1) + " " + o.numEquipamento}</MenuItem>
                                             })}
                                         </Select>
@@ -180,7 +187,7 @@ class Emm extends Component {
                                         <Text span className={"p-l-20 p-r-20"}>{emm.emm && emm.emm.modeloText}</Text>
                                     </div>
                                 </Grid>
-                                <Grid item xs={12} md={3}>
+                                <Grid item xs={12}>
                                 </Grid>
 
                             </Grid>
@@ -202,6 +209,7 @@ const fromEquipmentsPlanToEmms = (equipments, grouped) => {
         if (!equipment.emms) {
             return;
         }
+        console.log("SUPER", equipment)
         equipment.emms.map((emm, x) => {
             if (!emms[emm.numSerie]) {
                 emms[emm.numSerie] = emm;
@@ -217,7 +225,7 @@ const fromEquipmentsPlanToEmms = (equipments, grouped) => {
             var emm = emms[key];
             if (emm.equipments.length < equipments.length) {
                 emm.equipments.map((e, j) => {
-                    retval.push({select: e, emm});
+                    retval.push({selected: e, emm});
                 });
             } else {
                 retval.push({selected: 0, emm});

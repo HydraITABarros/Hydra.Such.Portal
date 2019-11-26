@@ -3,6 +3,8 @@ import {Input, Button, Icon, Text, Wrapper, Select, MenuItem, GSelect} from 'com
 import MuiAddIcon from '@material-ui/icons/Add';
 import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
 import MuiGrid from '@material-ui/core/Grid';
+import SimpleReactValidator from "simple-react-validator";
+import _ from "lodash";
 
 const Grid = styled(MuiGrid)`
     position: relative;
@@ -17,114 +19,239 @@ const TextCol = styled(Text)`&&{
 }
 `;
 
-const Material = (props) => {
-    return (
-        <div>
+class Material extends Component {
+    state = {
+        materials: []
+    }
 
-            <Wrapper padding={'0 0 16px'}>
-                <Grid container spacing={1}>
-                    <Grid item xs={10} md={3}>
-                        <GSelect
-                            placeholder=
-                                {"Associar a equipamento"}
-                            options={[
-                                {value: 10, title: "#1	3215"},
-                                {value: 20, title: "#2	3041"},
-                            ]}
-                        />
-                    </Grid>
-                    <Grid item xs={10} md={3}>
-                        <InputModal value={"Troca de cabo elétrico"}/>
-                    </Grid>
-                    <Grid item xs={10} md={2}>
-                        <InputModal value={"3 metros"}/>
-                    </Grid>
-                    <Grid item xs={10} md={3}>
-                        <GSelect
-                            placeholder=
-                                {"Fornecido por"}
-                            options={[
-                                {value: 10, title: "Cliente"},
-                                {value: 20, title: "Such"},
-                            ]}
-                        />
-                    </Grid>
-                    <Grid item xs={1} md={1}>
-                        <ButtonNew round><Icon remove/></ButtonNew>
-                    </Grid>
-                </Grid>
-            </Wrapper>
+    constructor(props) {
+        super(props);
 
-            <Wrapper padding={'0 0 16px'}>
-                <Grid container spacing={1}>
-                    <Grid item xs={10} md={3}>
-                        <GSelect
-                            placeholder=
-                                {"Associar a equipamento"}
-                            options={[
-                                {value: 10, title: "#1	3215"},
-                                {value: 20, title: "#2	3041"},
-                            ]}
-                        />
-                    </Grid>
-                    <Grid item xs={10} md={3}>
-                        <InputModal value={"Troca de cabo elétrico"}/>
-                    </Grid>
-                    <Grid item xs={10} md={2}>
-                        <InputModal value={"3 metros"}/>
-                    </Grid>
-                    <Grid item xs={10} md={3}>
-                        <GSelect
-                            placeholder=
-                                {"Fornecido por"}
-                            options={[
-                                {value: 10, title: "Cliente"},
-                                {value: 20, title: "Such"},
-                            ]}
-                        />
-                    </Grid>
-                    <Grid item xs={1} md={1}>
-                        <ButtonNew round><Icon remove/></ButtonNew>
-                    </Grid>
-                </Grid>
-            </Wrapper>
+        console.log('0constructor');
 
-            <Wrapper padding={'0 0 16px'}>
-                <Grid container spacing={1}>
-                    <Grid item xs={10} md={3}>
-                        <GSelect
-                            placeholder=
-                                {"Associar a equipamento"}
-                            options={[
-                                {value: 10, title: "#1	3215"},
-                                {value: 20, title: "#2	3041"},
-                            ]}
-                        />
-                    </Grid>
-                    <Grid item xs={10} md={3}>
-                        <InputModal placeholder={"Inserir material"}/>
-                    </Grid>
-                    <Grid item xs={10} md={2}>
-                        <InputModal placeholder={"Quantidade"}/>
-                    </Grid>
-                    <Grid item xs={10} md={3}>
-                        <GSelect
-                            placeholder=
-                                {"Fornecido por"}
-                            options={[
-                                {value: 10, title: "Cliente"},
-                                {value: 20, title: "Such"},
-                            ]}
-                        />
-                    </Grid>
-                    <Grid item xs={1} md={1}>
-                        <ButtonNew round><Icon remove/></ButtonNew>
-                    </Grid>
-                </Grid>
-            </Wrapper>
+        if (this.props.$equipments) {
+            this.state.materials = fromEquipmentsPlanToMaterials(this.props.$equipments.value, true);
+            this.state.materials.push({selected: this.props.$equipments.value, material: getDefaultMaterial()});
+        }
 
-        </div>
-    )
+        this.validator = new SimpleReactValidator();
+    }
+
+    componentDidMount() {
+        // if (this.props.$equipments) {
+        //     this.state.materials = fromEquipmentsPlanToMaterials(this.props.$equipments.value, true);
+        //     this.state.materials.push({selected: this.props.$equipments.value, material: getDefaultMaterial()});
+        // }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.$equipments != this.props.$equipments) {
+            this.state.materials = fromEquipmentsPlanToMaterials(this.props.$equipments.value, true);
+            this.state.materials.push({selected: this.props.$equipments.value, material: getDefaultMaterial()});
+        }
+    }
+
+    render() {
+        this.validator.purgeFields();
+
+        return (
+            <div>
+                <Wrapper padding={'0 0 16px'}>
+
+                    {this.state.materials.map((material, i) => {
+                        return (
+                            <div key={i}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={10} md={2}>
+                                        <Select
+                                            key={material.material.descricao}
+                                            multiple
+                                            value={material.selected}
+                                            onChange={(e) => {
+                                                material.selected = e.target.value;
+                                                this.setState({});
+                                            }}
+                                            error={!!this.validator.message('equipments_' + i, material.selected, 'required')}
+                                        >
+                                            {this.props.$equipments && this.props.$equipments.value.map((o, j) => {
+                                                return <MenuItem
+                                                    key={j}
+                                                    disabled={this.state.materials.length != (i + 1)}
+                                                    value={o}>{"#" + (j + 1) + " " + o.numEquipamento}</MenuItem>
+                                            })}
+                                        </Select>
+                                        <div className="hide">
+                                            {this.validator.message('equipments_' + i, material.selected, 'required')}
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={10} md={4}>
+                                        <Input
+                                            disabled={this.state.materials.length != (i + 1)}
+                                            key={material.material.descricao}
+                                            defaultValue={material.material.descricao}
+                                            onChange={(e) => {
+                                                material.material.descricao = e.target.value;
+                                            }}
+                                            error={!!this.validator.message('descricao_' + i, material.material.descricao, 'required')}
+                                            placeholder={"Inserir Material"}
+                                        />
+                                        <div className="hide">
+                                            {this.validator.message('descricao_' + i, material.material.descricao, 'required')}
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={10} md={2}>
+                                        <Input
+                                            disabled={this.state.materials.length != (i + 1)}
+                                            key={material.material.descricao}
+                                            defaultValue={material.material.quantidade}
+                                            onChange={(e) => {
+                                                material.material.quantidade = e.target.value;
+                                            }}
+                                            placeholder={"Quantidade"}/>
+                                    </Grid>
+                                    <Grid item xs={10} md={3}>
+                                        <Select
+                                            value={material.material.fornecidoPor || 0}
+                                            disabled={this.state.materials.length != (i + 1)}
+                                            key={material.material.descricao}
+                                            onChange={(e) => {
+                                                material.material.fornecidoPor = e.target.value;
+
+                                                this.setState({}, () => {
+                                                    attachMaterialToEquipments(this.state.materials, this.props.$equipments.value);
+                                                });
+
+                                            }}
+                                            error={!!this.validator.message('descricao_' + i, material.material.fornecidoPor, 'required')}
+                                        >
+                                            <MenuItem
+                                                value={0}
+                                                style={{display: 'none'}}>
+                                                <span>Fornecido por</span>
+                                            </MenuItem>
+                                            {[{value: 1, title: "Cliente"}, {value: 2, title: "Such"}].map((o, j) => {
+                                                return <MenuItem
+                                                    key={i + '' + j}
+                                                    value={o.value}>{o.title}</MenuItem>
+                                            })}
+                                        </Select>
+                                        <div className="hide">
+                                            {this.validator.message('fornecidoPor_' + i, material.material.fornecidoPor, 'required')}
+                                        </div>
+
+                                    </Grid>
+                                    <Grid item xs={1} md={1}>
+                                        {this.state.materials.length == (i + 1) &&
+                                        <Button
+                                            round
+                                            className={'input-width-button__button'}
+                                            onClick={(e) => {
+
+                                                if (!this.validator.allValid()) {
+                                                    this.validator.showMessages();
+                                                    this.forceUpdate();
+                                                    return;
+                                                }
+
+                                                this.state.materials.push({
+                                                    selected: this.props.$equipments.value,
+                                                    material: getDefaultMaterial()
+                                                });
+                                                this.setState({}, () => {
+                                                    attachMaterialToEquipments(this.state.materials, this.props.$equipments.value);
+                                                });
+                                            }}
+                                        ><Icon add/></Button>
+                                        }
+                                        {this.state.materials.length != (i + 1) &&
+                                        <Button
+                                            round
+                                            className={'input-width-button__button'}
+                                            onClick={(e) => {
+                                                this.state.materials.splice(i, 1);
+                                                console.log(this.state.materials);
+                                                this.setState({}, () => {
+                                                    attachMaterialToEquipments(this.state.materials, this.props.$equipments.value);
+                                                });
+                                            }}
+                                        ><Icon remove/></Button>
+                                        }
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                    </Grid>
+                                </Grid>
+                            </div>
+                        )
+                    })}
+                </Wrapper>
+
+            </div>
+        )
+    }
 }
+
+
+const fromEquipmentsPlanToMaterials = (equipments, grouped) => {
+    var materials = {};
+    if (!equipments) {
+        return [];
+    }
+    equipments.map((equipment, index) => {
+        if (!equipment.materials) {
+            return;
+        }
+
+        equipment.materials.map((material, x) => {
+            var key = material.descricao + material.quantidade + material.fornecidoPor;
+            if (!materials[key]) {
+                materials[key] = material;
+                materials[key].equipments = [];
+            }
+            materials[key].equipments.push(equipment);
+        });
+    });
+
+    var retval = [];
+
+    Object.keys(materials).map((key, i) => {
+        var material = materials[key];
+        retval.push({selected: material.equipments, material});
+    });
+
+    return retval;
+};
+
+const getDefaultMaterial = () => {
+    return {
+        fornecidoPor: null,
+        quantidade: null,
+        descricao: null
+    }
+};
+
+const attachMaterialToEquipments = (materials, equipments) => {
+    if (!materials) {
+        return;
+    }
+
+    var equipmentsMaterials = {};
+
+    materials.map((material, i) => {
+        if (!material.material.descricao) {
+            return;
+        }
+        material.selected.map((equipment) => {
+            if (!equipmentsMaterials[equipment.numEquipamento]) {
+                equipmentsMaterials[equipment.numEquipamento] = [];
+            }
+            equipmentsMaterials[equipment.numEquipamento].push(material.material);
+        });
+    });
+
+    equipments.map((equipment) => {
+        equipment.$materials.value = equipmentsMaterials[equipment.numEquipamento];
+    });
+
+};
 
 export default Material;
