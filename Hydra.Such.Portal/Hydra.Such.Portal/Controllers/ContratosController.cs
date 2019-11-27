@@ -4829,6 +4829,7 @@ namespace Hydra.Such.Portal.Controllers
                                 thisHeader.EstadoAlteração = 1;
                                 thisHeader.DataEnvioCliente = thiscontract != null ? thiscontract.DataEnvioCliente.HasValue ? thiscontract.DataEnvioCliente : (DateTime?)null : (DateTime?)null;
                                 thisHeader.DataDaAssinatura = thiscontract != null ? thiscontract.DataDaAssinatura.HasValue ? thiscontract.DataDaAssinatura : (DateTime?)null : (DateTime?)null;
+                                //thisHeader.NºContrato = thisHeader.NºContrato;
                                 //thisHeader.Estado = ????? ABARROS
                                 string create = DBContracts.Create(thisHeader).NºDeContrato;
 
@@ -4896,6 +4897,7 @@ namespace Hydra.Such.Portal.Controllers
                                 thisHeader.NºDeContrato = newNumeration;
                                 thisHeader.DataEnvioCliente = null;
                                 thisHeader.Estado = 1;
+                                //thisHeader.ReferênciaContrato = thisHeader.NºContrato;
                                 var create = DBContracts.Create(thisHeader).NºDeContrato;
 
                                 if(create != null)
