@@ -284,6 +284,7 @@ namespace Hydra.Such.Portal.Controllers
                 data.eReasonCode = 1;
 
                 var vendor = WSVendorService.MapVendorNAVToVendorModel(result.WSVendor);
+
                 if (vendor != null)
                 {
                     //SUCESSO
@@ -297,6 +298,28 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         SendEmailApprovals Email = new SendEmailApprovals();
 
+                        var path_tmp = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\tmp\\", data.NomeAnexo);
+                        string FileName_Final = data.NomeAnexo.Replace("FORNECEDOR", vendor.No);
+                        var path_final = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\", FileName_Final);
+
+                        FileStream file_tmp = new FileStream(path_tmp, FileMode.Open);
+                        FileStream file_final = new FileStream(path_final, FileMode.CreateNew);
+
+                        file_tmp.CopyTo(file_final);
+
+                        file_tmp.Dispose();
+                        file_final.Dispose();
+
+                        System.IO.File.Delete(path_tmp);
+
+                        Anexos newfile = new Anexos();
+                        newfile.NºOrigem = vendor.No;
+                        newfile.UrlAnexo = FileName_Final;
+                        newfile.TipoOrigem = TipoOrigemAnexos.Fornecedores;
+                        newfile.DataHoraCriação = DateTime.Now;
+                        newfile.UtilizadorCriação = User.Identity.Name;
+
+
                         Email.DisplayName = "e-SUCH - Fornecedor";
                         Email.From = "esuch@such.pt";
                         Email.To.Add(Parametro.Valor);
@@ -304,6 +327,7 @@ namespace Hydra.Such.Portal.Controllers
                         Email.BCC.Add("ARomao@esuch.pt");
                         Email.Subject = "e-SUCH - Novo Fornecedor";
                         Email.Body = MakeEmailBodyContent("Criado o Fornecedor:  " + vendor.No + " - " + vendor.Name, UserEmail.Nome);
+                        Email.Anexo = path_final;
                         Email.IsBodyHtml = true;
 
                         Email.SendEmail_Simple();
@@ -436,6 +460,65 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+        [HttpPost]
+        [Route("Fornecedores/FileUpload")]
+        public JsonResult FileUpload()
+        {
+            string full_filename = string.Empty;
+            try
+            {
+                var files = Request.Form.Files;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".msg" ||
+                            extension.ToLower() == ".txt" || extension.ToLower() == ".text" ||
+                            extension.ToLower() == ".pdf" ||
+                            extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" || extension.ToLower() == ".dotx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".pjpeg" || extension.ToLower() == ".jfif" || extension.ToLower() == ".pjp" ||
+                            extension.ToLower() == ".png" || extension.ToLower() == ".gif")
+                        {
+                            string filename = Path.GetFileName(file.FileName);
+                            //full_filename = "Requisicoes/" + id + "_" + filename;
+
+                            full_filename = "FORNECEDOR_" + User.Identity.Name + "_" + filename;
+                            var path = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\tmp\\", full_filename);
+
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                file.CopyTo(dd);
+                                dd.Dispose();
+
+                                //Anexos newfile = new Anexos();
+                                //newfile.NºOrigem = id;
+                                //newfile.UrlAnexo = full_filename;
+                                //newfile.TipoOrigem = TipoOrigemAnexos.PreRequisicao;
+                                //newfile.DataHoraCriação = DateTime.Now;
+                                //newfile.UtilizadorCriação = User.Identity.Name;
+
+                                //DBAttachments.Create(newfile);
+                                //if (newfile.NºLinha == 0)
+                                //{
+                                //    System.IO.File.Delete(path);
+                                //}
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+            return Json(full_filename);
+        }
 
 
 

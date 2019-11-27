@@ -3,7 +3,8 @@ using Hydra.Such.Data.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-    using System.Net;
+using System.IO;
+using System.Net;
     using System.Net.Mail;
 using System.Text;
 
@@ -137,6 +138,12 @@ namespace Hydra.Such.Data.Logic.Approvals
             MMessage.Subject = Subject;
             MMessage.Body = Body;
             MMessage.IsBodyHtml = IsBodyHtml;
+
+            if (!string.IsNullOrEmpty(Anexo))
+            {
+                Attachment anex = new Attachment(Anexo);
+                MMessage.Attachments.Add(anex);
+            }
 
             Client.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
 

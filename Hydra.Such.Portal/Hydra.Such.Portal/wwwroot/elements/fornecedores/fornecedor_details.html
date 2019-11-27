@@ -19,6 +19,8 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
 <!--Datepicker com correção de bug que impede visualização nas grids -->
@@ -197,7 +199,7 @@
                                                         </div>
 
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.distrito}}" maxlength="30" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}" > </vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.distrito}}" maxlength="30" id="county" name="county" label="Distrito" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-lg-3">
@@ -211,7 +213,7 @@
 
                                                     <div class="row break_clear">
                                                         <div class="col-lg-3">
-                                                            <vaadin-text-field value="{{data.phone}}" maxlength="30" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone" ></vaadin-text-field>
+                                                            <vaadin-text-field value="{{data.phone}}" maxlength="30" disabled="{{ !_permissions.update }}" id="phone_No" name="phone_No" label="Telefone"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-lg-3">
@@ -295,7 +297,7 @@
                                                     </div>
 
                                                     <div class="col-lg-6">
-                                                        <vaadin-text-field value="{{data.observacoes}}" maxlength="20" disabled="{{ !_permissions.update }}" id="observacoes" name="observacoes" label="Observações" > </vaadin-text-field>
+                                                        <vaadin-text-field value="{{data.observacoes}}" maxlength="20" disabled="{{ !_permissions.update }}" id="observacoes" name="observacoes" label="Observações"> </vaadin-text-field>
                                                     </div>
                                                 </div>
 
@@ -306,7 +308,7 @@
 
                                 <div class="marginSpace">
                                     <template is="dom-if" if="{{ _isCreate }}">
-                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_openDlgFornecedorIBAN"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                     </template>
                                     <template is="dom-if" if="{{ !_isCreate }}">
                                         <template is="dom-if" if="{{ _permissions.update }}">
@@ -330,6 +332,30 @@
             </div>
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
+
+        <paper-dialog id="dlgFornecedorIBAN" class="dialgoBox" modal style="height:230px; width:550px;">
+            <div class="row break_clear">
+                    <h2>Anexar ficheiro com o IBAN do fornecedor</h2>
+            </div>
+
+            <div class="row break_clear">
+                <!--<vaadin-upload nodrop max-files="1" id="sendToFornecedorIBAN_Anexo" contextmenu="teste"></vaadin-upload>-->
+                <vaadin-upload id="sendToFornecedorIBAN_Anexo"
+                               target="/Fornecedores/FileUpload/"
+                               method="POST"
+                               headers="{'Accept': 'application/json'}"
+                               timeout=15000
+                               nodrop
+                               max-files="1">
+                </vaadin-upload>
+            </div>
+
+            <div class="buttons">
+                <paper-button class="btnSave" id="btnEnviarsendToEval" on-tap="_btnCriarFornecedor"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                <paper-button class="btnRemove" id="btnCloseFornecedorIBAN" on-tap="_closeDlgFornecedorIBAN"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -370,9 +396,23 @@
                         type: String,
                     },
                 },
+
                 ready: function () {
                     var _this = this;
                     //GET Fornecedor DATA
+
+                    if (this.$.sendToFornecedorIBAN_Anexo != null) {
+                        this.$.sendToFornecedorIBAN_Anexo.addEventListener('upload-response', function (e) {
+                            var results = JSON.parse(e.detail.xhr.response);
+                            if (results != null && results != "") {
+                                _this.data.nomeAnexo = results;
+                            }
+                            else {
+                                var msg = document.querySelector("x-fornecedordetails");
+                                msg._openToastError("Não é permitido adicionar este tipo de ficheiros.");
+                            }
+                        });
+                    }
 
                     this.$.page_databound_ajax.body = JSON.stringify({ "No": this._no });
                     this.$.page_databound_ajax.generateRequest();
@@ -512,6 +552,7 @@
                 _createResponseProcessor: function () {
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
+                        this.$.dlgFornecedorIBAN.close();
                         this._openToast("Fornecedor criado com sucesso.");
                     } else {
                         this._openToastError(this.data.eMessage);
@@ -589,6 +630,22 @@
                         this.$.page_VerificarVAT_ajax.generateRequest();
                     }
                 },
+
+                _openDlgFornecedorIBAN: function () {
+                    this.$.dlgFornecedorIBAN.open();
+                },
+                _closeDlgFornecedorIBAN: function () {
+                    this.$.dlgFornecedorIBAN.close();
+                },
+
+
+                _btnCriarFornecedor: function (e) {
+                    if (this.data.nomeAnexo == undefined || this.data.nomeAnexo == null || this.data.nomeAnexo == "")
+                        this._showErrorMessage("É obrigatório indicar um ficheiro com o IBAN do fornecedor.");
+                    else
+                        this._executeRequest("/Fornecedores/Create", this.data)
+                },
+
 
             });
         });
