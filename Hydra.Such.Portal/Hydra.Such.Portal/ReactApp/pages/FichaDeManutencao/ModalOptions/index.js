@@ -23,17 +23,19 @@ const {DialogTitle, DialogContent, DialogActions} = ModalLarge;
 
 class ModalOptions extends Component {
     state = {
-        open: true,
+        open: false,
         tab: 0
-    }
+    };
 
     constructor(props) {
         super(props);
         this.fetch = this.fetch.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         //this.fetch();
     }
 
     handleChange(e, value) {
+        console.log("222", value);
         this.setState({
             tab: value
         });
@@ -66,7 +68,7 @@ class ModalOptions extends Component {
 
     componentDidUpdate(props) {
 
-        console.log("IMPPPPP",props.$equipments);
+        console.log("IMPPPPP", props.$equipments);
     }
 
     render() {
@@ -81,7 +83,7 @@ class ModalOptions extends Component {
                 }}
                 open={this.state.open}
                 onClose={() => {
-                    this.setState({open: false});
+                    this.setState({open: false, tab: 0});
                 }}
                 action={this.props.children} children={
                 <div id={"emm-modal"}>
@@ -107,16 +109,22 @@ class ModalOptions extends Component {
                     </DialogTitle>
 
                     <DialogContent>
-                        {this.state.tab == 0 && <Emm $equipments={this.props.$equipments} />}
-                        {this.state.tab == 1 && <Material/>}
-                        {/*{this.state.tab == 2 && <Fotografias/>}*/}
-                        {/*{this.state.tab == 3 && <Documentos/>}*/}
-                        {/*{this.state.tab == 4 && <Upload/>}*/}
-                        
+                        {this.state.tab == 0 &&
+                        <Emm orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                        {this.state.tab == 1 &&
+                        <Material orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                        {this.state.tab == 2 &&
+                        <Fotografias orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                        {this.state.tab == 3 &&
+                        <Documentos orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                        {this.state.tab == 4 &&
+                        <Upload orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+
                     </DialogContent>
                     <hr/>
                     <DialogActions>
-                        <Button onClick={() => this.setState({open: false})} primary color="primary">Guardar</Button>
+                        <Button onClick={() => this.setState({open: false, tab: 0})} primary
+                                color="primary">Guardar</Button>
                     </DialogActions>
                 </div>
             }/>
