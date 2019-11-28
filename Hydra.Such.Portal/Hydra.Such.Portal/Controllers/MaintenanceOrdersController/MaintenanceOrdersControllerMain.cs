@@ -29,6 +29,7 @@ using Hydra.Such.Data.Evolution.DatabaseReference;
 using StackExchange.Redis;
 using Hydra.Such.Portal.ViewModels;
 using System.Reflection;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -41,6 +42,8 @@ namespace Hydra.Such.Portal.Controllers
 		protected EvolutionWEBContext evolutionWEBContext;
 		protected SuchDBContext suchDBContext;
 		private readonly ISession session;
+		private readonly IHostingEnvironment _host;
+		
 
 		public MaintenanceOrdersController(
 		    MaintenanceOrdersRepository MaintenanceOrdersRepository,
@@ -48,8 +51,10 @@ namespace Hydra.Such.Portal.Controllers
 		    EquipamentoRepository EquipamentoRepository,
 		    SuchDBContext suchDBContext,
 		    EvolutionWEBContext evolutionWEBContext, IOptions<NAVWSConfigurations> NAVWSConfigs,
-		    IHttpContextAccessor httpContextAccessor)
+		    IHttpContextAccessor httpContextAccessor,
+		    IHostingEnvironment host)
 		{
+			_host = host;
 			session = httpContextAccessor.HttpContext.Session;
 			this.MaintenanceOrdersRepository = MaintenanceOrdersRepository;
 			this.MaintenanceOrdersLineRepository = MaintenanceOrdersLineRepository;
