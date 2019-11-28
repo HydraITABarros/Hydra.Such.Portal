@@ -4,6 +4,8 @@ import MuiAddIcon from '@material-ui/icons/Add';
 import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
 import MuiGrid from '@material-ui/core/Grid';
 import _theme from '../../../themes/default';
+import axios from "axios";
+import moment from "moment";
 
 
 const Grid = styled(MuiGrid)`
@@ -32,54 +34,95 @@ const TextDoc = styled(Text)`&&{
 }
 `;
 
-const Documentos = (props) => {
-    return (
-        <div>
+class Documentos extends Component {
+    state = {
+        documents: [],
+        photoIndex: 0,
+        lightboxOpen: false
+    };
 
-            <Wrapper padding={'0 0 16px'}>
-                <Grid container spacing={1}>
+    constructor(props) {
+        super(props);
+        this.fetch = this.fetch.bind(this);
+        if (this.props.$equipments) {
+            this.fetch();
+            var planEquipmentMap = {};
+            this.props.$equipments.value.map((e) => {
+                planEquipmentMap[e.id] = e.numEquipamento;
+            });
+            this.state.planEquipmentMap = planEquipmentMap;
+        }
 
-                    <Grid item container xs={12} md={4}>
-                        <Grid item xs={2}>
-                            <DocImg/>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <WrapperText>
-                                <Text b>Ficha Técnica</Text><br/>
-                                <TextDoc label>.pdf (243kb)<br/>11 Abr 2018</TextDoc>
-                            </WrapperText>
-                        </Grid>
+    };
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.$equipments != this.props.$equipments) {
+            this.fetch();
+            var planEquipmentMap = {};
+            this.props.$equipments.value.map((e) => {
+                planEquipmentMap[e.id] = e.numEquipamento;
+            });
+            this.state.planEquipmentMap = planEquipmentMap;
+        }
+    }
+
+    fetch() {
+        axios.get('/ordens-de-manutencao/files/' + this.props.orderId + '/?planIds=' +
+            (this.props.$equipments ? this.props.$equipments.value.map((e) => e.id).join(",") : "") +
+            '&documentType=document'
+        ).then((e) => {
+            console.log(e);
+            this.setState({
+                documents: e.data
+            }, () => {
+                console.log(this.state.documents)
+            });
+        }).catch((e) => {
+
+        });
+    }
+
+    render() {
+        this.documents = [];
+        return (
+            <div>
+
+                <Wrapper padding={'0 0 16px'}>
+                    <Grid container spacing={1}>
+
+                        {this.state.documents.map((document, i) => {
+                            this.documents.push(document.url);
+                            var documentIndex = this.documents.length - 1;
+                            return (
+                                <Grid item key={i} container xs={12} md={4} onClick={() => {
+                                    window.open(document.url, '_blank');
+                                }} className={"cursor-pointer"}>
+                                    <Grid item xs={3} lg={2}>
+                                        <DocImg/>
+                                    </Grid>
+                                    <Grid item xs={9} lg={10}>
+                                        <WrapperText>
+                                            <Text b className={'ws-nowrap to-ellipsis'}>{document.name}</Text><br/>
+                                            <TextDoc label>
+                                                <span className={'ws-nowrap to-ellipsis'}>
+                                                    .{document.name.split('.')[1]} ({Math.round((document.size * 0.001) * 100) / 100}kb)
+                                                </span> <br/>
+                                                <span className={'ws-nowrap'}>
+                                                    {moment(document.createdAt).format('DD MMM YYYY')}
+                                                </span>
+                                            </TextDoc>
+                                        </WrapperText>
+                                    </Grid>
+                                </Grid>
+                            )
+                        })}
+
                     </Grid>
+                </Wrapper>
 
-                    <Grid item container xs={12} md={4}>
-                        <Grid item xs={2}>
-                            <DocImg/>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <WrapperText>
-                                <Text b>Ficha Técnica</Text><br/>
-                                <TextDoc label>.pdf (243kb)<br/>11 Abr 2018</TextDoc>
-                            </WrapperText>
-                        </Grid>
-                    </Grid>
-
-                    <Grid item container xs={12} md={4}>
-                        <Grid item xs={2}>
-                            <DocImg/>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <WrapperText>
-                                <Text b>Ficha Técnica</Text><br/>
-                                <TextDoc label>.pdf (243kb)<br/>11 Abr 2018</TextDoc>
-                            </WrapperText>
-                        </Grid>
-                    </Grid>
-
-                </Grid>
-            </Wrapper>
-
-        </div>
-    )
+            </div>
+        )
+    }
 }
 
 export default Documentos;
