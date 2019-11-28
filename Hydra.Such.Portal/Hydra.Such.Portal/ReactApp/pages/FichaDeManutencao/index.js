@@ -415,7 +415,7 @@ class FichaDeManutencao extends Component {
                                 onRef={el => this.headerTitleWrapper = el}
                                 $equipments={this.state.$equipments}
                                 $currentUser={this.state.$currentUser}
-
+                                orderId={this.state.orderId}
                             />
                         </Sticky>
                         <HeaderDescription

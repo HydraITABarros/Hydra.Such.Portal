@@ -148,6 +148,7 @@ class HTitle extends Component {
                         <div style={{textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left'}}>
                             <ModalOptions
                                 $equipments={this.props.$equipments}
+                                orderId={this.props.orderId}
                             >
                                 <Button icon={<Icon options/>}
                                         style={{
@@ -240,7 +241,7 @@ class HDescription extends Component {
     constructor(props) {
         super(props);
         this.state = {...props};
-        
+
     }
 
     componentDidUpdate(props) {
