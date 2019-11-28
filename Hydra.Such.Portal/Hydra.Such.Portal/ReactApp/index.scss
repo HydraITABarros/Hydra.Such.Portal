@@ -18,7 +18,7 @@ $section-value in $colors {
   }
 }
 
-@each $dim in (0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50) {
+@each $dim in (0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50) {
   .m-b-#{$dim} {
     &span {
       display: inline-block;
@@ -69,14 +69,15 @@ $section-value in $colors {
 
 }
 
-@each $dim in (10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, auto) {
+@each $dim in (10, 20, 30, 40, 50, 60, 64, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, auto) {
   .w-#{$dim} {
     display: inline-block;
     width: $dim+px;
   }
 }
 
-@each $dim in (0, 10, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52) {
+
+@each $dim in (0, 9, 10, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52) {
   .f-s-#{$dim} {
     font-size: $dim+px !important;
   }
@@ -105,7 +106,7 @@ $section-value in $colors {
     left: 0;
     right: 0;
     bottom: 0;
-    opacity: .4;
+    opacity: .5;
     z-index: 1000;
     background: white;
     cursor: not-allowed;
@@ -125,6 +126,10 @@ $section-value in $colors {
 
 .text-normal {
   text-transform: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 body {
