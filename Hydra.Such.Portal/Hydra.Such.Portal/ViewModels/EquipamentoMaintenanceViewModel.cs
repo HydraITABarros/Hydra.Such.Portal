@@ -7,6 +7,7 @@ namespace Hydra.Such.Portal.ViewModels
 
     public class EquipamentMaintenancePlanViewModel
     {
+        public int Id { get; set; }               
         public int Categoria { get; set; }               
         public string EquipmentCresp { get; set; }
         public string CategoriaText { get; set; }
@@ -34,6 +35,7 @@ namespace Hydra.Such.Portal.ViewModels
         public List<FichaManutencaoTestesQualitativosViewModel> PlanQuality { get; set; }
         public List<FichaManutencaoTestesQuantitativosViewModel> PlanQuantity { get; set; }
         public List<FichaManutencaoEmmEquipamentosViewModel> Emms { get; set; }
+        public List<FichaManutencaoRelatorioMaterialViewModel> Materials { get; set; }
         public string Observacao { get; set; }
         public int? EstadoFinal { get; set; }
         public string AssinaturaTecnico { get; set; }
