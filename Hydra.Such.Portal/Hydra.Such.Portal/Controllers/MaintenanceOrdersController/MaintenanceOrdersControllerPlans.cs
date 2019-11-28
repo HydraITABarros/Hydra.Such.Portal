@@ -229,6 +229,7 @@ namespace Hydra.Such.Portal.Controllers
 				
 				if (planReport != null)
 				{
+					item.Id = planReport.Id;
 					item.EstadoFinal = planReport.EstadoFinal;
 					item.Observacao = planReport.Observacao;
 					item.AssinaturaCliente = planReport.AssinaturaCliente;
@@ -360,6 +361,7 @@ namespace Hydra.Such.Portal.Controllers
 						i.Observacoes = planQuantityReportLine.Observacoes;
 					}
 				});
+				
 				if (item.Emms == null)
 				{
 					item.Emms = new List<FichaManutencaoEmmEquipamentosViewModel>();
@@ -392,6 +394,20 @@ namespace Hydra.Such.Portal.Controllers
 					
 					item.Emms.Add(emm);
 				});
+
+				item.Materials = new List<FichaManutencaoRelatorioMaterialViewModel>();
+				
+				item.Materials = evolutionWEBContext.FichaManutencaoRelatorioMaterial
+					.Where(r => r.IdRelatorio == planReport.Id)
+					.Select( s => new FichaManutencaoRelatorioMaterialViewModel()
+						{
+							Id = s.Id,
+							Descricao = s.Descricao,
+							Quantidade = s.Quantidade,
+							FornecidoPor = s.FornecidoPor
+						}
+						)
+					.ToList();
 				
 				try
 				{
@@ -551,6 +567,13 @@ namespace Hydra.Such.Portal.Controllers
 					}
 				});
 				
+				
+				evolutionWEBContext.RemoveRange(
+					evolutionWEBContext.FichaManutencaoRelatorioEquipamentosTeste
+						.Where(r => 
+							!item.Emms.Select(s=> s.Id).Contains(r.IdEquipTeste)
+							&& r.IdRelatorio == planReport.Id ).ToList()
+				);
 				var planEmms = evolutionWEBContext.FichaManutencaoRelatorioEquipamentosTeste
 					.Where(r => r.IdRelatorio == planReport.Id);
 				item.Emms.ForEach(i =>
@@ -574,6 +597,38 @@ namespace Hydra.Such.Portal.Controllers
 					}
 				});
 
+				
+				evolutionWEBContext.RemoveRange(
+					evolutionWEBContext.FichaManutencaoRelatorioMaterial
+						.Where(r => !item.Materials.Select(s=> s.Id).Contains(r.Id)
+						            && r.IdRelatorio == planReport.Id ).ToList()
+				);
+				var planMaterials = evolutionWEBContext.FichaManutencaoRelatorioMaterial
+					.Where(r => r.IdRelatorio == planReport.Id);
+				item.Materials.ForEach(i =>
+				{
+					int IdMaterial;
+					int.TryParse(i.Id.ToString(), out IdMaterial);
+
+					var materialLine = planMaterials
+						.FirstOrDefault(r => r.IdRelatorio == planReport.Id && r.Id == IdMaterial);
+					if (materialLine == null)
+					{
+						evolutionWEBContext.FichaManutencaoRelatorioMaterial.Add(new FichaManutencaoRelatorioMaterial
+						{
+							IdRelatorio = planReport.Id,
+							Descricao = i.Descricao,
+							Quantidade = i.Quantidade,
+							FornecidoPor = i.FornecidoPor
+						});
+					}
+					else
+					{
+						materialLine.Descricao = i.Descricao;
+						materialLine.Quantidade = i.Quantidade;
+						materialLine.FornecidoPor = i.FornecidoPor;
+					}
+				});
 
 				var planQuantityReport = evolutionWEBContext.FichaManutencaoRelatorioTestesQuantitativos
 					.Where(r => r.IdRelatorio == planReport.Id 
