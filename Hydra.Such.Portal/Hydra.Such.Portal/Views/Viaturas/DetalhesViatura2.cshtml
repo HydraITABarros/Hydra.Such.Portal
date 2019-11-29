@@ -1,0 +1,14 @@
+﻿@model Hydra.Such.Data.Database.Viaturas
+
+@{
+    ViewData["Title"] = "Detalhes Viatura 2" + ViewBag.Matricula;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/elements/viaturas/viatura_details2.html">
+
+<x-viaturadetails2
+                  _matricula="@ViewBag.Matricula"
+                  _areaid="5"
+                  _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-viaturadetails2>

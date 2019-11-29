@@ -640,10 +640,14 @@
 
 
                 _btnCriarFornecedor: function (e) {
-                    if (this.data.nomeAnexo == undefined || this.data.nomeAnexo == null || this.data.nomeAnexo == "")
-                        this._showErrorMessage("É obrigatório indicar um ficheiro com o IBAN do fornecedor.");
-                    else
-                        this._executeRequest("/Fornecedores/Create", this.data)
+                    if (this._validateData()) {
+                        if (this.data.nomeAnexo == undefined || this.data.nomeAnexo == null || this.data.nomeAnexo == "") {
+                            this._showErrorMessage("É obrigatório indicar um ficheiro com o IBAN do fornecedor.");
+                        }
+                        else {
+                            this._executeRequest("/Fornecedores/Create", this.data)
+                        }
+                    }
                 },
 
 

@@ -319,7 +319,6 @@ namespace Hydra.Such.Portal.Controllers
                         newfile.DataHoraCriação = DateTime.Now;
                         newfile.UtilizadorCriação = User.Identity.Name;
 
-
                         Email.DisplayName = "e-SUCH - Fornecedor";
                         Email.From = "esuch@such.pt";
                         Email.To.Add(Parametro.Valor);

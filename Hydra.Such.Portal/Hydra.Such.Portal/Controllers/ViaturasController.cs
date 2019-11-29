@@ -73,6 +73,22 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult DetalhesViatura2(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Features.Viaturas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.Matricula = id == null ? "" : id;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetList()
         {
