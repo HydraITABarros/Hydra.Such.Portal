@@ -295,7 +295,7 @@ class Index extends Component {
                                 <Grid item xs={12} sm={2} padding="4px">
                                     <Button link style={{display: 'block'}}
                                             onClick={() => this.setState({search: true})}
-                                            className={'m-l-20 pull-right'}>Procurar</Button>
+                                            className={'m-l-20 pull-right'}>Procurar existente</Button>
                                 </Grid>
                             </Grid>
                         </form>
