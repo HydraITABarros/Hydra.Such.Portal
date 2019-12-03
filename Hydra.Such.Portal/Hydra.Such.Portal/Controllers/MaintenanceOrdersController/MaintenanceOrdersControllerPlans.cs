@@ -15,51 +15,70 @@ namespace Hydra.Such.Portal.Controllers
 
 		[Route("/ordens-de-manutencao/ficha-de-manutencao"), HttpGet, AcceptHeader("application/json")]
 		//[ResponseCache(Duration = 86400)]
-		public ActionResult GetMaintenancePlans(int categoryId, string orderId, string equipmentIds, string marcaIds, string servicoIds)
+		public ActionResult GetMaintenancePlans(int categoryId, string orderId, string equipmentIds, string marcaIds,
+			string servicoIds)
 		{
 			var loggedUser = suchDBContext.ConfigUtilizadores.FirstOrDefault(u => u.IdUtilizador == User.Identity.Name);
 
-			if (loggedUser == null) { return NotFound(); }
+			if (loggedUser == null)
+			{
+				return NotFound();
+			}
 
-			var loggedUserCresps = suchDBContext.AcessosDimensões.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).ToList();
+			var loggedUserCresps = suchDBContext.AcessosDimensões
+				.Where(o => o.Dimensão == 3 && o.IdUtilizador == loggedUser.IdUtilizador).ToList();
 
 			var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
 
-			if (evolutionLoggedUser == null) { return NotFound(); }
-
-			if (orderId == null || orderId == "") { return NotFound(); }
-			//obter ordem de manutencao
-			var order = evolutionWEBContext.MaintenanceOrder.Where(m => m.No == orderId).Select(o => new MaintenanceOrderViewModel()
+			if (evolutionLoggedUser == null)
 			{
-				No = o.No,
-				ClientName = o.ClientName,
-				ContractNo = o.ContractNo,
-				CustomerName = o.CustomerName,
-				CustomerNo = o.CustomerNo,
-				Description = o.Description,
-				IdClienteEvolution = o.IdClienteEvolution,
-				IdInstituicaoEvolution = o.IdInstituicaoEvolution,
-				IdServicoEvolution = o.IdServicoEvolution,
-				IdTecnico1 = o.IdTecnico1,
-				IdTecnico2 = o.IdTecnico2,
-				IdTecnico3 = o.IdTecnico3,
-				IdTecnico4 = o.IdTecnico4,
-				IdTecnico5 = o.IdTecnico5,
-				InstitutionName = o.InstitutionName,
-				isPreventive = o.isPreventive,
-				ResponsibleEmployee = o.ResponsibleEmployee,
-				MaintenanceResponsible = o.MaintenanceResponsible,
-                OrderType = o.OrderType,
-                Status = o.Status
-            }).FirstOrDefault();
-			if (order == null) { return NotFound(); }
+				return NotFound();
+			}
+
+			if (orderId == null || orderId == "")
+			{
+				return NotFound();
+			}
+
+			//obter ordem de manutencao
+			var order = evolutionWEBContext.MaintenanceOrder.Where(m => m.No == orderId).Select(o =>
+				new MaintenanceOrderViewModel()
+				{
+					No = o.No,
+					ClientName = o.ClientName,
+					ContractNo = o.ContractNo,
+					CustomerName = o.CustomerName,
+					CustomerNo = o.CustomerNo,
+					Description = o.Description,
+					IdClienteEvolution = o.IdClienteEvolution,
+					IdInstituicaoEvolution = o.IdInstituicaoEvolution,
+					IdServicoEvolution = o.IdServicoEvolution,
+					IdTecnico1 = o.IdTecnico1,
+					IdTecnico2 = o.IdTecnico2,
+					IdTecnico3 = o.IdTecnico3,
+					IdTecnico4 = o.IdTecnico4,
+					IdTecnico5 = o.IdTecnico5,
+					InstitutionName = o.InstitutionName,
+					isPreventive = o.isPreventive,
+					ResponsibleEmployee = o.ResponsibleEmployee,
+					MaintenanceResponsible = o.MaintenanceResponsible,
+					OrderType = o.OrderType,
+					Status = o.Status
+				}).FirstOrDefault();
+			if (order == null)
+			{
+				return NotFound();
+			}
 
 			var maintenanceOrderLine = evolutionWEBContext.MaintenanceOrderLine.Where(r => r.MoNo == order.No);
 			var ordemManutencaoLinha = evolutionWEBContext.OrdemManutencaoLinha.Where(r => r.No == order.No);
-
-			var availableEquipmentsIds = maintenanceOrderLine.Select(s => s.IdEquipamento).ToList();
-			availableEquipmentsIds.AddRange(ordemManutencaoLinha.Select(s => s.IdEquipamento).ToList());
-
+			
+			var OrderLines = maintenanceOrderLine
+				.ToList().Select(s => new OrderLineRoutine(){ IdEquipamento = s.IdEquipamento, IdRotina = s.IdRotina }).ToList()
+				.Concat(ordemManutencaoLinha.ToList().Select(s => new OrderLineRoutine() { IdEquipamento = s.IdEquipamento, IdRotina = s.IdRotina}).ToList());
+			
+			var availableEquipmentsIds = OrderLines.Select(s=>s.IdEquipamento);
+			
 			//obter campos de ficha de manutencao
 			var codigo = evolutionWEBContext.FichaManutencao.Where(f => f.IdCategoria == categoryId).Select(f => f.Codigo).FirstOrDefault();
 			if (codigo == null) { return NotFound(); }
@@ -69,21 +88,41 @@ namespace Hydra.Such.Portal.Controllers
 
 			var versao = planHeader.Versao;
 
-			var planMaintenance = evolutionWEBContext.FichaManutencaoManutencao.Where(m => m.Codigo == codigo && m.Versao == versao)
+			var planMaintenance = evolutionWEBContext.FichaManutencaoManutencao
+				.Where(m => m.Codigo == codigo && m.Versao == versao)
 			    .Select(p => new FichaManutencaoRelatorioManutencaoViewModel()
 			    {
 				    Descricao = p.Descricao,
 				    IdManutencao = p.IdManutencao,
 				    Codigo = p.Codigo,
-				    Versao = p.Versao
-			    }).ToList();
+				    Versao = p.Versao,
+				    Rotinas = p.Rotinas
+			    }).ToList()
+				.Select(p => new FichaManutencaoRelatorioManutencaoViewModel()
+				{
+					Descricao = p.Descricao,
+					IdManutencao = p.IdManutencao,
+					Codigo = p.Codigo,
+					Versao = p.Versao,
+					Rotinas = p.Rotinas,
+					RotinasList = p.Rotinas.Split(";").Select(Int32.Parse).ToList()
+				}).ToList();
 			var planQuality = evolutionWEBContext.FichaManutencaoTestesQualitativos.Where(m => m.Codigo == codigo && m.Versao == versao)
 			    .Select(p => new FichaManutencaoTestesQualitativosViewModel()
 			    {
 				    Descricao = p.Descricao,
 				    IdTesteQualitativos = p.IdTesteQualitativos,
 				    Codigo = p.Codigo,
-				    Versao = p.Versao
+				    Versao = p.Versao,
+				    Rotinas = p.Rotinas
+			    }).ToList().Select(p => new FichaManutencaoTestesQualitativosViewModel()
+			    {
+				    Descricao = p.Descricao,
+				    IdTesteQualitativos = p.IdTesteQualitativos,
+				    Codigo = p.Codigo,
+				    Versao = p.Versao,
+				    Rotinas = p.Rotinas,
+				    RotinasList = p.Rotinas.Split(";").Select(Int32.Parse).ToList() 
 			    }).ToList();
 			var planQuantity = evolutionWEBContext.FichaManutencaoTestesQuantitativos.Where(m => m.Codigo == codigo && m.Versao == versao)
 			    .Select(p => new FichaManutencaoTestesQuantitativosViewModel()
@@ -92,11 +131,21 @@ namespace Hydra.Such.Portal.Controllers
 				    IdTestesQuantitativos = p.IdTestesQuantitativos,
 				    UnidadeCampo1 = p.UnidadeCampo1,
 				    Codigo = p.Codigo,
-				    Versao = p.Versao
+				    Versao = p.Versao,
+				    Rotinas = p.Rotinas
+			    }).ToList().Select(p => new FichaManutencaoTestesQuantitativosViewModel()
+			    {
+				    Descricao = p.Descricao,
+				    IdTestesQuantitativos = p.IdTestesQuantitativos,
+				    UnidadeCampo1 = p.UnidadeCampo1,
+				    Codigo = p.Codigo,
+				    Versao = p.Versao,
+				    Rotinas = p.Rotinas,
+				    RotinasList = p.Rotinas.Split(";").Select(Int32.Parse).ToList() 
 			    }).ToList();
 
 			List<EquipamentMaintenancePlanViewModel> equipments;
-
+			
 			if (equipmentIds != null)
 			{
 				var equipmentIdsSplited = equipmentIds.Split(',');
@@ -111,7 +160,11 @@ namespace Hydra.Such.Portal.Controllers
 				if (_equipmentIds == null || _equipmentIds.Count() < 1) { return NotFound(); }
 
 				equipments = evolutionWEBContext.Equipamento
-				.Where(e => availableEquipmentsIds.Contains(e.IdEquipamento) && _equipmentIds.Contains(e.IdEquipamento) && e.Categoria == categoryId).Select(e => new EquipamentMaintenancePlanViewModel()
+				.Where(e => 
+					availableEquipmentsIds.Contains(e.IdEquipamento) && 
+					_equipmentIds.Contains(e.IdEquipamento) && 
+					e.Categoria == categoryId)
+				.Select(e => new EquipamentMaintenancePlanViewModel()
 				{
 					IdEquipamento = e.IdEquipamento,
 					Sala = e.Sala,
@@ -187,6 +240,10 @@ namespace Hydra.Such.Portal.Controllers
 			//obter fichas de manutencao (reports)
 			if (equipments == null || equipments.Count() < 1) { return NotFound(); }
 
+			
+			var rotinaId = 1;
+
+			var index = 0;
 			equipments.ForEach((item) =>
 			{
 				if (item.Marca != 1 && (item.MarcaText == null || item.MarcaText.Length == 0))
@@ -218,14 +275,20 @@ namespace Hydra.Such.Portal.Controllers
 				{
 					item.CategoriaText = categoria.Nome;
 				}
-
-				//todo get rotina (A or B)
-				var rotina = "1";
-				item.Rotina = rotina;
 				
 				var planReport = evolutionWEBContext.FichaManutencaoRelatorio
 					.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && r.Codigo == codigo && r.Versao == versao)
 					.OrderByDescending(o => o.Id).FirstOrDefault();
+				
+				if (index == 0 && planReport != null)
+				{
+					rotinaId = planReport.Rotina;
+				} else if (index == 0 && planReport == null)
+				{
+					var line = OrderLines.FirstOrDefault(o => o.IdEquipamento == item.Id);
+					rotinaId = line.IdRotina != null ? (int)line.IdRotina : 1;
+				}
+				index++;
 				
 				if (planReport != null)
 				{
@@ -236,7 +299,7 @@ namespace Hydra.Such.Portal.Controllers
 					item.AssinaturaSie = planReport.AssinaturaSie;
 					item.AssinaturaTecnico = planReport.AssinaturaTecnico;
 					item.UtilizadorAssinaturaTecnico = evolutionWEBContext.Utilizador.Where(u => u.Id == planReport.IdAssinaturaTecnico).FirstOrDefault();
-					item.Rotina = planReport.RotinaTipo;
+					item.RotinaId = rotinaId;
 				}
 				else
 				{
@@ -251,7 +314,7 @@ namespace Hydra.Such.Portal.Controllers
 						CriadoEm = DateTime.Now,
 						ActualizadoPor = evolutionLoggedUser.Id,
 						ActualizadoEm = DateTime.Now,
-						RotinaTipo = rotina
+						Rotina = rotinaId
 
 					};
 					evolutionWEBContext.FichaManutencaoRelatorio.Add(planReport);
@@ -272,6 +335,13 @@ namespace Hydra.Such.Portal.Controllers
 					.Where(r => r.IdRelatorio == planReport.Id).ToList();
 				item.PlanMaintenance.ForEach(i =>
 				{
+					/*
+					if (!i.RotinasList.Contains(rotinaId))
+					{
+						return;
+					}
+					*/
+					
 					int IdManutencao;
 					int.TryParse(i.IdManutencao.ToString(), out IdManutencao);
 					
@@ -302,6 +372,13 @@ namespace Hydra.Such.Portal.Controllers
 					.Where(r => r.IdRelatorio == planReport.Id).ToList();
 				item.PlanQuality.ForEach(i =>
 				{
+					/*	
+					if (!i.RotinasList.Contains(rotinaId))
+					{
+						return;
+					}
+					*/
+					
 					int IdTesteQualitativos;
 					int.TryParse(i.IdTesteQualitativos.ToString(), out IdTesteQualitativos);
 
@@ -335,6 +412,13 @@ namespace Hydra.Such.Portal.Controllers
 					.Where(r => r.IdRelatorio == planReport.Id).ToList();
 				item.PlanQuantity.ForEach(i =>
 				{
+					/*
+					if (!i.RotinasList.Contains(rotinaId))
+					{
+						return;
+					}
+					*/
+					
 					int IdTestesQuantitativos;
 					int.TryParse(i.IdTestesQuantitativos.ToString(), out IdTestesQuantitativos);
 
@@ -442,9 +526,9 @@ namespace Hydra.Such.Portal.Controllers
 			{
 				order,
 				equipments,
-				planMaintenance,
-				planQuality,
-				planQuantity,
+				planMaintenance = planMaintenance/*.Where(i => i.RotinasList.Contains(rotinaId))*/,
+				planQuality=planQuality/*.Where(i => i.RotinasList.Contains(rotinaId))*/,
+				planQuantity=planQuantity/*.Where(i => i.RotinasList.Contains(rotinaId))*/,
                 currentUser = evolutionLoggedUser
             });
 		}
@@ -490,7 +574,7 @@ namespace Hydra.Such.Portal.Controllers
 					planReport.CriadoEm = Now;
 					planReport.ActualizadoPor = evolutionLoggedUser.Id;
 					planReport.ActualizadoEm = Now;
-					planReport.RotinaTipo = item.Rotina;
+					planReport.Rotina = item.RotinaId != null ? (int) item.RotinaId : 1;
 				}
 				else
 				{
@@ -509,7 +593,7 @@ namespace Hydra.Such.Portal.Controllers
 						AssinaturaSie = item.AssinaturaSie,
 						AssinaturaTecnico = item.AssinaturaTecnico,
 						IdAssinaturaTecnico = item.UtilizadorAssinaturaTecnico!= null ?item.UtilizadorAssinaturaTecnico.Id : 0,
-						RotinaTipo = item.Rotina
+						Rotina = item.RotinaId != null ? (int) item.RotinaId : 1
 					});
 				}
 				
@@ -672,7 +756,13 @@ namespace Hydra.Such.Portal.Controllers
 
 			return Json(true);
 		}
+		
 	}
-	
+
+	public class OrderLineRoutine
+	{
+		public int? IdEquipamento { get; set; }
+		public int? IdRotina { get; set; }
+	}
 }
 

@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public int Id { get; set; }
         public string Om { get; set; }
         public int? IdEquipamento { get; set; }
-        public string RotinaTipo { get; set; }
+        public int Rotina { get; set; }
         public string Codigo { get; set; }
         public string Versao { get; set; }
         public int? EstadoFinal { get; set; }

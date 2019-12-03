@@ -41,7 +41,8 @@ namespace Hydra.Such.Portal.ViewModels
         public string AssinaturaTecnico { get; set; }
         public string AssinaturaCliente { get; set; }
         public string AssinaturaSie { get; set; }
-        public string Rotina { get; set; }
+        
+        public int? RotinaId { get; set; }
         public DateTime? DataRelatorio { get; set; }
         public Utilizador UtilizadorAssinaturaTecnico { get; set; }
     }

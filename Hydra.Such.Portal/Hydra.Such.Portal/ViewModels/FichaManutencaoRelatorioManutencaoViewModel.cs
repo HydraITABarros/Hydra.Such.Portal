@@ -23,5 +23,8 @@ namespace Hydra.Such.Portal.ViewModels
         public string Codigo { get; set; }
         [JsonIgnore]
         public string Versao { get; set; }
+        [JsonIgnore]
+        public string Rotinas { get; set; }
+        public List<int> RotinasList { get; set; }
     }
 }
