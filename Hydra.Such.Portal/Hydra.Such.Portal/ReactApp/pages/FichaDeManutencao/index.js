@@ -135,6 +135,7 @@ class FichaDeManutencao extends Component {
         equipmentsIds: null,
         equipments: [],
         equipmentsCount: 0,
+        rotinaId: 1,
         institution: null,
         client: null,
         service: null,
@@ -175,7 +176,7 @@ class FichaDeManutencao extends Component {
         this.waipointQualitativoHandlerLeave = this.waipointQualitativoHandlerLeave.bind(this);
         this.waipointQuantitativoHandlerLeave = this.waipointQuantitativoHandlerLeave.bind(this);
         this.handleScrollTo = this.handleScrollTo.bind(this);
-
+        this.handleRotinaChange = this.handleRotinaChange.bind(this);
         this.fetch();
     }
 
@@ -270,32 +271,12 @@ class FichaDeManutencao extends Component {
                     planQuality: data.planQuality,
                     planQuantity: data.planQuantity,
                     equipmentsCount: data.equipments.length,
-                    currentUser: data.currentUser
-                }
+                    currentUser: data.currentUser,
+                    rotinaId: data.equipments.length > 0 ? data.equipments[0].rotinaId : 1,
+                };
 
                 addLinkedPropsToObject(state, this);
 
-                state.planMaintenanceHtml = data.planMaintenance.map((item, index) => {
-                    return (
-                        <PlanRow odd={index % 2 == 0} key={index} text>
-                            <PlanRowText p>{item.descricao}</PlanRowText>
-                        </PlanRow>
-                    );
-                });
-                state.planQualityHtml = data.planQuality.map((item, index) => {
-                    return (
-                        <PlanRow odd={index % 2 == 0} key={index} text>
-                            <PlanRowText p>{item.descricao}</PlanRowText>
-                        </PlanRow>
-                    );
-                });
-                state.planQuantityHtml = data.planQuantity.map((item, index) => {
-                    return (
-                        <PlanRow odd={index % 2 == 0} key={index} text>
-                            <PlanRowText p>{item.descricao}</PlanRowText>
-                        </PlanRow>
-                    );
-                });
                 this.setState(state);
             }
         }).catch(function (error) {
@@ -363,13 +344,24 @@ class FichaDeManutencao extends Component {
             behavior: 'smooth',
             block: 'start'
         });
-    }
+    };
 
-    postPlans() {
+    handleRotinaChange(rotina) {
 
+        this.state.$equipments.value.map((equipment) => {
+            equipment.rotinaId = rotina;
+            equipment.$rotinaId.value = rotina;
+        });
+        this.setState({rotinaId: rotina, toUpdate: this.state.toUpdate + 1}, () => {
+
+        });
+
+    };
+
+    postPlans(cb) {
+        cb = cb || (() => {
+        });
         var url = `/ordens-de-manutencao/ficha-de-manutencao`;
-
-
         var equipments = _.cloneDeep(this.state.equipments);
         var toPost = equipments.map((item) => {
             var retval = {};
@@ -393,11 +385,10 @@ class FichaDeManutencao extends Component {
             return retval;
         });
 
-        console.log('toPost', toPost);
-
-        axios.post(url + "?orderId=" + this.state.orderId,
+        return axios.post(url + "?orderId=" + this.state.orderId,
             toPost
         ).then((result) => {
+            cb(result);
         });
     }
 
@@ -451,6 +442,7 @@ class FichaDeManutencao extends Component {
                                     }, 1200);
                                 }
                             }
+                            onRotinaChange={this.handleRotinaChange}
                         />
                         <Grid container direction="row" justify="space-between" alignitems="top" spacing={0}
                               maxwidth={'100%'} margin={0}>
@@ -490,7 +482,17 @@ class FichaDeManutencao extends Component {
                                 <Wrapper padding="0 0 0 32px">
                                     <div ref={(el) => this.maintenanceRef = el}
                                          style={{position: 'relative', top: '-400px'}}></div>
-                                    {this.state.planMaintenance.length > 0 && this.state.planMaintenanceHtml}
+                                    {this.state.planMaintenance.length > 0 && this.state.planMaintenance
+                                        .filter((item) => {
+                                            return item.rotinasList.indexOf(this.state.rotinaId) > -1;
+                                        })
+                                        .map((item, index) => {
+                                            return (
+                                                <PlanRow odd={index % 2 == 0} key={index} text>
+                                                    <PlanRowText p>{item.descricao}</PlanRowText>
+                                                </PlanRow>
+                                            );
+                                        })}
                                     <div ref={(el) => this.qualitativoRef = el}
                                          style={{position: 'relative', top: '-200px'}}></div>
                                     <Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
@@ -503,7 +505,17 @@ class FichaDeManutencao extends Component {
                                         <Wrapper padding="16px"><Text b>Qualitativo</Text></Wrapper>
                                     </Waypoint>
                                     }
-                                    {this.state.planQuality.length > 0 && this.state.planQualityHtml}
+                                    {this.state.planQuality.length > 0 && this.state.planQuality
+                                        .filter((item) => {
+                                            return item.rotinasList.indexOf(this.state.rotinaId) > -1;
+                                        })
+                                        .map((item, index) => {
+                                            return (
+                                                <PlanRow odd={index % 2 == 0} key={index} text>
+                                                    <PlanRowText p>{item.descricao}</PlanRowText>
+                                                </PlanRow>
+                                            );
+                                        })}
                                     <div ref={(el) => this.quantitativo = el}
                                          style={{position: 'relative', top: '-200px'}}></div>
                                     <Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
@@ -516,7 +528,17 @@ class FichaDeManutencao extends Component {
                                         <Wrapper padding="16px"><Text b>Quantitativo</Text></Wrapper>
                                     </Waypoint>
                                     }
-                                    {this.state.planQuantity.length > 0 && this.state.planQuantityHtml}
+                                    {this.state.planQuantity.length > 0 && this.state.planQuantity
+                                        .filter((item) => {
+                                            return item.rotinasList.indexOf(this.state.rotinaId) > -1;
+                                        })
+                                        .map((item, index) => {
+                                            return (
+                                                <PlanRow odd={index % 2 == 0} key={index} text>
+                                                    <PlanRowText p>{item.descricao}</PlanRowText>
+                                                </PlanRow>
+                                            );
+                                        })}
                                     <Wrapper padding="32px"><Text b>&nbsp;</Text></Wrapper>
                                 </Wrapper>
                                 <Wrapper padding="0" minHeight="164px"
@@ -592,16 +614,21 @@ class FichaDeManutencao extends Component {
                                         {/* form */}
                                         <Wrapper>
                                             <Wrapper padding="0  32px 0 0">
-                                                {this.state.planMaintenance.length > 0 && this.state.planMaintenance.map((item, index) => {
+                                                {this.state.planMaintenance.length > 0 && this.state.planMaintenance
+                                                    .filter((item) => {
+                                                        return item.rotinasList.indexOf(this.state.rotinaId) > -1;
+                                                    })
+                                                    .map((item, index) => {
 
-                                                    return (
-                                                        <PlanRow odd={index % 2 == 0} key={index} right
-                                                                 width={this.state.equipmentsHeaderScroll.innerWidth - 32}
-                                                                 className={"form__row"}>
-                                                            {this.state.equipmentsCheckBoxHtml}
-                                                            {this.state.equipments.map((e, i) => {
-                                                                return (
-                                                                    <PlanEquipmentsItem key={index + '' + i}>
+                                                        return (
+                                                            <PlanRow odd={index % 2 == 0} key={index} right
+                                                                     width={this.state.equipmentsHeaderScroll.innerWidth - 32}
+                                                                     className={"form__row"}>
+                                                                {this.state.equipmentsCheckBoxHtml}
+                                                                {this.state.equipments.map((e, i) => {
+                                                                    return (
+                                                                        <PlanEquipmentsItem
+                                                                            key={index + '' + i + i.descricao}>
 																		<span className={"inline-block form__item" +
                                                                         (e.planMaintenance[index].$observacoes.value != null &&
                                                                         e.planMaintenance[index].$observacoes.value != "" ?
@@ -610,46 +637,52 @@ class FichaDeManutencao extends Component {
 																			<MultipleCheckBox
                                                                                 $value={e.planMaintenance[index].$resultado}/>
 																		</span>
-                                                                    </PlanEquipmentsItem>
-                                                                )
-                                                            })}
-                                                            <Menu action={<Button iconSolo><Icon row-menu/></Button>}
-                                                                  containerStyle={{
-                                                                      float: 'right',
-                                                                      display: 'inline-block',
-                                                                      marginTop: '5px'
-                                                                  }}>
-                                                                <MenuItem onClick={() => {
-                                                                    item.open = true;
-                                                                    this.setState({toUpdate: this.state.toUpdate + 1});
-                                                                }}>
-                                                                    Observações
-                                                                </MenuItem>
-                                                            </Menu>
-                                                            <ModalComments open={item.open || false}
-                                                                           description={item.descricao}
-                                                                           $equipments={this.state.$equipments}
-                                                                           category={'planMaintenance'}
-                                                                           itemIndex={index}
-                                                                           onClose={() => {
-                                                                               item.open = false;
-                                                                               this.setState({toUpdate: this.state.toUpdate + 1});
-                                                                           }}>
-                                                            </ModalComments>
-                                                        </PlanRow>
-                                                    );
-                                                })}
+                                                                        </PlanEquipmentsItem>
+                                                                    )
+                                                                })}
+                                                                <Menu
+                                                                    action={<Button iconSolo><Icon row-menu/></Button>}
+                                                                    containerStyle={{
+                                                                        float: 'right',
+                                                                        display: 'inline-block',
+                                                                        marginTop: '5px'
+                                                                    }}>
+                                                                    <MenuItem onClick={() => {
+                                                                        item.open = true;
+                                                                        this.setState({toUpdate: this.state.toUpdate + 1});
+                                                                    }}>
+                                                                        Observações
+                                                                    </MenuItem>
+                                                                </Menu>
+                                                                <ModalComments open={item.open || false}
+                                                                               description={item.descricao}
+                                                                               $equipments={this.state.$equipments}
+                                                                               category={'planMaintenance'}
+                                                                               itemIndex={index}
+                                                                               onClose={() => {
+                                                                                   item.open = false;
+                                                                                   this.setState({toUpdate: this.state.toUpdate + 1});
+                                                                               }}>
+                                                                </ModalComments>
+                                                            </PlanRow>
+                                                        );
+                                                    })}
                                                 <Wrapper padding="16px"> <Text b>&nbsp;</Text></Wrapper>
                                                 {this.state.planQuality.length > 0 &&
                                                 <Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>}
-                                                {this.state.planQuality.length > 0 && this.state.planQuality.map((item, index) => {
-                                                    return (
-                                                        <PlanRow odd={index % 2 == 0} key={index} right
-                                                                 width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
-                                                            {this.state.equipments.map((e, i) => {
-                                                                renderCount++;
-                                                                return (
-                                                                    <PlanEquipmentsItem key={index + '' + i}>
+                                                {this.state.planQuality.length > 0 && this.state.planQuality
+                                                    .filter((item) => {
+                                                        return item.rotinasList.indexOf(this.state.rotinaId) > -1;
+                                                    })
+                                                    .map((item, index) => {
+                                                        return (
+                                                            <PlanRow odd={index % 2 == 0} key={index} right
+                                                                     width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
+                                                                {this.state.equipments.map((e, i) => {
+                                                                    renderCount++;
+                                                                    return (
+                                                                        <PlanEquipmentsItem
+                                                                            key={index + '' + i + i.descricao}>
 																		<span className={"inline-block form__item" +
                                                                         (e.planQuality[index].$observacoes.value != null &&
                                                                         e.planQuality[index].$observacoes.value != "" ?
@@ -658,85 +691,95 @@ class FichaDeManutencao extends Component {
 																			<MultipleCheckBox
                                                                                 $value={e.planQuality[index].$resultado}/>
 																		</span>
-                                                                    </PlanEquipmentsItem>
-                                                                )
-                                                            })}
-                                                            <Menu action={<Button iconSolo><Icon row-menu/></Button>}
-                                                                  containerStyle={{
-                                                                      float: 'right',
-                                                                      display: 'inline-block',
-                                                                      marginTop: '5px'
-                                                                  }}>
-                                                                <MenuItem onClick={() => {
-                                                                    item.open = true;
-                                                                    this.setState({toUpdate: this.state.toUpdate + 1});
-                                                                }}>
-                                                                    Observações
-                                                                </MenuItem>
-                                                            </Menu>
-                                                            <ModalComments open={item.open || false}
-                                                                           description={item.descricao}
-                                                                           $equipments={this.state.$equipments}
-                                                                           category={'planQuality'} itemIndex={index}
-                                                                           item={item}
-                                                                           onClose={() => {
-                                                                               item.open = false;
-                                                                               this.setState({toUpdate: this.state.toUpdate + 1});
-                                                                           }}>
-                                                            </ModalComments>
-                                                        </PlanRow>
-                                                    );
-                                                })}
+                                                                        </PlanEquipmentsItem>
+                                                                    )
+                                                                })}
+                                                                <Menu
+                                                                    action={<Button iconSolo><Icon row-menu/></Button>}
+                                                                    containerStyle={{
+                                                                        float: 'right',
+                                                                        display: 'inline-block',
+                                                                        marginTop: '5px'
+                                                                    }}>
+                                                                    <MenuItem onClick={() => {
+                                                                        item.open = true;
+                                                                        this.setState({toUpdate: this.state.toUpdate + 1});
+                                                                    }}>
+                                                                        Observações
+                                                                    </MenuItem>
+                                                                </Menu>
+                                                                <ModalComments open={item.open || false}
+                                                                               description={item.descricao}
+                                                                               $equipments={this.state.$equipments}
+                                                                               category={'planQuality'}
+                                                                               itemIndex={index}
+                                                                               item={item}
+                                                                               onClose={() => {
+                                                                                   item.open = false;
+                                                                                   this.setState({toUpdate: this.state.toUpdate + 1});
+                                                                               }}>
+                                                                </ModalComments>
+                                                            </PlanRow>
+                                                        );
+                                                    })}
                                                 <Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>
                                                 {this.state.planQuantity.length > 0 &&
                                                 <Wrapper padding="16px"><Text b>&nbsp;</Text></Wrapper>}
-                                                {this.state.planQuantity.length > 0 && this.state.planQuantity.map((item, index) => {
-                                                    return (
-                                                        <PlanRow odd={index % 2 == 0} key={index} right
-                                                                 width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
-                                                            {this.state.equipments.map((e, i) => {
-                                                                return (
-                                                                    <PlanEquipmentsItem key={index + '' + i}>
-                                                                        <Wrapper padding="0 8px"
-                                                                                 className={"form__item" +
-                                                                                 (e.planQuantity[index].$observacoes.value != null &&
-                                                                                 e.planQuantity[index].$observacoes.value != "" ?
-                                                                                     " form__item--commented" :
-                                                                                     "")}>
-                                                                            <Input type="number" step="0.01"
-                                                                                   $value={e.planQuantity[index].$resultado}/>
-                                                                        </Wrapper>
-                                                                    </PlanEquipmentsItem>
-                                                                )
-                                                            })}
-                                                            <Text span>{item.unidadeCampo1}</Text>
+                                                {this.state.planQuantity.length > 0 && this.state.planQuantity
+                                                    .filter((item) => {
+                                                        return item.rotinasList.indexOf(this.state.rotinaId) > -1;
+                                                    })
+                                                    .map((item, index) => {
 
-                                                            <Menu action={<Button iconSolo><Icon row-menu/></Button>}
-                                                                  containerStyle={{
-                                                                      float: 'right',
-                                                                      display: 'inline-block',
-                                                                      marginTop: '5px'
-                                                                  }}>
-                                                                <MenuItem onClick={() => {
-                                                                    item.open = true;
-                                                                    this.setState({toUpdate: this.state.toUpdate + 1});
-                                                                }}>
-                                                                    Observações
-                                                                </MenuItem>
-                                                            </Menu>
-                                                            <ModalComments open={item.open || false}
-                                                                           description={item.descricao}
-                                                                           $equipments={this.state.$equipments}
-                                                                           category={'planQuantity'} itemIndex={index}
-                                                                           item={item}
-                                                                           onClose={() => {
-                                                                               item.open = false;
-                                                                               this.setState({toUpdate: this.state.toUpdate + 1});
-                                                                           }}>
-                                                            </ModalComments>
-                                                        </PlanRow>
-                                                    );
-                                                })}
+                                                        return (
+                                                            <PlanRow odd={index % 2 == 0} key={index} right
+                                                                     width={this.state.equipmentsHeaderScroll.innerWidth - 32}>
+                                                                {this.state.equipments.map((e, i) => {
+                                                                    return (
+                                                                        <PlanEquipmentsItem
+                                                                            key={index + '' + i + i.descricao}>
+                                                                            <Wrapper padding="0 8px"
+                                                                                     className={"form__item" +
+                                                                                     (e.planQuantity[index].$observacoes.value != null &&
+                                                                                     e.planQuantity[index].$observacoes.value != "" ?
+                                                                                         " form__item--commented" :
+                                                                                         "")}>
+                                                                                <Input type="number" step="0.01"
+                                                                                       $value={e.planQuantity[index].$resultado}/>
+                                                                            </Wrapper>
+                                                                        </PlanEquipmentsItem>
+                                                                    )
+                                                                })}
+                                                                <Text span>{item.unidadeCampo1}</Text>
+
+                                                                <Menu
+                                                                    action={<Button iconSolo><Icon row-menu/></Button>}
+                                                                    containerStyle={{
+                                                                        float: 'right',
+                                                                        display: 'inline-block',
+                                                                        marginTop: '5px'
+                                                                    }}>
+                                                                    <MenuItem onClick={() => {
+                                                                        item.open = true;
+                                                                        this.setState({toUpdate: this.state.toUpdate + 1});
+                                                                    }}>
+                                                                        Observações
+                                                                    </MenuItem>
+                                                                </Menu>
+                                                                <ModalComments open={item.open || false}
+                                                                               description={item.descricao}
+                                                                               $equipments={this.state.$equipments}
+                                                                               category={'planQuantity'}
+                                                                               itemIndex={index}
+                                                                               item={item}
+                                                                               onClose={() => {
+                                                                                   item.open = false;
+                                                                                   this.setState({toUpdate: this.state.toUpdate + 1});
+                                                                               }}>
+                                                                </ModalComments>
+                                                            </PlanRow>
+                                                        );
+                                                    })}
                                                 <Wrapper padding="32px"><Text b>&nbsp;</Text></Wrapper>
                                             </Wrapper>
                                         </Wrapper>

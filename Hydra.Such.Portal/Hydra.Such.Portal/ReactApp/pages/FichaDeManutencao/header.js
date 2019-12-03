@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text as eText, Icon, Wrapper, Spacer, Button, Avatars, Select, MenuItem, Menu} from 'components';
+import {Text as eText, Icon, Wrapper, Spacer, Button, Avatars, Select, MenuItem, Menu, Modal} from 'components';
 import MuiGrid from '@material-ui/core/Grid';
 import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
 import {createMuiTheme} from '@material-ui/core/styles';
@@ -10,6 +10,8 @@ import mEquipments from './ModalEquipments';
 import mAssinatura from './ModalSignature';
 import ModalReport from './ModalReport';
 import ModalOptions from './ModalOptions';
+
+const {DialogTitle, DialogContent, DialogActions} = Modal;
 
 const muiTheme = createMuiTheme();
 
@@ -110,7 +112,7 @@ class HTitle extends Component {
         }
 
         if (Object.keys(newState).length > 0) {
-            this.setState(newState, () => {/* console.log(this.state)*/
+            this.setState(newState, () => {
             });
         }
     }
@@ -236,11 +238,14 @@ class HDescription extends Component {
         equipmentsCount: 0,
         $equipments: [],
         $equipmentsCount: 0,
+        rotinaModalOpen: false,
+        rotinaSelected: null
     }
 
     constructor(props) {
         super(props);
         this.state = {...props};
+        this.state.rotinaModalOpen = false;
 
     }
 
@@ -275,13 +280,15 @@ class HDescription extends Component {
             newState.$equipmentsCount = props.$equipmentsCount;
         }
         if (Object.keys(newState).length > 0) {
-            this.setState(newState, () => {/*console.log(this.state)*/
+            this.setState(newState, () => {
             });
         }
     }
 
     //const[state, setState] = React.useState({});
     render() {
+        var rotina = this.state.equipments && this.state.equipments.length > 0 ? this.state.equipments[0].rotinaId : '';
+
         return (
             <RootDescription width="100%">
                 <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
@@ -307,13 +314,66 @@ class HDescription extends Component {
                                     </Grid>
 
                                     <Grid item xs={4} sm={3}>
-                                        <Text span data-tip={'Tipo tarefa'}>Tipo tarefa</Text>
+                                        <Text span data-tip={'Rotina'}>Rotina</Text>
                                     </Grid>
                                     <Grid item xs={8} sm={9}>
-										<span style={{color: this.props.theme.palette.primary.default}}>
-											<Icon eye/>&nbsp;&nbsp;&nbsp;<Icon tool/>&nbsp;&nbsp;&nbsp;<Icon
-                                            meter/>&nbsp;&nbsp;&nbsp;<Icon material/>
-										</span>
+                                        <Menu
+                                            containerStyle={{marginRight: '15px', lineHeight: 0}}
+                                            action={
+                                                <Button link>{rotina == 2 ? "B" : "A"}</Button>
+                                            }
+                                        >
+                                            <MenuItem onClick={() => {
+                                                if (rotina == 1) {
+                                                    return;
+                                                }
+
+                                                this.props.onRotinaChange(1);
+
+                                            }} className={rotina == 1 ? "disabled" : ""}>
+                                                Rotina &nbsp;&nbsp; <Text b>A</Text>
+                                            </MenuItem>
+                                            <MenuItem onClick={() => {
+                                                if (rotina == 2) {
+                                                    return;
+                                                }
+
+                                                this.props.onRotinaChange(2);
+                                            }} className={rotina == 2 ? "disabled" : ""}>
+                                                Rotina &nbsp;&nbsp; <Text b>B</Text>
+                                            </MenuItem>
+                                        </Menu>
+                                        {/*<Modal*/}
+                                        {/*    open={this.state.rotinaModalOpen}*/}
+                                        {/*    onClose={() => {*/}
+                                        {/*        this.setState({rotinaModalOpen: false, rotinaSelected: null});*/}
+                                        {/*    }}*/}
+                                        {/*    aria-labelledby="alert-dialog-title"*/}
+                                        {/*    aria-describedby="alert-dialog-description"*/}
+                                        {/*>*/}
+                                        {/*    <DialogTitle id="alert-dialog-title">*/}
+                                        {/*        <Text h2>Alteração de Rotina.</Text>*/}
+                                        {/*    </DialogTitle>*/}
+                                        {/*    <hr/>*/}
+                                        {/*    <DialogContent>*/}
+                                        {/*        Esta acção eliminará de forma permanete alguns registos.<br/>*/}
+                                        {/*        Deseja continuar?*/}
+                                        {/*        <div className="p-t-20"></div>*/}
+                                        {/*    </DialogContent>*/}
+                                        {/*    <hr/>*/}
+                                        {/*    <DialogActions>*/}
+                                        {/*        <Button default onClick={() => {*/}
+                                        {/*            this.setState({rotinaModalOpen: false, rotinaSelected: null});*/}
+                                        {/*        }}>*/}
+                                        {/*            Cancelar*/}
+                                        {/*        </Button>*/}
+                                        {/*        <Button primary onClick={() => {*/}
+                                        {/*            this.setState({rotinaModalOpen: false, rotinaSelected: null});*/}
+                                        {/*        }} autoFocus>*/}
+                                        {/*            Continuar*/}
+                                        {/*        </Button>*/}
+                                        {/*    </DialogActions>*/}
+                                        {/*</Modal>*/}
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Spacer height="10px"/>
