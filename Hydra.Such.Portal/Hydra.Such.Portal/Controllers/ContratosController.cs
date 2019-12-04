@@ -4325,7 +4325,8 @@ namespace Hydra.Such.Portal.Controllers
                             if (ClientRequisition != null)
                             {
                                 PreInvoiceToCreate.No_Compromisso = !string.IsNullOrEmpty(ClientRequisition.NºCompromisso) ? ClientRequisition.NºCompromisso : "";
-                                PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
+                                if (ClientRequisition.DataRequisição != null)
+                                    PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
                             }
 
@@ -4736,9 +4737,24 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
-                        DBContracts.Update(DBContracts.ParseToDB(Contract));
+                        ClientRequisition = DBContractClientRequisition.GetAll().Where(x => x.NºContrato == Contract.ContractNo && x.GrupoFatura == Codgroup && x.DataInícioCompromisso <= Convert.ToDateTime(Contract.LastInvoiceDate) && x.DataFimCompromisso >= Convert.ToDateTime(Contract.LastInvoiceDate)).FirstOrDefault();
+                        if (ClientRequisition != null)
+                        {
+                            ClientRequisition.DataÚltimaFatura = !string.IsNullOrEmpty(Contract.LastInvoiceDate) ? Convert.ToDateTime(Contract.LastInvoiceDate) : (DateTime?)null;
+                            if (DBContractClientRequisition.Update(ClientRequisition) != null)
+                            {
+                                DBContracts.Update(DBContracts.ParseToDB(Contract));
 
-                        return Json(registado);
+                                return Json(registado);
+
+                            }
+                            else
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Ocorreu um erro ao atualizar a Requisição de Cliente.";
+                                return Json(result);
+                            }
+                        }
                     }
                 }
 
@@ -4841,7 +4857,8 @@ namespace Hydra.Such.Portal.Controllers
                                 thisHeader.EstadoAlteração = 1;
                                 thisHeader.DataEnvioCliente = thiscontract != null ? thiscontract.DataEnvioCliente.HasValue ? thiscontract.DataEnvioCliente : (DateTime?)null : (DateTime?)null;
                                 thisHeader.DataDaAssinatura = thiscontract != null ? thiscontract.DataDaAssinatura.HasValue ? thiscontract.DataDaAssinatura : (DateTime?)null : (DateTime?)null;
-                                //thisHeader.NºContrato = thisHeader.NºContrato;
+                                thisHeader.NºVersão = 1;
+                                thisHeader.NºContrato = "";
                                 //thisHeader.Estado = ????? ABARROS
                                 string create = DBContracts.Create(thisHeader).NºDeContrato;
 

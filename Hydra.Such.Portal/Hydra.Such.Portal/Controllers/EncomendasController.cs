@@ -328,7 +328,7 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.Arquivado = false;
                     Pedido.Resolvido = false;
                     Pedido.Prioritario = false;
-                    Pedido.EditarPrioritario = false;
+                    Pedido.EditarPrioritario = true;
 
                     Pedido.ValorJaPedido = pedidos.Where(y => y.Estado != 5).Sum(x => x.Valor);
                     Pedido.DataText = DateTime.Now.ToString("yyyy-MM-dd");
@@ -345,36 +345,43 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.ValorJaPedido = pedidos.Where(y => y.Estado != 5).Sum(x => x.Valor);
 
                     Pedido.EditarPrioritario = false;
-                    if (!string.IsNullOrEmpty(Pedido.Aprovadores) && Pedido.Aprovadores.ToLower().Contains(User.Identity.Name.ToLower()))
+                    if (!string.IsNullOrEmpty(Pedido.UtilizadorCriacao) && Pedido.UtilizadorCriacao.ToLower().Contains(User.Identity.Name.ToLower()))
                     {
                         Pedido.EditarPrioritario = true;
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(Pedido.UserAprovacao) && Pedido.UserAprovacao == User.Identity.Name.ToLower())
+                        if (!string.IsNullOrEmpty(Pedido.Aprovadores) && Pedido.Aprovadores.ToLower().Contains(User.Identity.Name.ToLower()))
                         {
                             Pedido.EditarPrioritario = true;
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(Pedido.UserValidacao) && Pedido.UserValidacao.ToLower() == User.Identity.Name.ToLower())
+                            if (!string.IsNullOrEmpty(Pedido.UserAprovacao) && Pedido.UserAprovacao == User.Identity.Name.ToLower())
                             {
                                 Pedido.EditarPrioritario = true;
                             }
                             else
                             {
-                                if (!string.IsNullOrEmpty(Pedido.UserFinanceiros) && Pedido.UserFinanceiros.ToLower() == User.Identity.Name.ToLower())
+                                if (!string.IsNullOrEmpty(Pedido.UserValidacao) && Pedido.UserValidacao.ToLower() == User.Identity.Name.ToLower())
                                 {
                                     Pedido.EditarPrioritario = true;
                                 }
                                 else
                                 {
-                                    MovimentosDeAprovação MDA = DBApprovalMovements.GetAll().Where(x => x.Número == Pedido.NoPedido.ToString() && x.Estado == 1).LastOrDefault();
-                                    if (MDA != null)
+                                    if (!string.IsNullOrEmpty(Pedido.UserFinanceiros) && Pedido.UserFinanceiros.ToLower() == User.Identity.Name.ToLower())
                                     {
-                                        UtilizadoresMovimentosDeAprovação UMDA = DBUserApprovalMovements.GetById(MDA.NºMovimento, User.Identity.Name);
-                                        if (UMDA != null)
-                                            Pedido.EditarPrioritario = true;
+                                        Pedido.EditarPrioritario = true;
+                                    }
+                                    else
+                                    {
+                                        MovimentosDeAprovação MDA = DBApprovalMovements.GetAll().Where(x => x.Número == Pedido.NoPedido.ToString() && x.Estado == 1).LastOrDefault();
+                                        if (MDA != null)
+                                        {
+                                            UtilizadoresMovimentosDeAprovação UMDA = DBUserApprovalMovements.GetById(MDA.NºMovimento, User.Identity.Name);
+                                            if (UMDA != null)
+                                                Pedido.EditarPrioritario = true;
+                                        }
                                     }
                                 }
                             }
