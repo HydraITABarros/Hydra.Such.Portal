@@ -2715,6 +2715,7 @@ namespace Hydra.Such.Portal.Controllers
                 Projetos project = null;
                 Contratos contract = null;
                 NAVClientsViewModel customer = null;
+                string customerName = string.Empty;
 
                 if (!string.IsNullOrEmpty(projectNo))
                     project = DBProjects.GetById(projectNo);
@@ -2723,6 +2724,9 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     contract = DBContracts.GetByIdLastVersion(project.NºContrato);
                     customer = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, project.NºCliente);
+
+                    if (customer != null && !string.IsNullOrEmpty(customer.Name))
+                        customerName = customer.Name;
 
                     using (SuchDBContext ctx = new SuchDBContext())
                     {
@@ -2742,6 +2746,7 @@ namespace Hydra.Such.Portal.Controllers
                             DescricaoGrupo = invoiceGroupDescription,
                             NumCompromisso = commitmentNumber,
                             CodCliente = project.NºCliente,
+                            NomeCliente = customerName,
                             CodContrato = contract?.NºDeContrato,
                             CodTermosPagamento = contract != null ? contract.CódTermosPagamento : customer?.PaymentTermsCode,
                             CodMetodoPagamento = customer?.PaymentMethodCode,
@@ -2845,18 +2850,6 @@ namespace Hydra.Such.Portal.Controllers
                             return Json(result);
                         }
 
-                        ctx.MovimentosDeProjeto.UpdateRange(unchangedProjectMovements);
-                        try
-                        {
-                            ctx.SaveChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            result.eReasonCode = 2;
-                            result.eMessage = "Ocorreu um erro ao atualizar os Movimentos de Projeto.";
-                            return Json(result);
-                        }
-
                         ctx.MovimentosProjectoAutorizados.AddRange(authorizedProjMovements);
                         try
                         {
@@ -2868,6 +2861,18 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             result.eReasonCode = 2;
                             result.eMessage = "Ocorreu um erro ao adicionar os Movimentos na Tabela Movimentos de Projeto Autorizados.";
+                            return Json(result);
+                        }
+
+                        ctx.MovimentosDeProjeto.UpdateRange(unchangedProjectMovements);
+                        try
+                        {
+                            ctx.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "Ocorreu um erro ao atualizar os Movimentos de Projeto.";
                             return Json(result);
                         }
                     }

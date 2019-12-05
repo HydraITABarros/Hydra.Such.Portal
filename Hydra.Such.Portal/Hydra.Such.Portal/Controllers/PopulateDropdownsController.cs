@@ -2771,6 +2771,19 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProjetosYearList()
+        {
+            var yearList = Enumerable.Range(2018, (DateTime.Now.Year - 2018) + 1).ToList();
+
+            List<DDMessageString> result = yearList.Select(x => new DDMessageString()
+            {
+                id = x.ToString(),
+                value = x.ToString()
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetTipoPedidoPagamento()
         {
             List<EnumData> result = EnumerablesFixed.TipoPedidoPagamento;

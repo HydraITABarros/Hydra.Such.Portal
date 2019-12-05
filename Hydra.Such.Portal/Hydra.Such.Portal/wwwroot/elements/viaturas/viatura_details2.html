@@ -183,6 +183,12 @@
                                     </div>
 
                                     <div class="col-md-2">
+                                        <vaadin-text-field id="imagem" name="imagem" label="Imagem" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-2">
                                         <vaadin-text-field id="idade" name="idade" label="Idade" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                                     </div>
 
@@ -271,14 +277,10 @@
                                     <div class="col-md-2">
                                         <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                                     </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="imagem" name="imagem" label="Imagem" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
                                 </div>
 
                                 <div class="row break_clear">
-                                    <paper-collapse-item class="panel-heading" header="Imobilizado (Histórico)">
+                                    <paper-collapse-item class="panel-heading" header="Imobilizado">
                                         <vaadin-grid id="gridImobilizado" aria-label="gridImobilizado" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable>
                                                 <template class="header">
@@ -449,7 +451,7 @@
 
                             <!--Utilização-->
                             <div>
-                                <paper-collapse-item class="panel-heading" header="Estado (Histórico)">
+                                <paper-collapse-item class="panel-heading" header="Estado">
                                     <vaadin-grid id="gridEstado" aria-label="gridEstado" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -507,7 +509,7 @@
 
                                 <paper-collapse-item class="panel-heading" header="Abastecimentos" closed>
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Abastecimentos SUCH (Histórico)" closed>
+                                        <paper-collapse-item class="panel-heading" header="Abastecimentos SUCH" closed>
                                             <vaadin-grid id="gridAbastecimentosSUCH" aria-label="gridAbastecimentosSUCH" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                                 <vaadin-grid-column resizable>
                                                     <template class="header">
@@ -855,7 +857,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Inspeção (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Inspeção" closed>
                                     <vaadin-grid id="gridInspecao" aria-label="gridInspecao" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -939,7 +941,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Carta Verde (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Carta Verde" closed>
                                     <vaadin-grid id="gridCartaVerde" aria-label="gridCartaVerde" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1135,7 +1137,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Substituição Provisória de Viaturas Não Renting (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Substituição Provisória de Viaturas Não Renting" closed>
                                     <vaadin-grid id="gridSubstituicaoViaturasNaoRenting" aria-label="gridSubstituicaoViaturasNaoRenting" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1302,7 +1304,7 @@
 
                             <!--Histórico-->
                             <div>
-                                <paper-collapse-item class="panel-heading" header="Afetação / Departamento (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Afetação / Departamento" closed>
                                     <vaadin-grid id="gridAfetacaoDepartamento" aria-label="gridAfetacaoDepartamento" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1444,7 +1446,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Parqueamento (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Parqueamento" closed>
                                     <vaadin-grid id="gridParqueamento" aria-label="gridParqueamento" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1500,7 +1502,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Propriedade (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Propriedade" closed>
                                     <vaadin-grid id="gridPropriedade" aria-label="gridPropriedade" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1570,7 +1572,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Condutores (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Condutores" closed>
                                     <vaadin-grid id="gridCondutores" aria-label="gridCondutores" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1626,7 +1628,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Gestores (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Gestores" closed>
                                     <vaadin-grid id="gridGestores" aria-label="gridGestores" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1685,7 +1687,7 @@
 
                             <!--Contrato Renting-->
                             <div>
-                                <paper-collapse-item class="panel-heading" header="Contrato (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Contrato" closed>
                                     <vaadin-grid id="gridContratoHistorico" aria-label="gridContratoHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1942,7 +1944,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Alterações ao Contrato (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Alterações ao Contrato" closed>
                                     <vaadin-grid id="gridAlteracoesContratoHistorico" aria-label="gridAlteracoesContratoHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -2042,7 +2044,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <paper-collapse-item class="panel-heading" header="Km (Histórico)" closed>
+                                <paper-collapse-item class="panel-heading" header="Km" closed>
                                     <vaadin-grid id="gridKmHistorico" aria-label="gridKmHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">

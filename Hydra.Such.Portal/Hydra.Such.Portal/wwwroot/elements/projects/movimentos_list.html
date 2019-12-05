@@ -120,17 +120,14 @@
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-3">
-                            <such-selectbox style="margin-top:11px;" id="selectbox-forcecedor"
-                                            label="Fornecedor"
+                            <such-selectbox style="margin-top:11px;" id="selectbox-projeto"
+                                            label="Projeto"
                                             value="{{forcecedor}}"
                                             items="[[forcecedores]]"
                                             text-path="value"
                                             value-path="id"
                                             fields='[{"field":"id", "name":"Código Fornecedor"}, {"field":"value", "name":"Nome Fornecedor"}]'>
                             </such-selectbox>
-                        </div>
-                        <div class="col-sm-3">
-                            <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{requisitionNo}}">  </vaadin-text-field>
                         </div>
 
                         <div class="col-sm-2">

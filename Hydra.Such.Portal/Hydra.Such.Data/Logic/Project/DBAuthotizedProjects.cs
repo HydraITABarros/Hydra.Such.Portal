@@ -38,6 +38,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.GrupoFactura = item.GrupoFactura;
                 proj.Descricao = item.Descricao;
                 proj.CodCliente = item.CodCliente;
+                proj.NomeCliente = item.NomeCliente;
                 if (item.ValorAutorizado != null)
                     proj.ValorAutorizado = (decimal)item.ValorAutorizado;
                 proj.CodRegiao = item.CodRegiao;
@@ -90,6 +91,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.GrupoFactura = item.GrupoFactura;
                 proj.Descricao = item.Descricao;
                 proj.CodCliente = item.CodCliente;
+                proj.NomeCliente = item.NomeCliente;
                 if (item.ValorAutorizado != null)
                     proj.ValorAutorizado = item.ValorAutorizado;
                 proj.CodRegiao = item.CodRegiao;
