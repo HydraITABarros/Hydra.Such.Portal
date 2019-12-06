@@ -13,6 +13,7 @@ import Emm from "./emm";
 import Upload from './upload';
 import Documentos from './documentos';
 import Fotografias from './fotografias';
+import {Offline, Online} from "react-detect-offline";
 
 const addLinkedPropsToObject = Functions.addLinkedPropsToObject;
 
@@ -24,14 +25,14 @@ const {DialogTitle, DialogContent, DialogActions} = ModalLarge;
 class ModalOptions extends Component {
     state = {
         open: false,
-        tab: 0
+        tab: 0,
+        online: true
     };
 
     constructor(props) {
         super(props);
-        this.fetch = this.fetch.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        //this.fetch();
+        this.state.online = navigator.onLine;
     }
 
     handleChange(e, value) {
@@ -41,34 +42,23 @@ class ModalOptions extends Component {
         });
     }
 
-    fetch() {
-        return;
-        var url = `/ordens-de-manutencao/equipments`;
-        var params = {
-            categoryId: this.props.categoryId,
-            orderId: this.props.orderId
-        };
-        axios.get(url, {params}).then((result) => {
-            var data = result.data;
-            if (data) {
-
-                var state = {
-                    searchEquipments: data
-                }
-
-                this.setState(state);
-            }
-        }).catch(function (error) {
-        }).then(() => {
-            this.setState({
-                isLoading: false
-            });
+    componentDidMount() {
+        window.addEventListener('online', () => {
+            setTimeout(() => {
+                this.setState({online: true});
+            }, 0);
         });
+
+        window.addEventListener('offline', () => {
+            setTimeout(() => {
+                this.setState({online: false, tab: 0});
+            }, 0);
+        });
+        this.setState({online: navigator.onLine});
     }
 
     componentDidUpdate(props) {
-
-        console.log("IMPPPPP", props.$equipments);
+        this.state.online = navigator.onLine;
     }
 
     render() {
@@ -100,9 +90,17 @@ class ModalOptions extends Component {
                             >
                                 <Tab className={"emm__tabs"} label={<Text b><Icon meter/>EMMs</Text>}/>
                                 <Tab className={"emm__tabs"} label={<Text b><Icon material/>Mat. Aplicado</Text>}/>
-                                <Tab className={"emm__tabs"} label={<Text b><Icon fotografias/>Fotografias</Text>}/>
-                                <Tab className={"emm__tabs"} label={<Text b><Icon folder/>Documentos</Text>}/>
-                                <Tab className={"emm__tabs"} label={<Text b><Icon upload/>Upload</Text>}/>
+
+                                <Tab disabled={!this.state.online}
+                                     className={"emm__tabs" + (!this.state.online && " disabled")}
+                                     label={<Text b><Icon fotografias/>Fotografias</Text>}/>
+                                <Tab disabled={!this.state.online}
+                                     className={"emm__tabs" + (!this.state.online && " disabled")}
+                                     label={<Text b><Icon folder/>Documentos</Text>}/>
+                                <Tab disabled={!this.state.online}
+                                     className={"emm__tabs" + (!this.state.online && " disabled")}
+                                     label={<Text b><Icon upload/>Upload</Text>}/>
+
                             </Tabs>
                             <hr/>
                         </Bar>
@@ -110,15 +108,20 @@ class ModalOptions extends Component {
 
                     <DialogContent>
                         {this.state.tab == 0 &&
-                        <Emm orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                        <Emm orderId={this.props.orderId} $equipments={this.props.$equipments}
+                             onChange={this.props.onChange}/>}
                         {this.state.tab == 1 &&
-                        <Material orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
-                        {this.state.tab == 2 &&
-                        <Fotografias orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
-                        {this.state.tab == 3 &&
-                        <Documentos orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
-                        {this.state.tab == 4 &&
-                        <Upload orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                        <Material orderId={this.props.orderId} $equipments={this.props.$equipments}
+                                  onChange={this.props.onChange}/>}
+
+                        <Online>
+                            {this.state.tab == 2 &&
+                            <Fotografias orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                            {this.state.tab == 3 &&
+                            <Documentos orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                            {this.state.tab == 4 &&
+                            <Upload orderId={this.props.orderId} $equipments={this.props.$equipments}/>}
+                        </Online>
 
                     </DialogContent>
                     <hr/>
