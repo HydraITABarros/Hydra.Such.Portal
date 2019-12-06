@@ -9,6 +9,7 @@ namespace Hydra.Such.Portal.ViewModels
     {
         public int Id { get; set; }               
         public int Categoria { get; set; }               
+        public string Om { get; set; }       
         public string EquipmentCresp { get; set; }
         public string CategoriaText { get; set; }
         public int Marca { get; set; }
@@ -41,6 +42,8 @@ namespace Hydra.Such.Portal.ViewModels
         public string AssinaturaTecnico { get; set; }
         public string AssinaturaCliente { get; set; }
         public string AssinaturaSie { get; set; }
+        public bool? AssinaturaClienteManual { get; set; }
+        public bool? AssinaturaSieIgualCliente { get; set; }
         
         public int? RotinaId { get; set; }
         public DateTime? DataRelatorio { get; set; }
