@@ -27,8 +27,6 @@ class Material extends Component {
     constructor(props) {
         super(props);
 
-        console.log('0constructor');
-
         if (this.props.$equipments) {
             this.state.materials = fromEquipmentsPlanToMaterials(this.props.$equipments.value, true);
             this.state.materials.push({selected: this.props.$equipments.value, material: getDefaultMaterial()});
@@ -38,10 +36,6 @@ class Material extends Component {
     }
 
     componentDidMount() {
-        // if (this.props.$equipments) {
-        //     this.state.materials = fromEquipmentsPlanToMaterials(this.props.$equipments.value, true);
-        //     this.state.materials.push({selected: this.props.$equipments.value, material: getDefaultMaterial()});
-        // }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -59,6 +53,12 @@ class Material extends Component {
                 <Wrapper padding={'0 0 16px'}>
 
                     {this.state.materials.map((material, i) => {
+                        let disabled = false;
+                        if ((this.state.materials.length - 1 != i)) {
+                            disabled = material.selected.filter((item) => {
+                                return item.estadoFinal > 0;
+                            }).length > 0;
+                        }
                         return (
                             <div key={i}>
                                 <Grid container spacing={1}>
@@ -66,7 +66,8 @@ class Material extends Component {
                                         <Select
                                             key={material.material.descricao}
                                             multiple
-                                            value={material.selected}
+                                            value={(this.state.materials.length - 1 != i) ? material.selected : material.selected.filter((e) => e.estadoFinal == 0)}
+                                            disabled={disabled}
                                             onChange={(e) => {
                                                 material.selected = e.target.value;
                                                 this.setState({});
@@ -76,7 +77,7 @@ class Material extends Component {
                                             {this.props.$equipments && this.props.$equipments.value.map((o, j) => {
                                                 return <MenuItem
                                                     key={j}
-                                                    disabled={this.state.materials.length != (i + 1)}
+                                                    disabled={this.state.materials.length != (i + 1) || o.estadoFinal > 0}
                                                     value={o}>{"#" + (j + 1) + " " + o.numEquipamento}</MenuItem>
                                             })}
                                         </Select>
@@ -86,7 +87,7 @@ class Material extends Component {
                                     </Grid>
                                     <Grid item xs={10} md={4}>
                                         <Input
-                                            disabled={this.state.materials.length != (i + 1)}
+                                            disabled={this.state.materials.length != (i + 1) || disabled}
                                             key={material.material.descricao}
                                             defaultValue={material.material.descricao}
                                             onChange={(e) => {
@@ -101,7 +102,7 @@ class Material extends Component {
                                     </Grid>
                                     <Grid item xs={10} md={2}>
                                         <Input
-                                            disabled={this.state.materials.length != (i + 1)}
+                                            disabled={this.state.materials.length != (i + 1) || disabled}
                                             key={material.material.descricao}
                                             defaultValue={material.material.quantidade}
                                             onChange={(e) => {
@@ -112,13 +113,17 @@ class Material extends Component {
                                     <Grid item xs={10} md={3}>
                                         <Select
                                             value={material.material.fornecidoPor || 0}
-                                            disabled={this.state.materials.length != (i + 1)}
+                                            disabled={this.state.materials.length != (i + 1) || disabled}
                                             key={material.material.descricao}
                                             onChange={(e) => {
                                                 material.material.fornecidoPor = e.target.value;
 
                                                 this.setState({}, () => {
                                                     attachMaterialToEquipments(this.state.materials, this.props.$equipments.value);
+
+                                                    if (this.props.onChange) {
+                                                        this.props.onChange();
+                                                    }
                                                 });
 
                                             }}
@@ -144,9 +149,11 @@ class Material extends Component {
                                         {this.state.materials.length == (i + 1) &&
                                         <Button
                                             round
-                                            className={'input-width-button__button'}
+                                            className={'input-width-button__button' + (disabled ? " disabled" : "")}
                                             onClick={(e) => {
-
+                                                if (disabled) {
+                                                    return;
+                                                }
                                                 if (!this.validator.allValid()) {
                                                     this.validator.showMessages();
                                                     this.forceUpdate();
@@ -159,6 +166,11 @@ class Material extends Component {
                                                 });
                                                 this.setState({}, () => {
                                                     attachMaterialToEquipments(this.state.materials, this.props.$equipments.value);
+
+
+                                                    if (this.props.onChange) {
+                                                        this.props.onChange();
+                                                    }
                                                 });
                                             }}
                                         ><Icon add/></Button>
@@ -166,12 +178,20 @@ class Material extends Component {
                                         {this.state.materials.length != (i + 1) &&
                                         <Button
                                             round
-                                            className={'input-width-button__button'}
+                                            className={'input-width-button__button' + (disabled ? " disabled" : "")}
                                             onClick={(e) => {
+
+                                                if (disabled) {
+                                                    return;
+                                                }
                                                 this.state.materials.splice(i, 1);
-                                                console.log(this.state.materials);
+
                                                 this.setState({}, () => {
                                                     attachMaterialToEquipments(this.state.materials, this.props.$equipments.value);
+
+                                                    if (this.props.onChange) {
+                                                        this.props.onChange();
+                                                    }
                                                 });
                                             }}
                                         ><Icon remove/></Button>
