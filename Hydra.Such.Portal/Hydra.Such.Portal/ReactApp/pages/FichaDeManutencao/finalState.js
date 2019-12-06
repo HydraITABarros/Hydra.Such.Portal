@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
-import Tabs from '@material-ui/core/Tabs';
-import MuiTab from '@material-ui/core/Tab';
 import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
 import {Wrapper, Tooltip, Button, Text as EText, Select, MenuItem, Modal, Input, Icon} from 'components';
 import MuiGrid from '@material-ui/core/Grid';
-import {observable} from 'mobx';
-import {observer} from 'mobx-react';
 import _theme from '../../themes/default';
+import ReactDOM from "react-dom";
 
 const {DialogTitle, DialogContent, DialogActions} = Modal;
 
@@ -16,25 +13,6 @@ const Root = styled.div`
 `;
 
 const Grid = styled(MuiGrid)`
-`;
-
-const Text = styled(EText)`
-	background-color:  ${props => props.theme.palette.bg.white};
-	/* color: #F9703E; */
-	text-transform: none;
-	padding: 8px 24px;
-	box-shadow: none;
-	border-radius: 6px;
-	display: inline-block;
-	border: 2px solid transparent;
-	cursor: pointer;
-	&.active {
-		border: 2px solid ${props => props.theme.palette.secondary.default};
-		color:  ${props => props.theme.palette.secondary.default};
-		small {
-			color:  ${props => props.theme.palette.secondary.default};
-		}
-	}
 `;
 
 const ActionWrapper = styled(Grid)` && {
@@ -54,7 +32,6 @@ var FinalInput = styled(Input)`
 	}
 
 	border-radius: ${props => props.theme.radius.primary};
-		
 	fieldset {
 		border: none;
 	}	
@@ -79,11 +56,15 @@ var FinalInput = styled(Input)`
 	}
 
 	[class*="MuiSelect-root"]  {		
-		background: white;
+		
 		color: ${props => props.theme.palette.alert.bad};
 		box-shadow: 1px 1px 2px 0px rgba(50,63,75,0.3);
 		border-radius: ${props => props.theme.radius.primary};
 	}
+	&.Mui-focused {
+        background-color: ${props => props.bgcolor} !important;     
+        border-radius: 6px !important;		
+    }
 `
 
 injectGlobal`
@@ -121,14 +102,13 @@ const Spacer = styled.div`
 
 class FinalState extends Component {
     state = {
-        open: false
+        open: false,
+        value: ''
     }
 
     constructor(props) {
         super(props);
-
-        console.log('12312', props.$value);
-
+        this.state.value = props.$value.value;
     }
 
     render() {
@@ -138,24 +118,35 @@ class FinalState extends Component {
         return (
             <Root>
                 <ActionWrapper container
-                               className={props.$value.value == 0 ? 'fs-grey' : props.$value.value == 3 ? 'fs-red' : 'fs-green'}>
+                               className={this.state.value == 0 ? 'fs-grey' : this.state.value == 3 ? 'fs-red' : 'fs-green'}>
                     <Select
-                        input={<FinalInput value={props.$value.value}/>}
+                        disabled={props.disabled}
+                        className={props.disabled ? 'disabled' : ''}
+                        input={
+                            <FinalInput
+                                value={this.state.value}
+                                bgcolor={this.state.value == 0 ? _theme.palette.primary.medium : this.state.value == 3 ? _theme.palette.alert.bad : _theme.palette.alert.good}
+                            />
+                        }
+                        onClose={() => {
+                            this.setState({}, () => {
+
+                            });
+                        }}
                         onChange={(e) => {
                             var value = e.target.value;
                             props.$value.value = value;
 
-                            if (typeof this.props.onChange == 'function') {
-                                this.props.onChange(e);
-                            }
-
-                            this.setState({}, () => {
+                            this.setState({value: value}, () => {
                                 if (value >= 2) {
                                     this.setState({open: true});
                                 }
+                                if (typeof this.props.onChange == 'function') {
+                                    this.props.onChange(e);
+                                }
                             });
                         }}
-                        value={this.props.$value.value}
+                        value={this.state.value}
                     >
                         <MenuItem value={0} style={{padding: '11px', textAlign: 'center'}}>
                             <div style={{textAlign: 'center', width: '100%'}}>
