@@ -240,12 +240,13 @@ namespace Hydra.Such.Portal.Controllers
 			//obter fichas de manutencao (reports)
 			if (equipments == null || equipments.Count() < 1) { return NotFound(); }
 
-			
 			var rotinaId = 1;
 
 			var index = 0;
 			equipments.ForEach((item) =>
 			{
+				item.Om = orderId;
+				
 				if (item.Marca != 1 && (item.MarcaText == null || item.MarcaText.Length == 0))
 				{
 					var marca = evolutionWEBContext.EquipMarca.FirstOrDefault(m => m.IdMarca == item.Marca);
@@ -299,6 +300,9 @@ namespace Hydra.Such.Portal.Controllers
 					item.AssinaturaSie = planReport.AssinaturaSie;
 					item.AssinaturaTecnico = planReport.AssinaturaTecnico;
 					item.UtilizadorAssinaturaTecnico = evolutionWEBContext.Utilizador.Where(u => u.Id == planReport.IdAssinaturaTecnico).FirstOrDefault();
+					
+					item.AssinaturaClienteManual = planReport.AssinaturaClienteManual;
+					item.AssinaturaSieIgualCliente = planReport.AssinaturaSieIgualCliente;
 					item.RotinaId = rotinaId;
 				}
 				else
@@ -329,7 +333,6 @@ namespace Hydra.Such.Portal.Controllers
 				{
 					var debug = ex;
 				}
-				
 
 				var planMaintenanceReport = evolutionWEBContext.FichaManutencaoRelatorioManutencao
 					.Where(r => r.IdRelatorio == planReport.Id).ToList();
@@ -570,6 +573,8 @@ namespace Hydra.Such.Portal.Controllers
 					planReport.AssinaturaSie = item.AssinaturaSie;
 					planReport.AssinaturaTecnico = item.AssinaturaTecnico;
 					planReport.IdAssinaturaTecnico = item.UtilizadorAssinaturaTecnico!= null ?item.UtilizadorAssinaturaTecnico.Id : 0;
+					planReport.AssinaturaClienteManual = item.AssinaturaClienteManual;
+					planReport.AssinaturaSieIgualCliente = item.AssinaturaSieIgualCliente;
 					planReport.CriadoPor = evolutionLoggedUser.Id;
 					planReport.CriadoEm = Now;
 					planReport.ActualizadoPor = evolutionLoggedUser.Id;
@@ -593,6 +598,10 @@ namespace Hydra.Such.Portal.Controllers
 						AssinaturaSie = item.AssinaturaSie,
 						AssinaturaTecnico = item.AssinaturaTecnico,
 						IdAssinaturaTecnico = item.UtilizadorAssinaturaTecnico!= null ?item.UtilizadorAssinaturaTecnico.Id : 0,
+						
+						AssinaturaClienteManual = item.AssinaturaClienteManual,
+						AssinaturaSieIgualCliente = item.AssinaturaSieIgualCliente,
+						
 						Rotina = item.RotinaId != null ? (int) item.RotinaId : 1
 					});
 				}
