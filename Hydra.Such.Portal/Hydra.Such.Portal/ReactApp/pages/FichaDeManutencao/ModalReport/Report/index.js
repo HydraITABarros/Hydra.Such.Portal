@@ -323,7 +323,7 @@ class Report extends Component {
                                             </div>
                                             {this.state.selectedEquipments.map((equipments, index) => {
                                                 return (
-                                                    <div key={index}
+                                                    <div key={'_maintenance' + index}
                                                          className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                         <Text b className="report__label">
                                                             #{index + 1}
@@ -336,7 +336,7 @@ class Report extends Component {
                                     </div>
                                     {maintenance.map((item, index) => {
                                         return (
-                                            <div key={index} className="report__row__el"
+                                            <div key={'maintenance' + index} className="report__row__el"
                                                  ref={(el) => this.state.refsMaintenance[refAux++] = el}>
                                                 <div className="report__hr"></div>
                                                 <div className="report__row">
@@ -347,7 +347,7 @@ class Report extends Component {
                                                     </div>
                                                     {this.state.selectedEquipments.map((equipment, i) => {
                                                         return (
-                                                            <div key={index + "" + i}
+                                                            <div key={'maintenance' + index + "" + i}
                                                                  className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                                 <Text p className="report__text">
                                                                     {equipment.planMaintenance[index].$resultado.value == 1 &&
@@ -383,7 +383,7 @@ class Report extends Component {
                                             </div>
                                             {this.state.selectedEquipments.map((equipments, index) => {
                                                 return (
-                                                    <div key={index}
+                                                    <div key={'_quality' + index}
                                                          className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                         <Text b className="report__label">
                                                             #{index + 1}
@@ -396,7 +396,7 @@ class Report extends Component {
                                     </div>
                                     {quality.map((item, index) => {
                                         return (
-                                            <div key={index} className="report__row__el"
+                                            <div key={'quality' + index} className="report__row__el"
                                                  ref={(el) => this.state.refsQuality[refAux++] = el}>
                                                 <div className="report__hr"></div>
                                                 <div className="report__row">
@@ -407,7 +407,7 @@ class Report extends Component {
                                                     </div>
                                                     {this.state.selectedEquipments.map((equipment, i) => {
                                                         return (
-                                                            <div key={index + "" + 1}
+                                                            <div key={'quality' + index + "" + i}
                                                                  className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                                 <Text p className="report__text">
                                                                     {equipment.planQuality[index].$resultado.value == 1 &&
@@ -446,7 +446,7 @@ class Report extends Component {
                                             </div>
                                             {this.state.selectedEquipments.map((equipments, index) => {
                                                 return (
-                                                    <div key={index}
+                                                    <div key={'_quantity' + index}
                                                          className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                         <Text b className="report__label">
                                                             #{index + 1}
@@ -459,7 +459,7 @@ class Report extends Component {
                                     </div>
                                     {quantity.map((item, index) => {
                                         return (
-                                            <div key={index} className="report__row__el"
+                                            <div key={'quantity' + index} className="report__row__el"
                                                  ref={(el) => this.state.refsQuality[refAux++] = el}>
 
                                                 <div className="report__hr"></div>
@@ -477,7 +477,7 @@ class Report extends Component {
                                                     </div>
                                                     {this.state.selectedEquipments.map((equipment, i) => {
                                                         return (
-                                                            <div key={index + "" + i}
+                                                            <div key={'quantity' + index + "" + i}
                                                                  className={"col-xs-" + Math.floor(5 / this.state.selectedEquipments.length) + " text-center"}>
                                                                 <Text p className="report__text">
                                                                     {equipment.planQuantity[index].resultado}
@@ -509,7 +509,7 @@ class Report extends Component {
                                 {this.state.selectedEquipments.length > 0 && this.state.selectedEquipments.map((equipment, i) => {
                                     var printed = false;
                                     return (
-                                        <div key={i} className="report__row__el"
+                                        <div key={(new Date).getTime() + i} className="report__row__el"
                                              ref={(el) => this.state.refsComments[refAux++] = el}>
                                             {(equipment.observacao && equipment.observacao != "") &&
                                             <div>
