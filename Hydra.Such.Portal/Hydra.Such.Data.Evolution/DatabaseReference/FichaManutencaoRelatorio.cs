@@ -16,7 +16,9 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         public string AssinaturaTecnico { get; set; }
         public int? IdAssinaturaTecnico { get; set; }
         public string AssinaturaCliente { get; set; }
+        public bool? AssinaturaClienteManual { get; set; }
         public string AssinaturaSie { get; set; }
+        public bool? AssinaturaSieIgualCliente { get; set; }
         public int? CriadoPor { get; set; }
         public DateTime? CriadoEm { get; set; }
         public int? ActualizadoPor { get; set; }
