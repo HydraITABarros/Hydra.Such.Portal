@@ -715,6 +715,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetInvoiceTypesClienteInterno()
+        {
+            List<EnumData> result = EnumerablesFixed.InvoiceTypeClienteInterno;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContractInvoiceGroups()
         {
             List<EnumData> result = EnumerablesFixed.ContractInvoiceGroups;

@@ -971,7 +971,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 3,
-                Value = "Fatura / Débito Interno" 
+                Value = "Fatura" 
             },
             new EnumData()
             {
@@ -983,6 +983,14 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 4,
                 Value = "Nota de Crédito"
             }
+        };
+
+        public static readonly List<EnumData> InvoiceTypeClienteInterno = new List<EnumData>(){
+            new EnumData()
+            {
+                Id = 3,
+                Value = "Débito Interno"
+            },
         };
 
         public static readonly List<EnumData> ContractInvoicePeriods = new List<EnumData>(){

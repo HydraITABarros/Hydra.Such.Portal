@@ -7,4 +7,7 @@
 <x-projectdetails _projectid="@ViewBag.ProjectNo"
                   _areaid="1"
                   _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
-                  _reportserverurl='@ViewBag.reportServerURL'></x-projectdetails>
+                  _reportserverurl='@ViewBag.reportServerURL'
+                  _projectclosed='@ViewBag.projectClosed'>
+
+</x-projectdetails>

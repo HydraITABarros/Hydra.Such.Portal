@@ -216,8 +216,8 @@
 
         <iron-ajax url="/PopulateDropdowns/GetPaymentTerms" id="paymentTerms_ajax" last-response="{{PaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetCustomers"
-                   last-response="{{Customers}}"
+        <iron-ajax url="/Projetos/GetAllCustomers"
+                   last-response="{{customers}}"
                    auto
                    method="post"
                    handle-as="json"
@@ -307,6 +307,14 @@
                    last-response="{{invoiceTypes}}"
                    auto
                    id="getInvoiceTypes"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetInvoiceTypesClienteInterno"
+                   last-response="{{invoiceTypesClienteInterno}}"
+                   auto
+                   id="getInvoiceTypesClienteInterno"
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
@@ -515,7 +523,7 @@
                     {{item.utilizador}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.observacoes.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
@@ -714,7 +722,6 @@
                         <span slot="suffix">{{item.adjustedDocument}}</span>
                     </template>
                 </vaadin-grid-column>-->
-
                 <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.adjustedDocumentData.hidden }}">
                     <template class="header">
                         <vaadin-grid-sorter path="adjustedDocumentData">Data Consumo Guia Corrigida</vaadin-grid-sorter>
@@ -724,7 +731,6 @@
                         <span slot="suffix">{{item.adjustedDocumentData}}</span>
                     </template>
                 </vaadin-grid-column>-->
-
                 <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.residueFinalDestinyCode.hidden }}">
                     <template class="header">
                         <vaadin-grid-sorter path="residueFinalDestinyCode">Destino Final Residuos</vaadin-grid-sorter>
@@ -908,6 +914,17 @@
 
         <paper-dialog id="dlgInvoiceNegativo" modal style="height:300px; width:300px">
             <div>
+                <vaadin-combo-box id="_CLOptionInvoiceNegativo" item-value-path="id" item-label-path="value" label="Documento a Emitir" required error-message="Este campo é obrigatório">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <div>
                 <vaadin-date-picker id="_CLDataNegativo" label="Data" required error-message="Este campo é obrigatório"></vaadin-date-picker>
             </div>
             <div class="buttons">
@@ -1076,18 +1093,32 @@
                         if (verifica == true) {
                             this.selectedItem = this.selectedItems;
                             this.$._CLOptionInvoice.value = "";
-                            var availableInvoiceTypes = this.invoiceTypes.slice();
-                            if (saldo > 0) {
+                            this.$._CLOptionInvoiceNegativo.value = "";
+                            var Customer = this.customers.find(x => x.no_ == this.selectedItem[0].codCliente);
+
+                            if (Customer.clienteInterno != true) {
+                                var availableInvoiceTypes = this.invoiceTypes.slice();
                                 delete availableInvoiceTypes[2];
                                 this.$._CLOptionInvoice.items = availableInvoiceTypes;
+                                this.$._CLOptionInvoice.disabled = false;
+                            }
+                            else {
+                                var availableInvoiceTypes = this.invoiceTypesClienteInterno.slice();
+                                this.$._CLOptionInvoice.items = availableInvoiceTypes;
+                                this.$._CLOptionInvoice.value = 3;
+                                this.$._CLOptionInvoice.disabled = true;
+                            }
+                            if (saldo > 0) {
                                 this.$._CLData.value = moment().format("YYYY-MM-DD");
                                 this.$.dlgInvoice.open();
                             }
                             else {
+                                var availableInvoiceTypes = this.invoiceTypes.slice();
                                 delete availableInvoiceTypes[0];
                                 delete availableInvoiceTypes[1];
-                                this.$._CLOptionInvoice.items = availableInvoiceTypes;
-                                this.$._CLOptionInvoice.value = 4;
+                                this.$._CLOptionInvoiceNegativo.items = availableInvoiceTypes;
+                                this.$._CLOptionInvoiceNegativo.value = 4;
+                                this.$._CLOptionInvoiceNegativo.disabled = true;
                                 this.$._CLDataNegativo.value = moment().format("YYYY-MM-DD");
                                 this.$.dlgInvoiceNegativo.open();
 
@@ -1199,17 +1230,23 @@
                 _validateInvoiceNegativo: function () {
                     var erro = this._validateData(this.selectedItem);
                     if (erro == "") {
-                        if (this.selectedItem && this.selectedItem.length > 0) {
-                            var customerNo = this.selectedItem[0].codCliente;
-                            var commitmentNo = this.selectedItem[0].numCompromisso;
-                            var data = this.$._CLDataNegativo.value;
+                        if (this.$._CLDataNegativo.value != "") {
+                            if (this.selectedItem && this.selectedItem.length > 0) {
+                                var customerNo = this.selectedItem[0].codCliente;
+                                var commitmentNo = this.selectedItem[0].numCompromisso;
+                                var data = this.$._CLDataNegativo.value;
 
-                            this.$.valCustomerNegativo_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo, "data": data });
-                            this.$.valCustomerNegativo_ajax.generateRequest();
-                            this.$.dlgInvoiceNegativo.close();
+                                this.$.valCustomerNegativo_ajax.body = JSON.stringify({ "customerNo": customerNo, "commitmentNo": commitmentNo, "data": data });
+                                this.$.valCustomerNegativo_ajax.generateRequest();
+                                this.$.dlgInvoiceNegativo.close();
+                            }
+                            else {
+                                this.openToastError("Não foi possivel aceder ao registo selecionado.");
+                            }
                         }
                         else {
-                            this.openToastError("Não foi possivel aceder ao registo selecionado.");
+                            this.$.dlgInvoice.close();
+                            this.openToastError("Tem que selecionar uma data.");
                         }
                     } else {
                         this.openToastError(erro);
@@ -1271,7 +1308,7 @@
                     var dataFormulario = this.$._CLDataNegativo.value;
 
                     if (this.CustBillingValResponse.eMessages.length != 0) {
-                        var option = this.$._CLOptionInvoice.value;
+                        var option = this.$._CLOptionInvoiceNegativo.value;
                         var valError = this.CustBillingValResponse.eMessages.find(x => x.type == 0);
                         if (valError) {
                             this.openToastError(valError.message);
@@ -1307,14 +1344,14 @@
                             }
                             else {
                                 this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
+                                this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoiceNegativo.value, "dataFormulario": dataFormulario };
                                 this.$.billProjects_ajax.generateRequest();
                             }
                         }
                     }
                     else {
                         this.$.billProjects_ajax.body = JSON.stringify(this.selectedItem);
-                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoice.value, "dataFormulario": dataFormulario };
+                        this.$.billProjects_ajax.params = { "OptionInvoice": this.$._CLOptionInvoiceNegativo.value, "dataFormulario": dataFormulario };
                         this.$.billProjects_ajax.generateRequest();
                     }
                 },
@@ -1381,7 +1418,7 @@
                         "dataAutorizacao": { hidden: false, label: "Data Autorização" },
                         "utilizador": { hidden: false, label: "Autorizado Por" },
                         "observacoes": { hidden: false, label: "Observações" }
-                       
+
                     };
 
                     if (localStorage["invoice.ToggleColumn"]) {

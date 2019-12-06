@@ -69,11 +69,23 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Detalhes(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            Projetos PROJ = DBProjects.GetById(id);
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProjectNo = id == null ? "" : id;
                 ViewBag.UPermissions = UPerm;
                 ViewBag.reportServerURL = _config.ReportServerURL;
+                if (PROJ != null && PROJ.Estado == (EstadoProjecto)2)
+                    ViewBag.projectClosed = true;
+                else
+                {
+                    if (UPerm.Update == true)
+                        ViewBag.projectClosed = false;
+                    else
+                        ViewBag.projectClosed = true;
+                }
+
                 return View();
             }
             else
@@ -291,7 +303,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     if (string.IsNullOrEmpty(TextoFatura) && !string.IsNullOrEmpty(cProject.NºContrato))
-                    { 
+                    {
                         TextoFatura = DBContracts.GetByIdLastVersion(cProject.NºContrato) != null ? DBContracts.GetByIdLastVersion(cProject.NºContrato).TextoFatura : "";
 
                         if (!string.IsNullOrEmpty(TextoFatura))
@@ -903,9 +915,9 @@ namespace Hydra.Such.Portal.Controllers
                 UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
                 if (UPerm != null && UPerm.Update == true)
                 {
-                //string NoMecanografico = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
-                //if (data.ProjectResponsible == NoMecanografico)
-                //{
+                    //string NoMecanografico = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                    //if (data.ProjectResponsible == NoMecanografico)
+                    //{
                     MovimentosDeAprovação MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == data.ProjectNo && x.Tipo == 5).LastOrDefault();
                     if (MovAprovacao != null && MovAprovacao.Estado == 1)
                     {
@@ -1066,6 +1078,171 @@ namespace Hydra.Such.Portal.Controllers
                 //        };
                 //        return Json(result);
                 //    }
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult ReabrirProject([FromBody] ProjectDetailsViewModel data)
+        {
+
+            if (data != null)
+            {
+                ErrorHandler result = new ErrorHandler();
+
+                UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+                if (UPerm != null && UPerm.Update == true)
+                {
+                    string NoMecanografico = DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo;
+                    if (data.ProjectResponsible == NoMecanografico)
+                    {
+                        try
+                        {
+                            //Read NAV Project Key
+                            Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
+                            try
+                            {
+                                TReadNavProj.Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                result = new ErrorHandler()
+                                {
+                                    eReasonCode = 3,
+                                    eMessage = "Ocorreu um erro ao ler o projeto do NAV."
+                                };
+                                return Json(result);
+                            }
+
+                            if (TReadNavProj.IsCompletedSuccessfully)
+                            {
+                                if (TReadNavProj.Result.WSJob == null)
+                                {
+                                    result = new ErrorHandler()
+                                    {
+                                        eReasonCode = 4,
+                                        eMessage = "Erro ao atualizar: O projeto não existe no NAV."
+                                    };
+                                    return Json(result);
+                                }
+                                else
+                                {
+                                    data.Status = (EstadoProjecto)1; //Encomenda
+
+                                    //Update Project on NAV
+                                    Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                                    bool statusL = true;
+                                    try
+                                    {
+                                        TUpdateNavProj.Wait();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        result = new ErrorHandler()
+                                        {
+                                            eReasonCode = 5,
+                                            eMessage = ex.InnerException.Message
+                                        };
+                                        return Json(result);
+                                    }
+
+                                    if (!TUpdateNavProj.IsCompletedSuccessfully && statusL)
+                                    {
+                                        result = new ErrorHandler()
+                                        {
+                                            eReasonCode = 6,
+                                            eMessage = "Ocorreu um erro ao atualizar o projeto no NAV."
+                                        };
+                                        return Json(result);
+                                    }
+                                    else
+                                    {
+                                        Projetos cProject = DBProjects.GetById(data.ProjectNo);
+
+                                        cProject.NºProjeto = data.ProjectNo;
+                                        cProject.Descrição = data.Description;
+                                        cProject.NºCliente = data.ClientNo;
+                                        cProject.Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null;
+                                        cProject.Estado = (EstadoProjecto)1; //Encomenda
+                                        cProject.ChefeProjeto = data.ProjectLeader;
+                                        cProject.ResponsávelProjeto = data.ProjectResponsible;
+                                        cProject.CódObjetoServiço = data.ServiceObjectCode;
+                                        cProject.Faturável = data.Billable;
+                                        cProject.NºContrato = data.ContractNo;
+                                        cProject.NossaProposta = data.OurProposal;
+                                        cProject.NºCompromisso = data.CommitmentCode;
+                                        cProject.CódigoRegião = data.RegionCode;
+                                        cProject.CódigoÁreaFuncional = data.FunctionalAreaCode;
+                                        cProject.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
+                                        cProject.TipoGrupoContabProjeto = data.GroupContabProjectType;
+                                        cProject.PedidoDoCliente = data.ClientRequest;
+                                        cProject.DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null;
+                                        cProject.DescriçãoDetalhada = data.DetailedDescription;
+                                        cProject.CódEndereçoEnvio = data.ShippingAddressCode;
+                                        cProject.EnvioANome = data.ShippingName;
+                                        cProject.EnvioAEndereço = data.ShippingAddress;
+                                        cProject.EnvioACódPostal = data.ShippingPostalCode;
+                                        cProject.EnvioALocalidade = data.ShippingLocality;
+                                        cProject.EnvioAContato = data.ShippingContact;
+                                        cProject.CódTipoProjeto = data.ProjectTypeCode;
+                                        cProject.CategoriaProjeto = data.ProjectCategory;
+                                        cProject.NºContratoOrçamento = data.BudgetContractNo;
+                                        cProject.ProjetoInterno = data.InternalProject;
+                                        cProject.GrupoContabObra = "PROJETO";
+                                        cProject.UtilizadorModificação = User.Identity.Name;
+                                        cProject.DataHoraModificação = DateTime.Now;
+
+                                        if (DBProjects.Update(cProject) != null)
+                                        {
+                                            result = new ErrorHandler()
+                                            {
+                                                eReasonCode = 0,
+                                                eMessage = "Projeto reaberto com sucesso."
+                                            };
+                                            return Json(result);
+                                        }
+                                        else
+                                        {
+                                            result = new ErrorHandler()
+                                            {
+                                                eReasonCode = 7,
+                                                eMessage = "Ocorreu um erro ao atualizar o projeto no eSUCH."
+                                            };
+                                            return Json(result);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            result = new ErrorHandler()
+                            {
+                                eReasonCode = 8,
+                                eMessage = "Ocorreu um erro ao atualizar o projeto."
+                            };
+                            return Json(result);
+                        }
+                    }
+                    else
+                    {
+                        result = new ErrorHandler()
+                        {
+                            eReasonCode = 9,
+                            eMessage = "Não tem permissões para reabrir o Projeto."
+                        };
+                        return Json(result);
+                    }
+                }
+                else
+                {
+                    result = new ErrorHandler()
+                    {
+                        eReasonCode = 9,
+                        eMessage = "Só o Responsável do Projeto é que pode o pode reabrir."
+                    };
+                    return Json(result);
+                }
             }
             return Json(false);
         }
@@ -2529,7 +2706,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     List<ProjectMovementViewModel> projectMovements = GetProjectMovements(projectNo, project.NºCliente, billable);
 
-                    if (project.Estado.HasValue && (project.Estado == EstadoProjecto.Encomenda || 
+                    if (project.Estado.HasValue && (project.Estado == EstadoProjecto.Encomenda ||
                         project.Estado == EstadoProjecto.Terminado))
                     {
                         result.eReasonCode = 1;
@@ -3444,6 +3621,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllCustomers()
+        {
+            try
+            {
+                List<NAVClientsViewModel> allCustomers = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+                return Json(allCustomers);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        [HttpPost]
         public JsonResult ValidateCustomerForBilling([FromBody]  JObject requestParams)
         {
             //TODO: substituir ValidationCliente
@@ -3561,7 +3752,7 @@ namespace Hydra.Such.Portal.Controllers
                         try
                         {
                             WSCreateProjectDiaryLine.WSJobJournalLine wSJobJournalLine = new WSCreateProjectDiaryLine.WSJobJournalLine();
-                            
+
 
                             wSJobJournalLine.Line_No = NumLinha;
                             wSJobJournalLine.Line_NoSpecified = true;
@@ -3720,14 +3911,14 @@ namespace Hydra.Such.Portal.Controllers
                 //FIM
 
 
-                
+
                 data = ctx.MovimentosProjectoAutorizados
                     .Join(ctx.MovimentosDeProjeto,
                         mpa => mpa.NumMovimento,
                         mp => mp.NºLinha,
                         (mpa, mp) => new SPInvoiceListViewModel
-                        {                            
-                            
+                        {
+
                             //ProjectDimension;
                             //##################################    Obter de projetos autorizados (campos editaveis)
                             //CodTermosPagamento = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodTermosPagamento,
@@ -3799,7 +3990,7 @@ namespace Hydra.Such.Portal.Controllers
                             //Billable = mp.Faturável,
                             //UpdateDate = mp.DataHoraModificação,
                             //UpdateUser = mp.UtilizadorModificação,
-                            
+
                         }
                     )
                     .Where(x => x.InvoiceGroup.HasValue &&
@@ -4724,7 +4915,7 @@ namespace Hydra.Such.Portal.Controllers
                 string ClientName = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, NoCliente).Name;
 
                 List<Serviços> AllServices = DBServices.GetAll();
-                List<TiposRefeição>  AllMealTypes = DBMealTypes.GetAll();
+                List<TiposRefeição> AllMealTypes = DBMealTypes.GetAll();
                 List<ClientServicesViewModel> AllServiceGroup = DBClientServices.GetAllServiceGroup(string.Empty, true);
 
                 List<EnumData> AllTiposMovimentos = EnumerablesFixed.ProjectDiaryMovements;
@@ -6584,7 +6775,7 @@ namespace Hydra.Such.Portal.Controllers
                             var quantityCell = row.CreateCell(Col);
                             quantityCell.SetCellType(CellType.Numeric);
                             quantityCell.SetCellValue((double)(item.Quantity != null ? item.Quantity : 0));
-                            
+
                             Col = Col + 1;
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
@@ -6615,7 +6806,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             var totalPriceCell = row.CreateCell(Col);
                             totalPriceCell.SetCellType(CellType.Numeric);
-                            totalPriceCell.SetCellValue((double)(item.TotalPrice != null ? item.TotalPrice: 0));
+                            totalPriceCell.SetCellValue((double)(item.TotalPrice != null ? item.TotalPrice : 0));
 
                             Col = Col + 1;
                         }
@@ -7324,22 +7515,22 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["totalCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.TotalCost??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.TotalCost ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["totalPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.TotalPrice??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.TotalPrice ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["billable"]["hidden"].ToString() == "False")
@@ -7484,7 +7675,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["unitValueToInvoice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitValueToInvoice??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitValueToInvoice ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["serviceClientCode"]["hidden"].ToString() == "False")
@@ -7792,27 +7983,27 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["quantity"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.Quantity??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.Quantity ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["unitPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitPrice ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["totalPrice"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.TotalPrice??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.TotalPrice ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["unitCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.UnitCost ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["totalCost"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue((double)(item.TotalCost??0));
+                            row.CreateCell(Col).SetCellValue((double)(item.TotalCost ?? 0));
                             Col = Col + 1;
                         }
                         if (dp["invoiceToClientNo"]["hidden"].ToString() == "False")
