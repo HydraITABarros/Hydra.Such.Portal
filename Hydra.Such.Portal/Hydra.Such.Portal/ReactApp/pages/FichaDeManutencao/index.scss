@@ -31,6 +31,40 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.scroll-bars {
+  > div {
+    &:first-child {
+      overflow: hidden !important;
+    }
+
+    &:nth-child(2) {
+      height: 100px !important;
+      padding: 0 !important;
+      //transform: translateY(22px);
+
+      div {
+        border-radius: 0px !important;
+        background: transparent !important;
+
+        &:before {
+          content: "";
+          height: 7px;
+          border-radius: 3px;
+          left: 0;
+          right: 0;
+          bottom: 0px;
+          opacity: .2;
+          position: absolute;
+          background: grey;
+          transform: translateY(-5px);
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+
 .form {
   &__row {
     > div > div {
