@@ -7,7 +7,6 @@ import Hidden from '@material-ui/core/Hidden';
 import {withRouter} from 'react-router-dom';
 import functions from '../../helpers/functions';
 import mEquipments from './ModalEquipments';
-import mAssinatura from './ModalSignature';
 import ModalReport from './ModalReport';
 import ModalOptions from './ModalOptions';
 
@@ -22,6 +21,7 @@ const RootTitle = styled(Wrapper)` && {
 	background:  ${props => props.theme.palette.bg.grey};
 	z-index: 10;
 	border-bottom: solid 1px ${props => props.theme.palette.bg.grey};
+	
 }`
 
 const RootDescription = styled(Wrapper)` && {
@@ -30,13 +30,19 @@ const RootDescription = styled(Wrapper)` && {
 	background:  ${props => props.theme.palette.bg.grey};
 	min-height: 190px;
 	z-index: 1;
+	&:after {
+      content: "";
+      position: absolute;
+      top: -38px;
+      left: 0;
+      right: 0;
+      height: 150px;
+      background: ${props => props.theme.palette.bg.grey};
+      z-index: -1;
+    }
 }`
 
 const ModalEquipments = styled(mEquipments)` && {
-	display:  inline-block;
-}`
-
-const ModalAssinatura = styled(mAssinatura)` && {
 	display:  inline-block;
 }`
 
@@ -151,6 +157,11 @@ class HTitle extends Component {
                             <ModalOptions
                                 $equipments={this.props.$equipments}
                                 orderId={this.props.orderId}
+                                onChange={() => {
+                                    if (this.props.onOptionsChange) {
+                                        this.props.onOptionsChange();
+                                    }
+                                }}
                             >
                                 <Button icon={<Icon options/>}
                                         style={{
@@ -187,10 +198,6 @@ class HTitle extends Component {
                                     Relatório de Manutenção
                                 </MenuItem>
 
-                                <MenuItem onClick={() => {
-                                }} className={"disabled"}>
-                                    Relatório de Conformidade
-                                </MenuItem>
                             </Menu>
 
                             <ModalReport
@@ -202,6 +209,11 @@ class HTitle extends Component {
                                 onClose={() => {
                                     //item.open = false;
                                     this.setState({toUpdate: this.state.toUpdate + 1, isModalReportOpen: false});
+                                }}
+                                onChange={() => {
+                                    if (this.props.onReportChange) {
+                                        this.props.onReportChange();
+                                    }
                                 }}>
                             </ModalReport>
 
@@ -316,7 +328,8 @@ class HDescription extends Component {
                                     <Grid item xs={4} sm={3}>
                                         <Text span data-tip={'Rotina'}>Rotina</Text>
                                     </Grid>
-                                    <Grid item xs={8} sm={9}>
+                                    <Grid item xs={8} sm={9}
+                                          className={this.state.equipments.filter(e => e.estadoFinal > 0).length > 0 ? "disabled" : ""}>
                                         <Menu
                                             containerStyle={{marginRight: '15px', lineHeight: 0}}
                                             action={
