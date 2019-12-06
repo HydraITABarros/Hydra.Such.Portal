@@ -19,7 +19,8 @@ const TextCol = styled(Text)`&&{
 class Emm extends Component {
 
     state = {
-        emms: []
+        emms: [],
+        online: true
     }
 
     constructor(props) {
@@ -32,6 +33,7 @@ class Emm extends Component {
         }
 
         this.validator = new SimpleReactValidator();
+        this.state.online = navigator.onLine;
     }
 
     componentDidMount() {
@@ -39,10 +41,24 @@ class Emm extends Component {
             this.state.emms = fromEquipmentsPlanToEmms(this.props.$equipments.value, true);
             this.state.emms.push({selected: this.props.$equipments.value, emm: null});
         }
+
+        window.addEventListener('online', () => {
+            setTimeout(() => {
+                this.setState({online: true});
+            }, 0);
+        });
+
+        window.addEventListener('offline', () => {
+            setTimeout(() => {
+                this.setState({online: false});
+            }, 0);
+        });
+        this.setState({online: navigator.onLine});
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
 
+        this.state.online = navigator.onLine;
         if (prevProps.$equipments != this.props.$equipments && !!this.props.$equipments) {
             this.state.emms = fromEquipmentsPlanToEmms(this.props.$equipments.value, true);
             this.state.emms.push({selected: this.props.$equipments.value, emm: null});
@@ -79,6 +95,9 @@ class Emm extends Component {
             this.state.emms.push({selected: this.props.$equipments.value, emm: null});
 
             this.setState({}, () => {
+                if (this.props.onChange) {
+                    this.props.onChange();
+                }
             });
         }).catch((err) => {
             emm.serialError = true;
@@ -88,7 +107,6 @@ class Emm extends Component {
 
 
     removeEmm(emm) {
-
         emm.selected.map((equipment, i) => {
 
             return equipment.emms = equipment.emms.filter((_emm, i) => {
@@ -107,8 +125,10 @@ class Emm extends Component {
 
         this.state.emms = emms;
 
-        console.log("IMPORTANT", this.props.$equipments.value);
         this.setState({}, () => {
+            if (this.props.onChange) {
+                this.props.onChange();
+            }
         });
     };
 
@@ -119,13 +139,21 @@ class Emm extends Component {
                 <Wrapper padding={'0 0 16px'}>
 
                     {this.state.emms.map((emm, i) => {
+                        let disabled = false;
+                        if ((this.state.emms.length - 1 != i)) {
+                            disabled = emm.selected.filter((item) => {
+                                return item.estadoFinal > 0;
+                            }).length > 0;
+                        }
                         return (
-                            <Grid container spacing={1} key={i}>
+                            <Grid container spacing={1} key={i}
+                                  className={(this.state.emms.length - 1 == i && !this.state.online) ? "content-disabled" : ""}>
                                 <Grid item xs={10} md={2}>
                                     <div>
                                         <Select
                                             multiple
-                                            value={emm.selected}
+                                            value={(this.state.emms.length - 1 != i) ? emm.selected : emm.selected.filter((e) => e.estadoFinal == 0)}
+                                            disabled={disabled}
                                             onChange={(e) => {
                                                 emm.selected = e.target.value;
                                                 this.setState({});
@@ -136,7 +164,7 @@ class Emm extends Component {
                                             {this.props.$equipments && this.props.$equipments.value.map((o, j) => {
                                                 return <MenuItem
                                                     key={j}
-                                                    disabled={!!emm.emm}
+                                                    disabled={!!emm.emm || o.estadoFinal > 0}
                                                     value={o}>{"#" + (j + 1) + " " + o.numEquipamento}</MenuItem>
                                             })}
                                         </Select>
@@ -149,7 +177,7 @@ class Emm extends Component {
                                     <div className="input-width-button">
                                         <Input
                                             key={emm.emm && emm.emm.numSerie}
-                                            disabled={!!emm.emm}
+                                            disabled={!!emm.emm || disabled}
                                             error={emm.serialError || !!this.validator.message('serial_' + i, emm.selected, 'required')}
                                             className={'input-width-button__input'}
                                             defaultValue={emm.emm && emm.emm.numSerie}
@@ -163,8 +191,11 @@ class Emm extends Component {
                                         {!emm.emm &&
                                         <Button
                                             round
-                                            className={'input-width-button__button'}
+                                            className={'input-width-button__button' + (disabled ? " disabled" : "")}
                                             onClick={(e) => {
+                                                if (disabled) {
+                                                    return;
+                                                }
                                                 this.findEmmBySerial(emm);
                                             }}
                                         ><Icon add/></Button>
@@ -172,8 +203,11 @@ class Emm extends Component {
                                         {!!emm.emm &&
                                         <Button
                                             round
-                                            className={'input-width-button__button'}
+                                            className={'input-width-button__button' + (disabled ? " disabled" : "")}
                                             onClick={(e) => {
+                                                if (disabled) {
+                                                    return;
+                                                }
                                                 this.removeEmm(emm);
                                             }}
                                         ><Icon remove/></Button>
