@@ -20,7 +20,7 @@ class Comments extends Component {
         equipments: [],
         comments: [],
         open: false
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -59,7 +59,7 @@ class Comments extends Component {
             var alreadyCommented = this.state.comments.filter((_i) => {
                 return _i.equipment == item;
             });
-            
+
             if (alreadyCommented.length == 0) {
                 return options.push(val);
             }
@@ -108,9 +108,11 @@ class Comments extends Component {
                                                     this.setState({comments: this.state.comments});
                                                 }}
                                                 placeholder="teste"
+                                                disabled={item.equipment && item.equipment.estadoFinal > 0}
                                                 value={item.equipment ? item.equipment : ''}>
                                                 {options.map((o, j) => {
-                                                    return <MenuItem key={j} disabled={o.disabled}
+                                                    return <MenuItem key={j}
+                                                                     disabled={o.disabled || o.value.estadoFinal > 0}
                                                                      value={o.value}>{o.label}</MenuItem>
                                                 })}
                                             </Select>
@@ -119,46 +121,47 @@ class Comments extends Component {
                                             <Input
                                                 key={"_" + (new Date().getTime())}
                                                 multiline rows={3}
-                                                   disabled={item.equipment == null}
-                                                   $value={item.equipment ? item.equipment[this.props.category][this.props.itemIndex].$observacoes : null}
-                                                   onBlur={() => {
-                                                       this.setState();
-                                                   }}
-                                                   onChange={() => {
-                                                       this.setState();
-                                                   }}></Input>
+                                                disabled={item.equipment == null || item.equipment.estadoFinal > 0}
+                                                $value={item.equipment ? item.equipment[this.props.category][this.props.itemIndex].$observacoes : null}
+                                                onBlur={() => {
+                                                    this.setState();
+                                                }}
+                                                onChange={() => {
+                                                    this.setState();
+                                                }}></Input>
                                         </Grid>
                                         <Grid item xs={12} md={1}>
-                                            {(i +1 ) == this.state.equipments.length ? <div></div> : i +1 == this.state.comments.length ?
-                                                <Button round
-                                                        disabled={
-                                                            item.equipment == null
-                                                        }
-                                                        onClick={() => {
-                                                            if (this.state.comments.length < this.state.equipments.length) {
-                                                                this.state.comments.push({equipment: null});
+                                            {(i + 1) == this.state.equipments.length ?
+                                                <div></div> : i + 1 == this.state.comments.length ?
+                                                    <Button round
+                                                            disabled={
+                                                                item.equipment == null
                                                             }
-                                                            this.setState({});
-                                                        }} ><Icon add/></Button>
-                                                :
-                                            <Button round
-                                                    disabled={
-                                                        item.equipment == null
-                                                    }
-                                                    onClick={() => {
-                                                        item.equipment[this.props.category][this.props.itemIndex].$observacoes.value = "";
-                                                        this.state.comments.splice(i, 1);
-                                                        if (this.state.comments.length == 0) {
-                                                            this.state.comments.push({equipment: null});
-                                                        }
-                                                        
-                                                        this.setState({}, ()=>{
+                                                            onClick={() => {
+                                                                if (this.state.comments.length < this.state.equipments.length) {
+                                                                    this.state.comments.push({equipment: null});
+                                                                }
+                                                                this.setState({});
+                                                            }}><Icon add/></Button>
+                                                    :
+                                                    <Button round
+                                                            disabled={
+                                                                item.equipment == null || item.equipment.estadoFinal > 0
+                                                            }
+                                                            onClick={() => {
+                                                                item.equipment[this.props.category][this.props.itemIndex].$observacoes.value = "";
+                                                                this.state.comments.splice(i, 1);
+                                                                if (this.state.comments.length == 0) {
+                                                                    this.state.comments.push({equipment: null});
+                                                                }
 
-                                                            console.log('IMP', this.state.comments);
-                                                        });
-                                                        
-                                                        
-                                                    }}><Icon remove/></Button>
+                                                                this.setState({}, () => {
+
+                                                                    console.log('IMP', this.state.comments);
+                                                                });
+
+
+                                                            }}><Icon remove/></Button>
                                             }
                                             <div className="p-t-40"></div>
 
