@@ -9,6 +9,7 @@ import {withRouter} from 'react-router-dom';
 import classnames from 'classnames';
 import Header from './header';
 import HeaderSelection from './headerSelection';
+import planStorageService from '../FichaDeManutencao/storageService';
 import './index.scss';
 
 axios.defaults.headers.post['Accept'] = 'application/json';
@@ -34,6 +35,7 @@ var headerScrollTop = 0;
 class OrdensDeManutencaoLine extends Component {
 
     state = {
+        planSyncing: false,
         orderId: "",
         isLoading: true,
         ordersCountsLines: {
@@ -64,6 +66,11 @@ class OrdensDeManutencaoLine extends Component {
         this.handleFetchEquipementsRequest = this.handleFetchEquipementsRequest.bind(this);
         this.state.orderId = this.props.match.params.orderid;
         this.addTechnical = this.addTechnical.bind(this);
+        planStorageService.onSync = () => {
+            this.state.planSyncing = true;
+            this.setState({});
+        };
+        planStorageService.init();
     }
 
     componentDidMount() {
