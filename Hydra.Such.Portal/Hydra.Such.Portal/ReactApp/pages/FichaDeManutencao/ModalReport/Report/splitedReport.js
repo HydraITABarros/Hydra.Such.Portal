@@ -85,11 +85,12 @@ class SplitedReport extends Component {
         this.state.refsQuantity = props.refsQuantity;
         this.state.refsComments = props.refsComments;
         this.state.refsFooter = props.refsFooter;
+        this.splitReport = this.splitReport.bind(this);
     }
 
 
     componentDidMount() {
-
+        this.splitReport();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -101,20 +102,18 @@ class SplitedReport extends Component {
         state.refsComments = nextProps.refsComments;
         state.refsFooter = nextProps.refsFooter;
         this.setState(state);
+        this.splitReport();
     }
 
     componentWillUnmount() {
     }
 
-    render() {
-        var date = this.props.date;
+    splitReport() {
 
-        var maintenanceResponsible = (this.props.order && this.props.order.maintenanceResponsibleObj && this.props.order.maintenanceResponsibleObj.nome);
-        var responsibleEmployee = (this.props.order && this.props.order.responsibleEmployeeObj && this.props.order.responsibleEmployeeObj.nome);
-
-        let report = [
+        this.state.report = [
             {header: [], maintenance: [], quality: [], quantity: [], comments: [], footer: []}
         ];
+        let report = this.state.report;
         let pageHeight = 1123 - (151 + 73 + 45);
         let tolerance = 20;
         let currentPage = 1;
@@ -124,6 +123,7 @@ class SplitedReport extends Component {
             if (!el) {
                 return;
             }
+
             var elHeight = el.clientHeight;
             if (((currentHeight + elHeight + tolerance) > (pageHeight * currentPage))) {
                 currentPage++;
@@ -134,7 +134,6 @@ class SplitedReport extends Component {
             report[currentPage - 1][partial].push(
                 <div key={i} dangerouslySetInnerHTML={{__html: ReactDOM.findDOMNode(el).cloneNode(true).innerHTML}}/>
             );
-
         };
 
         this.state.refsHeader.map((el, i) => {
@@ -160,6 +159,18 @@ class SplitedReport extends Component {
             this.props.onReportSplit(report.length);
         }
 
+        this.state.report = report;
+        this.setState({});
+    }
+
+    render() {
+        var date = this.props.date;
+
+        var maintenanceResponsible = (this.props.order && this.props.order.maintenanceResponsibleObj && this.props.order.maintenanceResponsibleObj.nome);
+        var responsibleEmployee = (this.props.order && this.props.order.responsibleEmployeeObj && this.props.order.responsibleEmployeeObj.nome);
+
+        let report = this.state.report;
+        
         return (
             <div className="report__wrapper">
                 <div className="report" id={"report"}>
