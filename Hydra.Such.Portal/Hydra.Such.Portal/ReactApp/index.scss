@@ -113,6 +113,24 @@ $section-value in $colors {
   }
 }
 
+.disabled {
+  cursor: not-allowed !important;
+  opacity: 0.4;
+  position: relative;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: .5;
+    z-index: 1000;
+    cursor: not-allowed;
+  }
+}
+
 .ws-nowrap {
   white-space: nowrap;
 }
