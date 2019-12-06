@@ -25,7 +25,9 @@ class Signature extends Component {
         technicalSignaturePadPng: null,
         sieSignaturePadOpen: false,
         sieSignaturePadPng: null,
-        selectedEquipments: []
+        selectedEquipments: [],
+        assinaturaSieIgualCliente: false,
+        assinaturaClienteManual: false
     }
 
     constructor(props) {
@@ -35,6 +37,23 @@ class Signature extends Component {
         this.state.clientSignaturePadPng = this.state.selectedEquipments && this.state.selectedEquipments[0] ? this.state.selectedEquipments[0].assinaturaCliente : null;
         this.state.technicalSignaturePadPng = this.state.selectedEquipments && this.state.selectedEquipments[0] ? this.state.selectedEquipments[0].assinaturaTecnico : null;
         this.state.sieSignaturePadPng = this.state.selectedEquipments && this.state.selectedEquipments[0] ? this.state.selectedEquipments[0].assinaturaSie : null;
+
+        let assinaturaSieIgualClienteCount = 0;
+        this.state.selectedEquipments.map((s) => {
+            if (s.$assinaturaSieIgualCliente.value == true) {
+                assinaturaSieIgualClienteCount++;
+            }
+        });
+
+        let assinaturaClienteManualCount = 0;
+        this.state.selectedEquipments.map((s) => {
+            if (s.$assinaturaClienteManual.value == true) {
+                assinaturaClienteManualCount++;
+            }
+        });
+
+        this.state.assinaturaSieIgualCliente = this.state.selectedEquipments.length == assinaturaSieIgualClienteCount;
+        this.state.assinaturaClienteManual = this.state.selectedEquipments.length == assinaturaClienteManualCount;
     }
 
     render() {
@@ -52,7 +71,7 @@ class Signature extends Component {
                         <br/>
                         <div>
                             <Text b>Técnico</Text>
-                            <Text span className="pull-right"> <small>Nº Mecanográfico: 215411</small></Text>
+                            {/*<Text span className="pull-right"> <small>Nº Mecanográfico: 215411</small></Text>*/}
                             <div className="clearfix"></div>
                         </div>
                         <Spacer height={"10px"}/>
@@ -66,8 +85,9 @@ class Signature extends Component {
                                 });
                             }}></Button>
                             {this.state.technicalSignaturePadPng &&
-                            <Wrapper inline padding="0 10px"><Icon approved
-                                                                   style={{color: _theme.palette.alert.good}}/></Wrapper>}
+                            <Wrapper inline padding="0 10px">
+                                <Icon approved style={{color: _theme.palette.alert.good}}/>
+                            </Wrapper>}
                         </div>
                         <div className="p-b-40"></div>
                         <div>
@@ -82,43 +102,92 @@ class Signature extends Component {
                                             if (this.state.sieSignaturePadPng) {
                                                 this.sieSignaturePad.fromDataURL(this.state.sieSignaturePadPng);
                                             }
+                                        }, () => {
+                                            this.props.onChange();
                                         });
                                     }}
                             ></Button>
-                            {this.state.sieSignaturePadPng && <Wrapper inline padding="0 10px"><Icon approved
-                                                                                                     style={{color: _theme.palette.alert.good}}/></Wrapper>}
+                            {this.state.sieSignaturePadPng &&
+                            <Wrapper inline padding="0 10px">
+                                <Icon approved style={{color: _theme.palette.alert.good}}/>
+                            </Wrapper>
+                            }
                         </div>
                         <Spacer height={"10px"}/>
-                        <CheckBox/> <Text span>Assinatura é igual à do cliente</Text>
+                        <CheckBox
+                            checked={this.state.assinaturaSieIgualCliente}
+                            id="sieisclient"
+                            onChange={(e) => {
+                                let value = e.target.checked;
+                                if (this.props.$equipments) {
+                                    this.props.$equipments.value.map((s) => {
+                                        s.$assinaturaSieIgualCliente.value = value;
+                                        if (value) {
+                                            s.$assinaturaClienteManual.value = false;
+                                        }
+                                    });
+                                }
+
+                                this.setState({
+                                    assinaturaSieIgualCliente: value,
+                                    assinaturaClienteManual: false
+                                }, () => {
+                                    this.props.onChange();
+                                });
+                            }}/>
+                        <label htmlFor="sieisclient" className="pointer">
+                            <Text span>Assinatura é igual à do cliente</Text>
+                        </label>
 
                     </DialogContent>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6} xl={5}
-                      className={(this.props.$equipments && this.props.$equipments.value.length < 1) ? "content-disabled" : ""}>
+                      className={(this.props.$equipments && this.props.$equipments.value.length < 1) || (this.state.assinaturaSieIgualCliente) ? "content-disabled" : ""}>
                     <DialogContent>
                         <Text h2>2<sup>a</sup> Fase</Text>
                         <br/>
-                        <div>
-                            <Text b>Cliente</Text>
+                        <div className={(this.state.assinaturaClienteManual) ? "content-disabled" : ""}>
+                            <div>
+                                <Text b>Cliente</Text>
+                            </div>
+                            <Spacer height={"10px"}/>
+                            <div style={{position: 'relative'}}>
+                                <Button icon={<Icon signature/>}
+                                        onClick={() => {
+                                            this.setState({clientSignaturePadOpen: true}, () => {
+                                                if (this.state.clientSignaturePadPng) {
+                                                    this.clientSignaturePad.fromDataURL(this.state.clientSignaturePadPng);
+                                                }
+                                            }, () => {
+                                                this.props.onChange();
+                                            });
+                                        }}
+                                ></Button>
+                                {this.state.clientSignaturePadPng && <Wrapper inline padding="0 10px">
+                                    <Icon approved style={{color: _theme.palette.alert.good}}/></Wrapper>}
+                            </div>
                         </div>
                         <Spacer height={"10px"}/>
-                        <div style={{position: 'relative'}}>
-                            <Button icon={<Icon signature/>}
-                                    onClick={() => {
-                                        this.setState({clientSignaturePadOpen: true}, () => {
-                                            if (this.state.clientSignaturePadPng) {
-                                                this.clientSignaturePad.fromDataURL(this.state.clientSignaturePadPng);
-                                            }
-                                        });
-                                    }}
-                            ></Button>
-                            {this.state.clientSignaturePadPng && <Wrapper inline padding="0 10px"><Icon approved
-                                                                                                        style={{color: _theme.palette.alert.good}}/></Wrapper>}
+                        <CheckBox
+                            checked={this.state.assinaturaClienteManual}
+                            id="assinaturamanual"
+                            onChange={(e) => {
+                                let value = e.target.checked;
+                                if (this.props.$equipments) {
+                                    this.props.$equipments.value.map((s) => {
+                                        s.$assinaturaClienteManual.value = value;
+                                    });
+                                }
 
-                        </div>
-                        <Spacer height={"10px"}/>
-                        <CheckBox id="assinaturamanual"/> <label htmlFor="assinaturamanual" className="pointer"><Text
-                        span>Assinatura manual</Text></label>
+                                this.setState({assinaturaClienteManual: value}, () => {
+                                    this.props.onChange();
+                                });
+
+                            }}
+                        />
+                        <label htmlFor="assinaturamanual" className="pointer">
+                            <Text span>Assinatura manual</Text>
+                        </label>
                     </DialogContent>
                 </Grid>
                 {this.state.clientSignaturePadOpen &&
@@ -137,12 +206,19 @@ class Signature extends Component {
                                 color="primary">Apagar</Button>
                         <Button primary onClick={() => {
                             var image = this.clientSignaturePad.toDataURL();
+                            if (this.clientSignaturePad.isEmpty()) {
+                                image = "";
+                            }
                             if (this.props.$equipments) {
                                 this.props.$equipments.value.map((s) => {
                                     s.$assinaturaCliente.value = image;
                                 });
                             }
-                            this.setState({clientSignaturePadPng: image, clientSignaturePadOpen: false});
+                            this.setState({clientSignaturePadPng: image, clientSignaturePadOpen: false}, () => {
+                                if (this.props.onChange) {
+                                    this.props.onChange();
+                                }
+                            });
                         }} color="primary">Guardar</Button>
                     </div>
                 </div>
@@ -162,12 +238,19 @@ class Signature extends Component {
                         <Button default onClick={() => this.sieSignaturePad.clear()} color="primary">Apagar</Button>
                         <Button primary onClick={() => {
                             var image = this.sieSignaturePad.toDataURL();
+                            if (this.sieSignaturePad.isEmpty()) {
+                                image = "";
+                            }
                             if (this.props.$equipments) {
                                 this.props.$equipments.value.map((s) => {
                                     s.$assinaturaSie.value = image;
                                 });
                             }
-                            this.setState({sieSignaturePadPng: image, sieSignaturePadOpen: false});
+                            this.setState({sieSignaturePadPng: image, sieSignaturePadOpen: false}, () => {
+                                if (this.props.onChange) {
+                                    this.props.onChange();
+                                }
+                            });
                         }} color="primary">Guardar</Button>
                     </div>
                 </div>
@@ -191,13 +274,20 @@ class Signature extends Component {
                                 color="primary">Apagar</Button>
                         <Button primary onClick={() => {
                             var image = this.technicalSignaturePad.toDataURL();
+                            if (this.technicalSignaturePad.isEmpty()) {
+                                image = "";
+                            }
                             if (this.props.$equipments) {
                                 this.props.$equipments.value.map((s) => {
                                     s.$assinaturaTecnico.value = image;
                                     s.$utilizadorAssinaturaTecnico.value = this.props.$currentUser.value;
                                 });
                             }
-                            this.setState({technicalSignaturePadPng: image, technicalSignaturePadOpen: false});
+                            this.setState({technicalSignaturePadPng: image, technicalSignaturePadOpen: false}, () => {
+                                if (this.props.onChange) {
+                                    this.props.onChange();
+                                }
+                            });
                         }} color="primary">Guardar</Button>
                     </div>
                 </div>
