@@ -239,7 +239,14 @@ class ModalReport extends Component {
                                         this.state.totalPages = totalPages;
                                     }}
                                 /> :
-                                <Signature $equipments={this.props.$equipments} $currentUser={this.props.$currentUser}/>
+                                <Signature $equipments={this.props.$equipments}
+                                           $currentUser={this.props.$currentUser}
+                                           onChange={() => {
+                                               if (this.props.onChange) {
+                                                   this.props.onChange();
+                                               }
+                                           }}
+                                />
                             }
 
                         </Grid>
@@ -264,8 +271,15 @@ class ModalReport extends Component {
                         <Button link onClick={() => this.setState({reportMode: true})}
                                 className={"text-decoration-none p-r-25"} icon={<Icon voltar/>} link>Voltar</Button>
                         }
-                        <Button onClick={() => this.setState({open: false})} primary
-                                color="primary" className={'m-l-15'}>Fechar</Button>
+                        <Button
+                            onClick={() => {
+                                this.setState({open: false, reportMode: true});
+                                if (this.props.onClose) {
+                                    this.props.onClose();
+                                }
+                            }}
+                            primary
+                            color="primary" className={'m-l-15'}>Fechar</Button>
                     </DialogActions>
                 </div>
             } open={this.state.open}/>
