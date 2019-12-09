@@ -2626,24 +2626,41 @@
                             this.$.page_databound_ajax.generateRequest();
                         }
                         else {
-                            if (e.model.item.dataDespesaTexto == null || e.model.item.dataDespesaTexto == "") {
-                                this._showErrorMessage('É obrigatório preencher o campo Data Viagem.');
-                                this.$.page_databound_ajax.generateRequest();
+                            if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
+                                if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
+                                    if (e.model.item.dataDespesaTexto == null || e.model.item.dataDespesaTexto == "") {
+                                        this._showErrorMessage('É obrigatório preencher o campo Data Viagem.');
+                                        this.$.page_databound_ajax.generateRequest();
+                                    }
+                                    else {
+                                        this.$.page_updatelinhapercurso_ajax.body = JSON.stringify({
+                                            noFolhaHoras: this.$.folhaDeHorasNo.value,
+                                            noLinha: e.model.item.noLinha,
+                                            codOrigem: e.model.item.codOrigem,
+                                            codDestino: e.model.item.codDestino,
+                                            dataDespesa: e.model.item.dataDespesaTexto,
+                                            observacao: e.model.item.observacao,
+                                            distancia: e.model.item.distancia,
+                                            custoUnitario: e.model.item.custoUnitario,
+                                            noProjeto: e.model.item.noProjeto,
+
+                                            codTipoCusto: this.$.codigoTipoKms.value,
+                                            funcionario: this.$.empregadoNo.value,
+                                            codRegiao: this.$.codigoRegiao.value,
+                                            codArea: this.$.codigoAreaFuncional.value,
+                                            codCresp: this.$.codigoCentroResponsabilidade.value,
+                                            matricula: this.$.matricula.value,
+                                        });
+                                        this.$.page_updatelinhapercurso_ajax.generateRequest();
+                                        this.$.tabPercurso.clearCache();
+                                    }
+                                }
+                                else {
+                                    this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
+                                }
                             }
                             else {
-                                this.$.page_updatelinhapercurso_ajax.body = JSON.stringify({
-                                    noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                    noLinha: e.model.item.noLinha,
-                                    codOrigem: e.model.item.codOrigem,
-                                    codDestino: e.model.item.codDestino,
-                                    dataDespesa: e.model.item.dataDespesaTexto,
-                                    observacao: e.model.item.observacao,
-                                    distancia: e.model.item.distancia,
-                                    custoUnitario: e.model.item.custoUnitario,
-                                    noProjeto: e.model.item.noProjeto
-                                });
-                                this.$.page_updatelinhapercurso_ajax.generateRequest();
-                                this.$.tabPercurso.clearCache();
+                                this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
                             }
                         }
                     }

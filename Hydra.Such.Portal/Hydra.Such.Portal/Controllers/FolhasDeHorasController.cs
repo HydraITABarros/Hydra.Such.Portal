@@ -1315,6 +1315,14 @@ namespace Hydra.Such.Portal.Controllers
                 string CodTipoCusto = data.CodTipoCusto;
                 string DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", CodTipoCusto);
                 decimal CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", CodTipoCusto);
+
+                decimal DistanciaPrevista = 0;
+
+                if (!string.IsNullOrEmpty(data.CodOrigem) && !string.IsNullOrEmpty(data.CodDestino))
+                    DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                else
+                    DistanciaPrevista = 0;
+
                 if (!string.IsNullOrEmpty(data.NoProjeto))
                 {
                     NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault();
@@ -1342,25 +1350,23 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.TipoCusto = 1; //PERCURSO
                     Percurso1.CodTipoCusto = CodTipoCusto;
                     Percurso1.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
-                    Percurso1.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CodOrigem = data.CodOrigem;
                     Percurso1.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso1.CodDestino = data.CodDestino;
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso1.Distancia = DistanciaPrevista;
+                    Percurso1.DistanciaPrevista = DistanciaPrevista;
                     Percurso1.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    if (Percurso1.Distancia.HasValue && Percurso1.Distancia == 0)
-                        Percurso1.CustoTotal = 0;
-                    else
-                        Percurso1.CustoTotal = Percurso1.Distancia * CustoUnitario;
+                    Percurso1.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso1.Funcionario = data.Funcionario;
                     Percurso1.CodRegiao = data.CodRegiao;
                     Percurso1.CodArea = data.CodArea;
                     Percurso1.CodCresp = data.CodCresp;
+                    //Percurso1.PrecoUnitario =
+                    //Percurso1.PrecoVenda =
                     Percurso1.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
@@ -1379,25 +1385,23 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.TipoCusto = 1; //PERCURSO
                     Percurso2.CodTipoCusto = CodTipoCusto;
                     Percurso2.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
-                    Percurso2.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso2.CodOrigem = data.CodDestino;
                     Percurso2.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso2.CodDestino = data.CodOrigem;
                     Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso2.DataDespesa = data.DataDespesa;
                     Percurso2.Observacao = data.Observacao;
-                    Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso2.Distancia = DistanciaPrevista;
+                    Percurso2.DistanciaPrevista = DistanciaPrevista;
                     Percurso2.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    if (Percurso2.Distancia.HasValue && Percurso2.Distancia == 0)
-                        Percurso2.CustoTotal = 0;
-                    else
-                        Percurso2.CustoTotal = Percurso2.Distancia * CustoUnitario;
+                    Percurso2.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso2.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso2.Funcionario = data.Funcionario;
                     Percurso2.CodRegiao = data.CodRegiao;
                     Percurso2.CodArea = data.CodArea;
                     Percurso2.CodCresp = data.CodCresp;
+                    //Percurso2.PrecoUnitario =
+                    //Percurso2.PrecoVenda =
                     Percurso2.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso2.UtilizadorCriacao = User.Identity.Name;
                     Percurso2.DataHoraCriacao = DateTime.Now;
@@ -1405,7 +1409,6 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.DataHoraModificacao = DateTime.Now;
                     Percurso2.NoProjeto = data.NoProjeto;
                     Percurso2.ProjetoDescricao = ProjetoDescricao;
-
 
                     var dbCreateResult2 = DBLinhasFolhaHoras.CreatePercurso(Percurso2);
 
@@ -1423,25 +1426,23 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.TipoCusto = 1; //PERCURSO
                     Percurso1.CodTipoCusto = CodTipoCusto;
                     Percurso1.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
-                    Percurso1.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                     Percurso1.CodOrigem = data.CodOrigem;
                     Percurso1.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso1.CodDestino = data.CodDestino;
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso1.Distancia = DistanciaPrevista;
+                    Percurso1.DistanciaPrevista = DistanciaPrevista;
                     Percurso1.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    if (Percurso1.Distancia.HasValue && Percurso1.Distancia == 0)
-                        Percurso1.CustoTotal = 0;
-                    else
-                        Percurso1.CustoTotal = Percurso1.Distancia * CustoUnitario;
+                    Percurso1.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso1.Funcionario = data.Funcionario;
                     Percurso1.CodRegiao = data.CodRegiao;
                     Percurso1.CodArea = data.CodArea;
                     Percurso1.CodCresp = data.CodCresp;
+                    //Percurso1.PrecoUnitario =
+                    //Percurso1.PrecoVenda =
                     Percurso1.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
@@ -1449,7 +1450,6 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DataHoraModificacao = DateTime.Now;
                     Percurso1.NoProjeto = data.NoProjeto;
                     Percurso1.ProjetoDescricao = ProjetoDescricao;
-
 
                     var dbCreateResult1 = DBLinhasFolhaHoras.CreatePercurso(Percurso1);
 
@@ -1471,48 +1471,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
-
-        //[HttpPost]
-        //public JsonResult UpdatePercurso([FromBody] FolhaDeHorasViewModel data)
-        //{
-        //    bool result = false;
-        //    try
-        //    {
-        //        if (data.FolhaDeHorasPercurso != null)
-        //        {
-        //            data.FolhaDeHorasPercurso.ForEach(x =>
-        //            {
-        //                DBLinhasFolhaHoras.UpdatePercurso(new LinhasFolhaHoras()
-        //                {
-        //                    NoFolhaHoras = x.NoFolhaHoras,
-        //                    NoLinha = x.NoLinha,
-        //                    TipoCusto = 1, //PERCURSO
-        //                    CodOrigem = x.CodOrigem,
-        //                    DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(x.CodOrigem),
-        //                    CodDestino = x.CodDestino,
-        //                    DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(x.CodDestino),
-        //                    DataDespesa = x.DataDespesa,
-        //                    Observacao = x.Observacao,
-        //                    Distancia = x.Distancia,
-        //                    DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(x.CodOrigem, x.CodDestino),
-        //                    CustoUnitario = x.CustoUnitario,
-        //                    CustoTotal = x.Distancia * x.CustoUnitario,
-        //                    UtilizadorCriacao = x.UtilizadorCriacao,
-        //                    DataHoraCriacao = x.DataHoraCriacao,
-        //                    UtilizadorModificacao = User.Identity.Name,
-        //                    DataHoraModificacao = DateTime.Now
-        //                });
-        //            });
-        //        }
-
-        //        result = true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //log
-        //    }
-        //    return Json(result);
-        //}
 
         [HttpPost]
         //Atualiza um percurso
@@ -1540,6 +1498,19 @@ namespace Hydra.Such.Portal.Controllers
                     string CodTipoCusto = data.CodTipoCusto;
                     string DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", CodTipoCusto);
                     decimal CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", CodTipoCusto);
+                    decimal DistanciaEfetuada = 0;
+                    decimal DistanciaPrevista = 0;
+
+                    if (data.Distancia.HasValue)
+                        DistanciaEfetuada = (decimal)data.Distancia;
+                    else
+                        DistanciaEfetuada = 0;
+
+                    if (!string.IsNullOrEmpty(data.CodOrigem) && !string.IsNullOrEmpty(data.CodDestino))
+                        DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    else
+                        DistanciaPrevista = 0;
+
                     if (!string.IsNullOrEmpty(data.NoProjeto))
                     {
                         NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault();
@@ -1560,27 +1531,43 @@ namespace Hydra.Such.Portal.Controllers
 
                     LinhasFolhaHoras Percurso = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
 
+                    Percurso.NoFolhaHoras = Percurso.NoFolhaHoras;
+                    Percurso.NoLinha = Percurso.NoLinha;
+                    Percurso.TipoCusto = 1; //PERCURSO
+                    Percurso.CodTipoCusto = CodTipoCusto;
+                    Percurso.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
                     Percurso.CodOrigem = data.CodOrigem;
                     Percurso.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso.CodDestino = data.CodDestino;
                     Percurso.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
-                    Percurso.CodTipoCusto = CodTipoCusto;
-                    Percurso.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
                     Percurso.DataDespesa = data.DataDespesa;
                     Percurso.Observacao = data.Observacao;
-                    Percurso.Distancia = data.Distancia;
-                    Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso.CustoUnitario = CustoUnitario; // data.CustoUnitario;
-
-                    if (Percurso.Distancia.HasValue && Percurso.Distancia == 0)
+                    Percurso.Distancia = DistanciaEfetuada;
+                    Percurso.DistanciaPrevista = DistanciaPrevista;
+                    Percurso.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
+                    if (DistanciaEfetuada == 0)
                         Percurso.CustoTotal = 0;
                     else
-                        Percurso.CustoTotal = Percurso.DistanciaPrevista > 0 ? Percurso.DistanciaPrevista * CustoUnitario : data.Distancia * CustoUnitario;
-
+                    {
+                        if (DistanciaPrevista == 0)
+                            Percurso.CustoTotal = DistanciaEfetuada * CustoUnitario;
+                        else
+                            Percurso.CustoTotal = DistanciaPrevista * CustoUnitario;
+                    }
+                    Percurso.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
+                    Percurso.Funcionario = data.Funcionario;
+                    Percurso.CodRegiao = data.CodRegiao;
+                    Percurso.CodArea = data.CodArea;
+                    Percurso.CodCresp = data.CodCresp;
+                    Percurso.Matricula = data.Matricula == "" ? null : data.Matricula;
+                    Percurso.UtilizadorCriacao = Percurso.UtilizadorCriacao;
+                    Percurso.DataHoraCriacao = Percurso.DataHoraCriacao;
                     Percurso.UtilizadorModificacao = User.Identity.Name;
                     Percurso.DataHoraModificacao = DateTime.Now;
                     Percurso.NoProjeto = data.NoProjeto;
                     Percurso.ProjetoDescricao = ProjetoDescricao;
+                    //Percurso.PrecoUnitario =
+                    //Percurso.PrecoVenda =
 
                     DBLinhasFolhaHoras.UpdatePercurso(Percurso);
                 }
@@ -1617,7 +1604,6 @@ namespace Hydra.Such.Portal.Controllers
                 PercursoCopia.TipoCusto = PercursoOriginal.TipoCusto;
                 PercursoCopia.CodTipoCusto = PercursoOriginal.CodTipoCusto;
                 PercursoCopia.DescricaoTipoCusto = PercursoOriginal.DescricaoTipoCusto;
-                PercursoCopia.Quantidade = PercursoOriginal.Quantidade;
                 PercursoCopia.CodOrigem = PercursoOriginal.CodOrigem;
                 PercursoCopia.DescricaoOrigem = PercursoOriginal.DescricaoOrigem;
                 PercursoCopia.CodDestino = PercursoOriginal.CodDestino;

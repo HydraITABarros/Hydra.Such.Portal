@@ -247,7 +247,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     //Get Requistion and verify if exists
                     RequisitionViewModel requisition = DBRequest.ParseToViewModel(DBRequest.GetById(approvalMovement.Number));
-                    if (requisition != null)
+                    if (requisition != null && requisition.State == RequisitionStates.Pending)
                     {
                         //Check if is to approve or reject
                         if (movementStatus == 1)
@@ -435,7 +435,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         result.eReasonCode = 200;
-                        result.eMessage = "A requisição já não existe.";
+                        result.eMessage = "A requisição não existe ou já aprovada.";
                     }
                 }
                 //COMPRAS A DINHEIRO
@@ -443,7 +443,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     //Get Requistion and verify if exists
                     RequisitionViewModel requisition = DBRequest.ParseToViewModel(DBRequest.GetById(approvalMovement.Number));
-                    if (requisition != null)
+                    if (requisition != null && requisition.State == RequisitionStates.Pending)
                     {
                         //Check if is to approve or reject
                         if (movementStatus == 1)
@@ -569,7 +569,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         result.eReasonCode = 200;
-                        result.eMessage = "A Compras Dinheiro já não existe.";
+                        result.eMessage = "A Compras Dinheiro não existe ou já aprovada.";
                     }
                 }
                 //Folhas de Horas - Validar
