@@ -576,8 +576,20 @@
                             </vaadin-combo-box>
                         </div>
 
-                        <div class="col-sm-3">
+                        <!--<div class="col-sm-3"> Alterado no dia 10/12/2019 a Pedido do Marco Marcelo
                             <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" on-blur="_updateAutoFH" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo km">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>-->
+
+                        <div class="col-sm-3">
+                            <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" on-blur="_validacaoTipoDeslocacao" label="Matricula" disabled="{{ !_permissions.update }}">
                                 <template>
                                     <paper-icon-item>
                                         <paper-item-body two-line>
@@ -590,18 +602,6 @@
                     </div>
 
                     <div class="row break_clear">
-                        <div class="col-sm-3">
-                            <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" on-blur="_validacaoTipoDeslocacao" label="Matricula" disabled="{{ !_permissions.update }}">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-
                         <div class="col-sm-3 alignPoga">
                             <vaadin-checkbox checked="{{data.deslocacaoForaConcelho}}" id="deslocacaoForaConcelho" on-blur="_updateAutoFH" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">Desloc. fora do concelho</vaadin-checkbox>
                             <vaadin-checkbox checked="{{data.deslocacaoPlaneada}}" id="deslocacaoPlaneada" on-blur="_updateAutoFH" disabled="true" hidden>Deslocação Planeada</vaadin-checkbox>
@@ -609,7 +609,7 @@
                             <vaadin-checkbox checked="{{chkTerminada}}" id="terminada" disabled="{{ !_permissions.update }}" on-click="_validacaoTerminada" required error-message="Este campo é obrigatório">Terminado</vaadin-checkbox>
                         </div>
 
-                        <div class="col-sm-3">
+                        <div class="col-sm-6">
                         </div>
 
                         <div class="col-sm-3">
@@ -1914,7 +1914,7 @@
                                     if (this.$.dataChegadaTexto.validate() & this.$.dataChegadaTexto.value != "") {
                                         if (this.$.horaChegadaTexto.validate() & this.$.horaChegadaTexto.value != "") {
                                             if (this.$.tipoDeslocacao.validate() & this.$.tipoDeslocacao.value != "") {
-                                                if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
+                                                //if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
                                                     if (this.$.codigoRegiao.value != "") {
                                                         if (this.$.codigoAreaFuncional.value != "") {
                                                             if (this.$.codigoCentroResponsabilidade.value != "") {
@@ -1964,11 +1964,11 @@
                                                         this._showErrorMessage("Falta preencher o campo Código Região.");
                                                         return false;
                                                     }
-                                                }
-                                                else {
-                                                    this._showErrorMessage("Falta preencher o campo Cód. Tipo km.");
-                                                    return false;
-                                                }
+                                                //}
+                                                //else {
+                                                //    this._showErrorMessage("Falta preencher o campo Cód. Tipo km.");
+                                                //    return false;
+                                                //}
                                             }
                                             else {
                                                 this._showErrorMessage("Falta preencher o campo Tipo Deslocação.");
@@ -2509,14 +2509,14 @@
                 _createPercurso: function () {
                     if (this.$.percursoProjeto.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
-                            if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
+                            //if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
                                 if (this.$.percursoOrigem.validate() & this.$.percursoOrigem.value != "") {
                                     if (this.$.percursoDestino.validate() & this.$.percursoDestino.value != "") {
                                         if (this.$.percursoDataViagem.validate() & this.$.percursoDataViagem.value != "") {
                                             if (this._PercursoDataValidar()) {
                                                 this.$.page_createpercurso_ajax.body = JSON.stringify({
                                                     noFolhaHoras: this.$.folhaDeHorasNo.value,
-                                                    codTipoCusto: this.$.codigoTipoKms.value,
+                                                    codTipoCusto: "AJC0003", //this.$.codigoTipoKms.value, Alterado no dia 10/12/2019 a Pedido do Marco Marcelo
                                                     codOrigem: this.$.percursoOrigem.value,
                                                     codDestino: this.$.percursoDestino.value,
                                                     dataDespesa: this.$.percursoDataViagem.value,
@@ -2555,10 +2555,10 @@
                                 else {
                                     this._showErrorMessage('É obrigatório preencher o campo Código Origem.');
                                 }
-                            }
-                            else {
-                                this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
-                            }
+                            //}
+                            //else {
+                            //    this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
+                            //}
                         }
                         else {
                             this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
@@ -2626,7 +2626,7 @@
                             this.$.page_databound_ajax.generateRequest();
                         }
                         else {
-                            if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
+                            //if (this.$.codigoTipoKms.validate() & this.$.codigoTipoKms.value != "") {
                                 if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                                     if (e.model.item.dataDespesaTexto == null || e.model.item.dataDespesaTexto == "") {
                                         this._showErrorMessage('É obrigatório preencher o campo Data Viagem.');
@@ -2644,7 +2644,7 @@
                                             custoUnitario: e.model.item.custoUnitario,
                                             noProjeto: e.model.item.noProjeto,
 
-                                            codTipoCusto: this.$.codigoTipoKms.value,
+                                            codTipoCusto: "AJC0003", //this.$.codigoTipoKms.value, Alterado no dia 10/12/2019 a Pedido do Marco Marcelo
                                             funcionario: this.$.empregadoNo.value,
                                             codRegiao: this.$.codigoRegiao.value,
                                             codArea: this.$.codigoAreaFuncional.value,
@@ -2658,10 +2658,10 @@
                                 else {
                                     this._showErrorMessage('É obrigatório preencher o campo Nº Empregado.');
                                 }
-                            }
-                            else {
-                                this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
-                            }
+                            //}
+                            //else {
+                            //    this._showErrorMessage('É obrigatório preencher o campo Cód. Tipo km.');
+                            //}
                         }
                     }
                 },
@@ -4716,7 +4716,7 @@
                         _self.$.horaChegadaTexto.disabled = true;
                         if (data.mostrarBotoes == false) {
                             _self.$.tipoDeslocacao.disabled = true;
-                            _self.$.codigoTipoKms.disabled = true;
+                            //_self.$.codigoTipoKms.disabled = true;
                             _self.$.matricula.disabled = true;
                             _self.$.deslocacaoForaConcelho.disabled = true;
                         }    
@@ -4735,7 +4735,7 @@
                         _self.$.dataChegadaTexto.disabled = true;
                         _self.$.horaChegadaTexto.disabled = true;
                         _self.$.tipoDeslocacao.disabled = true;
-                        _self.$.codigoTipoKms.disabled = true;
+                        //_self.$.codigoTipoKms.disabled = true;
                         _self.$.matricula.disabled = true;
                         _self.$.deslocacaoForaConcelho.disabled = true;
                         _self.$.terminada.disabled = true;
@@ -4787,7 +4787,7 @@
                         _self.$.dataChegadaTexto.disabled = true;
                         _self.$.horaChegadaTexto.disabled = true;
                         _self.$.tipoDeslocacao.disabled = true;
-                        _self.$.codigoTipoKms.disabled = true;
+                        //_self.$.codigoTipoKms.disabled = true;
                         _self.$.matricula.disabled = true;
                         _self.$.deslocacaoForaConcelho.disabled = true;
                         _self.$.terminada.disabled = true;

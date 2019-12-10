@@ -460,6 +460,211 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult VerificarData([FromBody] FornecedorDetailsViewModel data)
+        {
+            data.eReasonCode = 0;
+            data.eMessage = "";
+
+            if (data != null)
+            {
+                if (string.IsNullOrEmpty(data.Name))
+                {
+                    data.eReasonCode = 2;
+                    data.eMessage = "O campo Nome é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.Address))
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "O campo Endereço é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.PostCode))
+                {
+                    data.eReasonCode = 4;
+                    data.eMessage = "O campo Código Postal é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.City))
+                {
+                    data.eReasonCode = 5;
+                    data.eMessage = "O campo Cidade é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.Country))
+                {
+                    data.eReasonCode = 6;
+                    data.eMessage = "O campo Código Pais/Região é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.VATRegistrationNo))
+                {
+                    data.eReasonCode = 7;
+                    data.eMessage = "O campo Nº Contribuinte é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.PaymentTermsCode))
+                {
+                    data.eReasonCode = 8;
+                    data.eMessage = "O campo Termos de Pagamento é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.PaymentMethodCode))
+                {
+                    data.eReasonCode = 9;
+                    data.eMessage = "O campo Forma Pagamento é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                string No = data.No;
+                string VAT = data.VATRegistrationNo;
+                string Country = data.Country;
+
+                List<NAVFornecedoresViewModel> AllFornecedor = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+                List<NAVFornecedoresViewModel> FornecedorWithVAT = AllFornecedor.Where(x => x.VATRegistrationNo == VAT && x.No != No).ToList();
+
+                if (FornecedorWithVAT != null && FornecedorWithVAT.Count > 0)
+                {
+                    data.eReasonCode = 10;
+                    data.eMessage = "Já existe pelo menos um fonecedor com o nome " + FornecedorWithVAT.FirstOrDefault().Name + " com o mesmo Nº de Contribuinte.";
+                    return Json(data);
+                }
+                else
+                {
+                    if (Country == "PT")
+                    {
+                        VAT = VAT.Replace(" ", "");
+                        if (VAT.Length == 9)
+                        {
+                            int n;
+                            bool isNumeric = int.TryParse(VAT, out n);
+
+                            if (isNumeric == false)
+                            {
+                                data.eReasonCode = 13;
+                                data.eMessage = "Para Portugal o Nº de contribuinte só pode ter 9 carateres numéricos.";
+                                return Json(data);
+                            }
+                            else
+                            {
+                                data.eReasonCode = 0;
+                                data.eMessage = "";
+                                return Json(data);
+                            }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 11;
+                            data.eMessage = "Para Portugal o Nº de contribuinte só pode ter 9 carateres numéricos.";
+                            return Json(data);
+                        }
+                    }
+                    else
+                    {
+                        if (VAT.Length > 0)
+                        {
+                            data.eReasonCode = 0;
+                            data.eMessage = "";
+                            return Json(data);
+                        }
+                        else
+                        {
+                            data.eReasonCode = 12;
+                            data.eMessage = "É obrigatório preencher o Nº de contribuinte.";
+                            return Json(data);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                data.eReasonCode = 13;
+                data.eMessage = "Ocorreu um erro.";
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult VerificarVAT([FromBody] FornecedorDetailsViewModel data)
+        {
+            data.eReasonCode = 0;
+            data.eMessage = "";
+
+            if (data != null && !string.IsNullOrEmpty(data.No) && !string.IsNullOrEmpty(data.VATRegistrationNo) && !string.IsNullOrEmpty(data.Country))
+            {
+                string No = data.No;
+                string VAT = data.VATRegistrationNo;
+                string Country = data.Country;
+
+                List<NAVFornecedoresViewModel> AllFornecedor = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+                List<NAVFornecedoresViewModel> FornecedorWithVAT = AllFornecedor.Where(x => x.VATRegistrationNo == VAT && x.No != No).ToList();
+
+                if (FornecedorWithVAT != null && FornecedorWithVAT.Count > 0)
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Já existe pelo menos um fonecedor com o nome " + FornecedorWithVAT.FirstOrDefault().Name + " com o mesmo Nº de Contribuinte.";
+                    return Json(data);
+                }
+                else
+                {
+                    if (Country == "PT")
+                    {
+                        VAT = VAT.Replace(" ", "");
+                        if (VAT.Length == 9)
+                        {
+                            int n;
+                            bool isNumeric = int.TryParse(VAT, out n);
+
+                            if (isNumeric == false)
+                            {
+                                data.eReasonCode = 13;
+                                data.eMessage = "Para Portugal o Nº de contribuinte só pode ter 9 carateres numéricos.";
+                                return Json(data);
+                            }
+                            else
+                            {
+                                data.eReasonCode = 0;
+                                data.eMessage = "";
+                                return Json(data);
+                            }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 2;
+                            data.eMessage = "Para Portugal o Nº de contribuinte só pode ter 9 carateres numéricos.";
+                            return Json(data);
+                        }
+                    }
+                    else
+                    {
+                        if (VAT.Length > 0)
+                        {
+                            data.eReasonCode = 0;
+                            data.eMessage = "";
+                            return Json(data);
+                        }
+                        else
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "É obrigatório preencher o Nº de contribuinte.";
+                            return Json(data);
+                        }
+                    }
+                }
+            }
+            data.eReasonCode = 4;
+            data.eMessage = "É obrigatório ter preenchido os campos Nº Fornecedor, Código/País Região e Nº de contribuinte.";
+            return Json(data);
+        }
+
+        [HttpPost]
         [Route("Fornecedores/FileUpload")]
         public JsonResult FileUpload()
         {

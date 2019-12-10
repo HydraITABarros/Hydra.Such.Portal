@@ -2027,7 +2027,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
 
-            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString() && x.CalculoAutomatico == false).Select(x => new DDMessageString()
             {
                 id = x.CodRecurso,
                 value = x.Descricao
