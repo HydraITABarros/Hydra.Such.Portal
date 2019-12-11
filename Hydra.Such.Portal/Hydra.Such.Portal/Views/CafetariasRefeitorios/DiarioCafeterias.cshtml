@@ -105,6 +105,14 @@
                    on-response="_responseRegister"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/CafetariasRefeitorios/ValidateDataRegisto"
+                   last-response="{{dataregisto}}"
+                   method="post"
+                   handle-as="json"
+                   id="validatedataregisto_databound_ajax"
+                   on-response="_responseValidateDataRegisto"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetTiposMovimento" last-response="{{CBMovementType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <div class="subMenu">
@@ -118,7 +126,7 @@
 
             @*A pedido do Carlos Rodrigues 24/01/2019*@
             @*<template is="dom-if" if="{{ _permissions.create }}">*@
-                <paper-button id="btnRegisterLine" class="tablinks" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+            <paper-button id="btnRegisterLine" class="tablinks" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
             @*</template>*@
         </div>
 
@@ -132,7 +140,7 @@
                         <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate"></vaadin-date-picker>
+                        <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate" on-value-changed="_validateDataRegisto"></vaadin-date-picker>
                     </div>
                     <div class="col-lg-2">
                         <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento">
@@ -149,7 +157,7 @@
                         <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*([,.]\d+)?$" on-value-changed="_ConvertDecimals" value="{{diary.value}}" label="Valor"  required error-message="Este campo é obrigatório"></vaadin-text-field>
+                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*([,.]\d+)?$" on-value-changed="_ConvertDecimals" value="{{diary.value}}" label="Valor" required error-message="Este campo é obrigatório"></vaadin-text-field>
                     </div>
 
                 </div>
@@ -412,7 +420,20 @@
         },
         _goBack: function (e) {
             window.history.back();
-        }
+        },
+
+        _validateDataRegisto: function (e) {
+            if (this.$.registryDate.value != null && this.$.registryDate.value != "") {
+                this.$.validatedataregisto_databound_ajax.body = JSON.stringify({ "RegistryDate": this.$.registryDate.value });
+                this.$.validatedataregisto_databound_ajax.generateRequest();
+            }
+        },
+        _responseValidateDataRegisto: function () {
+            if (this.dataregisto == false) {
+                this._openToastError("Data Inválida.");
+            }
+        },
+
         });
     });
     </script>

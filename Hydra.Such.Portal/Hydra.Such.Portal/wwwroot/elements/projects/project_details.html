@@ -156,10 +156,8 @@
                     <paper-button id="btnPreProjectMovements" class="tablinks" on-tap="_OpenPreProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Movimentos Projeto</paper-button>
                     <paper-button id="btnProjectAdd" class="tablinks" on-tap="_terminarProject"><i class="fa fa-remove" aria-hidden="true"></i>&nbsp; Terminar</paper-button>
 
-                    <template is="dom-if" if="{{ _projectclosed }}">
-                        <paper-button id="btnProjectDiary" class="tablinks" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
-                        <paper-button id="btnProjectPreRegistration" class="tablinks" on-tap="_OpenProjectPreRegistration"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Registo Projetos</paper-button>
-                    </template>
+                    <paper-button id="btnProjectDiary" class="tablinks" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                    <paper-button id="btnProjectPreRegistration" class="tablinks" on-tap="_OpenProjectPreRegistration"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Registo Projetos</paper-button>
 
                     <template is="dom-if" if="{{ _permissions.create }}">
                         <paper-button id="btnInvoiceAut" class="tablinks" on-tap="_OpenInvoice"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Autorização Faturação</paper-button>
