@@ -165,117 +165,102 @@
                         <iron-pages selected="{{selected}}">
                             <!--Geral-->
                             <div>
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                <div class="col-md-8">
+                                    <div class="row break_clear">
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="marca" name="marca" label="Marca" value="" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="modelo" name="modelo" label="Modelo" value="" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="propriedade" name="propriedade" label="Propriedade" value="" disabled></vaadin-text-field>
+                                        </div>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="marca" name="marca" label="Marca" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    <div class="row break_clear">
+                                        <div class="col-md-8">
+                                            <vaadin-text-field id="gestor" name="gestor" label="Gestor" value="" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <vaadin-date-picker id="gestorData" name="gestorData" label=" " value="" disabled></vaadin-date-picker>
+                                        </div>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="modelo" name="modelo" label="Modelo" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    <div class="row break_clear">
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="condutor" name="condutor" label="Condutor" value="" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="descricao" name="descricao" label="Descrição" value="" disabled></vaadin-text-field>
+                                        </div>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-date-picker id="data1Matricula" name="data1Matricula" label="Data da 1ª matrícula" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                                    </div>
+                                    <div class="row break_clear">
+                                        <div class="col-md-4">
+                                            <vaadin-text-field id="seguroSituacao" name="seguroSituacao" label="Seguro Situação" value="" disabled></vaadin-text-field>
+                                        </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="imagem" name="imagem" label="Imagem" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <div class="col-md-4">
+                                            <vaadin-date-picker id="dataFimSeguro" name="dataFimSeguro" label="Data Fim Seguro" value="" disabled></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <vaadin-text-field id="garantiaSituacao" name="garantiaSituacao" label="Garantia Situação" value="" disabled></vaadin-text-field>
+                                        </div>
                                     </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <such-textarea id="imagem" name="imagem" label="Imagem" value="" disabled rows="16"> </such-textarea>
                                 </div>
 
                                 <div class="row break_clear">
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="idade" name="idade" label="Idade" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <vaadin-date-picker id="ultimaInspecao" name="ultimaInspecao" label="Última Inspeção" value="" disabled></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="dataMatricula" name="dataMatricula" label="Data matrícula" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="categoria" name="categoria" label="Categoria" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção (Previsão)" value="" disabled></vaadin-date-picker>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="tipo" name="tipo" label="Tipo" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    <div class="col-md-4">
+                                        <vaadin-text-field id="iucMesSeguinte" name="iucMesSeguinte" label="IUC Mês Seguinte" value="" disabled></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="classificacao" name="classificacao" label="Classificação" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    <div class="col-md-4">
+                                        <vaadin-text-field id="situacao" name="situacao" label="Situação" value="" disabled></vaadin-text-field>
                                     </div>
                                 </div>
 
                                 <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="estado" name="estado" label="Estado" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+
+                                    <div class="col-md-3">
+                                        <vaadin-text-field id="parqueamento" name="parqueamento" label="Parqueamento" value="" disabled></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="departamentoDimensoes" name="departamentoDimensoes" label="Departamento (Dimensões)" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    <div class="col-md-3">
+                                        <vaadin-text-field id="substituicao" name="substituicao" label="Substituição" value="" disabled></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="parqueamento" name="parqueamento" label="Parqueamento" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    <div class="col-md-3">
+                                        <vaadin-text-field id="afetacao" name="afetacao" label="Afetação" value="" disabled></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="proprietario" name="proprietario" label="Proprietário" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    <div class="col-md-1">
+                                        <vaadin-text-field id="idade" name="idade" label="Idade" value="" disabled></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="condutor" name="condutor" label="Condutor" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="responsavel" name="responsavel" label="Responsável" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima inspeção" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-date-picker id="ultimaInspecao" name="ultimaInspecao" label="Última inspeção" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="cartaVerde" name="cartaVerde" label="Carta verde" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-date-picker id="dataFim" name="dataFim" label="Data fim" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="cartaoCombustivel" name="cartaoCombustivel" label="Cartão combústivel" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="garantia" name="garantia" label="Garantia" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-date-picker id="data" name="data" label="Data" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="iucMesSeguinte" name="iucMesSeguinte" label="IUC mês seguinte" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    <div class="col-md-1">
+                                        <vaadin-text-field id="segmentacao" name="segmentacao" label="Segmentação" value="" disabled></vaadin-text-field>
                                     </div>
                                 </div>
 
@@ -370,95 +355,125 @@
                             <div>
                                 <div class="row break_clear">
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="marca" name="marca" label="Marca" value="" disabled></vaadin-text-field>
+                                        <vaadin-text-field id="marca" name="marca" label="Marca" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="modelo" name="modelo" label="Modelo" value="" disabled></vaadin-text-field>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="cilindrada" name="cilindrada" label="Cilíndrada" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <vaadin-text-field id="modelo" name="modelo" label="Modelo" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="combustivel" name="combustivel" label="Combústivel" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="consumoReferencia" name="consumoReferencia" label="Consumo referência" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="capacidadeDeposito" name="capacidadeDeposito" label="Capacidade depósito" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="autonomia" name="autonomia" label="Autonomia" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="pesoBruto" name="pesoBruto" label="Peso bruto" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="cargaMaxima" name="cargaMaxima" label="Carga máxima" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="tara" name="tara" label="Tara" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="distanciaEntreEixos" name="distanciaEntreEixos" label="Distância entre os eixos" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="potencia" name="potencia" label="Potência" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="noLugares" name="noLugares" label="Nº de lugares" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="noAnosGarantia" name="noAnosGarantia" label="Nº anos garantia" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="noQuadro" name="noQuadro" label="Nº quadro" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="tipoCaixa" name="tipoCaixa" label="Tipo caixa" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <vaadin-date-picker id="data1Matricula" name="data1Matricula" label="Data 1ª Matricula" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-2">
                                         <vaadin-text-field id="cor" name="cor" label="Cor" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                                     </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-date-picker id="dataMatricula" name="dataMatricula" label="Data da Matrícula" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                    </div>
                                 </div>
 
                                 <div class="row break_clear">
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="pneus" name="pneus" label="Pneus" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <vaadin-text-field id="potencia" name="potencia" label="Potência" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="pneusFrente" name="pneusFrente" label="Pneumáticos frente" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <vaadin-text-field id="distanciaEixos" name="distanciaEixos" label="Distância entre Eixos" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="txPneusRetaguarda" name="txPneusRetaguarda" label="Pneumáticos retaguarda" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <vaadin-text-field id="noLugares" name="noLugares" label="Nº de Lugares" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="noAnosGarantia" name="noAnosGarantia" label="Nº de Anos Garantia" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="noQuadro" name="noQuadro" label="Nº Quadro" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="tipoCaixa" name="tipoCaixa" label="Tipo de Caixa" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <label id="labelSegmento">Segmento</label>
+                                    <div>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="categoria" name="categoria" label="Categoria" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="tipo" name="tipo" label="Tipo" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <label id="labelCaracteristicas">Características</label>
+                                    <div>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="cilindrada" name="cilindrada" label="Cilindrada" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="combustivel" name="combustivel" label="Combústivel" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="consumoReferencia" name="consumoReferencia" label="Consumo Referência" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="capacidadeDeposito" name="capacidadeDeposito" label="Capacidade Depósito" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="autonomia" name="autonomia" label="Autonomia" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-6">
+                                        <label id="labelPeso">Peso</label>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="pesoBruto" name="pesoBruto" label="Peso Bruto" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="cargaMaxima" name="cargaMaxima" label="Carga Máxima" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="tara" name="tara" label="Tara" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <label id="labelPneus">Pneus</label>
+                                        <div>
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="pneuFrente" name="pneuFrente" label="Pneumáticos Frente" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="pneuRetaguarda" name="pneuRetaguarda" label="Pneumáticos Retaguarda" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <such-textarea id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.create }}" rows="7"> </such-textarea>
                                     </div>
                                 </div>
                             </div>
