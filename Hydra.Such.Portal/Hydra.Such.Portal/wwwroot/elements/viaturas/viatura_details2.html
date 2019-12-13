@@ -155,7 +155,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Informação</paper-tab>
                             <paper-tab>Caraterísticas</paper-tab>
                             <paper-tab>Utilização</paper-tab>
                             <paper-tab>Histórico</paper-tab>
@@ -163,12 +163,12 @@
                         </paper-tabs>
 
                         <iron-pages selected="{{selected}}">
-                            <!--Geral-->
+                            <!--Informação-->
                             <div>
                                 <div class="col-md-8">
                                     <div class="row break_clear">
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled placeholder="xx-xx-xx"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3">
@@ -190,7 +190,7 @@
                                         </div>
 
                                         <div class="col-md-4">
-                                            <vaadin-date-picker id="gestorData" name="gestorData" label=" " value="" disabled></vaadin-date-picker>
+                                            <vaadin-date-picker id="gestorData" name="gestorData" label=" " value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                         </div>
                                     </div>
 
@@ -210,7 +210,7 @@
                                         </div>
 
                                         <div class="col-md-4">
-                                            <vaadin-date-picker id="dataFimSeguro" name="dataFimSeguro" label="Data Fim Seguro" value="" disabled></vaadin-date-picker>
+                                            <vaadin-date-picker id="dataFimSeguro" name="dataFimSeguro" label="Data Fim Seguro" value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-4">
@@ -225,11 +225,11 @@
 
                                 <div class="row break_clear">
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="ultimaInspecao" name="ultimaInspecao" label="Última Inspeção" value="" disabled></vaadin-date-picker>
+                                        <vaadin-date-picker id="ultimaInspecao" name="ultimaInspecao" label="Última Inspeção" value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção (Previsão)" value="" disabled></vaadin-date-picker>
+                                        <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção (Previsão)" value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-4">
@@ -261,6 +261,133 @@
 
                                     <div class="col-md-1">
                                         <vaadin-text-field id="segmentacao" name="segmentacao" label="Segmentação" value="" disabled></vaadin-text-field>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Caraterísticas-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.create }}" placeholder="xx-xx-xx"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="marca" name="marca" label="Marca" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="modelo" name="modelo" label="Modelo" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-date-picker id="data1Matricula" name="data1Matricula" label="Data 1ª Matricula" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="cor" name="cor" label="Cor" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-date-picker id="dataMatricula" name="dataMatricula" label="Data da Matrícula" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="potencia" name="potencia" label="Potência" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">kW</div></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="distanciaEixos" name="distanciaEixos" label="Distância entre Eixos" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">m</div></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="noLugares" name="noLugares" label="Nº de Lugares" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="noAnosGarantia" name="noAnosGarantia" label="Nº de Anos Garantia" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="noQuadro" name="noQuadro" label="Nº Quadro" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="tipoCaixa" name="tipoCaixa" label="Tipo de Caixa" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <label id="labelSegmento">Segmento</label>
+                                    <div>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="categoria" name="categoria" label="Categoria" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="tipo" name="tipo" label="Tipo" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <label id="labelCaracteristicas">Características</label>
+                                    <div>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="cilindrada" name="cilindrada" label="Cilindrada" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="combustivel" name="combustivel" label="Combústivel" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="consumoReferencia" name="consumoReferencia" label="Consumo Referência" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">l/100</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="capacidadeDeposito" name="capacidadeDeposito" label="Capacidade Depósito" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">l</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="autonomia" name="autonomia" label="Autonomia" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">km</div></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-6">
+                                        <label id="labelPeso">Peso</label>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="pesoBruto" name="pesoBruto" label="Peso Bruto" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">kg</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="cargaMaxima" name="cargaMaxima" label="Carga Máxima" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">kg</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="tara" name="tara" label="Tara" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">kg</div></vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <label id="labelPneus">Pneus</label>
+                                        <div>
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="pneuFrente" name="pneuFrente" label="Pneumáticos Frente" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="pneuRetaguarda" name="pneuRetaguarda" label="Pneumáticos Retaguarda" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <such-textarea id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.create }}" rows="7"> </such-textarea>
                                     </div>
                                 </div>
 
@@ -330,15 +457,15 @@
                                                     </div>
 
                                                     <div class="col-md-2">
-                                                        <vaadin-date-picker id="dataCompra" name="dataCompra" label="Data da compra" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                        <vaadin-date-picker id="dataCompra" name="dataCompra" label="Data da compra" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                     </div>
 
                                                     <div class="col-md-2">
-                                                        <vaadin-date-picker id="inicioAmortizacao" name="inicioAmortizacao" label="Início amortização" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                        <vaadin-date-picker id="inicioAmortizacao" name="inicioAmortizacao" label="Início amortização" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                     </div>
 
                                                     <div class="col-md-2">
-                                                        <vaadin-date-picker id="fimAmortizacao" name="fimAmortizacao" label="Fim amortização" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                        <vaadin-date-picker id="fimAmortizacao" name="fimAmortizacao" label="Fim amortização" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                     </div>
 
                                                     <div class="col-md-2" style="padding-top:15px">
@@ -348,133 +475,6 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
-                                </div>
-                            </div>
-
-                            <!--Caraterísticas-->
-                            <div>
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="marca" name="marca" label="Marca" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="modelo" name="modelo" label="Modelo" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-date-picker id="data1Matricula" name="data1Matricula" label="Data 1ª Matricula" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="cor" name="cor" label="Cor" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-date-picker id="dataMatricula" name="dataMatricula" label="Data da Matrícula" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="potencia" name="potencia" label="Potência" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="distanciaEixos" name="distanciaEixos" label="Distância entre Eixos" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="noLugares" name="noLugares" label="Nº de Lugares" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="noAnosGarantia" name="noAnosGarantia" label="Nº de Anos Garantia" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="noQuadro" name="noQuadro" label="Nº Quadro" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <vaadin-text-field id="tipoCaixa" name="tipoCaixa" label="Tipo de Caixa" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <label id="labelSegmento">Segmento</label>
-                                    <div>
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="categoria" name="categoria" label="Categoria" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="tipo" name="tipo" label="Tipo" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <label id="labelCaracteristicas">Características</label>
-                                    <div>
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="cilindrada" name="cilindrada" label="Cilindrada" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="combustivel" name="combustivel" label="Combústivel" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="consumoReferencia" name="consumoReferencia" label="Consumo Referência" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="capacidadeDeposito" name="capacidadeDeposito" label="Capacidade Depósito" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="autonomia" name="autonomia" label="Autonomia" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row break_clear">
-                                    <div class="col-md-6">
-                                        <label id="labelPeso">Peso</label>
-                                        <div>
-                                            <div class="col-md-4">
-                                                <vaadin-text-field id="pesoBruto" name="pesoBruto" label="Peso Bruto" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <vaadin-text-field id="cargaMaxima" name="cargaMaxima" label="Carga Máxima" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <vaadin-text-field id="tara" name="tara" label="Tara" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                            </div>
-                                        </div>
-
-                                        <label id="labelPneus">Pneus</label>
-                                        <div>
-                                            <div class="col-md-6">
-                                                <vaadin-text-field id="pneuFrente" name="pneuFrente" label="Pneumáticos Frente" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <vaadin-text-field id="pneuRetaguarda" name="pneuRetaguarda" label="Pneumáticos Retaguarda" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <such-textarea id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.create }}" rows="7"> </such-textarea>
-                                    </div>
                                 </div>
                             </div>
 
@@ -521,11 +521,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2" style="padding-top:15px">
@@ -596,7 +596,7 @@
                                                         <vaadin-grid-filter path="km" />
                                                     </template>
                                                     <template>
-                                                        {{item.km}}
+                                                        {{item.km}} km
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -606,7 +606,7 @@
                                                         <vaadin-grid-filter path="litros" />
                                                     </template>
                                                     <template>
-                                                        {{item.litros}}
+                                                        {{item.litros}} l
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -639,11 +639,11 @@
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-date-picker id="data" name="data" label="Data" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                            <vaadin-date-picker id="data" name="data" label="Data" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="hora" name="hora" label="Hora" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                            <vaadin-text-field id="hora" name="hora" label="Hora" value="" disabled="{{ !_permissions.create }}" placeholder="hh:mm"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2">
@@ -655,13 +655,13 @@
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="km" name="km" label="Km" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                            <vaadin-text-field id="km" name="km" label="Km" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">km</div></vaadin-text-field>
                                                         </div>
                                                     </div>
 
                                                     <div class="row break_clear">
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="litros" name="litros" label="Litros" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                            <vaadin-text-field id="litros" name="litros" label="Litros" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">l</div></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2">
@@ -698,7 +698,7 @@
                                                         <vaadin-grid-filter path="kmsActuais" />
                                                     </template>
                                                     <template>
-                                                        {{item.kmsActuais}}
+                                                        {{item.kmsActuais}} km
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -708,7 +708,7 @@
                                                         <vaadin-grid-filter path="kmsRegistadosConsumo" />
                                                     </template>
                                                     <template>
-                                                        {{item.kmsRegistadosConsumo}}
+                                                        {{item.kmsRegistadosConsumo}} km
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -718,7 +718,7 @@
                                                         <vaadin-grid-filter path="diferencaKmsAbastAnterior" />
                                                     </template>
                                                     <template>
-                                                        {{item.diferencaKmsAbastAnterior}}
+                                                        {{item.diferencaKmsAbastAnterior}} km
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -748,7 +748,7 @@
                                                         <vaadin-grid-filter path="consumoMedio" />
                                                     </template>
                                                     <template>
-                                                        {{item.consumoMedio}}
+                                                        {{item.consumoMedio}} l/100
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -758,7 +758,7 @@
                                                         <vaadin-grid-filter path="litrosAbastecidos" />
                                                     </template>
                                                     <template>
-                                                        {{item.litrosAbastecidos}}
+                                                        {{item.litrosAbastecidos}} l
                                                     </template>
                                                 </vaadin-grid-column>
 
@@ -768,7 +768,7 @@
                                                         <vaadin-grid-filter path="valorLiquidoTotalComIVA" />
                                                     </template>
                                                     <template>
-                                                        {{item.valorLiquidoTotalComIVA}}
+                                                        {{item.valorLiquidoTotalComIVA}} €
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
@@ -822,7 +822,7 @@
                                                         <vaadin-grid-filter path="litros" />
                                                     </template>
                                                     <template>
-                                                        {{item.litros}}
+                                                        {{item.litros}} l
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
@@ -871,11 +871,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2" style="padding-top:15px">
@@ -904,7 +904,7 @@
                                                 <vaadin-grid-filter path="kmInspecao" />
                                             </template>
                                             <template>
-                                                {{item.kmInspecao}}
+                                                {{item.kmInspecao}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -943,11 +943,11 @@
                                         <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInspecao" name="dataInspecao" label="Data Inspeção" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataInspecao" name="dataInspecao" label="Data Inspeção" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="kmInspecao" name="kmInspecao" label="Km Inspeção" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="kmInspecao" name="kmInspecao" label="Km Inspeção" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -955,7 +955,7 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                    <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -1018,7 +1018,7 @@
                                                 <vaadin-grid-filter path="valorPremio" />
                                             </template>
                                             <template>
-                                                {{item.valorPremio}}
+                                                {{item.valorPremio}} €
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
@@ -1035,15 +1035,15 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="valorPremio" name="valorPremio" label="Valor Prémio" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="valorPremio" name="valorPremio" label="Valor Prémio" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2" style="padding-top:15px">
@@ -1095,11 +1095,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2" style="padding-top:15px">
@@ -1151,11 +1151,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
@@ -1194,7 +1194,7 @@
                                                 <vaadin-grid-filter path="kmNoInicio" />
                                             </template>
                                             <template>
-                                                {{item.kmNoInicio}}
+                                                {{item.kmNoInicio}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1214,7 +1214,7 @@
                                                 <vaadin-grid-filter path="kmNoFim" />
                                             </template>
                                             <template>
-                                                {{item.kmNoFim}}
+                                                {{item.kmNoFim}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1233,23 +1233,23 @@
                                         <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.create }}" placeholder="xx-xx-xx"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="inicioDaSubstituicao" name="inicioDaSubstituicao" label="Início da Substituição" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                    <vaadin-date-picker id="inicioDaSubstituicao" name="inicioDaSubstituicao" label="Início da Substituição" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="kmNoInicio" name="kmNoInicio" label="Km no Início" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="kmNoInicio" name="kmNoInicio" label="Km no Início" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="fimDaSubstituicao" name="fimDaSubstituicao" label="Fim da Substituição" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                    <vaadin-date-picker id="fimDaSubstituicao" name="fimDaSubstituicao" label="Fim da Substituição" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="kmNoFim" name="kmNoFim" label="Km no Fim" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="kmNoFim" name="kmNoFim" label="Km no Fim" value="" disabled="{{ !_permissions.create }}"><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -1456,11 +1456,11 @@
 
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="inicioAfetacao" name="inicioAfetacao" label="Início Afetação" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="inicioAfetacao" name="inicioAfetacao" label="Início Afetação" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="fimAfetacao" name="fimAfetacao" label="Fim Afetação" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="fimAfetacao" name="fimAfetacao" label="Fim Afetação" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -1516,11 +1516,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
@@ -1586,11 +1586,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.create }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
@@ -1642,11 +1642,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
@@ -1698,11 +1698,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
@@ -1734,7 +1734,7 @@
                                                 <vaadin-grid-filter path="kmIniciais" />
                                             </template>
                                             <template>
-                                                {{item.kmIniciais}}
+                                                {{item.kmIniciais}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1744,7 +1744,7 @@
                                                 <vaadin-grid-filter path="kmContratados" />
                                             </template>
                                             <template>
-                                                {{item.kmContratados}}
+                                                {{item.kmContratados}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1754,7 +1754,7 @@
                                                 <vaadin-grid-filter path="precoKmAdicionalSemIVA" />
                                             </template>
                                             <template>
-                                                {{item.precoKmAdicionalSemIVA}}
+                                                {{item.precoKmAdicionalSemIVA}} €
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1764,7 +1764,7 @@
                                                 <vaadin-grid-filter path="precoKmNaoPercorridoSemIVA" />
                                             </template>
                                             <template>
-                                                {{item.precoKmNaoPercorridoSemIVA}}
+                                                {{item.precoKmNaoPercorridoSemIVA}} €
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1774,7 +1774,7 @@
                                                 <vaadin-grid-filter path="kmMaximo" />
                                             </template>
                                             <template>
-                                                {{item.kmMaximo}}
+                                                {{item.kmMaximo}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1834,7 +1834,7 @@
                                                 <vaadin-grid-filter path="totalSemIVA" />
                                             </template>
                                             <template>
-                                                {{item.totalSemIVA}}
+                                                {{item.totalSemIVA}} €
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1844,7 +1844,7 @@
                                                 <vaadin-grid-filter path="iva" />
                                             </template>
                                             <template>
-                                                {{item.iva}}
+                                                {{item.iva}} €
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1854,7 +1854,7 @@
                                                 <vaadin-grid-filter path="totalComIVA" />
                                             </template>
                                             <template>
-                                                {{item.totalComIVA}}
+                                                {{item.totalComIVA}} €
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1864,7 +1864,7 @@
                                                 <vaadin-grid-filter path="franquiaSemIVA" />
                                             </template>
                                             <template>
-                                                {{item.franquiaSemIVA}}
+                                                {{item.franquiaSemIVA}} €
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1898,37 +1898,37 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="kmIniciais" name="kmIniciais" label="Km Iniciais" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="kmIniciais" name="kmIniciais" label="Km Iniciais" value=""><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="kmContratados" name="kmContratados" label="Km Contratados" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="kmContratados" name="kmContratados" label="Km Contratados" value=""><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="precoKmAdicionalSemIVA" name="precoKmAdicionalSemIVA" label="Preço Km Adicional Sem IVA" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="precoKmAdicionalSemIVA" name="precoKmAdicionalSemIVA" label="Preço Km Adicional Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="precoKmNaoPercorridoSemIVA" name="precoKmNaoPercorridoSemIVA" label="Preço Km Não Percorrido Sem IVA" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="precoKmNaoPercorridoSemIVA" name="precoKmNaoPercorridoSemIVA" label="Preço Km Não Percorrido Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="kmMaximo" name="kmMaximo" label="Km Máximo" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="kmMaximo" name="kmMaximo" label="Km Máximo" value=""><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
                                             </div>
 
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data de Início" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data de Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataTermo" name="dataTermo" label="Data de Termo" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataTermo" name="dataTermo" label="Data de Termo" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="inicioPagamento" name="inicioPagamento" label="Início Pagamento" value=""></vaadin-text-field>
+                                                    <vaadin-date-picker id="inicioPagamento" name="inicioPagamento" label="Início Pagamento" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -1940,21 +1940,21 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="totalSemIVA" name="totalSemIVA" label="Total Sem IVA" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="totalSemIVA" name="totalSemIVA" label="Total Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
                                             </div>
 
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="iva" name="iva" label="IVA" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="iva" name="iva" label="IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="totalComIVA" name="totalComIVA" label="Total Com IVA" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="totalComIVA" name="totalComIVA" label="Total Com IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="franquiaSemIVA" name="franquiaSemIVA" label="Franquia Sem IVA" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="franquiaSemIVA" name="franquiaSemIVA" label="Franquia Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -2011,7 +2011,7 @@
                                                 <vaadin-grid-filter path="kmAlteracao" />
                                             </template>
                                             <template>
-                                                {{item.kmAlteracao}}
+                                                {{item.kmAlteracao}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2040,7 +2040,7 @@
                                         <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataPedido" name="dataPedido" label="Data do Pedido" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataPedido" name="dataPedido" label="Data do Pedido" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -2048,11 +2048,11 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataAlteracaoKm" name="dataAlteracaoKm" label="Data Alteração Km" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="dataAlteracaoKm" name="dataAlteracaoKm" label="Data Alteração Km" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="kmAlteracao" name="kmAlteracao" label="Km Alteração" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="kmAlteracao" name="kmAlteracao" label="Km Alteração" value=""><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -2081,7 +2081,7 @@
                                                 <vaadin-grid-filter path="km" />
                                             </template>
                                             <template>
-                                                {{item.km}}
+                                                {{item.km}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2100,11 +2100,11 @@
                                         <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="km" name="km" label="Km" value=""></vaadin-text-field>
+                                                    <vaadin-text-field id="km" name="km" label="Km" value=""><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="data" name="data" label="Data" value=""></vaadin-date-picker>
+                                                    <vaadin-date-picker id="data" name="data" label="Data" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
@@ -2163,7 +2163,7 @@
                                                 <vaadin-grid-filter path="kmContratados" />
                                             </template>
                                             <template>
-                                                {{item.kmContratados}}
+                                                {{item.kmContratados}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2173,7 +2173,7 @@
                                                 <vaadin-grid-filter path="kmUltimaLeitura" />
                                             </template>
                                             <template>
-                                                {{item.kmUltimaLeitura}}
+                                                {{item.kmUltimaLeitura}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2193,7 +2193,7 @@
                                                 <vaadin-grid-filter path="kmGastos" />
                                             </template>
                                             <template>
-                                                {{item.kmGastos}}
+                                                {{item.kmGastos}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2203,7 +2203,7 @@
                                                 <vaadin-grid-filter path="kmRestam" />
                                             </template>
                                             <template>
-                                                {{item.kmRestam}}
+                                                {{item.kmRestam}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2243,7 +2243,7 @@
                                                 <vaadin-grid-filter path="mediaKmContratados" />
                                             </template>
                                             <template>
-                                                {{item.mediaKmContratados}}
+                                                {{item.mediaKmContratados}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2253,7 +2253,7 @@
                                                 <vaadin-grid-filter path="kmEsperadosDataLeitura" />
                                             </template>
                                             <template>
-                                                {{item.kmEsperadosDataLeitura}}
+                                                {{item.kmEsperadosDataLeitura}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2263,7 +2263,7 @@
                                                 <vaadin-grid-filter path="kmPercorridosKmEsperados" />
                                             </template>
                                             <template>
-                                                {{item.kmPercorridosKmEsperados}}
+                                                {{item.kmPercorridosKmEsperados}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2273,7 +2273,7 @@
                                                 <vaadin-grid-filter path="tempoDecorrido" />
                                             </template>
                                             <template>
-                                                {{item.tempoDecorrido}}
+                                                {{item.tempoDecorrido}} km
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2283,7 +2283,7 @@
                                                 <vaadin-grid-filter path="kmPercorridos" />
                                             </template>
                                             <template>
-                                                {{item.kmPercorridos}}
+                                                {{item.kmPercorridos}} km
                                             </template>
                                         </vaadin-grid-column>
 

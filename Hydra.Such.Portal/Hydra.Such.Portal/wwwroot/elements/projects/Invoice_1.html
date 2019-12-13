@@ -1201,6 +1201,31 @@
                     }
                     return "Verifique os dados inseridos.";
                 },
+                _validateDataNegativo: function (Item) {
+                    debugger;
+                    if (this.$._CLOptionInvoiceNegativo.validate()) {
+                        for (var line = 0; line < Item.length; line++) {
+                            if (Item[line].valorAutorizado == "" || Item[line].valorAutorizado == null || Item[line].valorAutorizado == 0) {
+                                return "Selecionou Linhas com Valor Autorizado a ZERO!";
+                            }
+                            //falta verificações
+                            if (Item[line].codCentroResponsabilidade == "") {
+                                return "O Centro de Responsabilidade não está preenchido!";
+                            }
+                            if (Item[line].codRegiao == "") {
+                                return "O Código de Região não está preenchido!";
+                            }
+                            if (Item[line].codProjeto == "") {
+                                return "O Nº de Projeto não está preenchido!";
+                            }
+                            if (Item[line].codAreaFuncional == "") {
+                                return "O Código Área Funcional não está preenchido!";
+                            }
+                        }
+                        return "";
+                    }
+                    return "Verifique os dados inseridos.";
+                },
                 _validateInvoice: function () {
                     var erro = this._validateData(this.selectedItem);
                     if (erro == "") {
@@ -1228,7 +1253,7 @@
                     }
                 },
                 _validateInvoiceNegativo: function () {
-                    var erro = this._validateData(this.selectedItem);
+                    var erro = this._validateDataNegativo(this.selectedItem);
                     if (erro == "") {
                         if (this.$._CLDataNegativo.value != "") {
                             if (this.selectedItem && this.selectedItem.length > 0) {
