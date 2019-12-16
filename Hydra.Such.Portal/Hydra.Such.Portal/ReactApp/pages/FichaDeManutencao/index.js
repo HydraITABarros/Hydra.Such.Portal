@@ -181,10 +181,6 @@ class FichaDeManutencao extends Component {
         this.handleScrollTo = this.handleScrollTo.bind(this);
         this.handleRotinaChange = this.handleRotinaChange.bind(this);
         this.savePlans = this.savePlans.bind(this);
-        storageService.onFirstSync = () => {
-            this.fetch();
-        };
-        storageService.init();
 
         window.addEventListener('online', () => {
             setTimeout(() => {
@@ -220,6 +216,13 @@ class FichaDeManutencao extends Component {
     }
 
     componentDidMount() {
+        this._ismounted = true;
+        storageService.onFirstSync = () => {
+            if (this._ismounted) {
+                this.fetch();
+            }
+        };
+        storageService.init();
         this.setBodyHeight();
         //var planContentEl = this.planContent.getElement();
         var planContentEl = ReactDOM.findDOMNode(this.planContent);
@@ -256,6 +259,10 @@ class FichaDeManutencao extends Component {
             this.setState({});
         }, 500)
 
+    }
+
+    componentWillUnmount() {
+        this._ismounted = false;
     }
 
     setBodyHeight() {
@@ -397,6 +404,12 @@ class FichaDeManutencao extends Component {
     }
 
     render() {
+        var completed = false;
+        if (this.state.$equipments) {
+            completed = this.state.$equipments.value.filter((e) => {
+                return e.$estadoFinal.value > 0;
+            }).length == this.state.$equipments.value.length;
+        }
         return (
             <PageTemplate>
                 <Offline>
@@ -416,7 +429,7 @@ class FichaDeManutencao extends Component {
                     <Breadcrumb order={this.state.order} onRef={el => this.breadcrumbWrapper = el}/>
                     <div className="scrollarea " style={{height: this.state.bodyHeight + 'px', overflow: 'auto'}}
                          ref={el => this.mainScroll = el}>
-                        <Sticky scrollElement=".scrollarea" style={{zIndex: 11}}>
+                        <Sticky scrollElement=".scrollarea" style={{zIndex: 11, position: 'relative'}}>
 
                             <HeaderTitle
                                 title={this.state.title}
@@ -677,8 +690,13 @@ class FichaDeManutencao extends Component {
                                                                 )
                                                             })}
                                                             <Menu
-                                                                action={<Button iconSolo><Icon
-                                                                    row-menu/></Button>}
+                                                                action={
+                                                                    <Button iconSolo
+                                                                            disabled={completed}
+                                                                    >
+                                                                        <Icon row-menu/>
+                                                                    </Button>
+                                                                }
                                                                 containerStyle={{
                                                                     float: 'right',
                                                                     display: 'inline-block',
@@ -737,7 +755,8 @@ class FichaDeManutencao extends Component {
                                                                 )
                                                             })}
                                                             <Menu
-                                                                action={<Button iconSolo><Icon
+                                                                action={<Button iconSolo
+                                                                                disabled={completed}><Icon
                                                                     row-menu/></Button>}
                                                                 containerStyle={{
                                                                     float: 'right',
@@ -801,7 +820,8 @@ class FichaDeManutencao extends Component {
                                                             <Text span>{item.unidadeCampo1}</Text>
 
                                                             <Menu
-                                                                action={<Button iconSolo><Icon
+                                                                action={<Button iconSolo
+                                                                                disabled={completed}><Icon
                                                                     row-menu/></Button>}
                                                                 containerStyle={{
                                                                     float: 'right',
@@ -842,6 +862,7 @@ class FichaDeManutencao extends Component {
                                             <Wrapper padding="48px 12px 56px" margin="none"
                                                      ref={el => this.finalStateEl = el}>
                                                 {this.state.equipments.map((equipment, i) => {
+                                                    console.log(equipment);
                                                     return (
                                                         <PlanEquipmentsItem key={i}>
                                                             <Wrapper padding="0 8px">
