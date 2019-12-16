@@ -29,7 +29,10 @@ class Emm extends Component {
 
         if (this.props.$equipments) {
             this.state.emms = fromEquipmentsPlanToEmms(this.props.$equipments.value, true);
-            this.state.emms.push({selected: this.props.$equipments.value, emm: null});
+            this.state.emms.push({
+                selected: this.props.$equipments.value.filter((e) => e.$estadoFinal.value == 0),
+                emm: null
+            });
         }
 
         this.validator = new SimpleReactValidator();
@@ -39,7 +42,10 @@ class Emm extends Component {
     componentDidMount() {
         if (this.props.$equipments) {
             this.state.emms = fromEquipmentsPlanToEmms(this.props.$equipments.value, true);
-            this.state.emms.push({selected: this.props.$equipments.value, emm: null});
+            this.state.emms.push({
+                selected: this.props.$equipments.value.filter((e) => e.$estadoFinal.value == 0),
+                emm: null
+            });
         }
 
         window.addEventListener('online', () => {
@@ -61,7 +67,10 @@ class Emm extends Component {
         this.state.online = navigator.onLine;
         if (prevProps.$equipments != this.props.$equipments && !!this.props.$equipments) {
             this.state.emms = fromEquipmentsPlanToEmms(this.props.$equipments.value, true);
-            this.state.emms.push({selected: this.props.$equipments.value, emm: null});
+            this.state.emms.push({
+                selected: this.props.$equipments.value.filter((e) => e.$estadoFinal.value == 0),
+                emm: null
+            });
         }
 
     }
@@ -92,7 +101,10 @@ class Emm extends Component {
 
             this.state.emms[this.state.emms.length - 1].emm = emm.emm;
 
-            this.state.emms.push({selected: this.props.$equipments.value, emm: null});
+            this.state.emms.push({
+                selected: this.props.$equipments.value.filter((e) => e.$estadoFinal.value == 0),
+                emm: null
+            });
 
             this.setState({}, () => {
                 if (this.props.onChange) {
@@ -120,7 +132,7 @@ class Emm extends Component {
         });
 
         if (emms.length == 0) {
-            emms = [{selected: this.props.$equipments.value, emm: null}];
+            emms = [{selected: this.props.$equipments.value.filter((e) => e.$estadoFinal.value == 0), emm: null}];
         }
 
         this.state.emms = emms;
@@ -134,6 +146,13 @@ class Emm extends Component {
 
     render() {
         this.validator.purgeFields();
+        var completed = false;
+        if (this.props.$equipments) {
+            completed = this.props.$equipments.value.filter((e) => {
+                return e.$estadoFinal.value > 0;
+            }).length == this.props.$equipments.value.length;
+        }
+
         return (
             <div>
                 <Wrapper padding={'0 0 16px'}>
@@ -147,16 +166,17 @@ class Emm extends Component {
                         }
                         return (
                             <Grid container spacing={1} key={i}
-                                  className={(this.state.emms.length - 1 == i && !this.state.online) ? "content-disabled" : ""}>
+                                  className={((this.state.emms.length - 1 == i || completed) && !this.state.online) ? "content-disabled" : ""}>
                                 <Grid item xs={10} md={2}>
                                     <div>
                                         <Select
                                             multiple
-                                            value={(this.state.emms.length - 1 != i) ? emm.selected : emm.selected.filter((e) => e.estadoFinal == 0)}
+                                            value={(this.state.emms.length - 1 != i) ? emm.selected : emm.selected}
                                             disabled={disabled}
                                             onChange={(e) => {
+                                                console.log(e);
                                                 emm.selected = e.target.value;
-                                                this.setState({});
+                                                this.setState({emms: this.state.emms});
                                             }}
                                             error={!!this.validator.message('equipments_' + i, emm.selected, 'required')}
                                         >
