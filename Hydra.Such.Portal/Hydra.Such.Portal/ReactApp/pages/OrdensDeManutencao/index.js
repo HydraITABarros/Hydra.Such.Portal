@@ -370,11 +370,6 @@ class OrdensDeManutencao extends Component {
         this.handleTechnicalsClose = this.handleTechnicalsClose.bind(this);
         this.handleFetchMaintenanceRequest = this.handleFetchMaintenanceRequest.bind(this);
 
-        planStorageService.onSync = () => {
-            this.state.planSyncing = true;
-            this.setState({});
-        };
-        planStorageService.init();
     }
 
     fetchTechnicals({orderId, technicalId, local}, cb) {
@@ -469,7 +464,7 @@ class OrdensDeManutencao extends Component {
                                 if (index > 0) {
                                     filter += " and ";
                                 }
-                                ;
+
                                 filter += "(contains(description,'" + value + "') or contains(no,'" + value + "') " + getOdataDateFilterExpression(true, 'orderDate', value, "or");
                                 //filter += "(contains(description,'" + value + "') or contains(no,'" + value + "') or " + getOdataDateFilterExpression('orderDate', value) + " or date(orderDate) eq " + moment(value).format('YYYY-MM-DD') + "";
                                 var _institutions = this.state.institutions.filter((item) => {
@@ -492,7 +487,7 @@ class OrdensDeManutencao extends Component {
                             $filter: filter == "" ? null : filter,
                             $count: true,
                             cancelToken: call.token
-                        }
+                        };
 
                         if (typeof sort != 'undefined' && typeof sort[0] != 'undefined' && typeof sort[0].columnName != 'undefined' && typeof sort[0].direction != 'undefined') {
                             params['$orderby'] = sort[0].columnName + " " + sort[0].direction;
@@ -544,12 +539,24 @@ class OrdensDeManutencao extends Component {
     }
 
     componentDidMount() {
+        this._ismounted = true;
+        planStorageService.onSync = () => {
+            this.state.planSyncing = true;
+            if (this._ismounted) {
+                this.setState({});
+            }
+        };
+        planStorageService.init();
         this.setState({tooltipReady: true});
         window.addEventListener("resize", this.handleResize);
         this.handleTableScroll();
         document.getElementById("basicreactcomponent")
         this.setDatePickerMarginTop();
         this.setTableMarginTop();
+    }
+
+    componentWillUnmount() {
+        this._ismounted = false;
     }
 
     handleTableScroll() {
