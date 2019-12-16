@@ -22,6 +22,9 @@ const StorageService = {
         window.addEventListener('online', () => {
             StorageService.syncData();
         });
+        if (firstSync && StorageService.onFirstSync) {
+            StorageService.onFirstSync();
+        }
         return StorageService;
     },
     getSyncQueueFromLocalStorage() {
@@ -69,9 +72,6 @@ const StorageService = {
         return StorageService.syncError;
     },
     syncData: () => {
-        if (!navigator.onLine) {
-            return;
-        }
         if (StorageService.isSynchronized()) {
             if (firstSync == false && StorageService.onFirstSync) {
                 StorageService.onFirstSync();
@@ -80,6 +80,9 @@ const StorageService = {
                 StorageService.onSync();
             }
             firstSync = true;
+            return;
+        }
+        if (!navigator.onLine) {
             return;
         }
         StorageService.synching = true;
