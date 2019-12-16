@@ -108,7 +108,7 @@ class FinalState extends Component {
 
     constructor(props) {
         super(props);
-        this.state.value = props.$value.value;
+        this.state.value = props.$value.value || 0;
     }
 
     render() {
@@ -125,7 +125,7 @@ class FinalState extends Component {
                         input={
                             <FinalInput
                                 value={this.state.value}
-                                bgcolor={this.state.value == 0 ? _theme.palette.primary.medium : this.state.value == 3 ? _theme.palette.alert.bad : _theme.palette.alert.good}
+                                bgcolor={this.state.value == 0 || this.state.value == null ? _theme.palette.primary.medium : this.state.value == 3 ? _theme.palette.alert.bad : _theme.palette.alert.good}
                             />
                         }
                         onClose={() => {
