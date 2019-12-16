@@ -847,16 +847,9 @@ class eTable extends Component {
                             return (
                                 <VirtualTable.Row
                                     {...props}
-
+                                    // key={props.tableRow.key}
                                     className={"table--row--hoverable" + (props.row.selected ? " table--row--hoverable__selected" : "") + (this.props.rowClassName ? " " + this.props.rowClassName : "")}
 
-                                    //onMouseDown={() => { !isMobile ? this.handleRowPress(props) : '' }}
-                                    //onMouseUp={() => { !isMobile ? this.handleRowRelease(props) : '' }}
-                                    //onTouchMove={(e) => { console.log("MOVE"); this.handleRowTouchMove(props, e) }}
-                                    //onDragStart={(e) => { console.log("DRA"); }}
-                                    //onTouchStart={() => { !this.state.selectionMode && false ? (() => { console.log("START"); this.handleRowPress(props) })() : '' }}
-                                    //onClick={() => { this.state.selectionMode && isMobile ? (() => { console.log("CLICK"); this.handleRowPress(props) })() : '' }}
-                                    //onTouchEnd={() => { console.log("END"); this.handleRowRelease(props) }}
                                     {...useDrag(({first, last, down, movement, event}) => {
 
                                         if (movement[0] !== 0 || movement[1] !== 0) {
@@ -875,7 +868,6 @@ class eTable extends Component {
                                             return this.handleRowRelease(props)
                                         }
                                     }, {dragDelay: 0})()}
-                                    //onScroll={(e) => { console.log("MOVE"); this.handleRowTouchMove(props, e) }}
                                 />
                             )
                         }}
@@ -994,13 +986,13 @@ class eTable extends Component {
                                                             padding="0 15px 0 0"><Icon equipamentos/></Wrapper>
                                                    {values.map((value, index) => {
                                                        return (
-                                                           <span key={index + props.tableRow.key.trim()}>{index > 0 ?
+                                                           <span key={index}>{index > 0 ?
                                                                <Icon arrow-right style={{
                                                                    color: 'white',
                                                                    verticalAlign: 'middle',
                                                                    margin: '0 6px'
                                                                }}/> : ''}
-                                                               <Text b key={index}
+                                                               <Text b
                                                                      style={{color: 'white', verticalAlign: 'middle'}}
                                                                      data-html={true} data-tip={renderToString(
                                                                    <Highlighter searchWords={this.state.searchValues}
