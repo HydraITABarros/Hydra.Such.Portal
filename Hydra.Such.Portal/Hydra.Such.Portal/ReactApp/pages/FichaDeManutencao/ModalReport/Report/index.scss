@@ -58,10 +58,12 @@
     position: relative;
     padding-left: 15px;
     padding-right: 15px;
+    min-width: 100%;
 
     &--raw {
       //z-index: 100;
       position: absolute;
+      overflow: hidden;
     }
   }
 
