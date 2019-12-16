@@ -19,7 +19,8 @@ const breakpoints = muiTheme.breakpoints.values;
 const RootTitle = styled(Wrapper)` && {
 	padding: 20px 25px 0;
 	background:  ${props => props.theme.palette.bg.grey};
-	z-index: 10;
+	z-index: 100;
+	position: relative;
 	border-bottom: solid 1px ${props => props.theme.palette.bg.grey};
 	
 }`
@@ -135,15 +136,14 @@ class HTitle extends Component {
     render() {
         var completed = false;
         if (this.props.$equipments) {
-            this.props.$equipments.value.map((e) => {
-                if (e.$estadoFinal.value > 0) {
-                    completed = true;
-                    return;
-                }
-                completed = false;
-            });
+            completed = this.props.$equipments.value.filter((e) => {
+                return e.$estadoFinal.value > 0;
+            }).length == this.props.$equipments.value.length;
+
+        } else {
+            return <div></div>;
         }
-        completed = true;
+
         ModalReport.open = ModalReport.open || false;
         return (
             <RootTitle width="100%" className={this.props.className}>
@@ -152,82 +152,72 @@ class HTitle extends Component {
                     <Grid item xs={12} sm={6} md={6} lg={7} padding="15px">
                         <Title h1 data-tip={this.state.title}>{this.state.title}</Title>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={6} lg={5} padding="15px">
-                        <div style={{textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left'}}>
-                            <ModalOptions
-                                $equipments={this.props.$equipments}
-                                orderId={this.props.orderId}
-                                onChange={() => {
-                                    if (this.props.onOptionsChange) {
-                                        this.props.onOptionsChange();
-                                    }
-                                }}
-                            >
-                                <Button icon={<Icon options/>}
-                                        style={{
-                                            lineHeight: '14px',
-                                            verticalAlign: 'middle',
-                                            padding: 0,
-                                            width: '40px',
-                                            minWidth: '40px',
-                                            textAlign: 'center',
-                                            marginRight: '15px'
-                                        }}
-                                        disabled={false}
-                                ></Button>
-                            </ModalOptions>
-
-                            <Menu
-                                containerStyle={{marginRight: '15px', display: 'inline-block'}}
-                                action={
-                                    <Button disabled={!completed}
-                                            iconPrimary={<Icon report/>}
-                                            onClick={() => {
-                                                //window.location.href = window.location.origin + '/images/certificados.pdf';
-                                                //this.props.history.push(`/images/certificado.pdf`);
-                                            }}
-                                    > Relatórios <Icon arrow-down
-                                                       style={{lineHeight: '14px', verticalAlign: 'middle'}}/>
-                                    </Button>
+                    <Grid item xs={12} sm={6} md={6} lg={5} padding="15px"
+                          style={{textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left'}}>
+                        <ModalOptions
+                            $equipments={this.props.$equipments}
+                            orderId={this.props.orderId}
+                            onChange={() => {
+                                if (this.props.onOptionsChange) {
+                                    this.props.onOptionsChange();
                                 }
-                            >
-                                <MenuItem onClick={() => {
-                                    this.state.isModalReportOpen = true;
-                                    this.setState({});
-                                }}>
-                                    Relatório de Manutenção
-                                </MenuItem>
+                            }}
+                        >
+                            <Button icon={<Icon options/>}
+                                    style={{
+                                        lineHeight: '14px',
+                                        verticalAlign: 'middle',
+                                        padding: 0,
+                                        width: '40px',
+                                        minWidth: '40px',
+                                        textAlign: 'center',
+                                        marginRight: '15px'
+                                    }}
+                                    disabled={false}
+                            ></Button>
+                        </ModalOptions>
 
-                            </Menu>
+                        <Menu
+                            containerStyle={{marginRight: '15px', display: 'inline-block'}}
+                            action={
+                                <Button disabled={!completed}
+                                        iconPrimary={<Icon report/>}
+                                        onClick={() => {
+                                            //window.location.href = window.location.origin + '/images/certificados.pdf';
+                                            //this.props.history.push(`/images/certificado.pdf`);
+                                        }}
+                                >
+                                    Relatórios
+                                    <Icon arrow-down style={{lineHeight: '14px', verticalAlign: 'middle'}}/>
+                                </Button>
+                            }
+                        >
+                            <MenuItem onClick={() => {
+                                this.state.isModalReportOpen = true;
+                                this.setState({});
+                            }}>
+                                Relatório de Manutenção
+                            </MenuItem>
 
-                            <ModalReport
-                                open={this.state.isModalReportOpen || false}
-                                order={this.props.order}
-                                equipmentType={this.props.title}
-                                $equipments={this.props.$equipments}
-                                $currentUser={this.props.$currentUser}
-                                onClose={() => {
-                                    //item.open = false;
-                                    this.setState({toUpdate: this.state.toUpdate + 1, isModalReportOpen: false});
-                                }}
-                                onChange={() => {
-                                    if (this.props.onReportChange) {
-                                        this.props.onReportChange();
-                                    }
-                                }}>
-                            </ModalReport>
+                        </Menu>
 
-                            {/*<ModalAssinatura*/}
-                            {/*    equipmentType={this.props.title}*/}
-                            {/*    $equipments={this.props.$equipments}*/}
-                            {/*    $currentUser={this.props.$currentUser}*/}
-                            {/*>*/}
-                            {/*    <Button*/}
-                            {/*        disabled={!completed}*/}
-                            {/*        icon={<Icon signature/>}>Assinar</Button>*/}
-                            {/*</ModalAssinatura>*/}
+                        <ModalReport
+                            open={this.state.isModalReportOpen || false}
+                            order={this.props.order}
+                            equipmentType={this.props.title}
+                            $equipments={this.props.$equipments}
+                            $currentUser={this.props.$currentUser}
+                            onClose={() => {
+                                //item.open = false;
+                                this.setState({toUpdate: this.state.toUpdate + 1, isModalReportOpen: false});
+                            }}
+                            onChange={() => {
+                                if (this.props.onReportChange) {
+                                    this.props.onReportChange();
+                                }
+                            }}>
+                        </ModalReport>
 
-                        </div>
                     </Grid>
                     <Grid item xs={12}>
                         <Spacer height="5px"/>
@@ -356,37 +346,6 @@ class HDescription extends Component {
                                                 Rotina &nbsp;&nbsp; <Text b>B</Text>
                                             </MenuItem>
                                         </Menu>
-                                        {/*<Modal*/}
-                                        {/*    open={this.state.rotinaModalOpen}*/}
-                                        {/*    onClose={() => {*/}
-                                        {/*        this.setState({rotinaModalOpen: false, rotinaSelected: null});*/}
-                                        {/*    }}*/}
-                                        {/*    aria-labelledby="alert-dialog-title"*/}
-                                        {/*    aria-describedby="alert-dialog-description"*/}
-                                        {/*>*/}
-                                        {/*    <DialogTitle id="alert-dialog-title">*/}
-                                        {/*        <Text h2>Alteração de Rotina.</Text>*/}
-                                        {/*    </DialogTitle>*/}
-                                        {/*    <hr/>*/}
-                                        {/*    <DialogContent>*/}
-                                        {/*        Esta acção eliminará de forma permanete alguns registos.<br/>*/}
-                                        {/*        Deseja continuar?*/}
-                                        {/*        <div className="p-t-20"></div>*/}
-                                        {/*    </DialogContent>*/}
-                                        {/*    <hr/>*/}
-                                        {/*    <DialogActions>*/}
-                                        {/*        <Button default onClick={() => {*/}
-                                        {/*            this.setState({rotinaModalOpen: false, rotinaSelected: null});*/}
-                                        {/*        }}>*/}
-                                        {/*            Cancelar*/}
-                                        {/*        </Button>*/}
-                                        {/*        <Button primary onClick={() => {*/}
-                                        {/*            this.setState({rotinaModalOpen: false, rotinaSelected: null});*/}
-                                        {/*        }} autoFocus>*/}
-                                        {/*            Continuar*/}
-                                        {/*        </Button>*/}
-                                        {/*    </DialogActions>*/}
-                                        {/*</Modal>*/}
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Spacer height="10px"/>
