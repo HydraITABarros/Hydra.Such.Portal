@@ -79,7 +79,7 @@ class ModalLarge extends React.Component {
 
     render() {
         return (
-            <span>
+            <span className={"inline-block"}>
 				<Action onClick={this.handleClickOpen}>
 					{this.props.action}
 				</Action>
