@@ -66,14 +66,17 @@ class OrdensDeManutencaoLine extends Component {
         this.handleFetchEquipementsRequest = this.handleFetchEquipementsRequest.bind(this);
         this.state.orderId = this.props.match.params.orderid;
         this.addTechnical = this.addTechnical.bind(this);
-        planStorageService.onSync = () => {
-            this.state.planSyncing = true;
-            this.setState({});
-        };
-        planStorageService.init();
     }
 
     componentDidMount() {
+        this._ismounted = true;
+        planStorageService.onSync = () => {
+            this.state.planSyncing = true;
+            if (this._ismounted) {
+                this.setState({});
+            }
+        };
+        planStorageService.init();
         window.addEventListener("resize", this.handleResize);
         this.setTableMarginTop();
         this.addTechnical();
@@ -82,7 +85,6 @@ class OrdensDeManutencaoLine extends Component {
             if (headerScrollTop < e.target.scrollTop + 5 /* up */) {
                 console.log('up');
                 if (!ReactDOM.findDOMNode(this.highlightWrapper).classList.contains("om-details__header--collapsed")) {
-                    //ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
                 }
             } else  /* down */ {
                 console.log('down');
@@ -92,22 +94,16 @@ class OrdensDeManutencaoLine extends Component {
             var parallaxHeader = ReactDOM.findDOMNode(this.highlightWrapper);
             var opacity = Math.round((e.target.scrollTop - height) / (-height) * 100) / 100;
             if (parallaxHeader !== null) {
-                //if (!ReactDOM.findDOMNode(this.highlightWrapper).classList.contains("om-details__header--selection")) {
                 parallaxHeader.style = "will-change: transform; transform: translate3d(0px, " + e.target.scrollTop + "px, 0px);";
                 if (document.getElementById('header__actions')) {
                     document.getElementById('header__actions').style = "position: absolute; bottom:" + e.target.scrollTop + "px;";
                 }
-                //parallaxHeader.style = "will-change: transform; height:  " + e.target.scrollTop + "px; ";
-                //}
-                //parallaxHeader.style = "will-change: transform; opacity: " + opacity + "; transform: translate3d(0px, " + e.target.scrollTop / 2 + "px, 0px); ";
             }
-            //window.teste = parallaxHeader;
-            // if (e.target.scrollTop + 10 >= parallaxHeader.offsetHeight) {
-            // 	ReactDOM.findDOMNode(this.page).classList.remove("scroll-overlay");
-            // } else {
-            // 	ReactDOM.findDOMNode(this.page).classList.add("scroll-overlay");
-            // }
         });
+    }
+
+    componentWillUnmount() {
+        this._ismounted = false;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -333,7 +329,7 @@ class OrdensDeManutencaoLine extends Component {
                         rows={this.state.equipments}
                         pageSize={150}
                         total={this.state.equipmentsTotal}
-                        rowId={'numEquipamento'}
+                        rowId={'idEquipamento'}
                         columns={[
                             {
                                 name: 'estado',
@@ -458,4 +454,4 @@ class OrdensDeManutencaoLine extends Component {
     }
 }
 
-export default withTheme(withRouter(OrdensDeManutencaoLine));
+export default withTheme(OrdensDeManutencaoLine);
