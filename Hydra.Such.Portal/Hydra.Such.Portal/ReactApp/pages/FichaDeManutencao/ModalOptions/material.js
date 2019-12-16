@@ -59,6 +59,11 @@ class Material extends Component {
                                 return item.estadoFinal > 0;
                             }).length > 0;
                         }
+
+                        // if (!this.state.online) {
+                        //     disabled = true;
+                        // }
+
                         return (
                             <div key={i}>
                                 <Grid container spacing={1}>
