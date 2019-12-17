@@ -318,6 +318,7 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.Aprovado = false;
                     Pedido.ValorEncomenda = lines.Sum(x => x.AmountIncludingVAT);
                     Pedido.NoEncomenda = id;
+                    Pedido.NoRequisicao = details.RequisitionNo;
                     Pedido.CodigoFornecedor = details.PayToVendorNo;
                     Pedido.Fornecedor = details.PayToName;
                     Pedido.NIB = vendor.NIB;
