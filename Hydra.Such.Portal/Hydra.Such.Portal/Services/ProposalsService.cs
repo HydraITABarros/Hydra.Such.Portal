@@ -238,6 +238,7 @@ namespace Hydra.Such.Portal.Services
                 contract.VersionNo = 1;
                 contract.Status = 1;
                 contract.RelatedContract = contractId;
+                contract.CustomerShipmentDate = string.Empty; //Data de Envio fica vazia a pedido do António José 2019/12/17
                 contract.CreateDate = DateTime.Now.ToString();
                 contract.CreateUser = changedByUserName;
                 contract.UpdateDate = string.Empty;
