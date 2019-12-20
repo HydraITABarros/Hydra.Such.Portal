@@ -825,7 +825,7 @@ Saldo</Value>
               <Sizing>FitProportional</Sizing>
               <Left>0.31753cm</Left>
               <Height>1.47672cm</Height>
-              <Width>18.06773cm</Width>
+              <Width>8.95634cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -954,39 +954,6 @@ Saldo</Value>
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
-            <Textbox Name="Now">
-              <CanGrow>true</CanGrow>
-              <KeepTogether>true</KeepTogether>
-              <Paragraphs>
-                <Paragraph>
-                  <TextRuns>
-                    <TextRun>
-                      <Value>=(Day(Now()).ToString() + ". " + MonthName(Month(Now()), false).ToString() + " " + Year(Now()).ToString())</Value>
-                      <Style>
-                        <FontSize>9pt</FontSize>
-                        <Language>pt-PT</Language>
-                      </Style>
-                    </TextRun>
-                  </TextRuns>
-                  <Style />
-                </Paragraph>
-              </Paragraphs>
-              <rd:DefaultName>Now</rd:DefaultName>
-              <Top>1.81195in</Top>
-              <Left>0.3175cm</Left>
-              <Height>0.25in</Height>
-              <Width>3.52613in</Width>
-              <ZIndex>4</ZIndex>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-                <PaddingLeft>2pt</PaddingLeft>
-                <PaddingRight>2pt</PaddingRight>
-                <PaddingTop>2pt</PaddingTop>
-                <PaddingBottom>2pt</PaddingBottom>
-              </Style>
-            </Textbox>
             <Textbox Name="Textbox10">
               <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
@@ -1033,7 +1000,7 @@ Saldo</Value>
               <Left>0.3175cm</Left>
               <Height>0.56181in</Height>
               <Width>3.52613in</Width>
-              <ZIndex>5</ZIndex>
+              <ZIndex>4</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1066,7 +1033,7 @@ Contribuite Nº</Value>
               <Left>0.3175cm</Left>
               <Height>0.46042in</Height>
               <Width>1.63546in</Width>
-              <ZIndex>6</ZIndex>
+              <ZIndex>5</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1098,7 +1065,122 @@ Contribuite Nº</Value>
               <Left>0.3175cm</Left>
               <Height>0.25in</Height>
               <Width>3.52613in</Width>
+              <ZIndex>6</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox20">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=(Day(Now()).ToString() + " " + MonthName(Month(Now()), false).ToString() + " " + Year(Now()).ToString())</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value xml:space="preserve">
+</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Replace(User!UserID, "SUCH\", "")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox20</rd:DefaultName>
+              <Left>9.27387cm</Left>
+              <Height>1.47672cm</Height>
+              <Width>9.11139cm</Width>
               <ZIndex>7</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Now">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=(Day(Parameters!Data.Value).ToString() + " " + MonthName(Month(Parameters!Data.Value), false).ToString() + " " + Year(Parameters!Data.Value).ToString())</Value>
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Now</rd:DefaultName>
+              <Top>1.81195in</Top>
+              <Left>4.47157cm</Left>
+              <Height>0.25in</Height>
+              <Width>1.89067in</Width>
+              <ZIndex>8</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Now2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Data Referência</Value>
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Now</rd:DefaultName>
+              <Top>1.81195in</Top>
+              <Left>0.31754cm</Left>
+              <Height>0.25in</Height>
+              <Width>1.63545in</Width>
+              <ZIndex>9</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1141,6 +1223,7 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox48</rd:DefaultName>
+              <Top>0cm</Top>
               <Left>12.97808cm</Left>
               <Height>0.6cm</Height>
               <Width>2.50038cm</Width>
@@ -1175,6 +1258,7 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox49</rd:DefaultName>
+              <Top>0cm</Top>
               <Left>15.47846cm</Left>
               <Height>0.6cm</Height>
               <Width>2.30812cm</Width>
@@ -1204,6 +1288,7 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox13</rd:DefaultName>
+              <Top>0cm</Top>
               <Left>0.3175cm</Left>
               <Height>0.6cm</Height>
               <Width>12.66058cm</Width>
@@ -1238,6 +1323,7 @@ Contribuite Nº</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox13</rd:DefaultName>
+              <Top>0cm</Top>
               <Left>0.31753cm</Left>
               <Height>0.6cm</Height>
               <Width>12.66058cm</Width>

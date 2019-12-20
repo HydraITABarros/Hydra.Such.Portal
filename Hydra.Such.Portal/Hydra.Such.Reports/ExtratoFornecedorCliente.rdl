@@ -825,7 +825,7 @@ Saldo</Value>
             <Top>0.17639cm</Top>
             <Left>0.00004cm</Left>
             <Height>0.59393in</Height>
-            <Width>7.4803in</Width>
+            <Width>7.48029in</Width>
             <Style />
           </Tablix>
         </ReportItems>
@@ -845,7 +845,7 @@ Saldo</Value>
               <Sizing>FitProportional</Sizing>
               <Left>0.00004cm</Left>
               <Height>1.47672cm</Height>
-              <Width>18.06773cm</Width>
+              <Width>8.95634cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -981,7 +981,7 @@ Saldo</Value>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=(Day(Now()).ToString() + ". " + MonthName(Month(Now()), false).ToString() + " " + Year(Now()).ToString())</Value>
+                      <Value>=(Day(Parameters!Data.Value).ToString() + " " + MonthName(Month(Parameters!Data.Value), false).ToString() + " " + Year(Parameters!Data.Value).ToString())</Value>
                       <Style>
                         <FontSize>9pt</FontSize>
                         <Language>pt-PT</Language>
@@ -993,9 +993,9 @@ Saldo</Value>
               </Paragraphs>
               <rd:DefaultName>Now</rd:DefaultName>
               <Top>1.81195in</Top>
-              <Left>0.00001cm</Left>
+              <Left>4.15407cm</Left>
               <Height>0.25in</Height>
-              <Width>3.52613in</Width>
+              <Width>1.89067in</Width>
               <ZIndex>4</ZIndex>
               <Style>
                 <Border>
@@ -1129,6 +1129,88 @@ Contribuite Nº</Value>
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
+            <Textbox Name="Now2">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Data Referência</Value>
+                      <Style>
+                        <FontSize>9pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Now</rd:DefaultName>
+              <Top>1.81195in</Top>
+              <Left>0.00004cm</Left>
+              <Height>0.25in</Height>
+              <Width>1.63545in</Width>
+              <ZIndex>8</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox20">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=(Day(Now()).ToString() + " " + MonthName(Month(Now()), false).ToString() + " " + Year(Now()).ToString())</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value xml:space="preserve">
+</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=Replace(User!UserID, "SUCH\", "")</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                        <Language>pt-PT</Language>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style>
+                    <TextAlign>Right</TextAlign>
+                  </Style>
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox20</rd:DefaultName>
+              <Left>8.95637cm</Left>
+              <Height>1.47672cm</Height>
+              <Width>10.04363cm</Width>
+              <ZIndex>9</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
           </ReportItems>
           <Style>
             <Border>
@@ -1232,6 +1314,7 @@ NvHDuYvQWxXr0ON5S9Ln2NOPwRSJal6+Z96hHdA0mHAro3zGs4g18XgzYfwtbwlq0DVciKhpz+HigHi3
 OGcNttm+IszYSDwzbyy51mM+ToEeeWSuYH6Y3lhT4edh4REDJjMLNBMtzJhT1QAeaD2RUE+Xgo7OcUl/tvGmRtJ9qKE6ddkGWgmmegrFkoRm8Vw7QHc7mTaljk8SxQEvSwGos9BGGA879h2AyhwFMyoaHl0NnfGzrQdGGCuanBIjdBfPqizMOk0ZEyJVQlUgKbmreayTprExfXnfOx/KlXpom/bXTEj8ew60Euy4TfQqNvoYjxiOac0AQAGi/fD6I/l+FiD2zKBMfo2dFNuq2zN9Z5w13EPTnv8V3Kb2wYJWrEHxGNqzjoOOh38/jUalT21/Y24guSi4YDM0iJbY/6HYp/XMPuw8NhrU1R2RTMaLM87uvbX/7l3cuXDHwYZK3Of19t+dETvGel/vmHvb8o65zdCw1/Oc2Oe3v9G/beBe2035Ei3E+djQihl3l3LsHOpMWI918jFQR5mOi93MUi14ew/v81s6Uno2jgZcq17XwdjMhmvCimaB7zWjyfNMzjiZvskcKybsM+t7D46sADOMgu9px9vkaipc5AhAUP5DaDvjAtGOY3LguQOgg9Om969U/OumMPyH0xlwAf8JsBNoCcGdNJFMpn+engaYVg/hJPvW2UTQgDolYRjgmXvJIKYgdPPsAUCgz+ISozMZzHgxkevAtYt91QR7nPegKHBQlux2ilSZtm0rw9L+uedgwAswCOajQEB1CVGfLnn7/sBz2w7clkogf+DpuPkzRW8f/YHnoRxmbgEeRmnSfuPfD38GaoWEjp8f9XiYgIKY51qvsF6AcMTx7se+FQI8nhv53p+52jZtf2zJf287zneWzpStGmy5/fp/Xy3170jgpVQAAAAASUVORK5CYII=</ImageData>
     </EmbeddedImage>
   </EmbeddedImages>
+  <Language>pt-PT</Language>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>64de8ca0-294b-4fc8-9d57-5b3abe0542cb</rd:ReportID>
 </Report>

@@ -983,7 +983,6 @@ IIF(Sum(Fields!Deposito.Value, "MovCaixa") &lt; 0, ABS(Sum(Fields!Deposito.Value
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>

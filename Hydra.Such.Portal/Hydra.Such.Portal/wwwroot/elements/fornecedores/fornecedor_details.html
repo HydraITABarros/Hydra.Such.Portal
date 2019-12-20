@@ -493,12 +493,17 @@
                     //return true;
                 },
                 _responseVerificarDataProcessor: function (e) {
+                    debugger;
                     if (this.verificarData.eReasonCode != 0) {
                         this._openToastError(this.verificarData.eMessage);
-                        return false;
                     }
                     else {
-                        return true;
+                        if (this.data.nomeAnexo == undefined || this.data.nomeAnexo == null || this.data.nomeAnexo == "") {
+                            this._showErrorMessage("É obrigatório indicar um ficheiro com o IBAN do fornecedor.");
+                        }
+                        else {
+                            this._executeRequest("/Fornecedores/Create", this.data)
+                        }
                     }
                 },
 
@@ -513,6 +518,7 @@
 
                 //CRUDS
                 _create: function () {
+                    debugger;
                     if (this._validateData()) {
                         this._executeRequest("/Fornecedores/Create", this.data);
                     }
@@ -673,14 +679,18 @@
 
 
                 _btnCriarFornecedor: function (e) {
-                    if (this._validateData()) {
-                        if (this.data.nomeAnexo == undefined || this.data.nomeAnexo == null || this.data.nomeAnexo == "") {
-                            this._showErrorMessage("É obrigatório indicar um ficheiro com o IBAN do fornecedor.");
-                        }
-                        else {
-                            this._executeRequest("/Fornecedores/Create", this.data)
-                        }
-                    }
+                    debugger;
+                    this._validateData();
+
+
+                    //if (this._validateData()) {
+                    //    if (this.data.nomeAnexo == undefined || this.data.nomeAnexo == null || this.data.nomeAnexo == "") {
+                    //        this._showErrorMessage("É obrigatório indicar um ficheiro com o IBAN do fornecedor.");
+                    //    }
+                    //    else {
+                    //        this._executeRequest("/Fornecedores/Create", this.data)
+                    //    }
+                    //}
                 },
 
 
