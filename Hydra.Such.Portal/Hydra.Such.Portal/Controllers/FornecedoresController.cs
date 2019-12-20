@@ -323,7 +323,7 @@ namespace Hydra.Such.Portal.Controllers
                         Email.From = "esuch@such.pt";
                         Email.To.Add(Parametro.Valor);
                         Email.BCC.Add("MMarcelo@such.pt");
-                        Email.BCC.Add("ARomao@esuch.pt");
+                        Email.BCC.Add("ARomao@such.pt");
                         Email.Subject = "e-SUCH - Novo Fornecedor";
                         Email.Body = MakeEmailBodyContent("Criado o Fornecedor:  " + vendor.No + " - " + vendor.Name, UserEmail.Nome);
                         Email.Anexo = path_final;
