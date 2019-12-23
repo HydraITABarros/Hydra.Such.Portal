@@ -158,7 +158,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras); //1, 6);
 
-                List<TabelaConfRecursosFh>  AllRecursos = DBTabelaConfRecursosFh.GetAll();
+                List<TabelaConfRecursosFh> AllRecursos = DBTabelaConfRecursosFh.GetAll();
 
                 if (UPerm != null && UPerm.Read.Value)
                 {
