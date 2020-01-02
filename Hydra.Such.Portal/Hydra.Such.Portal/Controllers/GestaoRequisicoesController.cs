@@ -1250,9 +1250,9 @@ namespace Hydra.Such.Portal.Controllers
             if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
             {
                 //if (status != (int)RequisitionStates.Archived) //ARQUIVO
-                    item = DBRequest.GetById(requisitionId).ParseToViewModel();
+                item = DBRequest.GetById(requisitionId).ParseToViewModel();
                 //else
-                    //item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
+                //item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
             }
             else
                 item = new RequisitionViewModel();
@@ -1894,7 +1894,14 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //Create Lines in NAV
-                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLines(productsToHandle, transactionId, configws);
+
+                                    //ORIGINAL
+                                    //Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLines(productsToHandle, transactionId, configws);
+
+                                    //TEMPORÁRIO 02/01/2020
+                                    DateTime DataRececao = string.IsNullOrEmpty(item.ReceivedDate) ? DateTime.Now : Convert.ToDateTime(item.ReceivedDate);
+                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLinesWithDataRececao(productsToHandle, transactionId, configws, DataRececao);
+
                                     createNavDiaryLines.Wait();
                                     if (createNavDiaryLines.IsCompletedSuccessfully)
                                     {
@@ -2431,7 +2438,7 @@ namespace Hydra.Such.Portal.Controllers
                                         NoProjeto = Linha.NºProjeto,
                                         RegiaoMercadoLocal = item.LocalMarketRegion,
                                         Estado = 1, //APROVADO
-                                    DataCriacao = DateTime.Now,
+                                        DataCriacao = DateTime.Now,
                                         UtilizadorCriacao = User.Identity.Name,
                                         DataMercadoLocal = DateTime.Now,
                                         Responsaveis = Responsaveis
@@ -2827,12 +2834,12 @@ namespace Hydra.Such.Portal.Controllers
                     //if (UPerm.Create == true)
                     //{
 
-                        
+
                     Requisicoes.ForEach(Requisicao =>
                     {
                         if (result.eReasonCode == 1)
                         {
-                            Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "" ;
+                            Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
                             RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                             Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
 
@@ -2934,7 +2941,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            catch(Exception ex) { createTransferShipResult.eMessage += ex.Message; }
+            catch (Exception ex) { createTransferShipResult.eMessage += ex.Message; }
 
             return Json(createTransferShipResult);
         }
