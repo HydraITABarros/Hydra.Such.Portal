@@ -4839,12 +4839,17 @@
                 },
 
                 _printFH: function () {
-                    if (this._reportserverurl != undefined) {
-                        this.$.rptContainer.src = this._reportserverurl + "FolhaHora&FH=" + this._folhadehoraid + "&Utilizador=" + this._userlogin;
-                        this.$.rptDialog.open();
+                    if (this.chkTerminada == true) {
+                        if (this._reportserverurl != undefined) {
+                            this.$.rptContainer.src = this._reportserverurl + "FolhaHora&FH=" + this._folhadehoraid + "&Utilizador=" + this._userlogin;
+                            this.$.rptDialog.open();
+                        }
+                        else {
+                            this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        }
                     }
                     else {
-                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        this._showErrorMessage("Não é possivel imprimir. A Folha de Horas não está Terminada.");
                     }
                 },
 
