@@ -158,7 +158,8 @@ namespace Hydra.Such.Data.Logic.Project
                         ResponsabilityCenterCode = x.CódigoCentroResponsabilidade,
                         ContractoNo = x.NºContrato,
                         ProjectTypeCode = x.CódTipoProjeto,
-                        ProjectTypeDescription = x.CódTipoProjetoNavigation.Descrição
+                        ProjectTypeDescription = x.CódTipoProjetoNavigation.Descrição,
+                        DescricaoDetalhada =x.DescriçãoDetalhada
                     }).ToList(); ;
                 }
             }

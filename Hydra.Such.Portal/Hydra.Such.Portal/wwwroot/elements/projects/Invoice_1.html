@@ -48,10 +48,12 @@
 
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             <template is="dom-if" if="{{isBillingList}}">
-                <paper-button class="tablinks" id="btnHistory" on-tap="_getHistory"><i class="fa fa-history" aria-hidden="true"></i> Histórico</paper-button>
+                <paper-button class="tablinks" id="btnHistory" on-tap="_getHistory"><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
+                <paper-button class="tablinks" id="btnReset" on-tap="_Reset"><i class="fa fa-undo" aria-hidden="true"></i> Eliminar Pré-Registo</paper-button>
             </template>
             <template is="dom-if" if="{{isNot(isBillingList)}}">
                 <paper-button class="tablinks" id="btnHistory" on-tap="_getToBilling"><i class="fa fa-list-alt" aria-hidden="true"></i> Não Faturados</paper-button>
+                <paper-button class="tablinks" id="btnHistoryUndo" on-tap="_HistoryUndo"><i class="fa fa-undo" aria-hidden="true"></i> Eliminar Autorização</paper-button>
             </template>
 
             <!--start ColumnToggle-->
@@ -328,6 +330,23 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Projetos/ResetProjeto"
+                   id="resetProjeto_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   last-response="{{ResetProjetoResponse}}"
+                   on-response="_ResetProjetoResponse">
+        </iron-ajax>
+
+        <iron-ajax url="/Projetos/UndoProjeto"
+                   id="undoProjeto_ajax"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json"
+                   last-response="{{UndoProjetoResponse}}"
+                   on-response="_UndoProjetoResponse">
+        </iron-ajax>
 
         <vaadin-grid column-reordering-allowed id="projectInvoiceAutorization" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[authorizedMovements]]" class="editGrid">
 
@@ -548,14 +567,14 @@
                 </vaadin-grid-column>
 
                 <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.movementType.hidden }}">
-                    <template class="header">
-                        <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="movementType" />
-                    </template>
-                    <template>
-                        [[ _parseMovementType(item.movementType) ]]
-                    </template>
-                </vaadin-grid-column>-->
+                <template class="header">
+                    <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementType" />
+                </template>
+                <template>
+                    [[ _parseMovementType(item.movementType) ]]
+                </template>
+            </vaadin-grid-column>-->
 
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.type.hidden }}">
                     <template class="header">
@@ -633,14 +652,14 @@
                 </vaadin-grid-column>
 
                 <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.billable.hidden }}">
-                    <template class="header">
-                        <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="billable" />
-                    </template>
-                    <template>
-                        <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
-                    </template>
-                </vaadin-grid-column>-->
+                <template class="header">
+                    <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="billable" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.billable}}"></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>-->
 
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.resourceType.hidden }}">
                     <template class="header">
@@ -714,32 +733,32 @@
                 </vaadin-grid-column>
 
                 <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.adjustedDocument.hidden }}">
-                    <template class="header">
-                        <vaadin-grid-sorter path="adjustedDocument">Nº Guia Corrigida</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="adjustedDocument" />
-                    </template>
-                    <template>
-                        <span slot="suffix">{{item.adjustedDocument}}</span>
-                    </template>
-                </vaadin-grid-column>-->
+                <template class="header">
+                    <vaadin-grid-sorter path="adjustedDocument">Nº Guia Corrigida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="adjustedDocument" />
+                </template>
+                <template>
+                    <span slot="suffix">{{item.adjustedDocument}}</span>
+                </template>
+            </vaadin-grid-column>-->
                 <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.adjustedDocumentData.hidden }}">
-                    <template class="header">
-                        <vaadin-grid-sorter path="adjustedDocumentData">Data Consumo Guia Corrigida</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="adjustedDocumentData" />
-                    </template>
-                    <template>
-                        <span slot="suffix">{{item.adjustedDocumentData}}</span>
-                    </template>
-                </vaadin-grid-column>-->
+                <template class="header">
+                    <vaadin-grid-sorter path="adjustedDocumentData">Data Consumo Guia Corrigida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="adjustedDocumentData" />
+                </template>
+                <template>
+                    <span slot="suffix">{{item.adjustedDocumentData}}</span>
+                </template>
+            </vaadin-grid-column>-->
                 <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.residueFinalDestinyCode.hidden }}">
-                    <template class="header">
-                        <vaadin-grid-sorter path="residueFinalDestinyCode">Destino Final Residuos</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="residueFinalDestinyCode" />
-                    </template>
-                    <template>
-                        <span slot="suffix">{{item.residueFinalDestinyCode}}</span>
-                    </template>
-                </vaadin-grid-column>-->
+                <template class="header">
+                    <vaadin-grid-sorter path="residueFinalDestinyCode">Destino Final Residuos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="residueFinalDestinyCode" />
+                </template>
+                <template>
+                    <span slot="suffix">{{item.residueFinalDestinyCode}}</span>
+                </template>
+            </vaadin-grid-column>-->
 
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.mealType.hidden }}">
                     <template class="header">
@@ -762,14 +781,14 @@
                 </vaadin-grid-column>
 
                 <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.locationCode.hidden }}">
-                    <template class="header">
-                        <vaadin-grid-sorter path="locationCode">Localização</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="locationCode" />
-                    </template>
-                    <template>
-                        [[ _parseLocation(item.locationCode)]]
-                    </template>
-                </vaadin-grid-column>-->
+                <template class="header">
+                    <vaadin-grid-sorter path="locationCode">Localização</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="locationCode" />
+                </template>
+                <template>
+                    [[ _parseLocation(item.locationCode)]]
+                </template>
+            </vaadin-grid-column>-->
 
                 <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.unitCost.hidden }}">
                     <template class="header">
@@ -1647,7 +1666,35 @@
                     this.$.projectInvoiceAutorization._loading = true;
                     this.isBillingList = true;
 
-                }
+                },
+
+
+
+
+
+                _Reset: function (selectedItem, selectedItems) {
+                    if (this.selectedItems.length != 0) {
+                        this.$.resetProjeto_ajax.body = JSON.stringify(this.selectedItems);
+                        this.$.resetProjeto_ajax.generateRequest();
+                    } else {
+                        this.openToastError("Selecione pelo menos um projeto!");
+                    }
+                },
+
+                _HistoryUndo: function (selectedItem, selectedItems) {
+                    if (this.selectedItems.length != 0) {
+                        this.$.undoProjeto_ajax.body = JSON.stringify(this.selectedItems);
+                        this.$.undoProjeto_ajax.generateRequest();
+                    } else {
+                        this.openToastError("Selecione pelo menos um projeto!");
+                    }
+                },
+
+
+
+
+
+
 
             });
         });

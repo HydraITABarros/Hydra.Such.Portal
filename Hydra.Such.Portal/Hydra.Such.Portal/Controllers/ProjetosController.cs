@@ -797,49 +797,39 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ErrorHandler result = new ErrorHandler();
 
-                MovimentosDeAprovação MovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == data.ProjectNo && x.Tipo == 5).LastOrDefault();
-                if (MovAprovacao != null && MovAprovacao.Estado == 1)
+                List<DiárioDeProjeto> Movements = DBProjectDiary.GetByProjectNo(data.ProjectNo, User.Identity.Name);
+                Movements.RemoveAll(x => !x.Registado.Value);
+
+                if (Movements.Count() > 0)
                 {
                     result = new ErrorHandler()
                     {
-                        eReasonCode = 7,
-                        eMessage = "Existe movimento de aprovação por aprovar."
+                        eReasonCode = 6,
+                        eMessage = "Já existem movimentos de projeto."
                     };
                     return Json(result);
                 }
                 else
                 {
-                    List<DiárioDeProjeto> Movements = DBProjectDiary.GetByProjectNo(data.ProjectNo, User.Identity.Name);
-                    Movements.RemoveAll(x => !x.Registado.Value);
-
-                    if (Movements.Count() > 0)
+                    //Update Project on NAV
+                    //Read NAV Project Key
+                    Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
+                    try
+                    {
+                        TReadNavProj.Wait();
+                    }
+                    catch (Exception ex)
                     {
                         result = new ErrorHandler()
                         {
-                            eReasonCode = 6,
-                            eMessage = "Já existem movimentos de projeto."
+                            eReasonCode = 5,
+                            eMessage = "Ocorreu um erro ao ler o projeto do NAV."
                         };
                         return Json(result);
                     }
-                    else
-                    {
-                        //Update Project on NAV
-                        //Read NAV Project Key
-                        Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.ProjectNo, _configws);
-                        try
-                        {
-                            TReadNavProj.Wait();
-                        }
-                        catch (Exception ex)
-                        {
-                            result = new ErrorHandler()
-                            {
-                                eReasonCode = 5,
-                                eMessage = "Ocorreu um erro ao ler o projeto do NAV."
-                            };
-                            return Json(result);
-                        }
 
+                    if (TReadNavProj.Result.WSJob != null)
+                    {
                         if (TReadNavProj.IsCompletedSuccessfully)
                         {
                             Task<WSCreateNAVProject.Delete_Result> TDeleteNavProj = WSProject.DeleteNavProject(TReadNavProj.Result.WSJob.Key, _configws);
@@ -858,6 +848,45 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
+                                    List<MovimentosDeAprovação> AllMovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == data.ProjectNo && x.Tipo == 5).ToList();
+
+                                    if (AllMovAprovacao != null & AllMovAprovacao.Count > 0)
+                                    {
+                                        foreach (MovimentosDeAprovação MovAprovacao in AllMovAprovacao)
+                                        {
+                                            if (MovAprovacao != null)
+                                            {
+                                                List<UtilizadoresMovimentosDeAprovação> AllUserMov = DBUserApprovalMovements.GetById(MovAprovacao.NºMovimento);
+
+                                                if (AllUserMov != null && AllUserMov.Count > 0)
+                                                {
+                                                    foreach (UtilizadoresMovimentosDeAprovação UserMov in AllUserMov)
+                                                    {
+                                                        if (DBUserApprovalMovements.Delete(UserMov) == false)
+                                                        {
+                                                            result = new ErrorHandler()
+                                                            {
+                                                                eReasonCode = 10,
+                                                                eMessage = "Ocorreu um erro ao eliminar o Movimento de Aprovação dos Utilizadores."
+                                                            };
+                                                            return Json(result);
+                                                        }
+                                                    }
+                                                }
+
+                                                if (DBApprovalMovements.Delete(MovAprovacao) == false)
+                                                {
+                                                    result = new ErrorHandler()
+                                                    {
+                                                        eReasonCode = 11,
+                                                        eMessage = "Ocorreu um erro ao eliminar o Movimento de Aprovação."
+                                                    };
+                                                    return Json(result);
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     if (DBProjects.Delete(data.ProjectNo) == true)
                                     {
                                         result = new ErrorHandler()
@@ -897,8 +926,68 @@ namespace Hydra.Such.Portal.Controllers
                             };
                             return Json(result);
                         }
-
                     }
+                    else
+                    {
+                        List<MovimentosDeAprovação> AllMovAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == data.ProjectNo && x.Tipo == 5).ToList();
+
+                        if (AllMovAprovacao != null & AllMovAprovacao.Count > 0)
+                        {
+                            foreach (MovimentosDeAprovação MovAprovacao in AllMovAprovacao)
+                            {
+                                if (MovAprovacao != null)
+                                {
+                                    List<UtilizadoresMovimentosDeAprovação> AllUserMov = DBUserApprovalMovements.GetById(MovAprovacao.NºMovimento);
+
+                                    if (AllUserMov != null && AllUserMov.Count > 0)
+                                    {
+                                        foreach (UtilizadoresMovimentosDeAprovação UserMov in AllUserMov)
+                                        {
+                                            if (DBUserApprovalMovements.Delete(UserMov) == false)
+                                            {
+                                                result = new ErrorHandler()
+                                                {
+                                                    eReasonCode = 10,
+                                                    eMessage = "Ocorreu um erro ao eliminar o Movimento de Aprovação dos Utilizadores."
+                                                };
+                                                return Json(result);
+                                            }
+                                        }
+                                    }
+
+                                    if (DBApprovalMovements.Delete(MovAprovacao) == false)
+                                    {
+                                        result = new ErrorHandler()
+                                        {
+                                            eReasonCode = 11,
+                                            eMessage = "Ocorreu um erro ao eliminar o Movimento de Aprovação."
+                                        };
+                                        return Json(result);
+                                    }
+                                }
+                            }
+                        }
+
+                        if (DBProjects.Delete(data.ProjectNo) == true)
+                        {
+                            result = new ErrorHandler()
+                            {
+                                eReasonCode = 0,
+                                eMessage = "Projeto removido com sucesso."
+                            };
+                            return Json(result);
+                        }
+                        else
+                        {
+                            result = new ErrorHandler()
+                            {
+                                eReasonCode = 8,
+                                eMessage = "Ocorreu um erro ao eliminar o Projecto do eSUCH."
+                            };
+                            return Json(result);
+                        }
+                    }
+
                 }
             }
             return Json(false);
@@ -6499,6 +6588,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Movimentos Venda");
                     Col = Col + 1;
                 }
+                if (dp["descricaoDetalhada"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição Detalhada");
+                    Col = Col + 1;
+                }
 
                 if (dp != null)
                 {
@@ -6571,6 +6665,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["movimentosVenda"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.MovimentosVenda);
+                            Col = Col + 1;
+                        }
+                        if (dp["descricaoDetalhada"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DescricaoDetalhada);
                             Col = Col + 1;
                         }
                         count++;
