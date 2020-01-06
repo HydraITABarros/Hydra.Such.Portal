@@ -518,7 +518,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
+                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.Estado != 2)
@@ -642,7 +643,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
+                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.Estado == 0) &&
@@ -768,7 +770,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
+                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.Estado == 0) &&
@@ -894,7 +897,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
+                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.IntegradoEmRh == false || x.IntegradoEmRh == null) &&
@@ -1020,8 +1024,9 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
-                        
+                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
+                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+
                         (x.Eliminada == false) &&
                         (x.IntegradoEmRhkm == false || x.IntegradoEmRhkm == null) &&
                         (x.Estado == 1) && // 1 == VALIDADO
@@ -1145,7 +1150,8 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
                         x.Validador.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRh.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
                         x.IntegradorEmRhKm.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
-                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
+                        x.UtilizadorModificação.ToUpper().Contains(CUser.IdUtilizador.ToUpper()) ||
+                        x.Intervenientes.ToUpper().Contains(CUser.IdUtilizador.ToUpper())) &&
 
                         (x.Eliminada == false) &&
                         (x.Estado == 2) // 2 == REGISTADO
