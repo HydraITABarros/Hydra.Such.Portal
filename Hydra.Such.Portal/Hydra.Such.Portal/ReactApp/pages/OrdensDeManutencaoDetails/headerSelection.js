@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import { Text, Icon, Circle, Wrapper, Spacer, Button } from 'components';
+import {Text, Icon, Circle, Wrapper, Spacer, Button} from 'components';
 import Functions from '../../helpers/functions';
 import MuiGrid from '@material-ui/core/Grid';
-import styled, { css, theme, injectGlobal, withTheme } from 'styled-components';
-import { createMuiTheme } from '@material-ui/core/styles';
+import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
+import {createMuiTheme} from '@material-ui/core/styles';
 import Hidden from '@material-ui/core/Hidden';
-import { withRouter } from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
+
 injectGlobal`
 	.transparent {
 		opacity: 0
@@ -23,14 +24,14 @@ const TextHeader = styled(Text)`
     display: inline-block;
 `
 const CircleOm = {
-	wrapper: styled.div`
+    wrapper: styled.div`
         margin: auto;
         white-space: nowrap;
         ${props => props.primary && css`
         
         `}
     `,
-	icon: styled.div`
+    icon: styled.div`
         font-size: 33px;
         line-height: 35px;
         display: inline-block;
@@ -60,7 +61,7 @@ const CircleOm = {
             }
         }
     `,
-	chart: styled.div`
+    chart: styled.div`
         padding: 6px;
         display: inline-block;
         vertical-align: middle;
@@ -93,39 +94,55 @@ const CircleOmWrapper = styled(CircleOm.wrapper)`
 `;
 
 class Header extends Component {
-	state = {
-		isLoading: true
-	}
+    state = {
+        isLoading: true
+    }
 
-	constructor(props) {
-		super(props);
-	}
+    constructor(props) {
+        super(props);
+    }
 
-	componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps) {
 
-		if (prevProps.isLoading !== this.state.isLoading) {
-			this.setState({ isLoading: prevProps.isLoading });
-		}
-	}
+        if (prevProps.isLoading !== this.state.isLoading) {
+            this.setState({isLoading: prevProps.isLoading});
+        }
+    }
 
-	render() {
-		return (
-			<div>
-				<Wrapper padding={' 20px 25px'} width="100%" >
-					<span>
-						<Text b onClick={(e) => { this.props.onBackClick(e) || ((e) => { }) }}
-							style={{ verticalAlign: 'middle', textDecoration: 'underline', cursor: 'pointer' }}>Voltar</Text>
+    render() {
+        return (
+            <div>
+                <Wrapper padding={'20px 25px'} width="100%" style={{textAlign: 'right'}}>
+
+                    <br/><br/>
+                </Wrapper>
+
+                <Wrapper id="header__actions" padding={' 20px 25px 0'} width="100%"
+                         style={{position: 'absolute', bottom: '5px'}}>
+                    <Button
+                        iconPrimary={<Icon open/>}
+                        className={"m-r-20"}
+                        onClick={(e) => {
+                            this.props.onOpenClick(e)
+                        }} disabled={!this.props.openEnabled}>Abrir</Button>
+                    <span
+                        className={"m-r-20"}>
+						<Text b onClick={(e) => {
+                            this.props.onBackClick(e) || ((e) => {
+                            })
+                        }}
+                              style={{
+                                  verticalAlign: 'middle',
+                                  textDecoration: 'underline',
+                                  cursor: 'pointer'
+                              }}>Voltar</Text>
 					</span>
-					<br /><br />
-					<Text h2 >{this.props.count}<small>/{'20'}</small> Seleccionados</Text>
-				</Wrapper>
-
-				<Wrapper id="header__actions" padding={' 20px 25px 0'} width="100%" style={{ position: 'absolute', bottom: 0 }} >
-					<Button iconPrimary={<Icon open />} onClick={(e) => { this.props.onOpenClick(e) }} disabled={!this.props.openEnabled}>Abrir</Button>
-				</Wrapper>
-			</div>
-		)
-	}
+                    <Text span
+                          className={'pull-right m-t-10'}>{this.props.count}<small>/{'5'}</small> Seleccionados</Text>
+                </Wrapper>
+            </div>
+        )
+    }
 };
 
 export default withRouter(withTheme(Header));
