@@ -27,6 +27,7 @@ namespace Hydra.Such.Portal.ViewModels
         public int IdRegiao { get; set; }
         public int Modelo { get; set; }
         public int IdCliente { get; set; }
+        public int Signed { get; set; }
     }
 
 }
