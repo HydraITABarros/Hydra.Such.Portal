@@ -70,6 +70,7 @@ class SplitedReport extends Component {
     state = {
         report: [],
         refsHeader: [],
+        refsSimplified: [],
         refsMaintenance: [],
         refsQuality: [],
         refsQuantity: [],
@@ -80,6 +81,7 @@ class SplitedReport extends Component {
     constructor(props) {
         super(props);
         this.state.refsHeader = props.refsHeader;
+        this.state.refsSimplified = props.refsSimplified;
         this.state.refsMaintenance = props.refsMaintenance;
         this.state.refsQuality = props.refsQuality;
         this.state.refsQuantity = props.refsQuantity;
@@ -96,6 +98,7 @@ class SplitedReport extends Component {
     componentWillReceiveProps(nextProps) {
         var state = {};
         state.refsHeader = nextProps.refsHeader;
+        state.refsSimplified = nextProps.refsSimplified;
         state.refsMaintenance = nextProps.refsMaintenance;
         state.refsQuality = nextProps.refsQuality;
         state.refsQuantity = nextProps.refsQuantity;
@@ -111,11 +114,11 @@ class SplitedReport extends Component {
     splitReport() {
 
         this.state.report = [
-            {header: [], maintenance: [], quality: [], quantity: [], comments: [], footer: []}
+            {header: [], simplified: [], maintenance: [], quality: [], quantity: [], comments: [], footer: []}
         ];
         let report = this.state.report;
-        let pageHeight = 1123 - (151 + 73 + 45);
-        let tolerance = 20;
+        let pageHeight = 1123 - (151 + 73 + 45 + 40);
+        let tolerance = 40;
         let currentPage = 1;
         let currentHeight = 1;
 
@@ -128,7 +131,15 @@ class SplitedReport extends Component {
             if (((currentHeight + elHeight + tolerance) > (pageHeight * currentPage))) {
                 currentPage++;
                 //currentHeight = 0;
-                report.push({header: [], maintenance: [], quality: [], quantity: [], comments: [], footer: []});
+                report.push({
+                    header: [],
+                    simplified: [],
+                    maintenance: [],
+                    quality: [],
+                    quantity: [],
+                    comments: [],
+                    footer: []
+                });
             }
             currentHeight += elHeight;
             report[currentPage - 1][partial].push(
@@ -136,6 +147,9 @@ class SplitedReport extends Component {
             );
         };
 
+        this.state.refsSimplified.map((el, i) => {
+            pushToReport(el, 'simplified', i);
+        });
         this.state.refsHeader.map((el, i) => {
             pushToReport(el, 'header', i);
         });
@@ -170,7 +184,7 @@ class SplitedReport extends Component {
         var responsibleEmployee = (this.props.order && this.props.order.responsibleEmployeeObj && this.props.order.responsibleEmployeeObj.nome);
 
         let report = this.state.report;
-        
+
         return (
             <div className="report__wrapper">
                 <div className="report" id={"report"}>
@@ -190,6 +204,13 @@ class SplitedReport extends Component {
                                             {item.header}
                                         </div>
                                         <div className="report__hr"></div>
+                                    </React.Fragment>
+                                    }
+                                    {item.simplified.length > 0 &&
+                                    <React.Fragment>
+                                        <div className="report__body">
+                                            {item.simplified}
+                                        </div>
                                     </React.Fragment>
                                     }
                                     {item.maintenance.length > 0 &&
@@ -213,7 +234,7 @@ class SplitedReport extends Component {
                                         </div>
                                     </React.Fragment>
                                     }
-                                    {item.comments.length > 0 &&
+                                    {item.comments.length > 2 &&
                                     <React.Fragment>
                                         <div className="report__body">
                                             {item.comments}

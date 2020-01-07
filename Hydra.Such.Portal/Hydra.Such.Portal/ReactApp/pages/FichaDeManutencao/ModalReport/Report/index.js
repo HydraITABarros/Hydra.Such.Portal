@@ -37,6 +37,7 @@ class Report extends Component {
         report: [],
         refsHeader: [],
         refsMaintenance: [],
+        refsSimplified: [],
         refsQuality: [],
         refsQuantity: [],
         refsComments: [],
@@ -53,6 +54,7 @@ class Report extends Component {
     resetRefs() {
         //return;
         this.state.refsHeader = [];
+        this.state.refsSimplified = [];
         this.state.refsMaintenance = [];
         this.state.refsQuality = [];
         this.state.refsQuantity = [];
@@ -99,6 +101,8 @@ class Report extends Component {
 
     render() {
         refAux = 0;
+
+        console.log(this.props);
 
         var order = this.props.order || {};
         var maintenance, quality, quantity;
@@ -170,7 +174,7 @@ class Report extends Component {
 
                                 <div className="report__row__el"
                                      ref={(el) => this.state.refsHeader[refAux++] = el}>
-                                    <div className="report__spacer--45"></div>
+                                    <div className="report__spacer--20"></div>
                                     {/* Cliente */}
                                     <div className="col-xs-2">
                                         <Text b className="report__label">Cliente</Text>
@@ -218,50 +222,52 @@ class Report extends Component {
                                     </div>
                                     <div className="clearfix"></div>
                                 </div>
-
-                                <div className="report__row__el"
-                                     ref={(el) => this.state.refsHeader[refAux++] = el}>
-                                    <div className="report__spacer--35"></div>
-                                    <div className="col-xs-2">
-                                        <Text b className="report__label">#Marca</Text></div>
-                                    <div className="col-xs-2">
-                                        <Text b className="report__label">Modelo</Text>
-                                    </div>
-                                    <div className="col-xs-2">
-                                        <Text b className="report__label">NºSérie</Text></div>
-                                    <div className="col-xs-2">
-                                        <Text b className="report__label">NºEquip.</Text></div>
-                                    <div className="col-xs-2">
-                                        <Text b className="report__label">Nº Inventário</Text></div>
-                                    <div className="clearfix"></div>
-                                </div>
-
-                                {this.state.selectedEquipments.map((equipment, i) => {
+                                {this.state.selectedEquipments.filter(item => item.idEquipamento != 0).length > 0 ?
+                                    <div className="report__row__el"
+                                         ref={(el) => this.state.refsHeader[refAux++] = el}>
+                                        <div className="report__spacer--35"></div>
+                                        <div className="col-xs-2">
+                                            <Text b className="report__label">#Marca</Text></div>
+                                        <div className="col-xs-2">
+                                            <Text b className="report__label">Modelo</Text>
+                                        </div>
+                                        <div className="col-xs-2">
+                                            <Text b className="report__label">NºSérie</Text></div>
+                                        <div className="col-xs-2">
+                                            <Text b className="report__label">NºEquip.</Text></div>
+                                        <div className="col-xs-2">
+                                            <Text b className="report__label">Nº Inventário</Text></div>
+                                        <div className="clearfix"></div>
+                                    </div> :
+                                    <div className="report__spacer--35"
+                                         ref={(el) => this.state.refsHeader[refAux++] = el}> &nbsp;</div>
+                                }
+                                {this.state.selectedEquipments.filter(item => item.idEquipamento != 0).map((equipment, i) => {
                                     return (
                                         <div key={i} className="report__row__el"
                                              ref={(el) => this.state.refsHeader[refAux++] = el}>
                                             <div>
-                                                <div className="col-xs-2 ws-nowrap">
+                                                <div className="col-xs-2 ws-nowrap to-ellipsis">
                                                     <Text p className="report__text">
                                                         {i + 1}&nbsp; {equipment.marcaText}
                                                     </Text>
                                                 </div>
-                                                <div className="col-xs-2 ws-nowrap">
+                                                <div className="col-xs-2 ws-nowrap to-ellipsis">
                                                     <Text p className="report__text">
                                                         {equipment.modeloText}
                                                     </Text>
                                                 </div>
-                                                <div className="col-xs-2 ws-nowrap">
+                                                <div className="col-xs-2 ws-nowrap to-ellipsis">
                                                     <Text p className="report__text">
                                                         {equipment.numSerie}
                                                     </Text>
                                                 </div>
-                                                <div className="col-xs-2 ws-nowrap">
+                                                <div className="col-xs-2 ws-nowrap to-ellipsis">
                                                     <Text p className="report__text">
                                                         {equipment.numEquipamento}
                                                     </Text>
                                                 </div>
-                                                <div className="col-xs-2 ws-nowrap">
+                                                <div className="col-xs-2 ws-nowrap to-ellipsis">
                                                     <Text p className="report__text">
                                                         {equipment.numInventario}
                                                     </Text>
@@ -274,14 +280,16 @@ class Report extends Component {
                                         </div>
                                     )
                                 })}
-
+                                {this.state.selectedEquipments.filter(e => {
+                                    return e.materials.length > 0;
+                                }).length > 0 &&
                                 <div className="report__row__el"
                                      ref={(el) => this.state.refsHeader[refAux++] = el}>
                                     {/* Material Aplicado To Do */}
-                                    <div className="col-xs-1">
+                                    <div className="col-xs-2">
                                         <Text b className="report__label">Equip.</Text>
                                     </div>
-                                    <div className="col-xs-5">
+                                    <div className="col-xs-4">
                                         <Text b className="report__label">Material Aplicado</Text>
                                     </div>
                                     <div className="col-xs-2">
@@ -291,28 +299,110 @@ class Report extends Component {
                                         <Text b className="report__label">Fornecido por</Text>
                                     </div>
 
-                                    <div className="col-xs-1 ws-nowrap">
-                                        <Text p className="report__text"> - </Text>
-                                    </div>
-                                    <div className="col-xs-5 ws-nowrap">
-                                        <Text p className="report__text"> - </Text>
-                                    </div>
-                                    <div className="col-xs-2 ws-nowrap">
-                                        <Text p className="report__text"> - </Text>
-                                    </div>
-                                    <div className="col-xs-4 ws-nowrap">
-                                        <Text p className="report__text"> - </Text>
-                                    </div>
+                                    {this.state.selectedEquipments.map((equipment, i) => {
+                                        return (
+                                            equipment.materials.map((material, j) => {
+                                                return (
+                                                    <div key={i + "-" + j}>
+                                                        <div className="col-xs-2 ws-nowrap to-ellipsis">
+                                                            <Text p
+                                                                  className="report__text"> {equipment.numEquipamento || "-"} </Text>
+                                                        </div>
+                                                        <div className="col-xs-4 ws-nowrap to-ellipsis">
+                                                            <Text p
+                                                                  className="report__text"> {material.descricao} </Text>
+                                                        </div>
+                                                        <div className="col-xs-2 ws-nowrap to-ellipsis">
+                                                            <Text p
+                                                                  className="report__text"> {material.quantidade} </Text>
+                                                        </div>
+                                                        <div className="col-xs-4 ws-nowrap to-ellipsis">
+                                                            <Text p
+                                                                  className="report__text"> {material.fornecidoPor == 1 ? "Cliente" : "Such"} </Text>
+                                                        </div>
+                                                    </div>)
+                                            })
+                                        )
+                                    })}
+
 
                                     <div className="clearfix"></div>
-                                    <div className="report__spacer--45"></div>
+                                    <div className="report__spacer--20"></div>
                                 </div>
+                                }
                             </div>
 
                             <div className="report__hr"></div>
 
                             <div className="report__body report__body--content">
-                                {maintenance &&
+
+                                {(this.props.isCurative || this.props.isSimplified) &&
+                                <div>
+
+                                    <div className="report__row__el"
+                                         ref={(el) => this.state.refsSimplified[refAux++] = el}
+                                         key={'customerRequest_first'}>
+                                        <div className="report__spacer--40"></div>
+                                    </div>
+                                    {this.state.selectedEquipments.length > 0 && this.state.selectedEquipments[0].customerRequest != "" && this.state.selectedEquipments[0].customerRequest != null &&
+                                    <div className="report__row__el"
+                                         ref={(el) => this.state.refsSimplified[refAux++] = el}
+                                         key={'customerRequest'}>
+                                        <div className="report__row">
+                                            <div className="col-xs-2">
+                                                <Text b className="report__label">Pedido do Cliente</Text></div>
+                                            <div className="col-xs-10">
+                                                <Text p
+                                                      className="report__text">{this.state.selectedEquipments.length > 0 && this.state.selectedEquipments[0].customerRequest}</Text>
+                                            </div>
+                                            <div className="clearfix"></div>
+                                        </div>
+                                    </div>
+                                    }
+
+                                    {this.state.selectedEquipments.length > 0 && this.state.selectedEquipments[0].malfunctionDescription != "" && this.state.selectedEquipments[0].malfunctionDescription != null &&
+                                    <div className="report__row__el"
+                                         ref={(el) => this.state.refsSimplified[refAux++] = el}
+                                         key={'malfunctionDescription'}>
+                                        <div className="report__row">
+                                            <div className="col-xs-2">
+                                                <Text b className="report__label">Descrição da Avaria</Text></div>
+                                            <div className="col-xs-10">
+                                                <Text p
+                                                      className="report__text">{this.state.selectedEquipments.length > 0 && this.state.selectedEquipments[0].malfunctionDescription}</Text>
+                                            </div>
+                                            <div className="clearfix"></div>
+                                        </div>
+                                    </div>
+                                    }
+
+                                    <div className="report__row__el"
+                                         ref={(el) => this.state.refsSimplified[refAux++] = el}
+                                         key={'relatorioTrabalho'}>
+                                        <div className="report__row">
+                                            <div className="col-xs-7">
+                                                <Text b className="report__label">Relatório de Trabalho</Text>
+                                            </div>
+                                            <div className="clearfix"></div>
+                                            <div className="p-b-10"></div>
+                                            <div className="report__row__el">
+                                                <div className="report__hr"></div>
+                                                <div className="report__row">
+                                                    <div className="col-xs-7">
+                                                        <Text p className="report__text">
+                                                            {this.state.selectedEquipments.length > 0 && this.state.selectedEquipments[0].relatorioTrabalho}
+                                                        </Text>
+                                                    </div>
+                                                    <div className="clearfix"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                }
+
+                                {(maintenance && maintenance.length > 0) &&
                                 <div>
                                     <div className="report__row__el"
                                          ref={(el) => this.state.refsMaintenance[refAux++] = el}>
@@ -333,12 +423,12 @@ class Report extends Component {
                                             })}
                                             <div className="clearfix"></div>
                                         </div>
+                                        <div className="report__hr"></div>
                                     </div>
                                     {maintenance.map((item, index) => {
                                         return (
                                             <div key={'maintenance' + index} className="report__row__el"
                                                  ref={(el) => this.state.refsMaintenance[refAux++] = el}>
-                                                <div className="report__hr"></div>
                                                 <div className="report__row">
                                                     <div className="col-xs-7">
                                                         <Text p className="report__text">
@@ -365,6 +455,7 @@ class Report extends Component {
                                                     })}
                                                     <div className="clearfix"></div>
                                                 </div>
+                                                <div className="report__hr"></div>
                                             </div>
                                         )
                                     })}
@@ -372,7 +463,7 @@ class Report extends Component {
                                 </div>
                                 }
 
-                                {quality &&
+                                {(quality && quality.length > 0) &&
                                 <div>
                                     <div className="report__row__el"
                                          ref={(el) => this.state.refsQuality[refAux++] = el}>
@@ -393,12 +484,12 @@ class Report extends Component {
                                             })}
                                             <div className="clearfix"></div>
                                         </div>
+                                        <div className="report__hr"></div>
                                     </div>
                                     {quality.map((item, index) => {
                                         return (
                                             <div key={'quality' + index} className="report__row__el"
                                                  ref={(el) => this.state.refsQuality[refAux++] = el}>
-                                                <div className="report__hr"></div>
                                                 <div className="report__row">
                                                     <div className="col-xs-7">
                                                         <Text p className="report__text">
@@ -425,6 +516,7 @@ class Report extends Component {
                                                     })}
                                                     <div className="clearfix"></div>
                                                 </div>
+                                                <div className="report__hr"></div>
                                             </div>
                                         )
                                     })}
@@ -432,7 +524,7 @@ class Report extends Component {
                                 </div>
                                 }
 
-                                {quantity &&
+                                {(quantity && quantity.length > 0) &&
                                 <div>
                                     <div className="report__row__el"
                                          ref={(el) => this.state.refsQuality[refAux++] = el}>
@@ -456,13 +548,13 @@ class Report extends Component {
                                             })}
                                             <div className="clearfix"></div>
                                         </div>
+                                        <div className="report__hr"></div>
                                     </div>
                                     {quantity.map((item, index) => {
                                         return (
                                             <div key={'quantity' + index} className="report__row__el"
                                                  ref={(el) => this.state.refsQuality[refAux++] = el}>
 
-                                                <div className="report__hr"></div>
                                                 <div className="report__row">
                                                     <div className="col-xs-6">
                                                         <Text p className="report__text">
@@ -487,6 +579,7 @@ class Report extends Component {
                                                     })}
                                                     <div className="clearfix"></div>
                                                 </div>
+                                                <div className="report__hr"></div>
 
                                             </div>
                                         )
@@ -509,149 +602,152 @@ class Report extends Component {
                                 {this.state.selectedEquipments.length > 0 && this.state.selectedEquipments.map((equipment, i) => {
                                     var printed = false;
                                     return (
-                                        <div key={(new Date).getTime() + i} className="report__row__el"
-                                             ref={(el) => this.state.refsComments[refAux++] = el}>
-                                            {(equipment.observacao && equipment.observacao != "") &&
-                                            <div>
-                                                {(!printed) && (printed = true) &&
-                                                <div className="col-xs-12 p-t-10">
-                                                    <Text b className="report__text m-b-5">Geral</Text>
+                                        (equipment.observacao && equipment.observacao != "") ?
+                                            <div key={(new Date).getTime() + i} className="report__row__el"
+                                                 ref={(el) => this.state.refsComments[refAux++] = el}>
+                                                <div>
+                                                    {(!printed) && (printed = true) &&
+                                                    <div className="col-xs-12 p-t-10">
+                                                        <Text b className="report__text m-b-5">Geral</Text>
+                                                    </div>
+                                                    }
+                                                    <div className="col-xs-1">
+                                                        <Text p
+                                                              className="report__text color-primary-light">#{i + 1}</Text>
+                                                    </div>
+                                                    <div className="col-xs-11 p-l-0">
+                                                        <Text p className="report__text">
+                                                            {equipment.observacao}
+                                                        </Text>
+                                                    </div>
+                                                    <div className="clearfix"></div>
                                                 </div>
-                                                }
-                                                <div className="col-xs-1">
-                                                    <Text p
-                                                          className="report__text color-primary-light">#{i + 1}</Text>
-                                                </div>
-                                                <div className="col-xs-11 p-l-0">
-                                                    <Text p className="report__text">
-                                                        {equipment.observacao}
-                                                    </Text>
-                                                </div>
-                                                <div className="clearfix"></div>
-                                            </div>}
-                                        </div>
+                                            </div> :
+                                            <div key={(new Date).getTime() + i}></div>
+
                                     )
                                 })}
 
-                                {(maintenance) && maintenance.map((item, index) => {
+                                {(maintenance && maintenance.length > 0) && maintenance.map((item, index) => {
                                     var printed = false;
                                     return (
                                         <div key={index}>
                                             {this.state.selectedEquipments.map((equipment, i) => {
                                                 return (
-                                                    <div key={index + "" + i} className="report__row__el"
-                                                         ref={(el) => this.state.refsComments[refAux++] = el}>
-                                                        {(equipment.planMaintenance[index].observacoes && equipment.planMaintenance[index].observacoes != "") &&
-                                                        <div>
-                                                            {!printed && (() => {
-                                                                printed = true;
-                                                                return (
-                                                                    <div className="col-xs-12 p-t-10">
-                                                                        <Text b
-                                                                              className="report__text m-b-5">
-                                                                            {item.descricao}
-                                                                        </Text>
-                                                                    </div>
-                                                                )
-                                                            })()}
-                                                            <div className="col-xs-1">
-                                                                <Text p
-                                                                      className="report__text color-primary-light">
-                                                                    #{i + 1}
-                                                                </Text>
+                                                    (equipment.planMaintenance[index].observacoes && equipment.planMaintenance[index].observacoes != "") ?
+                                                        <div key={index + "" + i} className="report__row__el"
+                                                             ref={(el) => this.state.refsComments[refAux++] = el}>
+                                                            <div>
+                                                                {!printed && (() => {
+                                                                    printed = true;
+                                                                    return (
+                                                                        <div className="col-xs-12 p-t-10">
+                                                                            <Text b
+                                                                                  className="report__text m-b-5">
+                                                                                {item.descricao}
+                                                                            </Text>
+                                                                        </div>
+                                                                    )
+                                                                })()}
+                                                                <div className="col-xs-1">
+                                                                    <Text p
+                                                                          className="report__text color-primary-light">
+                                                                        #{i + 1}
+                                                                    </Text>
+                                                                </div>
+                                                                <div className="col-xs-11 p-l-0">
+                                                                    <Text p className="report__text">
+                                                                        {equipment.planMaintenance[index].observacoes}
+                                                                    </Text>
+                                                                </div>
+                                                                <div className="clearfix"></div>
                                                             </div>
-                                                            <div className="col-xs-11 p-l-0">
-                                                                <Text p className="report__text">
-                                                                    {equipment.planMaintenance[index].observacoes}
-                                                                </Text>
-                                                            </div>
-                                                            <div className="clearfix"></div>
-                                                        </div>
-                                                        }
-                                                    </div>
+                                                        </div> :
+                                                        <div key={index + "" + i}></div>
                                                 )
                                             })}
                                         </div>
                                     )
                                 })}
 
-                                {(quality) && quality.map((item, index) => {
+                                {(quality && quality.length > 0) && quality.map((item, index) => {
                                     var printed = false;
                                     return (
                                         <div key={index}>
                                             {this.state.selectedEquipments.map((equipment, i) => {
                                                 return (
-                                                    <div key={index + "" + i} className="report__row__el"
-                                                         ref={(el) => this.state.refsComments[refAux++] = el}>
-                                                        {(equipment.planQuality[index].observacoes && equipment.planQuality[index].observacoes != "") &&
-                                                        <div>
-                                                            {!printed && (() => {
-                                                                printed = true;
-                                                                return (
-                                                                    <div className="col-xs-12 p-t-10">
-                                                                        <Text b
-                                                                              className="report__text m-b-5">
-                                                                            {item.descricao}
-                                                                        </Text>
-                                                                    </div>
-                                                                )
-                                                            })()}
-                                                            <div className="col-xs-1">
-                                                                <Text p
-                                                                      className="report__text color-primary-light">
-                                                                    #{i + 1}
-                                                                </Text>
+                                                    (equipment.planQuality[index].observacoes && equipment.planQuality[index].observacoes != "") ?
+                                                        <div key={index + "" + i} className="report__row__el"
+                                                             ref={(el) => this.state.refsComments[refAux++] = el}>
+                                                            <div>
+                                                                {!printed && (() => {
+                                                                    printed = true;
+                                                                    return (
+                                                                        <div className="col-xs-12 p-t-10">
+                                                                            <Text b
+                                                                                  className="report__text m-b-5">
+                                                                                {item.descricao}
+                                                                            </Text>
+                                                                        </div>
+                                                                    )
+                                                                })()}
+                                                                <div className="col-xs-1">
+                                                                    <Text p
+                                                                          className="report__text color-primary-light">
+                                                                        #{i + 1}
+                                                                    </Text>
+                                                                </div>
+                                                                <div className="col-xs-11 p-l-0">
+                                                                    <Text p className="report__text">
+                                                                        {equipment.planQuality[index].observacoes}
+                                                                    </Text>
+                                                                </div>
+                                                                <div className="clearfix"></div>
                                                             </div>
-                                                            <div className="col-xs-11 p-l-0">
-                                                                <Text p className="report__text">
-                                                                    {equipment.planQuality[index].observacoes}
-                                                                </Text>
-                                                            </div>
-                                                            <div className="clearfix"></div>
-                                                        </div>}
-                                                    </div>
+                                                        </div> :
+                                                        <div key={index + "" + i}></div>
                                                 )
                                             })}
                                         </div>
                                     )
                                 })}
 
-                                {(quantity) && quantity.map((item, index) => {
+                                {(quantity && quantity.length > 0) && quantity.map((item, index) => {
                                     var printed = false;
                                     return (
                                         <div key={index}>
                                             {this.state.selectedEquipments.map((equipment, i) => {
                                                 return (
-                                                    <div key={index + "" + i} className="report__row__el"
-                                                         ref={(el) => this.state.refsComments[refAux++] = el}>
-                                                        {(equipment.planQuantity[index].observacoes && equipment.planQuantity[index].observacoes != "") &&
-                                                        <div>
-                                                            {!printed && (() => {
-                                                                printed = true;
-                                                                return (
-                                                                    <div className="col-xs-12 p-t-10">
-                                                                        <Text b
-                                                                              className="report__text m-b-5">
-                                                                            {item.descricao}
-                                                                        </Text>
-                                                                    </div>
-                                                                )
-                                                            })()}
-                                                            <div className="col-xs-1">
-                                                                <Text p
-                                                                      className="report__text color-primary-light">
-                                                                    #{i + 1}
-                                                                </Text>
+                                                    (equipment.planQuantity[index].observacoes && equipment.planQuantity[index].observacoes != "") ?
+                                                        <div key={index + "" + i} className="report__row__el"
+                                                             ref={(el) => this.state.refsComments[refAux++] = el}>
+                                                            <div>
+                                                                {!printed && (() => {
+                                                                    printed = true;
+                                                                    return (
+                                                                        <div className="col-xs-12 p-t-10">
+                                                                            <Text b
+                                                                                  className="report__text m-b-5">
+                                                                                {item.descricao}
+                                                                            </Text>
+                                                                        </div>
+                                                                    )
+                                                                })()}
+                                                                <div className="col-xs-1">
+                                                                    <Text p
+                                                                          className="report__text color-primary-light">
+                                                                        #{i + 1}
+                                                                    </Text>
+                                                                </div>
+                                                                <div className="col-xs-11 p-l-0">
+                                                                    <Text p className="report__text">
+                                                                        {equipment.planQuantity[index].observacoes}
+                                                                    </Text>
+                                                                </div>
+                                                                <div className="clearfix"></div>
                                                             </div>
-                                                            <div className="col-xs-11 p-l-0">
-                                                                <Text p className="report__text">
-                                                                    {equipment.planQuantity[index].observacoes}
-                                                                </Text>
-                                                            </div>
-                                                            <div className="clearfix"></div>
-                                                        </div>
-                                                        }
-                                                    </div>
+                                                        </div> :
+                                                        <div key={index + "" + i}></div>
                                                 )
                                             })}
                                         </div>
@@ -686,6 +782,7 @@ class Report extends Component {
                                         this.state.selectedEquipments[0] &&
                                         this.state.selectedEquipments[0].$assinaturaSie ?
                                             this.state.selectedEquipments[0].$assinaturaSie.value : null}
+                                    assinaturaSieIgualCliente={this.state.selectedEquipments[0].assinaturaSieIgualCliente}
                                     technical={
                                         this.state.selectedEquipments[0] &&
                                         this.state.selectedEquipments[0].$utilizadorAssinaturaTecnico ?
@@ -700,6 +797,7 @@ class Report extends Component {
                 <SplitedReport
                     order={this.props.order}
                     refsHeader={this.state.refsHeader}
+                    refsSimplified={this.state.refsSimplified}
                     refsMaintenance={this.state.refsMaintenance}
                     refsQuality={this.state.refsQuality}
                     refsQuantity={this.state.refsQuantity}

@@ -119,6 +119,7 @@
     text-align: center;
     padding: 25px 25px 15px;
     position: relative;
+    margin-bottom: 25px;
 
     p {
       font-size: 20px;
@@ -135,6 +136,8 @@
   &__body {
     text-align: left;
     padding: 0 35px;
+    padding-bottom: 20px;
+
   }
 
   &__spacer {

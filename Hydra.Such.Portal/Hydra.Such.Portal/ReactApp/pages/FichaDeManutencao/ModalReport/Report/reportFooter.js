@@ -105,18 +105,23 @@ class SplitedReport extends Component {
                             </Text>
                         </div>
                     </div>
-                    <div className="col-xs-5 p-l-0 p-r-0">
-                        <img src={assinaturaCliente} className="report__signature img-responsive"/>
-                    </div>
-                    <div className="col-xs-2 p-l-0 p-r-0 m-t-15"></div>
-                    <div className="clearfix"></div>
-                    <div className="col-xs-5 p-l-0 p-r-0">
-                        <div className="text-left m-t-10 m-b-5 f-s-12 ">
-                            <Text b className="f-s-12 text-uppercase l-h-1">
-                                Sie/Aprovis. <br/> Assinatura
-                            </Text>
+                    {!this.props.assinaturaSieIgualCliente &&
+                    <div>
+                        <div className="col-xs-5 p-l-0 p-r-0">
+                            <img src={assinaturaCliente} className="report__signature img-responsive"/>
                         </div>
+                        <div className="col-xs-2 p-l-0 p-r-0 m-t-15"></div>
+                        <div className="clearfix"></div>
+                        <div className="col-xs-5 p-l-0 p-r-0">
+                            <div className="text-left m-t-10 m-b-5 f-s-12 ">
+                                <Text b className="f-s-12 text-uppercase l-h-1">
+                                    Sie/Aprovis. <br/> Assinatura
+                                </Text>
+                            </div>
+                        </div>
+                        <div className="clearfix"></div>
                     </div>
+                    }
                     <div className="col-xs-5 p-l-0 p-r-0">
                         <img src={assinaturaSie} className="report__signature img-responsive"/>
                     </div>
