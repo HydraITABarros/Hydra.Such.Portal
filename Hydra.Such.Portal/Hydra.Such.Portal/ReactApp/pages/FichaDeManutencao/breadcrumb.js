@@ -45,6 +45,9 @@ class Breadcrumb extends Component {
         if (props.order !== this.state.order) {
             this.setState({order: props.order});
         }
+        if (props.isLoading !== this.state.isLoading) {
+            this.setState({isLoading: props.isLoading});
+        }
     }
 
     componentDidMount() {
@@ -77,10 +80,13 @@ class Breadcrumb extends Component {
                                 verticalAlign: 'middle',
                                 position: 'relative',
                                 top: '1px',
-                                textDecoration: 'underline',
-                                cursor: 'pointer'
+                                textDecoration: (this.props.isCurative ? '' : 'underline'),
+                                cursor: (this.props.isCurative ? '' : 'pointer')
                             }}
                                   onClick={() => {
+                                      if (this.props.isCurative) {
+                                          return;
+                                      }
                                       this.props.history.push(`/ordens-de-manutencao/${this.state.order && this.state.order.no}`)
                                   }}>
 								{this.state.order && this.state.order.no}
