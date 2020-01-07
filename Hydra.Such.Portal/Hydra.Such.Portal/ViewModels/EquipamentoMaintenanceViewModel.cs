@@ -1,6 +1,7 @@
 ﻿using Hydra.Such.Data.Evolution.DatabaseReference;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Hydra.Such.Portal.ViewModels
 {
@@ -48,6 +49,27 @@ namespace Hydra.Such.Portal.ViewModels
         public int? RotinaId { get; set; }
         public DateTime? DataRelatorio { get; set; }
         public Utilizador UtilizadorAssinaturaTecnico { get; set; }
+        
+        public string RelatorioTrabalho { get; set; }
+
+        public string MalfunctionDescription { get; set; }
+        public string CustomerRequest
+        {
+            get
+            {
+                return TipoContactoClienteInicial + 
+                       NoDocumentoContactoInicial + 
+                       (DataPedidoReparação != null ? DataPedidoReparação.Value.ToString("MMddyyyy", CultureInfo.InvariantCulture): "") + 
+                       NoCompromisso + 
+                       ReferenciaEncomenda;
+            }
+        }
+
+        public string TipoContactoClienteInicial { get; set; }
+        public string NoDocumentoContactoInicial { get; set; }
+        public DateTime? DataPedidoReparação { get; set; }
+        public string NoCompromisso { get; set; }
+        public string ReferenciaEncomenda { get; set; }
     }
 
 }
