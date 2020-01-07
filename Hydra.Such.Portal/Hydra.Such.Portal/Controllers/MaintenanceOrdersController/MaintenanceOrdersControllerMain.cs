@@ -132,15 +132,16 @@ namespace Hydra.Such.Portal.Controllers
 			var query = MaintenanceOrdersRepository.AsQueryable()
 			    .Where(o =>
 			    (preventiveCodes.Contains(o.OrderType) || curativeCodes.Contains(o.OrderType)) &&
-			    (o.Status == 0 || o.Status == 6 || o.Status == 7) && (o.IdClienteEvolution != null && o.IdClienteEvolution != 0 && o.IdInstituicaoEvolution != null && o.IdInstituicaoEvolution != 0));
+			    (o.Status == 0 || o.Status == 6 || o.Status == 7) && 
+			    (o.IdClienteEvolution != null && o.IdClienteEvolution != 0 && o.IdInstituicaoEvolution != null && o.IdInstituicaoEvolution != 0));
 
 			var preventives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
 			       preventiveCodes.Contains(o.OrderType) && (o.Status == 0 || o.Status == 6 || o.Status == 7) &&
-			    (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
+			       (o.IdClienteEvolution != null && o.IdClienteEvolution != 0 && o.IdInstituicaoEvolution != null && o.IdInstituicaoEvolution != 0));
 
 			var curatives = MaintenanceOrdersRepository.AsQueryable().Where(o =>
 			       curativeCodes.Contains(o.OrderType) && (o.Status == 0 || o.Status == 6 || o.Status == 7) &&
-			    (o.IdClienteEvolution != null && o.IdInstituicaoEvolution != null));
+			       (o.IdClienteEvolution != null && o.IdClienteEvolution != 0 && o.IdInstituicaoEvolution != null && o.IdInstituicaoEvolution != 0));
 
 			/* remove in production */
 			if (v == "1")
@@ -228,7 +229,16 @@ namespace Hydra.Such.Portal.Controllers
 			newList.ForEach((item) =>
 			{
 				var technicals = GetTechnicals(item, null, null);
-				if (technicals != null) { item.Technicals = technicals.ToList(); }
+				if (technicals != null)
+				{
+					item.Technicals = technicals.Select(t => new Utilizador
+					{
+						Id = t.Id,
+						Nome = t.Nome,
+						Email = t.Email,
+						Username = t.Username,
+					}).ToList();
+				}
 
 				var client = evolutionWEBContext.Cliente.FirstOrDefault(c => c.IdCliente == item.IdClienteEvolution && c.Activo == true);
 				if (client != null) { item.ClientName = client.Nome; }
@@ -254,11 +264,12 @@ namespace Hydra.Such.Portal.Controllers
 			});
 
 			var result = new PageResult<dynamic>(newList, nextLink, total);
-
+			var preventiveCount = preventives.Count();
+			var curativeCount = curatives.Count();
 			return Json(new
 			{
 				result,
-				ordersCounts = new { preventive = preventives.Count(), curative = curatives.Count() }
+				ordersCounts = new { preventive = preventiveCount, curative = curativeCount }
 			});
 		}
 
@@ -396,7 +407,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
 		[Route("{orderId}/technicals/logged"), HttpPut]
-		public ActionResult SetTechnicals(string orderId)
+		public ActionResult SetTechnicals(string orderId, string all)
 		{
 			if (orderId == null) { return NotFound(); }
 
@@ -413,8 +424,15 @@ namespace Hydra.Such.Portal.Controllers
 			var evolutionLoggedUser = evolutionWEBContext.Utilizador.FirstOrDefault(u => u.Email == User.Identity.Name);
 
 			if (evolutionLoggedUser == null) { return NotFound(); }
+			
+			/*
+			 * filter MaintenanceOrder query based on user permissions
+			 * 1, 2, 8 = Podem ver tudo
+			 * 3, 4 = Filtrado por regiao
+			 * 5, 6, 7 = Filtrado por Cresp
+			 */
 
-			if (evolutionLoggedUser.NivelAcesso == 6 || evolutionLoggedUser.NivelAcesso == 7)
+			if (evolutionLoggedUser.NivelAcesso == 6 || evolutionLoggedUser.NivelAcesso == 7 || all == "true")
 			{
 				if (order.IdTecnico1 == evolutionLoggedUser.Id || order.IdTecnico2 == evolutionLoggedUser.Id ||
 				order.IdTecnico3 == evolutionLoggedUser.Id || order.IdTecnico4 == evolutionLoggedUser.Id ||
@@ -458,6 +476,7 @@ namespace Hydra.Such.Portal.Controllers
 			public string ClientName;
 			public string InstitutionDescription;
 			public string OrderType;
+			public DateTime? OrderDate;
 		}
 
 		public class IconsTasksHeaderViewModel
@@ -469,7 +488,7 @@ namespace Hydra.Such.Portal.Controllers
 		}
 
 
-		[Route("/ordens-de-manutencao/ficha-de-manutencao/curativa"), HttpGet, AcceptHeader("application/json")]
+		//[Route("/ordens-de-manutencao/ficha-de-manutencao/curativa"), HttpGet, AcceptHeader("application/json")]
 		//[ResponseCache(Duration = 60000)]
 		public ActionResult GetCurativeMaintenancePlans(string orderId, int equipmentId)
 		{
