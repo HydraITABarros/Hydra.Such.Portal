@@ -657,6 +657,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoTipoTrabalho.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoTipoTrabalho">Código Tipo Trabalho</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoTipoTrabalho" />
+                </template>
+                <template>
+                    {{item.codigoTipoTrabalho}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.internalRequest.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="internalRequest">Requisição Interna</vaadin-grid-sorter>
@@ -1048,6 +1058,7 @@
                         "serviceGroupCodeDescription": { hidden: false, label: "Grupo Serviço" },
                         "resourceType": { hidden: false, label: "Tipo Recurso" },
                         "folhaHoras": { hidden: false, label: "Nº Folha Horas" },
+                        "codigoTipoTrabalho": { hidden: false, label: "Código Tipo Trabalho" },
                         "internalRequest": { hidden: false, label: "Requisição Interna" },
                         "employeeNo": { hidden: false, label: "Nº Funcionário" },
                         "quantityReturned": { hidden: false, label: "Quantidade Devolvida" },

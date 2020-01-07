@@ -2519,6 +2519,7 @@ namespace Hydra.Such.Portal.Controllers
                         TypeText = x.Tipo != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault() != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "" : "",
                         Code = x.Código,
                         Description = x.Descrição,
+                        CodigoTipoTrabalho = x.CodigoTipoTrabalho,
                         Quantity = x.Quantidade,
                         MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
                         LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "",
@@ -2604,6 +2605,7 @@ namespace Hydra.Such.Portal.Controllers
                         TypeText = x.Tipo != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault() != null ? EnumerablesFixed.ProjectDiaryTypes.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "" : "",
                         Code = x.Código,
                         Description = x.Descrição,
+                        CodigoTipoTrabalho = x.CodigoTipoTrabalho,
                         Quantity = x.Quantidade,
                         MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
                         LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "",
@@ -2710,6 +2712,7 @@ namespace Hydra.Such.Portal.Controllers
                 Type = x.Tipo,
                 Code = x.Código,
                 Description = x.Descrição,
+                CodigoTipoTrabalho = x.CodigoTipoTrabalho,
                 Quantity = InverterSinal == false ? x.Quantidade : x.Quantidade * -1,
                 MeasurementUnitCode = x.CódUnidadeMedida,
                 LocationCode = x.CódLocalização,
@@ -7411,6 +7414,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nº Folha Horas");
                     Col = Col + 1;
                 }
+                if (dp["codigoTipoTrabalho"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Código Tipo Trabalho");
+                    Col = Col + 1;
+                }
                 if (dp["internalRequest"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Requisição Interna");
@@ -7735,6 +7743,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["folhaHoras"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.FolhaHoras);
+                            Col = Col + 1;
+                        }
+                        if (dp["codigoTipoTrabalho"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodigoTipoTrabalho);
                             Col = Col + 1;
                         }
                         if (dp["internalRequest"]["hidden"].ToString() == "False")

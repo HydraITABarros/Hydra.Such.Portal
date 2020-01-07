@@ -467,6 +467,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 //TypeDescription
                 projMovement.Code = item.Código;
                 projMovement.Description = item.Descrição;
+                projMovement.CodigoTipoTrabalho = item.CodigoTipoTrabalho;
                 projMovement.Quantity = item.Quantidade;
                 projMovement.MeasurementUnitCode = item.CódUnidadeMedida;
                 projMovement.LocationCode = item.CódLocalização;
@@ -559,6 +560,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 //TypeDescription
                 projMovement.Código = item.Code;
                 projMovement.Descrição = item.Description;
+                projMovement.CodigoTipoTrabalho = item.CodigoTipoTrabalho;
                 projMovement.Quantidade = item.Quantity;
                 projMovement.CódUnidadeMedida = item.MeasurementUnitCode;
                 projMovement.CódLocalização = item.LocationCode;

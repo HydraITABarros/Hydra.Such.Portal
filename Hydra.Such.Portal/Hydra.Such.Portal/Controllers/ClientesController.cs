@@ -420,6 +420,20 @@ namespace Hydra.Such.Portal.Controllers
             if (data != null && data.No != null)
             {
                 var result = DBNAV2017Clients.GetInvoices(_config.NAVDatabaseName, _config.NAVCompanyName, data.No);
+
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+
+                //Regions
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionId));
+                //FunctionalAreas
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaId));
+                //ResponsabilityCenter
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.RespCenterId));
+
                 return Json(result);
             }
             return Json(false);
@@ -450,6 +464,20 @@ namespace Hydra.Such.Portal.Controllers
             if (data != null && data.No != null)
             {
                 var result = DBNAV2017Clients.GetBalances(_config.NAVDatabaseName, _config.NAVCompanyName, data.No);
+
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+
+                //Regions
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionId));
+                //FunctionalAreas
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaId));
+                //ResponsabilityCenter
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.RespCenterId));
+
                 return Json(result);
             }
             return Json(false);

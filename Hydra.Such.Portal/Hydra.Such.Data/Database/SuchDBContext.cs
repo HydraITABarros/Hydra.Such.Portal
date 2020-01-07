@@ -5905,6 +5905,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
+                entity.Property(e => e.CodigoTipoTrabalho).HasMaxLength(10);
+
                 entity.Property(e => e.DocumentoCorrigido)
                     .HasColumnName("Documento Corrigido")
                     .HasMaxLength(20);
