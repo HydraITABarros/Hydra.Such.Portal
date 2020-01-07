@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import {PageTemplate} from 'components';
 import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
-import {Wrapper, OmDatePicker, Tooltip, PivotTable, Button, Text} from 'components';
+import {Wrapper, OmDatePicker, Tooltip, PivotTable, Button, Text, Icon} from 'components';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
 import {withRouter} from 'react-router-dom';
@@ -31,6 +31,7 @@ var headerCollapsed = false;
 
 var tableScrollTop = 0;
 var headerScrollTop = 0;
+var firstLoading = true;
 
 class OrdensDeManutencaoLine extends Component {
 
@@ -83,11 +84,9 @@ class OrdensDeManutencaoLine extends Component {
         document.getElementById("basicreactcomponent").addEventListener("scroll", (e) => {
             var height = 200;
             if (headerScrollTop < e.target.scrollTop + 5 /* up */) {
-                console.log('up');
                 if (!ReactDOM.findDOMNode(this.highlightWrapper).classList.contains("om-details__header--collapsed")) {
                 }
             } else  /* down */ {
-                console.log('down');
                 ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
             }
             headerScrollTop = e.target.scrollTop;
@@ -146,7 +145,8 @@ class OrdensDeManutencaoLine extends Component {
                     listContainerStyle: {
                         height: height,
                         marginTop: '0px'/*top*/,
-                        position: 'relative'
+                        position: 'relative',
+                        maxWidth: '100%'
                     }
                 }, () => {
                 })
@@ -212,7 +212,6 @@ class OrdensDeManutencaoLine extends Component {
     }
 
     handleFetchEquipementsRequest(request, isNext) {
-        // console.log('request', 'isNext', isNext);
         request.then((result) => {
             var data = result.data;
             this.setTableMarginTop();
@@ -220,7 +219,8 @@ class OrdensDeManutencaoLine extends Component {
                 var list = data.resultLines.items;
                 var nextPageLink = data.resultLines.nextPageLink;
                 var equipments = isNext ? this.state.equipments.concat(list) : list;
-                // console.log('IMP', equipments);
+
+                firstLoading = false;
                 this.setState({
                     maintenanceOrder: data.order,
                     marcas: data.marcas,
@@ -266,7 +266,6 @@ class OrdensDeManutencaoLine extends Component {
 
     render() {
         const {isLoading} = this.state;
-        // console.log(headerCollapsed);
         return (
             <PageTemplate>
                 <div ref={el => this.highlightWrapper = el} className={classnames(
@@ -310,14 +309,30 @@ class OrdensDeManutencaoLine extends Component {
                 <ListContainer ref={el => this.listContainer = el} style={{...this.state.listContainerStyle}}
                                className="om-details__list-container"
                                onScroll={(e) => {
+
                                    var scrollTop = e.target.scrollTop;
-                                   if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop - 20 <= 0) {
-                                       ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
-                                       headerCollapsed = false;
-                                   } else if (scrollTop > tableScrollTop) {
-                                       ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
-                                       headerCollapsed = true;
-                                   }
+                                   /*                                 
+                                    if (scrollTop - 20 <= 0) {
+                                        ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
+                                        headerCollapsed = false;
+                                    } else if (scrollTop > tableScrollTop) {
+                                        ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
+                                        headerCollapsed = true;
+                                    }
+                                    */
+
+                                   setTimeout(() => {
+                                       if (scrollTop <= 10 || this.state.isLoading) {
+                                           ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
+                                           headerCollapsed = false;
+                                       } else if (scrollTop >= 10) {
+                                           ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
+                                           headerCollapsed = true;
+                                       }
+                                       tableScrollTop = scrollTop;
+                                   });
+
+
                                    setTimeout(() => {
                                        Tooltip.Hidden.hide();
                                        Tooltip.Hidden.rebuild();
@@ -337,7 +352,8 @@ class OrdensDeManutencaoLine extends Component {
                                 selectionEnabled: false,
                                 width: 60,
                                 groupingEnabled: false,
-                                sortingEnabled: false
+                                sortingEnabled: false,
+                                dataType: 'omState'
                             },
                             {
                                 name: 'categoriaText',
@@ -370,16 +386,22 @@ class OrdensDeManutencaoLine extends Component {
                                 sortingEnabled: true
                             },
                             {
-                                name: 'action',
-                                title: ' ',
+                                name: 'signed',
+                                title: '           ',
                                 selectionEnabled: false,
-                                width: 60,
+                                width: 80,
                                 groupingEnabled: false,
-                                sortingEnabled: false
+                                sortingEnabled: false,
+                                dataType: 'omSigned'
                             },
                         ]}
                         getRows={this.fetchEquipements}
+                        maxSelection={5}
                         onRowSelectionChange={(e) => {
+                            if (e.selectedRows.length > 5) {
+                                e.selectedRows.splice(5, e.selectedRows.length);
+
+                            }
                             this.setState({
                                 selectionMode: e.selectionMode,
                                 selectedRows: e.selectedRows,
@@ -391,7 +413,7 @@ class OrdensDeManutencaoLine extends Component {
                         onRowClick={(row) => {
                             this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=${row.categoria}&equipmentsIds=${row.idEquipamento}`);
                         }}
-                        onGroupRowClick={selection => {
+                        _onGroupRowClick={selection => {
                             var idsMarca, idsServico, idCategoria, idsCategorias;
                             if (selection.categoriaText) {
                                 idsCategorias = this.state.categorias.filter((item) => {
@@ -421,6 +443,7 @@ class OrdensDeManutencaoLine extends Component {
                             }
                         }}
                         groupingEnabled={true}
+                        groupRowAction={false}
                         searchEnabled={true}
                         allowMultiple={true}
                         noData={this.state.ordersCountsLines.executed + this.state.ordersCountsLines.toExecute == 0 &&
@@ -442,7 +465,9 @@ class OrdensDeManutencaoLine extends Component {
                                     color: this.props.theme.palette.primary.default,
                                     marginBottom: '5px'
                                 }}>OM sem equipamentos</Text>
-                                <Button primary>Ficha de Manutenção</Button>
+                                <Button primary onClick={(row) => {
+                                    this.props.history.push(`/ordens-de-manutencao/${this.state.orderId}/ficha-de-manutencao?categoryId=0`);
+                                }}>Ficha de Manutenção</Button>
                             </div>
                         </td>
                         }
