@@ -96,6 +96,12 @@ $section-value in $colors {
   line-height: 0;
 }
 
+@each $dim in (0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100) {
+  .m-w-#{$dim} {
+    max-width: $dim+px !important;
+  }
+}
+
 .content-disabled {
   position: relative;
 
@@ -251,4 +257,12 @@ mark,
 
 .box-shadow-none {
   box-shadow: none !important;
+}
+
+.display-none {
+  display: none !important;
+}
+
+.min-width-95 {
+  min-width: 95%;
 }
