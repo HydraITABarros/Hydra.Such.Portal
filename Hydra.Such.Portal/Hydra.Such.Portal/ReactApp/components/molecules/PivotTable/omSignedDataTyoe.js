@@ -1,0 +1,44 @@
+import React, {Component} from 'react';
+import styled, {css, theme, injectGlobal, withTheme} from 'styled-components';
+import {renderToString} from 'react-dom/server';
+import Highlighter from "react-highlight-words";
+import {
+    Button,
+    Text,
+    Icon,
+    Circle,
+    Wrapper,
+    OmDatePicker,
+    CheckBox,
+    Input,
+    Avatars,
+    Modal,
+    Tooltip,
+    Spacer,
+    Breadcrumb
+} from 'components';
+
+const IsPerventive = (props) => {
+    return (
+        <div style={{height: '1px', position: 'relative', top: '-21px', textAlign: 'center'}}>
+            <Text b
+                  style={{color: props.theme.palette.primary.default}}
+                  data-html={true}
+                  data-tip={
+                      renderToString(<Highlighter searchWords={props.searchValues} autoEscape={true}
+                                                  textToHighlight={props.value ? props.value.toString() : ""}></Highlighter>)
+                  }>
+                {props.value == 0 || props.value == null ?
+                    <span></span> :
+                    props.value == 1 ?
+                        <div className={"unsigned-om"}>Assinar</div> :
+                        props.value == 2 ?
+                            <Icon lock style={{fontSize: '18px', top: "9px", position: "relative"}}/> :
+                            <span></span>
+                }
+            </Text>
+        </div>
+    )
+};
+
+export default withTheme(IsPerventive);

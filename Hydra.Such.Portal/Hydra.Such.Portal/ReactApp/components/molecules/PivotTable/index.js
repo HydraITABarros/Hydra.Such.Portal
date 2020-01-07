@@ -39,6 +39,8 @@ import IsPreventiveTypeProvider from './isPreventiveDataType';
 import DefaultTypeProvider from './defaultDataType';
 import AvatarsTypeProvider from './avatarsDataType';
 import DateTypeProvider from './dateDataType';
+import OmStateTypeProvider from './omStateDataType'
+import OmSignedTypeProvider from './omSignedDataTyoe'
 import {isMobile} from 'react-device-detect';
 import {useDrag, useScroll} from 'react-use-gesture'
 
@@ -165,7 +167,7 @@ injectGlobal`
                         &[class*="MuiChip-deletable"] {
                                 &:before {
                                         font-family: 'eSuch' !important;
-                                        content: '\\e90f';
+                                        content: '\e90f';
                                         color: white;
                                         position: absolute;
                                         top: 4px;                                                                
@@ -380,6 +382,10 @@ const SortLabel = styled(TableHeaderRow.SortLabel)`&& {
 			} 
 		}
 	}
+	svg {
+	    left: 3px;
+	    position: relative;
+	}
 }
 `
 var fetchNextTimeout = 0;
@@ -478,6 +484,9 @@ class eTable extends Component {
                 props.row.selected;
                 this.setState({rows: this.state.rows});
             } else if (this.state.selectionMode) {
+                if (this.props.maxSelection <= this.state.selectedRowsCount && !props.row.selected) {
+                    return;
+                }
                 props.row.selected = !props.row.selected;
                 var selcted = [];
                 var selectedRows = this.state.selectedRows || [];
@@ -487,6 +496,11 @@ class eTable extends Component {
                 } else {
                     selcted = selectedRows.filter((item) => item.idEquipamento !== props.row.idEquipamento);
                 }
+
+                if (this.props.maxSelection) {
+                    selcted.splice(this.props.maxSelection, selcted.length);
+                }
+
                 // console.log("selectedRowsCount", selcted.length);
                 this.setState({selectedRowsCount: selcted.length, selectedRows: selcted}, () => {
                     this.handleSelectionEvent();
@@ -757,7 +771,8 @@ class eTable extends Component {
         // console.log('total', totalRowCount, totalMax, this.state.total);
 
         var retval = (
-            <div style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}} className={'pivot-table'}>
+            <div style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, maxWidth: '100%'}}
+                 className={'pivot-table'}>
                 <div style={{
                     height: '100%',
                     width: '100%',
@@ -894,6 +909,12 @@ class eTable extends Component {
                                     case "isPreventive":
                                         return (<IsPreventiveTypeProvider value={value}
                                                                           searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                    case "omState":
+                                        return (<OmStateTypeProvider value={value}
+                                                                     searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                    case "omSigned":
+                                        return (<OmSignedTypeProvider value={value}
+                                                                      searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
                                     case "avatars":
                                         return (<AvatarsTypeProvider value={value}
                                                                      searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
@@ -1011,9 +1032,11 @@ class eTable extends Component {
                                                        textAlign: 'center',
                                                        cursor: 'pointer'
                                                    }}>
+                                                       {this.props.groupRowAction &&
                                                        <Icon open onClick={() => {
                                                            this.onGroupRowClick(this.state.group, values);
                                                        }}/>
+                                                       }
                                                    </Wrapper>
                                                </MuiTableCell>
                                            </TableRow>)
