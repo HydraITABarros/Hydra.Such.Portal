@@ -305,6 +305,8 @@ var call;
 var timeout = 0;
 var tableScrollTop = 0;
 
+var scrollTimeout = 0;
+
 class OrdensDeManutencao extends Component {
     state = {
         planSyncing: true,
@@ -748,28 +750,31 @@ class OrdensDeManutencao extends Component {
                 {this.state.listContainerStyle.marginTop &&
                 <ListContainer ref={el => this.listContainer = el}
                                className="om__list-container"
-                               style={{...this.state.listContainerStyle}} onScroll={(e) => {
-                    var scrollTop = e.target.scrollTop;
+                               style={{...this.state.listContainerStyle}}
+                               onScroll={(e) => {
+                                   var scrollTop = e.target.scrollTop;
 
-                    var basicreactcomponent = document.getElementById("basicreactcomponent");
-                    //basicreactcomponent.scrollTop = basicreactcomponent.scrollTop + ((scrollTop - tableScrollTop) * 2);
-                    //basicreactcomponent.scrollTop = (scrollTop / 2);
-                    //e.target.scrollTop = (scrollTop / 2)
+                                   var basicreactcomponent = document.getElementById("basicreactcomponent");
+                                   //basicreactcomponent.scrollTop = basicreactcomponent.scrollTop + ((scrollTop - tableScrollTop) * 2);
+                                   //basicreactcomponent.scrollTop = (scrollTop / 2);
+                                   //e.target.scrollTop = (scrollTop / 2)
 
-                    if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop - 6 <= 0) {
-                        ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
-                    } else if (scrollTop > tableScrollTop) {
-                        ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
-                    }
-                    // var scrollTop = e.target.scrollTop;
-                    // console.log(scrollTop);
-                    //  if (scrollTop < 5 || isLoading) {
-                    //  	ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
-                    //  } else if (scrollTop > tableScrollTop) {
-                    //  	ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
-                    //  }
-                    tableScrollTop = scrollTop;
-                }}>
+                                   setTimeout(() => {
+                                       if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop <= 30 || scrollTop > (tableScrollTop + 900)) {
+                                           ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
+                                       } else if (scrollTop < tableScrollTop) {
+                                           ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
+                                       }
+                                   });
+                                   // var scrollTop = e.target.scrollTop;
+                                   // console.log(scrollTop);
+                                   //  if (scrollTop < 5 || isLoading) {
+                                   //  	ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
+                                   //  } else if (scrollTop > tableScrollTop) {
+                                   //  	ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
+                                   //  }
+                                   tableScrollTop = scrollTop;
+                               }}>
                     <PivotTable
                         onRef={el => this.table = el}
                         isLoading={this.state.maintenenceOrdersIsLoading}
@@ -853,7 +858,7 @@ class OrdensDeManutencao extends Component {
                             if (row.isPreventive) {
                                 this.props.history.push(`/ordens-de-manutencao/${row.no}`);
                             } else {
-                                this.props.history.push(`/ordens-de-manutencao/${row.no}/curativa?equipmentId=6744`);
+                                this.props.history.push(`/ordens-de-manutencao/${row.no}/ficha-de-manutencao?categoryId=0`);
                             }
                         }}
                         groupingEnabled={false}
