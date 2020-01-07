@@ -51,7 +51,7 @@ namespace Hydra.Such.Portal.Controllers
 			var equipments = evolutionWEBContext.Equipamento
 				.Where(e => e.Activo == true && e.IdCliente == order.IdClienteEvolution);
 
-			if (categoryId != null)
+			if (categoryId != null || categoryId != 0)
 			{
 				equipments = equipments.Where(e => e.Categoria == categoryId);
 			}
