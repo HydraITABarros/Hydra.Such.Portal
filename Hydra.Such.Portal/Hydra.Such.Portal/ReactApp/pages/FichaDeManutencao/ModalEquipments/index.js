@@ -245,7 +245,7 @@ class Index extends Component {
                 onOpen={() => this.setState({open: true})}
                 open={this.state.open}
                 action={this.props.children} children={
-                <Grid>
+                <div>
                     <DialogTitle>
                         <Text h2>{this.props.title}</Text>
 
@@ -305,7 +305,7 @@ class Index extends Component {
                               maxwidth={'100%'} margin={0}>
                             <Grid item xs={12} sm={8} padding="4px" style={{overflow: 'visible'}}>
                                 {this.props.$equipments &&
-                                <Select placeholder={'Adicionar ' + this.props.title}
+                                <Select placeholder={!this.props.isCurative ? 'Adicionar ' + this.props.title : ''}
                                         value={this.state.selected}
                                         options={
                                             this.state.searchEquipments.filter((item) => {
@@ -329,11 +329,13 @@ class Index extends Component {
                                         onClick={this.addEquipmentHandler}>Adicionar</Button>
                             </Grid>
                             <Grid item xs={12} sm={2} padding="4px">
+                                {!this.props.isCurative &&
                                 <Button link style={{display: 'block'}}
                                         onClick={() => {
                                             this.setState({search: false, newEquipmentCount: 0})
                                         }}
                                         className={'m-l-20 pull-right'}>Criar Novo</Button>
+                                }
                             </Grid>
                         </Grid>
                         }
@@ -354,7 +356,7 @@ class Index extends Component {
                             </Grid>
                             <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
                                   maxwidth={'100%'} margin={0} className={"equipment-list__body"}>
-                                {this.props.$equipments && this.props.$equipments.value.map((item, index) => {
+                                {this.props.$equipments && this.props.$equipments.value.filter((item) => item.idEquipamento != 0).map((item, index) => {
                                     return (<Grid container key={index} direction="row" justify="space-between"
                                                   alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>
                                         <Grid item xs={2}>
@@ -402,12 +404,12 @@ class Index extends Component {
                     <hr/>
                     <DialogActions>
                         <Wrapper className="equipmentsCounter" padding="0 0 0 40px"><Text
-                            span>{this.props.$equipments && this.props.$equipments.value.length} Equipamentos</Text></Wrapper>
+                            span>{this.props.$equipments && this.props.$equipments.value.filter(item => item.idEquipamento != 0).length} Equipamentos</Text></Wrapper>
                         <Button primary color="primary"
                                 onClick={() => this.setState({open: false, search: true})}
                         >Guardar</Button>
                     </DialogActions>
-                </Grid>
+                </div>
             }/>
         )
     }
