@@ -160,13 +160,14 @@ class ModalReport extends Component {
                                     <Text b className="ws-nowrap to-ellipsis">{this.props.equipmentType}</Text>
                                 </div>
                                 <div className="col-xs-2 p-l-0 p-r-0">
-                                    <Text b>({this.props.$equipments && this.props.$equipments.value.length})</Text>
+                                    <Text
+                                        b>{!this.props.isSimplified && this.props.$equipments && "(" + this.props.$equipments.value.length + ")"}</Text>
                                 </div>
                                 <div className="clearfix"></div>
                                 {/* <div>debug selected count: {this.state.selectedEquipments.length}</div> */}
                                 {this.state.reportMode ?
 
-                                    this.props.$equipments && this.props.$equipments.value.map((equipment, i) => {
+                                    (this.props.$equipments && !this.props.isSimplified && !this.props.isCurative) && this.props.$equipments.value.map((equipment, i) => {
                                         return (
                                             <div key={i} style={{lineHeight: '32px'}}>
                                                 <div className="w-30 v-a-m">
@@ -181,7 +182,7 @@ class ModalReport extends Component {
 
                                                                   if (event.target.checked) {
                                                                       this.state.selectedEquipments = this.state.selectedEquipments.filter((selected) => {
-                                                                          return selected.idEquipamento != e.idEquipamento;
+                                                                          return selected.idEquipamento != equipment.idEquipamento;
                                                                       });
                                                                       equipment.checked = true;
                                                                       this.state.selectedEquipments.push(equipment);
@@ -235,6 +236,10 @@ class ModalReport extends Component {
                                     order={this.props.order}
                                     equipmentType={this.props.equipmentType}
                                     $equipments={this.props.$equipments}
+
+                                    isCurative={this.props.isCurative}
+                                    isSimplified={this.props.isSimplified}
+
                                     onReportSplit={(totalPages) => {
                                         this.state.totalPages = totalPages;
                                     }}
