@@ -42,5 +42,11 @@ namespace Hydra.Such.Portal.ViewModels
         public int? IdTecnico4 { get; set; }
         public int? IdTecnico5 { get; set; }
         public List<Utilizador> Technicals;
+        
+        public string TipoContactoClienteInicial { get; set; }
+        public string NoDocumentoContactoInicial { get; set; }
+        public DateTime? DataPedidoReparação { get; set; }
+        public string NoCompromisso { get; set; }
+        public string ReferenciaEncomenda { get; set; }
     }
 }
