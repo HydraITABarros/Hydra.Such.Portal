@@ -29,6 +29,7 @@ using Hydra.Such.Data.Evolution.DatabaseReference;
 using StackExchange.Redis;
 using Hydra.Such.Portal.ViewModels;
 using System.Reflection;
+using NJsonSchema.Infrastructure;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -66,7 +67,8 @@ namespace Hydra.Such.Portal.Controllers
 				ShortcutDimension1Code = o.ShortcutDimension1Code,
 				ShortcutDimension3Code = o.ShortcutDimension3Code,
 				IdRegiao = 0,
-				OrderType = o.OrderType
+				OrderType = o.OrderType,
+				OrderDate = o.OrderDate
 			});
 
 			/*
@@ -106,8 +108,13 @@ namespace Hydra.Such.Portal.Controllers
 			equipmentIds.AddRange(ordemManutencaoLinha.Select(s => s.IdEquipamento).ToList());
 
 			// hammered to force the list to return only equipment with defined maintenance.
-			var availableCategories = evolutionWEBContext.FichaManutencao.Select(m => m.IdCategoria).Distinct().ToList();
+			var availableTypes = evolutionWEBContext.FichaManutencao
+				.Where(s => order.OrderDate >= s.PeriodoInicio && order.OrderDate <= s.PeriodoFim).Select(s => s.IdTipo)
+				.Distinct().ToList();
+			var availableCategories = evolutionWEBContext.EquipCategoria
+				.Where(ec => availableTypes.Contains(ec.IdTipo)).Select(s => s.IdCategoria).ToList();
 
+			
 			var queryEquipments = evolutionWEBContext.Equipamento.OrderByDescending(o => o.IdEquipamento).Select(e => new Equipamento
 			{
 				Nome = e.Nome,
@@ -179,17 +186,40 @@ namespace Hydra.Such.Portal.Controllers
 
 				item.ServicoText = servico != null ? servico.Nome : "";
 				item.haveCurative = evolutionWEBContext.MaintenanceOrder.Where(c => c.IdServicoEvolution == item.IdServico).Select(c => c.No).FirstOrDefault();
+
+				var plan = evolutionWEBContext.FichaManutencaoRelatorio.FirstOrDefault(m =>
+					m.Om == order.No && m.IdEquipamento == item.IdEquipamento);
+				item.Estado = "0";
+				if (plan != null)
+				{
+					item.Estado = plan.EstadoFinal.ToString();
+					item.Signed = (plan.AssinaturaCliente != "" && plan.AssinaturaCliente != null) || 
+					              (plan.AssinaturaSieIgualCliente == true && plan.AssinaturaSie != ""&& plan.AssinaturaSie != null) && item.Estado != "0" ? 2:item.Estado != "0" ? 1 : 0 ;
+				}
+				
 			});
 
 			var resultLines = new PageResult<dynamic>(newList, nextLink, total);
-
+			var all = evolutionWEBContext.Equipamento.Where(e =>
+				(v == "2" ? true : equipmentIds.Contains(e.IdEquipamento)) &&
+				(v == "1" ? true : availableCategories.Contains(e.Categoria))).Count();
+			var executed = evolutionWEBContext.FichaManutencaoRelatorio
+				.Where(m =>
+					m.Om == order.No && (m.AssinaturaCliente != null && m.AssinaturaCliente != "") ||
+					(m.AssinaturaSieIgualCliente == true && (m.AssinaturaSie != "" && m.AssinaturaSie != null)) &&
+					m.EstadoFinal != 0).Count();
+			
 			var ordersCountsLines = new
 			{
-				toExecute = evolutionWEBContext.Equipamento.Where(e => (v == "2" ? true : equipmentIds.Contains(e.IdEquipamento)) && (v == "1" ? true : availableCategories.Contains(e.Categoria))).Count(),
-				toSigning = 0, //ToDo
-				executed = 0 //ToDo
+				toExecute = all - executed,
+				toSigning = evolutionWEBContext.FichaManutencaoRelatorio
+					.Where(m=>
+						m.Om == order.No && (m.AssinaturaCliente == null || m.AssinaturaCliente == "") && 
+						(m.AssinaturaSieIgualCliente == false || (m.AssinaturaSie == "" || m.AssinaturaSie == null) ) &&
+						m.EstadoFinal != 0).Count(),
+				executed = executed
 			};
-
+			
 			return Json(new
 			{
 				order,
