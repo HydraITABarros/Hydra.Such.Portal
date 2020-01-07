@@ -140,15 +140,19 @@ const StorageService = {
             retval[k] = plan[k];
         });
 
-        retval.emms = plan.emms.map((emm) => {
-            var _item = _.omit(emm, ['equipments']);
-            return _item;
-        });
+        if (plan.emms) {
+            retval.emms = plan.emms.map((emm) => {
+                var _item = _.omit(emm, ['equipments']);
+                return _item;
+            });
+        }
 
-        retval.materials = plan.materials.map((material) => {
-            var _item = _.omit(material, ['equipments']);
-            return _item;
-        });
+        if (plan.materials) {
+            retval.materials = plan.materials.map((material) => {
+                var _item = _.omit(material, ['equipments']);
+                return _item;
+            });
+        }
 
         return retval;
     }
