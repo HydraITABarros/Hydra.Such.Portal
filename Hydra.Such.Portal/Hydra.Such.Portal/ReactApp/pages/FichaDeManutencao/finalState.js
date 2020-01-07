@@ -179,6 +179,7 @@ class FinalState extends Component {
                                 <Grid container direction="row" justify="space-between" alignitems="top" spacing={0}
                                       maxwidth={'100%'} margin={0}>
                                     <Grid item md={9}>
+                                        {!this.props.isCurative && !this.props.isSimplified &&
                                         <Grid container direction="row" justify="space-between" alignitems="top"
                                               spacing={0} maxwidth={'100%'} margin={0}>
                                             <Grid item xs={3}>
@@ -210,13 +211,14 @@ class FinalState extends Component {
                                                 </div>
                                             </Grid>
                                         </Grid>
+                                        }
                                         <Spacer/><Spacer/>
                                         {/* <Input $value={props.$value} placeholder={'Definir notificação interna'} />
 										<Spacer /><Spacer /> */}
                                         <Input multiline rowsMax="6" rows="6" $value={props.$message}
                                                placeholder={'Inserir observação geral'}/>
                                         <Spacer/><Spacer/>
-                                        <Button icon={<Icon attach/>}>Anexar Fotos</Button>
+                                        {/*<Button icon={<Icon attach/>}>Anexar Fotos</Button>*/}
                                         <Spacer/><Spacer/>
                                     </Grid>
                                 </Grid>
