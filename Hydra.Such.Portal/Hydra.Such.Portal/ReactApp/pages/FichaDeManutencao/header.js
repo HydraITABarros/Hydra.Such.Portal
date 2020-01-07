@@ -9,6 +9,7 @@ import functions from '../../helpers/functions';
 import mEquipments from './ModalEquipments';
 import ModalReport from './ModalReport';
 import ModalOptions from './ModalOptions';
+import _theme from "../../themes/default";
 
 const {DialogTitle, DialogContent, DialogActions} = Modal;
 
@@ -150,10 +151,23 @@ class HTitle extends Component {
                 <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
                       maxwidth={'100%'} margin={0}>
                     <Grid item xs={12} sm={6} md={6} lg={7} padding="15px">
-                        <Title h1 data-tip={this.state.title}>{this.state.title}</Title>
+                        {(this.props.isPreventive || this.props.isSimplified) ?
+                            <Title h1 data-tip={this.props.order.no}>{this.props.order.no}</Title> :
+                            <Title h1 data-tip={this.state.title}>{this.state.title}</Title>
+                        }
                     </Grid>
                     <Grid item xs={12} sm={6} md={6} lg={5} padding="15px"
                           style={{textAlign: window.innerWidth > breakpoints.sm ? 'right' : 'left'}}>
+
+                        {this.props.isCurative &&
+                        <Text b style={{
+                            color: _theme.palette.secondary.default,
+                            verticalAlign: 'middle'
+                        }} className={"p-r-25"}>
+                            <Icon curativa data-tip="Curativa"/>
+                            &nbsp;&nbsp; Ordem Curativa
+                        </Text>
+                        }
                         <ModalOptions
                             $equipments={this.props.$equipments}
                             orderId={this.props.orderId}
@@ -207,6 +221,10 @@ class HTitle extends Component {
                             equipmentType={this.props.title}
                             $equipments={this.props.$equipments}
                             $currentUser={this.props.$currentUser}
+
+                            isCurative={this.props.isCurative}
+                            isSimplified={this.props.isSimplified}
+
                             onClose={() => {
                                 //item.open = false;
                                 this.setState({toUpdate: this.state.toUpdate + 1, isModalReportOpen: false});
@@ -314,10 +332,12 @@ class HDescription extends Component {
                                     <Grid item xs={8} sm={9}>
                                         <Text b data-tip={this.state.service}>{this.state.service}</Text>
                                     </Grid>
-
+                                    {!this.props.isSimplified &&
                                     <Grid item xs={4} sm={3}>
                                         <Text span data-tip={'Rotina'}>Rotina</Text>
                                     </Grid>
+                                    }
+                                    {!this.props.isSimplified &&
                                     <Grid item xs={8} sm={9}
                                           className={this.state.equipments.filter(e => e.estadoFinal > 0).length > 0 ? "disabled" : ""}>
                                         <Menu
@@ -347,6 +367,7 @@ class HDescription extends Component {
                                             </MenuItem>
                                         </Menu>
                                     </Grid>
+                                    }
                                     <Grid item xs={12}>
                                         <Spacer height="10px"/>
                                     </Grid>
@@ -373,13 +394,14 @@ class HDescription extends Component {
                     </Hidden>
 
                     <Grid item xs={12} sm={6} md={5} padding="0">
+                        {!(this.props.isSimplified && !this.props.isCurative) &&
                         <Grid container direction="row" justify="space-between" alignitems="middle" spacing={0}
                               maxwidth={'100%'} margin={0}>
                             <Grid item xs={3}><Text label data-tip={'Marca'}>#&nbsp;&nbsp;Marca</Text></Grid>
                             <Grid item xs={3}><Text label data-tip={'Modelo'}>Modelo</Text></Grid>
                             <Grid item xs={3}><Text label data-tip={'Nº Equip.'}>Nº Equip.</Text></Grid>
                             <Grid item xs={3}><Text label data-tip={'Nº Série'}>Nº Série</Text></Grid>
-                            {this.state.equipments.slice(0, 5).map((item, index) => {
+                            {this.state.equipments.filter(item => item.idEquipamento != 0).slice(0, 5).map((item, index) => {
                                 return (<Grid container key={index} direction="row" justify="space-between"
                                               alignitems="middle" spacing={0} maxwidth={'100%'} margin={0}>
                                     <Grid item xs={3}><Text span
@@ -398,7 +420,8 @@ class HDescription extends Component {
 										<ModalEquipments $equipmentsCount={this.props.$equipmentsCount}
                                                          $equipments={this.props.$equipments} title={this.props.title}
                                                          categoryId={this.props.categoryId} orderId={this.props.orderId}
-                                                         onChange={this.props.onEquipmentsChange}>
+                                                         onChange={this.props.onEquipmentsChange}
+                                                         isCurative={this.props.isCurative}>
 											<Button link style={{cursor: 'pointer'}}>
 												{this.state.equipments.length > 5 && (this.state.equipments.length - (this.state.equipments.slice(0, 5).length))}
 											</Button>
@@ -406,18 +429,22 @@ class HDescription extends Component {
                                     &nbsp;&nbsp;
 									</span>
                                 }
+                                {(!this.props.isCurative || (this.props.$equipments && this.props.$equipments.value[0].idEquipamento == 0)) &&
                                 <ModalEquipments $equipmentsCount={this.props.$equipmentsCount}
                                                  $equipments={this.props.$equipments} title={this.props.title}
                                                  categoryId={this.props.categoryId} orderId={this.props.orderId}
-                                                 onChange={this.props.onEquipmentsChange}>
+                                                 onChange={this.props.onEquipmentsChange}
+                                                 isCurative={this.props.isCurative}>
                                     <Button link style={{cursor: 'pointer'}}>
                                         Adicionar Equip.
                                     </Button>
                                 </ModalEquipments>
+                                }
                             </Grid>
                             <Grid item xs={5}></Grid>
 
                         </Grid>
+                        }
                     </Grid>
                     <Grid item xs={12} md={1}></Grid>
                 </Grid>
