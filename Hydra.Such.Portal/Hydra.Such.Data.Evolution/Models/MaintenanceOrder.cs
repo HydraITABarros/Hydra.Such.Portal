@@ -17,7 +17,7 @@ namespace Hydra.Such.Data.Evolution.DatabaseReference
         }
 
         [NotMapped]
-        public bool isPreventive;
+        public bool isPreventive { get; set; }
 
         [NotMapped]
         public List<Utilizador> Technicals;
