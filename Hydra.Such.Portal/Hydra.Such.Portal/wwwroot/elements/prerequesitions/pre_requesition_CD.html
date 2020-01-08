@@ -2040,40 +2040,19 @@
                 },
 
                 _sumLines: function () {
-                    debugger;
-                    this._TotalLine = 0;
-                    this._TotalWithIVALine = 0;
-                    var count = parseFloat(0);
-                    var countWithIVA = parseFloat(0);
-
-                    var lineQuant = parseFloat(0);
-                    var lineCustoUnitario = parseFloat(0);
-                    var lineTotalCusto = parseFloat(0);
-                    var lineIVA = parseFloat(0);
-                    var lineTotalIVA = parseFloat(0);
-
-
-                    if (this.dataLines.lines != null && this.dataLines.lines.length > 0) {
+                    var count = 0;
+                    var countWithIVA = 0;
+                    if (this.dataLines.lines != null) {
                         for (var i = 0; i < this.dataLines.lines.length; i++) {
-                            lineQuant = parseFloat(parseFloat(this.dataLines.lines[i].quantityToRequire).toFixed(4));
-                            lineCustoUnitario = parseFloat(parseFloat(this.dataLines.lines[i].unitCost).toFixed(5));
-                            lineTotalCusto = parseFloat(parseFloat(lineQuant * lineCustoUnitario).toFixed(2));
-
-                            lineIVA = parseFloat(parseFloat(this.dataLines.lines[i].taxaIVA).toFixed(2));
-                            lineIVA = parseFloat(((lineIVA / 100) + 1));
-                            lineTotalIVA = parseFloat(parseFloat(lineTotalCusto * lineIVA).toFixed(2));
-
-                            count = parseFloat((count + lineTotalCusto));
-                            countWithIVA = parseFloat((countWithIVA + lineTotalIVA));
+                            count += this.dataLines.lines[i].totalCost;
+                            countWithIVA += this.dataLines.lines[i].totalCostWithIVA;
                         }
-
-                        this._TotalLine = parseFloat(parseFloat(count).toFixed(2));//.replace(",", ".");
-                        this._TotalWithIVALine = parseFloat(parseFloat(countWithIVA).toFixed(2));//.replace(",", ".");
+                        this._TotalLine = count;
+                        this._TotalWithIVALine = countWithIVA;
                         this.$.dialogTotal.open();
                     } else {
-                        this._openToastError("Não tem Linhas inseridas.");
+                        this._openToast("Não tem Linhas inseridas.");
                     }
-
                 },
 
                 _clFormatSupplierProductCode: function (param) {

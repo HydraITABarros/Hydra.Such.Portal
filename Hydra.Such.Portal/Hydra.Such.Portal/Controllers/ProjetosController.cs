@@ -6489,9 +6489,52 @@ namespace Hydra.Such.Portal.Controllers
         #region Movimentos_Lista
 
         [HttpPost]
-        public JsonResult GetListMovimentos()
+        public JsonResult GetListMovimentos([FromBody] JObject requestParams)
         {
-            List<ProjectMovementViewModel> result = DBProjectMovements.GetAll().ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<ProjectMovementViewModel> result = new List<ProjectMovementViewModel>();
+            List<MovimentosDeProjeto> AllMovFilter = new List<MovimentosDeProjeto>();
+            try
+            {
+                int skip = 0;
+                int.TryParse(requestParams.GetValue("skip")?.ToString(), out skip);
+
+                int year = 0;
+                int.TryParse(requestParams.GetValue("year")?.ToString(), out year);
+
+                int month = 0;
+                int.TryParse(requestParams.GetValue("month")?.ToString(), out month);
+
+                string cliente = (string)requestParams.GetValue("cliente");
+
+                string from = "";
+                string to = "";
+                if (year != 0)
+                {
+                    from = new DateTime((int)year, (month == 0 ? 1 : month), 1).ToString("yyyy-MM-dd");
+                    int days = DateTime.DaysInMonth((int)year, (month == 0 ? 12 : month));
+                    to = new DateTime((int)year, (month == 0 ? 12 : month), days).ToString("yyyy-MM-dd");
+                }
+
+                AllMovFilter = DBProjectMovements.GetAllByFilter(from, to, cliente, skip);
+
+                //Apply User Dimensions Validations
+                List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+                //Regions
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                    AllMovFilter.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+                //FunctionalAreas
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                    AllMovFilter.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+                //ResponsabilityCenter
+                if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                    AllMovFilter.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
+                result = AllMovFilter.ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName);
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
 
             return Json(result);
         }

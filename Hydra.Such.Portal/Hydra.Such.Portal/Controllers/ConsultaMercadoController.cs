@@ -1106,6 +1106,30 @@ namespace Hydra.Such.Portal.Controllers
                         var result = CreateNAVPurchaseOrderFor(purchOrder, data.NumConsultaMercado, data.Obs);
                         if (result.CompletedSuccessfully)
                         {
+                            //INICIO CODIGO NOVO
+                            string NotaEncomenda = result.ResultValue;
+
+                            if (!string.IsNullOrEmpty(NotaEncomenda))
+                            {
+                                Requisição REQ = DBRequest.GetById(purchOrder.RequisitionId);
+                                REQ.NºEncomenda = NotaEncomenda;
+                                REQ.UtilizadorModificação = User.Identity.Name;
+
+                                DBRequest.Update(REQ);
+
+                                REQ.LinhasRequisição.ToList().ForEach(linha =>
+                                {
+                                    if (linha.NºFornecedor == purchOrder.SupplierId)
+                                    {
+                                        linha.NºEncomendaCriada = NotaEncomenda;
+                                        linha.UtilizadorModificação = User.Identity.Name;
+
+                                        DBRequestLine.Update(linha);
+                                    }
+                                });
+                            }
+                            //FIM CODIGO NOVO
+
                             data.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
                         }
                     }
