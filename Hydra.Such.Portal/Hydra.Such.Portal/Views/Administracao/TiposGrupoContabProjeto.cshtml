@@ -107,38 +107,18 @@
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-lg-2"><vaadin-text-field id="ddDescription" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field></div>
+                        <div class="col-lg-2">
+                            <vaadin-text-field id="ddDescription" label="Código" maxlength="50" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                        </div>
 
                         <div class="col-lg-2">
-                            <vaadin-combo-box items="[[RegionData]]" id="ddRegions" item-value-path="id" item-label-path="value" value="{{ddRegion}}" label="Código Região" disabled="{{ _permissionsCreate }}">
-                                <template>
-                                    <table width="180px">
-                                        <tr>
-                                            <td width="20%">[[item.id]]</td>
-                                            <td width="80%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
+                            <vaadin-text-field id="ddDescription2" label="Descrição" maxlength="100" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
                         </div>
 
                         <div class="col-lg-2">
                             <vaadin-combo-box items="[[FunctionalAreaCodeData]]" id="ddFunctionalAreas" item-value-path="id" item-label-path="value" value="{{ddFunctionalArea}}" label="Código Area Funcional" disabled="{{ _permissionsCreate }}">
                                 <template>
                                     <table width="200px">
-                                        <tr>
-                                            <td width="40%">[[item.id]]</td>
-                                            <td width="60%"> <b>[[item.value]]</b></td>
-                                        </tr>
-                                    </table>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>
-
-                        <div class="col-lg-2 ">
-                            <vaadin-combo-box items="[[ResponsabilityCenterData]]" id="ddResponsabilityCenters" item-value-path="id" item-label-path="value" value="{{ddResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ _permissionsCreate }}">
-                                <template>
-                                    <table width="160px">
                                         <tr>
                                             <td width="40%">[[item.id]]</td>
                                             <td width="60%"> <b>[[item.value]]</b></td>
@@ -157,9 +137,9 @@
         <br />
 
         <vaadin-grid id="gridContabGroupTypes" aria-label="gridContabGroupTypesTable" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="50px">
                 <template class="header">
-                    <vaadin-grid-sorter path="id">Código</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="id">ID</vaadin-grid-sorter>
                     <vaadin-grid-filter path="id" />
                 </template>
                 <template>
@@ -167,35 +147,27 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="300px">
                 <template class="header">
-                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="description">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field id="description" value="{{item.description}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    <vaadin-text-field id="description" value="{{item.description}}" maxlength="50" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="500px">
                 <template class="header">
-                    <vaadin-grid-sorter path="region">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="description2">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description2" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[RegionData]]" item-value-path="id" item-label-path="value" value="{{item.region}}" disabled="{{ _permissionsUpdate }}">
-                        <template>
-                            <table width="180px">
-                                <tr>
-                                    <td width="20%">[[item.id]]</td>
-                                    <td width="80%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
+                    <vaadin-text-field id="description2" value="{{item.description2}}" maxlength="100" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
-            </vaadin-grid-column>*@
+            </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="500px">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
                 </template>
@@ -213,31 +185,12 @@
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="responsabilityCenter">Código Centro Responsabilidade</vaadin-grid-sorter>
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[ResponsabilityCenterData]]" item-value-path="id" item-label-path="value" value="{{item.responsabilityCenter}}" disabled="{{ _permissionsUpdate }}">
-                        <template>
-                            <table width="160px">
-                                <tr>
-                                    <td width="40%">[[item.id]]</td>
-                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>*@
-
             <template is="dom-if" if="{{ !_permissionsDelete }}">
-                <vaadin-grid-column resizable width="150px">
+                <vaadin-grid-column resizable width="50px">
                     <template class="header">
                     </template>
                     <template>
                         <center>
-                            @*<paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{ _permissionsDelete }}">Eliminar</paper-button>*@
                             <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAccessProfile" disabled="{{ _permissionsDelete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                         </center>
                     </template>
@@ -277,23 +230,11 @@
                     type: Boolean,
                     value: DeleteValue
                 },
-                ddRegion: {
-                    type: Number,
-                    notify: true,
-                    value: ""
-                },
-
                 ddFunctionalArea: {
                     type: String,
                     notify: true,
                     value: ""
                 },
-
-                ddResponsabilityCenter: {
-                    type: String,
-                    notify: true,
-                    value: ""
-                }
             },
             ready: function () {
                 //this.$.page_databound_ajax.generateRequest();
@@ -322,15 +263,9 @@
                 this.$.ToastMessageError.open();
             },
             _update: function () {
-                //if (this.data.description !== '' && this.data.description != null) {
                 this.$.page_databound_ajax.url = "/Administracao/UpdateTiposGrupoContabProjeto";
                 this.$.page_databound_ajax.body = JSON.stringify(this.result);
-                //this.$.page_databound_ajax.generateRequest();
-                //this.$.page_databound_ajax.url = "/Administracao/GetTiposGrupoContabProjeto";
                 this.$.gridContabGroupTypes.clearCache();
-                //} else {
-                //this.openToast('É obrigatório preencher o campo Descrição.');
-                //}
             },
 
             _updateResponse: function (e) {
@@ -342,9 +277,8 @@
                         this.$.page_databound_ajax.url = "/Administracao/GetTiposGrupoContabProjeto";
                         this.$.page_databound_ajax.generateRequest();
                         this.$.ddDescription.value = "";
-                        this.$.ddRegions.value = "";
+                        this.$.ddDescription2.value = "";
                         this.$.ddFunctionalAreas.value = "";
-                        this.$.ddResponsabilityCenters.value = "";
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
@@ -353,7 +287,6 @@
 
             },
             _cancel: function () {
-                //this.$.page_databound_ajax.url = "/Administracao/GetTiposGrupoContabProjeto";
                 this.$.page_databound_ajax.generateRequest();
                 this.$.gridContabGroupTypes.clearCache();
             },
@@ -362,9 +295,8 @@
                 this.result.unshift({
 
                     description: this.$.ddDescription.value,
-                    region: this.ddRegion,
+                    description2: this.$.ddDescription2.value,
                     functionalAreaCode: this.ddFunctionalArea,
-                    responsabilityCenter: this.ddResponsabilityCenter
                 });
                 this.$.page_databound_ajax.url = "/Administracao/UpdateTiposGrupoContabProjeto";
                 this.$.page_databound_ajax.body = JSON.stringify(this.result);

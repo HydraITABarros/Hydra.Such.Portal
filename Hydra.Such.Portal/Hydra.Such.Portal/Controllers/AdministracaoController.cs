@@ -1269,9 +1269,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 ID = x.Código,
                 Description = x.Descrição,
+                Description2 = x.Descricao2,
                 FunctionalAreaCode = x.CódigoÁreaFuncional,
-                Region = x.CódigoRegião,
-                ResponsabilityCenter = x.CódigoCentroResponsabilidade
+                DataHoraCriacao = x.DataHoraCriação,
+                UtilizadorCriacao = x.UtilizadorCriação,
+                DataHoraModificacao = x.DataHoraModificação,
+                UtilizadorModificacao = x.UtilizadorModificação
             }).ToList();
 
             return Json(result);
@@ -1291,13 +1294,14 @@ namespace Hydra.Such.Portal.Controllers
                 TiposGrupoContabProjeto CN = new TiposGrupoContabProjeto()
                 {
                     Descrição = x.Description,
-                    CódigoCentroResponsabilidade = x.ResponsabilityCenter,
-                    CódigoRegião = x.Region,
+                    Descricao2 = x.Description2,
                     CódigoÁreaFuncional = x.FunctionalAreaCode
                 };
 
                 if (x.ID > 0)
                 {
+                    CN.DataHoraCriação = x.DataHoraCriacao;
+                    CN.UtilizadorCriação = x.UtilizadorCriacao;
                     CN.DataHoraModificação = DateTime.Now;
                     CN.UtilizadorModificação = User.Identity.Name;
                     CN.Código = x.ID;

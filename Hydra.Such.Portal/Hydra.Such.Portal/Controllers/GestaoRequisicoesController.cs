@@ -1902,8 +1902,25 @@ namespace Hydra.Such.Portal.Controllers
                                     DateTime DataRececao = string.IsNullOrEmpty(item.ReceivedDate) ? DateTime.Now : Convert.ToDateTime(item.ReceivedDate);
                                     Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLinesWithDataRececao(productsToHandle, transactionId, configws, DataRececao);
 
-                                    createNavDiaryLines.Wait();
-                                    if (createNavDiaryLines.IsCompletedSuccessfully)
+                                    bool ok = false;
+                                    try
+                                    {
+                                        createNavDiaryLines.Wait();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        if (!ex.Message.ToLower().Contains("maximum message size quota".ToLower()))
+                                        {
+                                            item.eReasonCode = 9;
+                                            item.eMessage = "Ocorreu um erro: " + ex.Message;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            ok = true;
+                                        }
+                                    }
+                                    if (createNavDiaryLines.IsCompletedSuccessfully || ok)
                                     {
                                         Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryLines;
                                         try
@@ -1921,17 +1938,8 @@ namespace Hydra.Such.Portal.Controllers
                                         if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
                                         {
                                             bool keepOpen = true;
-                                            //item.Lines = productsToHandle;
 
                                             keepOpen = item.Lines.Any(x => x.QuantityReceived != x.QuantityRequired);
-                                            //item.Lines.ForEach(Linha =>
-                                            //{
-                                            //    if (Linha.QuantityReceived != Linha.QuantityRequired)
-                                            //        keepOpen = false;
-                                            //});
-
-                                            //if (keepOpen != true)
-                                            //    keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
 
                                             if (keepOpen == false)
                                             {
@@ -1972,82 +1980,6 @@ namespace Hydra.Such.Portal.Controllers
                                                     item.eReasonCode = 14;
                                                     item.eMessage = "Ocorreu um erro ao fechar no Receber.";
                                                 }
-                                                //if (string.IsNullOrEmpty(item.eMessage))
-                                                //{
-                                                //    if (item.eReasonCode == 1)
-                                                //    {
-                                                //        item.eMessage = "Requisição foi fechada no Receber.";
-                                                //    }
-                                                //}
-
-                                                //bool okReceber = true;
-                                                //RequisiçãoHist REQHistReceber = DBRequest.TransferToRequisitionHist(item);
-                                                //if (REQHistReceber != null)
-                                                //{
-                                                //    REQHistReceber.Estado = (int)RequisitionStates.Archived;
-                                                //    REQHistReceber.UtilizadorModificação = User.Identity.Name;
-                                                //    REQHistReceber.DataHoraModificação = DateTime.Now;
-
-                                                //    if (DBRequesitionHist.Create(REQHistReceber) != null)
-                                                //    {
-                                                //        List<LinhasRequisiçãoHist> REQLinhasHistReceber = DBRequest.TransferToRequisitionLinesHist(item.Lines);
-                                                //        if (REQLinhasHistReceber.Count > 0)
-                                                //        {
-                                                //            REQLinhasHistReceber.ForEach(Linha =>
-                                                //            {
-                                                //                Linha.UtilizadorModificação = User.Identity.Name;
-                                                //                Linha.DataHoraModificação = DateTime.Now;
-                                                //                if (DBRequesitionLinesHist.Create(Linha) == null)
-                                                //                {
-                                                //                    okReceber = false;
-                                                //                    item.eReasonCode = 14;
-                                                //                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
-                                                //                }
-                                                //            });
-                                                //        }
-
-                                                //        if (okReceber == true)
-                                                //        {
-                                                //            if (item.Lines.Count > 0)
-                                                //            {
-                                                //                item.Lines.ForEach(Linha =>
-                                                //                {
-                                                //                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
-                                                //                    {
-                                                //                        okReceber = false;
-                                                //                        item.eReasonCode = 15;
-                                                //                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
-                                                //                    }
-                                                //                });
-                                                //            }
-
-                                                //            if (okReceber == true)
-                                                //            {
-                                                //                if (DBRequest.Delete(item.ParseToDB()) == false)
-                                                //                {
-                                                //                    okReceber = false;
-                                                //                    item.eReasonCode = 16;
-                                                //                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
-                                                //                }
-                                                //                else
-                                                //                {
-                                                //                    item.eReasonCode = 1;
-                                                //                    item.eMessage = "Requisição foi fechada";
-                                                //                }
-                                                //            }
-                                                //        }
-                                                //    }
-                                                //    else
-                                                //    {
-                                                //        item.eReasonCode = 17;
-                                                //        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
-                                                //    }
-                                                //}
-                                                //else
-                                                //{
-                                                //    item.eReasonCode = 18;
-                                                //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
-                                                //}
                                             }
                                         }
                                         else

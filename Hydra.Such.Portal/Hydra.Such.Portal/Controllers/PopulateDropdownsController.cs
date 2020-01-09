@@ -1548,7 +1548,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     id = x.Código,
                     value = x.Descrição,
-                    extra = x.Descricao2
+                    extra = x.Descricao2,
+                    extra2 = x.CódigoÁreaFuncional
                 }).ToList();
             }
 

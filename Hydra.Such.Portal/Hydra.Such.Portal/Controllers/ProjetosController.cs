@@ -3030,7 +3030,8 @@ namespace Hydra.Such.Portal.Controllers
                             DataPedido = customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null,
                             DataPrestacaoServico = serviceDate > DateTime.MinValue ? serviceDate : (DateTime?)null,
                             CodEnderecoEnvio = !string.IsNullOrEmpty(project.CódEndereçoEnvio) ? project.CódEndereçoEnvio : "",
-                            ValorAutorizado = authorizationTotal
+                            ValorAutorizado = authorizationTotal,
+                            GrupoContabilisticoProjeto = project.TipoGrupoContabProjeto.HasValue ? project.TipoGrupoContabProjeto.ToString() : string.Empty
                         };
 
                         //Atualizar apenas os campos relativos à autorização. Nos movimentos de projeto atualizar apenas os necessários à listagem/apresentação
@@ -3950,59 +3951,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
 
-
-
                 projectsDetails = ctx.Projetos.Where(x => projectsIds.Contains(x.NºProjeto)).ToList();
-
-                //AMARO NOVO METODO PARA IR BUSCAR AS LINHAS
-                //INICIO
-                /*
-                List<MovimentosProjectoAutorizados> ListMPA = DBAuthorizedProjectMovements.GetAll("");
-                foreach (AuthorizedProjectViewModel AuthProj in authProjectMovements)
-                {
-                    List<MovimentosDeProjeto> MOV = DBProjectMovements.GetByProjectNo(AuthProj.CodProjeto);
-                    foreach (MovimentosProjectoAutorizados MPA in ListMPA)
-                    {
-                        if (MPA.CodProjeto == AuthProj.CodProjeto && MPA.GrupoFactura == AuthProj.GrupoFactura)
-                        {
-                            SPInvoiceListViewModel addlinha = new SPInvoiceListViewModel
-                            {
-                                CommitmentNumber = AuthProj.NumCompromisso,
-                                Date = AuthProj.DataPrestacaoServico,
-                                InvoiceToClientNo = AuthProj.CodCliente,
-                                ClientRequest = AuthProj.PedidoCliente,
-
-                                MealType = MPA.TipoRefeicao,
-                                Type = MPA.Tipo,
-                                Code = MPA.Codigo,
-                                Description = MPA.Descricao,
-                                RegionCode = MPA.CodRegiao,
-                                FunctionalAreaCode = MPA.CodAreaFuncional,
-                                ResponsabilityCenterCode = MPA.CodCentroResponsabilidade,
-                                ProjectNo = MPA.CodProjeto,
-                                ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(x => x == MPA.CodProjeto),
-                                ConsumptionDate = MPA.DataConsumo.HasValue ? MPA.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
-                                ServiceClientCode = MPA.CodServCliente,
-                                MeasurementUnitCode = MPA.CodUnidadeMedida,
-                                Quantity = MPA.Quantidade,
-                                ServiceGroupCode = MPA.CodGrupoServico,
-                                ExternalGuideNo = MPA.NumGuiaExterna,
-                                WasteGuideNo_GAR = MPA.NumGuiaResiduosGar,
-                                InvoiceGroup = MPA.GrupoFactura,
-
-                                UnitPrice = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).PreçoUnitário,
-                                UnitCost = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).CustoUnitário,
-                                LocationCode = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).CódLocalização,
-                                ProjectContabGroup = MOV.FirstOrDefault(y => y.NºLinha == MPA.NumMovimento).GrupoContabProjeto,
-                            };
-                            data.Add(addlinha);
-                        }
-                    }
-                }
-                */
-                //FIM
-
-
 
                 data = ctx.MovimentosProjectoAutorizados
                     .Join(ctx.MovimentosDeProjeto,
@@ -4331,60 +4280,6 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                 }
                             }
-
-                            //if (proj != null && !string.IsNullOrEmpty(proj.CódEndereçoEnvio))
-                            //{
-                            //    NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(proj.CódEndereçoEnvio, _config.NAVDatabaseName, _config.NAVCompanyName);
-                            //    if (SHIP != null)
-                            //    {
-                            //        Ship.Ship_to_Address = SHIP.Address1;
-                            //        Ship.Ship_to_Address_2 = SHIP.Address2;
-                            //        Ship.Ship_to_City = SHIP.City;
-                            //        Ship.Ship_to_Code = SHIP.Code;
-                            //        Ship.Ship_to_Contact = SHIP.Contact;
-                            //        Ship.Ship_to_Country_Region_Code = "";
-                            //        Ship.Ship_to_County = "";
-                            //        Ship.Ship_to_Name = SHIP.Name1;
-                            //        Ship.Ship_to_Name_2 = SHIP.Name2;
-                            //        Ship.Ship_to_Post_Code = proj.EnvioACódPostal;
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    if (cont != null && !string.IsNullOrEmpty(cont.CódEndereçoEnvio))
-                            //    {
-                            //        NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByCode(cont.CódEndereçoEnvio, _config.NAVDatabaseName, _config.NAVCompanyName);
-                            //        if (SHIP != null)
-                            //        {
-                            //            Ship.Ship_to_Address = SHIP.Address1;
-                            //            Ship.Ship_to_Address_2 = SHIP.Address2;
-                            //            Ship.Ship_to_City = SHIP.City;
-                            //            Ship.Ship_to_Code = SHIP.Code;
-                            //            Ship.Ship_to_Contact = SHIP.Contact;
-                            //            Ship.Ship_to_Country_Region_Code = "";
-                            //            Ship.Ship_to_County = "";
-                            //            Ship.Ship_to_Name = SHIP.Name1;
-                            //            Ship.Ship_to_Name_2 = SHIP.Name2;
-                            //            Ship.Ship_to_Post_Code = cont.EnvioACódPostal;
-                            //        }
-                            //    }
-                            //    else
-                            //    {
-                            //        if (cli != null)
-                            //        {
-                            //            Ship.Ship_to_Address = cli.Address1;
-                            //            Ship.Ship_to_Address_2 = cli.Address2;
-                            //            Ship.Ship_to_City = cli.City;
-                            //            Ship.Ship_to_Code = "";
-                            //            Ship.Ship_to_Contact = cli.PhoneNo;
-                            //            Ship.Ship_to_Country_Region_Code = cli.CountryRegionCode;
-                            //            Ship.Ship_to_County = cli.County;
-                            //            Ship.Ship_to_Name = cli.Name.Length >= 50 ? cli.Name.Substring(0, 49) : cli.Name;
-                            //            Ship.Ship_to_Name_2 = "";
-                            //            Ship.Ship_to_Post_Code = cli.PostCode;
-                            //        }
-                            //    }
-                            //}
 
                             if (proj.FaturaPrecosIvaIncluido == true)
                                 header.FaturaPrecosIvaIncluido = true;
