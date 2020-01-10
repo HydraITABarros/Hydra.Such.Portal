@@ -1605,7 +1605,7 @@ namespace Hydra.Such.Portal.Controllers
                     newdp.Descrição = x.Description;
                     newdp.Quantidade = x.Quantity;
                     newdp.CódUnidadeMedida = x.MeasurementUnitCode;
-                    newdp.CódLocalização = x.LocationCode;
+                    newdp.CódLocalização = x.Type.HasValue && x.Type == 1 ? "DIR" : x.LocationCode;
                     newdp.GrupoContabProjeto = x.ProjectContabGroup;
                     newdp.CódigoRegião = x.RegionCode;
                     newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
@@ -1646,7 +1646,7 @@ namespace Hydra.Such.Portal.Controllers
                         Descrição = x.Description,
                         Quantidade = x.Quantity,
                         CódUnidadeMedida = x.MeasurementUnitCode,
-                        CódLocalização = x.LocationCode,
+                        CódLocalização = x.Type.HasValue && x.Type == 1 ? "DIR" : x.LocationCode,
                         GrupoContabProjeto = x.ProjectContabGroup,
                         CódigoRegião = x.RegionCode,
                         CódigoÁreaFuncional = x.FunctionalAreaCode,
@@ -2158,11 +2158,11 @@ namespace Hydra.Such.Portal.Controllers
 
                                     MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
                                     {
-                                    //NºLinha = newdp.NºLinha,
-                                    NºProjeto = newdp.NºProjeto,
+                                        //NºLinha = newdp.NºLinha,
+                                        NºProjeto = newdp.NºProjeto,
                                         Data = newdp.Data,
                                         TipoMovimento = 1, //CONSUMO
-                                    Tipo = newdp.Tipo,
+                                        Tipo = newdp.Tipo,
                                         Código = newdp.Código,
                                         Descrição = newdp.Descrição,
                                         Quantidade = newdp.Quantidade,
@@ -2175,9 +2175,9 @@ namespace Hydra.Such.Portal.Controllers
                                         Utilizador = User.Identity.Name,
                                         CustoUnitário = newdp.CustoUnitário,
                                         CustoTotal = newdp.Quantidade * newdp.CustoUnitário, //newdp.CustoTotal,
-                                    PreçoUnitário = newdp.PreçoUnitário,
+                                        PreçoUnitário = newdp.PreçoUnitário,
                                         PreçoTotal = newdp.Quantidade * newdp.PreçoUnitário, //newdp.PreçoTotal,
-                                    Faturável = newdp.Faturável,
+                                        Faturável = newdp.Faturável,
                                         Registado = true,
                                         Faturada = false,
                                         FaturaANºCliente = newdp.FaturaANºCliente,

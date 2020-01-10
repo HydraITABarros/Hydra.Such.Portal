@@ -2251,6 +2251,18 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetProductsCodeDiarioProjeto()
+        {
+            List<DDMessageRelated> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Where(x => x.InventoryValueZero == 1).Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetProductsForCurrentUser([FromBody] JObject requestParams)
         {
             string rootAreaId = string.Empty;

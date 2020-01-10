@@ -716,11 +716,11 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 2,
                 Value = "Recurso"
             },
-            new EnumData()
-            {
-                Id = 3,
-                Value = "Conta CG"
-            }
+            //new EnumData()
+            //{
+            //    Id = 3,
+            //    Value = "Conta CG"
+            //}
         };
         public static readonly List<EnumData> requestTypes = new List<EnumData>()
         {

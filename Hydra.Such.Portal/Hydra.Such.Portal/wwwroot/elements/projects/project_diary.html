@@ -153,7 +153,7 @@
             </template>
         </div><!--on-response="_gridListResponse"-->
         <iron-ajax url="/Projetos/GetProjectMovementsDp" last-response="{{resultMovements}}" method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetProductsCode" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProductsCodeDiarioProjeto" last-response="{{CBCodeProducts}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{CBResourceCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetCGAccountCode" last-response="{{CBCGAccountCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResourcesCode" last-response="{{codeOptions}}" id="ajax_code_options" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -1804,6 +1804,10 @@
                     if (this._validateData())
                     //Validações
                     {
+                        if (this.projectTypeNumber == "1") {
+                            this.codeLocation = "DIR";
+                        };
+
                         this.result.items.unshift({
                             projectNo: this.projectNumber,
                             date: this.date,
@@ -2033,7 +2037,7 @@
                         this.$.ajax_code_options.generateRequest();
                     }
                     else if (type == "1") {
-                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetProductsCode";
+                        this.$.ajax_code_options.url = "/PopulateDropdowns/GetProductsCodeDiarioProjeto";
                         this.$.ajax_code_options.generateRequest();
                     }
                     else if (type == "3") {
