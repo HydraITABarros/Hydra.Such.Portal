@@ -1849,8 +1849,10 @@ namespace Hydra.Such.Portal.Controllers
                                 else
                                 {
                                     decimal quantityInStock = 0;
+
                                     Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
                                     quantityinStockTask.Wait();
+
                                     if (quantityinStockTask.IsCompletedSuccessfully)
                                     {
                                         quantityInStock = quantityinStockTask.Result.return_value;

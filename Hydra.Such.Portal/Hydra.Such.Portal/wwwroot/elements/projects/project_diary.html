@@ -1787,15 +1787,17 @@
                         this.openToastError("O campo Nº Projeto é de preenchimento obrigatório.");
                         return false;
                     }
+
                     if (!this.$.dpDate.validate() || this.$.dpDate.value == "") {
                         this.openToastError("O campo Data é de preenchimento obrigatório.");
                         return false;
                     }
-                    //if (this.$.projectList.validate() && this.$.dpDate.validate()) {
-                    //    return true;
-                    //}
-                    //this.openToastError("Verifique os dados inseridos.");
-                    //return false;
+
+                    if (this.codeFuncArea.startsWith("5") && this.ddMealTypes == 0) {
+                        this.openToastError("O campo Tipo de Refeição é de preenchimento Obrigatório para a área da Alimentação.");
+                        return false;
+                    }
+
                     return true;
                 },
                 _add() {
