@@ -216,18 +216,32 @@ class Report extends Component {
                                      ref={(el) => this.state.refsHeader[refAux++] = el}>
                                     <div className="report__spacer--35"></div>
                                     <div className="col-xs-2">
+                                        <Text b className="report__label">Nº Ordem</Text></div>
+                                    <div className="col-xs-10">
+                                        <Text p className="report__text">{order.no}</Text>
+                                    </div>
+                                    <div className="clearfix"></div>
+                                </div>
+                                <div className="report__row__el"
+                                     ref={(el) => this.state.refsHeader[refAux++] = el}>
+                                    {/*<div className="report__spacer--35"></div>*/}
+                                    <div className="col-xs-2">
                                         <Text b className="report__label">Tipo de Ordem</Text></div>
                                     <div className="col-xs-10">
                                         <Text p className="report__text">{order.orderType}</Text>
                                     </div>
                                     <div className="clearfix"></div>
                                 </div>
+
+
                                 {this.state.selectedEquipments.filter(item => item.idEquipamento != 0).length > 0 ?
                                     <div className="report__row__el"
                                          ref={(el) => this.state.refsHeader[refAux++] = el}>
                                         <div className="report__spacer--35"></div>
+                                        <div className="col-xs-12">
+                                            <Text b className="report__label">Equipamentos</Text></div>
                                         <div className="col-xs-2">
-                                            <Text b className="report__label">#Marca</Text></div>
+                                            <Text b className="report__label">#&nbsp;&nbsp;Marca</Text></div>
                                         <div className="col-xs-2">
                                             <Text b className="report__label">Modelo</Text>
                                         </div>
@@ -235,8 +249,8 @@ class Report extends Component {
                                             <Text b className="report__label">NºSérie</Text></div>
                                         <div className="col-xs-2">
                                             <Text b className="report__label">NºEquip.</Text></div>
-                                        <div className="col-xs-2">
-                                            <Text b className="report__label">Nº Inventário</Text></div>
+                                        <div className="col-xs-4">
+                                            <Text b className="report__label">Data Manutenção</Text></div>
                                         <div className="clearfix"></div>
                                     </div> :
                                     <div className="report__spacer--35"
@@ -249,7 +263,7 @@ class Report extends Component {
                                             <div>
                                                 <div className="col-xs-2 ws-nowrap to-ellipsis">
                                                     <Text p className="report__text">
-                                                        {i + 1}&nbsp; {equipment.marcaText}
+                                                        {i + 1}&nbsp;&nbsp;{equipment.marcaText}
                                                     </Text>
                                                 </div>
                                                 <div className="col-xs-2 ws-nowrap to-ellipsis">
@@ -269,7 +283,7 @@ class Report extends Component {
                                                 </div>
                                                 <div className="col-xs-2 ws-nowrap to-ellipsis">
                                                     <Text p className="report__text">
-                                                        {equipment.numInventario}
+                                                        {moment(equipment.dataEstadoFinal).format('DD-MM-YYYY')}
                                                     </Text>
                                                 </div>
                                                 <div className="clearfix"></div>
