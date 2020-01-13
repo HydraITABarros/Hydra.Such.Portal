@@ -690,7 +690,8 @@ class OrdensDeManutencao extends Component {
                                 <TextHeader h2>Ordens de Manutenção <br/> <b>Por executar</b></TextHeader>
                                 <Hidden mdUp>
                                     <br/> <br/>
-                                    <Button icon={<Icon archive/>} onClick={() => {
+                                    <Button icon={<Icon archive/>} className={'disabled hide'} onClick={() => {
+                                        return;
                                         this.props.history.push(`/ordens-de-manutencao/arquivo`)
                                     }}>Arquivo</Button>
                                 </Hidden>
@@ -712,8 +713,9 @@ class OrdensDeManutencao extends Component {
                                 <CircleOm.chart>
                                     <Circle
                                         loading={this.state.isLoading} label=""
-                                        strokeValue={this.state.isLoading ? 0 : ordersCounts.preventive + ordersCounts.curative}
-                                        trailValue={ordersCounts.curative} strokeIcon={<Icon curativa/>}
+                                        strokeValue={this.state.isLoading ? 0 : ordersCounts.curative}
+                                        trailValue={this.state.isLoading ? 0 : ordersCounts.preventive + ordersCounts.curative}
+                                        strokeIcon={<Icon curativa/>}
                                         trailIcon={<Icon preventiva/>} width={191}
                                         strokeColor={_theme.palette.secondary.default}
                                         trailColor={_theme.palette.primary.dark} full
@@ -733,7 +735,9 @@ class OrdensDeManutencao extends Component {
                                     <PullRight>
                                         <Button style={{boxShadow: 'none'}}
                                                 icon={<Icon archive/>}
+                                                className={'disabled hide'}
                                                 onClick={() => {
+                                                    return;
                                                     this.props.history.push(`/ordens-de-manutencao/arquivo`)
                                                 }}>
                                             Arquivo
