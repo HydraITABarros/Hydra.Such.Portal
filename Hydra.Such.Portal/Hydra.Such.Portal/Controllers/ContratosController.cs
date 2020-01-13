@@ -445,7 +445,7 @@ namespace Hydra.Such.Portal.Controllers
             //FunctionalAreas
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.CódigoÁreaFuncional || string.IsNullOrEmpty(x.CódigoÁreaFuncional))));
-            
+
             //ResponsabilityCenter
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
@@ -457,7 +457,8 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<EnumData> status = EnumerablesFixed.ContractStatus;
 
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
                 x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).FirstOrDefault() != null ? status.Where(y => y.Id == x.Status).FirstOrDefault().Value : "" : "";
                 x.FixedVowsAgreementText = x.FixedVowsAgreement.HasValue ? x.FixedVowsAgreement == true ? "Sim" : "Não" : "Não";
@@ -506,7 +507,7 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
-            
+
             //Cliente
             if (!string.IsNullOrEmpty(ClienteNo))
                 ContractsList.RemoveAll(x => x.NºCliente != ClienteNo);
@@ -517,7 +518,8 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<EnumData> status = EnumerablesFixed.ContractStatus;
 
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
                 x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).FirstOrDefault() != null ? status.Where(y => y.Id == x.Status).FirstOrDefault().Value : "" : "";
             });
@@ -579,7 +581,8 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> AllContractBillingTypes = EnumerablesFixed.ContractBillingTypes;
             //List<ClientServicesViewModel> AllClientServices = new List<ClientServicesViewModel>();
 
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 contrato = ContractsList.Find(y => y.NºDeContrato == x.ContractNo && y.NºVersão == x.VersionNo);
                 if (contrato != null)
                 {
@@ -651,7 +654,8 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<EnumData> status = EnumerablesFixed.ContractStatus;
 
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
                 x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).FirstOrDefault() != null ? status.Where(y => y.Id == x.Status).FirstOrDefault().Value : "" : "";
             });
@@ -714,7 +718,8 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> AllContractBillingTypes = EnumerablesFixed.ContractBillingTypes;
             //List<ClientServicesViewModel> AllClientServices = new List<ClientServicesViewModel>();
 
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 contrato = ContractsList.Find(y => y.NºDeContrato == x.ContractNo && y.NºVersão == x.VersionNo);
                 if (contrato != null)
                 {
@@ -786,7 +791,8 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<EnumData> status = EnumerablesFixed.ContractALLStatus;
 
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
                 x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).FirstOrDefault() != null ? status.Where(y => y.Id == x.Status).FirstOrDefault().Value : "" : "";
             });
@@ -2115,8 +2121,8 @@ namespace Hydra.Such.Portal.Controllers
 
                 //if (cContract != null && cContract.Arquivado == true)
                 //{
-                    //UPerm.Update = false;
-                    //UPerm.Delete = false;
+                //UPerm.Update = false;
+                //UPerm.Delete = false;
                 //}
                 if (hist == "true")
                 {
@@ -2161,15 +2167,15 @@ namespace Hydra.Such.Portal.Controllers
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            
+
             //Regions
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
-            
+
             //FunctionalAreas
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
-            
+
             //ResponsabilityCenter
             if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
@@ -2323,7 +2329,7 @@ namespace Hydra.Such.Portal.Controllers
                     ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
                     RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
                     StartDate = StartDate,
-                    ExpiryDate = ExpiryDate,   
+                    ExpiryDate = ExpiryDate,
                     InvoicePeriod = InvoicePeriod
                 });
             }
@@ -2353,15 +2359,15 @@ namespace Hydra.Such.Portal.Controllers
 
             foreach (var item in contractList)
             {
-                string StartDate="";
+                string StartDate = "";
                 string ExpiryDate = "";
                 int? InvoicePeriod = null;
-                Contratos AFixaContract= DBContracts.GetByIdAvencaFixa(item.NºContrato);
+                Contratos AFixaContract = DBContracts.GetByIdAvencaFixa(item.NºContrato);
                 if (AFixaContract != null)
                 {
-                     StartDate = AFixaContract.DataInicial.HasValue? AFixaContract.DataInicial.Value.ToString("yyyy-MM-dd") : "";
-                     ExpiryDate = AFixaContract.DataExpiração.HasValue ? AFixaContract.DataExpiração.Value.ToString("yyyy-MM-dd") : "";
-                     InvoicePeriod = AFixaContract.PeríodoFatura;
+                    StartDate = AFixaContract.DataInicial.HasValue ? AFixaContract.DataInicial.Value.ToString("yyyy-MM-dd") : "";
+                    ExpiryDate = AFixaContract.DataExpiração.HasValue ? AFixaContract.DataExpiração.Value.ToString("yyyy-MM-dd") : "";
+                    InvoicePeriod = AFixaContract.PeríodoFatura;
                 }
                 //Estado Pendente
                 string DocNo_ = "";
@@ -2370,37 +2376,37 @@ namespace Hydra.Such.Portal.Controllers
                 List<NAVSalesLinesViewModel> SLines = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºContrato, item.NºCliente);
                 if (SLines.Count > 0)
                 {
-                     DocNo_ = SLines.LastOrDefault().DocNo;
+                    DocNo_ = SLines.LastOrDefault().DocNo;
                 }
                 // Valor Fatura
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
                 Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
                 Decimal Count = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Count();
-                    result.Add(new FaturacaoContratosViewModel
-                    {
-                        Document_No = DocNo_,
-                        ContractNo = item.NºContrato,
-                        Description = item.Descrição,
-                        ClientNo = item.NºCliente,
-                        ClientName = cliName,
-                        InvoiceValue = Math.Round(sum, 2),
-                        NumberOfInvoices = item.NºDeFaturasAEmitir,
-                        InvoiceTotal = Math.Round(((decimal)item.NºDeFaturasAEmitir * sum), 2),
-                        ContractValue = item.ValorDoContrato,
-                        ValueToInvoice = item.ValorPorFaturar,
-                        BilledValue = item.ValorFaturado,
-                        RegionCode = item.CódigoRegião,
-                        Situation= item.Situação,
-                        InvoiceGroupCount = Count,
-                        InvoiceGroupValue = item.GrupoFatura,
-                        FunctionalAreaCode = item.CódigoÁreaFuncional,
-                        ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
-                        RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
-                        StartDate= StartDate,
-                        ExpiryDate = ExpiryDate,
-                        InvoicePeriod = InvoicePeriod
-                    });
-                
+                result.Add(new FaturacaoContratosViewModel
+                {
+                    Document_No = DocNo_,
+                    ContractNo = item.NºContrato,
+                    Description = item.Descrição,
+                    ClientNo = item.NºCliente,
+                    ClientName = cliName,
+                    InvoiceValue = Math.Round(sum, 2),
+                    NumberOfInvoices = item.NºDeFaturasAEmitir,
+                    InvoiceTotal = Math.Round(((decimal)item.NºDeFaturasAEmitir * sum), 2),
+                    ContractValue = item.ValorDoContrato,
+                    ValueToInvoice = item.ValorPorFaturar,
+                    BilledValue = item.ValorFaturado,
+                    RegionCode = item.CódigoRegião,
+                    Situation = item.Situação,
+                    InvoiceGroupCount = Count,
+                    InvoiceGroupValue = item.GrupoFatura,
+                    FunctionalAreaCode = item.CódigoÁreaFuncional,
+                    ResponsabilityCenterCode = item.CódigoCentroResponsabilidade,
+                    RegisterDate = item.DataPróximaFatura.HasValue ? item.DataPróximaFatura.Value.ToString("yyyy-MM-dd") : "",
+                    StartDate = StartDate,
+                    ExpiryDate = ExpiryDate,
+                    InvoicePeriod = InvoicePeriod
+                });
+
             }
             return Json(result);
         }
@@ -2410,7 +2416,7 @@ namespace Hydra.Such.Portal.Controllers
             //AMARO TESTE DELETEALL
             // Delete All lines From "Autorizar Faturação Contratos" & "Linhas Faturação Contrato"
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
-            
+
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
 
             //AMARO COMENTAR
@@ -2808,7 +2814,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Problema += " Fatura no Pre-Registo!";
                                 }
                             }
-                            
+
                             if (!string.IsNullOrEmpty(item.NºCliente))
                             {
                                 Task<ClientDetailsViewModel> postNAV = WSCustomerService.GetByNoAsync(item.NºCliente, _configws);
@@ -3002,7 +3008,7 @@ namespace Hydra.Such.Portal.Controllers
                 List<AutorizarFaturaçãoContratos> contract_List = new List<AutorizarFaturaçãoContratos>();
 
                 if (itm.InvoiceGroupValue > 0)
-                    contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo).Where(x => x.GrupoFatura == itm.InvoiceGroupValue).ToList() ;
+                    contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo).Where(x => x.GrupoFatura == itm.InvoiceGroupValue).ToList();
                 else
                     contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo);
 
@@ -3689,7 +3695,7 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 return Json(true);
-            }           
+            }
         }
         #endregion
 
@@ -3723,7 +3729,7 @@ namespace Hydra.Such.Portal.Controllers
                     cContract = DBContracts.GetByIdAndVersion(id, int.Parse(version));
                 else
                     cContract = DBContracts.GetByIdLastVersion(id);
-           
+
                 if (hist == "true")
                 {
                     ViewBag.Historic = "(Histórico)";
@@ -3805,7 +3811,8 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> status = EnumerablesFixed.ProposalsStatus;
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x)));
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
                 x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).FirstOrDefault() != null ? status.Where(y => y.Id == x.Status).FirstOrDefault().Value : "" : "";
                 //x.CodeRegion = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, x.CodeRegion).FirstOrDefault().Name ?? "";
@@ -3880,7 +3887,8 @@ namespace Hydra.Such.Portal.Controllers
             List<EnumData> status = EnumerablesFixed.ProposalsStatus;
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x)));
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
                 x.StatusDescription = x.Status != null ? status.Where(y => y.Id == x.Status).FirstOrDefault() != null ? status.Where(y => y.Id == x.Status).FirstOrDefault().Value : "" : "";
                 //x.CodeRegion = DBNAV2017DimensionValues.GetById(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name, x.CodeRegion).FirstOrDefault().Name ?? "";
@@ -3902,7 +3910,8 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x)));
-            result.ForEach(x => {
+            result.ForEach(x =>
+            {
                 x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
             });
 
@@ -4121,7 +4130,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams, string dateCont )
+        public JsonResult CreateInvoiceHeaderFromContract([FromBody] JObject requestParams, string dateCont)
         {
             bool registado = false;
             ErrorHandler result = new ErrorHandler();
@@ -4157,7 +4166,8 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
 
-                if (createGroup == true) {
+                if (createGroup == true)
+                {
                     //Create Project if existe
                     ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
                     Task<WSCreateNAVProject.Read_Result> Project = WSProject.GetNavProject(Contract.ContractNo, _configws);
@@ -4166,7 +4176,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ProjectDetailsViewModel proj = new ProjectDetailsViewModel();
                         proj.ProjectNo = Contract.ContractNo;
-                        proj.ClientNo = Contract.ClientNo;                                               
+                        proj.ClientNo = Contract.ClientNo;
                         proj.Status = EstadoProjecto.Encomenda;
                         proj.RegionCode = Contract.CodeRegion;
                         proj.ResponsabilityCenterCode = Contract.CodeResponsabilityCenter;
@@ -4284,7 +4294,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
                         PreInvoiceToCreate.PaymentTermsCode = Contract.CodePaymentTerms;
-                   
+
                         PreInvoiceToCreate.No_Compromisso = Contract.PromiseNo;
                         PreInvoiceToCreate.CodigoPedido = Contract.ClientRequisitionNo;
                         if (Contract.ReceiptDateRequisition != null && Contract.ReceiptDateRequisition != "")
@@ -4335,7 +4345,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {
-                               
+
                                 string cod = InvoiceHeader.Result.WSPreInvoice.No;
                                 List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
                                 foreach (ContractLineViewModel line in ContractLines)
@@ -4347,7 +4357,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
                                         PreInvoiceLinesToCreate.Descrição = line.Description;
-                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ?  line.Description2.Substring(0, 49) : !string.IsNullOrEmpty(line.Description2) ? line.Description2 : "";
+                                        PreInvoiceLinesToCreate.Descricao2 = !string.IsNullOrEmpty(line.Description2) && line.Description2.Length > 50 ? line.Description2.Substring(0, 49) : !string.IsNullOrEmpty(line.Description2) ? line.Description2 : "";
                                         PreInvoiceLinesToCreate.CódUnidadeMedida = line.CodeMeasureUnit;
                                         PreInvoiceLinesToCreate.CódigoÁreaFuncional = line.CodeFunctionalArea;
                                         PreInvoiceLinesToCreate.CódigoRegião = line.CodeRegion;
@@ -4355,7 +4365,7 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.NºContrato = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.NºProjeto = Contract.ContractNo;
                                         PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
-                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 0 : Contract.InvocePeriod==5 ? 12 : Contract.InvocePeriod==4 ? 6 : Contract.InvocePeriod);
+                                        PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 0 : Contract.InvocePeriod == 5 ? 12 : Contract.InvocePeriod == 4 ? 6 : Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
@@ -4595,7 +4605,7 @@ namespace Hydra.Such.Portal.Controllers
                             InvoiceHeader.Wait();
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {
-                               
+
                                 string cod = InvoiceHeader.Result.WSPreInvoice.No;
                                 List<LinhasFaturaçãoContrato> LinhasFaturacao = new List<LinhasFaturaçãoContrato>();
                                 foreach (ContractLineViewModel line in ContractLines)
@@ -4707,7 +4717,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
-            if(result.eMessages.Count > 0)
+            if (result.eMessages.Count > 0)
             {
                 return Json(result);
             }
@@ -4929,7 +4939,7 @@ namespace Hydra.Such.Portal.Controllers
                                 //thisHeader.ReferênciaContrato = thisHeader.NºContrato;
                                 var create = DBContracts.Create(thisHeader).NºDeContrato;
 
-                                if(create != null)
+                                if (create != null)
                                 {
                                     foreach (var contractlinestocreate in ContractLines)
                                     {
@@ -5067,9 +5077,9 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<NAVContractInvoiceLinesViewModel> result = new List<NAVContractInvoiceLinesViewModel>();
             result = DBNAV2017ContractDetails.GetContractInvoiceLinesByNo(contractNo, _config.NAVDatabaseName, _config.NAVCompanyName);
-            foreach(var temp in result)
+            foreach (var temp in result)
             {
-                if(temp.DataRegistoDiario != null)
+                if (temp.DataRegistoDiario != null)
                 {
                     temp.DataRegistoDiarioSTR = temp.DataRegistoDiario.Value.Year != 1753 ? temp.DataRegistoDiario.Value.ToString("yyyy-MM-dd") : "";
                 }
@@ -6251,7 +6261,7 @@ namespace Hydra.Such.Portal.Controllers
             //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
-        
+
         //1
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
@@ -6563,7 +6573,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            catch (Exception e )
+            catch (Exception e)
             {
                 throw;
             }

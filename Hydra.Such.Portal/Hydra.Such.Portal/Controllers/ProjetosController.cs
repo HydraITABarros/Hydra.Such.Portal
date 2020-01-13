@@ -1590,93 +1590,93 @@ namespace Hydra.Such.Portal.Controllers
 
                 dp.ForEach(x =>
                 {
-                List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
+                    List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
 
-                if (dpObject.Count > 0)
-                {
-                    DiárioDeProjeto newdp = dpObject.FirstOrDefault();
-
-                    newdp.NºLinha = x.LineNo;
-                    newdp.NºProjeto = x.ProjectNo;
-                    newdp.Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date);
-                    newdp.TipoMovimento = x.MovementType;
-                    newdp.Tipo = x.Type;
-                    newdp.Código = x.Code;
-                    newdp.Descrição = x.Description;
-                    newdp.Quantidade = x.Quantity;
-                    newdp.CódUnidadeMedida = x.MeasurementUnitCode;
-                    newdp.CódLocalização = x.Type.HasValue && x.Type == 1 ? "DIR" : x.LocationCode;
-                    newdp.GrupoContabProjeto = x.ProjectContabGroup;
-                    newdp.CódigoRegião = x.RegionCode;
-                    newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
-                    newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
-                    newdp.Utilizador = User.Identity.Name;
-                    newdp.CustoUnitário = x.UnitCost;
-                    newdp.CustoTotal = x.Quantity * x.UnitCost; //x.TotalCost;
-                    newdp.PreçoUnitário = x.UnitPrice;
-                    newdp.PreçoTotal = x.Quantity * x.UnitPrice; //x.TotalPrice;
-                    newdp.Faturável = x.Billable;
-                    newdp.Registado = false;
-                    newdp.FaturaANºCliente = x.InvoiceToClientNo;
-                    newdp.Moeda = x.Currency;
-                    newdp.ValorUnitárioAFaturar = x.UnitValueToInvoice;
-                    newdp.TipoRefeição = x.MealType;
-                    newdp.CódGrupoServiço = x.ServiceGroupCode;
-                    newdp.NºGuiaResíduos = x.ResidueGuideNo;
-                    newdp.NºGuiaExterna = x.ExternalGuideNo;
-                    newdp.DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate);
-                    newdp.CódServiçoCliente = x.ServiceClientCode;
-                    newdp.Faturada = x.Billed;
-                    newdp.DataHoraModificação = DateTime.Now;
-                    newdp.UtilizadorModificação = User.Identity.Name;
-                    newdp.PréRegisto = false;
-
-                    DBProjectDiary.Update(newdp);
-                }
-                else
-                {
-                    DiárioDeProjeto newdp = new DiárioDeProjeto()
+                    if (dpObject.Count > 0)
                     {
-                        NºLinha = x.LineNo,
-                        NºProjeto = x.ProjectNo,
-                        Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
-                        TipoMovimento = x.MovementType,
-                        Tipo = x.Type,
-                        Código = x.Code,
-                        Descrição = x.Description,
-                        Quantidade = x.Quantity,
-                        CódUnidadeMedida = x.MeasurementUnitCode,
-                        CódLocalização = x.Type.HasValue && x.Type == 1 ? "DIR" : x.LocationCode,
-                        GrupoContabProjeto = x.ProjectContabGroup,
-                        CódigoRegião = x.RegionCode,
-                        CódigoÁreaFuncional = x.FunctionalAreaCode,
-                        CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
-                        Utilizador = User.Identity.Name,
-                        CustoUnitário = x.UnitCost,
-                        CustoTotal = x.Quantity * x.UnitCost, //x.TotalCost,
-                        PreçoUnitário = x.UnitPrice,
-                        PreçoTotal = x.Quantity * x.UnitPrice, //x.TotalPrice,
-                        Faturável = x.Billable,
-                        Registado = false,
-                        FaturaANºCliente = x.InvoiceToClientNo,
-                        Moeda = x.Currency,
-                        ValorUnitárioAFaturar = x.UnitValueToInvoice,
-                        TipoRefeição = x.MealType,
-                        CódGrupoServiço = x.ServiceGroupCode,
-                        NºGuiaResíduos = x.ResidueGuideNo,
-                        NºGuiaExterna = x.ExternalGuideNo,
-                        DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
-                        CódServiçoCliente = x.ServiceClientCode,
-                        PréRegisto = false
+                        DiárioDeProjeto newdp = dpObject.FirstOrDefault();
 
-                    };
+                        newdp.NºLinha = x.LineNo;
+                        newdp.NºProjeto = x.ProjectNo;
+                        newdp.Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date);
+                        newdp.TipoMovimento = x.MovementType;
+                        newdp.Tipo = x.Type;
+                        newdp.Código = x.Code;
+                        newdp.Descrição = x.Description;
+                        newdp.Quantidade = x.Quantity;
+                        newdp.CódUnidadeMedida = x.MeasurementUnitCode;
+                        newdp.CódLocalização = x.Type.HasValue && x.Type == 1 ? "DIR" : x.LocationCode;
+                        newdp.GrupoContabProjeto = x.ProjectContabGroup;
+                        newdp.CódigoRegião = x.RegionCode;
+                        newdp.CódigoÁreaFuncional = x.FunctionalAreaCode;
+                        newdp.CódigoCentroResponsabilidade = x.ResponsabilityCenterCode;
+                        newdp.Utilizador = User.Identity.Name;
+                        newdp.CustoUnitário = x.UnitCost;
+                        newdp.CustoTotal = x.Quantity * x.UnitCost; //x.TotalCost;
+                        newdp.PreçoUnitário = x.UnitPrice;
+                        newdp.PreçoTotal = x.Quantity * x.UnitPrice; //x.TotalPrice;
+                        newdp.Faturável = x.Billable;
+                        newdp.Registado = false;
+                        newdp.FaturaANºCliente = x.InvoiceToClientNo;
+                        newdp.Moeda = x.Currency;
+                        newdp.ValorUnitárioAFaturar = x.UnitValueToInvoice;
+                        newdp.TipoRefeição = x.MealType;
+                        newdp.CódGrupoServiço = x.ServiceGroupCode;
+                        newdp.NºGuiaResíduos = x.ResidueGuideNo;
+                        newdp.NºGuiaExterna = x.ExternalGuideNo;
+                        newdp.DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate);
+                        newdp.CódServiçoCliente = x.ServiceClientCode;
+                        newdp.Faturada = x.Billed;
+                        newdp.DataHoraModificação = DateTime.Now;
+                        newdp.UtilizadorModificação = User.Identity.Name;
+                        newdp.PréRegisto = false;
 
-                    newdp.Faturada = false;
-                    newdp.DataHoraCriação = DateTime.Now;
-                    newdp.UtilizadorCriação = User.Identity.Name;
-                    DBProjectDiary.Create(newdp);
-                }
-            });
+                        DBProjectDiary.Update(newdp);
+                    }
+                    else
+                    {
+                        DiárioDeProjeto newdp = new DiárioDeProjeto()
+                        {
+                            NºLinha = x.LineNo,
+                            NºProjeto = x.ProjectNo,
+                            Data = x.Date == "" || x.Date == null ? (DateTime?)null : DateTime.Parse(x.Date),
+                            TipoMovimento = x.MovementType,
+                            Tipo = x.Type,
+                            Código = x.Code,
+                            Descrição = x.Description,
+                            Quantidade = x.Quantity,
+                            CódUnidadeMedida = x.MeasurementUnitCode,
+                            CódLocalização = x.Type.HasValue && x.Type == 1 ? "DIR" : x.LocationCode,
+                            GrupoContabProjeto = x.ProjectContabGroup,
+                            CódigoRegião = x.RegionCode,
+                            CódigoÁreaFuncional = x.FunctionalAreaCode,
+                            CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                            Utilizador = User.Identity.Name,
+                            CustoUnitário = x.UnitCost,
+                            CustoTotal = x.Quantity * x.UnitCost, //x.TotalCost,
+                            PreçoUnitário = x.UnitPrice,
+                            PreçoTotal = x.Quantity * x.UnitPrice, //x.TotalPrice,
+                            Faturável = x.Billable,
+                            Registado = false,
+                            FaturaANºCliente = x.InvoiceToClientNo,
+                            Moeda = x.Currency,
+                            ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                            TipoRefeição = x.MealType,
+                            CódGrupoServiço = x.ServiceGroupCode,
+                            NºGuiaResíduos = x.ResidueGuideNo,
+                            NºGuiaExterna = x.ExternalGuideNo,
+                            DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
+                            CódServiçoCliente = x.ServiceClientCode,
+                            PréRegisto = false
+
+                        };
+
+                        newdp.Faturada = false;
+                        newdp.DataHoraCriação = DateTime.Now;
+                        newdp.UtilizadorCriação = User.Identity.Name;
+                        DBProjectDiary.Create(newdp);
+                    }
+                });
             }
             catch (Exception e)
             {
@@ -2151,10 +2151,10 @@ namespace Hydra.Such.Portal.Controllers
                                 DiárioDeProjeto newdp = DBProjectDiary.GetAllByCode(User.Identity.Name, x.Code);
                                 if (newdp != null)
                                 {
-                                //newdp.Registado = true;
-                                //newdp.UtilizadorModificação = User.Identity.Name;
-                                //newdp.DataHoraModificação = DateTime.Now;
-                                DBProjectDiary.Delete(newdp);
+                                    //newdp.Registado = true;
+                                    //newdp.UtilizadorModificação = User.Identity.Name;
+                                    //newdp.DataHoraModificação = DateTime.Now;
+                                    DBProjectDiary.Delete(newdp);
 
                                     MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
                                     {

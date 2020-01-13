@@ -446,7 +446,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (type == 1) //Matéria Prima
                 {
                     var prodUnit = DBProductivityUnits.GetById(produtivityUnitId);
-                    result = DBLinhasAcordoPrecos.GetMateriaPrima(date, prodUnit.Armazém);                    
+                    result = DBLinhasAcordoPrecos.GetMateriaPrima(date, prodUnit.Armazém);
                 }
                 else //Matéria Subsidiária
                 {
@@ -455,10 +455,11 @@ namespace Hydra.Such.Portal.Controllers
                     result = DBLinhasAcordoPrecos.GetMateriaSubsidiaria(date, config.ArmazemCompraDireta, prodUnit.CódigoCentroResponsabilidade);
                 }
 
-                result.ForEach(r => {
+                result.ForEach(r =>
+                {
                     var serializerSettings = new JsonSerializerSettings();
                     serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    dynamic _item = JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(r, serializerSettings));                   
+                    dynamic _item = JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(r, serializerSettings));
                     _item.produtoFornecedor = r.CodProduto.ToString() + r.NoFornecedor.ToString();
                     retval.Add(_item);
                 });
@@ -918,8 +919,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<AcessosDimensões> userDims = DBUserDimensions.GetByUserId(User.Identity.Name);
             List<NAVDimValueViewModel> nav2017Areas = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
-            
-            if(userDims != null && userDims.Count > 0)
+
+            if (userDims != null && userDims.Count > 0)
             {
                 nav2017Areas.RemoveAll(x => !userDims.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.Code));
             }
@@ -1046,7 +1047,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result_all);
         }
 
-      
+
         [HttpPost]
         public JsonResult GetLocationsValuesFromLines([FromBody] string locationId)
         {

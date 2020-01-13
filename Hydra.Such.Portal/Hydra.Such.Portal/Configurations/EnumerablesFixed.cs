@@ -117,117 +117,117 @@ namespace Hydra.Such.Portal.Configurations
         //};
 
         public static readonly List<EnumData> Features = featuresEnumData;
-       //     new List<EnumData>(){
-       //     new EnumData()
-       //     {
-       //         Id = 1,
-       //         Value = "Projetos"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 2,
-       //         Value = "Contratos"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 3,
-       //         Value = "Pré-Requisições"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 4,
-       //         Value = "Requisições"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 5,
-       //         Value = "Requisições Simplificadas"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 6,
-       //         Value = "Folhas de Horas"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 7,
-       //         Value = "Unidades Produtivas"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 8,
-       //         Value = "Fichas Técnicas de Pratos"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 9,
-       //         Value = "Pedido de Aquisição"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 10,
-       //         Value = "Pedido Simplificado"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 11,
-       //         Value = "Viaturas"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 12,
-       //         Value = "Telemoveis"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 13,
-       //         Value = "Telefones"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 14,
-       //         Value = "Processos Disciplinares"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 15,
-       //         Value = "Processos de Inquérito"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 16,
-       //         Value = "Receção de Compras"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 17,
-       //         Value = "Receção de Faturação"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 18,
-       //         Value = "Administração"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 19,
-       //         Value = "Diário de Projeto"
-       //     },
-       //     new EnumData()
-       //     {
-       //         Id = 20,
-       //         Value = "Oportunidades"
-       //     },
-       //      new EnumData()
-       //     {
-       //         Id = 21,
-       //         Value = "Propostas"
-       //     },
-       //      new EnumData()
-       //     {
-       //         Id = 22,
-       //         Value = "Autorizaçãp Faturação"
-       //     },
+        //     new List<EnumData>(){
+        //     new EnumData()
+        //     {
+        //         Id = 1,
+        //         Value = "Projetos"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 2,
+        //         Value = "Contratos"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 3,
+        //         Value = "Pré-Requisições"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 4,
+        //         Value = "Requisições"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 5,
+        //         Value = "Requisições Simplificadas"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 6,
+        //         Value = "Folhas de Horas"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 7,
+        //         Value = "Unidades Produtivas"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 8,
+        //         Value = "Fichas Técnicas de Pratos"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 9,
+        //         Value = "Pedido de Aquisição"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 10,
+        //         Value = "Pedido Simplificado"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 11,
+        //         Value = "Viaturas"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 12,
+        //         Value = "Telemoveis"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 13,
+        //         Value = "Telefones"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 14,
+        //         Value = "Processos Disciplinares"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 15,
+        //         Value = "Processos de Inquérito"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 16,
+        //         Value = "Receção de Compras"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 17,
+        //         Value = "Receção de Faturação"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 18,
+        //         Value = "Administração"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 19,
+        //         Value = "Diário de Projeto"
+        //     },
+        //     new EnumData()
+        //     {
+        //         Id = 20,
+        //         Value = "Oportunidades"
+        //     },
+        //      new EnumData()
+        //     {
+        //         Id = 21,
+        //         Value = "Propostas"
+        //     },
+        //      new EnumData()
+        //     {
+        //         Id = 22,
+        //         Value = "Autorizaçãp Faturação"
+        //     },
 
         //      // zpgm. identify users that can be appointed Elementos Juri in ProcedimentosCcp
         //      new EnumData()
@@ -971,7 +971,7 @@ namespace Hydra.Such.Portal.Configurations
             new EnumData()
             {
                 Id = 3,
-                Value = "Fatura" 
+                Value = "Fatura"
             },
             new EnumData()
             {
@@ -2228,7 +2228,7 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Fornecedor Secundário"
             }
         };
-        
+
         //CLIENTE
         public static List<EnumData> Tipo_Cliente
         {
@@ -2735,7 +2735,7 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 1,
                 Value="Produto"
             }
-            
+
         };
 
         //PEDIDOS DE DESENVOLVIMENTO

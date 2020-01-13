@@ -1124,7 +1124,6 @@
                                                             </div>
                                                         </div>
                                                         <!--</template>-->
-
                                                         <!-- VAADIN GRID  Textos Fatura -->
                                                         <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
                                                             <vaadin-grid-column resizable>
@@ -3724,7 +3723,6 @@
                 },
 
                 _changeStatusChanged: function () {
-                    debugger;
                     if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
                         if (this.$.mChangeStatus.value == "2") {
                             if (this._validateData()) {

@@ -116,7 +116,7 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
-        
+
 
         [HttpPost]
         public JsonResult GetViaturaDetails([FromBody] ViaturasViewModel data)
