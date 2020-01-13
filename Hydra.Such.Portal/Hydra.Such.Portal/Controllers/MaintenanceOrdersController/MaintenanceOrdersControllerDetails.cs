@@ -109,7 +109,7 @@ namespace Hydra.Such.Portal.Controllers
 
 			// hammered to force the list to return only equipment with defined maintenance.
 			var availableTypes = evolutionWEBContext.FichaManutencao
-				.Where(s => order.OrderDate >= s.PeriodoInicio && order.OrderDate <= s.PeriodoFim).Select(s => s.IdTipo)
+				.Where(s => order.OrderDate >= s.PeriodoInicio && (s.PeriodoFim == null || order.OrderDate <= s.PeriodoFim)).Select(s => s.IdTipo)
 				.Distinct().ToList();
 			var availableCategories = evolutionWEBContext.EquipCategoria
 				.Where(ec => availableTypes.Contains(ec.IdTipo)).Select(s => s.IdCategoria).ToList();
@@ -187,16 +187,24 @@ namespace Hydra.Such.Portal.Controllers
 				item.ServicoText = servico != null ? servico.Nome : "";
 				item.haveCurative = evolutionWEBContext.MaintenanceOrder.Where(c => c.IdServicoEvolution == item.IdServico).Select(c => c.No).FirstOrDefault();
 
-				var plan = evolutionWEBContext.FichaManutencaoRelatorio.FirstOrDefault(m =>
-					m.Om == order.No && m.IdEquipamento == item.IdEquipamento);
-				item.Estado = "0";
-				if (plan != null)
-				{
-					item.Estado = plan.EstadoFinal.ToString();
-					item.Signed = (plan.AssinaturaCliente != "" && plan.AssinaturaCliente != null) || 
-					              (plan.AssinaturaSieIgualCliente == true && plan.AssinaturaSie != ""&& plan.AssinaturaSie != null) && item.Estado != "0" ? 2:item.Estado != "0" ? 1 : 0 ;
-				}
 				
+				var planHeader = GetPlanHeader(order, item.Categoria);
+				if (planHeader != null)
+				{
+					var plan = evolutionWEBContext.FichaManutencaoRelatorio.FirstOrDefault(m =>
+						m.Om == order.No && m.IdEquipamento == item.IdEquipamento && m.Versao == planHeader.Versao && m.Codigo == planHeader.Codigo);
+					
+					item.Estado = "0";
+					if (plan != null)
+					{
+						item.Estado = plan.EstadoFinal.ToString();
+						item.Signed = (((plan.AssinaturaSieIgualCliente == null || plan.AssinaturaSieIgualCliente == false) && (plan.AssinaturaCliente != "" && plan.AssinaturaCliente != null)) || 
+						              (plan.AssinaturaSieIgualCliente == true && (plan.AssinaturaSie != "" || plan.AssinaturaSie != null))) && plan.EstadoFinal != 0 ? 1 : 0;
+					}
+				}
+
+				//item.CategoriaText = planHeader.Designacao;
+
 			});
 
 			var resultLines = new PageResult<dynamic>(newList, nextLink, total);
@@ -214,8 +222,8 @@ namespace Hydra.Such.Portal.Controllers
 				toExecute = all - executed,
 				toSigning = evolutionWEBContext.FichaManutencaoRelatorio
 					.Where(m=>
-						m.Om == order.No && (m.AssinaturaCliente == null || m.AssinaturaCliente == "") && 
-						(m.AssinaturaSieIgualCliente == false || (m.AssinaturaSie == "" || m.AssinaturaSie == null) ) &&
+						m.Om == order.No && ((m.AssinaturaSieIgualCliente == false && (m.AssinaturaCliente == null || m.AssinaturaCliente == "")) || 
+						(m.AssinaturaSieIgualCliente == true && (m.AssinaturaSie == "" || m.AssinaturaSie == null) )) &&
 						m.EstadoFinal != 0).Count(),
 				executed = executed
 			};
