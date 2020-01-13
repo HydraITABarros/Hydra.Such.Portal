@@ -300,7 +300,7 @@ class FichaDeManutencao extends Component {
 
                 var state = {
                     order: data.order,
-                    title: data.isCurative || data.isSimplified ? this.state.orderId : data.equipments.length > 0 ? data.equipments[0].categoriaText : "",
+                    title: data.isCurative || data.isSimplified ? this.state.orderId : data.equipments.length > 0 ? data.planHeader.designacao : "",
                     service: data.equipments.length > 0 ? data.equipments[0].servicoText : "",
                     room: data.equipments.length == 1 ? data.equipments[0].sala : "",
                     equipments: data.equipments,
@@ -314,7 +314,7 @@ class FichaDeManutencao extends Component {
                     isCurative: data.isCurative,
                     isSimplified: data.isSimplified
                 };
-
+                console.log('IMPO', data.planMaintenance, data.equipments[0].rotinaId);
                 addLinkedPropsToObject(state, this);
 
                 this.setState(state);
@@ -974,7 +974,11 @@ class FichaDeManutencao extends Component {
                                                                             (equipment.assinaturaSieIgualCliente == true || equipment.assinaturaClienteManual == true))
                                                                     )}
                                                                     onChange={() => {
-
+                                                                        if (equipment.$estadoFinal.value == 0) {
+                                                                            equipment.$dataEstadoFinal.value = null;
+                                                                        } else {
+                                                                            equipment.$dataEstadoFinal.value = moment().toDate();
+                                                                        }
                                                                         //this.finalStateEl.current.blur();
                                                                         if (this.state.order.technicals.filter((item) => {
                                                                             return item.id == this.state.currentUser.id;
