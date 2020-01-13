@@ -462,21 +462,13 @@ namespace Hydra.Such.Portal.Controllers
 			return Json(false);
 		}
 
-		public class OmHeaderViewModel
+		public class OmHeaderViewModel : MaintenanceOrderViewModel
 		{
-			public string ContractNo;
-			public string No;
 			public string NomeCliente;
-			public string Description;
-			public int? IdClienteEvolution;
-			public int? IdInstituicaoEvolution;
 			public int IdRegiao;
 			public string ShortcutDimension1Code;
 			public string ShortcutDimension3Code;
-			public string ClientName;
 			public string InstitutionDescription;
-			public string OrderType;
-			public DateTime? OrderDate;
 		}
 
 		public class IconsTasksHeaderViewModel
