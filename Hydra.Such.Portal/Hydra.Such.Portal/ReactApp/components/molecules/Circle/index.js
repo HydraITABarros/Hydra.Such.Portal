@@ -119,10 +119,10 @@ class Circle extends React.Component {
                     strokeColor: this.props.strokeColor,
                     trailTooltipHtml: renderToString(<span><TooltipIcon
                         color={this.props.trailColor}>{this.props.trailIcon}</TooltipIcon> <Text
-                        b>{this.props.strokeValue - this.props.trailValue}</Text></span>),
+                        b>{this.props.trailValue - this.props.strokeValue}</Text></span>),
                     strokeTooltipHtml: renderToString(<span><TooltipIcon
                         color={this.props.strokeColor}>{this.props.strokeIcon}</TooltipIcon> <Text
-                        b>{this.props.trailValue}</Text></span>)
+                        b>{this.props.strokeValue}</Text></span>)
                 });
                 this.setState({tooltipReady: true}, () => {
                     count = 0;
@@ -142,10 +142,10 @@ class Circle extends React.Component {
                             <CircleTotal>
                                 <Text dataBig
                                       style={{fontSize: '50px', lineHeight: '70px', color: this.props.trailColor}}>
-                                    {this.props.strokeValue - this.props.trailValue}<span style={{
+                                    {this.props.trailValue - this.props.strokeValue}<span style={{
                                     fontSize: '50px',
                                     color: this.props.strokeColor
-                                }}>/{this.props.trailValue}</span>
+                                }}>/{this.props.strokeValue}</span>
                                 </Text>
                                 <Text p style={{color: this.props.strokeColor}}>
                                     {this.props.label}
