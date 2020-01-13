@@ -179,6 +179,7 @@ namespace Hydra.Such.Portal.Controllers
 			{
 				order,
 				equipments,
+				planHeader,
 				planMaintenance = planMaintenance/*.Where(i => i.RotinasList.Contains(rotinaId))*/,
 				planQuality=planQuality/*.Where(i => i.RotinasList.Contains(rotinaId))*/,
 				planQuantity=planQuantity/*.Where(i => i.RotinasList.Contains(rotinaId))*/,
@@ -196,7 +197,7 @@ namespace Hydra.Such.Portal.Controllers
 			//if (codigo == null && !isCurative && !isSimplified) { return NotFound(); }
 
 			var planHeader = evolutionWEBContext.FichaManutencao
-				.Where(f => f.IdTipo == tipo && order.OrderDate >= f.PeriodoInicio && order.OrderDate <= f.PeriodoFim)
+				.Where(f => f.IdTipo == tipo && order.OrderDate >= f.PeriodoInicio && (f.PeriodoFim == null || order.OrderDate <= f.PeriodoFim))
 				.OrderByDescending(f => f.Versao).FirstOrDefault();
 
 			return planHeader;
@@ -229,6 +230,7 @@ namespace Hydra.Such.Portal.Controllers
 					ResponsibleEmployee = o.ResponsibleEmployee,
 					MaintenanceResponsible = o.MaintenanceResponsible,
 					OrderType = o.OrderType,
+					OrderDate = o.OrderDate,
 					Status = o.Status,
 					TipoContactoClienteInicial = o.TipoContactoClienteInicial,
 					NoDocumentoContactoInicial = o.NoDocumentoContactoInicial,
@@ -472,7 +474,7 @@ namespace Hydra.Such.Portal.Controllers
 				
 				if (index == 0 && planReport != null)
 				{
-					rotinaId = planReport.Rotina;
+					rotinaId = planReport.Rotina != null ? (int)planReport.Rotina : 1;
 				} else if (index == 0 && planReport == null)
 				{
 					var line = OrderLines.FirstOrDefault(o => o.IdEquipamento == item.Id);
@@ -492,6 +494,7 @@ namespace Hydra.Such.Portal.Controllers
 					item.AssinaturaClienteManual = planReport.AssinaturaClienteManual;
 					item.AssinaturaSieIgualCliente = planReport.AssinaturaSieIgualCliente;
 					item.RotinaId = rotinaId;
+					item.DataEstadoFinal = planReport.DataEstadoFinal;
 				}
 				else
 				{
@@ -511,6 +514,7 @@ namespace Hydra.Such.Portal.Controllers
 					};
 					evolutionWEBContext.FichaManutencaoRelatorio.Add(planReport);
 					item.EstadoFinal = 0;
+					item.RotinaId = rotinaId;
 				}
 				
 				try

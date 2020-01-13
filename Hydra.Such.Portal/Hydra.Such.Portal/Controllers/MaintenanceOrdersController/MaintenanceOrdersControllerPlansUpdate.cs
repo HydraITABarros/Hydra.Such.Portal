@@ -45,6 +45,7 @@ namespace Hydra.Such.Portal.Controllers
 				if (planReport != null)
 				{
 					planReport.EstadoFinal = item.EstadoFinal;
+					planReport.DataEstadoFinal = item.DataEstadoFinal;
 					planReport.Observacao = item.Observacao;
 					planReport.RelatorioTrabalho = item.RelatorioTrabalho;
 					planReport.AssinaturaCliente = item.AssinaturaCliente;
@@ -69,7 +70,8 @@ namespace Hydra.Such.Portal.Controllers
 						Versao = item.Versao,
 						Observacao = item.Observacao,
 						RelatorioTrabalho = item.RelatorioTrabalho,
-						EstadoFinal = item.EstadoFinal,						
+						EstadoFinal = item.EstadoFinal,			
+						DataEstadoFinal = item.DataEstadoFinal,			
 						CriadoPor = evolutionLoggedUser.Id,
 						CriadoEm = Now,
 						ActualizadoPor = evolutionLoggedUser.Id,
@@ -84,6 +86,18 @@ namespace Hydra.Such.Portal.Controllers
 						
 						Rotina = item.RotinaId != null ? (int) item.RotinaId : 1
 					});
+					
+					
+			
+					try
+					{
+						evolutionWEBContext.SaveChanges();
+						planReport = evolutionWEBContext.FichaManutencaoRelatorio
+							.Where(r => r.Om == order.No && r.IdEquipamento == item.IdEquipamento && 
+							            (item.Codigo != null ? r.Codigo == item.Codigo : true) && (item.Versao != null ? r.Versao == item.Versao: true))
+							.OrderByDescending(o => o.Id).FirstOrDefault();
+					}
+					catch{}
 				}
 				
 				var planMaintenanceReport = evolutionWEBContext.FichaManutencaoRelatorioManutencao
