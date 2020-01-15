@@ -10775,6 +10775,8 @@ namespace Hydra.Such.Data.Database
             {
                 entity.HasKey(e => e.Matricula);
 
+                entity.ToTable("Viaturas2");
+
                 entity.Property(e => e.Matricula)
                     .HasColumnName("Matricula")
                     .HasMaxLength(20)
@@ -10873,6 +10875,48 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("NomeImagem")
                     .HasMaxLength(200);
 
+                entity.Property(e => e.DataEstado)
+                    .HasColumnName("DataEstado")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.IDTipoPropriedade)
+                    .HasColumnName("IDTipoPropriedade");
+
+                entity.Property(e => e.IDPropriedade)
+                    .HasColumnName("IDPropriedade");
+
+                entity.Property(e => e.IDSegmentacao)
+                    .HasColumnName("IDSegmentacao");
+
+                entity.Property(e => e.DataProximaInspecao)
+                    .HasColumnName("DataProximaInspecao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.IntervaloRevisoes)
+                    .HasColumnName("IntervaloRevisoes");
+
+                entity.Property(e => e.IDLocalParqueamento)
+                    .HasColumnName("IDLocalParqueamento");
+
+                entity.Property(e => e.AlvaraLicenca)
+                    .HasColumnName("AlvaraLicenca");
+
+                entity.Property(e => e.CodRegiao)
+                    .HasColumnName("CodRegiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .HasColumnName("CodAreaFuncional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .HasColumnName("CodCentroResponsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoProjeto)
+                    .HasColumnName("NoProjeto")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")
                     .HasMaxLength(50);
@@ -10894,8 +10938,10 @@ namespace Hydra.Such.Data.Database
             {
                 entity.HasKey(e => new { e.Tabela, e.ID });
 
+                entity.ToTable("Configuracao Tabelas");
+
                 entity.Property(e => e.Tabela)
-                    .HasColumnName("Tipo")
+                    .HasColumnName("Tabela")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.ID)
@@ -10918,12 +10964,14 @@ namespace Hydra.Such.Data.Database
             {
                 entity.HasKey(e => e.ID);
 
+                entity.ToTable("Viaturas2_Marcas");
+
                 entity.Property(e => e.ID)
                     .HasColumnName("ID");
 
-                entity.Property(e => e.Marca)
+                    entity.Property(e => e.Marca)
                     .HasColumnName("Marca")
-                    .HasMaxLength(200);
+                    .HasMaxLength(60);
 
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")
@@ -10946,6 +10994,8 @@ namespace Hydra.Such.Data.Database
             {
                 entity.HasKey(e => e.ID);
 
+                entity.ToTable("Viaturas2_Modelos");
+
                 entity.Property(e => e.ID)
                     .HasColumnName("ID");
 
@@ -10954,7 +11004,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Modelo)
                     .HasColumnName("Modelo")
-                    .HasMaxLength(200);
+                    .HasMaxLength(60);
 
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")

@@ -1944,6 +1944,171 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaEstados()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ESTADO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaMarcas()
+        {
+            List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllMarcas != null && AllMarcas.Count > 0)
+            {
+                result = AllMarcas.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Marca
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaModelos()
+        {
+            List<Viaturas2Modelos> AllModelos = DBViaturas2Modelos.GetAll();
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllModelos != null && AllModelos.Count > 0)
+            {
+                result = AllModelos.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Modelo
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaCategorias()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CATEGORIA");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaTipos()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaCombustiveis()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_COMBUSTIVEL");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaTiposPropriedades()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO_PROPRIEDADE");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaPropriedades()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_PROPRIEDADE");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaSegmentacoes()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_SEGMENTACAO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result);
+        }
+
+        //[HttpPost]
+        //public JsonResult GetViaturas2ListaLocaisParqueamento()
+        //{
+        //    List<DDMessage> result = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_SEGMENTACAO").Select(x => new DDMessage()
+        //    {
+        //        id = x.ID,
+        //        value = x.Descricao
+        //    }).ToList();
+        //    return Json(result);
+        //}
+
         [HttpPost]
         public JsonResult GetAjudaCustoTipoCusto()
         {

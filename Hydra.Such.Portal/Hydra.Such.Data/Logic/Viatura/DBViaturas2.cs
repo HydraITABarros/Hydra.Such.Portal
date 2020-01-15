@@ -130,6 +130,18 @@ namespace Hydra.Such.Data.Logic.Viatura
                 PneuRetaguarda = x.PneuRetaguarda,
                 Observacoes = x.Observacoes,
                 NomeImagem = x.NomeImagem,
+                DataEstado = x.DataEstado,
+                IDTipoPropriedade = x.IDTipoPropriedade,
+                IDPropriedade = x.IDPropriedade,
+                IDSegmentacao = x.IDSegmentacao,
+                DataProximaInspecao = x.DataProximaInspecao,
+                IntervaloRevisoes = x.IntervaloRevisoes,
+                IDLocalParqueamento = x.IDLocalParqueamento,
+                AlvaraLicenca = x.AlvaraLicenca,
+                CodRegiao = x.CodRegiao,
+                CodAreaFuncional = x.CodAreaFuncional,
+                CodCentroResponsabilidade = x.CodCentroResponsabilidade,
+                NoProjeto = x.NoProjeto,
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 DataCriacao = x.DataCriacao,
                 UtilizadorModificacao = x.UtilizadorModificacao,
@@ -138,6 +150,8 @@ namespace Hydra.Such.Data.Logic.Viatura
 
             if (!string.IsNullOrEmpty(x.Data1MatriculaTexto)) viatura.Data1Matricula = Convert.ToDateTime(x.Data1MatriculaTexto);
             if (!string.IsNullOrEmpty(x.DataMatriculaTexto)) viatura.DataMatricula = Convert.ToDateTime(x.DataMatriculaTexto);
+            if (!string.IsNullOrEmpty(x.DataEstadoTexto)) viatura.DataEstado = Convert.ToDateTime(x.DataEstadoTexto);
+            if (!string.IsNullOrEmpty(x.DataProximaInspecaoTexto)) viatura.DataProximaInspecao = Convert.ToDateTime(x.DataProximaInspecaoTexto);
             if (!string.IsNullOrEmpty(x.DataCriacaoTexto)) viatura.DataCriacao = Convert.ToDateTime(x.DataCriacaoTexto);
             if (!string.IsNullOrEmpty(x.DataModificacaoTexto)) viatura.DataModificacao = Convert.ToDateTime(x.DataModificacaoTexto);
 
@@ -185,6 +199,18 @@ namespace Hydra.Such.Data.Logic.Viatura
                 PneuRetaguarda = x.PneuRetaguarda,
                 Observacoes = x.Observacoes,
                 NomeImagem = x.NomeImagem,
+                DataEstado = x.DataEstado,
+                IDTipoPropriedade = x.IDTipoPropriedade,
+                IDPropriedade = x.IDPropriedade,
+                IDSegmentacao = x.IDSegmentacao,
+                DataProximaInspecao = x.DataProximaInspecao,
+                IntervaloRevisoes = x.IntervaloRevisoes,
+                IDLocalParqueamento = x.IDLocalParqueamento,
+                AlvaraLicenca = x.AlvaraLicenca,
+                CodRegiao = x.CodRegiao,
+                CodAreaFuncional = x.CodAreaFuncional,
+                CodCentroResponsabilidade = x.CodCentroResponsabilidade,
+                NoProjeto = x.NoProjeto,
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 DataCriacao = x.DataCriacao,
                 UtilizadorModificacao = x.UtilizadorModificacao,
@@ -193,6 +219,8 @@ namespace Hydra.Such.Data.Logic.Viatura
 
             if (x.Data1Matricula != null) viatura.Data1MatriculaTexto = x.Data1Matricula.Value.ToString("yyyy-MM-dd");
             if (x.DataMatricula != null) viatura.DataMatriculaTexto = x.DataMatricula.Value.ToString("yyyy-MM-dd");
+            if (x.DataEstado != null) viatura.DataEstadoTexto = x.DataEstado.Value.ToString("yyyy-MM-dd");
+            if (x.DataProximaInspecao != null) viatura.DataProximaInspecaoTexto = x.DataProximaInspecao.Value.ToString("yyyy-MM-dd");
             if (x.DataCriacao != null) viatura.DataCriacaoTexto = x.DataCriacao.Value.ToString("yyyy-MM-dd");
             if (x.DataModificacao != null) viatura.DataModificacaoTexto = x.DataModificacao.Value.ToString("yyyy-MM-dd");
 

@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic.Viatura
 {
     public static class DBViaturas2Marcas
     {
-        public static List<Viaturas2Marcas> GetAllToList()
+        public static List<Viaturas2Marcas> GetAll()
         {
             try
             {

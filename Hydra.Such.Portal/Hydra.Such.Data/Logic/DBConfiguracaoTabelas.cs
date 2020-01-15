@@ -9,7 +9,7 @@ namespace Hydra.Such.Data.Logic
 {
     public static class DBConfiguracaoTabelas
     {
-        public static List<ConfiguracaoTabelas> GetAllToList()
+        public static List<ConfiguracaoTabelas> GetAll()
         {
             try
             {

@@ -40,6 +40,26 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string PneuRetaguarda { get; set; }
         public string Observacoes { get; set; }
         public string NomeImagem { get; set; }
+        public DateTime? DataEstado { get; set; }
+        public string DataEstadoTexto { get; set; }
+        public int? IDTipoPropriedade { get; set; }
+        public string TipoPropriedade { get; set; }
+        public int? IDPropriedade { get; set; }
+        public string Propriedade { get; set; }
+        public int? IDSegmentacao { get; set; }
+        public string Segmentacao { get; set; }
+        public DateTime? DataProximaInspecao { get; set; }
+        public string DataProximaInspecaoTexto { get; set; }
+        public int? IntervaloRevisoes { get; set; }
+        public int? IDLocalParqueamento { get; set; }
+        public string LocalParqueamento { get; set; }
+        public bool? AlvaraLicenca { get; set; }
+        public string AlvaraLicencaTexto { get; set; }
+        public string CodRegiao { get; set; }
+        public string CodAreaFuncional { get; set; }
+        public string CodCentroResponsabilidade { get; set; }
+        public string NoProjeto { get; set; }
+        public string Projeto { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string DataCriacaoTexto { get; set; }

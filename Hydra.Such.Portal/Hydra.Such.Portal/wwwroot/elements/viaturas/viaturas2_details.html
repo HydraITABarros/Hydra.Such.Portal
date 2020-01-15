@@ -33,7 +33,7 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
-<dom-module id="x-viaturadetails2">
+<dom-module id="x-viaturas2details">
     <template>
         <!-- STYLES -->
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -137,6 +137,35 @@
             }
         </style>
 
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetViaturasTipos" last-response="{{LTiposViatura}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaEstados" last-response="{{ListaEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaMarcas" last-response="{{ListaMarcas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaModelos" last-response="{{ListaModelos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCategorias" last-response="{{ListaCategorias}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaTipos" last-response="{{ListaTipos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCombustiveis" last-response="{{ListaCombustiveis}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaTiposPropriedades" last-response="{{ListaTiposPropriedades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaPropriedades" last-response="{{ListaPropriedades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaSegmentacoes" last-response="{{ListaSegmentacoes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetViaturas2ListaLocaisParqueamento" last-response="{{ListaLocaisParqueamento}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ListaCentros}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{ListaProjetos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Viaturas/GetViatura2Details"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -168,19 +197,19 @@
                                 <div class="col-md-8">
                                     <div class="row break_clear">
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled placeholder="xx-xx-xx"></vaadin-text-field>
+                                            <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="{{data.matricula}}" disabled placeholder="xx-xx-xx"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="marca" name="marca" label="Marca" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="marca" name="marca" label="Marca" value="{{data.marca}}" disabled></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="modelo" name="modelo" label="Modelo" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="modelo" name="modelo" label="Modelo" value="{{data.modelo}}" disabled></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-3">
-                                            <vaadin-text-field id="propriedade" name="propriedade" label="Propriedade" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="propriedade" name="propriedade" label="Propriedade" value="{{data.propriedade}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
 
@@ -200,7 +229,7 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <vaadin-text-field id="descricao" name="descricao" label="Descrição" value="" disabled></vaadin-text-field>
+                                            <vaadin-text-field id="descricao" name="descricao" label="Descrição" value="{{data.observacoes}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
 
@@ -229,7 +258,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção (Previsão)" value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção (Previsão)" value="{{data.dataProximaInspecaoTexto}}" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-4">
@@ -259,8 +288,8 @@
                                         <vaadin-text-field id="idade" name="idade" label="Idade" value="" disabled></vaadin-text-field>
                                     </div>
 
-                                    <div class="col-md-1">
-                                        <vaadin-text-field id="segmentacao" name="segmentacao" label="Segmentação" value="" disabled></vaadin-text-field>
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="segmentacao" name="segmentacao" label="Segmentação" value="{{data.segmentacao}}"  disabled></vaadin-text-field>
                                     </div>
                                 </div>
                             </div>
@@ -269,11 +298,19 @@
                             <div>
                                 <div class="row break_clear">
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.create }}" placeholder="xx-xx-xx"></vaadin-text-field>
+                                        <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="{{data.matricula}}" disabled="{{ !_permissions.create }}" placeholder="xx-xx-xx"></vaadin-text-field>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-text-field id="marca" name="marca" label="Marca" value="" disabled="{{ !_permissions.create }}"></vaadin-text-field>
+                                        <vaadin-combo-box items="[[ListaMarcas]]" id="carMarca" item-value-path="id" item-label-path="value" value="{{data.idMarca}}" label="Marca" required error-message="Este campo é obrigatório">
+                                            <template>
+                                                <paper-icon-item>
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.value]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </template>
+                                        </vaadin-combo-box>
                                     </div>
 
                                     <div class="col-md-2">
@@ -2312,7 +2349,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-viaturadetails2',
+                is: 'x-viaturas2details',
                 properties: {
                     _matricula: {
                         type: String,
@@ -2334,6 +2371,14 @@
                 },
 
                 ready: function () {
+                    //GET PROJECT DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    if (this._matricula == "") {
+                        this._isCreate = true;
+                    }
+
                 },
 
                 _openToast: function (message) {

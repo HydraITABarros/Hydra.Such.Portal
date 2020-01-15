@@ -41,6 +41,18 @@ namespace Hydra.Such.Data.Database
         public string PneuRetaguarda { get; set; }
         public string Observacoes { get; set; }
         public string NomeImagem { get; set; }
+        public DateTime? DataEstado { get; set; }
+        public int? IDTipoPropriedade { get; set; }
+        public int? IDPropriedade { get; set; }
+        public int? IDSegmentacao { get; set; }
+        public DateTime? DataProximaInspecao { get; set; }
+        public int? IntervaloRevisoes { get; set; }
+        public int? IDLocalParqueamento { get; set; }
+        public bool? AlvaraLicenca { get; set; }
+        public string CodRegiao { get; set; }
+        public string CodAreaFuncional { get; set; }
+        public string CodCentroResponsabilidade { get; set; }
+        public string NoProjeto { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }

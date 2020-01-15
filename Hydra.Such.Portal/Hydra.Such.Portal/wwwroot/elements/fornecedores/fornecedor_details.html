@@ -405,6 +405,10 @@
                         type: Boolean,
                         value: false
                     },
+                    _btnupdate: {
+                        type: Boolean,
+                        value: false
+                    },
                     _showCreateNew: {
                         type: Boolean,
                         value: false
@@ -497,7 +501,14 @@
                         this._openToastError(this.verificarData.eMessage);
                     }
                     else {
-                        this.$.dlgFornecedorIBAN.open();
+                        if (this._btnupdate == true) {
+                            this._btnupdate = false;
+
+                            this._executeRequest("/Fornecedores/Update", this.data);
+                        }
+                        else {
+                            this.$.dlgFornecedorIBAN.open();
+                        }
                     }
                 },
 
@@ -518,9 +529,9 @@
                 },
 
                 _update: function () {
-                    if (this._validateData()) {
-                        this._executeRequest("/Fornecedores/Update", this.data);
-                    }
+                    this._btnupdate = true;
+
+                    this._validateData();
                 },
 
                 _delete: function () {

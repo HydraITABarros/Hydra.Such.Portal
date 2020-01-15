@@ -2897,7 +2897,8 @@ namespace Hydra.Such.Portal.Controllers
                         ListaProdutos.RemoveAll(x => string.IsNullOrEmpty(x.AreaFiltro));
 
                         List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId(User.Identity.Name);
-                        //List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId("abeldoo@such.pt");
+                        //List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId("mgomes@such.pt");
+                        //List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId("mlavrador@such.pt");
                         UserAcessos.RemoveAll(x => x.Dimensão != 2);
 
                         if (UserAcessos.Count() > 0)
