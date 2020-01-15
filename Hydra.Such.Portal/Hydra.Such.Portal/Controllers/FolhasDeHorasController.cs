@@ -3076,7 +3076,7 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (NoDias > 0)
                             {
-                                string CodRecurso = x.CodigoTipoCusto;
+                                string CodRecurso = x.CodigoTipoCusto.Trim();
                                 decimal CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim()).FirstOrDefault().PrecoUnitarioCusto);
                                 decimal PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
                                 decimal CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
@@ -3112,7 +3112,7 @@ namespace Hydra.Such.Portal.Controllers
 
                                 Ajuda.NoFolhaHoras = data.FolhaDeHorasNo;
                                 Ajuda.NoLinha = noLinha;
-                                Ajuda.CodTipoCusto = x.CodigoTipoCusto.Trim();
+                                Ajuda.CodTipoCusto = CodRecurso; // x.CodigoTipoCusto.Trim();
                                 Ajuda.TipoCusto = x.TipoCusto;
                                 Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
                                 Ajuda.Quantidade = Convert.ToDecimal(NoDias);
