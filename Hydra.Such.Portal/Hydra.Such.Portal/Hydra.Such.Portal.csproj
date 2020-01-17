@@ -98,7 +98,6 @@
     <Folder Include="Areas\Nutricao\Data\" />
     <Folder Include="Areas\Nutricao\Models\" />
     <Folder Include="wwwroot\fonts\" />
-    <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\Infinity\" />
     <Folder Include="wwwroot\lib\paper-menu-master\.github\" />
     <Folder Include="wwwroot\lib\paper-menu-master\demo\" />

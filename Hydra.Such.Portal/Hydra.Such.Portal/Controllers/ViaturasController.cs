@@ -23,6 +23,7 @@ using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Newtonsoft.Json.Linq;
+using System.Drawing;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -151,12 +152,15 @@ namespace Hydra.Such.Portal.Controllers
             List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
             List<Viaturas2Modelos> AllModelos = DBViaturas2Modelos.GetAll();
             List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+            List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll();
+            List<Viaturas2ParqueamentoLocal> AllPArqueamentosLocais = DBViaturas2ParqueamentoLocal.GetAll();
 
             result.ForEach(x =>
             {
                 if (x.IDEstado != null) x.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == x.IDEstado).FirstOrDefault().Descricao;
                 if (x.IDMarca != null) x.Marca = AllMarcas.Where(y => y.ID == x.IDMarca).FirstOrDefault().Marca;
                 if (x.IDModelo != null) x.Modelo = AllModelos.Where(y => y.ID == x.IDModelo).FirstOrDefault().Modelo;
+                if (x.IDTipoCaixa != null) x.TipoCaixa = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_CAIXA" && y.ID == x.IDTipoCaixa).FirstOrDefault().Descricao;
                 if (x.IDCategoria != null) x.Categoria = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_CATEGORIA" && y.ID == x.IDCategoria).FirstOrDefault().Descricao;
                 if (x.IDTipo != null) x.Tipo = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO" && y.ID == x.IDTipo).FirstOrDefault().Descricao;
                 if (x.IDCombustivel != null) x.Combustivel = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_COMBUSTIVEL" && y.ID == x.IDCombustivel).FirstOrDefault().Descricao;
@@ -164,7 +168,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.IDPropriedade != null) x.Propriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_PROPRIEDADE" && y.ID == x.IDPropriedade).FirstOrDefault().Descricao;
                 if (x.IDSegmentacao != null) x.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == x.IDSegmentacao).FirstOrDefault().Descricao;
                 if (x.AlvaraLicenca == true) x.AlvaraLicencaTexto = "Sim"; else x.AlvaraLicencaTexto = "Não";
-                //if (x.IDLocalParqueamento != null) x.LocalParqueamento = AllLicalParqueamento.Where(y => y.ID == x.IDLocalParqueamento).FirstOrDefault().LocalParqueamento;
+                if (x.IDLocalParqueamento != null) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == AllParquamentos.Where(z => z.ID == x.IDLocalParqueamento).FirstOrDefault().IDLocal).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description;
             });
 
@@ -193,6 +197,59 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+        [Route("Viaturas/loadimage/{matricula}")]
+        public ActionResult loadimage(string matricula)
+        {
+            //string matricula = "00-AA-00";
+            string defaultImg = "_default";
+            string imgPath = _generalConfig.FileUploadFolder + "Viaturas\\" + matricula + ".jpg";
+            string imgPathDefault = _generalConfig.FileUploadFolder + "Viaturas\\" + defaultImg + ".jpg";
+
+            if (System.IO.File.Exists(imgPath))
+                return new FileStreamResult(new FileStream(imgPath, FileMode.Open), "image/jpeg");
+            else
+                return new FileStreamResult(new FileStream(imgPathDefault, FileMode.Open), "image/jpeg");
+        }
+
+        [Route("Viaturas/UploadImage/{matricula}")]
+        public JsonResult UploadImage(string matricula)
+        {
+            try
+            {
+                var files = Request.Form.Files;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".jpg")
+                        {
+                            string imgPath = _generalConfig.FileUploadFolder + "Viaturas\\" + matricula + ".jpg";
+                            if (System.IO.File.Exists(imgPath))
+                                System.IO.File.Delete(imgPath);
+
+                            using (FileStream dd = new FileStream(imgPath, FileMode.CreateNew))
+                            {
+                                file.CopyTo(dd);
+                                dd.Dispose();
+
+                                return Json(true);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json(false);
+        }
+
         [HttpPost]
         public JsonResult GetViatura2Details([FromBody] Viaturas2ViewModel data)
         {
@@ -201,14 +258,23 @@ namespace Hydra.Such.Portal.Controllers
             {
                 viatura = DBViaturas2.ParseToViewModel(DBViaturas2.GetByMatricula(data.Matricula));
 
+                viatura.IDEstadoOrinalDB = viatura.IDEstado;
+                viatura.IDLocalParqueamentoOriginalDB = viatura.IDLocalParqueamento;
+                viatura.CodRegiaoOriginalDB = viatura.CodRegiao;
+                viatura.CodAreaFuncionalOriginalDB = viatura.CodAreaFuncional;
+                viatura.CodCentroResponsabilidadeOriginalDB = viatura.CodCentroResponsabilidade;
+
                 List<ConfiguracaoTabelas> AllConfTabelas = DBConfiguracaoTabelas.GetAll();
                 List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
                 List<Viaturas2Modelos> AllModelos = DBViaturas2Modelos.GetAll();
                 List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll();
+                List<Viaturas2ParqueamentoLocal> AllPArqueamentosLocais = DBViaturas2ParqueamentoLocal.GetAll();
 
                 if (viatura.IDEstado != null) viatura.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == viatura.IDEstado).FirstOrDefault().Descricao;
                 if (viatura.IDMarca != null) viatura.Marca = AllMarcas.Where(y => y.ID == viatura.IDMarca).FirstOrDefault().Marca;
                 if (viatura.IDModelo != null) viatura.Modelo = AllModelos.Where(y => y.ID == viatura.IDModelo).FirstOrDefault().Modelo;
+                if (viatura.IDTipoCaixa != null) viatura.TipoCaixa = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_CAIXA" && y.ID == viatura.IDTipoCaixa).FirstOrDefault().Descricao;
                 if (viatura.IDCategoria != null) viatura.Categoria = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_CATEGORIA" && y.ID == viatura.IDCategoria).FirstOrDefault().Descricao;
                 if (viatura.IDTipo != null) viatura.Tipo = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO" && y.ID == viatura.IDTipo).FirstOrDefault().Descricao;
                 if (viatura.IDCombustivel != null) viatura.Combustivel = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_COMBUSTIVEL" && y.ID == viatura.IDCombustivel).FirstOrDefault().Descricao;
@@ -216,7 +282,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (viatura.IDPropriedade != null) viatura.Propriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_PROPRIEDADE" && y.ID == viatura.IDPropriedade).FirstOrDefault().Descricao;
                 if (viatura.IDSegmentacao != null) viatura.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == viatura.IDSegmentacao).FirstOrDefault().Descricao;
                 if (viatura.AlvaraLicenca == true) viatura.AlvaraLicencaTexto = "Sim"; else viatura.AlvaraLicencaTexto = "Não";
-                //if (viatura.IDLocalParqueamento != null) viatura.LocalParqueamento = AllLicalParqueamento.Where(y => y.ID == viatura.IDLocalParqueamento).FirstOrDefault().LocalParqueamento;
+                if (viatura.IDLocalParqueamento != null) viatura.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == AllParquamentos.Where(z => z.ID == viatura.IDLocalParqueamento).FirstOrDefault().IDLocal).FirstOrDefault().Local;
+                if (viatura.IDLocalParqueamento != null) viatura.IDLocal = AllParquamentos.Where(z => z.ID == viatura.IDLocalParqueamento).FirstOrDefault().IDLocal;
                 if (!string.IsNullOrEmpty(viatura.NoProjeto)) viatura.Projeto = AllProjects.Where(y => y.No == viatura.NoProjeto).FirstOrDefault().Description;
             }
             return Json(viatura);
@@ -315,6 +382,36 @@ namespace Hydra.Such.Portal.Controllers
                     else
                         DBViaturaImagem.Create(ViaturaImagem);
                 }
+
+
+                return Json(data);
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateViatura2([FromBody] Viaturas2ViewModel data)
+        {
+
+            if (data != null)
+            {
+                Viaturas2 viatura = DBViaturas2.ParseToDB(data);
+                viatura.UtilizadorModificacao = User.Identity.Name;
+                DBViaturas2.Update(viatura);
+
+                //if (data.Imagem != null)
+                //{
+                //    ViaturasImagens ViaturaImagem = new ViaturasImagens
+                //    {
+                //        Matricula = data.Matricula,
+                //        Imagem = data.Imagem,
+                //        UtilizadorModificacao = User.Identity.Name
+                //    };
+                //    if (DBViaturaImagem.GetByMatricula(data.Matricula) != null)
+                //        DBViaturaImagem.Update(ViaturaImagem);
+                //    else
+                //        DBViaturaImagem.Create(ViaturaImagem);
+                //}
 
 
                 return Json(data);

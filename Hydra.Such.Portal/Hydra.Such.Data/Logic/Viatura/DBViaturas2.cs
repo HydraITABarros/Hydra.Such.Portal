@@ -125,7 +125,7 @@ namespace Hydra.Such.Data.Logic.Viatura
                 NoLugares = x.NoLugares,
                 NoAnosGarantia = x.NoAnosGarantia,
                 NoQuadro = x.NoQuadro,
-                TipoCaixa = x.TipoCaixa,
+                IDTipoCaixa = x.IDTipoCaixa,
                 PneuFrente = x.PneuFrente,
                 PneuRetaguarda = x.PneuRetaguarda,
                 Observacoes = x.Observacoes,
@@ -145,7 +145,7 @@ namespace Hydra.Such.Data.Logic.Viatura
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 DataCriacao = x.DataCriacao,
                 UtilizadorModificacao = x.UtilizadorModificacao,
-                DataModificacao = x.DataModificacao
+                DataModificacao = x.DataModificacao,
             };
 
             if (!string.IsNullOrEmpty(x.Data1MatriculaTexto)) viatura.Data1Matricula = Convert.ToDateTime(x.Data1MatriculaTexto);
@@ -194,7 +194,7 @@ namespace Hydra.Such.Data.Logic.Viatura
                 NoLugares = x.NoLugares,
                 NoAnosGarantia = x.NoAnosGarantia,
                 NoQuadro = x.NoQuadro,
-                TipoCaixa = x.TipoCaixa,
+                IDTipoCaixa = x.IDTipoCaixa,
                 PneuFrente = x.PneuFrente,
                 PneuRetaguarda = x.PneuRetaguarda,
                 Observacoes = x.Observacoes,

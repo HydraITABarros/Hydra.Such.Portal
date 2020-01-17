@@ -6,6 +6,7 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
     {
         public string Matricula { get; set; }
         public int? IDEstado { get; set; }
+        public int? IDEstadoOrinalDB { get; set; }
         public string Estado { get; set; }
         public int? IDMarca { get; set; }
         public string Marca { get; set; }
@@ -35,6 +36,7 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public int? NoLugares { get; set; }
         public int? NoAnosGarantia { get; set; }
         public string NoQuadro { get; set; }
+        public int? IDTipoCaixa { get; set; }
         public string TipoCaixa { get; set; }
         public string PneuFrente { get; set; }
         public string PneuRetaguarda { get; set; }
@@ -52,12 +54,17 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string DataProximaInspecaoTexto { get; set; }
         public int? IntervaloRevisoes { get; set; }
         public int? IDLocalParqueamento { get; set; }
+        public int? IDLocalParqueamentoOriginalDB { get; set; }
+        public int? IDLocal { get; set; }
         public string LocalParqueamento { get; set; }
         public bool? AlvaraLicenca { get; set; }
         public string AlvaraLicencaTexto { get; set; }
         public string CodRegiao { get; set; }
+        public string CodRegiaoOriginalDB { get; set; }
         public string CodAreaFuncional { get; set; }
+        public string CodAreaFuncionalOriginalDB { get; set; }
         public string CodCentroResponsabilidade { get; set; }
+        public string CodCentroResponsabilidadeOriginalDB { get; set; }
         public string NoProjeto { get; set; }
         public string Projeto { get; set; }
         public string UtilizadorCriacao { get; set; }

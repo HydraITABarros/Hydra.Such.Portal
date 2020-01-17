@@ -1959,7 +1959,7 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Descricao
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -1976,14 +1976,19 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Marca
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
-        public JsonResult GetViaturas2ListaModelos()
+        public JsonResult GetViaturas2ListaModelos([FromBody] string marca)
         {
-            List<Viaturas2Modelos> AllModelos = DBViaturas2Modelos.GetAll();
+            List<Viaturas2Modelos> AllModelos = new List<Viaturas2Modelos>();
             List<DDMessage> result = new List<DDMessage>();
+
+            if (!string.IsNullOrEmpty(marca))
+                AllModelos = DBViaturas2Modelos.GetAll().Where(x => x.IDMarca == Convert.ToInt32(marca)).ToList();
+            else
+                AllModelos = DBViaturas2Modelos.GetAll();
 
             if (AllModelos != null && AllModelos.Count > 0)
             {
@@ -1993,7 +1998,24 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Modelo
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaTipoCaixa()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO_CAIXA");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -2010,7 +2032,7 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Descricao
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -2027,7 +2049,7 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Descricao
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -2044,7 +2066,7 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Descricao
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -2061,7 +2083,7 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Descricao
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -2078,7 +2100,7 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Descricao
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -2095,19 +2117,48 @@ namespace Hydra.Such.Portal.Controllers
                     value = x.Descricao
                 }).ToList();
             }
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
-        //[HttpPost]
-        //public JsonResult GetViaturas2ListaLocaisParqueamento()
-        //{
-        //    List<DDMessage> result = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_SEGMENTACAO").Select(x => new DDMessage()
-        //    {
-        //        id = x.ID,
-        //        value = x.Descricao
-        //    }).ToList();
-        //    return Json(result);
-        //}
+        [HttpPost]
+        public JsonResult GetViaturas2ListaLocaisParqueamento()
+        {
+            List<Viaturas2ParqueamentoLocal> AllLocais = DBViaturas2ParqueamentoLocal.GetAll();
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllLocais != null && AllLocais.Count > 0)
+            {
+                result = AllLocais.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Local
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2Centros([FromBody] string areaCode)
+        {
+            List<NAVDimValueViewModel> AllCentros = new List<NAVDimValueViewModel>();
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            if (!string.IsNullOrEmpty(areaCode))
+                AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.StartsWith(areaCode)).ToList();
+            else
+                AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
+
+            if (AllCentros != null && AllCentros.Count > 0)
+            {
+                result = AllCentros.Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+
+            return Json(result.OrderBy(x => x.value));
+        }
 
         [HttpPost]
         public JsonResult GetAjudaCustoTipoCusto()

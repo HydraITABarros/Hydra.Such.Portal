@@ -36,7 +36,7 @@ namespace Hydra.Such.Data.Database
         public int? NoLugares { get; set; }
         public int? NoAnosGarantia { get; set; }
         public string NoQuadro { get; set; }
-        public string TipoCaixa { get; set; }
+        public int? IDTipoCaixa { get; set; }
         public string PneuFrente { get; set; }
         public string PneuRetaguarda { get; set; }
         public string Observacoes { get; set; }
