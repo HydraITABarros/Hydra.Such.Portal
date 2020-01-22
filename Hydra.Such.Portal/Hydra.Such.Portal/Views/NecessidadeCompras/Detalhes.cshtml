@@ -212,7 +212,7 @@
             </div>
 
             <div class="col-md-3">
-                <vaadin-text-field id="supplierProdDescription2Id" name="supplierProdDescription2Name" label="Descrição 2 Produto" value=""></vaadin-text-field>
+                <vaadin-text-field id="supplierProdDescription2Id" name="supplierProdDescription2Name" label="Descrição 2 Produto" value="" maxlength="50"></vaadin-text-field>
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
@@ -250,7 +250,7 @@
             <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
         </div>*@
             <div class="col-md-3">
-                <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value=""></vaadin-text-field>
+                <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value="" maxlength="100"></vaadin-text-field>
             </div>
             <div class="col-md-3">
                 <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>

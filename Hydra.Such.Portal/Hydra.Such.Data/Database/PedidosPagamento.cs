@@ -13,6 +13,7 @@ namespace Hydra.Such.Data.Database
         public bool? Aprovado { get; set; }
         public decimal? Valor { get; set; }
         public string NoEncomenda { get; set; }
+        public string NoRequisicao { get; set; }
         public string CodigoFornecedor { get; set; }
         public string Fornecedor { get; set; }
         public string NIB { get; set; }

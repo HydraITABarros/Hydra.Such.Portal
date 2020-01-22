@@ -25,7 +25,11 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
-<x-productivityunitdetails _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-productivityunitdetails>
+<x-productivityunitdetails 
+                           _permissions_cafetariasrefeitorios = '@Html.Raw(Json.Serialize(ViewBag.UPermissions_CafetariasRefeitorios))'
+                           _permissions = '@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                           >
+</x-productivityunitdetails>
 <dom-module id="x-productivityunitdetails">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -452,13 +456,13 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
 
-                                                <div class="subMenu">
-                                                    <template is="dom-if" if="{{ _permissions.create }}">
-                                                        <template is="dom-if" if="{{ !_isCreate }}">
-                                                            <paper-button class="tablinks" on-tap="_NewCafetariaRefeitorio"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo(a)</paper-button>
-                                                        </template>
-                                                    </template>
-                                                </div>
+                                                <template is="dom-if" if="{{ _permissions_cafetariasrefeitorios.create }}">
+                                                    <div class="subMenu">
+                                                        @*<template is="dom-if" if="{{ !_isCreate }}">*@
+                                                        <paper-button class="tablinks" on-tap="_NewCafetariaRefeitorio"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo(a)</paper-button>
+                                                        @*</template>*@
+                                                    </div>
+                                                </template>
 
                                             </div>
                                             <div class="panel-body">
@@ -559,6 +563,9 @@
                 is: 'x-productivityunitdetails',
                 properties: {
                     _permissions: {
+                        type: Array
+                    },
+                    _permissions_cafetariasrefeitorios: {
                         type: Array
                     },
                     selected: {

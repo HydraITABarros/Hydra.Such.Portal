@@ -1,0 +1,2666 @@
+﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html" />
+
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<dom-module id="x-viaturas2details">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            vaadin-upload {
+                padding: 0px;
+            }
+
+            vaadin-upload {
+                --primary-color: rgba(48, 64, 84, 0.06);
+                --paper-font-button_-_font-size: 13px;
+                --primary-font-color: rgba(48, 64, 84, 0.91);
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetViaturasTipos" last-response="{{LTiposViatura}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaEstados" last-response="{{ListaEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaMarcas" last-response="{{ListaMarcas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetViaturas2ListaModelos" last-response="{{ListaModelos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaTipoCaixa" last-response="{{ListaTipoCaixa}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCategorias" last-response="{{ListaCategorias}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaTipos" last-response="{{ListaTipos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCombustiveis" last-response="{{ListaCombustiveis}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaTiposPropriedades" last-response="{{ListaTiposPropriedades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaPropriedades" last-response="{{ListaPropriedades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaSegmentacoes" last-response="{{ListaSegmentacoes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaLocaisParqueamento" last-response="{{ListaLocaisParqueamento}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetViaturas2Centros" last-response="{{ListaCentros}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{ListaProjetos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Viaturas/GetViatura2Details"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaModelos"
+                   last-response="{{ListaModelos}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="page_GetListaModelos_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2Centros"
+                   last-response="{{ListaCentros}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="page_GetListaCentros_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+            <template is="dom-if" if="{{ _permissions.update }}">
+                <paper-button id="btnUpdate" class="btnEdit tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+            </template>
+
+            <template is="dom-if" if="{{ _permissions.delete }}">
+                <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+            </template>
+        </div>
+
+
+        <div class="row break_frm">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Informação</paper-tab>
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Utilização</paper-tab>
+                            <paper-tab>Histórico</paper-tab>
+                            <paper-tab>Contrato Renting</paper-tab>
+                        </paper-tabs>
+
+                        <iron-pages selected="{{selected}}">
+                            <!--Informação-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-md-9">
+                                        <div class="row break_clear">
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_matricula" name="info_matricula" label="Matrícula" value="{{data.matricula}}" disabled placeholder="xx-xx-xx"></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_marca" name="info_marca" label="Marca" value="{{data.marca}}" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_modelo" name="info_modelo" label="Modelo" value="{{data.modelo}}" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_estado" name="info_estado" label="Estado" value="{{data.estado}}" disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <div class="row break_clear">
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_segmentacao" name="info_segmentacao" label="Segmentação" value="{{data.segmentacao}}" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_parqueamento" name="info_parqueamento" label="Local de Parqueamento" value="{{data.localParqueamento}}" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_propriedade" name="info_propriedade" label="Propriedade" value="{{data.propriedade}}" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-1">
+                                                <vaadin-text-field id="info_idade" name="info_idade" label="Idade" value="" disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <div class="row break_clear">
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="info_gestor" name="info_gestor" label="Gestor" value="" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="info_condutor" name="info_condutor" label="Condutor" value="" disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <div class="row break_clear">
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="info_garantiaSituacao" name="info_garantiaSituacao" label="Garantia Situação" value="" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="info_seguroSituacao" name="info_seguroSituacao" label="Seguro Situação" value="" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <vaadin-date-picker id="info_dataFimSeguro" name="info_dataFimSeguro" label="Data Fim Seguro" value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                            </div>
+                                        </div>
+
+                                        <div class="row break_clear">
+                                            <div class="col-md-2">
+                                                <vaadin-date-picker id="info_ultimaInspecao" name="info_ultimaInspecao" label="Última Inspeção" value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-date-picker id="info_proximaInspecao" name="info_proximaInspecao" label="Próxima Inspeção (Previsão)" value="{{data.dataProximaInspecaoTexto}}" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="info_iucMesSeguinte" name="info_iucMesSeguinte" label="IUC Mês Seguinte" value="" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_substituicao" name="info_substituicao" label="Substituição" value="" disabled></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="info_afetacao" name="info_afetacao" label="Afetação" value="" disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <div class="row break_clear">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3" align="center" style="width: 25%; height: 350px; background-size: contain;">
+                                        <img id="info_imagem" name="info_imagem" src="/viaturas/loadimage/{{data.matricula}}" />
+                                        <vaadin-upload id="info_uploadimage" name="info_uploadimage"
+                                                       target="/Viaturas/UploadImage/{{data.matricula}}"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       accept=".jpg"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
+                                        </vaadin-upload>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Geral-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="geral_matricula" name="geral_matricula" value="{{data.matricula}}" label="Matrícula" disabled="{{ !_permissions.update }}" placeholder="xx-xx-xx" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_marca" name="geral_marca" value="{{data.idMarca}}" label="Marca"
+                                                        items="[[ListaMarcas]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"value", "name":"Marca"}]'
+                                                        on-value-changed="_GetListaModelos">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_modelo" name="geral_modelo" value="{{data.idModelo}}" label="Modelo"
+                                                        items="[[ListaModelos]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"value", "name":"Marca"}]'>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-date-picker id="geral_data1Matricula" name="geral_data1Matricula" value="{{data.data1MatriculaTexto}}" label="Data 1ª Matricula" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-date-picker id="geral_dataMatricula" name="geral_dataMatricula" value="{{data.dataMatriculaTexto}}" label="Data da Matrícula" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_estado" name="geral_estado" value="{{data.idEstado}}" label="Estado"
+                                                        items="[[ListaEstados]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"value", "name":"Estado"}]'>
+                                        </such-selectbox>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_projeto" name="geral_projeto" value="{{data.noProjeto}}" label="Projeto"
+                                                        items="[[ListaProjetos]]"
+                                                        text-path="no"
+                                                        value-path="no"
+                                                        fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Cód. Região"}, {"field":"globalDimension2", "name":"Cód. Área Funcional"}]'
+                                                        disabled>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_codRegiao" name="geral_codRegiao" value="{{data.codRegiao}}" label="Região"
+                                                        items="[[ListaRegioes]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_codAreaFuncional" name="geral_codAreaFuncional" value="{{data.codAreaFuncional}}" label="Área Funcional"
+                                                        items="[[ListaAreas]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                        on-value-changed="_GetListaCentros">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_codCentroResponsabilidade" name="geral_codCentroResponsabilidade" value="{{data.codCentroResponsabilidade}}" label="Centro de Responsabilidade"
+                                                        items="[[ListaCentros]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_localParqueamento" name="geral_localParqueamento" value="{{data.idLocal}}" label="Local de Parqueamento"
+                                                        items="[[ListaLocaisParqueamento]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"value", "name":"Local de Parqueamento"}]'>
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2 alignPoga">
+                                        <vaadin-checkbox id="geral_alvaraLicenca" name="geral_alvaraLicenca" checked="{{data.alvaraLicenca}}" disabled="{{ !_permissions.update }}" type="number" class="alignRight">Alvará Licença</vaadin-checkbox>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <label id="labelSegmento">Segmento</label>
+                                    <div>
+                                        <div class="col-md-2">
+                                            <such-selectbox id="geral_categoria" name="geral_categoria" value="{{data.idCategoria}}" label="Categoria"
+                                                            items="[[ListaCategorias]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"value", "name":"Categoria"}]'>
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <such-selectbox id="geral_tipo" name="geral_tipo" value="{{data.idTipo}}" label="Tipo"
+                                                            items="[[ListaCategorias]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"value", "name":"Tipo"}]'>
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_intervaloRevisoes" name="geral_intervaloRevisoes" value="{{data.intervaloRevisoes}}" label="Intervalo entre Revisões" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <label id="labelCaracteristicas">Características</label>
+                                    <div>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_potencia" name="geral_potencia" value="{{data.potencia}}" label="Potência" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">kW</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_cilindrada" name="geral_cilindrada" value="{{data.cilindrada}}" label="Cilindrada" disabled="{{ !_permissions.update }}" type="number" class="alignRight"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <!--<such-selectbox id="geral_combustivel" name="geral_combustivel" value="{{data.idCombustivel}}" label="Combústivel"
+                                                            items="[[ListaCombustiveis]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"value", "name":"Combústivel"}]'>
+                                            </such-selectbox>-->
+                                            <vaadin-combo-box id="geral_combustivel" name="geral_combustivel" items="[[ListaCombustiveis]]" item-value-path="id" item-label-path="value" value="{{data.idCombustivel}}" label="Combústivel" disabled="{{ !_permissions.update }}">
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.value]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>
+
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_consumoReferencia" name="geral_consumoReferencia" value="{{data.consumoReferencia}}" label="Consumo Referência" disabled="{{ !_permissions.update }}" class="alignRight"><div slot="suffix">l/100</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_capacidadeDeposito" name="geral_capacidadeDeposito" value="{{data.capacidadeDeposito}}" label="Capacidade Depósito" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">l</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_autonomia" name="geral_autonomia" value="{{data.autonomia}}" label="Autonomia" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_distanciaEixos" name="geral_distanciaEixos" value="{{data.distanciaEixos}}" label="Distância entre Eixos" disabled="{{ !_permissions.update }}" class="alignRight"><div slot="suffix">m</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_noLugares" name="geral_noLugares" value="{{data.noLugares}}" label="Nº de Lugares" disabled="{{ !_permissions.update }}" type="number" class="alignRight"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_noAnosGarantia" name="geral_noAnosGarantia" value="{{data.noAnosGarantia}}" label="Nº de Anos Garantia" disabled="{{ !_permissions.update }}" type="number" class="alignRight"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_noQuadro" name="geral_noQuadro" value="{{data.noQuadro}}" label="Nº Quadro" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <such-selectbox id="geral_tipoCaixa" name="geral_tipoCaixa" value="{{data.idTipoCaixa}}" label="Tipo de Caixa"
+                                                            items="[[ListaTipoCaixa]]"
+                                                            text-path="value"
+                                                            value-path="id"
+                                                            fields='[{"field":"value", "name":"Tipo de Caixa"}]'>
+                                            </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="geral_cor" name="geral_cor" value="{{data.cor}}" label="Cor" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-6">
+                                        <label id="labelPeso">Peso</label>
+                                        <div>
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="geral_pesoBruto" name="geral_pesoBruto" value="{{data.pesoBruto}}" label="Peso Bruto" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="geral_cargaMaxima" name="geral_cargaMaxima" value="{{data.cargaMaxima}}" label="Carga Máxima" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="geral_tara" name="geral_tara" value="{{data.tara}}" label="Tara" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <label id="labelPneus">Pneus</label>
+                                        <div>
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="geral_pneuFrente" name="geral_pneuFrente" value="{{data.pneuFrente}}" label="Pneumáticos Frente" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="geral_pneuRetaguarda" name="geral_pneuRetaguarda" value="{{data.pneuRetaguarda}}" label="Pneumáticos Retaguarda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <such-textarea id="geral_observacoes" name="geral_observacoes" value="{{data.observacoes}}" label="Observações" disabled="{{ !_permissions.update }}" rows="7"> </such-textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <paper-collapse-item class="panel-heading" header="Imobilizado">
+                                        <vaadin-grid id="gridImobilizado" aria-label="gridImobilizado" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="noImobilizado">Nº Imobilizado</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="noImobilizado" />
+                                                </template>
+                                                <template>
+                                                    {{item.noImobilizado}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="descricao" />
+                                                </template>
+                                                <template>
+                                                    {{item.descricao}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="dataCompra">data da compra</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="dataCompra" />
+                                                </template>
+                                                <template>
+                                                    {{item.dataCompra}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="inicioAmortizacao">Início Amortização</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="inicioAmortizacao" />
+                                                </template>
+                                                <template>
+                                                    {{item.inicioAmortizacao}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="fimAmortizacao">Fim Amortização</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="fimAmortizacao" />
+                                                </template>
+                                                <template>
+                                                    {{item.fimAmortizacao}}
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+
+                                        <div style="padding-left:50px">
+                                            <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                                <div class="row break_clear">
+                                                    <div class="col-md-2">
+                                                        <vaadin-text-field id="noImobilizado" name="noImobilizado" label="Nº imobilizado" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <vaadin-text-field id="descricao" name="descricao" label="Descrição" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <vaadin-date-picker id="dataCompra" name="dataCompra" label="Data da compra" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <vaadin-date-picker id="inicioAmortizacao" name="inicioAmortizacao" label="Início amortização" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <vaadin-date-picker id="fimAmortizacao" name="fimAmortizacao" label="Fim amortização" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    </div>
+
+                                                    <div class="col-md-2" style="padding-top:15px">
+                                                        <paper-button raised id="btnCriarEstado" class="btnSave" on-tap="_createEstado" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                    </div>
+                                                </div>
+                                            </paper-collapse-item>
+                                        </div>
+                                    </paper-collapse-item>
+                                </div>
+                            </div>
+
+                            <!--Utilização-->
+                            <div>
+                                <paper-collapse-item class="panel-heading" header="Estado">
+                                    <vaadin-grid id="gridEstado" aria-label="gridEstado" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="estado" />
+                                            </template>
+                                            <template>
+                                                {{item.estado}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicio" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="estado" name="estado" label="Estado" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2" style="padding-top:15px">
+                                                    <paper-button raised id="btnCriarEstado" class="btnSave" on-tap="_createEstado" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Abastecimentos" closed>
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Abastecimentos SUCH" closed>
+                                            <vaadin-grid id="gridAbastecimentosSUCH" aria-label="gridAbastecimentosSUCH" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="localDeAbastecimento">Local de Abastecimento</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="localDeAbastecimento" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.localDeAbastecimento}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="data" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.data}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="hora">Hora</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="hora" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.hora}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noCartao">Nº Cartão</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noCartao" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.noCartao}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="combustivel">Combustível</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="combustivel" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.combustivel}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="km">Km</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="km" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.km}} km
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="litros">Litros</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="litros" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.litros}} l
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="condutor">Condutor</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="condutor" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.condutor}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="observacoes" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.observacoes}}
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+
+                                            <div style="padding-left:50px">
+                                                <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                                    <div class="row break_clear">
+                                                        <div class="col-md-2">
+                                                            <vaadin-text-field id="localDeAbastecimento" name="localDeAbastecimento" label="Local de Abastecimento" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            <vaadin-date-picker id="data" name="data" label="Data" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            <vaadin-text-field id="hora" name="hora" label="Hora" value="" disabled="{{ !_permissions.update }}" placeholder="hh:mm"></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            <vaadin-text-field id="noCartao" name="noCartao" label="Nº Cartão" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            <vaadin-text-field id="combustivel" name="combustivel" label="Combustível" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            <vaadin-text-field id="km" name="km" label="Km" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">km</div></vaadin-text-field>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row break_clear">
+                                                        <div class="col-md-2">
+                                                            <vaadin-text-field id="litros" name="litros" label="Litros" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">l</div></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            <vaadin-text-field id="condutor" name="condutor" label="Condutor" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                        </div>
+
+                                                        <div class="col-md-2" style="padding-top:15px">
+                                                            <paper-button raised id="btnAbastecimentosSUCH" class="btnSave" on-tap="_createAbastecimentosSUCH" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                        </div>
+                                                    </div>
+                                                </paper-collapse-item>
+                                            </div>
+                                        </paper-collapse-item>
+
+                                        <paper-collapse-item class="panel-heading" header="Abastecimentos GALP (Apenas Consulta)" closed>
+                                            <vaadin-grid id="gridAbastecimentosGALP" aria-label="gridAbastecimentosGALP" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noCartao">Nº Cartão</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noCartao" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.noCartao}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="kmsActuais">Kms Actuais</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="kmsActuais" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.kmsActuais}} km
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="kmsRegistadosConsumo">Kms Registados Consumo</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="kmsRegistadosConsumo" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.kmsRegistadosConsumo}} km
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="diferencaKmsAbastAnterior">Diferença Kms Abast Anterior</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="diferencaKmsAbastAnterior" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.diferencaKmsAbastAnterior}} km
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataTransacao">Data Transação</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="dataTransacao" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.dataTransacao}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="horaTransação">Hora Transação</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="horaTransação" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.horaTransação}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="consumoMedio">Consumo Médio</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="consumoMedio" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.consumoMedio}} l/100
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="litrosAbastecidos">Litros Abastecidos</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="litrosAbastecidos" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.litrosAbastecidos}} l
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="valorLiquidoTotalComIVA">Valor Liq Total c/ IVA</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="valorLiquidoTotalComIVA" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.valorLiquidoTotalComIVA}} €
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </paper-collapse-item>
+
+                                        <paper-collapse-item class="panel-heading" header="União Abastecimentos SUCH e GALP (Apenas Consulta)" closed>
+                                            <vaadin-grid id="gridUniaoAbastecimentosSUCHeGALP" aria-label="gridUniaoAbastecimentosSUCHeGALP" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="noCartao">Nº Cartão</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="noCartao" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.noCartao}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="data" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.data}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="hora">Hora</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="hora" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.hora}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="combustivel">Combustível</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="combustivel" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.combustivel}}
+                                                    </template>
+                                                </vaadin-grid-column>
+
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="litros">Litros</vaadin-grid-sorter>
+                                                        <vaadin-grid-filter path="litros" />
+                                                    </template>
+                                                    <template>
+                                                        {{item.litros}} l
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Manutenção" closed>
+                                    <vaadin-grid id="gridManutencao" aria-label="gridManutencao" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="local" />
+                                            </template>
+                                            <template>
+                                                {{item.local}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicio" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="dlocal" name="dlocal" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2" style="padding-top:15px">
+                                                    <paper-button raised id="btnAcidentes" class="btnSave" on-tap="_createAcidentes" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Inspeção" closed>
+                                    <vaadin-grid id="gridInspecao" aria-label="gridInspecao" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInspecao">Data Inspeção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInspecao" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInspecao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmInspecao">Km Inspeção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmInspecao" />
+                                            </template>
+                                            <template>
+                                                {{item.kmInspecao}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="resultado">Resultado</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="resultado" />
+                                            </template>
+                                            <template>
+                                                {{item.resultado}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="proximaInspecao">Próxima Inspeção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="proximaInspecao" />
+                                            </template>
+                                            <template>
+                                                {{item.proximaInspecao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoes" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoes}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataInspecao" name="dataInspecao" label="Data Inspeção" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="kmInspecao" name="kmInspecao" label="Km Inspeção" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="resultado" name="resultado" label="Resultado" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2" style="padding-top:15px">
+                                                    <paper-button raised id="btnInspecao" class="btnSave" on-tap="_createInspecao" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Carta Verde" closed>
+                                    <vaadin-grid id="gridCartaVerde" aria-label="gridCartaVerde" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noDaApolice">Nº da Apólice</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noDaApolice" />
+                                            </template>
+                                            <template>
+                                                {{item.noDaApolice}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="seguradora">Seguradora</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="seguradora" />
+                                            </template>
+                                            <template>
+                                                {{item.seguradora}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicio" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="valorPremio">Valor Prémio</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="valorPremio" />
+                                            </template>
+                                            <template>
+                                                {{item.valorPremio}} €
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="noDaApolice" name="noDaApolice" label="Nº da Apólice" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="seguradora" name="seguradora" label="Seguradora" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="valorPremio" name="valorPremio" label="Valor Prémio" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2" style="padding-top:15px">
+                                                    <paper-button raised id="btnCartaVerde" class="btnSave" on-tap="_createCartaVerde" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Acidentes" closed>
+                                    <vaadin-grid id="gridAcidentes" aria-label="gridAcidentes" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="local" />
+                                            </template>
+                                            <template>
+                                                {{item.local}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicio" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="dlocal" name="dlocal" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2" style="padding-top:15px">
+                                                    <paper-button raised id="btnAcidentes" class="btnSave" on-tap="_createAcidentes" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Contraordenações" closed>
+                                    <vaadin-grid id="gridContraordenacoes" aria-label="gridContraordenacoes" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="local" />
+                                            </template>
+                                            <template>
+                                                {{item.local}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicio" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="local" name="local" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnContraOrdenacoes" class="btnSave" on-tap="_createContraOrdenacoes" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Substituição Provisória de Viaturas Não Renting" closed>
+                                    <vaadin-grid id="gridSubstituicaoViaturasNaoRenting" aria-label="gridSubstituicaoViaturasNaoRenting" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="matricula">Matrícula</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="matricula" />
+                                            </template>
+                                            <template>
+                                                {{item.matricula}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="inicioDaSubstituicao">Início da Substituição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="inicioDaSubstituicao" />
+                                            </template>
+                                            <template>
+                                                {{item.inicioDaSubstituicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmNoInicio">Km no Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmNoInicio" />
+                                            </template>
+                                            <template>
+                                                {{item.kmNoInicio}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fimDaSubstituicao">Fim da Substituição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fimDaSubstituicao" />
+                                            </template>
+                                            <template>
+                                                {{item.fimDaSubstituicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmNoFim">Km no Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmNoFim" />
+                                            </template>
+                                            <template>
+                                                {{item.kmNoFim}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoes" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoes}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.update }}" placeholder="xx-xx-xx"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="inicioDaSubstituicao" name="inicioDaSubstituicao" label="Início da Substituição" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="kmNoInicio" name="kmNoInicio" label="Km no Início" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="fimDaSubstituicao" name="fimDaSubstituicao" label="Fim da Substituição" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="kmNoFim" name="kmNoFim" label="Km no Fim" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row break_clear">
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnSubstituicaoViaturasNaoRenting" class="btnSave" on-tap="_createSubstituicaoViaturasNaoRenting" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Abate (Apenas Consulta)" closed>
+                                    <vaadin-grid id="gridAbate" aria-label="gridAbate" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipoDeAtoAdministrativo">Tipo de Ato Administrativo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipoDeAtoAdministrativo" />
+                                            </template>
+                                            <template>
+                                                {{item.tipoDeAtoAdministrativo}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noDeRegisto">Nº de Registo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noDeRegisto" />
+                                            </template>
+                                            <template>
+                                                {{item.noDeRegisto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="descricaoDoAto">Descrição do Ato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="descricaoDoAto" />
+                                            </template>
+                                            <template>
+                                                {{item.descricaoDoAto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fundamentacao">Fundamentação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fundamentacao" />
+                                            </template>
+                                            <template>
+                                                {{item.fundamentacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="autor">Autor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="autor" />
+                                            </template>
+                                            <template>
+                                                {{item.autor}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="data" />
+                                            </template>
+                                            <template>
+                                                {{item.data}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </paper-collapse-item>
+                            </div>
+
+                            <!--Histórico-->
+                            <div>
+                                <paper-collapse-item class="panel-heading" header="Afetação / Departamento" closed>
+                                    <vaadin-grid id="gridAfetacaoDepartamento" aria-label="gridAfetacaoDepartamento" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="departamentoNAV">Departamento Navision</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="departamentoNAV" />
+                                            </template>
+                                            <template>
+                                                {{item.departamentoNAV}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="areaReal">Área Real</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="areaReal" />
+                                            </template>
+                                            <template>
+                                                {{item.areaReal}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="areaRealLocalExato">Área Real Local Exato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="areaRealLocalExato" />
+                                            </template>
+                                            <template>
+                                                {{item.areaRealLocalExato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoRegiao">Código Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoRegiao" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoRegiao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoAreaFuncional" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoAreaFuncional}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="codigoCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="codigoCentroResponsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.codigoCentroResponsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="inicioAfetacao">Início Afetação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="inicioAfetacao" />
+                                            </template>
+                                            <template>
+                                                {{item.inicioAfetacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fimAfetacao">Fim Afetação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fimAfetacao" />
+                                            </template>
+                                            <template>
+                                                {{item.fimAfetacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoes" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoes}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="departamentoNAV" name="departamentoNAV" label="Departamento Navision" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="areaReal" name="areaReal" label="Área Real" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="areaRealLocalExato" name="areaRealLocalExato" label="Área Real Local Exato" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="codigoRegiao" name="codigoRegiao" label="Código Região" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="codigoAreaFuncional" name="codigoAreaFuncional" label="Código Área Funcional" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="codigoCentroResponsabilidade" name="codigoCentroResponsabilidade" label="Código Centro Responsabilidade" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="inicioAfetacao" name="inicioAfetacao" label="Início Afetação" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="fimAfetacao" name="fimAfetacao" label="Fim Afetação" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnAfetacaoDepartamento" class="btnSave" on-tap="_createAfetacaoDepartamento" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Parqueamento" closed>
+                                    <vaadin-grid id="gridParqueamento" aria-label="gridParqueamento" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="localParqueamento">Local Parqueamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="localParqueamento" />
+                                            </template>
+                                            <template>
+                                                {{item.localParqueamento}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicio" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="localParqueamento" name="localParqueamento" label="Local Parqueamento" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnParqueamento" class="btnSave" on-tap="_createParqueamento" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Propriedade" closed>
+                                    <vaadin-grid id="gridPropriedade" aria-label="gridPropriedade" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="propriedade">Propriedade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="localPpropriedadearqueamento" />
+                                            </template>
+                                            <template>
+                                                {{item.propriedade}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipoPropriedade">Tipo Propriedade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipoPropriedade" />
+                                            </template>
+                                            <template>
+                                                {{item.tipoPropriedade}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="datainicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="datainicio" />
+                                            </template>
+                                            <template>
+                                                {{item.datainicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="propriedade" name="propriedade" label="Propriedade" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="tipoPropriedade" name="tipoPropriedade" label="Tipo Propriedade" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnPropriedade" class="btnSave" on-tap="_createbtnPropriedade" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Condutores" closed>
+                                    <vaadin-grid id="gridCondutores" aria-label="gridCondutores" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeCondutor">Nome do Condutor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeCondutor" />
+                                            </template>
+                                            <template>
+                                                {{item.nomeCondutor}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="datainicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="datainicio" />
+                                            </template>
+                                            <template>
+                                                {{item.datainicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="nomeCondutor" name="nomeCondutor" label="Nome do Condutor" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnCondutores" class="btnSave" on-tap="_createCondutores" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Gestores" closed>
+                                    <vaadin-grid id="gridGestores" aria-label="gridGestores" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="nomeGestor">Nome do Gestor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="nomeGestor" />
+                                            </template>
+                                            <template>
+                                                {{item.nomeGestor}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="datainicio">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="datainicio" />
+                                            </template>
+                                            <template>
+                                                {{item.datainicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFim" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFim}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="nomeGestor" name="nomeGestor" label="Nome do Gestor" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnGestores" class="btnSave" on-tap="_createGestores" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+                            </div>
+
+                            <!--Contrato Renting-->
+                            <div>
+                                <paper-collapse-item class="panel-heading" header="Contrato" closed>
+                                    <vaadin-grid id="gridContratoHistorico" aria-label="gridContratoHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.noContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmIniciais">Km Iniciais</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmIniciais" />
+                                            </template>
+                                            <template>
+                                                {{item.kmIniciais}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmContratados">Km Contratados</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmContratados" />
+                                            </template>
+                                            <template>
+                                                {{item.kmContratados}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoKmAdicionalSemIVA">Preço Km Adicional Sem IVA</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoKmAdicionalSemIVA" />
+                                            </template>
+                                            <template>
+                                                {{item.precoKmAdicionalSemIVA}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoKmNaoPercorridoSemIVA">Preço Km Não Percorrido Sem IVA</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoKmNaoPercorridoSemIVA" />
+                                            </template>
+                                            <template>
+                                                {{item.precoKmNaoPercorridoSemIVA}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmMaximo">Km Máximo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmMaximo" />
+                                            </template>
+                                            <template>
+                                                {{item.kmMaximo}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInicio">Data de Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicio" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInicio}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataTermo">Data de Termo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataTermo" />
+                                            </template>
+                                            <template>
+                                                {{item.dataTermo}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="inicioPagamento">Início Pagamento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="inicioPagamento" />
+                                            </template>
+                                            <template>
+                                                {{item.inicioPagamento}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noPagamentos">Nº Pagamentos</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noPagamentos" />
+                                            </template>
+                                            <template>
+                                                {{item.noPagamentos}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="periodicidade">Periodicidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="periodicidade" />
+                                            </template>
+                                            <template>
+                                                {{item.periodicidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="totalSemIVA">Total Sem IVA</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="totalSemIVA" />
+                                            </template>
+                                            <template>
+                                                {{item.totalSemIVA}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="iva">IVA</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="iva" />
+                                            </template>
+                                            <template>
+                                                {{item.iva}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="totalComIVA">Total Com IVA</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="totalComIVA" />
+                                            </template>
+                                            <template>
+                                                {{item.totalComIVA}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="franquiaSemIVA">Franquia Sem IVA</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="franquiaSemIVA" />
+                                            </template>
+                                            <template>
+                                                {{item.franquiaSemIVA}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="responsavelContrato">Responsável Contrato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="responsavelContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.responsavelContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoesContrato">Observações Contrato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoesContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoesContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="noContrato" name="noContrato" label="Nº Contrato" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="kmIniciais" name="kmIniciais" label="Km Iniciais" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="kmContratados" name="kmContratados" label="Km Contratados" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="precoKmAdicionalSemIVA" name="precoKmAdicionalSemIVA" label="Preço Km Adicional Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="precoKmNaoPercorridoSemIVA" name="precoKmNaoPercorridoSemIVA" label="Preço Km Não Percorrido Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="kmMaximo" name="kmMaximo" label="Km Máximo" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data de Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataTermo" name="dataTermo" label="Data de Termo" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="inicioPagamento" name="inicioPagamento" label="Início Pagamento" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="noPagamentos" name="noPagamentos" label="Nº Pagamentos" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="periodicidade" name="periodicidade" label="Periodicidade" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="totalSemIVA" name="totalSemIVA" label="Total Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="iva" name="iva" label="IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="totalComIVA" name="totalComIVA" label="Total Com IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="franquiaSemIVA" name="franquiaSemIVA" label="Franquia Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="responsavelContrato" name="responsavelContrato" label="Responsável Contrato" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="observacoesContrato" name="observacoesContrato" label="Observações Contrato" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnContratoHistorico" class="btnSave" on-tap="_createContratoHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Alterações ao Contrato" closed>
+                                    <vaadin-grid id="gridAlteracoesContratoHistorico" aria-label="gridAlteracoesContratoHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataPedido">Data do Pedido</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataPedido" />
+                                            </template>
+                                            <template>
+                                                {{item.dataPedido}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="autorizadoFINLOG">Autorizado FINLOG</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="autorizadoFINLOG" />
+                                            </template>
+                                            <template>
+                                                {{item.autorizadoFINLOG}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataAlteracaoKm">Data Alteração Km</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataAlteracaoKm" />
+                                            </template>
+                                            <template>
+                                                {{item.dataAlteracaoKm}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmAlteracao">Km Alteração</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmAlteracao" />
+                                            </template>
+                                            <template>
+                                                {{item.kmAlteracao}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="mensalidadeAlteracao">Mensalidade Alteração</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="mensalidadeAlteracao" />
+                                            </template>
+                                            <template>
+                                                {{item.mensalidadeAlteracao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="notas">Notas</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="notas" />
+                                            </template>
+                                            <template>
+                                                {{item.notas}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataPedido" name="dataPedido" label="Data do Pedido" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="autorizadoFINLOG" name="autorizadoFINLOG" label="Autorizado FINLOG" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="dataAlteracaoKm" name="dataAlteracaoKm" label="Data Alteração Km" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="kmAlteracao" name="kmAlteracao" label="Km Alteração" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="mensalidadeAlteracao" name="mensalidadeAlteracao" label="Mensalidade Alteração" value=""></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="notas" name="notas" label="Notas" value=""></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="row break_clear">
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnAlteracoesContratoHistorico" class="btnSave" on-tap="_createAlteracoesContratoHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Km" closed>
+                                    <vaadin-grid id="gridKmHistorico" aria-label="gridKmHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="km">Km</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="km" />
+                                            </template>
+                                            <template>
+                                                {{item.km}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="data" />
+                                            </template>
+                                            <template>
+                                                {{item.data}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="km" name="km" label="Km" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="data" name="data" label="Data" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnKmHistorico" class="btnSave" on-tap="_createKmHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
+                                <paper-collapse-item class="panel-heading" header="Resumo Km Viatura Renting para Rotação de Viaturas (Apenas Consulta)" closed>
+                                    <vaadin-grid id="gridResumoViaturaRenting" aria-label="gridResumoViaturaRenting" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="inicioContrato">Início Contrato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="inicioContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.inicioContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="termoContrato">Termo Contrato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="termoContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.termoContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noDiasContrato">Nº Dias do Contrato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noDiasContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.noDiasContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noDiasParaTermoContrato">Nº Dias para Termo Contrato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noDiasParaTermoContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.noDiasParaTermoContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmContratados">Km Contratados</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmContratados" />
+                                            </template>
+                                            <template>
+                                                {{item.kmContratados}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmUltimaLeitura">Km na Última Leitura</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmUltimaLeitura" />
+                                            </template>
+                                            <template>
+                                                {{item.kmUltimaLeitura}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataUltimaLeitura">Data Última Leitura</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataUltimaLeitura" />
+                                            </template>
+                                            <template>
+                                                {{item.dataUltimaLeitura}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmGastos">Km Gastos</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmGastos" />
+                                            </template>
+                                            <template>
+                                                {{item.kmGastos}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmRestam">Km Restam</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmRestam" />
+                                            </template>
+                                            <template>
+                                                {{item.kmRestam}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noDiasDecorridosContrato">Nº Dias Decorridos do Contrato até Data Leitura</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noDiasDecorridosContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.noDiasDecorridosContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noDiasTermoContrato">Nº Dias para Termo Contrato desde Leitura</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noDiasTermoContrato" />
+                                            </template>
+                                            <template>
+                                                {{item.noDiasTermoContrato}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="diferencaHojeUltimaLeitura">Diferença Hoje e Última Leitura (dias)</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="diferencaHojeUltimaLeitura" />
+                                            </template>
+                                            <template>
+                                                {{item.diferencaHojeUltimaLeitura}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="mediaKmContratados">Média Km Dia Contratados</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="mediaKmContratados" />
+                                            </template>
+                                            <template>
+                                                {{item.mediaKmContratados}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmEsperadosDataLeitura">Km Esperados na Data da Leitura</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmEsperadosDataLeitura" />
+                                            </template>
+                                            <template>
+                                                {{item.kmEsperadosDataLeitura}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmPercorridosKmEsperados">Km Percorridos / Km Esperados</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmPercorridosKmEsperados" />
+                                            </template>
+                                            <template>
+                                                {{item.kmPercorridosKmEsperados}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tempoDecorrido">% Tempo Decorrido</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tempoDecorrido" />
+                                            </template>
+                                            <template>
+                                                {{item.tempoDecorrido}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmPercorridos">% Km Percorridos</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmPercorridos" />
+                                            </template>
+                                            <template>
+                                                {{item.kmPercorridos}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="relacaoTempoKm">Relação Tempo Km</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="relacaoTempoKm" />
+                                            </template>
+                                            <template>
+                                                {{item.relacaoTempoKm}}
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </paper-collapse-item>
+                            </div>
+                        </iron-pages>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-viaturas2details',
+                properties: {
+                    _matricula: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                },
+
+                ready: function () {
+                    //GET PROJECT DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    this.$.info_uploadimage.addEventListener('upload-response', function (e) {
+                        var results = JSON.parse(e.detail.xhr.response);
+                        if (results == true) {
+                            var msg = document.querySelector("x-viaturas2details");
+                            msg._openToast("Imagem gravada com sucesso.");
+                        }
+                        else {
+                            var msg = document.querySelector("x-viaturas2details");
+                            msg._openToastError("Só é permitido imagens com extensão jpg.");
+                        }
+                    });
+
+                    if (this._matricula == "") {
+                        this._isCreate = true;
+                    }
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _goBack: function () {
+                    window.location.href = "../Viaturas2/";
+                },
+
+                _validateData: function () {
+
+                    var polymerDom = Polymer.dom(this.root);
+                    var errors = 0;
+                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    var formFields = polymerDom.querySelectorAll(formSelector);
+
+                    formFields.forEach(function (element) {
+                        if (!element.validate()) errors++;
+                    });
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+
+                _create: function () {
+
+                    if (this._validateData()) {
+                        this._executeRequest("/Viaturas/CreateViatura2", this.data);
+                    }
+
+                },
+
+                _update: function () {
+                    if (this._validateData()) {
+                        this._executeRequest("/Viaturas/UpdateViatura2", this.data)
+                    }
+                },
+
+                _delete: function () {
+                    var Project = this.data;
+                    var ajax_request = this.$.ajax_delete_project;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende eliminar a viatura " + this.data.matricula + " ?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                _responseProcessor: function (data) {
+                    var self = this;
+
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetViatura") !== -1) {
+                            //this._GetListaModelos();
+
+                            window.data = this.data;
+
+                            if (this.data.matricula == "") {
+                                this._isCreate = true;
+                            }
+                        } else if (data.detail.url.indexOf("Create") !== -1) {
+                            this._responseCreateProcessor();
+                        } else if (data.detail.url.indexOf("Update") !== -1) {
+                            this._openToast("Viatura atualizado com sucesso.")
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro ao criar a viatura.")
+                    }
+                },
+
+                _responseCreateProcessor: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._isCreate = false;
+                        this._openToast("Viatura criada com sucesso.");
+                    } else {
+                        this._openToastError(this.data.eMessage);
+                    }
+                },
+
+                _responseDeleteProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.deletedData.eReasonCode == 1) {
+                            this._openToastError("Não é possivel eliminar a viatura pois este já possui movimentos.");
+                        } else {
+                            this._openToast(this.deletedData.eMessage);
+                            setTimeout(
+                                function () {
+                                    self._goToViaturas();
+                                }, 2500);
+                        }
+                    }
+                },
+
+                _GetListaModelos: function () {
+                    this.$.geral_modelo._clearSelection();
+                    var marca = this.$.geral_Marca.value;
+
+                    this.$.page_GetListaModelos_ajax.body = JSON.stringify(marca);
+                    this.$.page_GetListaModelos_ajax.generateRequest();
+                },
+                
+                _GetListaCentros: function() {
+                    this.$.geral_codCentroResponsabilidade._clearSelection();
+                    var codArea = this.$.geral_codAreaFuncional.value;
+
+                    this.$.page_GetListaCentros_ajax.body = JSON.stringify(codArea);
+                    this.$.page_GetListaCentros_ajax.generateRequest();
+                },
+            });
+        });
+    </script>
+
+</dom-module>

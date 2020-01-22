@@ -247,7 +247,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     //Get Requistion and verify if exists
                     RequisitionViewModel requisition = DBRequest.ParseToViewModel(DBRequest.GetById(approvalMovement.Number));
-                    if (requisition != null)
+                    if (requisition != null && requisition.State == RequisitionStates.Pending)
                     {
                         //Check if is to approve or reject
                         if (movementStatus == 1)
@@ -435,7 +435,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         result.eReasonCode = 200;
-                        result.eMessage = "A requisição já não existe.";
+                        result.eMessage = "A requisição não existe ou já aprovada.";
                     }
                 }
                 //COMPRAS A DINHEIRO
@@ -443,7 +443,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     //Get Requistion and verify if exists
                     RequisitionViewModel requisition = DBRequest.ParseToViewModel(DBRequest.GetById(approvalMovement.Number));
-                    if (requisition != null)
+                    if (requisition != null && requisition.State == RequisitionStates.Pending)
                     {
                         //Check if is to approve or reject
                         if (movementStatus == 1)
@@ -569,7 +569,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         result.eReasonCode = 200;
-                        result.eMessage = "A Compras Dinheiro já não existe.";
+                        result.eMessage = "A Compras Dinheiro não existe ou já aprovada.";
                     }
                 }
                 //Folhas de Horas - Validar
@@ -709,28 +709,25 @@ namespace Hydra.Such.Portal.Controllers
                                                             }
                                                             else
                                                             {
-                                                                result.eReasonCode = 199;
-                                                                result.eMessage = "Ocorreu no script SQL de integração RH.";
-
-                                                                if (Resultado == 1)
+                                                                if (result.eReasonCode == 1)
                                                                 {
                                                                     result.eReasonCode = 101;
                                                                     result.eMessage = "Não tem permissões para validar.";
                                                                 }
-                                                                if (Resultado == 2)
-                                                                {
-                                                                    result.eReasonCode = 102;
-                                                                    result.eMessage = "O projecto não existe no eSUCH e no Evolution.";
-                                                                }
-                                                                if (Resultado == 3)
-                                                                {
-                                                                    result.eReasonCode = 103;
-                                                                    result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
-                                                                }
-                                                                if (Resultado == 5)
+                                                                if (result.eReasonCode == 5)
                                                                 {
                                                                     result.eReasonCode = 105;
-                                                                    result.eMessage = "Não Pode validar pois já se encontra validada.";
+                                                                    result.eMessage = "Não Pode validar pois já se encontra integrada em RH.";
+                                                                }
+                                                                if (result.eReasonCode == 8)
+                                                                {
+                                                                    result.eReasonCode = 108;
+                                                                    result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                                }
+                                                                if (result.eReasonCode == 9)
+                                                                {
+                                                                    result.eReasonCode = 109;
+                                                                    result.eMessage = "Já existe Ajudas de Custo Integradas para Folha de Horas.";
                                                                 }
                                                             }
                                                         }
@@ -782,28 +779,30 @@ namespace Hydra.Such.Portal.Controllers
                                                             }
                                                             else
                                                             {
-                                                                result.eReasonCode = 199;
-                                                                result.eMessage = "Ocorreu no script SQL de Integração de Km.";
-
-                                                                if (Resultado == 1)
+                                                                if (result.eReasonCode == 1)
                                                                 {
                                                                     result.eReasonCode = 101;
                                                                     result.eMessage = "Não tem permissões para validar.";
                                                                 }
-                                                                if (Resultado == 2)
-                                                                {
-                                                                    result.eReasonCode = 102;
-                                                                    result.eMessage = "O projecto não existe no eSUCH e no Evolution.";
-                                                                }
-                                                                if (Resultado == 3)
-                                                                {
-                                                                    result.eReasonCode = 103;
-                                                                    result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
-                                                                }
-                                                                if (Resultado == 5)
+                                                                if (result.eReasonCode == 5)
                                                                 {
                                                                     result.eReasonCode = 105;
-                                                                    result.eMessage = "Não Pode validar pois já se encontra validada.";
+                                                                    result.eMessage = "Não Pode validar pois já se encontra integrada em RH KM.";
+                                                                }
+                                                                if (result.eReasonCode == 6)
+                                                                {
+                                                                    result.eReasonCode = 106;
+                                                                    result.eMessage = "Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.";
+                                                                }
+                                                                if (result.eReasonCode == 8)
+                                                                {
+                                                                    result.eReasonCode = 108;
+                                                                    result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                                }
+                                                                if (result.eReasonCode == 9)
+                                                                {
+                                                                    result.eReasonCode = 109;
+                                                                    result.eMessage = "Já existe Km's integrados para esta Folha de Hora.";
                                                                 }
                                                             }
                                                         }
@@ -1083,8 +1082,31 @@ namespace Hydra.Such.Portal.Controllers
                                                                 }
                                                                 else
                                                                 {
-                                                                    result.eReasonCode = 101;
-                                                                    result.eMessage = "Ocorreu um erro no script SQL de Integração Km na Folha de Horas.";
+                                                                    if (result.eReasonCode == 1)
+                                                                    {
+                                                                        result.eReasonCode = 101;
+                                                                        result.eMessage = "Não tem permissões para validar.";
+                                                                    }
+                                                                    if (result.eReasonCode == 5)
+                                                                    {
+                                                                        result.eReasonCode = 105;
+                                                                        result.eMessage = "Não Pode validar pois já se encontra integrada em RH KM.";
+                                                                    }
+                                                                    if (result.eReasonCode == 6)
+                                                                    {
+                                                                        result.eReasonCode = 106;
+                                                                        result.eMessage = "Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.";
+                                                                    }
+                                                                    if (result.eReasonCode == 8)
+                                                                    {
+                                                                        result.eReasonCode = 108;
+                                                                        result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                                    }
+                                                                    if (result.eReasonCode == 9)
+                                                                    {
+                                                                        result.eReasonCode = 109;
+                                                                        result.eMessage = "Já existe Km's integrados para esta Folha de Hora.";
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -1143,8 +1165,26 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                             else
                                             {
-                                                result.eReasonCode = 101;
-                                                result.eMessage = "Ocorreu um erro no script SQL de Integração RH na Folha de Horas.";
+                                                if (Resultado == 1)
+                                                {
+                                                    result.eReasonCode = 101;
+                                                    result.eMessage = "Não tem permissões para validar.";
+                                                }
+                                                if (Resultado == 5)
+                                                {
+                                                    result.eReasonCode = 105;
+                                                    result.eMessage = "Não Pode validar pois já se encontra integrada em RH.";
+                                                }
+                                                if (Resultado == 8)
+                                                {
+                                                    result.eReasonCode = 108;
+                                                    result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                }
+                                                if (result.eReasonCode == 9)
+                                                {
+                                                    result.eReasonCode = 109;
+                                                    result.eMessage = "Já existe Ajudas de Custo Integradas para Folha de Horas.";
+                                                }
                                             }
                                         }
                                     }
@@ -1273,6 +1313,30 @@ namespace Hydra.Such.Portal.Controllers
                                                                         result.eMessage = "Ocorreu um erro ao Integrar Ajudas de Custo.";
                                                                     }
                                                                 }
+                                                                else
+                                                                {
+                                                                    if (result.eReasonCode == 1)
+                                                                    {
+                                                                        result.eReasonCode = 101;
+                                                                        result.eMessage = "Não tem permissões para validar.";
+                                                                    }
+                                                                    if (result.eReasonCode == 5)
+                                                                    {
+                                                                        result.eReasonCode = 105;
+                                                                        result.eMessage = "Não Pode validar pois já se encontra integrada em RH.";
+                                                                    }
+                                                                    if (result.eReasonCode == 8)
+                                                                    {
+                                                                        result.eReasonCode = 108;
+                                                                        result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                                    }
+                                                                    if (result.eReasonCode == 9)
+                                                                    {
+                                                                        result.eReasonCode = 109;
+                                                                        result.eMessage = "Já existe Ajudas de Custo Integradas para Folha de Horas.";
+                                                                    }
+
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -1324,8 +1388,31 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                             else
                                             {
-                                                result.eReasonCode = 101;
-                                                result.eMessage = "Ocorreu um erro no script SQL de Integração Km na Folha de Horas.";
+                                                if (Resultado == 1)
+                                                {
+                                                    result.eReasonCode = 101;
+                                                    result.eMessage = "Não tem permissões para validar.";
+                                                }
+                                                if (Resultado == 5)
+                                                {
+                                                    result.eReasonCode = 105;
+                                                    result.eMessage = "Não Pode validar pois já se encontra integrada em RH KM.";
+                                                }
+                                                if (Resultado == 6)
+                                                {
+                                                    result.eReasonCode = 106;
+                                                    result.eMessage = "Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.";
+                                                }
+                                                if (Resultado == 8)
+                                                {
+                                                    result.eReasonCode = 108;
+                                                    result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                }
+                                                if (Resultado == 9)
+                                                {
+                                                    result.eReasonCode = 109;
+                                                    result.eMessage = "Já existe Km's integrados para esta Folha de Hora.";
+                                                }
                                             }
                                         }
                                     }

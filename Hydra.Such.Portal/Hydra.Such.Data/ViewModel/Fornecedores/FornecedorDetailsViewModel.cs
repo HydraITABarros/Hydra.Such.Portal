@@ -29,6 +29,7 @@ namespace Hydra.Such.Data.ViewModel.Fornecedores
         public string CriticidadeText { get; set; }
         public string Observacoes { get; set; }
         public string Utilizador_Alteracao_eSUCH { get; set; }
+        public string NomeAnexo { get; set; }
 
 
 

@@ -16,6 +16,7 @@ namespace Hydra.Such.Data.ViewModel
         public string TypeText { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
+        public string CodigoTipoTrabalho { get; set; }
         public decimal? Quantity { get; set; }
         public string MeasurementUnitCode { get; set; }
         public string MeasurementUnitCodeText { get; set; }

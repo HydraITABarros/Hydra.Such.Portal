@@ -35,6 +35,7 @@ using Newtonsoft.Json.Serialization;
 using Hydra.Such.Data.ViewModel.Encomendas;
 using System.Data.SqlClient;
 using Hydra.Such.Data.ViewModel.FH;
+using Hydra.Such.Data.ViewModel.Viaturas;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -445,7 +446,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (type == 1) //Matéria Prima
                 {
                     var prodUnit = DBProductivityUnits.GetById(produtivityUnitId);
-                    result = DBLinhasAcordoPrecos.GetMateriaPrima(date, prodUnit.Armazém);                    
+                    result = DBLinhasAcordoPrecos.GetMateriaPrima(date, prodUnit.Armazém);
                 }
                 else //Matéria Subsidiária
                 {
@@ -454,10 +455,11 @@ namespace Hydra.Such.Portal.Controllers
                     result = DBLinhasAcordoPrecos.GetMateriaSubsidiaria(date, config.ArmazemCompraDireta, prodUnit.CódigoCentroResponsabilidade);
                 }
 
-                result.ForEach(r => {
+                result.ForEach(r =>
+                {
                     var serializerSettings = new JsonSerializerSettings();
                     serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                    dynamic _item = JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(r, serializerSettings));                   
+                    dynamic _item = JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(r, serializerSettings));
                     _item.produtoFornecedor = r.CodProduto.ToString() + r.NoFornecedor.ToString();
                     retval.Add(_item);
                 });
@@ -714,6 +716,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetInvoiceTypesClienteInterno()
+        {
+            List<EnumData> result = EnumerablesFixed.InvoiceTypeClienteInterno;
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetContractInvoiceGroups()
         {
             List<EnumData> result = EnumerablesFixed.ContractInvoiceGroups;
@@ -910,8 +919,8 @@ namespace Hydra.Such.Portal.Controllers
         {
             List<AcessosDimensões> userDims = DBUserDimensions.GetByUserId(User.Identity.Name);
             List<NAVDimValueViewModel> nav2017Areas = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2);
-            
-            if(userDims != null && userDims.Count > 0)
+
+            if (userDims != null && userDims.Count > 0)
             {
                 nav2017Areas.RemoveAll(x => !userDims.Any(y => y.Dimensão == 2 && y.ValorDimensão == x.Code));
             }
@@ -1038,7 +1047,7 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result_all);
         }
 
-      
+
         [HttpPost]
         public JsonResult GetLocationsValuesFromLines([FromBody] string locationId)
         {
@@ -1540,7 +1549,8 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     id = x.Código,
                     value = x.Descrição,
-                    extra = x.Descricao2
+                    extra = x.Descricao2,
+                    extra2 = x.CódigoÁreaFuncional
                 }).ToList();
             }
 
@@ -1896,6 +1906,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturasForPreReq()
+        {
+            List<ViaturasViewModel> result = DBViatura.ParseListToViewModel(DBViatura.GetAllToList());
+            List<Marcas> AllMarcas = DBMarcas.GetAll();
+            List<Modelos> AllModelos = DBModelos.GetAll();
+
+            result.ForEach(x =>
+            {
+                x.EstadoDescricao = x.Estado != null ? EnumerablesFixed.ViaturasEstado.Where(y => y.Id == x.Estado).FirstOrDefault().Value : "";
+                x.MarcaDescricao = !string.IsNullOrEmpty(x.CodigoMarca) ? AllMarcas.Where(y => y.CódigoMarca == Convert.ToInt32(x.CodigoMarca)).FirstOrDefault().Descrição : "";
+                x.ModeloDescricao = !string.IsNullOrEmpty(x.CodigoModelo) ? AllModelos.Where(y => y.CódigoModelo == Convert.ToInt32(x.CodigoModelo)).FirstOrDefault().Descrição : "";
+            });
+
+            return Json(result.OrderBy(x => x.Estado).ToList());
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas()
         {
             List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
@@ -1915,6 +1942,222 @@ namespace Hydra.Such.Portal.Controllers
                 value = x.Descrição
             }).ToList();
             return Json(result);
+        }
+
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaEstados()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ESTADO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaMarcas()
+        {
+            List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllMarcas != null && AllMarcas.Count > 0)
+            {
+                result = AllMarcas.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Marca
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaModelos([FromBody] string marca)
+        {
+            List<Viaturas2Modelos> AllModelos = new List<Viaturas2Modelos>();
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (!string.IsNullOrEmpty(marca))
+                AllModelos = DBViaturas2Modelos.GetAll().Where(x => x.IDMarca == Convert.ToInt32(marca)).ToList();
+            else
+                AllModelos = DBViaturas2Modelos.GetAll();
+
+            if (AllModelos != null && AllModelos.Count > 0)
+            {
+                result = AllModelos.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Modelo
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaTipoCaixa()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO_CAIXA");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaCategorias()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CATEGORIA");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaTipos()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaCombustiveis()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_COMBUSTIVEL");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaTiposPropriedades()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO_PROPRIEDADE");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaPropriedades()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_PROPRIEDADE");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaSegmentacoes()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_SEGMENTACAO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaLocaisParqueamento()
+        {
+            List<Viaturas2ParqueamentoLocal> AllLocais = DBViaturas2ParqueamentoLocal.GetAll();
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllLocais != null && AllLocais.Count > 0)
+            {
+                result = AllLocais.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Local
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2Centros([FromBody] string areaCode)
+        {
+            List<NAVDimValueViewModel> AllCentros = new List<NAVDimValueViewModel>();
+            List<DDMessageString> result = new List<DDMessageString>();
+
+            if (!string.IsNullOrEmpty(areaCode))
+                AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3).Where(x => x.Code.StartsWith(areaCode)).ToList();
+            else
+                AllCentros = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 3);
+
+            if (AllCentros != null && AllCentros.Count > 0)
+            {
+                result = AllCentros.Select(x => new DDMessageString()
+                {
+                    id = x.Code,
+                    value = x.Name
+                }).ToList();
+            }
+
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -2002,7 +2245,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetCodTipoCustoByTipoCusto([FromBody]DDMessage tipoCusto)
         {
 
-            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString()).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBTabelaConfRecursosFh.GetAll().Where(x => x.Tipo == tipoCusto.id.ToString() && x.CalculoAutomatico == false).Select(x => new DDMessageString()
             {
                 id = x.CodRecurso,
                 value = x.Descricao
@@ -2216,6 +2459,18 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetProductsCode()
         {
             List<DDMessageRelated> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Select(x => new DDMessageRelated()
+            {
+                id = x.Code,
+                value = x.Name,
+                extra = x.MeasureUnit
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProductsCodeDiarioProjeto()
+        {
+            List<DDMessageRelated> result = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").Where(x => x.InventoryValueZero == 1).Select(x => new DDMessageRelated()
             {
                 id = x.Code,
                 value = x.Name,
@@ -2741,6 +2996,19 @@ namespace Hydra.Such.Portal.Controllers
 
         [HttpPost]
         public JsonResult GetEncomendasYearList()
+        {
+            var yearList = Enumerable.Range(2018, (DateTime.Now.Year - 2018) + 1).ToList();
+
+            List<DDMessageString> result = yearList.Select(x => new DDMessageString()
+            {
+                id = x.ToString(),
+                value = x.ToString()
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetProjetosYearList()
         {
             var yearList = Enumerable.Range(2018, (DateTime.Now.Year - 2018) + 1).ToList();
 

@@ -29,6 +29,8 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
 
         public decimal VlrRececionadoComIVA { get; set; }
         public decimal VlrRececionadoSemIVA { get; set; }
+        public string PedidosPagamentoPendentes { get; set; }
+        public string NoPedidosPagamento { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

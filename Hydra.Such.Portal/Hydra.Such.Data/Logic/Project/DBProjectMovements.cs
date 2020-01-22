@@ -28,6 +28,36 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
+        public static List<MovimentosDeProjeto> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosDeProjeto.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<MovimentosDeProjeto> GetAllByFilter(string from = null, string to = null, string cliente = "", int skip = 0)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosDeProjeto.Where(x => x.CodCliente.ToUpper().Contains(cliente.ToUpper()) && x.Data >= Convert.ToDateTime(from) && x.Data <= Convert.ToDateTime(to)).Skip(skip).Take(25).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<MovimentosDeProjeto> GetAllOpen(string user)
         {
             try
@@ -452,6 +482,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 //TypeDescription
                 projMovement.Code = item.Código;
                 projMovement.Description = item.Descrição;
+                projMovement.CodigoTipoTrabalho = item.CodigoTipoTrabalho;
                 projMovement.Quantity = item.Quantidade;
                 projMovement.MeasurementUnitCode = item.CódUnidadeMedida;
                 projMovement.LocationCode = item.CódLocalização;
@@ -544,6 +575,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 //TypeDescription
                 projMovement.Código = item.Code;
                 projMovement.Descrição = item.Description;
+                projMovement.CodigoTipoTrabalho = item.CodigoTipoTrabalho;
                 projMovement.Quantidade = item.Quantity;
                 projMovement.CódUnidadeMedida = item.MeasurementUnitCode;
                 projMovement.CódLocalização = item.LocationCode;

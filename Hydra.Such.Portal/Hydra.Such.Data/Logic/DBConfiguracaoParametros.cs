@@ -23,13 +23,13 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<ConfiguracaoParametros> GetByParametro(string Parametro)
+        public static ConfiguracaoParametros GetByParametro(string Parametro)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConfiguracaoParametros.Where(x => x.Parametro == Parametro).ToList();
+                    return ctx.ConfiguracaoParametros.Where(x => x.Parametro == Parametro).FirstOrDefault();
                 }
             }
             catch (Exception ex)

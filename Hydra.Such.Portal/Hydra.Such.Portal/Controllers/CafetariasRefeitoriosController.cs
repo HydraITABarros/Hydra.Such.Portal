@@ -498,6 +498,61 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
                 return Json(false);
             }
         }
+
+        public JsonResult ValidateDataRegisto([FromBody] CoffeeShopDiaryViewModel data)
+        {
+            int DiaLimiteRegistoReceita = 6;
+
+            try
+            {
+                ConfigUtilizadores user = DBUserConfigurations.GetById(User.Identity.Name);
+
+                if (user != null && user.RegistoDataDiarioCafetaria == true)
+                    return Json(true);
+                else
+                {
+                    if (data != null && !string.IsNullOrEmpty(data.RegistryDate))
+                    {
+                        DateTime DataRegisto = Convert.ToDateTime(data.RegistryDate);
+
+                        DateTime DataAtual = DateTime.Now;
+                        int DiaAtual = DataAtual.Day;
+
+                        if (DataRegisto > DataAtual)
+                            return Json(false);
+                        else
+                        {
+                            if (DiaAtual > DiaLimiteRegistoReceita)
+                            {
+                                DateTime DataLimite = Convert.ToDateTime("01/" + DataAtual.Month + "/" + DataAtual.Year);
+                                if (DataRegisto < DataLimite)
+                                    return Json(false);
+                                else
+                                    return Json(true);
+                            }
+                            else
+                            {
+                                DateTime DataAtualMenos1Mes = DataAtual.AddMonths(-1);
+                                DateTime DataLimite = Convert.ToDateTime("01/" + DataAtualMenos1Mes.Month + "/" + DataAtualMenos1Mes.Year);
+                                if (DataRegisto < DataLimite)
+                                    return Json(false);
+                                else
+                                    return Json(true);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return Json(false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return Json(false);
+            }
+        }
         #endregion
     }
 }

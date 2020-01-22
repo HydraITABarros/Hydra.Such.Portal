@@ -210,14 +210,14 @@
                 <template>
                     {{item.movementTypeText}}
                     <!--<vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -239,14 +239,14 @@
                 <template>
                     {{item.typeText}}
                     <!--<vaadin-combo-box items="[[response3]]" disabled item-value-path="id" item-label-path="value" value="{{item.type}}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -290,14 +290,14 @@
                 <template>
                     {{item.measurementUnitCode}}
                     <!--<vaadin-combo-box items="[[MeasureUnit]]" item-value-path="id" disabled item-label-path="value" value="{{item.measurementUnitCode}}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -309,14 +309,14 @@
                 <template>
                     {{item.locationCode}}
                     <!--<vaadin-combo-box items="[[Locations]]" item-value-path="id" disabled item-label-path="value" value="{{item.locationCode}}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -338,14 +338,14 @@
                 <template>
                     {{item.regionCode}}
                     <!--<vaadin-combo-box items="[[RegionData]]" item-value-path="id" disabled item-label-path="value" value="{{item.regionCode}}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -357,14 +357,14 @@
                 <template>
                     {{item.functionalAreaCode}}
                     <!--<vaadin-combo-box items="[[FunctionalAreaCodeData]]" item-value-path="id" item-label-path="value" disabled value="{{item.functionalAreaCode}}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -376,14 +376,14 @@
                 <template>
                     {{item.responsabilityCenterCode}}
                     <!--<vaadin-combo-box items="[[ResponsabilityCenterData]]" disabled item-value-path="id" item-label-path="value" value="{{item.responsabilityCenterCode}}">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.value]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>-->
                 </template>
             </vaadin-grid-column>
 
@@ -657,6 +657,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoTipoTrabalho.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoTipoTrabalho">Código Tipo Trabalho</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoTipoTrabalho" />
+                </template>
+                <template>
+                    {{item.codigoTipoTrabalho}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.internalRequest.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="internalRequest">Requisição Interna</vaadin-grid-sorter>
@@ -853,6 +863,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createUser.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createUser" />
+                </template>
+                <template>
+                    {{item.createUser}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createDateText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="createDateText">Data Criação</vaadin-grid-sorter>
@@ -1038,6 +1058,7 @@
                         "serviceGroupCodeDescription": { hidden: false, label: "Grupo Serviço" },
                         "resourceType": { hidden: false, label: "Tipo Recurso" },
                         "folhaHoras": { hidden: false, label: "Nº Folha Horas" },
+                        "codigoTipoTrabalho": { hidden: false, label: "Código Tipo Trabalho" },
                         "internalRequest": { hidden: false, label: "Requisição Interna" },
                         "employeeNo": { hidden: false, label: "Nº Funcionário" },
                         "quantityReturned": { hidden: false, label: "Quantidade Devolvida" },
@@ -1057,6 +1078,7 @@
                         "authorizedBy": { hidden: false, label: "Autorizado Por" },
                         "serviceObject": { hidden: false, label: "Objeto Serviço" },
                         "fatura": { hidden: false, label: "Fatura" },
+                        "createUser": { hidden: false, label: "Utilizador Criação" },
                         "createDateText": { hidden: false, label: "Data Criação" },
                         "createHourText": { hidden: false, label: "Hora Criação" }
                     };

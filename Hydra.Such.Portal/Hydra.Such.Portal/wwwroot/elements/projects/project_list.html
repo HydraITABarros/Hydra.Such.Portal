@@ -219,6 +219,16 @@
                     {{item.movimentosVenda}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="500px" resizable hidden$="{{ _columns.descricaoDetalhada.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricaoDetalhada">Descrição Detalhada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoDetalhada" value="[[filter.descricaoDetalhada]]" />
+                </template>
+                <template>
+                    {{item.descricaoDetalhada}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -372,6 +382,7 @@
                         "projectTypeCode": { hidden: false, label: "Cód. Tipo Projeto" },
                         "projectTypeDescription": { hidden: false, label: "Tipo Projeto" },
                         "movimentosVenda": { hidden: false, label: "Movimentos Venda" },
+                        "descricaoDetalhada": { hidden: false, label: "Descrição Detalhada" }
                     };
 
                     if (localStorage["projectlist.ToggleColumn"]) {

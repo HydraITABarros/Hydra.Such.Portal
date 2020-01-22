@@ -86,7 +86,6 @@ namespace Hydra.Such.Data.Logic.Encomendas
             }
         }
 
-
         public static PedidosPagamento Update(PedidosPagamento ObjectToUpdate)
         {
             try
@@ -140,10 +139,12 @@ namespace Hydra.Such.Data.Logic.Encomendas
                     DataText = ObjectToTransform.Data == null ? "" : ObjectToTransform.Data.Value.ToString("yyyy-MM-dd"),
                     Tipo = ObjectToTransform.Tipo,
                     Estado = ObjectToTransform.Estado,
+                    EstadoText = ObjectToTransform.Estado.HasValue ? ObjectToTransform.Estado == 1 ? "Inicial" : ObjectToTransform.Estado == 2 ? "Em Aprovação" : ObjectToTransform.Estado == 3 ? "Aprovado" : ObjectToTransform.Estado == 4 ? "Validado" : ObjectToTransform.Estado == 5 ? "Anulado" : ObjectToTransform.Estado == 6 ? "Liquidado" : ObjectToTransform.Estado == 7 ? "Arquivado" : "" : "",
                     Aprovado = ObjectToTransform.Aprovado == null ? false : (bool)ObjectToTransform.Aprovado,
                     AprovadoText = ObjectToTransform.Aprovado.HasValue ? ObjectToTransform.Aprovado == true ? "Sim" : "Não" : "Não",
                     Valor = ObjectToTransform.Valor,
                     NoEncomenda = ObjectToTransform.NoEncomenda,
+                    NoRequisicao = ObjectToTransform.NoRequisicao,
                     CodigoFornecedor = ObjectToTransform.CodigoFornecedor,
                     Fornecedor = ObjectToTransform.Fornecedor,
                     NIB = ObjectToTransform.NIB,
@@ -217,6 +218,7 @@ namespace Hydra.Such.Data.Logic.Encomendas
                     Aprovado = ObjectToTransform.Aprovado == null ? false : (bool)ObjectToTransform.Aprovado,
                     Valor = ObjectToTransform.Valor,
                     NoEncomenda = ObjectToTransform.NoEncomenda,
+                    NoRequisicao = ObjectToTransform.NoRequisicao,
                     CodigoFornecedor = ObjectToTransform.CodigoFornecedor,
                     Fornecedor = ObjectToTransform.Fornecedor,
                     NIB = ObjectToTransform.NIB,

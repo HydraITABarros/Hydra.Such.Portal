@@ -1,5 +1,7 @@
 ﻿using Hydra.Such.Data;
+using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Fornecedores;
@@ -257,8 +259,6 @@ namespace Hydra.Such.Portal.Controllers
                 if (data.Criticidade == null) data.Criticidade = 0;
                 if (string.IsNullOrEmpty(data.Observacoes)) data.Observacoes = "";
 
-
-
                 data.Utilizador_Alteracao_eSUCH = User.Identity.Name;
                 var createVendorTask = WSVendorService.CreateAsync(data, _configws);
                 try
@@ -284,14 +284,108 @@ namespace Hydra.Such.Portal.Controllers
                 data.eReasonCode = 1;
 
                 var vendor = WSVendorService.MapVendorNAVToVendorModel(result.WSVendor);
+
                 if (vendor != null)
                 {
+                    //SUCESSO
                     vendor.eReasonCode = 1;
+
+                    //Envio de email
+                    ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetByParametro("AddFornecedorEmail");
+                    ConfigUtilizadores UserEmail = DBUserConfigurations.GetById(User.Identity.Name);
+
+                    if (Parametro != null && !string.IsNullOrEmpty(Parametro.Valor))
+                    {
+                        SendEmailApprovals Email = new SendEmailApprovals();
+
+                        var path_tmp = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\tmp\\", data.NomeAnexo);
+                        string FileName_Final = data.NomeAnexo.Replace("FORNECEDOR", vendor.No);
+                        var path_final = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\", FileName_Final);
+
+                        FileStream file_tmp = new FileStream(path_tmp, FileMode.Open);
+                        FileStream file_final = new FileStream(path_final, FileMode.CreateNew);
+
+                        file_tmp.CopyTo(file_final);
+
+                        file_tmp.Dispose();
+                        file_final.Dispose();
+
+                        System.IO.File.Delete(path_tmp);
+
+                        Anexos newfile = new Anexos();
+                        newfile.NºOrigem = vendor.No;
+                        newfile.UrlAnexo = FileName_Final;
+                        newfile.TipoOrigem = TipoOrigemAnexos.Fornecedores;
+                        newfile.DataHoraCriação = DateTime.Now;
+                        newfile.UtilizadorCriação = User.Identity.Name;
+
+                        Email.DisplayName = "e-SUCH - Fornecedor";
+                        Email.From = "esuch@such.pt";
+                        Email.To.Add(Parametro.Valor);
+                        Email.BCC.Add("MMarcelo@such.pt");
+                        Email.BCC.Add("ARomao@such.pt");
+                        Email.Subject = "e-SUCH - Novo Fornecedor";
+                        Email.Body = MakeEmailBodyContent("Criado o Fornecedor:  " + vendor.No + " - " + vendor.Name, UserEmail.Nome);
+                        Email.Anexo = path_final;
+                        Email.IsBodyHtml = true;
+
+                        Email.SendEmail_Simple();
+                    }
+
                     return Json(vendor);
                 }
 
             }
             return Json(data);
+        }
+
+        public static string MakeEmailBodyContent(string BodyText, string BodyAssinatura)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Caro (a)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyAssinatura +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
         }
 
         [HttpPost]
@@ -365,6 +459,270 @@ namespace Hydra.Such.Portal.Controllers
             return Json(false);
         }
 
+        [HttpPost]
+        public JsonResult VerificarData([FromBody] FornecedorDetailsViewModel data)
+        {
+            data.eReasonCode = 0;
+            data.eMessage = "";
+
+            if (data != null)
+            {
+                if (string.IsNullOrEmpty(data.Name))
+                {
+                    data.eReasonCode = 2;
+                    data.eMessage = "O campo Nome é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.Address))
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "O campo Endereço é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.PostCode))
+                {
+                    data.eReasonCode = 4;
+                    data.eMessage = "O campo Código Postal é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.City))
+                {
+                    data.eReasonCode = 5;
+                    data.eMessage = "O campo Cidade é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.Country))
+                {
+                    data.eReasonCode = 6;
+                    data.eMessage = "O campo Código Pais/Região é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.VATRegistrationNo))
+                {
+                    data.eReasonCode = 7;
+                    data.eMessage = "O campo Nº Contribuinte é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.PaymentTermsCode))
+                {
+                    data.eReasonCode = 8;
+                    data.eMessage = "O campo Termos de Pagamento é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                if (string.IsNullOrEmpty(data.PaymentMethodCode))
+                {
+                    data.eReasonCode = 9;
+                    data.eMessage = "O campo Forma Pagamento é de preenchimento obrigatório.";
+                    return Json(data);
+                }
+
+                string No = data.No;
+                string VAT = data.VATRegistrationNo;
+                string Country = data.Country;
+
+                List<NAVFornecedoresViewModel> AllFornecedor = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+                List<NAVFornecedoresViewModel> FornecedorWithVAT = AllFornecedor.Where(x => x.VATRegistrationNo == VAT && x.No != No).ToList();
+
+                if (FornecedorWithVAT != null && FornecedorWithVAT.Count > 0)
+                {
+                    data.eReasonCode = 10;
+                    data.eMessage = "Já existe pelo menos um fonecedor com o nome " + FornecedorWithVAT.FirstOrDefault().Name + " com o mesmo Nº de Contribuinte.";
+                    return Json(data);
+                }
+                else
+                {
+                    if (Country == "PT")
+                    {
+                        VAT = VAT.Replace(" ", "");
+                        if (VAT.Length == 9)
+                        {
+                            int n;
+                            bool isNumeric = int.TryParse(VAT, out n);
+
+                            if (isNumeric == false)
+                            {
+                                data.eReasonCode = 13;
+                                data.eMessage = "Para Portugal o Nº de contribuinte só pode ter 9 carateres numéricos.";
+                                return Json(data);
+                            }
+                            else
+                            {
+                                data.eReasonCode = 0;
+                                data.eMessage = "";
+                                return Json(data);
+                            }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 11;
+                            data.eMessage = "Para Portugal o Nº de contribuinte só pode ter 9 carateres numéricos.";
+                            return Json(data);
+                        }
+                    }
+                    else
+                    {
+                        if (VAT.Length > 0)
+                        {
+                            data.eReasonCode = 0;
+                            data.eMessage = "";
+                            return Json(data);
+                        }
+                        else
+                        {
+                            data.eReasonCode = 12;
+                            data.eMessage = "É obrigatório preencher o Nº de contribuinte.";
+                            return Json(data);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                data.eReasonCode = 13;
+                data.eMessage = "Ocorreu um erro.";
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult VerificarVAT([FromBody] FornecedorDetailsViewModel data)
+        {
+            data.eReasonCode = 0;
+            data.eMessage = "";
+
+            if (data != null && !string.IsNullOrEmpty(data.No) && !string.IsNullOrEmpty(data.VATRegistrationNo) && !string.IsNullOrEmpty(data.Country))
+            {
+                string No = data.No;
+                string VAT = data.VATRegistrationNo;
+                string Country = data.Country;
+
+                List<NAVFornecedoresViewModel> AllFornecedor = DBNAV2017Fornecedores.GetFornecedores(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+                List<NAVFornecedoresViewModel> FornecedorWithVAT = AllFornecedor.Where(x => x.VATRegistrationNo == VAT && x.No != No).ToList();
+
+                if (FornecedorWithVAT != null && FornecedorWithVAT.Count > 0)
+                {
+                    data.eReasonCode = 1;
+                    data.eMessage = "Já existe pelo menos um fonecedor com o nome " + FornecedorWithVAT.FirstOrDefault().Name + " com o mesmo Nº de Contribuinte.";
+                    return Json(data);
+                }
+                else
+                {
+                    if (Country == "PT")
+                    {
+                        VAT = VAT.Replace(" ", "");
+                        if (VAT.Length == 9)
+                        {
+                            int n;
+                            bool isNumeric = int.TryParse(VAT, out n);
+
+                            if (isNumeric == false)
+                            {
+                                data.eReasonCode = 13;
+                                data.eMessage = "Para Portugal o Nº de contribuinte só pode ter 9 carateres numéricos.";
+                                return Json(data);
+                            }
+                            else
+                            {
+                                data.eReasonCode = 0;
+                                data.eMessage = "";
+                                return Json(data);
+                            }
+                        }
+                        else
+                        {
+                            data.eReasonCode = 2;
+                            data.eMessage = "Para Portugal o Nº de contribuinte só pode ter 9 carateres numéricos.";
+                            return Json(data);
+                        }
+                    }
+                    else
+                    {
+                        if (VAT.Length > 0)
+                        {
+                            data.eReasonCode = 0;
+                            data.eMessage = "";
+                            return Json(data);
+                        }
+                        else
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "É obrigatório preencher o Nº de contribuinte.";
+                            return Json(data);
+                        }
+                    }
+                }
+            }
+            data.eReasonCode = 4;
+            data.eMessage = "É obrigatório ter preenchido os campos Nº Fornecedor, Código/País Região e Nº de contribuinte.";
+            return Json(data);
+        }
+
+        [HttpPost]
+        [Route("Fornecedores/FileUpload")]
+        public JsonResult FileUpload()
+        {
+            string full_filename = string.Empty;
+            try
+            {
+                var files = Request.Form.Files;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension.ToLower() == ".msg" ||
+                            extension.ToLower() == ".txt" || extension.ToLower() == ".text" ||
+                            extension.ToLower() == ".pdf" ||
+                            extension.ToLower() == ".xls" || extension.ToLower() == ".xlsx" ||
+                            extension.ToLower() == ".doc" || extension.ToLower() == ".docx" || extension.ToLower() == ".dotx" ||
+                            extension.ToLower() == ".jpg" || extension.ToLower() == ".jpeg" || extension.ToLower() == ".pjpeg" || extension.ToLower() == ".jfif" || extension.ToLower() == ".pjp" ||
+                            extension.ToLower() == ".png" || extension.ToLower() == ".gif")
+                        {
+                            string filename = Path.GetFileName(file.FileName);
+                            //full_filename = "Requisicoes/" + id + "_" + filename;
+
+                            full_filename = "FORNECEDOR_" + User.Identity.Name + "_" + filename;
+                            var path = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\tmp\\", full_filename);
+
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                file.CopyTo(dd);
+                                dd.Dispose();
+
+                                //Anexos newfile = new Anexos();
+                                //newfile.NºOrigem = id;
+                                //newfile.UrlAnexo = full_filename;
+                                //newfile.TipoOrigem = TipoOrigemAnexos.PreRequisicao;
+                                //newfile.DataHoraCriação = DateTime.Now;
+                                //newfile.UtilizadorCriação = User.Identity.Name;
+
+                                //DBAttachments.Create(newfile);
+                                //if (newfile.NºLinha == 0)
+                                //{
+                                //    System.IO.File.Delete(path);
+                                //}
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(null);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+            return Json(full_filename);
+        }
 
 
 

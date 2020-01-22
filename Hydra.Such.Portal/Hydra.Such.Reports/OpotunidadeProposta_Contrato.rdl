@@ -2089,7 +2089,7 @@
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
-                                    <Format>N2</Format>
+                                    <Format>N4</Format>
                                   </Style>
                                 </TextRun>
                               </TextRuns>

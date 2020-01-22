@@ -316,6 +316,21 @@ namespace Hydra.Such.Portal.Controllers
                             dp.ProjectNo = UP.ProjetoMatSubsidiárias;
                         }
                     }
+
+                    if (dp.Description.Length >= 100)
+                    {
+                        result.eReasonCode = 6;
+                        result.eMessage = "O campo Descrição Produto Fornecedor não pode ter mais de 100 carateres.";
+                        return Json(result);
+                    }
+
+                    if (dp.Description2.Length >= 50)
+                    {
+                        result.eReasonCode = 7;
+                        result.eMessage = "O campo Descrição 2 Produto não pode ter mais de 50 carateres.";
+                        return Json(result);
+                    }
+
                     dp.CreateUser = User.Identity.Name;
                     var newdp = DBShoppingNecessity.Create(dp.ParseToDB()).ParseToViewModel();
                     if (newdp == null)
@@ -632,8 +647,8 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     Type = 2,
                                     Code = item.ProductNo,
-                                    Description = item.Description,
-                                    Description2 = item.Description2,
+                                    Description = !string.IsNullOrEmpty(item.Description) ? item.Description.Length >= 100 ? item.Description.Substring(0, 100) : item.Description : "",
+                                    Description2 = !string.IsNullOrEmpty(item.Description2) ? item.Description2.Length >= 50 ? item.Description2.Substring(0, 50) : item.Description2 : "",
                                     UnitMeasureCode = item.UnitMeasureCode,
                                     QtyByUnitOfMeasure = item.QuantitybyUnitMeasure,
                                     QuantityToRequire = item.Quantity,

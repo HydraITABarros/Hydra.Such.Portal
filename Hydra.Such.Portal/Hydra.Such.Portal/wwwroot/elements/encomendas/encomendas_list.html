@@ -214,6 +214,7 @@
                     {{item.no}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.payToVendorNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="payToVendorNo">Código Fornecedor</vaadin-grid-sorter>
@@ -223,6 +224,7 @@
                     {{item.payToVendorNo}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.payToName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="payToName">Nome Fornecedor</vaadin-grid-sorter>
@@ -232,6 +234,7 @@
                     {{item.payToName}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.yourReference.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="yourReference">Sua Referência</vaadin-grid-sorter>
@@ -251,6 +254,7 @@
                     {{item.orderDate}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.noConsulta.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noConsulta">Nº Consulta Mercado</vaadin-grid-sorter>
@@ -326,6 +330,7 @@
                     {{item.regionId}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.functionalAreaId.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaId">Cód. Área Funcional</vaadin-grid-sorter>
@@ -335,6 +340,7 @@
                     {{item.functionalAreaId}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="220px" resizable hidden$="{{ _columns.respCenterId.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="respCenterId">Cód. Centro de Responsabilidade</vaadin-grid-sorter>
@@ -355,6 +361,25 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.pedidosPagamentoPendentes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="pedidosPagamentoPendentes">Pedidos Pagamento Pendentes</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pedidosPagamentoPendentes" value="[[filter.pedidosPagamentoPendentes]]" />
+                </template>
+                <template>
+                    {{item.pedidosPagamentoPendentes}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="170px" resizable hidden$="{{ _columns.noPedidosPagamento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noPedidosPagamento">Nº Pedido Pagamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noPedidosPagamento" value="[[filter.noPedidosPagamento]]" />
+                </template>
+                <template>
+                    {{item.noPedidosPagamento}}
+                </template>
+            </vaadin-grid-column>
 
         </vaadin-grid>
 
@@ -498,6 +523,8 @@
                         "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
                         "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
                         "hasAnAdvance": { hidden: false, label: "Adiantamento" },
+                        "pedidosPagamentoPendentes": { hidden: false, label: "Pedidos Pagamento Pendentes" },
+                        "noPedidosPagamento": { hidden: false, label: "Nº Pedido Pagamento" },
                     };
 
                     if (localStorage["encomendaslist.ToggleColumn"]) {

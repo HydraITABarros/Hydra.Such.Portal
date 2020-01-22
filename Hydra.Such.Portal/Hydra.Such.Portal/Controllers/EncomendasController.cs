@@ -102,8 +102,30 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (UPerm != null && UPerm.Read.Value)
                 {
+                    List<PedidosPagamento> AllPedidos = DBPedidoPagamento.GetAllPedidosPagamento();
                     List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
                     List<EncomendasViewModel> result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", from, to, fornecedor, requisitionNo);
+
+                    foreach (EncomendasViewModel item in result)
+                    {
+                        item.PedidosPagamentoPendentes = "Não";
+                        item.NoPedidosPagamento = "";
+                        List<PedidosPagamento> AllPedidosForEncomenda = AllPedidos.Where(x => x.NoEncomenda == item.No).ToList();
+
+                        if (AllPedidosForEncomenda != null && AllPedidosForEncomenda.Count > 0)
+                        {
+                            int NoPedidosPendentes = AllPedidosForEncomenda.Where(p => p.Estado == 1 || p.Estado == 2 || p.Estado == 3 || p.Estado == 4).Count();
+                            if (NoPedidosPendentes > 0)
+                                item.PedidosPagamentoPendentes = "Sim";
+
+                            foreach (PedidosPagamento pedido in AllPedidosForEncomenda)
+                            {
+                                item.NoPedidosPagamento = item.NoPedidosPagamento + pedido.NoPedido.ToString() + " - ";
+                            };
+                        }
+                    };
+
+
                     return Json(result);
                 }
                 else
@@ -143,8 +165,6 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_ListaEncomendas([FromBody] List<EncomendasViewModel> Lista)
         {
-            JObject dp = (JObject)Lista[0].ColunasEXCEL;
-
             string sWebRootFolder = _generalConfig.FileUploadFolder + "Encomendas\\" + "tmp\\";
             string user = User.Identity.Name;
             user = user.Replace("@", "_");
@@ -153,67 +173,82 @@ namespace Hydra.Such.Portal.Controllers
             string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
             var memory = new MemoryStream();
+
+            try
+            {
+
+                JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+
             using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
             {
-                IWorkbook workbook;
-                workbook = new XSSFWorkbook();
-                ISheet excelSheet = workbook.CreateSheet("Encomendas");
-                IRow row = excelSheet.CreateRow(0);
-                int Col = 0;
+                    IWorkbook workbook;
+                    workbook = new XSSFWorkbook();
+                    ISheet excelSheet = workbook.CreateSheet("Encomendas");
+                    IRow row = excelSheet.CreateRow(0);
+                    int Col = 0;
 
-                if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº"); Col = Col + 1; }
-                if (dp["payToVendorNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Fornecedor"); Col = Col + 1; }
-                if (dp["payToName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Fornecedor"); Col = Col + 1; }
-                if (dp["yourReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Sua Referência"); Col = Col + 1; }
-                if (dp["orderDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data da Encomenda"); Col = Col + 1; }
-                if (dp["noConsulta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Consulta Mercado"); Col = Col + 1; }
-                if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado com IVA"); Col = Col + 1; }
-                if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado sem IVA"); Col = Col + 1; }
-                if (dp["total"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Total"); Col = Col + 1; }
-                if (dp["expectedReceiptDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Recepção Esperada"); Col = Col + 1; }
-                if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
-                if (dp["regionId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
-                if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
-                if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade"); Col = Col + 1; }
-                if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Adiantamento"); Col = Col + 1; }
+                    if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº"); Col = Col + 1; }
+                    if (dp["payToVendorNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Fornecedor"); Col = Col + 1; }
+                    if (dp["payToName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Fornecedor"); Col = Col + 1; }
+                    if (dp["yourReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Sua Referência"); Col = Col + 1; }
+                    if (dp["orderDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data da Encomenda"); Col = Col + 1; }
+                    if (dp["noConsulta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Consulta Mercado"); Col = Col + 1; }
+                    if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado com IVA"); Col = Col + 1; }
+                    if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Vlr rececionado sem IVA"); Col = Col + 1; }
+                    if (dp["total"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Total"); Col = Col + 1; }
+                    if (dp["expectedReceiptDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Recepção Esperada"); Col = Col + 1; }
+                    if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
+                    if (dp["regionId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
+                    if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
+                    if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro de Responsabilidade"); Col = Col + 1; }
+                    if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Adiantamento"); Col = Col + 1; }
+                    if (dp["pedidosPagamentoPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedidos Pagamento Pendentes"); Col = Col + 1; }
+                    if (dp["noPedidosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Pedido Pagamento"); Col = Col + 1; }
 
 
-                if (dp != null)
-                {
-                    int count = 1;
-
-                    foreach (EncomendasViewModel item in Lista)
+                    if (dp != null)
                     {
-                        Col = 0;
-                        row = excelSheet.CreateRow(count);
+                        int count = 1;
 
-                        if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.No) ? item.No : ""); Col = Col + 1; }
-                        if (dp["payToVendorNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.PayToVendorNo) ? item.PayToVendorNo : ""); Col = Col + 1; }
-                        if (dp["payToName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.PayToName) ? item.PayToName : ""); Col = Col + 1; }
-                        if (dp["yourReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.YourReference) ? item.YourReference : ""); Col = Col + 1; }
-                        if (dp["orderDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderDate); Col = Col + 1; }
-                        if (dp["noConsulta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.NoConsulta) ? item.NoConsulta : ""); Col = Col + 1; }
-                        if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoComIVA.ToString()); Col = Col + 1; }
-                        if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoSemIVA.ToString()); Col = Col + 1; }
-                        if (dp["total"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Total.ToString()); Col = Col + 1; }
-                        if (dp["expectedReceiptDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ExpectedReceiptDate.ToString()); Col = Col + 1; }
-                        if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
-                        if (dp["regionId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionId); Col = Col + 1; }
-                        if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaId); Col = Col + 1; }
-                        if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RespCenterId); Col = Col + 1; }
-                        if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.HasAnAdvance); Col = Col + 1; }
+                        foreach (EncomendasViewModel item in Lista)
+                        {
+                            Col = 0;
+                            row = excelSheet.CreateRow(count);
 
+                            if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.No) ? item.No : ""); Col = Col + 1; }
+                            if (dp["payToVendorNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.PayToVendorNo) ? item.PayToVendorNo : ""); Col = Col + 1; }
+                            if (dp["payToName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.PayToName) ? item.PayToName : ""); Col = Col + 1; }
+                            if (dp["yourReference"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.YourReference) ? item.YourReference : ""); Col = Col + 1; }
+                            if (dp["orderDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderDate); Col = Col + 1; }
+                            if (dp["noConsulta"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.NoConsulta) ? item.NoConsulta : ""); Col = Col + 1; }
+                            if (dp["vlrRececionadoComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoComIVA.ToString()); Col = Col + 1; }
+                            if (dp["vlrRececionadoSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VlrRececionadoSemIVA.ToString()); Col = Col + 1; }
+                            if (dp["total"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Total.ToString()); Col = Col + 1; }
+                            if (dp["expectedReceiptDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ExpectedReceiptDate.ToString()); Col = Col + 1; }
+                            if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
+                            if (dp["regionId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionId); Col = Col + 1; }
+                            if (dp["functionalAreaId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaId); Col = Col + 1; }
+                            if (dp["respCenterId"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RespCenterId); Col = Col + 1; }
+                            if (dp["hasAnAdvance"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.HasAnAdvance); Col = Col + 1; }
+                            if (dp["pedidosPagamentoPendentes"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedidosPagamentoPendentes); Col = Col + 1; }
+                            if (dp["noPedidosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoPedidosPagamento); Col = Col + 1; }
 
-                        count++;
+                            count++;
+                        }
                     }
+                    workbook.Write(fs);
                 }
-                workbook.Write(fs);
+                using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
             }
-            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            catch (Exception ex)
             {
-                await stream.CopyToAsync(memory);
+                return Json(null);
             }
-            memory.Position = 0;
             return Json(sFileName);
         }
 
@@ -283,6 +318,7 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.Aprovado = false;
                     Pedido.ValorEncomenda = lines.Sum(x => x.AmountIncludingVAT);
                     Pedido.NoEncomenda = id;
+                    Pedido.NoRequisicao = details.RequisitionNo;
                     Pedido.CodigoFornecedor = details.PayToVendorNo;
                     Pedido.Fornecedor = details.PayToName;
                     Pedido.NIB = vendor.NIB;
@@ -293,7 +329,7 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.Arquivado = false;
                     Pedido.Resolvido = false;
                     Pedido.Prioritario = false;
-                    Pedido.EditarPrioritario = false;
+                    Pedido.EditarPrioritario = true;
 
                     Pedido.ValorJaPedido = pedidos.Where(y => y.Estado != 5).Sum(x => x.Valor);
                     Pedido.DataText = DateTime.Now.ToString("yyyy-MM-dd");
@@ -310,36 +346,43 @@ namespace Hydra.Such.Portal.Controllers
                     Pedido.ValorJaPedido = pedidos.Where(y => y.Estado != 5).Sum(x => x.Valor);
 
                     Pedido.EditarPrioritario = false;
-                    if (!string.IsNullOrEmpty(Pedido.Aprovadores) && Pedido.Aprovadores.ToLower().Contains(User.Identity.Name.ToLower()))
+                    if (!string.IsNullOrEmpty(Pedido.UtilizadorCriacao) && Pedido.UtilizadorCriacao.ToLower().Contains(User.Identity.Name.ToLower()))
                     {
                         Pedido.EditarPrioritario = true;
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(Pedido.UserAprovacao) && Pedido.UserAprovacao == User.Identity.Name.ToLower())
+                        if (!string.IsNullOrEmpty(Pedido.Aprovadores) && Pedido.Aprovadores.ToLower().Contains(User.Identity.Name.ToLower()))
                         {
                             Pedido.EditarPrioritario = true;
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(Pedido.UserValidacao) && Pedido.UserValidacao.ToLower() == User.Identity.Name.ToLower())
+                            if (!string.IsNullOrEmpty(Pedido.UserAprovacao) && Pedido.UserAprovacao == User.Identity.Name.ToLower())
                             {
                                 Pedido.EditarPrioritario = true;
                             }
                             else
                             {
-                                if (!string.IsNullOrEmpty(Pedido.UserFinanceiros) && Pedido.UserFinanceiros.ToLower() == User.Identity.Name.ToLower())
+                                if (!string.IsNullOrEmpty(Pedido.UserValidacao) && Pedido.UserValidacao.ToLower() == User.Identity.Name.ToLower())
                                 {
                                     Pedido.EditarPrioritario = true;
                                 }
                                 else
                                 {
-                                    MovimentosDeAprovação MDA = DBApprovalMovements.GetAll().Where(x => x.Número == Pedido.NoPedido.ToString() && x.Estado == 1).LastOrDefault();
-                                    if (MDA != null)
+                                    if (!string.IsNullOrEmpty(Pedido.UserFinanceiros) && Pedido.UserFinanceiros.ToLower() == User.Identity.Name.ToLower())
                                     {
-                                        UtilizadoresMovimentosDeAprovação UMDA = DBUserApprovalMovements.GetById(MDA.NºMovimento, User.Identity.Name);
-                                        if (UMDA != null)
-                                            Pedido.EditarPrioritario = true;
+                                        Pedido.EditarPrioritario = true;
+                                    }
+                                    else
+                                    {
+                                        MovimentosDeAprovação MDA = DBApprovalMovements.GetAll().Where(x => x.Número == Pedido.NoPedido.ToString() && x.Estado == 1).LastOrDefault();
+                                        if (MDA != null)
+                                        {
+                                            UtilizadoresMovimentosDeAprovação UMDA = DBUserApprovalMovements.GetById(MDA.NºMovimento, User.Identity.Name);
+                                            if (UMDA != null)
+                                                Pedido.EditarPrioritario = true;
+                                        }
                                     }
                                 }
                             }
@@ -1193,5 +1236,19 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        [HttpPost]
+        public JsonResult TodosPedidosPagamentoPorEncomenda([FromBody] EncomendasViewModel item)
+        {
+            List<PedidosPagamentoViewModel> result = new List<PedidosPagamentoViewModel>();
+
+            if (item != null)
+            {
+                if (!string.IsNullOrEmpty(item.No))
+                {
+                    result = DBPedidoPagamento.GetAllPedidosPagamentoByEncomenda(item.No).ParseToViewModel().ToList();
+                }
+            }
+            return Json(result);
+        }
     }
 }

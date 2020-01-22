@@ -174,6 +174,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noRequisicao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noRequisicao">Nº Requisição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noRequisicao" value="[[filter.noRequisicao]]" />
+                </template>
+                <template>
+                    {{item.noRequisicao}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codigoFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codigoFornecedor">Cód. Fornecedor</vaadin-grid-sorter>
@@ -893,6 +903,7 @@
                         "dataText": { hidden: false, label: "Data" },
                         "estadoText": { hidden: false, label: "Estado" },
                         "noEncomenda": { hidden: false, label: "Nº Encomenda" },
+                        "noRequisicao": { hidden: false, label: "Nº Requisição" },
                         "codigoFornecedor": { hidden: false, label: "Cód. Fornecedor" },
                         "fornecedor": { hidden: false, label: "Fornecedor" },
                         "regiaoMercadoLocalText": { hidden: false, label: "Mercado Local" },

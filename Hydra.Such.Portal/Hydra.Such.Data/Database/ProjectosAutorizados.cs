@@ -10,8 +10,6 @@ namespace Hydra.Such.Data.Database
         public int GrupoFactura { get; set; }
         public string Descricao { get; set; }
         public string CodCliente { get; set; }
-
-        [NotMapped]
         public string NomeCliente { get; set; }
         public decimal? ValorAutorizado { get; set; }
         public string CodRegiao { get; set; }

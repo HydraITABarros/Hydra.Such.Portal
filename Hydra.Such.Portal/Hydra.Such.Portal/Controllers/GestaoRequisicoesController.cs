@@ -1250,9 +1250,9 @@ namespace Hydra.Such.Portal.Controllers
             if (!string.IsNullOrEmpty(requisitionId) && requisitionId != "0" && statusIsValid)
             {
                 //if (status != (int)RequisitionStates.Archived) //ARQUIVO
-                    item = DBRequest.GetById(requisitionId).ParseToViewModel();
+                item = DBRequest.GetById(requisitionId).ParseToViewModel();
                 //else
-                    //item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
+                //item = DBRequesitionHist.TransferToRequisition(DBRequesitionHist.GetByNo(requisitionId)).ParseToViewModel();
             }
             else
                 item = new RequisitionViewModel();
@@ -1849,8 +1849,10 @@ namespace Hydra.Such.Portal.Controllers
                                 else
                                 {
                                     decimal quantityInStock = 0;
+
                                     Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
                                     quantityinStockTask.Wait();
+
                                     if (quantityinStockTask.IsCompletedSuccessfully)
                                     {
                                         quantityInStock = quantityinStockTask.Result.return_value;
@@ -1894,9 +1896,33 @@ namespace Hydra.Such.Portal.Controllers
                                 try
                                 {
                                     //Create Lines in NAV
-                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLines(productsToHandle, transactionId, configws);
-                                    createNavDiaryLines.Wait();
-                                    if (createNavDiaryLines.IsCompletedSuccessfully)
+
+                                    //ORIGINAL
+                                    //Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLines(productsToHandle, transactionId, configws);
+
+                                    //TEMPORÁRIO 02/01/2020
+                                    DateTime DataRececao = string.IsNullOrEmpty(item.ReceivedDate) ? DateTime.Now : Convert.ToDateTime(item.ReceivedDate);
+                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLinesWithDataRececao(productsToHandle, transactionId, configws, DataRececao);
+
+                                    bool ok = false;
+                                    try
+                                    {
+                                        createNavDiaryLines.Wait();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        if (!ex.Message.ToLower().Contains("maximum message size quota".ToLower()))
+                                        {
+                                            item.eReasonCode = 9;
+                                            item.eMessage = "Ocorreu um erro: " + ex.Message;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            ok = true;
+                                        }
+                                    }
+                                    if (createNavDiaryLines.IsCompletedSuccessfully || ok)
                                     {
                                         Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryLines;
                                         try
@@ -1914,17 +1940,8 @@ namespace Hydra.Such.Portal.Controllers
                                         if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
                                         {
                                             bool keepOpen = true;
-                                            //item.Lines = productsToHandle;
 
                                             keepOpen = item.Lines.Any(x => x.QuantityReceived != x.QuantityRequired);
-                                            //item.Lines.ForEach(Linha =>
-                                            //{
-                                            //    if (Linha.QuantityReceived != Linha.QuantityRequired)
-                                            //        keepOpen = false;
-                                            //});
-
-                                            //if (keepOpen != true)
-                                            //    keepOpen = productsToHandle.Where(x => x.QuantityRequired.HasValue && x.QuantityReceived.HasValue).Any(x => (x.QuantityRequired.Value - x.QuantityReceived.Value) != 0);
 
                                             if (keepOpen == false)
                                             {
@@ -1965,82 +1982,6 @@ namespace Hydra.Such.Portal.Controllers
                                                     item.eReasonCode = 14;
                                                     item.eMessage = "Ocorreu um erro ao fechar no Receber.";
                                                 }
-                                                //if (string.IsNullOrEmpty(item.eMessage))
-                                                //{
-                                                //    if (item.eReasonCode == 1)
-                                                //    {
-                                                //        item.eMessage = "Requisição foi fechada no Receber.";
-                                                //    }
-                                                //}
-
-                                                //bool okReceber = true;
-                                                //RequisiçãoHist REQHistReceber = DBRequest.TransferToRequisitionHist(item);
-                                                //if (REQHistReceber != null)
-                                                //{
-                                                //    REQHistReceber.Estado = (int)RequisitionStates.Archived;
-                                                //    REQHistReceber.UtilizadorModificação = User.Identity.Name;
-                                                //    REQHistReceber.DataHoraModificação = DateTime.Now;
-
-                                                //    if (DBRequesitionHist.Create(REQHistReceber) != null)
-                                                //    {
-                                                //        List<LinhasRequisiçãoHist> REQLinhasHistReceber = DBRequest.TransferToRequisitionLinesHist(item.Lines);
-                                                //        if (REQLinhasHistReceber.Count > 0)
-                                                //        {
-                                                //            REQLinhasHistReceber.ForEach(Linha =>
-                                                //            {
-                                                //                Linha.UtilizadorModificação = User.Identity.Name;
-                                                //                Linha.DataHoraModificação = DateTime.Now;
-                                                //                if (DBRequesitionLinesHist.Create(Linha) == null)
-                                                //                {
-                                                //                    okReceber = false;
-                                                //                    item.eReasonCode = 14;
-                                                //                    item.eMessage = "Ocorreu Um erro ao fechar na criação da linha no Histórico";
-                                                //                }
-                                                //            });
-                                                //        }
-
-                                                //        if (okReceber == true)
-                                                //        {
-                                                //            if (item.Lines.Count > 0)
-                                                //            {
-                                                //                item.Lines.ForEach(Linha =>
-                                                //                {
-                                                //                    if (DBRequestLine.Delete(Linha.ParseToDB()) == false)
-                                                //                    {
-                                                //                        okReceber = false;
-                                                //                        item.eReasonCode = 15;
-                                                //                        item.eMessage = "Ocorreu Um erro ao fechar ao Eliminar linha.";
-                                                //                    }
-                                                //                });
-                                                //            }
-
-                                                //            if (okReceber == true)
-                                                //            {
-                                                //                if (DBRequest.Delete(item.ParseToDB()) == false)
-                                                //                {
-                                                //                    okReceber = false;
-                                                //                    item.eReasonCode = 16;
-                                                //                    item.eMessage = "Ocorreu Um erro ao fechar na Eliminação da Requisição";
-                                                //                }
-                                                //                else
-                                                //                {
-                                                //                    item.eReasonCode = 1;
-                                                //                    item.eMessage = "Requisição foi fechada";
-                                                //                }
-                                                //            }
-                                                //        }
-                                                //    }
-                                                //    else
-                                                //    {
-                                                //        item.eReasonCode = 17;
-                                                //        item.eMessage = "Ocorreu Um erro ao fechar ao criar Requisição Histórico.";
-                                                //    }
-                                                //}
-                                                //else
-                                                //{
-                                                //    item.eReasonCode = 18;
-                                                //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
-                                                //}
                                             }
                                         }
                                         else
@@ -2431,7 +2372,7 @@ namespace Hydra.Such.Portal.Controllers
                                         NoProjeto = Linha.NºProjeto,
                                         RegiaoMercadoLocal = item.LocalMarketRegion,
                                         Estado = 1, //APROVADO
-                                    DataCriacao = DateTime.Now,
+                                        DataCriacao = DateTime.Now,
                                         UtilizadorCriacao = User.Identity.Name,
                                         DataMercadoLocal = DateTime.Now,
                                         Responsaveis = Responsaveis
@@ -2827,12 +2768,12 @@ namespace Hydra.Such.Portal.Controllers
                     //if (UPerm.Create == true)
                     //{
 
-                        
+
                     Requisicoes.ForEach(Requisicao =>
                     {
                         if (result.eReasonCode == 1)
                         {
-                            Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "" ;
+                            Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
                             RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
                             Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
 
@@ -2934,7 +2875,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
             }
-            catch(Exception ex) { createTransferShipResult.eMessage += ex.Message; }
+            catch (Exception ex) { createTransferShipResult.eMessage += ex.Message; }
 
             return Json(createTransferShipResult);
         }

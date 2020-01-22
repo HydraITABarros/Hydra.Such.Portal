@@ -103,11 +103,13 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Detalhes(int id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.UnidadesProdutivas);
+            UserAccessesViewModel UPerm_CafetariasRefeitorios = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Cafetarias_Refeitórios);
 
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.ProductivityUnityNo = id;
                 ViewBag.UPermissions = UPerm;
+                ViewBag.UPermissions_CafetariasRefeitorios = UPerm_CafetariasRefeitorios;
                 return View();
             }
             else

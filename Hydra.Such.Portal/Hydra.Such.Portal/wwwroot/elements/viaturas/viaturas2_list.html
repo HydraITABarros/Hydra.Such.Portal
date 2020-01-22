@@ -1,0 +1,652 @@
+﻿
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-viaturas2list">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <iron-ajax url="/Viaturas/GetList2"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/ExportToExcel_Viaturas2"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Nova Viatura</paper-button>
+            </template>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid column-reordering-allowed id="grdViaturasGrid" aria-label="ViaturasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.matricula.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="matricula">Matrícula</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="matricula" value="[[filter.matricula]]" />
+                </template>
+                <template>
+                    {{item.matricula}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.estado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="estado" value="[[filter.estado]]" />
+                </template>
+                <template>
+                    {{item.estado}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.marca.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="marca">Marca</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="marca" value="[[filter.marca]]" />
+                </template>
+                <template>
+                    {{item.marca}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.modelo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="modelo">Modelo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="modelo" value="[[filter.modelo]]" />
+                </template>
+                <template>
+                    {{item.modelo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.data1MatriculaTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="data1MatriculaTexto">Data 1ª Matrícula</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="data1MatriculaTexto" value="[[filter.data1MatriculaTexto]]" />
+                </template>
+                <template>
+                    {{item.data1MatriculaTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.cor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cor">Cor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cor" value="[[filter.cor]]" />
+                </template>
+                <template>
+                    {{item.cor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.dataMatriculaTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataMatriculaTexto">Data Matrícula</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataMatriculaTexto" value="[[filter.dataMatriculaTexto]]" />
+                </template>
+                <template>
+                    {{item.dataMatriculaTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.categoria.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="categoria">Categoria</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="categoria" value="[[filter.categoria]]" />
+                </template>
+                <template>
+                    {{item.categoria}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.tipo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipo" value="[[filter.tipo]]" />
+                </template>
+                <template>
+                    {{item.tipo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.classificacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="classificacao">Classificacao</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="classificacao" value="[[filter.classificacao]]" />
+                </template>
+                <template>
+                    {{item.classificacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.cilindrada.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cilindrada">Cilíndrada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cilindrada" value="[[filter.cilindrada]]" />
+                </template>
+                <template>
+                    {{item.cilindrada}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.combustivel.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="combustivel">Combústivel</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="combustivel" value="[[filter.combustivel]]" />
+                </template>
+                <template>
+                    {{item.combustivel}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.consumoReferencia.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="consumoReferencia">Consumo Referência</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="consumoReferencia" value="[[filter.consumoReferencia]]" />
+                </template>
+                <template>
+                    {{item.consumoReferencia}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.capacidadeDeposito.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="capacidadeDeposito">Capacidade Depósito</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="capacidadeDeposito" value="[[filter.capacidadeDeposito]]" />
+                </template>
+                <template>
+                    {{item.capacidadeDeposito}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.autonomia.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="autonomia">Autonomia</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="autonomia" value="[[filter.autonomia]]" />
+                </template>
+                <template>
+                    {{item.autonomia}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.pesoBruto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="pesoBruto">Peso Bruto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pesoBruto" value="[[filter.pesoBruto]]" />
+                </template>
+                <template>
+                    {{item.pesoBruto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.cargaMaxima.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cargaMaxima">Carga Máxima</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cargaMaxima" value="[[filter.cargaMaxima]]" />
+                </template>
+                <template>
+                    {{item.cargaMaxima}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.tara.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tara">Tara</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tara" value="[[filter.tara]]" />
+                </template>
+                <template>
+                    {{item.tara}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.potencia.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="potencia">Potência</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="potencia" value="[[filter.potencia]]" />
+                </template>
+                <template>
+                    {{item.potencia}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.distanciaEixos.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="distanciaEixos">Distância Eixos</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="distanciaEixos" value="[[filter.distanciaEixos]]" />
+                </template>
+                <template>
+                    {{item.distanciaEixos}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.noLugares.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noLugares">Nº Lugares</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noLugares" value="[[filter.noLugares]]" />
+                </template>
+                <template>
+                    {{item.noLugares}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.noAnosGarantia.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noAnosGarantia">Nº Anos Garantia</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noAnosGarantia" value="[[filter.noAnosGarantia]]" />
+                </template>
+                <template>
+                    {{item.noAnosGarantia}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.noQuadro.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noQuadro">Nº Quadro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noQuadro" value="[[filter.noQuadro]]" />
+                </template>
+                <template>
+                    {{item.noQuadro}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.tipoCaixa.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipoCaixa">Tipo Caixa</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoCaixa" value="[[filter.tipoCaixa]]" />
+                </template>
+                <template>
+                    {{item.tipoCaixa}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.pneuFrente.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="pneuFrente">Pneu Frente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pneuFrente" value="[[filter.pneuFrente]]" />
+                </template>
+                <template>
+                    {{item.pneuFrente}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.pneuRetaguarda.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="pneuRetaguarda">Pneu Retaguarda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="pneuRetaguarda" value="[[filter.pneuRetaguarda]]" />
+                </template>
+                <template>
+                    {{item.pneuRetaguarda}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.observacoes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="observacoes" value="[[filter.observacoes]]" />
+                </template>
+                <template>
+                    {{item.observacoes}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.tipoPropriedade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipoPropriedade">Tipo Propriedade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipoPropriedade" value="[[filter.tipoPropriedade]]" />
+                </template>
+                <template>
+                    {{item.tipoPropriedade}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.propriedade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="propriedade">Propriedade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="propriedade" value="[[filter.propriedade]]" />
+                </template>
+                <template>
+                    {{item.propriedade}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.segmentacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="segmentacao">Segmentação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="segmentacao" value="[[filter.segmentacao]]" />
+                </template>
+                <template>
+                    {{item.segmentacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.dataProximaInspecaoTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataProximaInspecaoTexto">Data Próxima Inspeção</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataProximaInspecaoTexto" value="[[filter.dataProximaInspecaoTexto]]" />
+                </template>
+                <template>
+                    {{item.dataProximaInspecaoTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.intervaloRevisoes.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="intervaloRevisoes">Intervalo Revisões</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="intervaloRevisoes" value="[[filter.intervaloRevisoes]]" />
+                </template>
+                <template>
+                    {{item.intervaloRevisoes}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.localParqueamento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localParqueamento">Local Parqueamento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localParqueamento" value="[[filter.localParqueamento]]" />
+                </template>
+                <template>
+                    {{item.localParqueamento}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.alvaraLicencaTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="alvaraLicencaTexto">Alvará Licença</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="alvaraLicencaTexto" value="[[filter.alvaraLicencaTexto]]" />
+                </template>
+                <template>
+                    {{item.alvaraLicencaTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codRegiao">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codRegiao" value="[[filter.codRegiao]]" />
+                </template>
+                <template>
+                    {{item.codRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codAreaFuncional">Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codAreaFuncional" value="[[filter.codAreaFuncional]]" />
+                </template>
+                <template>
+                    {{item.codAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codCentroResponsabilidade">Código Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codCentroResponsabilidade" value="[[filter.codCentroResponsabilidade]]" />
+                </template>
+                <template>
+                    {{item.codCentroResponsabilidade}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.noProjeto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noProjeto">Nº Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noProjeto" value="[[filter.noProjeto]]" />
+                </template>
+                <template>
+                    {{item.noProjeto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.projeto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="projeto">Projeto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projeto" value="[[filter.projeto]]" />
+                </template>
+                <template>
+                    {{item.projeto}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-viaturas2list',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _areaid: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grdViaturasGrid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('viaturas-viaturas2list', filters || {});
+
+                        window.location.href = "/Viaturas/DetalhesViatura2/" + item.matricula;
+                    }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('viaturas-viaturas2list');
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Viaturas/DetalhesViatura2/";
+                    }
+                },
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grdViaturasGrid, 'viaturas-viaturas2list');
+                    window.grid = this.$.grdViaturasGrid;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grdViaturasGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _exportEXCEL: function () {
+                    var result = this.$.grdViaturasGrid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../Viaturas/ExportToExcelDownload_Viaturas2?sFileName=' + FileName;
+                },
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "matricula": { hidden: false, label: "Matrícula" },
+                        "estado": { hidden: false, label: "Estado" },
+                        "marca": { hidden: false, label: "Marca" },
+                        "modelo": { hidden: false, label: "Modelo" },
+                        "data1MatriculaTexto": { hidden: false, label: "Data 1ª Matrícula" },
+                        "cor": { hidden: false, label: "Cor" },
+                        "dataMatriculaTexto": { hidden: false, label: "Data Matrícula" },
+                        "categoria": { hidden: false, label: "Categoria" },
+                        "tipo": { hidden: false, label: "Tipo" },
+                        "classificacao": { hidden: false, label: "Classificacao" },
+                        "cilindrada": { hidden: false, label: "Cilíndrada" },
+                        "combustivel": { hidden: false, label: "Combústivel" },
+                        "consumoReferencia": { hidden: false, label: "Consumo Referência" },
+                        "capacidadeDeposito": { hidden: false, label: "Capacidade Depósito" },
+                        "autonomia": { hidden: false, label: "Autonomia" },
+                        "pesoBruto": { hidden: false, label: "Peso Bruto" },
+                        "cargaMaxima": { hidden: false, label: "Carga Máxima" },
+                        "tara": { hidden: false, label: "Tara" },
+                        "potencia": { hidden: false, label: "Potência" },
+                        "distanciaEixos": { hidden: false, label: "Distância Eixos" },
+                        "noLugares": { hidden: false, label: "Nº Lugares" },
+                        "noAnosGarantia": { hidden: false, label: "Nº Anos Garantia" },
+                        "noQuadro": { hidden: false, label: "Nº Quadro" },
+                        "tipoCaixa": { hidden: false, label: "Tipo Caixa" },
+                        "pneuFrente": { hidden: false, label: "Pneu Frente" },
+                        "pneuRetaguarda": { hidden: false, label: "Pneu Retaguarda" },
+                        "observacoes": { hidden: false, label: "Observações" },
+                        "tipoPropriedade": { hidden: false, label: "Tipo Propriedade" },
+                        "propriedade": { hidden: false, label: "Propriedade" },
+                        "segmentacao": { hidden: false, label: "Segmentação" },
+                        "dataProximaInspecaoTexto": { hidden: false, label: "Data Próxima Inspeção" },
+                        "intervaloRevisoes": { hidden: false, label: "Intervalo Revisões" },
+                        "localParqueamento": { hidden: false, label: "Local Parqueamento" },
+                        "alvaraLicencaTexto": { hidden: false, label: "Alvará Licença" },
+                        "codRegiao": { hidden: false, label: "Código Região" },
+                        "codAreaFuncional": { hidden: false, label: "Código Área Funcional" },
+                        "codCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "noProjeto": { hidden: false, label: "Nº Projeto" },
+                        "projeto": { hidden: false, label: "Projeto" }
+                    };
+
+                    if (localStorage["viaturas2list.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["viaturas2list.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["viaturas2list.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                }
+                /* end - ColumnToggle */
+            });
+        });
+    </script>
+</dom-module>

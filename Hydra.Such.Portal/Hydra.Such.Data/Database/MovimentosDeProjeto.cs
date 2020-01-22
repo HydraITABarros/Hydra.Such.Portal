@@ -13,6 +13,7 @@ namespace Hydra.Such.Data.Database
         public int? Tipo { get; set; }
         public string Código { get; set; }
         public string Descrição { get; set; }
+        public string CodigoTipoTrabalho { get; set; }
         public decimal? Quantidade { get; set; }
         public string CódUnidadeMedida { get; set; }
         public string CódLocalização { get; set; }

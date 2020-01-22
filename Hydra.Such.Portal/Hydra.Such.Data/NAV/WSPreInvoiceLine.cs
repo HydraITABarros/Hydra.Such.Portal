@@ -9,6 +9,7 @@ using System.Net;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using Hydra.Such.Data.Logic.ProjectDiary;
+using Hydra.Such.Data.Logic.Contracts;
 
 namespace Hydra.Such.Data.NAV
 {
@@ -92,9 +93,27 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, string InvoiceBorrowed, NAVWSConfigurations WSConfigurations)
         {
             int counter = 0;
+            string TextoFatura = "";
+            string Mes = InvoiceBorrowed.Substring(0, InvoiceBorrowed.IndexOf("/"));
+            string Ano = InvoiceBorrowed.Substring(InvoiceBorrowed.IndexOf("/") + 1, 4);
+            bool ContratoQuota = false;
+            Contratos Contrato = DBContracts.GetByIdLastVersion(LinesList.FirstOrDefault().NºContrato);
+
+            if (Contrato != null && Contrato.TipoContrato == 3 && Contrato.Tipo == 3) //Contrato Quotas
+            {
+                ContratoQuota = true;
+
+                if (Contrato != null && !string.IsNullOrEmpty(Contrato.TextoFatura))
+                {
+                    TextoFatura = Contrato.TextoFatura;
+                    TextoFatura = TextoFatura.Replace("<MES>", Mes);
+                    TextoFatura = TextoFatura.Replace("<ANO>", Ano);
+                }
+            }
+
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                {
@@ -106,22 +125,66 @@ namespace Hydra.Such.Data.NAV
                    Document_TypeSpecified = true,
                    No = x.Código,
                    TypeSpecified = true,
-                   
                    Type = ConvertToSaleslineType(x.Tipo.Replace(" ", String.Empty)),
-                   Description = x.Descrição != null && x.Descrição.Length > 50 ? x.Descrição.Substring(0, 50) : !string.IsNullOrEmpty(x.Descrição) ? x.Descrição : "",
-                   Description_2 = x.Descricao2 != null && x.Descricao2.Length > 50 ? x.Descricao2.Substring(0, 50) : !string.IsNullOrEmpty(x.Descricao2) ? x.Descricao2 : "",
-                                            //Quantity = x.Quantidade.Value,
+                   Description = ContratoQuota == false ? x.Descrição != null && x.Descrição.Length > 50 ? x.Descrição.Substring(0, 50) : !string.IsNullOrEmpty(x.Descrição) ? x.Descrição : "" : !string.IsNullOrEmpty(TextoFatura) ? TextoFatura : "",
+                   Description_2 = ContratoQuota == false ? x.Descricao2 != null && x.Descricao2.Length > 50 ? x.Descricao2.Substring(0, 50) : !string.IsNullOrEmpty(x.Descricao2) ? x.Descricao2 : "" : "",
                    Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,
                    QuantitySpecified = true,
                    Unit_of_Measure = x.CódUnidadeMedida,
                    Unit_Price = x.PreçoUnitário.HasValue ? x.PreçoUnitário.Value : 0,
-                                            //Unit_Price = x.PreçoUnitário.Value,
                    Unit_PriceSpecified = true,
-                                            //Amount = x.ValorVenda.Value,
-                                            //AmountSpecified = true,
                    Service_Contract_No = x.NºContrato,
                    Contract_No = x.NºContrato,
-                                            //Job_No = x.NºContrato,//Não definir para não obrigar a ter movimentos
+                   gJobDimension = x.NºContrato,
+                   RegionCode20 = x.CódigoRegião,
+                   FunctionAreaCode20 = x.CódigoÁreaFuncional,
+                   ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,
+               }).ToArray();
+
+            WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient WS_Client = new WSCreatePreInvoiceLine.WsPreInvoiceLine_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoiceLine.CreateMultiple_Result result = await WS_Client.CreateMultipleAsync(NAVCreate);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineList(List<LinhasFaturaçãoContrato> LinesList, String HeaderNo, NAVWSConfigurations WSConfigurations)
+        {
+            int counter = 0;
+
+            WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
+               x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
+               {
+
+                   Document_No = HeaderNo,
+                   Line_No = counter += 10000,
+                   Line_NoSpecified = true,
+                   Document_Type = WSCreatePreInvoiceLine.Document_Type.Invoice,
+                   Document_TypeSpecified = true,
+                   No = x.Código,
+                   TypeSpecified = true,
+                   Type = ConvertToSaleslineType(x.Tipo.Replace(" ", String.Empty)),
+                   Description = x.Descrição != null && x.Descrição.Length > 50 ? x.Descrição.Substring(0, 50) : !string.IsNullOrEmpty(x.Descrição) ? x.Descrição : "",
+                   Description_2 = x.Descricao2 != null && x.Descricao2.Length > 50 ? x.Descricao2.Substring(0, 50) : !string.IsNullOrEmpty(x.Descricao2) ? x.Descricao2 : "",
+                   Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,
+                   QuantitySpecified = true,
+                   Unit_of_Measure = x.CódUnidadeMedida,
+                   Unit_Price = x.PreçoUnitário.HasValue ? x.PreçoUnitário.Value : 0,
+                   Unit_PriceSpecified = true,
+                   Service_Contract_No = x.NºContrato,
+                   Contract_No = x.NºContrato,
                    gJobDimension = x.NºContrato,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
@@ -146,7 +209,7 @@ namespace Hydra.Such.Data.NAV
                 throw ex;
             }
         }
-        
+
         public static async Task<WSCreatePreInvoiceLine.CreateMultiple_Result> CreatePreInvoiceLineListProject(List<SPInvoiceListViewModel> LinesList, String HeaderNo, string OptionInvoice, NAVWSConfigurations WSConfigurations)
         {
             int counter = 0;

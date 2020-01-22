@@ -1124,7 +1124,6 @@
                                                             </div>
                                                         </div>
                                                         <!--</template>-->
-
                                                         <!-- VAADIN GRID  Textos Fatura -->
                                                         <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
                                                             <vaadin-grid-column resizable>
@@ -3725,24 +3724,28 @@
 
                 _changeStatusChanged: function () {
                     if (this.$.mChangeStatus.value != null && this.$.mChangeStatus.value != "") {
-                        if (this._validateData()) {
+                        if (this.$.mChangeStatus.value == "2") {
+                            if (this._validateData()) {
 
-                            for (i = 0; i < this.dataLines.lines.length; i++) {
-                                if ((this.dataLines.lines[i].codeRegion == null || this.dataLines.lines[i].codeRegion == "") ||
-                                    (this.dataLines.lines[i].codeFunctionalArea == null || this.dataLines.lines[i].codeFunctionalArea == "") ||
-                                    (this.dataLines.lines[i].codeResponsabilityCenter == null || this.dataLines.lines[i].codeResponsabilityCenter == "")) {
+                                for (i = 0; i < this.dataLines.lines.length; i++) {
+                                    if ((this.dataLines.lines[i].codeRegion == null || this.dataLines.lines[i].codeRegion == "") ||
+                                        (this.dataLines.lines[i].codeFunctionalArea == null || this.dataLines.lines[i].codeFunctionalArea == "") ||
+                                        (this.dataLines.lines[i].codeResponsabilityCenter == null || this.dataLines.lines[i].codeResponsabilityCenter == "")) {
 
-                                    this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
-                                    return;
+                                        this._openToastError("Não se pode alterar o Estado Alteração do Contrato, por existir Linhas com Dimensões não preenchidas.");
+                                        return;
+                                    }
                                 }
                             }
-
-                            this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
-                            this.$.changeStatusChanged_databound_ajax.generateRequest();
-
-                            this.data.changeStatus = this.$.mChangeStatus.value;
-                            this._executeRequest("/Contratos/UpdateContract", this.data);
+                            else {
+                                return;
+                            }
                         }
+                        this.$.changeStatusChanged_databound_ajax.body = JSON.stringify(this.dataLines);
+                        this.$.changeStatusChanged_databound_ajax.generateRequest();
+
+                        this.data.changeStatus = this.$.mChangeStatus.value;
+                        this._executeRequest("/Contratos/UpdateContract", this.data);
                     }
                 },
 

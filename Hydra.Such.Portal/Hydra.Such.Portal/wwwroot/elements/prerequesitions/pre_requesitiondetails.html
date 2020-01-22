@@ -1,5 +1,4 @@
-﻿
-<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
 <link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -143,7 +142,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="page_GetFunctionalAreaCode_ajax" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="page_GetResponsabilityCenterCode_ajax" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="page_GetRegionCode_ajax" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturasForPreReq" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -470,17 +469,12 @@
                                         </div>
 
                                         <div class="col-md-3" id="VehicleDiv" hidden>
-                                            <!--<vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{data.vehicle}}" label="Viatura" on-value-changed="_GetNoProjetoCabecalho">
-                                            <template>
-                                                <b>[[item.id]]</b>
-                                            </template>
-                                        </vaadin-combo-box>-->
                                             <such-selectbox id="Vehicle" name="Vehicle" label="Viatura" value="{{data.vehicle}}"
                                                             on-value-changed="_GetNoProjetoCabecalho"
                                                             items="[[CBVehicle]]"
-                                                            text-path="id"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Matrícula"}]'>
+                                                            text-path="matricula"
+                                                            value-path="matricula"
+                                                            fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estadoDescricao", "name":"Estado"}, {"field":"marcaDescricao", "name":"Marca"}, {"field":"modeloDescricao", "name":"Modelo"}]'>
                                             </such-selectbox>
                                         </div>
 
@@ -860,16 +854,11 @@
                                         <vaadin-text-field value="{{_MaintenanceOrderLineNo}}" id="_MaintenanceOrderLineNo" name="_MaintenanceOrderLineNo" label="Nº Linha Ord. Manutenção" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[CBVehicle]]" id="_VehicleLines" item-value-path="id" item-label-path="id" label="Viatura" on-value-changed="_GetNoProjetoLinha">
-                                        <template>
-                                            <b>[[item.id]]</b>
-                                        </template>
-                                    </vaadin-combo-box>-->
                                         <such-selectbox id="_VehicleLines" on-value-changed="_GetNoProjetoLinha" label="Viatura"
                                                         items="[[CBVehicle]]"
-                                                        text-path="id"
-                                                        value-path="id"
-                                                        fields='[{"field":"id", "name":"Matrícula"}]'
+                                                        text-path="matricula"
+                                                        value-path="matricula"
+                                                        fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estadoDescricao", "name":"Estado"}, {"field":"marcaDescricao", "name":"Marca"}, {"field":"modeloDescricao", "name":"Modelo"}]'>
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -1227,21 +1216,12 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <!--<vaadin-combo-box items="[[CBVehicle]]" id="_CLGridVehicle" name="_CLGridVehicle" item-value-path="id" item-label-path="id" value="{{item.vehicle}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPreRequisicao">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.id]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridVehicle" value="{{item.vehicle}}"
                                                                 items="[[CBVehicle]]"
                                                                 on-change="_updateLinhaPreRequisicao"
-                                                                text-path="id"
-                                                                value-path="id"
-                                                                fields='[{"field":"id", "name":"Matrícula"}]'
+                                                                text-path="matricula"
+                                                                value-path="matricula"
+                                                                fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estadoDescricao", "name":"Estado"}, {"field":"marcaDescricao", "name":"Marca"}, {"field":"modeloDescricao", "name":"Modelo"}]'>
                                                                 disabled="{{ !_permissions.update }}">
                                                 </such-selectbox>
                                             </template>
@@ -2405,7 +2385,6 @@
                     } else {
                         this._openToast("Não tem Linhas inseridas.");
                     }
-
                 },
 
                 _clFormatSupplierProductCode: function (param) {

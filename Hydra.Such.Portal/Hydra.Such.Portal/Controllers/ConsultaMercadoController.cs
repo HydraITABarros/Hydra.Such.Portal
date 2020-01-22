@@ -1106,6 +1106,30 @@ namespace Hydra.Such.Portal.Controllers
                         var result = CreateNAVPurchaseOrderFor(purchOrder, data.NumConsultaMercado, data.Obs);
                         if (result.CompletedSuccessfully)
                         {
+                            //INICIO CODIGO NOVO
+                            string NotaEncomenda = result.ResultValue;
+
+                            if (!string.IsNullOrEmpty(NotaEncomenda))
+                            {
+                                Requisição REQ = DBRequest.GetById(purchOrder.RequisitionId);
+                                REQ.NºEncomenda = NotaEncomenda;
+                                REQ.UtilizadorModificação = User.Identity.Name;
+
+                                DBRequest.Update(REQ);
+
+                                REQ.LinhasRequisição.ToList().ForEach(linha =>
+                                {
+                                    if (linha.NºFornecedor == purchOrder.SupplierId)
+                                    {
+                                        linha.NºEncomendaCriada = NotaEncomenda;
+                                        linha.UtilizadorModificação = User.Identity.Name;
+
+                                        DBRequestLine.Update(linha);
+                                    }
+                                });
+                            }
+                            //FIM CODIGO NOVO
+
                             data.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
                         }
                     }
@@ -1345,7 +1369,8 @@ namespace Hydra.Such.Portal.Controllers
                 DBConsultaMercado.Update(DBConsultaMercado.CastSeleccaoEntidadesViewToDB(fornecedor));
 
                 //Apaga o anexo criado no disco
-                System.IO.File.Delete(Path.Combine(sWebRootFolder, sFileName));
+                if (System.IO.Directory.Exists(Path.Combine(sWebRootFolder, sFileName)))
+                    System.IO.File.Delete(Path.Combine(sWebRootFolder, sFileName));
             }
 
             return Json(data);
@@ -1361,10 +1386,8 @@ namespace Hydra.Such.Portal.Controllers
             ConsultaMercado consultaMercado = DBConsultaMercado.GetDetalheConsultaMercado(Consulta);
             ConsultaMercadoView data = DBConsultaMercado.CastConsultaMercadoToView(consultaMercado);
 
-
             data.eReasonCode = 0;
             data.eMessage = "Email não enviado!";
-
 
             string sWebRootFolder = _generalConfig.FileUploadFolder + "ConsultasMercado\\" + "tmp\\";
             string sFileName = @Consulta + "_" + Cod + ".pdf";
@@ -1399,6 +1422,7 @@ namespace Hydra.Such.Portal.Controllers
             using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
             {
                 await stream.CopyToAsync(_my_stream);
+                stream.Close();
             }
 
             SendEmailsPedidoCotacao Email = new SendEmailsPedidoCotacao
@@ -1427,7 +1451,6 @@ namespace Hydra.Such.Portal.Controllers
             data.EmailEnviado = true;
             DBConsultaMercado.Update(data);
 
-
             //Actualizar Tabela "Seleccao_Entidades", com Data de Envio Ao Fornecedor e com Utilizador Envio
             SeleccaoEntidadesView fornecedor = data.SeleccaoEntidades.Where(x => x.CodFornecedor == Cod).First();
             fornecedor.DataEnvioAoFornecedor = DateTime.Now;
@@ -1435,7 +1458,8 @@ namespace Hydra.Such.Portal.Controllers
             DBConsultaMercado.Update(DBConsultaMercado.CastSeleccaoEntidadesViewToDB(fornecedor));
 
             //Apaga o anexo criado no disco
-            System.IO.File.Delete(Path.Combine(sWebRootFolder, sFileName));
+            if (System.IO.Directory.Exists(Path.Combine(sWebRootFolder, sFileName)))
+                System.IO.File.Delete(Path.Combine(sWebRootFolder, sFileName));
 
             return Json(data);
         }

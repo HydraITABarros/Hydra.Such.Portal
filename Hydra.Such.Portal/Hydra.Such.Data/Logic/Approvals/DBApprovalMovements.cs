@@ -27,6 +27,22 @@ namespace Hydra.Such.Data.Logic.Approvals
             }
         }
 
+        public static MovimentosDeAprovação GetByNumero(string Numero)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.MovimentosDeAprovação.Where(x => x.Número == Numero).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<MovimentosDeAprovação> GetAll()
         {
             try

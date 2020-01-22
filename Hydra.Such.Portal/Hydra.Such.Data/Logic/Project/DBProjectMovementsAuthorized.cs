@@ -169,7 +169,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.CodClient = item.CodCliente;
                 projMovement.InvoiceGroup = item.GrupoFactura ?? 0;
 
-
+                return projMovement;
             }
             return null;
         }

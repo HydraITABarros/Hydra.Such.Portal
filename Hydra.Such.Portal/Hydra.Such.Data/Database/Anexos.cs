@@ -27,6 +27,7 @@ namespace Hydra.Such.Data.Database
         ConsultaMercado = 5,
         Oportunidades = 6,
         Propostas = 7,
-        Orcamentos = 8
+        Orcamentos = 8,
+        Fornecedores = 9
     }
 }

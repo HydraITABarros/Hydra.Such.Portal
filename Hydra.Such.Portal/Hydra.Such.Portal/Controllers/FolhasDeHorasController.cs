@@ -158,7 +158,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.FolhasHoras); //1, 6);
 
-                List<TabelaConfRecursosFh>  AllRecursos = DBTabelaConfRecursosFh.GetAll();
+                List<TabelaConfRecursosFh> AllRecursos = DBTabelaConfRecursosFh.GetAll();
 
                 if (UPerm != null && UPerm.Read.Value)
                 {
@@ -1311,11 +1311,35 @@ namespace Hydra.Such.Portal.Controllers
                 int noLinha;
                 noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.NoFolhaHoras);
 
-                string ProjetoDescricao;
-                if (!string.IsNullOrEmpty(data.NoProjeto))
-                    ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
+                string ProjetoDescricao = "";
+                string CodTipoCusto = data.CodTipoCusto;
+                string DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", CodTipoCusto);
+                decimal CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", CodTipoCusto);
+
+                decimal DistanciaPrevista = 0;
+
+                if (!string.IsNullOrEmpty(data.CodOrigem) && !string.IsNullOrEmpty(data.CodDestino))
+                    DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
                 else
-                    ProjetoDescricao = "";
+                    DistanciaPrevista = 0;
+
+                if (!string.IsNullOrEmpty(data.NoProjeto))
+                {
+                    NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault();
+                    if (PROJ != null && !string.IsNullOrEmpty(PROJ.Description))
+                        ProjetoDescricao = PROJ.Description;
+
+                    if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                    {
+                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
+                        if (Cliente != null && Cliente.ClienteInterno == true)
+                        {
+                            CodTipoCusto = "AJC0019";
+                            DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", CodTipoCusto);
+                            CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", CodTipoCusto);
+                        }
+                    }
+                }
 
                 if (noPercursos == 0)
                 {
@@ -1324,28 +1348,25 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.NoFolhaHoras = data.NoFolhaHoras;
                     Percurso1.NoLinha = noLinha;
                     Percurso1.TipoCusto = 1; //PERCURSO
-                    Percurso1.CodTipoCusto = data.CodTipoCusto;
-                    Percurso1.DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
-                    Percurso1.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso1.CodTipoCusto = CodTipoCusto;
+                    Percurso1.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
                     Percurso1.CodOrigem = data.CodOrigem;
                     Percurso1.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso1.CodDestino = data.CodDestino;
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    if (Percurso1.Distancia.HasValue && Percurso1.Distancia == 0)
-                        Percurso1.CustoTotal = 0;
-                    else
-                        Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
-                    //Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    Percurso1.Distancia = DistanciaPrevista;
+                    Percurso1.DistanciaPrevista = DistanciaPrevista;
+                    Percurso1.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
+                    Percurso1.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso1.Funcionario = data.Funcionario;
                     Percurso1.CodRegiao = data.CodRegiao;
                     Percurso1.CodArea = data.CodArea;
                     Percurso1.CodCresp = data.CodCresp;
+                    //Percurso1.PrecoUnitario =
+                    //Percurso1.PrecoVenda =
                     Percurso1.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
@@ -1362,28 +1383,25 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.NoFolhaHoras = data.NoFolhaHoras;
                     Percurso2.NoLinha = noLinha + 1;
                     Percurso2.TipoCusto = 1; //PERCURSO
-                    Percurso2.CodTipoCusto = data.CodTipoCusto;
-                    Percurso2.DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
-                    Percurso2.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso2.CodTipoCusto = CodTipoCusto;
+                    Percurso2.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
                     Percurso2.CodOrigem = data.CodDestino;
                     Percurso2.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso2.CodDestino = data.CodOrigem;
                     Percurso2.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso2.DataDespesa = data.DataDespesa;
                     Percurso2.Observacao = data.Observacao;
-                    Percurso2.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso2.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso2.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    if (Percurso2.Distancia.HasValue && Percurso2.Distancia == 0)
-                        Percurso2.CustoTotal = 0;
-                    else
-                        Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
-                    //Percurso2.CustoTotal = Percurso2.Distancia * Percurso2.CustoUnitario;
+                    Percurso2.Distancia = DistanciaPrevista;
+                    Percurso2.DistanciaPrevista = DistanciaPrevista;
+                    Percurso2.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
+                    Percurso2.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso2.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso2.Funcionario = data.Funcionario;
                     Percurso2.CodRegiao = data.CodRegiao;
                     Percurso2.CodArea = data.CodArea;
                     Percurso2.CodCresp = data.CodCresp;
+                    //Percurso2.PrecoUnitario =
+                    //Percurso2.PrecoVenda =
                     Percurso2.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso2.UtilizadorCriacao = User.Identity.Name;
                     Percurso2.DataHoraCriacao = DateTime.Now;
@@ -1391,7 +1409,6 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso2.DataHoraModificacao = DateTime.Now;
                     Percurso2.NoProjeto = data.NoProjeto;
                     Percurso2.ProjetoDescricao = ProjetoDescricao;
-
 
                     var dbCreateResult2 = DBLinhasFolhaHoras.CreatePercurso(Percurso2);
 
@@ -1407,28 +1424,25 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.NoFolhaHoras = data.NoFolhaHoras;
                     Percurso1.NoLinha = noLinha;
                     Percurso1.TipoCusto = 1; //PERCURSO
-                    Percurso1.CodTipoCusto = data.CodTipoCusto;
-                    Percurso1.DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
-                    Percurso1.Quantidade = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    Percurso1.CodTipoCusto = CodTipoCusto;
+                    Percurso1.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
                     Percurso1.CodOrigem = data.CodOrigem;
                     Percurso1.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso1.CodDestino = data.CodDestino;
                     Percurso1.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso1.DataDespesa = data.DataDespesa;
                     Percurso1.Observacao = data.Observacao;
-                    Percurso1.Distancia = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso1.CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
-                    if (Percurso1.Distancia.HasValue && Percurso1.Distancia == 0)
-                        Percurso1.CustoTotal = 0;
-                    else
-                        Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
-                    //Percurso1.CustoTotal = Percurso1.Distancia * Percurso1.CustoUnitario;
+                    Percurso1.Distancia = DistanciaPrevista;
+                    Percurso1.DistanciaPrevista = DistanciaPrevista;
+                    Percurso1.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
+                    Percurso1.CustoTotal = DistanciaPrevista * CustoUnitario;
                     Percurso1.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
                     Percurso1.Funcionario = data.Funcionario;
                     Percurso1.CodRegiao = data.CodRegiao;
                     Percurso1.CodArea = data.CodArea;
                     Percurso1.CodCresp = data.CodCresp;
+                    //Percurso1.PrecoUnitario =
+                    //Percurso1.PrecoVenda =
                     Percurso1.Matricula = data.Matricula == "" ? null : data.Matricula;
                     Percurso1.UtilizadorCriacao = User.Identity.Name;
                     Percurso1.DataHoraCriacao = DateTime.Now;
@@ -1436,7 +1450,6 @@ namespace Hydra.Such.Portal.Controllers
                     Percurso1.DataHoraModificacao = DateTime.Now;
                     Percurso1.NoProjeto = data.NoProjeto;
                     Percurso1.ProjetoDescricao = ProjetoDescricao;
-
 
                     var dbCreateResult1 = DBLinhasFolhaHoras.CreatePercurso(Percurso1);
 
@@ -1458,48 +1471,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(result);
         }
-
-        //[HttpPost]
-        //public JsonResult UpdatePercurso([FromBody] FolhaDeHorasViewModel data)
-        //{
-        //    bool result = false;
-        //    try
-        //    {
-        //        if (data.FolhaDeHorasPercurso != null)
-        //        {
-        //            data.FolhaDeHorasPercurso.ForEach(x =>
-        //            {
-        //                DBLinhasFolhaHoras.UpdatePercurso(new LinhasFolhaHoras()
-        //                {
-        //                    NoFolhaHoras = x.NoFolhaHoras,
-        //                    NoLinha = x.NoLinha,
-        //                    TipoCusto = 1, //PERCURSO
-        //                    CodOrigem = x.CodOrigem,
-        //                    DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(x.CodOrigem),
-        //                    CodDestino = x.CodDestino,
-        //                    DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(x.CodDestino),
-        //                    DataDespesa = x.DataDespesa,
-        //                    Observacao = x.Observacao,
-        //                    Distancia = x.Distancia,
-        //                    DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(x.CodOrigem, x.CodDestino),
-        //                    CustoUnitario = x.CustoUnitario,
-        //                    CustoTotal = x.Distancia * x.CustoUnitario,
-        //                    UtilizadorCriacao = x.UtilizadorCriacao,
-        //                    DataHoraCriacao = x.DataHoraCriacao,
-        //                    UtilizadorModificacao = User.Identity.Name,
-        //                    DataHoraModificacao = DateTime.Now
-        //                });
-        //            });
-        //        }
-
-        //        result = true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //log
-        //    }
-        //    return Json(result);
-        //}
 
         [HttpPost]
         //Atualiza um percurso
@@ -1523,34 +1494,80 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
-                    string ProjetoDescricao;
-                    if (!string.IsNullOrEmpty(data.NoProjeto))
-                        ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
+                    string ProjetoDescricao = "";
+                    string CodTipoCusto = data.CodTipoCusto;
+                    string DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", CodTipoCusto);
+                    decimal CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", CodTipoCusto);
+                    decimal DistanciaEfetuada = 0;
+                    decimal DistanciaPrevista = 0;
+
+                    if (data.Distancia.HasValue)
+                        DistanciaEfetuada = (decimal)data.Distancia;
                     else
-                        ProjetoDescricao = "";
+                        DistanciaEfetuada = 0;
+
+                    if (!string.IsNullOrEmpty(data.CodOrigem) && !string.IsNullOrEmpty(data.CodDestino))
+                        DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
+                    else
+                        DistanciaPrevista = 0;
+
+                    if (!string.IsNullOrEmpty(data.NoProjeto))
+                    {
+                        NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault();
+                        if (PROJ != null && !string.IsNullOrEmpty(PROJ.Description))
+                            ProjetoDescricao = PROJ.Description;
+
+                        if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                        {
+                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
+                            if (Cliente != null && Cliente.ClienteInterno == true)
+                            {
+                                CodTipoCusto = "AJC0019";
+                                DescricaoTipoCusto = DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", CodTipoCusto);
+                                CustoUnitario = DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", CodTipoCusto);
+                            }
+                        }
+                    }
 
                     LinhasFolhaHoras Percurso = DBLinhasFolhaHoras.GetByPercursoNo(data.NoFolhaHoras, data.NoLinha);
 
+                    Percurso.NoFolhaHoras = Percurso.NoFolhaHoras;
+                    Percurso.NoLinha = Percurso.NoLinha;
+                    Percurso.TipoCusto = 1; //PERCURSO
+                    Percurso.CodTipoCusto = CodTipoCusto;
+                    Percurso.DescricaoTipoCusto = DescricaoTipoCusto; // DBTabelaConfRecursosFh.GetDescricaoByRecurso("1", data.CodTipoCusto);
                     Percurso.CodOrigem = data.CodOrigem;
                     Percurso.DescricaoOrigem = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodOrigem);
                     Percurso.CodDestino = data.CodDestino;
                     Percurso.DescricaoDestino = DBOrigemDestinoFh.GetOrigemDestinoDescricao(data.CodDestino);
                     Percurso.DataDespesa = data.DataDespesa;
                     Percurso.Observacao = data.Observacao;
-                    Percurso.Distancia = data.Distancia;
-                    Percurso.DistanciaPrevista = DBDistanciaFh.GetDistanciaPrevista(data.CodOrigem, data.CodDestino);
-                    Percurso.CustoUnitario = data.CustoUnitario;
-
-                    if (Percurso.Distancia.HasValue && Percurso.Distancia == 0)
+                    Percurso.Distancia = DistanciaEfetuada;
+                    Percurso.DistanciaPrevista = DistanciaPrevista;
+                    Percurso.CustoUnitario = CustoUnitario; // DBTabelaConfRecursosFh.GetPrecoUnitarioCusto("1", data.CodTipoCusto);
+                    if (DistanciaEfetuada == 0)
                         Percurso.CustoTotal = 0;
                     else
-                        Percurso.CustoTotal = Percurso.DistanciaPrevista > 0 ? Percurso.DistanciaPrevista * data.CustoUnitario : data.Distancia * data.CustoUnitario;
-
-                    //Percurso.CustoTotal = Percurso.DistanciaPrevista > 0 ? Percurso.DistanciaPrevista * data.CustoUnitario : data.Distancia * data.CustoUnitario;
+                    {
+                        if (DistanciaPrevista == 0)
+                            Percurso.CustoTotal = DistanciaEfetuada * CustoUnitario;
+                        else
+                            Percurso.CustoTotal = DistanciaPrevista * CustoUnitario;
+                    }
+                    Percurso.RubricaSalarial = DBTabelaConfRecursosFh.GetRubricaSalarial("1", data.CodTipoCusto);
+                    Percurso.Funcionario = data.Funcionario;
+                    Percurso.CodRegiao = data.CodRegiao;
+                    Percurso.CodArea = data.CodArea;
+                    Percurso.CodCresp = data.CodCresp;
+                    Percurso.Matricula = data.Matricula == "" ? null : data.Matricula;
+                    Percurso.UtilizadorCriacao = Percurso.UtilizadorCriacao;
+                    Percurso.DataHoraCriacao = Percurso.DataHoraCriacao;
                     Percurso.UtilizadorModificacao = User.Identity.Name;
                     Percurso.DataHoraModificacao = DateTime.Now;
                     Percurso.NoProjeto = data.NoProjeto;
                     Percurso.ProjetoDescricao = ProjetoDescricao;
+                    //Percurso.PrecoUnitario =
+                    //Percurso.PrecoVenda =
 
                     DBLinhasFolhaHoras.UpdatePercurso(Percurso);
                 }
@@ -1587,7 +1604,6 @@ namespace Hydra.Such.Portal.Controllers
                 PercursoCopia.TipoCusto = PercursoOriginal.TipoCusto;
                 PercursoCopia.CodTipoCusto = PercursoOriginal.CodTipoCusto;
                 PercursoCopia.DescricaoTipoCusto = PercursoOriginal.DescricaoTipoCusto;
-                PercursoCopia.Quantidade = PercursoOriginal.Quantidade;
                 PercursoCopia.CodOrigem = PercursoOriginal.CodOrigem;
                 PercursoCopia.DescricaoOrigem = PercursoOriginal.DescricaoOrigem;
                 PercursoCopia.CodDestino = PercursoOriginal.CodDestino;
@@ -1693,7 +1709,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         string ProjetoDescricao;
                         if (!string.IsNullOrEmpty(data.NoProjeto))
-                            ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
+                            ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault().Description : "";
                         else
                             ProjetoDescricao = "";
 
@@ -1826,23 +1842,63 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (result == 0)
                 {
-                    string ProjetoDescricao;
-                    if (!string.IsNullOrEmpty(data.NoProjeto))
-                        ProjetoDescricao = DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto) != null ? DBNAV2017Projects.GetAll(_config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto).FirstOrDefault().Description : "";
-                    else
-                        ProjetoDescricao = "";
-
                     LinhasFolhaHoras Ajuda = DBLinhasFolhaHoras.GetByAjudaNo(data.NoFolhaHoras, data.NoLinha);
+
+                    string ProjetoDescricao = "";
+                    int TipoCusto = (int)Ajuda.TipoCusto;
+                    string CodTipoCusto = Ajuda.CodTipoCusto;
+                    decimal Quantidade = (decimal)Ajuda.Quantidade;
+                    decimal CustoUnitario = (decimal)Ajuda.CustoUnitario;
+                    decimal PrecoUnitario = (decimal)Ajuda.PrecoUnitario;
+                    decimal CustoTotal = (decimal)Ajuda.CustoTotal;
+                    decimal PrecoVenda = (decimal)Ajuda.PrecoVenda;
+                    string RubricaSalarial = Ajuda.RubricaSalarial;
+                    if (!string.IsNullOrEmpty(data.NoProjeto))
+                    {
+                        NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto).FirstOrDefault();
+
+                        if (PROJ != null && !string.IsNullOrEmpty(PROJ.Description))
+                            ProjetoDescricao = PROJ.Description;
+
+                        if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                        {
+                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
+                            if (Cliente != null && Cliente.ClienteInterno == true)
+                            {
+                                if (CodTipoCusto == "AJC0001")
+                                    CodTipoCusto = "AJC0017";
+                                if (CodTipoCusto == "AJC0002")
+                                    CodTipoCusto = "AJC0018";
+
+                                CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == data.TipoCusto.ToString() && y.CodRecurso == CodTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == data.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                CustoTotal = Quantidade * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == data.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                PrecoVenda = Quantidade * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == data.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == data.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodTipoCusto.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+                            }
+                        }
+                    }
 
                     if (Ajuda.CalculoAutomatico == true)
                     {
                         Ajuda.NoProjeto = data.NoProjeto;
                         Ajuda.ProjetoDescricao = ProjetoDescricao;
+                        Ajuda.TipoCusto = TipoCusto;
+                        Ajuda.CodTipoCusto = CodTipoCusto;
+                        Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
+                        Ajuda.Quantidade = Quantidade;
+                        Ajuda.CustoUnitario = CustoUnitario;
+                        Ajuda.PrecoUnitario = PrecoUnitario;
+                        Ajuda.CustoTotal = CustoTotal;
+                        Ajuda.PrecoVenda = PrecoVenda;
+                        Ajuda.RubricaSalarial = RubricaSalarial;
                         Ajuda.UtilizadorModificacao = User.Identity.Name;
                         Ajuda.DataHoraModificacao = DateTime.Now;
                     }
                     else
                     {
+                        Ajuda.NoProjeto = data.NoProjeto;
+                        Ajuda.ProjetoDescricao = ProjetoDescricao;
                         Ajuda.TipoCusto = data.TipoCusto;
                         Ajuda.CodTipoCusto = data.CodTipoCusto;
                         Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == data.TipoCusto).FirstOrDefault().Value;
@@ -1853,8 +1909,6 @@ namespace Hydra.Such.Portal.Controllers
                         Ajuda.PrecoVenda = data.Quantidade * data.PrecoUnitario;
                         Ajuda.DataDespesa = data.DataDespesa;
                         Ajuda.Observacao = data.Observacao;
-                        Ajuda.NoProjeto = data.NoProjeto;
-                        Ajuda.ProjetoDescricao = ProjetoDescricao;
                         Ajuda.UtilizadorModificacao = User.Identity.Name;
                         Ajuda.DataHoraModificacao = DateTime.Now;
                     }
@@ -2083,12 +2137,17 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //TABELA PRECOVENDARECURSOFH
-                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() && x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now && Convert.ToDateTime(x.EndingDate) >= DateTime.Now).FirstOrDefault();
+                    //PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() &&
+                    //    x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= DateTime.Now &&
+                    //    Convert.ToDateTime(x.EndingDate) >= DateTime.Now).FirstOrDefault();
+                    PrecoVendaRecursoFh PrecoVendaRecurso = DBPrecoVendaRecursoFH.GetAll().Where(x => x.Code.ToLower() == MaoDeObra.NºRecurso.ToLower() &&
+                        x.CodTipoTrabalho.ToLower() == data.CodigoTipoTrabalho.ToString().ToLower() && Convert.ToDateTime(x.StartingDate) <= Convert.ToDateTime(data.Date) &&
+                        Convert.ToDateTime(x.EndingDate) >= Convert.ToDateTime(data.Date)).FirstOrDefault();
                     if (PrecoVendaRecurso != null)
                     {
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
                         MaoDeObra.PreçoDeCusto = PrecoVendaRecurso.CustoUnitario;
-                        MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.PrecoUnitario;
+                        MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.CustoUnitario;   //PrecoUnitario; Alterado no dia 13/11/2019 a pedido do Marco Marcelo
                     }
                     else
                     {
@@ -2480,7 +2539,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         MaoDeObra.PreçoDeVenda = PrecoVendaRecurso.PrecoUnitario;
                         MaoDeObra.PreçoDeCusto = PrecoVendaRecurso.CustoUnitario;
-                        MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.PrecoUnitario;
+                        MaoDeObra.CustoUnitárioDireto = PrecoVendaRecurso.CustoUnitario;   //PrecoUnitario; Alterado no dia 13/11/2019 a pedido do Marco Marcelo
                     }
 
                     //CALCULAR PRECO TOTAL
@@ -3017,27 +3076,57 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (NoDias > 0)
                             {
+                                string CodRecurso = x.CodigoTipoCusto.Trim();
+                                decimal CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                decimal PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                decimal CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                decimal PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                string RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+
+                                if (!string.IsNullOrEmpty(data.ProjetoNo))
+                                {
+                                    NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, data.ProjetoNo).FirstOrDefault();
+
+                                    if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                                    {
+                                        NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, PROJ.CustomerNo);
+                                        if (Cliente != null && Cliente.ClienteInterno == true)
+                                        {
+                                            if (CodRecurso == "AJC0001")
+                                                CodRecurso = "AJC0017";
+                                            if (CodRecurso == "AJC0002")
+                                                CodRecurso = "AJC0018";
+
+                                            CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == CodRecurso.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                            PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                            CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                            PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                            RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == CodRecurso.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+                                        }
+                                    }
+                                }
+
                                 noLinha = DBLinhasFolhaHoras.GetMaxByFolhaHoraNo(data.FolhaDeHorasNo);
 
                                 LinhasFolhaHoras Ajuda = new LinhasFolhaHoras();
 
                                 Ajuda.NoFolhaHoras = data.FolhaDeHorasNo;
                                 Ajuda.NoLinha = noLinha;
-                                Ajuda.CodTipoCusto = x.CodigoTipoCusto.Trim();
+                                Ajuda.CodTipoCusto = CodRecurso; // x.CodigoTipoCusto.Trim();
                                 Ajuda.TipoCusto = x.TipoCusto;
                                 Ajuda.DescricaoTipoCusto = EnumerablesFixed.FolhaDeHoraAjudaTipoCusto.Where(y => y.Id == x.TipoCusto).FirstOrDefault().Value;
                                 Ajuda.Quantidade = Convert.ToDecimal(NoDias);
-                                Ajuda.CustoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                                Ajuda.PrecoUnitario = Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
-                                Ajuda.CustoTotal = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
-                                Ajuda.PrecoVenda = NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                Ajuda.CustoUnitario = CustoUnitario; // Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo == x.TipoCusto.ToString() && y.CodRecurso == x.CodigoTipoCusto.Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                Ajuda.PrecoUnitario = PrecoUnitario; // Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
+                                Ajuda.CustoTotal = CustoTotal; // NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioCusto);
+                                Ajuda.PrecoVenda = PrecoVenda; // NoDias * Convert.ToDecimal(DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.ToLower().Trim()).FirstOrDefault().PrecoUnitarioVenda);
                                 Ajuda.DataDespesa = Convert.ToDateTime(data.DataPartidaTexto + " " + data.HoraPartidaTexto);
                                 Ajuda.CalculoAutomatico = true;
                                 Ajuda.Funcionario = data.EmpregadoNo;
                                 Ajuda.CodRegiao = data.CodigoRegiao == "" ? null : data.CodigoRegiao;
                                 Ajuda.CodArea = data.CodigoAreaFuncional == "" ? null : data.CodigoAreaFuncional;
                                 Ajuda.CodCresp = data.CodigoCentroResponsabilidade == null ? null : data.CodigoCentroResponsabilidade;
-                                Ajuda.RubricaSalarial = DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
+                                Ajuda.RubricaSalarial = RubricaSalarial; // DBTabelaConfRecursosFh.GetAll().Where(y => y.Tipo.ToLower() == x.TipoCusto.ToString().ToLower() && y.CodRecurso.ToLower() == x.CodigoTipoCusto.Trim().ToLower()).FirstOrDefault().RubricaSalarial;
                                 Ajuda.NoProjeto = data.ProjetoNo;
                                 Ajuda.ProjetoDescricao = data.ProjetoDescricao;
                                 Ajuda.UtilizadorCriacao = User.Identity.Name;
@@ -3498,34 +3587,20 @@ namespace Hydra.Such.Portal.Controllers
                                                             result.eReasonCode = 101;
                                                             result.eMessage = "Não tem permissões para validar.";
                                                         }
-                                                        else
+                                                        if (result.eReasonCode == 5)
                                                         {
-                                                            if (result.eReasonCode == 2)
-                                                            {
-                                                                result.eReasonCode = 102;
-                                                                result.eMessage = "O projecto não existe no eSUCH e no Evolution.";
-                                                            }
-                                                            else
-                                                            {
-                                                                if (result.eReasonCode == 3)
-                                                                {
-                                                                    result.eReasonCode = 103;
-                                                                    result.eMessage = "O projecto na Mão de Obra não existe no eSUCH e no Evolution.";
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (result.eReasonCode == 5)
-                                                                    {
-                                                                        result.eReasonCode = 105;
-                                                                        result.eMessage = "Não Pode validar pois já se encontra validada.";
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        result.eReasonCode = 199;
-                                                                        result.eMessage = "Ocorreu um erro no script SQL de Validaçãodo na Folha de Horas.";
-                                                                    }
-                                                                }
-                                                            }
+                                                            result.eReasonCode = 105;
+                                                            result.eMessage = "Não Pode validar pois já se encontra integrada em RH.";
+                                                        }
+                                                        if (result.eReasonCode == 8)
+                                                        {
+                                                            result.eReasonCode = 108;
+                                                            result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                        }
+                                                        if (result.eReasonCode == 9)
+                                                        {
+                                                            result.eReasonCode = 109;
+                                                            result.eMessage = "Já existe Ajudas de Custo Integradas para Folha de Horas.";
                                                         }
                                                     }
                                                 }
@@ -3575,6 +3650,34 @@ namespace Hydra.Such.Portal.Controllers
                                                         {
                                                             result.eReasonCode = 31;
                                                             result.eMessage = "Ocorreu um erro ao Integrar km.";
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (result.eReasonCode == 1)
+                                                        {
+                                                            result.eReasonCode = 101;
+                                                            result.eMessage = "Não tem permissões para validar.";
+                                                        }
+                                                        if (result.eReasonCode == 5)
+                                                        {
+                                                            result.eReasonCode = 105;
+                                                            result.eMessage = "Não Pode validar pois já se encontra integrada em RH KM.";
+                                                        }
+                                                        if (result.eReasonCode == 6)
+                                                        {
+                                                            result.eReasonCode = 106;
+                                                            result.eMessage = "Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.";
+                                                        }
+                                                        if (result.eReasonCode == 8)
+                                                        {
+                                                            result.eReasonCode = 108;
+                                                            result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                        }
+                                                        if (result.eReasonCode == 9)
+                                                        {
+                                                            result.eReasonCode = 109;
+                                                            result.eMessage = "Já existe Km's integrados para esta Folha de Hora.";
                                                         }
                                                     }
                                                 }
@@ -3957,8 +4060,31 @@ namespace Hydra.Such.Portal.Controllers
                                                     }
                                                     else
                                                     {
-                                                        result.eReasonCode = 101;
-                                                        result.eMessage = "Ocorreu um erro no script SQL de Integração KM na Folha de Horas.";
+                                                        if (result.eReasonCode == 1)
+                                                        {
+                                                            result.eReasonCode = 101;
+                                                            result.eMessage = "Não tem permissões para validar.";
+                                                        }
+                                                        if (result.eReasonCode == 5)
+                                                        {
+                                                            result.eReasonCode = 105;
+                                                            result.eMessage = "Não Pode validar pois já se encontra integrada em RH KM.";
+                                                        }
+                                                        if (result.eReasonCode == 6)
+                                                        {
+                                                            result.eReasonCode = 106;
+                                                            result.eMessage = "Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.";
+                                                        }
+                                                        if (result.eReasonCode == 8)
+                                                        {
+                                                            result.eReasonCode = 108;
+                                                            result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                        }
+                                                        if (result.eReasonCode == 9)
+                                                        {
+                                                            result.eReasonCode = 109;
+                                                            result.eMessage = "Já existe Km's integrados para esta Folha de Hora.";
+                                                        }
                                                     }
                                                 }
                                             }
@@ -4028,8 +4154,26 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
-                                    result.eReasonCode = 101;
-                                    result.eMessage = "Ocorreu um erro no script SQL de Integrar RH na Folha de Horas.";
+                                    if (result.eReasonCode == 1)
+                                    {
+                                        result.eReasonCode = 101;
+                                        result.eMessage = "Não tem permissões para validar.";
+                                    }
+                                    if (result.eReasonCode == 5)
+                                    {
+                                        result.eReasonCode = 105;
+                                        result.eMessage = "Não Pode validar pois já se encontra integrada em RH.";
+                                    }
+                                    if (result.eReasonCode == 8)
+                                    {
+                                        result.eReasonCode = 108;
+                                        result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                    }
+                                    if (result.eReasonCode == 9)
+                                    {
+                                        result.eReasonCode = 109;
+                                        result.eMessage = "Já existe Ajudas de Custo Integradas para Folha de Horas.";
+                                    }
                                 }
                             }
                         }
@@ -4217,6 +4361,29 @@ namespace Hydra.Such.Portal.Controllers
                                                                 result.eMessage = "Ocorreu um erro ao Integrar Ajudas de Custo.";
                                                             }
                                                         }
+                                                        else
+                                                        {
+                                                            if (result.eReasonCode == 1)
+                                                            {
+                                                                result.eReasonCode = 101;
+                                                                result.eMessage = "Não tem permissões para validar.";
+                                                            }
+                                                            if (result.eReasonCode == 5)
+                                                            {
+                                                                result.eReasonCode = 105;
+                                                                result.eMessage = "Não Pode validar pois já se encontra integrada em RH.";
+                                                            }
+                                                            if (result.eReasonCode == 8)
+                                                            {
+                                                                result.eReasonCode = 108;
+                                                                result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                                            }
+                                                            if (result.eReasonCode == 9)
+                                                            {
+                                                                result.eReasonCode = 109;
+                                                                result.eMessage = "Já existe Ajudas de Custo Integradas para Folha de Horas.";
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -4281,8 +4448,31 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     else
                                     {
-                                        result.eReasonCode = 101;
-                                        result.eMessage = "Ocorreu um erro no script SQL de Integrar Km na Folha de Horas.";
+                                        if (result.eReasonCode == 1)
+                                        {
+                                            result.eReasonCode = 101;
+                                            result.eMessage = "Não tem permissões para validar.";
+                                        }
+                                        if (result.eReasonCode == 5)
+                                        {
+                                            result.eReasonCode = 105;
+                                            result.eMessage = "Não Pode validar pois já se encontra integrada em RH KM.";
+                                        }
+                                        if (result.eReasonCode == 6)
+                                        {
+                                            result.eReasonCode = 106;
+                                            result.eMessage = "Para integrar KMs o campo Tipo de Deslocação tem que ser Viatura Própria.";
+                                        }
+                                        if (result.eReasonCode == 8)
+                                        {
+                                            result.eReasonCode = 108;
+                                            result.eMessage = "A Folha de Horas tem que estar no estado Validado.";
+                                        }
+                                        if (result.eReasonCode == 9)
+                                        {
+                                            result.eReasonCode = 109;
+                                            result.eMessage = "Já existe Km's integrados para esta Folha de Hora.";
+                                        }
                                     }
                                 }
                             }
