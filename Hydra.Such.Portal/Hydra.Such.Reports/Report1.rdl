@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2005/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSources>
+    <DataSource Name="eSUCHTestes">
+      <rd:DataSourceID>d901b21b-4860-46e3-b19a-e8139f9cd78d</rd:DataSourceID>
+      <DataSourceReference>eSUCHTestes</DataSourceReference>
+    </DataSource>
+  </DataSources>
+  <rd:ReportID>9abed62b-904e-41db-8bf0-d485fc2aef27</rd:ReportID>
+  <Width>5in</Width>
+  <Body>
+    <Height>0.43in</Height>
+    <ColumnSpacing>0.5in</ColumnSpacing>
+    <ReportItems>
+      <Textbox Name="textbox1">
+        <Style>
+          <FontFamily>Segoe UI Light</FontFamily>
+          <FontSize>24pt</FontSize>
+          <FontWeight>Bold</FontWeight>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <rd:DefaultName>textbox1</rd:DefaultName>
+        <Value>Report1</Value>
+        <CanGrow>true</CanGrow>
+        <Height>0.43in</Height>
+      </Textbox>
+      <Table Name="table1">
+        <Top>0.43in</Top>
+        <Style />
+        <Header>
+          <RepeatOnNewPage>true</RepeatOnNewPage>
+          <TableRows>
+            <TableRow>
+              <TableCells />
+              <Height>0in</Height>
+            </TableRow>
+          </TableRows>
+        </Header>
+        <Details>
+          <TableRows>
+            <TableRow>
+              <TableCells />
+              <Height>0in</Height>
+            </TableRow>
+          </TableRows>
+        </Details>
+        <TableColumns />
+        <DataSetName>DataSet1</DataSetName>
+      </Table>
+    </ReportItems>
+  </Body>
+  <Language>en-US</Language>
+  <LeftMargin>1in</LeftMargin>
+  <RightMargin>1in</RightMargin>
+  <TopMargin>1in</TopMargin>
+  <BottomMargin>1in</BottomMargin>
+  <PageWidth>8.5in</PageWidth>
+  <PageHeight>11in</PageHeight>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Fields />
+      <Query>
+        <DataSourceName>eSUCHTestes</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>rpt_GuiaTransport</CommandText>
+        <QueryParameters>
+          <QueryParameter Name="@No">
+            <Value>=Parameters!No.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@IsHistoric">
+            <Value>=Parameters!IsHistoric.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <Timeout>0</Timeout>
+        <rd:DesignerState>
+          <QueryDefinition xmlns="http://schemas.microsoft.com/ReportingServices/QueryDefinition/Relational">
+            <Functions>
+              <SProc ColumnOwner="rpt_GuiaTransport">
+                <Parameter Name="@No">
+                  <Value>GT000008</Value>
+                </Parameter>
+                <Parameter Name="@IsHistoric">
+                  <Value>1</Value>
+                </Parameter>
+              </SProc>
+            </Functions>
+            <SelectedColumns />
+          </QueryDefinition>
+        </rd:DesignerState>
+      </Query>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="No">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>GT000008</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>No</Prompt>
+      <Nullable>true</Nullable>
+    </ReportParameter>
+    <ReportParameter Name="IsHistoric">
+      <DataType>Integer</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>1</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Is Historic</Prompt>
+      <Nullable>true</Nullable>
+    </ReportParameter>
+  </ReportParameters>
+</Report>
