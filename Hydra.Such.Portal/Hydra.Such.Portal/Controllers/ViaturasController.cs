@@ -24,6 +24,9 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Newtonsoft.Json.Linq;
 using System.Drawing;
+using Hydra.Such.Data.ViewModel.Projects;
+using Hydra.Such.Data.Logic.Request;
+using Hydra.Such.Data.Logic.ComprasML;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -169,7 +172,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.IDSegmentacao != null) x.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == x.IDSegmentacao).FirstOrDefault().Descricao;
                 if (x.AlvaraLicenca == true) x.AlvaraLicencaTexto = "Sim"; else x.AlvaraLicencaTexto = "Não";
                 if (x.IDLocalParqueamento != null) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == AllParquamentos.Where(z => z.ID == x.IDLocalParqueamento).FirstOrDefault().IDLocal).FirstOrDefault().Local;
-                if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description;
+                if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description : "";
             });
 
             return Json(result);
@@ -200,7 +203,6 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Viaturas/loadimage/{matricula}")]
         public ActionResult loadimage(string matricula)
         {
-            //string matricula = "00-AA-00";
             string defaultImg = "_default";
             string imgPath = _generalConfig.FileUploadFolder + "Viaturas\\" + matricula + ".jpg";
             string imgPathDefault = _generalConfig.FileUploadFolder + "Viaturas\\" + defaultImg + ".jpg";
@@ -254,7 +256,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetViatura2Details([FromBody] Viaturas2ViewModel data)
         {
             Viaturas2ViewModel viatura = new Viaturas2ViewModel();
-            if (data != null)
+            if (data != null && !string.IsNullOrEmpty(data.Matricula))
             {
                 viatura = DBViaturas2.ParseToViewModel(DBViaturas2.GetByMatricula(data.Matricula));
 
@@ -360,6 +362,132 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateViatura2([FromBody] Viaturas2ViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    if (data.Matricula != null && !string.IsNullOrEmpty(data.Matricula))
+                    {
+                        data.Matricula = data.Matricula.ToUpper();
+                        data.NoProjeto = "V" + data.Matricula;
+                        int CounteSUCH = 0;
+                        int CountNAV2017 = 0;
+                        int CountNAV2009 = 0;
+
+                        Viaturas2 Viatura = DBViaturas2.GetByMatricula(data.Matricula);
+                        if (Viatura != null)
+                            CounteSUCH = 1;
+
+                        List<NAVProjectsViewModel> AllProjectsNAV2017 = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto);
+                        if (AllProjectsNAV2017 != null)
+                            CountNAV2017 = AllProjectsNAV2017.Count;
+
+                        List<NAVProjectsViewModel> AllProjectsNAV2009 = DBNAV2009Projects.GetAll(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto);
+                        if (AllProjectsNAV2009 != null)
+                            CountNAV2009 = AllProjectsNAV2009.Count;
+
+                        if (CounteSUCH == 0 && CountNAV2017 == 0 && CountNAV2009 == 0)
+                        {
+                            //NAV2017
+                            ProjectDetailsViewModel ProjectToCreate = new ProjectDetailsViewModel()
+                            {
+                                ProjectNo = data.NoProjeto,
+                                Description = "CONTROLO CUSTOS VIATURAS: " + data.Matricula,
+                                ClientNo = "999992",
+                                Status = (EstadoProjecto)1, //ENCOMENDA
+                                RegionCode = data.CodRegiao,
+                                FunctionalAreaCode = data.CodAreaFuncional,
+                                ResponsabilityCenterCode = data.CodCentroResponsabilidade,
+                                Visivel = true
+                            };
+
+                            Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(ProjectToCreate, _configws);
+                            try
+                            {
+                                TCreateNavProj.Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2017.";
+                            }
+
+                            if (TCreateNavProj.IsCompletedSuccessfully)
+                            {
+                                //NAV2009
+                                int resultNAV2009 = DBNAV2009Projects.Create(data.Matricula, data.CodRegiao, data.CodAreaFuncional, data.CodCentroResponsabilidade, User.Identity.Name);
+
+                                if (resultNAV2009 == 1)
+                                {
+                                    //e-SUCH
+                                    Viaturas2 viaturaCreated = DBViaturas2.Create(DBViaturas2.ParseToDB(data));
+
+                                    if (viaturaCreated == null)
+                                    {
+                                        data.eReasonCode = 3;
+                                        data.eMessage = "Ocorreu um erro ao criar a Viatura no e-SUCH.";
+                                    }
+                                    else
+                                    {
+                                        data.eReasonCode = 1;
+                                        data.eMessage = "Viatura criada com sucesso.";
+                                    }
+
+                                }
+                                else
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2009.";
+                                }
+                            }
+                            else
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2017.";
+                            }
+                        }
+                        else
+                        {
+                            if (CounteSUCH != 0)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Já existe uma viatura no e-SUCH com a matricula " + data.Matricula;
+                            }
+                            if (CountNAV2017 != 0)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Já existe um projeto no NAV2017 com o código " + data.NoProjeto;
+                            }
+                            if (CountNAV2009 != 0)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Já existe um projeto no NAV2009 com o código " + data.NoProjeto;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "O campo matricula é de preenchimento obrigatório";
+                    }
+                }
+                else
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Erro na obtensão dos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                data.eReasonCode = 4;
+                data.eMessage = "Ocorreu um erro.";
+            }
+            return Json(data);
+        }
+
+        [HttpPost]
         public JsonResult UpdateViatura([FromBody] ViaturasViewModel data)
         {
 
@@ -392,31 +520,168 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult UpdateViatura2([FromBody] Viaturas2ViewModel data)
         {
-
             if (data != null)
             {
-                Viaturas2 viatura = DBViaturas2.ParseToDB(data);
-                viatura.UtilizadorModificacao = User.Identity.Name;
-                DBViaturas2.Update(viatura);
+                if (!string.IsNullOrEmpty(data.NoProjeto) && (data.IDEstadoOrinalDB != data.IDEstado || data.CodRegiaoOriginalDB != data.CodRegiao ||
+                    data.CodAreaFuncionalOriginalDB != data.CodCentroResponsabilidade || data.CodCentroResponsabilidadeOriginalDB != data.CodCentroResponsabilidade))
+                {
+                    int CountNAV2017 = 0;
+                    int CountNAV2009 = 0;
 
-                //if (data.Imagem != null)
-                //{
-                //    ViaturasImagens ViaturaImagem = new ViaturasImagens
-                //    {
-                //        Matricula = data.Matricula,
-                //        Imagem = data.Imagem,
-                //        UtilizadorModificacao = User.Identity.Name
-                //    };
-                //    if (DBViaturaImagem.GetByMatricula(data.Matricula) != null)
-                //        DBViaturaImagem.Update(ViaturaImagem);
-                //    else
-                //        DBViaturaImagem.Create(ViaturaImagem);
-                //}
+                    List<NAVProjectsViewModel> AllProjectsNAV2017 = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto);
+                    if (AllProjectsNAV2017 != null)
+                        CountNAV2017 = AllProjectsNAV2017.Count;
 
+                    List<NAVProjectsViewModel> AllProjectsNAV2009 = DBNAV2009Projects.GetAll(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto);
+                    if (AllProjectsNAV2009 != null)
+                        CountNAV2009 = AllProjectsNAV2009.Count;
+
+                    if (CountNAV2017 == 0 || CountNAV2009 == 0)
+                    {
+                        if (CountNAV2017 == 0)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Não é possível atualizar a Viatura " + data.Matricula + " , pois a mesma não existe no NAV2017";
+                            return Json(data);
+                        }
+                        if (CountNAV2009 == 0)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Não é possível atualizar a Viatura " + data.Matricula + " , pois a mesma não existe no NAV2009";
+                            return Json(data);
+                        }
+                    }
+                    else
+                    {
+                        int EstadoProjetoNAV2009 = 0;
+                        int EstadoProjetoNAV2017 = 0;
+                        if (data.IDEstado == 1 || data.IDEstado == 2 || data.IDEstado == 6) //ATIVO
+                        {
+                            EstadoProjetoNAV2009 = 2;
+                            EstadoProjetoNAV2017 = 1;
+                        }
+                        if (data.IDEstado == 3 || data.IDEstado == 4 || data.IDEstado == 5) //DESATIVADO
+                        {
+                            EstadoProjetoNAV2009 = 3;
+                            EstadoProjetoNAV2017 = 2;
+                        }
+
+                        ProjectDetailsViewModel ProjectToUpdate = new ProjectDetailsViewModel()
+                        {
+                            ProjectNo = data.NoProjeto,
+                            Description = "CONTROLO CUSTOS VIATURAS: " + data.Matricula,
+                            ClientNo = "999992",
+                            Status = (EstadoProjecto)EstadoProjetoNAV2017, //ENCOMENDA
+                            RegionCode = data.CodRegiao,
+                            FunctionalAreaCode = data.CodAreaFuncional,
+                            ResponsabilityCenterCode = data.CodCentroResponsabilidade,
+                            Visivel = true
+                        };
+
+                        //Read NAV2017 Project Key
+                        Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.NoProjeto, _configws);
+                        try
+                        {
+                            TReadNavProj.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Erro ao atualizar: Não foi possivel obter o Projeto a partir do NAV2017.";
+                            return Json(data);
+                        }
+
+                        if (TReadNavProj.IsCompletedSuccessfully)
+                        {
+                            if (TReadNavProj.Result.WSJob == null)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Erro ao atualizar: O projeto não existe no NAV2017";
+                                return Json(data);
+                            }
+                            else
+                            {
+                                //Update Project on NAV2017
+                                Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, ProjectToUpdate, _configws);
+                                try
+                                {
+                                    TUpdateNavProj.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = ex.InnerException.Message;
+                                    return Json(data);
+                                }
+
+                                if (!TUpdateNavProj.IsCompletedSuccessfully)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Erro ao atualizar: Não foi possivel atualizar o projeto no NAV2017";
+                                    return Json(data);
+                                }
+                            }
+                        }
+
+                        //Update Project on NAV2009
+                        int resultNAV2009 = DBNAV2009Projects.Update(data.Matricula, EstadoProjetoNAV2009, data.CodRegiao, data.CodAreaFuncional, data.CodCentroResponsabilidade, User.Identity.Name);
+
+                        if (resultNAV2009 != 1)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Erro ao atualizar: Não foi possivel atualizar o projeto no NAV2009";
+                            return Json(data);
+                        }
+                    }
+                }
+
+                //UPDATE E-SUCH
+                int CounteSUCH = 0;
+
+                Viaturas2 Viatura = DBViaturas2.GetByMatricula(data.Matricula);
+                if (Viatura != null)
+                    CounteSUCH = 1;
+
+                if (CounteSUCH == 0)
+                {
+                    if (CounteSUCH == 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Não é possível atualizar a Viatura " + data.Matricula + " , pois a mesma não existe no e-SUCH";
+                        return Json(data);
+                    }
+                }
+                else
+                {
+                    if (data.IDEstado != data.IDEstadoOrinalDB)
+                    {
+                        data.DataEstado = DateTime.Now;
+                        data.DataEstadoTexto = data.DataEstado.Value.ToString("yyyy-MM-dd");
+                    }
+
+                    Viaturas2 viatura = DBViaturas2.ParseToDB(data);
+                    viatura.UtilizadorModificacao = User.Identity.Name;
+                    if (DBViaturas2.Update(viatura) != null)
+                    {
+                        data.eReasonCode = 1;
+                        data.eMessage = "Viatura atualizada com sucesso.";
+                    }
+                    else
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro na atualização da viatura.";
+                    }
+                }
 
                 return Json(data);
             }
-            return Json(false);
+            else
+            {
+                data.eReasonCode = 3;
+                data.eMessage = "Erro na obtensão dos dados.";
+            }
+
+            return Json(data);
         }
 
         [HttpPost]
@@ -442,6 +707,211 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(result);
             }
             return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViatura2([FromBody] Viaturas2ViewModel data)
+        {
+            if (data != null && !string.IsNullOrEmpty(data.Matricula))
+            {
+                List<FolhasDeHoras> AllFolhasHoras = DBFolhasDeHoras.GetAll();
+                List<PréRequisição> AllPreReq = DBPreRequesition.GetAll();
+                List<LinhasPréRequisição> AllPreReqLines = DBPreRequesitionLines.GetAll();
+                List<Requisição> AllReq = DBRequest.GetAll();
+                List<LinhasRequisição> AllReqLines = DBRequestLine.GetAll();
+
+                //FOLHAS DE HORAS
+                int CountFH = 0;
+                CountFH = AllFolhasHoras.Where(x => x.Matrícula == data.Matricula).Count();
+                if (CountFH > 0)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Não é possível eliminar a Viatura por existirem Folhas de Horas associadas a esta Viatura " + data.Matricula;
+                    return Json(data);
+                }
+
+                //PRÉ-REQUISIÇÕES
+                int CountPreRQ = 0;
+                CountPreRQ = AllPreReq.Where(x => x.Viatura == data.Matricula).Count();
+                if (CountPreRQ > 0)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Não é possível eliminar a Viatura por existirem Pré-Requisições associadas a esta Viatura " + data.Matricula;
+                    return Json(data);
+                }
+                int CountPreRQLines = 0;
+                CountPreRQLines = AllPreReqLines.Where(x => x.Viatura == data.Matricula).Count();
+                if (CountPreRQLines > 0)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Não é possível eliminar a Viatura por existirem Linhas de Pré-Requisições associadas a esta Viatura " + data.Matricula;
+                    return Json(data);
+                }
+
+                //REQUISIÇÕES
+                int CountRQ = 0;
+                CountRQ = AllReq.Where(x => x.Viatura == data.Matricula).Count();
+                if (CountRQ > 0)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Não é possível eliminar a Viatura por existirem Requisições associadas a esta Viatura " + data.Matricula;
+                    return Json(data);
+                }
+                int CountRQLines = 0;
+                CountRQLines = AllReqLines.Where(x => x.Viatura == data.Matricula).Count();
+                if (CountRQLines > 0)
+                {
+                    data.eReasonCode = 3;
+                    data.eMessage = "Não é possível eliminar a Viatura por existirem Linhas de Requisições associadas a esta Viatura " + data.Matricula;
+                    return Json(data);
+                }
+
+                //PROJETOS
+                if (!string.IsNullOrEmpty(data.NoProjeto))
+                {
+                    //PRÉ-REQUISIÇÕES
+                    int CountPreRQProj = 0;
+                    CountPreRQProj = AllPreReq.Where(x => x.NºProjeto == data.NoProjeto).Count();
+                    if (CountPreRQProj > 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Não é possível eliminar a Viatura por existirem Pré-Requisições associadas a este Projeto " + data.NoProjeto;
+                        return Json(data);
+                    }
+                    int CountPreRQLinesProj = 0;
+                    CountPreRQLinesProj = AllPreReqLines.Where(x => x.NºProjeto == data.NoProjeto).Count();
+                    if (CountPreRQLinesProj > 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Não é possível eliminar a Viatura por existirem Linhas de Pré-Requisições associadas a este Projeto " + data.NoProjeto;
+                        return Json(data);
+                    }
+
+                    //REQUISIÇÕES
+                    int CountRQProj = 0;
+                    CountRQProj = AllReq.Where(x => x.NºProjeto == data.NoProjeto).Count();
+                    if (CountRQProj > 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Não é possível eliminar a Viatura por existirem Requisições associados a este Projeto " + data.NoProjeto;
+                        return Json(data);
+                    }
+                    int CountRQLinesProj = 0;
+                    CountRQLinesProj = AllReqLines.Where(x => x.NºProjeto == data.NoProjeto).Count();
+                    if (CountRQLinesProj > 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Não é possível eliminar a Viatura por existirem Linhas de Requisições associados a este Projeto " + data.NoProjeto;
+                        return Json(data);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(data.NoProjeto))
+                {
+                    int CountNAV2017 = 0;
+                    List<NAVProjectsViewModel> AllProjectsNAV2017 = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto);
+                    if (AllProjectsNAV2017 != null)
+                        CountNAV2017 = AllProjectsNAV2017.Count;
+
+                    if (CountNAV2017 > 0)
+                    {
+                        //Read NAV2017 Project Key
+                        Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.NoProjeto, _configws);
+                        try
+                        {
+                            TReadNavProj.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Erro ao eliminar projeto: Não foi possivel obter o Projeto a partir do NAV2017.";
+                            return Json(data);
+                        }
+
+                        if (TReadNavProj.IsCompletedSuccessfully)
+                        {
+                            if (TReadNavProj.Result.WSJob == null)
+                            {
+                                data.eReasonCode = 3;
+                                data.eMessage = "Erro ao eliminar projeto: O projeto não existe no NAV2017";
+                                return Json(data);
+                            }
+                            else
+                            {
+                                //Delete Project on NAV2017
+                                Task<WSCreateNAVProject.Delete_Result> TDeleteNavProj = WSProject.DeleteNavProject(TReadNavProj.Result.WSJob.Key, _configws);
+                                try
+                                {
+                                    TDeleteNavProj.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = ex.InnerException.Message;
+                                    return Json(data);
+                                }
+
+                                if (!TDeleteNavProj.IsCompletedSuccessfully)
+                                {
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Erro ao eliminar projeto: Não foi possivel eliminar o projeto no NAV2017";
+                                    return Json(data);
+                                }
+                            }
+                        }
+                    }
+
+                    //Delete Project on NAV2009
+                    int CountNAV2009 = 0;
+                    List<NAVProjectsViewModel> AllProjectsNAV2009 = DBNAV2009Projects.GetAll(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto);
+                    if (AllProjectsNAV2009 != null)
+                        CountNAV2009 = AllProjectsNAV2009.Count;
+
+                    if (CountNAV2009 > 0)
+                    {
+                        int resultNAV2009 = DBNAV2009Projects.Delete(data.NoProjeto);
+
+                        if (resultNAV2009 != 1)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Erro ao eliminar: Não foi possivel eliminar o projeto no NAV2009";
+                            return Json(data);
+                        }
+                    }
+                }
+
+                //Delete E-SUCH
+                int CounteSUCH = 0;
+                Viaturas2 Viatura = DBViaturas2.GetByMatricula(data.Matricula);
+                if (Viatura != null)
+                    CounteSUCH = 1;
+
+                if (CounteSUCH > 0)
+                {
+                    Viaturas2 viatura = DBViaturas2.ParseToDB(data);
+                    if (DBViaturas2.Delete(viatura) == true)
+                    {
+                        data.eReasonCode = 1;
+                        data.eMessage = "Viatura eliminada com sucesso.";
+                        return Json(data);
+                    }
+                    else
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro na eliminação da viatura no e-SUCH.";
+                        return Json(data);
+                    }
+                }
+
+                return Json(data);
+            }
+            else
+            {
+                data.eReasonCode = 3;
+                data.eMessage = "Erro na obtensão dos dados.";
+            }
+
+            return Json(data);
         }
 
         [HttpPost]

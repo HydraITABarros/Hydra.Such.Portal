@@ -2087,19 +2087,32 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetViaturas2ListaPropriedades()
+        public JsonResult GetViaturas2ListaPropriedades([FromBody] int tipoPropriedade)
         {
             List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_PROPRIEDADE");
             List<DDMessage> result = new List<DDMessage>();
 
             if (AllResults != null && AllResults.Count > 0)
             {
-                result = AllResults.Select(x => new DDMessage()
+                if (tipoPropriedade == 1) //"SUCH"
                 {
-                    id = x.ID,
-                    value = x.Descricao
-                }).ToList();
+                    result = AllResults.Select(x => new DDMessage()
+                    {
+                        id = x.ID,
+                        value = x.Descricao
+                    }).Where(y => y.value.ToUpper() == "SUCH".ToUpper()).ToList();
+                }
+
+                if (tipoPropriedade == 2) //"Renting"
+                {
+                    result = AllResults.Select(x => new DDMessage()
+                    {
+                        id = x.ID,
+                        value = x.Descricao
+                    }).ToList();
+                }
             }
+
             return Json(result.OrderBy(x => x.value));
         }
 

@@ -14,7 +14,22 @@ namespace Hydra.Such.Data.Logic.Request
     public static class DBRequest
     {
         #region CRUD
-        
+
+        public static List<Requisição> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<Requisição> GetAll(int TipoReq)
         {
             try

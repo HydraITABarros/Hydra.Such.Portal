@@ -10918,6 +10918,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("NoProjeto")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.DataAquisicao)
+                    .HasColumnName("DataAquisicao")
+                    .HasColumnType("date");
+
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")
                     .HasMaxLength(50);

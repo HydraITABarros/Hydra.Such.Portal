@@ -2237,11 +2237,23 @@ namespace Hydra.Such.Portal.Controllers
                     List<Anexos> FilesLoaded = DBAttachments.GetById(TipoOrigemAnexos.PreRequisicao, data.PreRequesitionsNo);
                     data.eMessage = "";
 
-                    if (data.ValorTotalDocComIVA != data.LinhasValorTotalDocComIVA)
+
+                    decimal sumCD = 0;
+                    decimal sumCDLines = 0;
+
+                    sumCD = data.ValorTotalDocComIVA.HasValue ? (decimal)data.ValorTotalDocComIVA : 0;
+                    sumCDLines = PreRequesitionLines.Sum(x => (x.QuantidadeARequerer.HasValue ? (decimal)x.QuantidadeARequerer : 0) * (x.CustoUnitarioComIVA.HasValue ? (decimal)x.CustoUnitarioComIVA : 0));
+
+                    if (sumCD != sumCDLines)
                     {
                         data.eReasonCode = 0;
                         data.eMessage = "O valor do campo Valor Total Doc. com IVA têm que ser igual ao somatório do campo Custo Total com IVA das linhas.";
                     }
+                    //if (data.ValorTotalDocComIVA != data.LinhasValorTotalDocComIVA)
+                    //{
+                    //    data.eReasonCode = 0;
+                    //    data.eMessage = "O valor do campo Valor Total Doc. com IVA têm que ser igual ao somatório do campo Custo Total com IVA das linhas.";
+                    //}
                     else
                     {
                         if (FilesLoaded.Count() > 0)

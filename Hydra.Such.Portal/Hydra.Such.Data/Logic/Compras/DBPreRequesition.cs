@@ -57,6 +57,21 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
+        public static List<PréRequisição> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PréRequisição.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<PréRequisição> GetAll(string User, int area)
         {
             try

@@ -67,6 +67,8 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string CodCentroResponsabilidadeOriginalDB { get; set; }
         public string NoProjeto { get; set; }
         public string Projeto { get; set; }
+        public DateTime? DataAquisicao { get; set; }
+        public string DataAquisicaoTexto { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string DataCriacaoTexto { get; set; }

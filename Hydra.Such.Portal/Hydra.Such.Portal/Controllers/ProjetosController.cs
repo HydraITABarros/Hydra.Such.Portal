@@ -513,7 +513,8 @@ namespace Hydra.Such.Portal.Controllers
                                 ProjetoInterno = data.InternalProject,
                                 ChefeProjeto = data.ProjectLeader,
                                 ResponsávelProjeto = data.ProjectResponsible,
-                                UtilizadorCriação = User.Identity.Name
+                                UtilizadorCriação = User.Identity.Name,
+                                
                             };
 
                             //Create Project on NAV
