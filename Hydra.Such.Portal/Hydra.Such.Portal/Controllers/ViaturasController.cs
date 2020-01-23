@@ -173,6 +173,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.AlvaraLicenca == true) x.AlvaraLicencaTexto = "Sim"; else x.AlvaraLicencaTexto = "Não";
                 if (x.IDLocalParqueamento != null) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == AllParquamentos.Where(z => z.ID == x.IDLocalParqueamento).FirstOrDefault().IDLocal).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description : "";
+
+                if (x.Data1Matricula.HasValue) x.Idade = (DateTime.Now.Year - Convert.ToDateTime(x.Data1Matricula).Year).ToString() + " ano(s)";
             });
 
             return Json(result);
@@ -287,6 +289,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (viatura.IDLocalParqueamento != null) viatura.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == AllParquamentos.Where(z => z.ID == viatura.IDLocalParqueamento).FirstOrDefault().IDLocal).FirstOrDefault().Local;
                 if (viatura.IDLocalParqueamento != null) viatura.IDLocal = AllParquamentos.Where(z => z.ID == viatura.IDLocalParqueamento).FirstOrDefault().IDLocal;
                 if (!string.IsNullOrEmpty(viatura.NoProjeto)) viatura.Projeto = AllProjects.Where(y => y.No == viatura.NoProjeto).FirstOrDefault().Description;
+
+                if (viatura.Data1Matricula.HasValue) viatura.Idade = (DateTime.Now.Year - Convert.ToDateTime(viatura.Data1Matricula).Year).ToString() + " ano(s)";
             }
             return Json(viatura);
         }
@@ -422,6 +426,30 @@ namespace Hydra.Such.Portal.Controllers
                                 if (resultNAV2009 == 1)
                                 {
                                     //e-SUCH
+                                    data.IDSegmentacao = 0;
+                                    if (data.IDCategoria.HasValue && data.IDTipo.HasValue)
+                                    {
+                                        if (data.IDCategoria == 1) //Viatura Ligeira
+                                        {
+                                            if (data.IDTipo == 1) //Passageiros
+                                                data.IDSegmentacao = 1; //Viaturas Ligeiras de Passageiros
+                                            if (data.IDTipo == 2) //Mercadorias
+                                            {
+                                                if (data.PesoBruto.HasValue)
+                                                {
+                                                    if (data.PesoBruto <= 2200)
+                                                        data.IDSegmentacao = 2; //Viaturas de Mercadorias – Peso Bruto ≤ 2.200 Kg
+                                                    if (data.PesoBruto > 2200 && data.PesoBruto <= 3500)
+                                                        data.IDSegmentacao = 3; //Viaturas de Mercadorias – 2.200 Kg <Peso Bruto ≤ 3.500 Kg
+                                                    if (data.PesoBruto > 3500 && data.PesoBruto <= 12000)
+                                                        data.IDSegmentacao = 4; //Viaturas de Mercadorias – 3.500 Kg <Peso Bruto ≤ 12.000 Kg
+                                                    if (data.PesoBruto > 12000 && data.PesoBruto <= 19000)
+                                                        data.IDSegmentacao = 5; //Viaturas de Mercadorias – 12.000 Kg <Peso Bruto ≤ 19.000 Kg
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     Viaturas2 viaturaCreated = DBViaturas2.Create(DBViaturas2.ParseToDB(data));
 
                                     if (viaturaCreated == null)
@@ -653,6 +681,30 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
+                    data.IDSegmentacao = 0;
+                    if (data.IDCategoria.HasValue && data.IDTipo.HasValue)
+                    {
+                        if (data.IDCategoria == 1) //Viatura Ligeira
+                        {
+                            if (data.IDTipo == 1) //Passageiros
+                                data.IDSegmentacao = 1; //Viaturas Ligeiras de Passageiros
+                            if (data.IDTipo == 2) //Mercadorias
+                            {
+                                if (data.PesoBruto.HasValue)
+                                {
+                                    if (data.PesoBruto <= 2200)
+                                        data.IDSegmentacao = 2; //Viaturas de Mercadorias – Peso Bruto ≤ 2.200 Kg
+                                    if (data.PesoBruto > 2200 && data.PesoBruto <= 3500)
+                                        data.IDSegmentacao = 3; //Viaturas de Mercadorias – 2.200 Kg <Peso Bruto ≤ 3.500 Kg
+                                    if (data.PesoBruto > 3500 && data.PesoBruto <= 12000)
+                                        data.IDSegmentacao = 4; //Viaturas de Mercadorias – 3.500 Kg <Peso Bruto ≤ 12.000 Kg
+                                    if (data.PesoBruto > 12000 && data.PesoBruto <= 19000)
+                                        data.IDSegmentacao = 5; //Viaturas de Mercadorias – 12.000 Kg <Peso Bruto ≤ 19.000 Kg
+                                }
+                            }
+                        }
+                    }
+
                     if (data.IDEstado != data.IDEstadoOrinalDB)
                     {
                         data.DataEstado = DateTime.Now;

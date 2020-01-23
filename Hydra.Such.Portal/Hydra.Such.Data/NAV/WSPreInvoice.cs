@@ -270,7 +270,7 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations, string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento, bool PricesIncludingVAT, string Ship_to_Code)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreateContractInvoice(AutorizarFaturaçãoContratos CreateInvoice, NAVWSConfigurations WSConfigurations, string ContractInvoicePeriod, string InvoiceBorrowed, string CodTermosPagamento, string MetdoPagamento, bool PricesIncludingVAT, string Ship_to_Code)
         {
             DateTime now = DateTime.Now;
             string PostingNoSeries = "";
@@ -344,6 +344,9 @@ namespace Hydra.Such.Data.NAV
                     Prices_Including_VATSpecified = true,
 
                     Ship_to_Code = !string.IsNullOrEmpty(Ship_to_Code) ? Ship_to_Code : "",
+
+                    //Contratos Quotas
+                    Payment_Method_Code = MetdoPagamento
                 }
             };
 

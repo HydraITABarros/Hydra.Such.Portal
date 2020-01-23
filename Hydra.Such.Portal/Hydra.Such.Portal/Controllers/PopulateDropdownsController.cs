@@ -1908,7 +1908,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetViaturasForPreReq()
         {
-            List<ViaturasViewModel> result = DBViatura.ParseListToViewModel(DBViatura.GetAllToList());
+            List<ViaturasViewModel> result = DBViatura.ParseListToViewModel(DBViatura.GetAllToList().Where(x => x.Estado != 3).ToList());
             List<Marcas> AllMarcas = DBMarcas.GetAll();
             List<Modelos> AllModelos = DBModelos.GetAll();
 

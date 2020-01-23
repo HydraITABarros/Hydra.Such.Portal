@@ -292,7 +292,7 @@
                                             </div>
 
                                             <div class="col-md-1">
-                                                <vaadin-text-field id="info_idade" name="info_idade" label="Idade" value="" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="info_idade" name="info_idade" label="Idade" value="{{data.idade}}" disabled></vaadin-text-field>
                                             </div>
                                         </div>
 
@@ -450,7 +450,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <such-selectbox id="geral_localParqueamento" name="geral_localParqueamento" value="{{data.idLocal}}" label="Local de Parqueamento"
+                                        <such-selectbox id="geral_localParqueamento" name="geral_localParqueamento" value="{{data.idLocalParqueamento}}" label="Local de Parqueamento"
                                                         items="[[ListaLocaisParqueamento]]"
                                                         text-path="value"
                                                         value-path="id"
@@ -542,7 +542,7 @@
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_consumoReferencia" name="geral_consumoReferencia" value="{{data.consumoReferencia}}" label="Consumo Referência" disabled="{{ !_permissions.update }}" class="alignRight"><div slot="suffix">l/100</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_consumoReferencia" name="geral_consumoReferencia" value="{{data.consumoReferencia}}" label="Consumo Referência" disabled="{{ !_permissions.update }}" class="alignRight"  on-value-changed="_ConvertDecimals"><div slot="suffix">l/100</div></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
@@ -556,7 +556,7 @@
 
                                     <div>
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_distanciaEixos" name="geral_distanciaEixos" value="{{data.distanciaEixos}}" label="Distância entre Eixos" disabled="{{ !_permissions.update }}" class="alignRight"><div slot="suffix">m</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_distanciaEixos" name="geral_distanciaEixos" value="{{data.distanciaEixos}}" label="Distância entre Eixos" disabled="{{ !_permissions.update }}" class="alignRight"  on-value-changed="_ConvertDecimals"><div slot="suffix">m</div></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
@@ -2862,6 +2862,12 @@
                     this.$.geral_propriedade.value = this._propriedade;
                     this._propriedade = "";
                 },
+
+                _ConvertDecimals: function (e) {
+                    var stringVal = "" + e.target.value;
+                    e.target.value = stringVal.replace(",", ".");
+                },
+
             });
         });
     </script>

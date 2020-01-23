@@ -467,18 +467,21 @@
                                                                     <vaadin-date-picker label="Data Requisição" id="_CRRequisitionDate" name="_CRRequisitionDate" value="{{_CRRequisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </div>
                                                                 <div class="col-lg-2">
-                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFields }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
+                                                                    <vaadin-text-field value="{{_CRPromiseNo}}" id="_CRPromiseNo" name="_CRPromiseNo" label="Nº Compromisso" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </div>
-                                                                <div class="col-lg-2">
+                                                                <div class="col-lg-2" hidden>
                                                                     <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRInvoiceGroup" name="_CRInvoiceGroup" item-value-path="id" item-label-path="value" value="{{_CRInvoiceGroup}}" label="Grupo Fatura" disabled="{{ _lockFields }}">
                                                                         <template>
                                                                             <b>[[item.value]]</b>
                                                                         </template>
                                                                     </vaadin-combo-box>
                                                                 </div>
+                                                                <div class="col-lg-1">
+                                                                    <paper-button class="btnSave" raised on-tap="_createClientRequisition">Criar</paper-button>
+                                                                </div>
                                                             </div>
                                                             <div class="row break_frm">
-                                                                <div class="col-lg-2">
+                                                                <div class="col-lg-2" hidden>
                                                                     <such-selectbox id="_CRProjectNo" name="_CRProjectNo" value="{{_CRProjectNo}}" label="Nº Projeto" disabled="{{ _lockFields }}"
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="value"
@@ -487,11 +490,8 @@
                                                                     </such-selectbox>
 
                                                                 </div>
-                                                                <div class="col-lg-2">
+                                                                <div class="col-lg-2"hidden>
                                                                     <vaadin-date-picker label="Data Última Fatura" id="_CRLastInvoiceDate" name="_CRLastInvoiceDate" value="{{_CRLastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                                                </div>
-                                                                <div class="col-lg-1">
-                                                                    <paper-button class="btnSave" raised on-tap="_createClientRequisition">Criar</paper-button>
                                                                 </div>
                                                             </div>
                                                         </template>
@@ -548,7 +548,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column resizable>
+                                                            <vaadin-grid-column resizable hidden>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceGroup" />
@@ -567,7 +567,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column resizable>
+                                                            <vaadin-grid-column resizable hidden>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="projectNo" />
