@@ -279,11 +279,11 @@
                                         </div>
 
                                         <div class="row break_clear">
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <vaadin-text-field id="info_segmentacao" name="info_segmentacao" label="Segmentação" value="{{data.segmentacao}}" disabled></vaadin-text-field>
                                             </div>
 
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <vaadin-text-field id="info_parqueamento" name="info_parqueamento" label="Local de Parqueamento" value="{{data.localParqueamento}}" disabled></vaadin-text-field>
                                             </div>
 
@@ -542,7 +542,7 @@
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_consumoReferencia" name="geral_consumoReferencia" value="{{data.consumoReferencia}}" label="Consumo Referência" disabled="{{ !_permissions.update }}" class="alignRight"  on-value-changed="_ConvertDecimals"><div slot="suffix">l/100</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_consumoReferencia" name="geral_consumoReferencia" value="{{data.consumoReferencia}}" label="Consumo Referência" disabled="{{ !_permissions.update }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">l/100</div></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
@@ -556,7 +556,7 @@
 
                                     <div>
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_distanciaEixos" name="geral_distanciaEixos" value="{{data.distanciaEixos}}" label="Distância entre Eixos" disabled="{{ !_permissions.update }}" class="alignRight"  on-value-changed="_ConvertDecimals"><div slot="suffix">m</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_distanciaEixos" name="geral_distanciaEixos" value="{{data.distanciaEixos}}" label="Distância entre Eixos" disabled="{{ !_permissions.update }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">m</div></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
@@ -675,7 +675,7 @@
                                         </vaadin-grid>
 
                                         <div style="padding-left:50px">
-                                            <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                                 <div class="row break_clear">
                                                     <div class="col-md-2">
                                                         <vaadin-text-field id="noImobilizado" name="noImobilizado" label="Nº imobilizado" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -734,7 +734,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="km" name="km" label="Km" value=""><div slot="suffix">km</div></vaadin-text-field>
@@ -850,7 +850,7 @@
                                             </vaadin-grid>
 
                                             <div style="padding-left:50px">
-                                                <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                                <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                                     <div class="row break_clear">
                                                         <div class="col-md-2">
                                                             <vaadin-text-field id="localDeAbastecimento" name="localDeAbastecimento" label="Local de Abastecimento" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -1085,7 +1085,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="dlocal" name="dlocal" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -1162,7 +1162,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-date-picker id="dataInspecao" name="dataInspecao" label="Data Inspeção" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
@@ -1247,7 +1247,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="noDaApolice" name="noDaApolice" label="Nº da Apólice" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -1312,7 +1312,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="dlocal" name="dlocal" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -1369,7 +1369,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="local" name="local" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -1486,7 +1486,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="departamentoNAV" name="departamentoNAV" label="Departamento Navision" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -1569,7 +1569,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="nomeCondutor" name="nomeCondutor" label="Nome do Condutor" value=""></vaadin-text-field>
@@ -1626,7 +1626,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="nomeGestor" name="nomeGestor" label="Nome do Gestor" value=""></vaadin-text-field>
@@ -1713,7 +1713,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="matricula" name="matricula" label="Matrícula" value="" disabled="{{ !_permissions.update }}" placeholder="xx-xx-xx"></vaadin-text-field>
@@ -1852,7 +1852,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="estado" name="estado" label="Estado" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -1909,7 +1909,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="localParqueamento" name="localParqueamento" label="Local Parqueamento" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -1976,7 +1976,7 @@
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
                                                     <vaadin-text-field id="propriedade" name="propriedade" label="Propriedade" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -2181,7 +2181,7 @@
                                 </vaadin-grid>
 
                                 <div style="padding-left:50px">
-                                    <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                    <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                         <div class="row break_clear">
                                             <div class="col-md-2">
                                                 <vaadin-text-field id="noContrato" name="noContrato" label="Nº Contrato" value=""></vaadin-text-field>
@@ -2327,7 +2327,7 @@
                                 </vaadin-grid>
 
                                 <div style="padding-left:50px">
-                                    <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                    <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                         <div class="row break_clear">
                                             <div class="col-md-2">
                                                 <vaadin-date-picker id="dataPedido" name="dataPedido" label="Data do Pedido" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
@@ -2635,6 +2635,10 @@
                 _goToViatura: function () {
                     window.location.href = "../DetalhesViatura2/" + this.data.matricula;
                 },
+                _goRefresh: function () {
+                    location.reload();
+                },
+
 
                 _validateData: function () {
                     var polymerDom = Polymer.dom(this.root);
@@ -2793,8 +2797,13 @@
                 },
 
                 _responseUpdateProcessor: function () {
+                    var self = this;
                     if (this.data.eReasonCode == 1) {
                         this._openToast(this.data.eMessage);
+                        setTimeout(
+                            function () {
+                                self._goRefresh();
+                            }, 1000);
                     } else {
                         this._openToastError(this.data.eMessage);
                     }

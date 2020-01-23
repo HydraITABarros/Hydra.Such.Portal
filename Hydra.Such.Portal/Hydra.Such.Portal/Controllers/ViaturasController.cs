@@ -171,7 +171,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.IDPropriedade != null) x.Propriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_PROPRIEDADE" && y.ID == x.IDPropriedade).FirstOrDefault().Descricao;
                 if (x.IDSegmentacao != null) x.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == x.IDSegmentacao).FirstOrDefault().Descricao;
                 if (x.AlvaraLicenca == true) x.AlvaraLicencaTexto = "Sim"; else x.AlvaraLicencaTexto = "Não";
-                if (x.IDLocalParqueamento != null) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == AllParquamentos.Where(z => z.ID == x.IDLocalParqueamento).FirstOrDefault().IDLocal).FirstOrDefault().Local;
+                if (x.IDLocalParqueamento != null) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == x.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description : "";
 
                 if (x.Data1Matricula.HasValue) x.Idade = (DateTime.Now.Year - Convert.ToDateTime(x.Data1Matricula).Year).ToString() + " ano(s)";
@@ -286,8 +286,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (viatura.IDPropriedade != null) viatura.Propriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_PROPRIEDADE" && y.ID == viatura.IDPropriedade).FirstOrDefault().Descricao;
                 if (viatura.IDSegmentacao != null) viatura.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == viatura.IDSegmentacao).FirstOrDefault().Descricao;
                 if (viatura.AlvaraLicenca == true) viatura.AlvaraLicencaTexto = "Sim"; else viatura.AlvaraLicencaTexto = "Não";
-                if (viatura.IDLocalParqueamento != null) viatura.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == AllParquamentos.Where(z => z.ID == viatura.IDLocalParqueamento).FirstOrDefault().IDLocal).FirstOrDefault().Local;
-                if (viatura.IDLocalParqueamento != null) viatura.IDLocal = AllParquamentos.Where(z => z.ID == viatura.IDLocalParqueamento).FirstOrDefault().IDLocal;
+                if (viatura.IDLocalParqueamento != null) viatura.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == viatura.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(viatura.NoProjeto)) viatura.Projeto = AllProjects.Where(y => y.No == viatura.NoProjeto).FirstOrDefault().Description;
 
                 if (viatura.Data1Matricula.HasValue) viatura.Idade = (DateTime.Now.Year - Convert.ToDateTime(viatura.Data1Matricula).Year).ToString() + " ano(s)";
