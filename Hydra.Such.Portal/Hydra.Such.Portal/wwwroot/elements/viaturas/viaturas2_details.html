@@ -28,6 +28,7 @@
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
@@ -240,6 +241,8 @@
                     <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                 </template>
             </template>
+
+            <such-dropdown-menu on-value-changed="_viewMenuItemSelected" title="Consultar" items='[[ _viewMenuItems ]]'></such-dropdown-menu>
         </div>
 
 
@@ -374,7 +377,8 @@
                                                         value-path="id"
                                                         fields='[{"field":"value", "name":"Marca"}]'
                                                         on-value-changed="_GetListaModelos"
-                                                        required error-message="O campo Marca é de preenchimento obrigatório">
+                                                        required error-message="O campo Marca é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
 
@@ -384,16 +388,17 @@
                                                         text-path="value"
                                                         value-path="id"
                                                         fields='[{"field":"value", "name":"Marca"}]'
-                                                        required error-message="O campo Modelo é de preenchimento obrigatório">
+                                                        required error-message="O campo Modelo é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="geral_data1Matricula" name="geral_data1Matricula" value="{{data.data1MatriculaTexto}}" label="Data 1ª Matricula" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        <vaadin-date-picker id="geral_data1Matricula" name="geral_data1Matricula" value="{{data.data1MatriculaTexto}}" label="Data 1ª Matricula" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <vaadin-date-picker id="geral_dataMatricula" name="geral_dataMatricula" value="{{data.dataMatriculaTexto}}" label="Data da Matrícula" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa" required error-message="O campo Data da Matrícula é de preenchimento obrigatório"></vaadin-date-picker>
+                                        <vaadin-date-picker id="geral_dataMatricula" name="geral_dataMatricula" value="{{data.dataMatriculaTexto}}" label="Data da Matrícula" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data da Matrícula é de preenchimento obrigatório"></vaadin-date-picker>
                                     </div>
 
                                     <div class="col-md-2">
@@ -424,7 +429,8 @@
                                                         text-path="value"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
-                                                        required error-message="O campo Região é de preenchimento obrigatório">
+                                                        required error-message="O campo Região é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
 
@@ -435,7 +441,8 @@
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                                         on-value-changed="_GetListaCentros"
-                                                        required error-message="O campo Área Funcional é de preenchimento obrigatório">
+                                                        required error-message="O campo Área Funcional é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
 
@@ -445,7 +452,8 @@
                                                         text-path="value"
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
-                                                        required error-message="O campo Centro de Responsabilidade é de preenchimento obrigatório">
+                                                        required error-message="O campo Centro de Responsabilidade é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
 
@@ -454,12 +462,13 @@
                                                         items="[[ListaLocaisParqueamento]]"
                                                         text-path="value"
                                                         value-path="id"
-                                                        fields='[{"field":"value", "name":"Local de Parqueamento"}]'>
+                                                        fields='[{"field":"value", "name":"Local de Parqueamento"}]'
+                                                        disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
 
                                     <div class="col-md-2 alignPoga">
-                                        <vaadin-checkbox id="geral_alvaraLicenca" name="geral_alvaraLicenca" checked="{{data.alvaraLicenca}}" disabled="{{ !_permissions.update }}" type="number" class="alignRight">Alvará Licença</vaadin-checkbox>
+                                        <vaadin-checkbox id="geral_alvaraLicenca" name="geral_alvaraLicenca" checked="{{data.alvaraLicenca}}" disabled="{{ _lockFields }}" type="number" class="alignRight">Alvará Licença</vaadin-checkbox>
                                     </div>
                                 </div>
 
@@ -472,7 +481,8 @@
                                                             text-path="value"
                                                             value-path="id"
                                                             fields='[{"field":"value", "name":"Categoria"}]'
-                                                            required error-message="O campo Categoria é de preenchimento obrigatório">
+                                                            required error-message="O campo Categoria é de preenchimento obrigatório"
+                                                            disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
 
@@ -482,7 +492,8 @@
                                                             text-path="value"
                                                             value-path="id"
                                                             fields='[{"field":"value", "name":"Tipo"}]'
-                                                            required error-message="O campo Tipo é de preenchimento obrigatório">
+                                                            required error-message="O campo Tipo é de preenchimento obrigatório"
+                                                            disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
 
@@ -493,7 +504,8 @@
                                                             value-path="id"
                                                             fields='[{"field":"value", "name":"Tipo"}]'
                                                             on-value-changed="_GetListaPropriedades"
-                                                            required error-message="O campo Tipo de Propriedade é de preenchimento obrigatório">
+                                                            required error-message="O campo Tipo de Propriedade é de preenchimento obrigatório"
+                                                            disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
 
@@ -503,16 +515,17 @@
                                                             text-path="value"
                                                             value-path="id"
                                                             fields='[{"field":"value", "name":"Tipo"}]'
-                                                            required error-message="O campo Propriedade é de preenchimento obrigatório">
+                                                            required error-message="O campo Propriedade é de preenchimento obrigatório"
+                                                            disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-date-picker id="geral_dataAquisicao" name="geral_dataAquisicao" value="{{data.dataAquisicaoTexto}}" label="Data de Aquisição" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                            <vaadin-date-picker id="geral_dataAquisicao" name="geral_dataAquisicao" value="{{data.dataAquisicaoTexto}}" label="Data de Aquisição" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_intervaloRevisoes" name="geral_intervaloRevisoes" value="{{data.intervaloRevisoes}}" label="Intervalo entre Revisões" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_intervaloRevisoes" name="geral_intervaloRevisoes" value="{{data.intervaloRevisoes}}" label="Intervalo entre Revisões" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -521,15 +534,15 @@
                                     <label id="labelCaracteristicas">Características</label>
                                     <div>
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_potencia" name="geral_potencia" value="{{data.potencia}}" label="Potência" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">kW</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_potencia" name="geral_potencia" value="{{data.potencia}}" label="Potência" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">kW</div></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_cilindrada" name="geral_cilindrada" value="{{data.cilindrada}}" label="Cilindrada" disabled="{{ !_permissions.update }}" type="number" class="alignRight"></vaadin-text-field>
+                                            <vaadin-text-field id="geral_cilindrada" name="geral_cilindrada" value="{{data.cilindrada}}" label="Cilindrada" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-combo-box id="geral_combustivel" name="geral_combustivel" items="[[ListaCombustiveis]]" item-value-path="id" item-label-path="value" value="{{data.idCombustivel}}" label="Combústivel" disabled="{{ !_permissions.update }}">
+                                            <vaadin-combo-box id="geral_combustivel" name="geral_combustivel" items="[[ListaCombustiveis]]" item-value-path="id" item-label-path="value" value="{{data.idCombustivel}}" label="Combústivel" disabled="{{ _lockFields }}">
                                                 <template>
                                                     <paper-icon-item>
                                                         <paper-item-body two-line>
@@ -542,33 +555,33 @@
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_consumoReferencia" name="geral_consumoReferencia" value="{{data.consumoReferencia}}" label="Consumo Referência" disabled="{{ !_permissions.update }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">l/100</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_consumoReferencia" name="geral_consumoReferencia" value="{{data.consumoReferencia}}" label="Consumo Referência" disabled="{{ _lockFields }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">l/100</div></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_capacidadeDeposito" name="geral_capacidadeDeposito" value="{{data.capacidadeDeposito}}" label="Capacidade Depósito" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">l</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_capacidadeDeposito" name="geral_capacidadeDeposito" value="{{data.capacidadeDeposito}}" label="Capacidade Depósito" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">l</div></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_autonomia" name="geral_autonomia" value="{{data.autonomia}}" label="Autonomia" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_autonomia" name="geral_autonomia" value="{{data.autonomia}}" label="Autonomia" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
                                         </div>
                                     </div>
 
                                     <div>
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_distanciaEixos" name="geral_distanciaEixos" value="{{data.distanciaEixos}}" label="Distância entre Eixos" disabled="{{ !_permissions.update }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">m</div></vaadin-text-field>
+                                            <vaadin-text-field id="geral_distanciaEixos" name="geral_distanciaEixos" value="{{data.distanciaEixos}}" label="Distância entre Eixos" disabled="{{ _lockFields }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">m</div></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_noLugares" name="geral_noLugares" value="{{data.noLugares}}" label="Nº de Lugares" disabled="{{ !_permissions.update }}" type="number" class="alignRight"></vaadin-text-field>
+                                            <vaadin-text-field id="geral_noLugares" name="geral_noLugares" value="{{data.noLugares}}" label="Nº de Lugares" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_noAnosGarantia" name="geral_noAnosGarantia" value="{{data.noAnosGarantia}}" label="Nº de Anos Garantia" disabled="{{ !_permissions.update }}" type="number" class="alignRight"></vaadin-text-field>
+                                            <vaadin-text-field id="geral_noAnosGarantia" name="geral_noAnosGarantia" value="{{data.noAnosGarantia}}" label="Nº de Anos Garantia" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_noQuadro" name="geral_noQuadro" value="{{data.noQuadro}}" label="Nº Quadro" disabled="{{ !_permissions.update }}" maxlength="50" required error-message="O campo Nº Quadro é de preenchimento obrigatório"></vaadin-text-field>
+                                            <vaadin-text-field id="geral_noQuadro" name="geral_noQuadro" value="{{data.noQuadro}}" label="Nº Quadro" disabled="{{ _lockFields }}" maxlength="50" required error-message="O campo Nº Quadro é de preenchimento obrigatório"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
@@ -576,12 +589,13 @@
                                                             items="[[ListaTipoCaixa]]"
                                                             text-path="value"
                                                             value-path="id"
-                                                            fields='[{"field":"value", "name":"Tipo de Caixa"}]'>
+                                                            fields='[{"field":"value", "name":"Tipo de Caixa"}]'
+                                                            disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
 
                                         <div class="col-md-2">
-                                            <vaadin-text-field id="geral_cor" name="geral_cor" value="{{data.cor}}" label="Cor" disabled="{{ !_permissions.update }}" maxlength="40" required error-message="O campo Cor é de preenchimento obrigatório"></vaadin-text-field>
+                                            <vaadin-text-field id="geral_cor" name="geral_cor" value="{{data.cor}}" label="Cor" disabled="{{ _lockFields }}" maxlength="40" required error-message="O campo Cor é de preenchimento obrigatório"></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -591,32 +605,32 @@
                                         <label id="labelPeso">Peso</label>
                                         <div>
                                             <div class="col-md-4">
-                                                <vaadin-text-field id="geral_pesoBruto" name="geral_pesoBruto" value="{{data.pesoBruto}}" label="Peso Bruto" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
+                                                <vaadin-text-field id="geral_pesoBruto" name="geral_pesoBruto" value="{{data.pesoBruto}}" label="Peso Bruto" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-4">
-                                                <vaadin-text-field id="geral_cargaMaxima" name="geral_cargaMaxima" value="{{data.cargaMaxima}}" label="Carga Máxima" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
+                                                <vaadin-text-field id="geral_cargaMaxima" name="geral_cargaMaxima" value="{{data.cargaMaxima}}" label="Carga Máxima" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-4">
-                                                <vaadin-text-field id="geral_tara" name="geral_tara" value="{{data.tara}}" label="Tara" disabled="{{ !_permissions.update }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
+                                                <vaadin-text-field id="geral_tara" name="geral_tara" value="{{data.tara}}" label="Tara" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">kg</div></vaadin-text-field>
                                             </div>
                                         </div>
 
                                         <label id="labelPneus">Pneus</label>
                                         <div>
                                             <div class="col-md-6">
-                                                <vaadin-text-field id="geral_pneuFrente" name="geral_pneuFrente" value="{{data.pneuFrente}}" label="Pneumáticos Frente" maxlength="50" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                <vaadin-text-field id="geral_pneuFrente" name="geral_pneuFrente" value="{{data.pneuFrente}}" label="Pneumáticos Frente" maxlength="50" disabled="{{ _lockFields }}"></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-6">
-                                                <vaadin-text-field id="geral_pneuRetaguarda" name="geral_pneuRetaguarda" value="{{data.pneuRetaguarda}}" label="Pneumáticos Retaguarda" maxlength="50" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                <vaadin-text-field id="geral_pneuRetaguarda" name="geral_pneuRetaguarda" value="{{data.pneuRetaguarda}}" label="Pneumáticos Retaguarda" maxlength="50" disabled="{{ _lockFields }}"></vaadin-text-field>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <such-textarea id="geral_observacoes" name="geral_observacoes" value="{{data.observacoes}}" label="Observações" disabled="{{ !_permissions.update }}" rows="7"> </such-textarea>
+                                        <such-textarea id="geral_observacoes" name="geral_observacoes" value="{{data.observacoes}}" label="Observações" disabled="{{ _lockFields }}" rows="7"> </such-textarea>
                                     </div>
                                 </div>
 
@@ -2596,6 +2610,14 @@
                         type: String,
                         value: ""
                     },
+                    _lockFields: {
+                        type: Boolean,
+                        value: true
+                    },
+                    _viewMenuItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Mov. Projeto" }, { value: 2, description: "Custos" }]
+                    },
                 },
 
                 ready: function () {
@@ -2759,6 +2781,14 @@
                                 this.$.geral_estado.value = 1;
                             }
 
+                            if (this.data.idEstado == 3 || this.data.idEstado == 4 || this.data.idEstado == 5) {
+                                this._lockFields = true;
+                            }
+                            if ((this._permissions.create == false || this._permissions.update == false) || (this.data.idEstado == 3 || this.data.idEstado == 4 || this.data.idEstado == 5))
+                                this._lockFields = true;
+                            else
+                                this._lockFields = false;
+
                             this._modelo = this.data.idModelo;
                             this._centro = this.data.codCentroResponsabilidade;
                             this._propriedade = this.data.idPropriedade;
@@ -2877,7 +2907,32 @@
                     e.target.value = stringVal.replace(",", ".");
                 },
 
-            });
+                _viewMenuItemSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    switch (item.value) {
+                        case 1:
+                            this._openMovimentos();
+                            break;
+                        case 2:
+                            this._openCustos();
+                            break;
+                    }
+                },
+
+                _openMovimentos: function () {
+                    window.location.href = "/Viaturas/Viaturas2Movimentos/" + "?matricula=" + this.data.matricula + "&noProjeto=" + this.data.noProjeto;
+                },
+
+                _openCustos: function () {
+                    window.location.href = "/Viaturas/Viaturas2Movimentos/" + this.data.noProjeto;
+                },
+          });
         });
     </script>
 

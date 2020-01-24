@@ -1274,6 +1274,20 @@ namespace Hydra.Such.Portal.Controllers
             //    }
             //}
 
+            if (!string.IsNullOrEmpty(item.ProjectNo))
+            {
+                NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAllInDB(config.NAVDatabaseName, config.NAVCompanyName, item.ProjectNo).FirstOrDefault();
+                if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
+                {
+                    NAVClientsViewModel CLIENT = DBNAV2017Clients.GetClientById(config.NAVDatabaseName, config.NAVCompanyName, PROJ.CustomerNo);
+                    if (CLIENT != null)
+                    {
+                        item.ClientCode = CLIENT.No_;
+                        item.ClientName = CLIENT.Name;
+                    }
+                }
+            }
+
             item.GoAprove = false;
             MovimentosDeAprovação MOV = DBApprovalMovements.GetAll().Where(x => x.Número == requisitionId && x.Estado == 1).FirstOrDefault();
             if (MOV != null)

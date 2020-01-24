@@ -305,12 +305,12 @@
                    content-type="application/json"></iron-ajax>
 
         <!--<iron-ajax url="/GestaoRequisicoes/VerificarUserAprovacao"
-    last-response="{{verificarUserAprovacao}}"
-    method="post"
-    handle-as="json"
-    id="action_databound"
-    on-response="_verificarUserAprovacaoResponseProcessor"
-    content-type="application/json"></iron-ajax>-->
+        last-response="{{verificarUserAprovacao}}"
+        method="post"
+        handle-as="json"
+        id="action_databound"
+        on-response="_verificarUserAprovacaoResponseProcessor"
+        content-type="application/json"></iron-ajax>-->
 
         <iron-ajax url="/GestaoRequisicoes/GetReqAprovadores"
                    id="dlg_GetAprovadores_ajax"
@@ -382,17 +382,17 @@
                                             <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled="{{ !_isCreate }}"></vaadin-text-field>
                                         </div>
                                         <!--<div class="col-md-3" id="divLocalMarketRegions">
-                                        <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled$="{{ !_permissions.update }}">
-                                            <template>
-                                                <table width="180px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>-->
+                                            <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled$="{{ !_permissions.update }}">
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.id]]</td>
+                                                            <td width="60%"> <b>[[item.value]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>
+                                        </div>-->
                                         <div class="col-md-3 " hidden>
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                         </div>
@@ -403,15 +403,16 @@
                                                             text-path="no"
                                                             value-path="no"
                                                             fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
+                                                -s
                                             </such-selectbox>
                                         </div>
 
                                         <div class="col-lg-3">
                                             <!--<vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}" on-value-changed="_GetNoProjetoCabecalho">
-                                            <template>
-                                                <b>[[item.id]]</b>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                                <template>
+                                                    <b>[[item.id]]</b>
+                                                </template>
+                                            </vaadin-combo-box>-->
                                             <such-selectbox id="Vehicle" name="Vehicle" label="Viatura" value="{{Requisition.vehicle}}"
                                                             on-value-changed="_GetNoProjetoCabecalho"
                                                             items="[[CBVehicle]]"
@@ -420,6 +421,10 @@
                                                             fields='[{"field":"id", "name":"Matrícula"}]'
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
+                                        </div>
+
+                                        <div class="col-md-3 ">
+                                            <vaadin-text-field id="txtClientName" name="txtClientName" label="Cliente" value="{{Requisition.clientName}}" disabled></vaadin-text-field>
                                         </div>
                                     </div>
 
@@ -689,13 +694,13 @@
                                                        timeout=15000>
                                         </vaadin-upload>
                                         <!--<vaadin-upload id="UploadRequest"
-                                                   target="/GestaoRequisicoes/FileUpload/{{_requisitionid}}/{{_lineno}}"
-                                                   accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
-                                                   method="POST"
-                                                   headers="{'Accept': 'application/json'}"
-                                                   hidden="{{ !_permissions.update }}"
-                                                   timeout=15000>
-                                    </vaadin-upload>-->
+                                                       target="/GestaoRequisicoes/FileUpload/{{_requisitionid}}/{{_lineno}}"
+                                                       accept="application/vnd.ms-outlook, text/plain, application/pdf, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.template, image/jpeg, image/png, image/gif"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
+                                        </vaadin-upload>-->
                                         <!--</template>-->
                                     </div>
                                     <div class="row break_clear">
@@ -757,8 +762,8 @@
 
                                 <!--<paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>-->
                                 <!--<template is="dom-if" if="{{ !isReadOnly() }}">
-                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
-                            </template>-->
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
+                                </template>-->
                             </div>
                         </div>
 
@@ -1018,15 +1023,15 @@
                                                             on-change="_onProductInGridChanged">
                                             </such-selectbox>
                                             <!--<vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" on-change="_onProductInGridChanged" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ !_permissions.update }}">
-                    <template>
-                        <table width="180px">
-                            <tr>
-                                <td width="40%">[[item.code]]</td>
-                                <td width="60%"> <b>[[item.name]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>-->
+                                                <template>
+                                                    <table width="180px">
+                                                        <tr>
+                                                            <td width="40%">[[item.code]]</td>
+                                                            <td width="60%"> <b>[[item.name]]</b></td>
+                                                        </tr>
+                                                    </table>
+                                                </template>
+                                            </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.code}}
@@ -1257,7 +1262,7 @@
                                     <template class="header">
                                         <p class="alignCenter">Criar Consulta Mercado</p>
                                         <!--<vaadin-grid-filter path="createMarketSearchStringValue">
-            </vaadin-grid-filter>-->
+                                        </vaadin-grid-filter>-->
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
@@ -1282,6 +1287,7 @@
                                             <vaadin-checkbox checked="{{item.criarNotaEncomenda}}" disabled></vaadin-checkbox>
                                         </template>
                                     </template>
+                                    </
                                 </vaadin-grid-column>
 
                                 <vaadin-grid-column width="130px" resizable>
@@ -1300,8 +1306,11 @@
                                             <!--{{item.localMarketStringValue}}-->
                                         </template>
                                     </template>
+                                    
+
                                 </vaadin-grid-column>
 
+                                
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Enviado Pré Compra</p>
@@ -1318,6 +1327,7 @@
                                             <!--{{item.submitPrePurchaseStringValue}}-->
                                         </template>
                                     </template>
+                                    um
                                 </vaadin-grid-column>
 
                                 <vaadin-grid-column width="160px" resizable>
@@ -1399,14 +1409,14 @@
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <!--<vaadin-combo-box items="[[Suppliers]]" id="_CLGridSupplierNo" name="_CLGridSupplierNo" item-value-path="no_" item-label-path="name" value="{{item.supplierNo}}" on-change="_onSupplierInGridChanged" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.name]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.name]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>-->
                                             <such-selectbox id="_CLGridSupplierNo"
                                                             items="[[Suppliers]]"
                                                             value="{{item.supplierNo}}"
@@ -1439,14 +1449,14 @@
                                                             disabled="{{ !_permissions.update }}">
                                             </such-selectbox>
                                             <!--<vaadin-combo-box items="[[Projects]]" id="_CLGridProjectNo" name="_CLGridProjectNo" item-value-path="no" item-label-path="no" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}" on-blur="_updateRequisitionLines">
-                    <template>
-                        <paper-icon-item>
-                            <paper-item-body two-line>
-                                <div>[[item.no]]</div>
-                            </paper-item-body>
-                        </paper-icon-item>
-                    </template>
-                </vaadin-combo-box>-->
+                                                <template>
+                                                    <paper-icon-item>
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.no]]</div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                </template>
+                                            </vaadin-combo-box>-->
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.projectNo}}
@@ -1672,10 +1682,10 @@
                         </div>
 
                         <!--<div class="marginSpace">
-                        <template is="dom-if" if="{{ _permissions.update }}">
-                            <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                        </template>
-                    </div>-->
+                            <template is="dom-if" if="{{ _permissions.update }}">
+                                <paper-button raised id="btnSaveLine" class="btnEdit" on-tap="_updateRequisitionLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                            </template>
+                        </div>-->
                     </div>
                 </iron-form>
             </div>

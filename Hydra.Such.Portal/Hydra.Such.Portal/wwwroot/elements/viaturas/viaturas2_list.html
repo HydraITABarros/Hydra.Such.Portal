@@ -77,6 +77,8 @@
             </template>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
+            <paper-button class="tablinks" id="showInativas" on-tap="_showInativas"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showInativasMessage }}</paper-button>
+
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations>
                 <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
@@ -507,6 +509,16 @@
                             return {};
                         }
                     },
+                    _inativas: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _showInativasMessage: {
+                        type: String,
+                        notify: true,
+                        value: "Exibir Histórico"
+                    },
                     /*FILTROS*/
                     filter: {
                         type: Object,
@@ -535,7 +547,7 @@
                     }
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify(this._areaid);
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "inativas": false });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*FILTROS*/
@@ -573,6 +585,25 @@
                     var FileName = this.export;
                     location.href = '../Viaturas/ExportToExcelDownload_Viaturas2?sFileName=' + FileName;
                 },
+
+                _showInativas: function (item) {
+                    if (item != null) {
+                        if (this._inativas) {
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "inativas": false });
+                            this.$.grid_databound_ajax.generateRequest();
+                            this._showInativasdMessage = "Exibir Histórico";
+                        } else {
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "inativas": true });
+                            this.$.grid_databound_ajax.generateRequest();
+                            this._showInativasMessage = "Exibir Gestão";
+                        }
+
+                        this._inativas = !this._inativas;
+                    }
+                },
+
+
+
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {

@@ -396,45 +396,48 @@ namespace Hydra.Such.Portal.Controllers
             //Verificar se existem validadores para o projeto
             if (string.IsNullOrEmpty(result))
             {
-                List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, DateTime.Now);
-
-                int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
-                ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
-
-                if (ApprovalConfigurations != null && ApprovalConfigurations.Count > 0)
+                if (data.Status != (EstadoProjecto)1) //ENCOMENDA
                 {
-                    List<string> UsersToNotify = new List<string>();
-                    var approvalConfiguration = ApprovalConfigurations[0];
-                    if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
-                    {
-                        if (approvalConfiguration.UtilizadorAprovação.ToLower() == User.Identity.Name.ToLower())
-                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(User.Identity.Name).SuperiorHierarquico;
+                    List<ConfiguraçãoAprovações> ApprovalConfigurations = DBApprovalConfigurations.GetByTypeAreaValueDateAndDimensions(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, DateTime.Now);
 
-                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação.ToLower() != User.Identity.Name.ToLower())
+                    int lowLevel = ApprovalConfigurations.Where(x => x.NívelAprovação.HasValue).OrderBy(x => x.NívelAprovação.Value).Select(x => x.NívelAprovação.Value).FirstOrDefault();
+                    ApprovalConfigurations.RemoveAll(x => x.NívelAprovação != lowLevel);
+
+                    if (ApprovalConfigurations != null && ApprovalConfigurations.Count > 0)
+                    {
+                        List<string> UsersToNotify = new List<string>();
+                        var approvalConfiguration = ApprovalConfigurations[0];
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                         {
-                            ok = true;
+                            if (approvalConfiguration.UtilizadorAprovação.ToLower() == User.Identity.Name.ToLower())
+                                approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(User.Identity.Name).SuperiorHierarquico;
+
+                            if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null && approvalConfiguration.UtilizadorAprovação.ToLower() != User.Identity.Name.ToLower())
+                            {
+                                ok = true;
+                            }
+                        }
+                        else if (approvalConfiguration.GrupoAprovação.HasValue)
+                        {
+                            List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                            if (GUsers.Exists(x => x.ToLower() == User.Identity.Name.ToLower()))
+                            {
+                                GUsers.RemoveAll(x => x.ToLower() == User.Identity.Name.ToLower());
+
+                                string SH = DBUserConfigurations.GetById(User.Identity.Name).SuperiorHierarquico;
+                                if (!string.IsNullOrEmpty(SH))
+                                    GUsers.Add(SH);
+                            }
+                            GUsers = GUsers.Distinct().ToList();
+
+                            if (GUsers.Count > 0)
+                                ok = true;
                         }
                     }
-                    else if (approvalConfiguration.GrupoAprovação.HasValue)
-                    {
-                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
-                        if (GUsers.Exists(x => x.ToLower() == User.Identity.Name.ToLower()))
-                        {
-                            GUsers.RemoveAll(x => x.ToLower() == User.Identity.Name.ToLower());
 
-                            string SH = DBUserConfigurations.GetById(User.Identity.Name).SuperiorHierarquico;
-                            if (!string.IsNullOrEmpty(SH))
-                                GUsers.Add(SH);
-                        }
-                        GUsers = GUsers.Distinct().ToList();
-
-                        if (GUsers.Count > 0)
-                            ok = true;
-                    }
+                    if (ok == false)
+                        result = "Não é possivel criar o projeto, por não existirem validadores para dimensões pretendidas.";
                 }
-
-                if (ok == false)
-                    result = "Não é possivel criar o projeto, por não existirem validadores para dimensões pretendidas.";
             }
 
             return Json(result);

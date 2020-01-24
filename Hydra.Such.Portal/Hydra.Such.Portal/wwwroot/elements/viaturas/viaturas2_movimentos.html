@@ -1,0 +1,412 @@
+﻿
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-time-picker-master/vaadin-time-picker.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/neon-animation/web-animations.html">
+<link rel="import" href="~/lib/datetime-picker-master/time-element.html" />
+<link rel="import" href="~/lib/datetime-picker-master/time-picker.html" />
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-viaturasmovimentos">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+
+                .panel-heading {
+                    padding: 0 !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Viaturas/GetMovimentos"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/ExportToExcel_MovimentosViaturas2"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+                <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                <!--start ColumnToggle-->
+                <paper-menu-button class="column-toggle" no-animations>
+                    <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                    <div class="list-group" slot="dropdown-content">
+                        <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                            <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                                {{ item.value.label }}
+                            </a>
+                            <hr />
+                        </template>
+                    </div>
+                </paper-menu-button>
+                <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid column-reordering-allowed aria-label="Movimentos de Projeto" id="projectMovementTable" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.data.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="data" />
+                </template>
+                <template>
+                    {{item.data}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.tipo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="tipo" />
+                </template>
+                <template>
+                    {{item.tipo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.codigo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigo">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigo" />
+                </template>
+                <template>
+                    {{item.codigo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="500px" resizable hidden$="{{ _columns.descricao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricao" />
+                </template>
+                <template>
+                    {{item.descricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.quantidade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidade" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        {{item.quantidade}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.codigoUnidadeMedida.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoUnidadeMedida">Unidade de Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoUnidadeMedida" />
+                </template>
+                <template>
+                    {{item.codigoUnidadeMedida}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.custoUnitario.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="custoUnitario">Custo Unitário</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoUnitario" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        {{item.custoUnitario}} €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.custoTotal.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="custoTotal">Custo Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoTotal" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        {{item.custoTotal}} €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.regiao.hidden }}">
+                <template class="header" width="120px" resizable>
+                    <vaadin-grid-sorter path="regiao">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiao" />
+                </template>
+                <template>
+                    <div class="text-center">
+                        {{item.regiao}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.area.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="area">Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="area" />
+                </template>
+                <template>
+                    <div class="text-center">
+                        {{item.area}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="125px" resizable hidden$="{{ _columns.cresp.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="cresp">Centro de Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="cresp" />
+                </template>
+                <template>
+                    <div class="text-center">
+                        {{item.cresp}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="125px" resizable hidden$="{{ _columns.documentoNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="documentoNo">Nº Documento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="documentoNo" />
+                </template>
+                <template>
+                    {{item.documentoNo}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-viaturasmovimentos',
+                properties: {
+                    paramprojno: {
+                        type: String,
+                        value: ""
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    }
+                },
+
+                ready: function () {
+                    if (this.paramprojno != "") {
+                        this.$.grid_databound_ajax.body = JSON.stringify({ projectno: this.paramprojno });
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var _this = this;
+                    setTimeout(function () {
+                        var grid_el = $(_this.$.projectMovementTable);
+                        var parentHeight = $(_this).offsetParent().height();
+                        var windowHeight = $(window).height();
+                        var paddingTop = $(_this).offsetParent().css('padding-top').replace("px", "");
+                        var offsetTop = $(_this).offset().top;
+                        var height = windowHeight - offsetTop - paddingTop;
+                        $(_this.$.projectMovementTable).height(height - $(_this.$.gridheader).height());
+                    }, 3600);
+                },
+
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _exportEXCEL: function () {
+                    var result = this.$.projectMovementTable._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../ExportToExcelDownload_Viaturas2?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "data": { hidden: false, label: "Data" },
+                        "tipo": { hidden: false, label: "Tipo" },
+                        "codigo": { hidden: false, label: "Código" },
+                        "descricao": { hidden: false, label: "Descrição" },
+                        "quantidade": { hidden: false, label: "Quantidade" },
+                        "codigoUnidadeMedida": { hidden: false, label: "Unidade Medida" },
+                        "custoUnitario": { hidden: false, label: "Custo Unitário" },
+                        "custoTotal": { hidden: false, label: "Custo Total" },
+                        "regiao": { hidden: false, label: "Região" },
+                        "area": { hidden: false, label: "Área Funcional" },
+                        "cresp": { hidden: false, label: "Centro Responsabilidade" },
+                        "documentoNo": { hidden: false, label: "Nº Documento" }
+                    };
+
+                    if (localStorage["viaturasmovimentos.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["viaturasmovimentos.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["viaturasmovimentos.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+            });
+        });
+    </script>
+
+</dom-module>

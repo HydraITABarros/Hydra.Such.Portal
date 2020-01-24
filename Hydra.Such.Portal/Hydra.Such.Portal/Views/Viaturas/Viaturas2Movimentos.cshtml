@@ -1,0 +1,11 @@
+﻿
+@{
+    ViewData["Title"] = "Movimentos da Viatura - " + ViewBag.Matricula; ;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="import" href="~/elements/viaturas/viaturas2_movimentos.html">
+<x-viaturasmovimentos
+                      paramprojno="@ViewBag.ProjectNo">
+</x-viaturasmovimentos>
+
+

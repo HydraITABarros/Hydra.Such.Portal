@@ -118,5 +118,48 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static List<NAVProjectsMovementsViaturasViewModel> GetAllMovimentsByViatura(string NAVDatabaseName, string NAVCompanyName, string NoProjeto)
+        {
+            try
+            {
+                List<NAVProjectsMovementsViaturasViewModel> result = new List<NAVProjectsMovementsViaturasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@NoProjeto", NoProjeto)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017MovimentosProjetoViaturas @DBName, @CompanyName, @NoProjeto", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new NAVProjectsMovementsViaturasViewModel()
+                        {
+                            Data = (string)temp.Data,
+                            Tipo = (string)temp.Tipo,
+                            Codigo = (string)temp.Codigo,
+                            Descricao = (string)temp.Descricao,
+                            Quantidade = (decimal)temp.Quantidade,
+                            CodigoUnidadeMedida = (string)temp.CodigoUnidadeMedida,
+                            CustoUnitario = (decimal)temp.CustoUnitario,
+                            CustoTotal = (decimal)temp.CustoTotal,
+                            Regiao = (string)temp.Regiao,
+                            Area = (string)temp.Area,
+                            Cresp = (string)temp.Cresp,
+                            DocumentoNo = (string)temp.DocumentoNo,
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

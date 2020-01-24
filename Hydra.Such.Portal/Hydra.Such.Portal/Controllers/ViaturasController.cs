@@ -108,6 +108,29 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult Viaturas2Movimentos(string matricula, string noProjeto)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Viaturas);
+
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                if (!string.IsNullOrEmpty(noProjeto))
+                {
+                    ViewBag.Matricula = matricula ?? "";
+                    ViewBag.ProjectNo = noProjeto ?? "";
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("PageNotFound", "Error");
+                }
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         [HttpPost]
         public JsonResult GetList()
         {
@@ -138,9 +161,11 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-        public JsonResult GetList2()
+        public JsonResult GetList2([FromBody] JObject requestParams)
         {
-            List<Viaturas2ViewModel> result = DBViaturas2.ParseListToViewModel(DBViaturas2.GetAllToList());
+            Boolean EstadoInativas = Boolean.Parse(requestParams["inativas"].ToString());
+
+            List<Viaturas2ViewModel> result = DBViaturas2.ParseListToViewModel(DBViaturas2.GetAllInativas(EstadoInativas));
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -176,6 +201,16 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (x.Data1Matricula.HasValue) x.Idade = (DateTime.Now.Year - Convert.ToDateTime(x.Data1Matricula).Year).ToString() + " ano(s)";
             });
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetMovimentos([FromBody] JObject requestParams)
+        {
+            string ProjectNo = (string)requestParams.GetValue("projectno");
+
+            List<NAVProjectsMovementsViaturasViewModel> result = DBNAV2017Projects.GetAllMovimentsByViatura(_config.NAVDatabaseName, _config.NAVCompanyName, ProjectNo);
 
             return Json(result);
         }
@@ -271,7 +306,7 @@ namespace Hydra.Such.Portal.Controllers
                 List<ConfiguracaoTabelas> AllConfTabelas = DBConfiguracaoTabelas.GetAll();
                 List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
                 List<Viaturas2Modelos> AllModelos = DBViaturas2Modelos.GetAll();
-                List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, "");
                 List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll();
                 List<Viaturas2ParqueamentoLocal> AllPArqueamentosLocais = DBViaturas2ParqueamentoLocal.GetAll();
 
@@ -1300,6 +1335,75 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = _generalConfig.FileUploadFolder + "Viaturas\\" + "tmp\\" + sFileName;
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_MovimentosViaturas2([FromBody] List<NAVProjectsMovementsViaturasViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Viaturas\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Viaturas Movimentos");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["data"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
+                if (dp["tipo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo"); Col = Col + 1; }
+                if (dp["codigo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código"); Col = Col + 1; }
+                if (dp["descricao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
+                if (dp["quantidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Quantidade"); Col = Col + 1; }
+                if (dp["codigoUnidadeMedida"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unidade Medida"); Col = Col + 1; }
+                if (dp["custoUnitario"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1; }
+                if (dp["custoTotal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Custo Total"); Col = Col + 1; }
+                if (dp["regiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região"); Col = Col + 1; }
+                if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área Funcional"); Col = Col + 1; }
+                if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["documentoNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (NAVProjectsMovementsViaturasViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["data"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Data); Col = Col + 1; }
+                        if (dp["tipo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Tipo); Col = Col + 1; }
+                        if (dp["codigo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Codigo); Col = Col + 1; }
+                        if (dp["descricao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Descricao); Col = Col + 1; }
+                        if (dp["quantidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantidade.ToString()); Col = Col + 1; }
+                        if (dp["codigoUnidadeMedida"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodigoUnidadeMedida); Col = Col + 1; }
+                        if (dp["custoUnitario"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustoUnitario.ToString()); Col = Col + 1; }
+                        if (dp["custoTotal"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustoTotal.ToString()); Col = Col + 1; }
+                        if (dp["regiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Regiao); Col = Col + 1; }
+                        if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area); Col = Col + 1; }
+                        if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Cresp); Col = Col + 1; }
+                        if (dp["documentoNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentoNo); Col = Col + 1; }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
         }
     }
 }
