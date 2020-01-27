@@ -2616,7 +2616,7 @@
                     },
                     _viewMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Mov. Projeto" }, { value: 2, description: "Custos" }]
+                        value: [{ value: 1, description: "Mov. Projeto" }, { value: 2, description: "Mov. Contabilidade" }]
                     },
                 },
 
@@ -2930,7 +2930,7 @@
                 },
 
                 _openCustos: function () {
-                    window.location.href = "/Viaturas/Viaturas2Movimentos/" + this.data.noProjeto;
+                    window.location.href = "/Viaturas/Viaturas2Custos/" + "?matricula=" + this.data.matricula + "&noProjeto=" + this.data.noProjeto;
                 },
           });
         });
