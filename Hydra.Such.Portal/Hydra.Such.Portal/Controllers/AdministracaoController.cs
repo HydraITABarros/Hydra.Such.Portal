@@ -1876,38 +1876,39 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetTiposViaturas()
         {
-            List<TiposViaturaViewModel> result = DBTiposViaturas.ParseListToViewModel(DBTiposViaturas.GetAll());
-            return Json(result);
+            List<ConfiguracaoTabelasViewModel> result = DBConfiguracaoTabelas.ParseListToViewModel(DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO"));
+            return Json(result.OrderBy(x => x.Descricao));
         }
 
         [HttpPost]
-        public JsonResult CreateTiposViaturas([FromBody] TiposViaturaViewModel data)
+        public JsonResult CreateTiposViaturas([FromBody] ConfiguracaoTabelasViewModel data)
         {
-            TiposViatura tiposViatura = DBTiposViaturas.ParseToDB(data);
-            tiposViatura.UtilizadorCriação = User.Identity.Name;
-            DBTiposViaturas.Create(tiposViatura);
+            ConfiguracaoTabelas tiposViatura = DBConfiguracaoTabelas.ParseToDB(data);
+            tiposViatura.Tabela = "VIATURAS2_TIPO";
+            tiposViatura.ID = DBConfiguracaoTabelas.GetMaxByTabela("VIATURAS2_TIPO") + 1;
+            tiposViatura.UtilizadorCriacao = User.Identity.Name;
+            DBConfiguracaoTabelas.Create(tiposViatura);
 
             return Json(data);
         }
 
         [HttpPost]
-        public JsonResult DeleteTiposViaturas([FromBody] TiposViaturaViewModel data)
+        public JsonResult DeleteTiposViaturas([FromBody] ConfiguracaoTabelasViewModel data)
         {
-            var result = DBTiposViaturas.Delete(DBTiposViaturas.ParseToDB(data));
+            var result = DBConfiguracaoTabelas.Delete(DBConfiguracaoTabelas.ParseToDB(data));
             return Json(result);
         }
 
         [HttpPost]
-        public JsonResult UpdateTiposViaturas([FromBody] List<TiposViaturaViewModel> data)
+        public JsonResult UpdateTiposViaturas([FromBody] List<ConfiguracaoTabelasViewModel> data)
         {
-            List<TiposViatura> results = DBTiposViaturas.GetAll();
-            data.RemoveAll(x => results.Any(u => u.CódigoTipo == x.CodigoTipo && u.Descrição == x.Descricao));
+            List<ConfiguracaoTabelas> results = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO");
+            data.RemoveAll(x => results.Any(u => u.ID == x.ID && u.Descricao == x.Descricao));
 
             data.ForEach(x =>
             {
-                TiposViatura tiposViatura = DBTiposViaturas.ParseToDB(x);
-                tiposViatura.UtilizadorModificação = User.Identity.Name;
-                DBTiposViaturas.Update(tiposViatura);
+                ConfiguracaoTabelas tiposViatura = DBConfiguracaoTabelas.ParseToDB(x);
+                DBConfiguracaoTabelas.Update(tiposViatura);
             });
             return Json(data);
         }
@@ -1935,38 +1936,38 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMarcas()
         {
-            List<MarcasViewModel> result = DBMarcas.ParseListToViewModel(DBMarcas.GetAll());
-            return Json(result);
+            List<Viaturas2MarcasViewModel> result = DBViaturas2Marcas.ParseListToViewModel(DBViaturas2Marcas.GetAll());
+            return Json(result.OrderBy(x => x.Marca));
         }
 
         [HttpPost]
-        public JsonResult CreateMarca([FromBody] MarcasViewModel data)
+        public JsonResult CreateMarca([FromBody] Viaturas2MarcasViewModel data)
         {
-            Marcas toCreate = DBMarcas.ParseToDB(data);
-            toCreate.UtilizadorCriação = User.Identity.Name;
-            DBMarcas.Create(toCreate);
+            Viaturas2Marcas toCreate = DBViaturas2Marcas.ParseToDB(data);
+            toCreate.UtilizadorCriacao = User.Identity.Name;
+            DBViaturas2Marcas.Create(toCreate);
 
             return Json(data);
         }
 
         [HttpPost]
-        public JsonResult DeleteMarca([FromBody] MarcasViewModel data)
+        public JsonResult DeleteMarca([FromBody] Viaturas2MarcasViewModel data)
         {
-            var result = DBMarcas.Delete(DBMarcas.ParseToDB(data));
+            var result = DBViaturas2Marcas.Delete(DBViaturas2Marcas.ParseToDB(data));
             return Json(result);
         }
 
         [HttpPost]
-        public JsonResult UpdateMarcas([FromBody] List<MarcasViewModel> data)
+        public JsonResult UpdateMarcas([FromBody] List<Viaturas2MarcasViewModel> data)
         {
-            List<Marcas> results = DBMarcas.GetAll();
-            data.RemoveAll(x => results.Any(u => u.CódigoMarca == x.CodigoMarca && u.Descrição == x.Descricao));
+            List<Viaturas2Marcas> results = DBViaturas2Marcas.GetAll();
+            data.RemoveAll(x => results.Any(u => u.ID == x.ID && u.Marca == x.Marca));
 
             data.ForEach(x =>
             {
-                Marcas toUpdate = DBMarcas.ParseToDB(x);
-                toUpdate.UtilizadorModificação = User.Identity.Name;
-                DBMarcas.Update(toUpdate);
+                Viaturas2Marcas toUpdate = DBViaturas2Marcas.ParseToDB(x);
+                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBViaturas2Marcas.Update(toUpdate);
             });
             return Json(data);
         }
@@ -1993,38 +1994,41 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetModelos()
         {
-            List<ModelosViewModel> result = DBModelos.ParseListToViewModel(DBModelos.GetAll());
-            return Json(result);
+            List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
+            List<Viaturas2ModelosViewModel> result = DBViaturas2Modelos.ParseListToViewModel(DBViaturas2Modelos.GetAll());
+
+            result.ForEach(x => x.Marca = AllMarcas.Where(Y => Y.ID == x.IDMarca).FirstOrDefault().Marca);
+            return Json(result.OrderBy(x => x.Marca).ThenBy(y => y.Modelo));
         }
 
         [HttpPost]
-        public JsonResult CreateModelo([FromBody] ModelosViewModel data)
+        public JsonResult CreateModelo([FromBody] Viaturas2ModelosViewModel data)
         {
-            Modelos toCreate = DBModelos.ParseToDB(data);
-            toCreate.UtilizadorCriação = User.Identity.Name;
-            DBModelos.Create(toCreate);
+            Viaturas2Modelos toCreate = DBViaturas2Modelos.ParseToDB(data);
+            toCreate.UtilizadorCriacao = User.Identity.Name;
+            DBViaturas2Modelos.Create(toCreate);
 
             return Json(data);
         }
 
         [HttpPost]
-        public JsonResult DeleteModelo([FromBody] ModelosViewModel data)
+        public JsonResult DeleteModelo([FromBody] Viaturas2ModelosViewModel data)
         {
-            var result = DBModelos.Delete(DBModelos.ParseToDB(data));
+            var result = DBViaturas2Modelos.Delete(DBViaturas2Modelos.ParseToDB(data));
             return Json(result);
         }
 
         [HttpPost]
-        public JsonResult UpdateModelos([FromBody] List<ModelosViewModel> data)
+        public JsonResult UpdateModelos([FromBody] List<Viaturas2ModelosViewModel> data)
         {
-            List<Modelos> results = DBModelos.GetAll();
-            data.RemoveAll(x => results.Any(u => u.CódigoModelo == x.CodigoModelo && u.Descrição == x.Descricao));
+            List<Viaturas2Modelos> results = DBViaturas2Modelos.GetAll();
+            data.RemoveAll(x => results.Any(u => u.ID == x.ID && u.Modelo == x.Modelo));
 
             data.ForEach(x =>
             {
-                Modelos toUpdate = DBModelos.ParseToDB(x);
-                toUpdate.UtilizadorModificação = User.Identity.Name;
-                DBModelos.Update(toUpdate);
+                Viaturas2Modelos toUpdate = DBViaturas2Modelos.ParseToDB(x);
+                toUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBViaturas2Modelos.Update(toUpdate);
             });
             return Json(data);
         }

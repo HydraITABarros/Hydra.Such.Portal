@@ -150,7 +150,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" id="page_GetFunctionalAreaCode_ajax" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" id="page_GetResponsabilityCenterCode_ajax" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" id="page_GetRegionCode_ajax" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetViaturas" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturasForPreReq" last-response="{{CBVehicle}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{CBJobNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{CBVendor}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPlaces" last-response="{{CBLocal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -466,9 +466,9 @@
                                             <such-selectbox id="Vehicle" name="Vehicle" label="Viatura" value="{{data.vehicle}}"
                                                             on-value-changed="_GetNoProjetoCabecalho"
                                                             items="[[CBVehicle]]"
-                                                            text-path="id"
-                                                            value-path="id"
-                                                            fields='[{"field":"id", "name":"Matrícula"}]'>
+                                                            text-path="matricula"
+                                                            value-path="matricula"
+                                                            fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estado", "name":"Estado"}, {"field":"marca", "name":"Marca"}, {"field":"modelo", "name":"Modelo"}]'>
                                             </such-selectbox>
                                         </div>
 
@@ -740,9 +740,9 @@
                                     <div class="col-lg-2">
                                         <such-selectbox id="_VehicleLines" on-value-changed="_GetNoProjetoLinha" label="Viatura"
                                                         items="[[CBVehicle]]"
-                                                        text-path="id"
-                                                        value-path="id"
-                                                        fields='[{"field":"id", "name":"Matrícula"}]'
+                                                        text-path="matricula"
+                                                        value-path="matricula"
+                                                        fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estado", "name":"Estado"}, {"field":"marca", "name":"Marca"}, {"field":"modelo", "name":"Modelo"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -1001,9 +1001,9 @@
                                                 <such-selectbox id="_CLGridVehicle" value="{{item.vehicle}}"
                                                                 items="[[CBVehicle]]"
                                                                 on-change="_updateLinhaPreRequisicao"
-                                                                text-path="id"
-                                                                value-path="id"
-                                                                fields='[{"field":"id", "name":"Matrícula"}]'
+                                                                text-path="matricula"
+                                                                value-path="matricula"
+                                                                fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estado", "name":"Estado"}, {"field":"marca", "name":"Marca"}, {"field":"modelo", "name":"Modelo"}]'
                                                                 disabled="{{ !_permissions.update }}">
                                                 </such-selectbox>
                                             </template>
@@ -2132,7 +2132,7 @@
 
                 _clFormatvehicle: function (param) {
                     if (param != undefined && this.CBVehicle != undefined) {
-                        var sel = this.CBVehicle.find(x => x.id == param);
+                        var sel = this.CBVehicle.find(x => x.matricula == param);
                         if (sel != undefined) {
                             return sel.id;
                         }

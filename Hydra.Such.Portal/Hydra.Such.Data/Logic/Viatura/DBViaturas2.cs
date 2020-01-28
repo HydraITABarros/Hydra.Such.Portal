@@ -24,16 +24,16 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static List<Viaturas2> GetAllInativas(bool Inativas)
+        public static List<Viaturas2> GetAllAtivas(bool Ativas = true)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    if (Inativas == true)
-                        return ctx.Viaturas2.Where(x => x.IDEstado == 3 || x.IDEstado == 4 || x.IDEstado == 5).ToList();
-                    else
+                    if (Ativas == true)
                         return ctx.Viaturas2.Where(x => x.IDEstado == 1 || x.IDEstado == 2 || x.IDEstado == 6).ToList();
+                    else
+                        return ctx.Viaturas2.Where(x => x.IDEstado == 3 || x.IDEstado == 4 || x.IDEstado == 5).ToList();
                 }
             }
             catch (Exception e)

@@ -461,7 +461,7 @@
                                             <vaadin-date-picker label="Data Inicial Prevista" id="mStartData" name="startData" value="{{data.startData}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-1" style="padding:12px; text-align:center">
-                                            <paper-button class="btnSave" raised on-tap="_dataInicioChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                            <paper-button id="btn_StartData" name="btn_StartData" class="btnSave" raised on-tap="_dataInicioChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
                                         </div>
                                     </div>
                                     <div class="row break_clear">
@@ -469,7 +469,7 @@
                                             <vaadin-date-picker label="Data Expiração Prevista" id="DueDate" name="DueDate" value="{{data.dueDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                         <div class="col-md-1" style="padding:12px; text-align:center">
-                                            <paper-button class="btnSave" raised on-tap="_dataFimChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                            <paper-button id="btn_DueDate" name="btn_DueDate" class="btnSave" raised on-tap="_dataFimChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
                                         </div>
                                         <div class="col-md-3 ">
                                             <vaadin-combo-box items="[[CBProposalsStatus]]" id="mStatus" item-value-path="id" item-label-path="value" value="{{data.status}}" label="Estado" disabled>
@@ -2593,7 +2593,9 @@
                         _self.$.txtRelatedContractNo.disabled = true;
                         _self.$.versionNo.disabled = true;
                         _self.$.mStartData.disabled = true;
+                        _self.$.btn_StartData.disabled = true;
                         _self.$.DueDate.disabled = true;
+                        _self.$.btn_DueDate.disabled = true;
                         _self.$.mStatus.disabled = true;
                         _self.$.mCustomerShipmentDate.disabled = true;
                         _self.$.mProposalChangeDate.disabled = true;
@@ -2685,7 +2687,9 @@
                         _self.$.txtRelatedContractNo.disabled = true;
                         _self.$.versionNo.disabled = true;
                         _self.$.mStartData.disabled = true;
+                        _self.$.btn_StartData.disabled = true;
                         _self.$.DueDate.disabled = true;
+                        _self.$.btn_DueDate.disabled = true;
                         _self.$.mStatus.disabled = true;
                         _self.$.mCustomerShipmentDate.disabled = true;
                         _self.$.mProposalChangeDate.disabled = true;

@@ -174,12 +174,12 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetProjetoNo([FromBody] string Matricula)
         {
-            Viaturas viatura = new Viaturas();
+            Viaturas2 viatura = new Viaturas2();
             string ProjetoNo = "";
 
             if (!string.IsNullOrEmpty(Matricula))
             {
-                viatura = DBViatura.GetByMatricula(Matricula);
+                viatura = DBViaturas2.GetByMatricula(Matricula);
                 ProjetoNo = viatura.NoProjeto ?? "";
             }
 
@@ -3000,10 +3000,10 @@ namespace Hydra.Such.Portal.Controllers
 
             if (!string.IsNullOrEmpty(data.Vehicle))
             {
-                Viaturas viatura = DBViatura.GetByMatricula(data.Vehicle);
-                if (viatura != null && (viatura.Estado == 2 || viatura.Estado == 3)) //2 = Bloqueado 3 = Abatido
+                Viaturas2 viatura = DBViaturas2.GetByMatricula(data.Vehicle);
+                if (viatura != null && (viatura.IDEstado == 3 || viatura.IDEstado == 4 || viatura.IDEstado == 5)) //3 = Devolvido 4 = Vendido 5 = Abatido
                 {
-                    return Json("Não pode utilizar a viatura " + data.Vehicle + " pois a mesma encontra-se Bloqueada ou Abatida.");
+                    return Json("Não pode utilizar a viatura " + data.Vehicle + " pois a mesma encontra-se Devolvido, Vendido ou Abatido.");
                 }
 
                 List<LinhasPréRequisição> PreLinhas = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
@@ -3016,8 +3016,8 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (!string.IsNullOrEmpty(x.Viatura))
                             {
-                                viatura = DBViatura.GetByMatricula(x.Viatura);
-                                if (viatura != null && (viatura.Estado == 2 || viatura.Estado == 3)) //2 = Bloqueado 3 = Abatido
+                                viatura = DBViaturas2.GetByMatricula(x.Viatura);
+                                if (viatura != null && (viatura.IDEstado == 3 || viatura.IDEstado == 4 || viatura.IDEstado == 5)) //3 = Devolvido 4 = Vendido 5 = Abatido
                                 {
                                     erro = true;
                                 }
@@ -3026,7 +3026,7 @@ namespace Hydra.Such.Portal.Controllers
                     });
                     if (erro == true)
                     {
-                        return Json("Nas Linhas, não pode utilizar a viatura " + viatura.Matrícula + " pois a mesma encontra-se Bloqueada ou Abatida.");
+                        return Json("Nas Linhas, não pode utilizar a viatura " + viatura.Matricula + " pois a mesma encontra-se Devolvido, Vendido ou Abatido.");
                     }
                 }
             }

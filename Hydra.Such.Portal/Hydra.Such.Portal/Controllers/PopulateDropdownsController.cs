@@ -304,10 +304,21 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetFolhaDeHoraViaturasMatriculas()
         {
-            List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
+            List<DDMessageString> result = DBViaturas2.GetAllToList().Select(x => new DDMessageString()
             {
-                id = x.Matrícula,
-                value = x.Matrícula
+                id = x.Matricula,
+                value = x.Matricula
+            }).ToList();
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetFolhaDeHoraViaturas2Matriculas()
+        {
+            List<DDMessageString> result = DBViaturas2.GetAllAtivas(true).Select(x => new DDMessageString()
+            {
+                id = x.Matricula,
+                value = x.Matricula
             }).ToList();
             return Json(result);
         }
@@ -1833,23 +1844,23 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetViaturasMarcas()
         {
-            List<DDMessageString> result = DBMarcas.GetAll().Select(x => new DDMessageString()
+            List<DDMessageString> result = DBViaturas2Marcas.GetAll().Select(x => new DDMessageString()
             {
-                id = x.CódigoMarca.ToString(),
-                value = x.Descrição
+                id = x.ID.ToString(),
+                value = x.Marca
             }).ToList();
-            return Json(result);
+            return Json(result.OrderBy(y => y.value));
         }
 
         [HttpPost]
         public JsonResult GetViaturasModelos()
         {
-            List<DDMessageString> result = DBModelos.GetAll().Select(x => new DDMessageString()
+            List<DDMessageString> result = DBViaturas2Modelos.GetAll().Select(x => new DDMessageString()
             {
-                id = x.CódigoModelo.ToString(),
-                value = x.Descrição
+                id = x.ID.ToString(),
+                value = x.Modelo
             }).ToList();
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
 
@@ -1857,12 +1868,12 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetViaturasModelosByMarca([FromBody]DDMessage marca)
         {
 
-            List<DDMessageString> result = DBModelos.GetAllByMarca(marca.id).Select(x => new DDMessageString()
+            List<DDMessageString> result = DBViaturas2Modelos.GetAllByMarca(marca.id).Select(x => new DDMessageString()
             {
-                id = x.CódigoModelo.ToString(),
-                value = x.Descrição
+                id = x.ID.ToString(),
+                value = x.Modelo
             }).ToList();
-            return Json(result);
+            return Json(result.OrderBy(x => x.value));
         }
 
         [HttpPost]
@@ -1908,27 +1919,27 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetViaturasForPreReq()
         {
-            List<ViaturasViewModel> result = DBViatura.ParseListToViewModel(DBViatura.GetAllToList().Where(x => x.Estado != 3).ToList());
-            List<Marcas> AllMarcas = DBMarcas.GetAll();
-            List<Modelos> AllModelos = DBModelos.GetAll();
+            List<Viaturas2ViewModel> result = DBViaturas2.ParseListToViewModel(DBViaturas2.GetAllAtivas(true));
+            List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
+            List<Viaturas2Modelos> AllModelos = DBViaturas2Modelos.GetAll();
 
             result.ForEach(x =>
             {
-                x.EstadoDescricao = x.Estado != null ? EnumerablesFixed.ViaturasEstado.Where(y => y.Id == x.Estado).FirstOrDefault().Value : "";
-                x.MarcaDescricao = !string.IsNullOrEmpty(x.CodigoMarca) ? AllMarcas.Where(y => y.CódigoMarca == Convert.ToInt32(x.CodigoMarca)).FirstOrDefault().Descrição : "";
-                x.ModeloDescricao = !string.IsNullOrEmpty(x.CodigoModelo) ? AllModelos.Where(y => y.CódigoModelo == Convert.ToInt32(x.CodigoModelo)).FirstOrDefault().Descrição : "";
+                x.Estado = x.IDEstado != null ? DBConfiguracaoTabelas.GetByTabelaAndID("VIATURAS2_ESTADO", (int)x.IDEstado).Descricao : "";
+                x.Marca = x.IDMarca != null ? AllMarcas.Where(y => y.ID == (int)x.IDMarca).FirstOrDefault().Marca : "";
+                x.Modelo = x.IDModelo != null ? AllModelos.Where(y => y.ID == (int)x.IDModelo).FirstOrDefault().Modelo : "";
             });
 
-            return Json(result.OrderBy(x => x.Estado).ToList());
+            return Json(result.OrderBy(x => x.Estado));
         }
 
         [HttpPost]
         public JsonResult GetViaturas()
         {
-            List<DDMessageString> result = DBViatura.GetAllToList().Select(x => new DDMessageString()
+            List<DDMessageString> result = DBViaturas2.GetAllToList().Select(x => new DDMessageString()
             {
-                id = x.Matrícula ?? "",
-                value = x.Matrícula ?? ""
+                id = x.Matricula ?? "",
+                value = x.Matricula ?? ""
             }).ToList();
             return Json(result);
         }

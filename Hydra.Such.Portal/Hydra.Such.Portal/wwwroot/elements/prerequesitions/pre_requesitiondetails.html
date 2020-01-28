@@ -474,7 +474,7 @@
                                                             items="[[CBVehicle]]"
                                                             text-path="matricula"
                                                             value-path="matricula"
-                                                            fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estadoDescricao", "name":"Estado"}, {"field":"marcaDescricao", "name":"Marca"}, {"field":"modeloDescricao", "name":"Modelo"}]'>
+                                                            fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estado", "name":"Estado"}, {"field":"marca", "name":"Marca"}, {"field":"modelo", "name":"Modelo"}]'>
                                             </such-selectbox>
                                         </div>
 
@@ -858,7 +858,7 @@
                                                         items="[[CBVehicle]]"
                                                         text-path="matricula"
                                                         value-path="matricula"
-                                                        fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estadoDescricao", "name":"Estado"}, {"field":"marcaDescricao", "name":"Marca"}, {"field":"modeloDescricao", "name":"Modelo"}]'>
+                                                        fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estado", "name":"Estado"}, {"field":"marca", "name":"Marca"}, {"field":"modelo", "name":"Modelo"}]'
                                                         disabled="{{ !_permissions.update }}">
                                         </such-selectbox>
                                     </div>
@@ -1221,7 +1221,7 @@
                                                                 on-change="_updateLinhaPreRequisicao"
                                                                 text-path="matricula"
                                                                 value-path="matricula"
-                                                                fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estadoDescricao", "name":"Estado"}, {"field":"marcaDescricao", "name":"Marca"}, {"field":"modeloDescricao", "name":"Modelo"}]'>
+                                                                fields='[{"field":"matricula", "name":"Matrícula"}, {"field":"estado", "name":"Estado"}, {"field":"marca", "name":"Marca"}, {"field":"modelo", "name":"Modelo"}]'>
                                                                 disabled="{{ !_permissions.update }}">
                                                 </such-selectbox>
                                             </template>
@@ -2490,7 +2490,7 @@
 
                 _clFormatvehicle: function (param) {
                     if (param != undefined && this.CBVehicle != undefined) {
-                        var sel = this.CBVehicle.find(x => x.id == param);
+                        var sel = this.CBVehicle.find(x => x.matricula == param);
                         if (sel != undefined) {
                             return sel.id;
                         }

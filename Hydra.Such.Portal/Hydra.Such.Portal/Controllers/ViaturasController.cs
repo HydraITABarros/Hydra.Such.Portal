@@ -186,9 +186,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetList2([FromBody] JObject requestParams)
         {
-            Boolean EstadoInativas = Boolean.Parse(requestParams["inativas"].ToString());
+            Boolean EstadoAtivas = Boolean.Parse(requestParams["ativas"].ToString());
 
-            List<Viaturas2ViewModel> result = DBViaturas2.ParseListToViewModel(DBViaturas2.GetAllInativas(EstadoInativas));
+            List<Viaturas2ViewModel> result = DBViaturas2.ParseListToViewModel(DBViaturas2.GetAllAtivas(EstadoAtivas));
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -225,7 +225,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.Data1Matricula.HasValue) x.Idade = (DateTime.Now.Year - Convert.ToDateTime(x.Data1Matricula).Year).ToString() + " ano(s)";
             });
 
-            return Json(result);
+            return Json(result.OrderBy(x => x.Matricula));
         }
 
         [HttpPost]

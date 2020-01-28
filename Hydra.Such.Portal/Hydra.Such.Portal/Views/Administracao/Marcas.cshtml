@@ -104,7 +104,7 @@
                 <div class="panel-body">
                     <div class="row" id="marcasCreate">
                         <div class="col-lg-2">
-                            <vaadin-text-field id="descricao" value="{{description}}" label="Descrição" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                            <vaadin-text-field id="descricao" value="{{description}}" label="Marca" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
                         </div>
 
                         <div class="col-lg-2 alignPoga">
@@ -119,31 +119,31 @@
         <vaadin-grid id="gridMarcas" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="codigoMarca">Código</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoMarca" />
+                    <vaadin-grid-sorter path="id">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="id" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.codigoMarca}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.id}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricao" />
+                    <vaadin-grid-sorter path="marca">Marca</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="marca" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.descricao}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
+                    <vaadin-text-field value="{{item.marca}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataHoraCriacao">Data/Hora Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraCriacao" />
+                    <vaadin-grid-sorter path="dataCriacaoTexto">Data/Hora Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataCriacaoTexto" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.dataHoraCriacao}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.dataCriacaoTexto}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -159,11 +159,11 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataHoraModificacao">Data/Hora Modificação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataHoraModificacao" />
+                    <vaadin-grid-sorter path="dataModificacaoTexto">Data/Hora Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataModificacaoTexto" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.dataHoraModificacao}}" disabled></vaadin-text-field>
+                    <vaadin-text-field value="{{item.dataModificacaoTexto}}" disabled></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -273,7 +273,7 @@
                     },
                     _create: function () {
                         if (this._validateData("marcasCreate")) {
-                            this.$.ajax_create.body = JSON.stringify({ descricao: this.$.descricao.value });
+                            this.$.ajax_create.body = JSON.stringify({ marca: this.$.descricao.value });
                             this.$.ajax_create.generateRequest();
                             this.$.gridMarcas.clearCache();
                         }

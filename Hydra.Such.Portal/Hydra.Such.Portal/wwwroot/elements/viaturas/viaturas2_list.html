@@ -547,7 +547,7 @@
                     }
                 },
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "inativas": false });
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*FILTROS*/
@@ -589,11 +589,11 @@
                 _showInativas: function (item) {
                     if (item != null) {
                         if (this._inativas) {
-                            this.$.grid_databound_ajax.body = JSON.stringify({ "inativas": false });
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
                             this.$.grid_databound_ajax.generateRequest();
                             this._showInativasdMessage = "Exibir Histórico";
                         } else {
-                            this.$.grid_databound_ajax.body = JSON.stringify({ "inativas": true });
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": false });
                             this.$.grid_databound_ajax.generateRequest();
                             this._showInativasMessage = "Exibir Gestão";
                         }

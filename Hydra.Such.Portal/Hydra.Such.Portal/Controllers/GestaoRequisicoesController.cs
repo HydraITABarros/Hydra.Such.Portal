@@ -1414,7 +1414,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (!string.IsNullOrEmpty(linha.Vehicle))
                             {
-                                Viaturas Viatura = DBViatura.GetByMatricula(linha.Vehicle);
+                                Viaturas2 Viatura = DBViaturas2.GetByMatricula(linha.Vehicle);
                                 if (Viatura != null)
                                 {
                                     linha.ProjectNo = Viatura.NoProjeto;

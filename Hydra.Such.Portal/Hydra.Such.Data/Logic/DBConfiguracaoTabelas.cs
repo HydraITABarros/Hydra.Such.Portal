@@ -54,6 +54,21 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static int GetMaxByTabela(string Tabela)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ConfiguracaoTabelas.Where(p => p.Tabela == Tabela).OrderByDescending(x => x.ID).FirstOrDefault() != null ? ctx.ConfiguracaoTabelas.Where(p => p.Tabela == Tabela).OrderByDescending(x => x.ID).FirstOrDefault().ID : 0;
+                }
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+        }
+
         public static ConfiguracaoTabelas Create(ConfiguracaoTabelas ObjectToCreate)
         {
             try
