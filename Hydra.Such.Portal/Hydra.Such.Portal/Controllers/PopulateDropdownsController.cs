@@ -2185,6 +2185,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2InspecoesResultados()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_INSPECAO_RESULTADO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
         public JsonResult GetAjudaCustoTipoCusto()
         {
             List<EnumData> result = EnumerablesFixed.AjudaCustoTipoCusto;

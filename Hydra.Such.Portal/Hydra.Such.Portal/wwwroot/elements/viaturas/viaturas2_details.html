@@ -164,6 +164,7 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaTiposPropriedades" last-response="{{ListaTiposPropriedades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaSegmentacoes" last-response="{{ListaSegmentacoes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaLocaisParqueamento" last-response="{{ListaLocaisParqueamento}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2InspecoesResultados" last-response="{{ListaInspecoesResultados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{ListaProjetos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -194,6 +195,34 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--INSPEÇÕES-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabInspecao"
+                   last-response="{{tabInspecao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabinspecao_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Inspecao"
+                   last-response="{{createViaturas2InspecaoResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Inspecao_ajax"
+                   on-response="_responseCreateViaturas2Inspecao"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Inspecao"
+                   last-response="{{deleteViaturas2InspecaoResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Inspecao_ajax"
+                   on-response="_responseDeleteViaturas2Inspecao"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--PopulateDropdowns-->
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaModelos"
                    last-response="{{ListaModelos}}"
                    method="post"
@@ -551,7 +580,6 @@
                                                     </paper-icon-item>
                                                 </template>
                                             </vaadin-combo-box>
-
                                         </div>
 
                                         <div class="col-md-2">
@@ -1123,14 +1151,14 @@
 
                                 <!--Inspeção-->
                                 <paper-collapse-item class="panel-heading" header="Inspeção" closed>
-                                    <vaadin-grid id="gridInspecao" aria-label="gridInspecao" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="gridInspecao" name="gridInspecao" aria-label="gridInspecao" items="{{ tabInspecao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInspecao">Data Inspeção</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataInspecao" />
+                                                <vaadin-grid-sorter path="dataInspecaoTexto">Data Inspeção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInspecaoTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataInspecao}}
+                                                {{item.dataInspecaoTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1156,50 +1184,68 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="proximaInspecao">Próxima Inspeção</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="proximaInspecao" />
+                                                <vaadin-grid-sorter path="proximaInspecaoTexto">Próxima Inspeção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="proximaInspecaoTexto" />
                                             </template>
                                             <template>
-                                                {{item.proximaInspecao}}
+                                                {{item.proximaInspecaoTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="observacoes" />
+                                                <vaadin-grid-sorter path="observacao">Observações</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacao" />
                                             </template>
                                             <template>
-                                                {{item.observacoes}}
+                                                {{item.observacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteInspecao" class="btnRemove tableBtn" raised on-tap="_deleteInspecao" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInspecao" name="dataInspecao" label="Data Inspeção" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="inspecao_dataInspecao" name="inspecao_dataInspecao" label="Data Inspeção" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data Inspeção é de preenchimento obrigatório"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1">
+                                                    <vaadin-text-field id="inspecao_kmInspecao" name="inspecao_kmInspecao" label="Km Inspeção" value="" disabled="{{ _lockFields }}" type="number" class="alignRight" required error-message="O campo Km Inspeção é de preenchimento obrigatório"><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="kmInspecao" name="kmInspecao" label="Km Inspeção" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">km</div></vaadin-text-field>
+                                                    <vaadin-combo-box id="inspecao_resultado" name="inspecao_resultado" items="[[ListaInspecoesResultados]]" item-value-path="id" item-label-path="value" value="" label="Resultado" disabled="{{ _lockFields }}" required error-message="O campo Resultado é de preenchimento obrigatório">
+                                                        <template>
+                                                            <paper-icon-item>
+                                                                <paper-item-body two-line>
+                                                                    <div>[[item.value]]</div>
+                                                                </paper-item-body>
+                                                            </paper-icon-item>
+                                                        </template>
+                                                    </vaadin-combo-box>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="resultado" name="resultado" label="Resultado" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    <vaadin-date-picker id="inspecao_proximaInspecao" name="inspecao_proximaInspecao" label="Próxima Inspeção" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Próxima Inspeção é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
-                                                <div class="col-md-2">
-                                                    <vaadin-date-picker id="proximaInspecao" name="proximaInspecao" label="Próxima Inspeção" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="inspecao_observacoes" name="inspecao_observacoes" label="Observações" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
                                                 </div>
 
-                                                <div class="col-md-2">
-                                                    <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                                </div>
-
-                                                <div class="col-md-2" style="padding-top:15px">
-                                                    <paper-button raised id="btnInspecao" class="btnSave" on-tap="_createInspecao" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btnInspecao" class="btnSave" on-tap="_createInspecao" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -2021,24 +2067,401 @@
                             <!--<div>-->
                             <!--Contrato-->
                             <!--<paper-collapse-item class="panel-heading" header="Contrato" closed>
-                                <vaadin-grid id="gridContratoHistorico" aria-label="gridContratoHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                            <vaadin-grid id="gridContratoHistorico" aria-label="gridContratoHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="noContrato" />
+                                    </template>
+                                    <template>
+                                        {{item.noContrato}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="kmIniciais">Km Iniciais</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="kmIniciais" />
+                                    </template>
+                                    <template>
+                                        {{item.kmIniciais}} km
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="kmContratados">Km Contratados</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="kmContratados" />
+                                    </template>
+                                    <template>
+                                        {{item.kmContratados}} km
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="precoKmAdicionalSemIVA">Preço Km Adicional Sem IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="precoKmAdicionalSemIVA" />
+                                    </template>
+                                    <template>
+                                        {{item.precoKmAdicionalSemIVA}} €
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="precoKmNaoPercorridoSemIVA">Preço Km Não Percorrido Sem IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="precoKmNaoPercorridoSemIVA" />
+                                    </template>
+                                    <template>
+                                        {{item.precoKmNaoPercorridoSemIVA}} €
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="kmMaximo">Km Máximo</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="kmMaximo" />
+                                    </template>
+                                    <template>
+                                        {{item.kmMaximo}} km
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="dataInicio">Data de Início</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="dataInicio" />
+                                    </template>
+                                    <template>
+                                        {{item.dataInicio}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="dataTermo">Data de Termo</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="dataTermo" />
+                                    </template>
+                                    <template>
+                                        {{item.dataTermo}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="inicioPagamento">Início Pagamento</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="inicioPagamento" />
+                                    </template>
+                                    <template>
+                                        {{item.inicioPagamento}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="noPagamentos">Nº Pagamentos</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="noPagamentos" />
+                                    </template>
+                                    <template>
+                                        {{item.noPagamentos}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="periodicidade">Periodicidade</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="periodicidade" />
+                                    </template>
+                                    <template>
+                                        {{item.periodicidade}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="totalSemIVA">Total Sem IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="totalSemIVA" />
+                                    </template>
+                                    <template>
+                                        {{item.totalSemIVA}} €
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="iva">IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="iva" />
+                                    </template>
+                                    <template>
+                                        {{item.iva}} €
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="totalComIVA">Total Com IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="totalComIVA" />
+                                    </template>
+                                    <template>
+                                        {{item.totalComIVA}} €
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="franquiaSemIVA">Franquia Sem IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="franquiaSemIVA" />
+                                    </template>
+                                    <template>
+                                        {{item.franquiaSemIVA}} €
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="responsavelContrato">Responsável Contrato</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="responsavelContrato" />
+                                    </template>
+                                    <template>
+                                        {{item.responsavelContrato}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="observacoesContrato">Observações Contrato</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="observacoesContrato" />
+                                    </template>
+                                    <template>
+                                        {{item.observacoesContrato}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                            </vaadin-grid>
+
+                            <div style="padding-left:50px">
+                                <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                    <div class="row break_clear">
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="noContrato" name="noContrato" label="Nº Contrato" value=""></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="kmIniciais" name="kmIniciais" label="Km Iniciais" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="kmContratados" name="kmContratados" label="Km Contratados" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="precoKmAdicionalSemIVA" name="precoKmAdicionalSemIVA" label="Preço Km Adicional Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="precoKmNaoPercorridoSemIVA" name="precoKmNaoPercorridoSemIVA" label="Preço Km Não Percorrido Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="kmMaximo" name="kmMaximo" label="Km Máximo" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data de Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="dataTermo" name="dataTermo" label="Data de Termo" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="inicioPagamento" name="inicioPagamento" label="Início Pagamento" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="noPagamentos" name="noPagamentos" label="Nº Pagamentos" value=""></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="periodicidade" name="periodicidade" label="Periodicidade" value=""></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="totalSemIVA" name="totalSemIVA" label="Total Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="iva" name="iva" label="IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="totalComIVA" name="totalComIVA" label="Total Com IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="franquiaSemIVA" name="franquiaSemIVA" label="Franquia Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="responsavelContrato" name="responsavelContrato" label="Responsável Contrato" value=""></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="observacoesContrato" name="observacoesContrato" label="Observações Contrato" value=""></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-1" style="padding-top:15px">
+                                            <paper-button raised id="btnContratoHistorico" class="btnSave" on-tap="_createContratoHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </div>
+                                    </div>
+                                </paper-collapse-item>
+                            </div>
+                        </paper-collapse-item>-->
+                            <!--Alterações ao Contrato-->
+                            <!--<paper-collapse-item class="panel-heading" header="Alterações ao Contrato" closed>
+                            <vaadin-grid id="gridAlteracoesContratoHistorico" aria-label="gridAlteracoesContratoHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="dataPedido">Data do Pedido</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="dataPedido" />
+                                    </template>
+                                    <template>
+                                        {{item.dataPedido}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="autorizadoFINLOG">Autorizado FINLOG</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="autorizadoFINLOG" />
+                                    </template>
+                                    <template>
+                                        {{item.autorizadoFINLOG}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="dataAlteracaoKm">Data Alteração Km</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="dataAlteracaoKm" />
+                                    </template>
+                                    <template>
+                                        {{item.dataAlteracaoKm}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="kmAlteracao">Km Alteração</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="kmAlteracao" />
+                                    </template>
+                                    <template>
+                                        {{item.kmAlteracao}} km
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="mensalidadeAlteracao">Mensalidade Alteração</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="mensalidadeAlteracao" />
+                                    </template>
+                                    <template>
+                                        {{item.mensalidadeAlteracao}}
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="notas">Notas</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="notas" />
+                                    </template>
+                                    <template>
+                                        {{item.notas}}
+                                    </template>
+                                </vaadin-grid-column>
+                            </vaadin-grid>
+
+                            <div style="padding-left:50px">
+                                <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                    <div class="row break_clear">
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="dataPedido" name="dataPedido" label="Data do Pedido" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="autorizadoFINLOG" name="autorizadoFINLOG" label="Autorizado FINLOG" value=""></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-date-picker id="dataAlteracaoKm" name="dataAlteracaoKm" label="Data Alteração Km" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="kmAlteracao" name="kmAlteracao" label="Km Alteração" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="mensalidadeAlteracao" name="mensalidadeAlteracao" label="Mensalidade Alteração" value=""></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="notas" name="notas" label="Notas" value=""></vaadin-text-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                        <div class="col-md-1" style="padding-top:15px">
+                                            <paper-button raised id="btnAlteracoesContratoHistorico" class="btnSave" on-tap="_createAlteracoesContratoHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </div>
+                                    </div>
+                                </paper-collapse-item>
+                            </div>
+                        </paper-collapse-item>-->
+                            <!--Resumo Km Viatura Renting para Rotação de Viaturas (Apenas Consulta)-->
+                            <!--<paper-collapse-item class="panel-heading" header="Resumo Km Viatura Renting para Rotação de Viaturas (Apenas Consulta)" closed>
+                                <vaadin-grid id="gridResumoViaturaRenting" aria-label="gridResumoViaturaRenting" items="" class="grid" multi-sort="true" column-reordering-allowed>
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="noContrato" />
+                                            <vaadin-grid-sorter path="inicioContrato">Início Contrato</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="inicioContrato" />
                                         </template>
                                         <template>
-                                            {{item.noContrato}}
+                                            {{item.inicioContrato}}
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="kmIniciais">Km Iniciais</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="kmIniciais" />
+                                            <vaadin-grid-sorter path="termoContrato">Termo Contrato</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="termoContrato" />
                                         </template>
                                         <template>
-                                            {{item.kmIniciais}} km
+                                            {{item.termoContrato}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="noDiasContrato">Nº Dias do Contrato</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="noDiasContrato" />
+                                        </template>
+                                        <template>
+                                            {{item.noDiasContrato}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column resizable>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="noDiasParaTermoContrato">Nº Dias para Termo Contrato</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="noDiasParaTermoContrato" />
+                                        </template>
+                                        <template>
+                                            {{item.noDiasParaTermoContrato}}
                                         </template>
                                     </vaadin-grid-column>
 
@@ -2054,513 +2477,136 @@
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="precoKmAdicionalSemIVA">Preço Km Adicional Sem IVA</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="precoKmAdicionalSemIVA" />
+                                            <vaadin-grid-sorter path="kmUltimaLeitura">Km na Última Leitura</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="kmUltimaLeitura" />
                                         </template>
                                         <template>
-                                            {{item.precoKmAdicionalSemIVA}} €
+                                            {{item.kmUltimaLeitura}} km
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="precoKmNaoPercorridoSemIVA">Preço Km Não Percorrido Sem IVA</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="precoKmNaoPercorridoSemIVA" />
+                                            <vaadin-grid-sorter path="dataUltimaLeitura">Data Última Leitura</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataUltimaLeitura" />
                                         </template>
                                         <template>
-                                            {{item.precoKmNaoPercorridoSemIVA}} €
+                                            {{item.dataUltimaLeitura}}
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="kmMaximo">Km Máximo</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="kmMaximo" />
+                                            <vaadin-grid-sorter path="kmGastos">Km Gastos</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="kmGastos" />
                                         </template>
                                         <template>
-                                            {{item.kmMaximo}} km
+                                            {{item.kmGastos}} km
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="dataInicio">Data de Início</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="dataInicio" />
+                                            <vaadin-grid-sorter path="kmRestam">Km Restam</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="kmRestam" />
                                         </template>
                                         <template>
-                                            {{item.dataInicio}}
+                                            {{item.kmRestam}} km
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="dataTermo">Data de Termo</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="dataTermo" />
+                                            <vaadin-grid-sorter path="noDiasDecorridosContrato">Nº Dias Decorridos do Contrato até Data Leitura</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="noDiasDecorridosContrato" />
                                         </template>
                                         <template>
-                                            {{item.dataTermo}}
+                                            {{item.noDiasDecorridosContrato}}
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="inicioPagamento">Início Pagamento</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="inicioPagamento" />
+                                            <vaadin-grid-sorter path="noDiasTermoContrato">Nº Dias para Termo Contrato desde Leitura</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="noDiasTermoContrato" />
                                         </template>
                                         <template>
-                                            {{item.inicioPagamento}}
+                                            {{item.noDiasTermoContrato}}
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="noPagamentos">Nº Pagamentos</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="noPagamentos" />
+                                            <vaadin-grid-sorter path="diferencaHojeUltimaLeitura">Diferença Hoje e Última Leitura (dias)</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="diferencaHojeUltimaLeitura" />
                                         </template>
                                         <template>
-                                            {{item.noPagamentos}}
+                                            {{item.diferencaHojeUltimaLeitura}}
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="periodicidade">Periodicidade</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="periodicidade" />
+                                            <vaadin-grid-sorter path="mediaKmContratados">Média Km Dia Contratados</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="mediaKmContratados" />
                                         </template>
                                         <template>
-                                            {{item.periodicidade}}
+                                            {{item.mediaKmContratados}} km
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="totalSemIVA">Total Sem IVA</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="totalSemIVA" />
+                                            <vaadin-grid-sorter path="kmEsperadosDataLeitura">Km Esperados na Data da Leitura</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="kmEsperadosDataLeitura" />
                                         </template>
                                         <template>
-                                            {{item.totalSemIVA}} €
+                                            {{item.kmEsperadosDataLeitura}} km
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="iva">IVA</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="iva" />
+                                            <vaadin-grid-sorter path="kmPercorridosKmEsperados">Km Percorridos / Km Esperados</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="kmPercorridosKmEsperados" />
                                         </template>
                                         <template>
-                                            {{item.iva}} €
+                                            {{item.kmPercorridosKmEsperados}} km
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="totalComIVA">Total Com IVA</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="totalComIVA" />
+                                            <vaadin-grid-sorter path="tempoDecorrido">% Tempo Decorrido</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="tempoDecorrido" />
                                         </template>
                                         <template>
-                                            {{item.totalComIVA}} €
+                                            {{item.tempoDecorrido}} km
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="franquiaSemIVA">Franquia Sem IVA</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="franquiaSemIVA" />
+                                            <vaadin-grid-sorter path="kmPercorridos">% Km Percorridos</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="kmPercorridos" />
                                         </template>
                                         <template>
-                                            {{item.franquiaSemIVA}} €
+                                            {{item.kmPercorridos}} km
                                         </template>
                                     </vaadin-grid-column>
 
                                     <vaadin-grid-column resizable>
                                         <template class="header">
-                                            <vaadin-grid-sorter path="responsavelContrato">Responsável Contrato</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="responsavelContrato" />
+                                            <vaadin-grid-sorter path="relacaoTempoKm">Relação Tempo Km</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="relacaoTempoKm" />
                                         </template>
                                         <template>
-                                            {{item.responsavelContrato}}
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="observacoesContrato">Observações Contrato</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="observacoesContrato" />
-                                        </template>
-                                        <template>
-                                            {{item.observacoesContrato}}
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                </vaadin-grid>
-
-                                <div style="padding-left:50px">
-                                    <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
-                                        <div class="row break_clear">
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="noContrato" name="noContrato" label="Nº Contrato" value=""></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="kmIniciais" name="kmIniciais" label="Km Iniciais" value=""><div slot="suffix">km</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="kmContratados" name="kmContratados" label="Km Contratados" value=""><div slot="suffix">km</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="precoKmAdicionalSemIVA" name="precoKmAdicionalSemIVA" label="Preço Km Adicional Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="precoKmNaoPercorridoSemIVA" name="precoKmNaoPercorridoSemIVA" label="Preço Km Não Percorrido Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="kmMaximo" name="kmMaximo" label="Km Máximo" value=""><div slot="suffix">km</div></vaadin-text-field>
-                                            </div>
-                                        </div>
-
-                                        <div class="row break_clear">
-                                            <div class="col-md-2">
-                                                <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data de Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-date-picker id="dataTermo" name="dataTermo" label="Data de Termo" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-date-picker id="inicioPagamento" name="inicioPagamento" label="Início Pagamento" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="noPagamentos" name="noPagamentos" label="Nº Pagamentos" value=""></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="periodicidade" name="periodicidade" label="Periodicidade" value=""></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="totalSemIVA" name="totalSemIVA" label="Total Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
-                                            </div>
-                                        </div>
-
-                                        <div class="row break_clear">
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="iva" name="iva" label="IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="totalComIVA" name="totalComIVA" label="Total Com IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="franquiaSemIVA" name="franquiaSemIVA" label="Franquia Sem IVA" value=""><div slot="suffix">€</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="responsavelContrato" name="responsavelContrato" label="Responsável Contrato" value=""></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="observacoesContrato" name="observacoesContrato" label="Observações Contrato" value=""></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-1" style="padding-top:15px">
-                                                <paper-button raised id="btnContratoHistorico" class="btnSave" on-tap="_createContratoHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                            </div>
-                                        </div>
-                                    </paper-collapse-item>
-                                </div>
-                            </paper-collapse-item>-->
-                            <!--Alterações ao Contrato-->
-                            <!--<paper-collapse-item class="panel-heading" header="Alterações ao Contrato" closed>
-                                <vaadin-grid id="gridAlteracoesContratoHistorico" aria-label="gridAlteracoesContratoHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
-                                    <vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="dataPedido">Data do Pedido</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="dataPedido" />
-                                        </template>
-                                        <template>
-                                            {{item.dataPedido}}
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="autorizadoFINLOG">Autorizado FINLOG</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="autorizadoFINLOG" />
-                                        </template>
-                                        <template>
-                                            {{item.autorizadoFINLOG}}
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="dataAlteracaoKm">Data Alteração Km</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="dataAlteracaoKm" />
-                                        </template>
-                                        <template>
-                                            {{item.dataAlteracaoKm}}
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="kmAlteracao">Km Alteração</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="kmAlteracao" />
-                                        </template>
-                                        <template>
-                                            {{item.kmAlteracao}} km
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="mensalidadeAlteracao">Mensalidade Alteração</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="mensalidadeAlteracao" />
-                                        </template>
-                                        <template>
-                                            {{item.mensalidadeAlteracao}}
-                                        </template>
-                                    </vaadin-grid-column>
-
-                                    <vaadin-grid-column resizable>
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="notas">Notas</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="notas" />
-                                        </template>
-                                        <template>
-                                            {{item.notas}}
+                                            {{item.relacaoTempoKm}}
                                         </template>
                                     </vaadin-grid-column>
                                 </vaadin-grid>
-
-                                <div style="padding-left:50px">
-                                    <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
-                                        <div class="row break_clear">
-                                            <div class="col-md-2">
-                                                <vaadin-date-picker id="dataPedido" name="dataPedido" label="Data do Pedido" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="autorizadoFINLOG" name="autorizadoFINLOG" label="Autorizado FINLOG" value=""></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-date-picker id="dataAlteracaoKm" name="dataAlteracaoKm" label="Data Alteração Km" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="kmAlteracao" name="kmAlteracao" label="Km Alteração" value=""><div slot="suffix">km</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="mensalidadeAlteracao" name="mensalidadeAlteracao" label="Mensalidade Alteração" value=""></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="notas" name="notas" label="Notas" value=""></vaadin-text-field>
-                                            </div>
-                                        </div>
-
-                                        <div class="row break_clear">
-                                            <div class="col-md-1" style="padding-top:15px">
-                                                <paper-button raised id="btnAlteracoesContratoHistorico" class="btnSave" on-tap="_createAlteracoesContratoHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                            </div>
-                                        </div>
-                                    </paper-collapse-item>
-                                </div>
-                            </paper-collapse-item>-->
-                            <!--Resumo Km Viatura Renting para Rotação de Viaturas (Apenas Consulta)-->
-                            <!--<paper-collapse-item class="panel-heading" header="Resumo Km Viatura Renting para Rotação de Viaturas (Apenas Consulta)" closed>
-                                    <vaadin-grid id="gridResumoViaturaRenting" aria-label="gridResumoViaturaRenting" items="" class="grid" multi-sort="true" column-reordering-allowed>
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="inicioContrato">Início Contrato</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="inicioContrato" />
-                                            </template>
-                                            <template>
-                                                {{item.inicioContrato}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="termoContrato">Termo Contrato</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="termoContrato" />
-                                            </template>
-                                            <template>
-                                                {{item.termoContrato}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="noDiasContrato">Nº Dias do Contrato</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="noDiasContrato" />
-                                            </template>
-                                            <template>
-                                                {{item.noDiasContrato}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="noDiasParaTermoContrato">Nº Dias para Termo Contrato</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="noDiasParaTermoContrato" />
-                                            </template>
-                                            <template>
-                                                {{item.noDiasParaTermoContrato}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="kmContratados">Km Contratados</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="kmContratados" />
-                                            </template>
-                                            <template>
-                                                {{item.kmContratados}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="kmUltimaLeitura">Km na Última Leitura</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="kmUltimaLeitura" />
-                                            </template>
-                                            <template>
-                                                {{item.kmUltimaLeitura}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="dataUltimaLeitura">Data Última Leitura</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataUltimaLeitura" />
-                                            </template>
-                                            <template>
-                                                {{item.dataUltimaLeitura}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="kmGastos">Km Gastos</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="kmGastos" />
-                                            </template>
-                                            <template>
-                                                {{item.kmGastos}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="kmRestam">Km Restam</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="kmRestam" />
-                                            </template>
-                                            <template>
-                                                {{item.kmRestam}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="noDiasDecorridosContrato">Nº Dias Decorridos do Contrato até Data Leitura</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="noDiasDecorridosContrato" />
-                                            </template>
-                                            <template>
-                                                {{item.noDiasDecorridosContrato}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="noDiasTermoContrato">Nº Dias para Termo Contrato desde Leitura</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="noDiasTermoContrato" />
-                                            </template>
-                                            <template>
-                                                {{item.noDiasTermoContrato}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="diferencaHojeUltimaLeitura">Diferença Hoje e Última Leitura (dias)</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="diferencaHojeUltimaLeitura" />
-                                            </template>
-                                            <template>
-                                                {{item.diferencaHojeUltimaLeitura}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="mediaKmContratados">Média Km Dia Contratados</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="mediaKmContratados" />
-                                            </template>
-                                            <template>
-                                                {{item.mediaKmContratados}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="kmEsperadosDataLeitura">Km Esperados na Data da Leitura</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="kmEsperadosDataLeitura" />
-                                            </template>
-                                            <template>
-                                                {{item.kmEsperadosDataLeitura}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="kmPercorridosKmEsperados">Km Percorridos / Km Esperados</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="kmPercorridosKmEsperados" />
-                                            </template>
-                                            <template>
-                                                {{item.kmPercorridosKmEsperados}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="tempoDecorrido">% Tempo Decorrido</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="tempoDecorrido" />
-                                            </template>
-                                            <template>
-                                                {{item.tempoDecorrido}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="kmPercorridos">% Km Percorridos</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="kmPercorridos" />
-                                            </template>
-                                            <template>
-                                                {{item.kmPercorridos}} km
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="relacaoTempoKm">Relação Tempo Km</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="relacaoTempoKm" />
-                                            </template>
-                                            <template>
-                                                {{item.relacaoTempoKm}}
-                                            </template>
-                                        </vaadin-grid-column>
-                                    </vaadin-grid>
-                                </paper-collapse-item>
-                            </div>-->
+                            </paper-collapse-item>
+                        </div>-->
                         </iron-pages>
                     </div>
                 </div>
@@ -2625,6 +2671,10 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_databound_ajax.generateRequest();
 
+                    this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabinspecao_ajax.generateRequest();
+                    this.$.gridInspecao.clearCache();
+
                     this.$.info_uploadimage.addEventListener('upload-response', function (e) {
                         var results = JSON.parse(e.detail.xhr.response);
                         if (results == true) {
@@ -2663,14 +2713,14 @@
 
 
                 _validateData: function () {
-                    var polymerDom = Polymer.dom(this.root);
-                    var errors = 0;
-                    var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
-                    var formFields = polymerDom.querySelectorAll(formSelector);
+                    //var polymerDom = Polymer.dom(this.root);
+                    //var errors = 0;
+                    //var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
+                    //var formFields = polymerDom.querySelectorAll(formSelector);
 
-                    formFields.forEach(function (element) {
-                        if (!element.validate()) errors++;
-                    });
+                    //formFields.forEach(function (element) {
+                    //    if (!element.validate()) errors++;
+                    //});
 
                     if (this.$.geral_marca.value == null || this.$.geral_marca.value == "") {
                         this.$.geral_marca.validate();
@@ -2932,7 +2982,117 @@
                 _openCustos: function () {
                     window.location.href = "/Viaturas/Viaturas2Custos/" + "?matricula=" + this.data.matricula + "&noProjeto=" + this.data.noProjeto;
                 },
-          });
+
+                _createInspecao: function () {
+                    if (this._validateDataInspecao()) {
+                        this.$.page_CreateViaturas2Inspecao_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+                            dataInspecaoTexto: this.$.inspecao_dataInspecao.value,
+                            kmInspecao: this.$.inspecao_kmInspecao.value,
+                            idResultado: this.$.inspecao_resultado.value,
+                            proximaInspecaoTexto: this.$.inspecao_proximaInspecao.value,
+                            observacao: this.$.inspecao_observacoes.value
+                        });
+                        this.$.page_CreateViaturas2Inspecao_ajax.generateRequest();
+                        this.$.gridInspecao.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Inspecao: function () {
+                    if (this.createViaturas2InspecaoResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2InspecaoResult.eMessage);
+
+                        this.$.inspecao_dataInspecao.value = "";
+                        this.$.inspecao_kmInspecao.value = "";
+                        this.$.inspecao_resultado.value = "";
+                        this.$.inspecao_proximaInspecao.value = "";
+                        this.$.inspecao_observacoes.value = "";
+
+                        this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabinspecao_ajax.generateRequest();
+                        this.$.gridInspecao.clearCache();
+                    } else {
+                        this._openToastError(this.createViaturas2InspecaoResult.eMessage);
+                    }
+                },
+
+                _validateDataInspecao: function () {
+                    if (this.$.inspecao_dataInspecao.value == null || this.$.inspecao_dataInspecao.value == "") {
+                        this.$.inspecao_dataInspecao.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.inspecao_kmInspecao.value == null || this.$.inspecao_kmInspecao.value == "") {
+                        this.$.inspecao_kmInspecao.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.inspecao_resultado.value == null || this.$.inspecao_resultado.value == "") {
+                        this.$.inspecao_resultado.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.inspecao_proximaInspecao.value == null || this.$.inspecao_proximaInspecao.value == "") {
+                        this.$.inspecao_proximaInspecao.validate();
+                        errors = errors + 1;
+                    }
+
+                    return true;
+                },
+
+                _deleteInspecao: function (e) {
+                    if (this._permissions.delete == true) {
+                        var index = this.tabInspecao.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var dataInspecao = e.model.item.dataInspecaoTexto;
+                        var ajax_request = this.$.page_DeleteViaturas2Inspecao_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Inspeção realizada no dia " + dataInspecao + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteInspecao) {
+                                if (deleteInspecao) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridInspecao.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Inspeções.');
+                    }
+                },
+                _responseDeleteViaturas2Inspecao: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2InspecaoResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2InspecaoResult.eMessage);
+
+                        this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabinspecao_ajax.generateRequest();
+                        this.$.gridInspecao.clearCache();
+                    } else {
+                        this._openToastError(this.deleteViaturas2InspecaoResult.eMessage);
+                    }
+                },
+
+            });
         });
     </script>
 

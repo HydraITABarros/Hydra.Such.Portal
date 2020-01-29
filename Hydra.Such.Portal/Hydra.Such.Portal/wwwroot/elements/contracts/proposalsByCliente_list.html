@@ -403,9 +403,11 @@
                             filters[value.path] = value.value;
                         });
 
-                        window.setGridFilter('contratos-propostas', filters || {});
+                        window.setGridFilter('contratos-proposalsbycliente', filters || {});
 
-                        window.location.href = "DetalhesProposta/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
+                        //var url = "Contratos/DetalhesProposta/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric
+                        var url = "https://esuch.such.pt/Contratos/DetalhesProposta/" + item.contractNo + "?version=" + item.versionNo + "&" + "isHistoric=" + this._isHistoric;
+                        window.location.href = url;
                     }
                 },
                 _create: function (item) {
@@ -414,7 +416,7 @@
                     }
                 },
                 created: function () {
-                    this.filter = window.getGridFilter('contratos-propostas');
+                    this.filter = window.getGridFilter('contratos-proposalsbycliente');
                 },
                 ready: function () {
                     if (this._archived == 1) {
@@ -423,7 +425,7 @@
                     this.$.grid_databound_ajax.body = JSON.stringify({ "Archived": this._archived, "ContractNo": this._contractno, "showLevel": this._showLevel, "ClienteNo": this._clienteno });
                     this.$.grid_databound_ajax.generateRequest();
 
-                    window.handleGridListColumnsOrder(this.$.grid, 'contratos-propostas');
+                    window.handleGridListColumnsOrder(this.$.grid, 'contratos-proposalsbycliente');
 
                     window.grid = this.$.grid;
                     window._this = this;

@@ -363,6 +363,24 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2TabInspecao([FromBody] Viaturas2InspecoesViewModel viatura)
+        {
+            List<Viaturas2InspecoesViewModel> TabInspecoes = new List<Viaturas2InspecoesViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabInspecoes = DBViaturas2Inspecoes.ParseListToViewModel(DBViaturas2Inspecoes.GetByMatricula(viatura.Matricula));
+
+                List<ConfiguracaoTabelas> AllResultados = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_INSPECAO_RESULTADO");
+
+                TabInspecoes.ForEach(x =>
+                {
+                    if (x.IDResultado != null) x.Resultado = AllResultados.Where(y => y.ID == x.IDResultado).FirstOrDefault().Descricao;
+                });
+            }
+            return Json(TabInspecoes.OrderByDescending(x => x.DataInspecao));
+        }
+
+        [HttpPost]
         public JsonResult CreateViatura([FromBody] ViaturasViewModel data)
         {
 
@@ -580,6 +598,89 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro.";
             }
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2Inspecao([FromBody] Viaturas2InspecoesViewModel inspecao)
+        {
+            try
+            {
+                if (inspecao != null && !string.IsNullOrEmpty(inspecao.Matricula))
+                {
+                    Viaturas2Inspecoes inspecaoToCreate = new Viaturas2Inspecoes();
+
+                    inspecaoToCreate = DBViaturas2Inspecoes.ParseToDB(inspecao);
+                    inspecaoToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Inspecoes.Create(inspecaoToCreate) != null)
+                    {
+                        inspecao.eReasonCode = 1;
+                        inspecao.eMessage = "Inspecao criada com sucesso.";
+                    }
+                    else
+                    {
+                        inspecao.eReasonCode = 3;
+                        inspecao.eMessage = "Ocorreu um erro ao criar a Inspeção no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    inspecao.eReasonCode = 3;
+                    inspecao.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                inspecao.eReasonCode = 4;
+                inspecao.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(inspecao);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Inspecao([FromBody] Viaturas2InspecoesViewModel inspecao)
+        {
+            try
+            {
+                if (inspecao != null && !string.IsNullOrEmpty(inspecao.Matricula))
+                {
+                    Viaturas2Inspecoes inspecaoToDelete = new Viaturas2Inspecoes();
+
+                    inspecaoToDelete = DBViaturas2Inspecoes.GetByID(inspecao.ID);
+
+                    if (inspecaoToDelete != null)
+                    {
+                        if (DBViaturas2Inspecoes.Delete(inspecaoToDelete) == true)
+                        {
+                            inspecao.eReasonCode = 1;
+                            inspecao.eMessage = "Inspecao Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            inspecao.eReasonCode = 3;
+                            inspecao.eMessage = "Ocorreu um erro ao Eliminar a Inspeção no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        inspecao.eReasonCode = 3;
+                        inspecao.eMessage = "Ocorreu um erro ao Eliminar ao ler a Inspeção.";
+                    }
+                }
+                else
+                {
+                    inspecao.eReasonCode = 3;
+                    inspecao.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                inspecao.eReasonCode = 4;
+                inspecao.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(inspecao);
         }
 
         [HttpPost]

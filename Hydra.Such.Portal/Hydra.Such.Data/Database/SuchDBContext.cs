@@ -165,6 +165,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas2Modelos> Viaturas2Modelos { get; set; }
         public virtual DbSet<Viaturas2Parqueamento> Viaturas2Parqueamento { get; set; }
         public virtual DbSet<Viaturas2ParqueamentoLocal> Viaturas2ParqueamentoLocal { get; set; }
+        public virtual DbSet<Viaturas2Inspecoes> Viaturas2Inspecoes { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
         public virtual DbSet<PedidosPagamento> PedidosPagamento { get; set; }
         public virtual DbSet<TabelaLog> TabelaLog { get; set; }
@@ -11080,6 +11081,55 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Local)
                 .HasColumnName("Local")
+                .HasMaxLength(200);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataModificacao)
+                    .HasColumnName("DataModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Viaturas2Inspecoes>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Viaturas2_Inspecao");
+
+                entity.Property(e => e.ID)
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.Matricula)
+                .HasColumnName("Matricula")
+                .HasMaxLength(20);
+
+                entity.Property(e => e.DataInspecao)
+                .HasColumnName("DataInspecao")
+                .HasColumnType("date");
+
+                entity.Property(e => e.KmInspecao)
+                .HasColumnName("KmInspecao")
+                .HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.IDResultado)
+                .HasColumnName("IDResultado");
+
+                entity.Property(e => e.ProximaInspecao)
+                .HasColumnName("ProximaInspecao")
+                .HasColumnType("date");
+
+                entity.Property(e => e.Observacao)
+                .HasColumnName("Observacao")
                 .HasMaxLength(200);
 
                 entity.Property(e => e.UtilizadorCriacao)

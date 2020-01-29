@@ -921,7 +921,7 @@ namespace Hydra.Such.Portal.Controllers
 
 
                     //GET CLIENT REQUISITIONS
-                    List<RequisiçõesClienteContrato> ClientRequisition = DBContractClientRequisition.GetByContract(result.ContractNo);
+                    List<RequisiçõesClienteContrato> ClientRequisition = DBContractClientRequisition.GetByContract(result.ContractNo).OrderByDescending(x => x.DataInícioCompromisso).ThenBy(y => y.GrupoFatura).ToList();
                     result.ClientRequisitions = new List<ContractClientRequisitionViewModel>();
 
                     if (ClientRequisition != null)
