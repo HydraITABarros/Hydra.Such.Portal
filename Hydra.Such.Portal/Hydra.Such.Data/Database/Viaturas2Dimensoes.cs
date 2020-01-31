@@ -6,8 +6,9 @@ namespace Hydra.Such.Data.Database
     {
         public int ID { get; set; }
         public string Matricula { get; set; }
-        public int? IDTipoDimensao { get; set; }
-        public string Dimensao { get; set; }
+        public string Regiao { get; set; }
+        public string Area { get; set; }
+        public string Cresp { get; set; }
         public DateTime? DataInicio { get; set; }
         public DateTime? DataFim { get; set; }
         public string UtilizadorCriacao { get; set; }

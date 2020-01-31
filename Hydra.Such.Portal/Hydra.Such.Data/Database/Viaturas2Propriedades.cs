@@ -6,6 +6,7 @@ namespace Hydra.Such.Data.Database
     {
         public int ID { get; set; }
         public string Matricula { get; set; }
+        public int? IDTipoPropriedade { get; set; }
         public int? IDPropriedade { get; set; }
         public DateTime? DataInicio { get; set; }
         public DateTime? DataFim { get; set; }

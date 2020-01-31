@@ -6,6 +6,8 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
     {
         public int ID { get; set; }
         public string Matricula { get; set; }
+        public int? IDTipoPropriedade { get; set; }
+        public string TipoPropriedade { get; set; }
         public int? IDPropriedade { get; set; }
         public string Propriedade { get; set; }
         public DateTime? DataInicio { get; set; }

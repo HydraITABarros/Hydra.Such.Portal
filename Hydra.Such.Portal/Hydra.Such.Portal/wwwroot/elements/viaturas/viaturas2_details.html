@@ -472,6 +472,7 @@
                                                         text-path="value"
                                                         value-path="id"
                                                         fields='[{"field":"value", "name":"Estado"}]'
+                                                        on-value-changed="_openDlgEstado"
                                                         required error-message="O campo Estado é de preenchimento obrigatório">
                                         </such-selectbox>
                                     </div>
@@ -495,6 +496,7 @@
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                                         required error-message="O campo Região é de preenchimento obrigatório"
+                                                        on-value-changed="_openDlgDimensao"
                                                         disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
@@ -518,6 +520,7 @@
                                                         value-path="id"
                                                         fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                                         required error-message="O campo Centro de Responsabilidade é de preenchimento obrigatório"
+                                                        on-value-changed="_openDlgDimensao"
                                                         disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
@@ -528,6 +531,7 @@
                                                         text-path="value"
                                                         value-path="id"
                                                         fields='[{"field":"value", "name":"Local de Parqueamento"}]'
+                                                        on-value-changed="_openDlgParqueamento"
                                                         disabled="{{ _lockFields }}">
                                         </such-selectbox>
                                     </div>
@@ -581,6 +585,7 @@
                                                             value-path="id"
                                                             fields='[{"field":"value", "name":"Tipo"}]'
                                                             required error-message="O campo Propriedade é de preenchimento obrigatório"
+                                                            on-value-changed="_openDlgPropriedade"
                                                             disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
@@ -1943,21 +1948,31 @@
                                     <vaadin-grid id="gridDimensao" aria-label="gridDimensao" items="{{ tabDimensao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="tipoDimensao">Tipo</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="tipoDimensao" />
+                                                <vaadin-grid-sorter path="regiao">Região</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="regiao" />
                                             </template>
                                             <template>
-                                                {{item.tipoDimensao}}
+                                                {{item.regiao}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dimensao">Dimensão</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dimensao" />
+                                                <vaadin-grid-sorter path="area">Área Funcional</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="area" />
                                             </template>
                                             <template>
-                                                {{item.dimensao}}
+                                                {{item.area}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="cresp">Centro de Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="cresp" />
+                                            </template>
+                                            <template>
+                                                {{item.cresp}}
                                             </template>
                                         </vaadin-grid-column>
 
@@ -2003,8 +2018,18 @@
                                     <vaadin-grid id="gridPropriedade" aria-label="gridPropriedade" items="{{ tabPropriedade }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
+                                                <vaadin-grid-sorter path="tipoPropriedade">Tipo de Propriedade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipoPropriedade" />
+                                            </template>
+                                            <template>
+                                                {{item.tipoPropriedade}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
                                                 <vaadin-grid-sorter path="propriedade">Propriedade</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="localPpropriedadearqueamento" />
+                                                <vaadin-grid-filter path="propriedade" />
                                             </template>
                                             <template>
                                                 {{item.propriedade}}
@@ -2576,7 +2601,7 @@
 
         <paper-dialog id="dlgEstado" modal style="width:300px; height:175px">
             <div class="row break_clear">
-                <div class="col-md-12 ">
+                <div class="col-md-12">
                     <vaadin-date-picker label="Data do novo Estado" id="dpStartDateEstado" name="dpStartDateEstado" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
             </div>
@@ -2586,51 +2611,39 @@
             </div>
         </paper-dialog>
 
-        <paper-dialog id="dlgRegiao" modal style="height:300px; width:600px">
+        <paper-dialog id="dlgDimensao" modal style="width:300px; height:175px">
             <div class="row break_clear">
-                <div class="col-md-4 ">
-                    <vaadin-date-picker label="Data da nova Região" id="dpStartDateRegiao" name="dpStartDateRegiao" required error-message="Este campo é obrigatório"></vaadin-date-picker>
+                <div class="col-md-12">
+                    <vaadin-date-picker label="Data da nova Dimensão" id="dpStartDateDimensao" name="dpStartDateDimensao" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_novaDataRegiao">Guardar</paper-button>
-                <paper-button raised class="btnRemove" on-tap="_closeDlgRegiao">Cancelar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_novaDataDimensao">Nova Data</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeDlgDimensao">Fechar</paper-button>
             </div>
         </paper-dialog>
 
-        <paper-dialog id="dlgCresp" modal style="height:300px; width:600px">
+        <paper-dialog id="dlgParqueamento" modal style="width:300px; height:175px">
             <div class="row break_clear">
-                <div class="col-md-4 ">
-                    <vaadin-date-picker label="Data do novo Centro Responsabilidade" id="dpStartDateCresp" name="dpStartDateCresp" required error-message="Este campo é obrigatório"></vaadin-date-picker>
-                </div>
-            </div>
-            <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_novaDataCresp">Guardar</paper-button>
-                <paper-button raised class="btnRemove" on-tap="_closeDlgCresp">Cancelar</paper-button>
-            </div>
-        </paper-dialog>
-
-        <paper-dialog id="dlgParqueamento" modal style="height:300px; width:600px">
-            <div class="row break_clear">
-                <div class="col-md-4 ">
+                <div class="col-md-12 ">
                     <vaadin-date-picker label="Data do novo Parqueamento" id="dpStartDateParqueamento" name="dpStartDateParqueamento" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_novaDataParqueamento">Guardar</paper-button>
-                <paper-button raised class="btnRemove" on-tap="_closeDlgParqueamento">Cancelar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_novaDataParqueamento">Nova Data</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeDlgParqueamento">Fechar</paper-button>
             </div>
         </paper-dialog>
 
-        <paper-dialog id="dlgPropriedade" modal style="height:300px; width:600px">
+        <paper-dialog id="dlgPropriedade" modal style="width:300px; height:175px">
             <div class="row break_clear">
-                <div class="col-md-4 ">
+                <div class="col-md-12 ">
                     <vaadin-date-picker label="Data da nova Propriedade" id="dpStartDatePropriedade" name="dpStartDatePropriedade" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                 </div>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_novaDataPropriedade">Guardar</paper-button>
-                <paper-button raised class="btnRemove" on-tap="_closeDlgPropriedade">Cancelar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_novaDataPropriedade">Nova Data</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeDlgPropriedade">Fechar</paper-button>
             </div>
         </paper-dialog>
 
@@ -2845,18 +2858,10 @@
                         this._openToastError("O campo Data do novo Parqueamento é de preenchimento obrigatório.");
                     }
                 },
-                _closeDlgParqueamento: function () {
-                    this.$.dlgParqueamento.close();
-                },
 
                 _update: function () {
                     if (this._validateData()) {
-                        if (this.data.idLocalParqueamentoOriginalDB == this.data.idLocalParqueamento) {
-                            this._executeRequest("/Viaturas/UpdateViatura2", this.data);
-                        }
-                        else {
-                            this.$.dlgParqueamentoUpdate.open();
-                        }
+                        this._executeRequest("/Viaturas/UpdateViatura2", this.data);
                     }
                 },
 
@@ -3190,6 +3195,128 @@
                         this._openToastError(this.deleteViaturas2InspecaoResult.eMessage);
                     }
                 },
+
+
+                _openDlgEstado: function () {
+                    if (this._isCreate == false && this.$.geral_estado.value != "" && this.data.idEstadoOriginalDB != this.$.geral_estado.value)
+                        this.$.dlgEstado.open();
+                },
+                _openDlgDimensao: function () {
+                    if ((this._isCreate == false && this.$.geral_codRegiao.value != "" && this.data.codRegiaoOriginalDB != this.$.geral_codRegiao.value) ||
+                        (this._isCreate == false && this.$.geral_codAreaFuncional.value != "" && this.data.codAreaFuncionalOriginalDB != this.$.geral_codAreaFuncional.value) ||
+                        (this._isCreate == false && this.$.geral_codCentroResponsabilidade.value != "" && this.data.codCentroResponsabilidadeOriginalDB != this.$.geral_codCentroResponsabilidade.value))
+                        
+                        this.$.dlgDimensao.open();
+                },
+                _openDlgParqueamento: function () {
+                    if (this._isCreate == false && this.$.geral_localParqueamento.value != "" && this.data.idLocalParqueamentoOriginalDB != this.$.geral_localParqueamento.value)
+                        this.$.dlgParqueamento.open();
+                },
+                _openDlgPropriedade: function () {
+                    if (this._isCreate == false && this.$.geral_propriedade.value != "" && this.data.idPropriedadeOriginalDB != this.$.geral_propriedade.value)
+                        this.$.dlgPropriedade.open();
+                },
+
+                _closeDlgEstado: function () {
+                    this.$.geral_estado.value = this.data.idEstadoOriginalDB;
+                    this.$.dlgEstado.close();
+                },
+                _closeDlgDimensao: function () {
+                    this.$.geral_codRegiao.value = this.data.codRegiaoOriginalDB;
+                    this.$.geral_codAreaFuncional._clearSelection();
+                    this.$.geral_codCentroResponsabilidade._clearSelection();
+                    this.$.dlgDimensao.close();
+                },
+                _closeDlgParqueamento: function () {
+                    this.$.geral_localParqueamento.value = this.data.idLocalParqueamentoOriginalDB;
+                    this.$.dlgParqueamento.close();
+                },
+                _closeDlgPropriedade: function () {
+                    this.$.geral_tipoPropriedade._clearSelection();
+                    this.$.geral_propriedade._clearSelection();
+                    this.$.dlgPropriedade.close();
+                },
+
+                _novaDataEstado: function () {
+                    if (this.$.dpStartDateEstado.value == null || this.$.dpStartDateEstado.value == "") {
+                        this.$.dpStartDateEstado.validate();
+                    }
+                    else {
+                        if (Date.parse(this.$.dpStartDateEstado.value) > new Date()) {
+                            this._openToastError('A Data do Novo Estado não pode ser superior à data atual.');
+                        }
+                        else {
+                            if (Date.parse(this.$.dpStartDateEstado.value) < Date.parse(this.data.dataEstadoLast)) {
+                                this._openToastError('A Data do Novo Estado tem que ser superior ou igual á data da ultima mudança da data de Estado.');
+                            }
+                            else {
+                                this.data.dataEstado = this.$.dpStartDateEstado.value;
+                                this.$.dlgEstado.close();
+                            }
+                        }
+                    }
+                },
+                _novaDataDimensao: function () {
+                    debugger;
+                    if (this.$.dpStartDateDimensao.value == null || this.$.dpStartDateDimensao.value == "") {
+                        this.$.dpStartDateDimensao.validate();
+                    }
+                    else {
+                        if (Date.parse(this.$.dpStartDateDimensao.value) > new Date()) {
+                            this._openToastError('A Data da nova Dimensão não pode ser superior à data atual.');
+                        }
+                        else {
+                            if (Date.parse(this.$.dpStartDateDimensao.value) < Date.parse(this.data.dataDimensaoLast)) {
+                                this._openToastError('A Data da nova Dimensão tem que ser superior ou igual á data da ultima mudança da Dimensão.');
+                            }
+                            else {
+                                this.data.dataDimensao = this.$.dpStartDateDimensao.value;
+                                this.$.dlgDimensao.close();
+                            }
+                        }
+                    }
+                },
+                _novaDataParqueamento: function () {
+                    debugger;
+                    if (this.$.dpStartDateParqueamento.value == null || this.$.dpStartDateParqueamento.value == "") {
+                        this.$.dpStartDateParqueamento.validate();
+                    }
+                    else {
+                        if (Date.parse(this.$.dpStartDateParqueamento.value) > new Date()) {
+                            this._openToastError('A Data da Novo Parqueamento não pode ser superior à data atual.');
+                        }
+                        else {
+                            if (Date.parse(this.$.dpStartDateParqueamento.value) < Date.parse(this.data.dataParqueamentoLast)) {
+                                this._openToastError('A Data do Novo Estado tem que ser superior ou igual á data da ultima mudança da data de Parqueamento.');
+                            }
+                            else {
+                                this.data.dataParqueamento = this.$.dpStartDateParqueamento.value;
+                                this.$.dlgParqueamento.close();
+                            }
+                        }
+                    }
+                },
+                _novaDataPropriedade: function () {
+                    if (this.$.dpStartDatePropriedade.value == null || this.$.dpStartDatePropriedade.value == "") {
+                        this.$.dpStartDatePropriedade.validate();
+                    }
+                    else {
+                        if (Date.parse(this.$.dpStartDatePropriedade.value) > new Date()) {
+                            this._openToastError('A Data da Nova Propriedade não pode ser superior à data atual.');
+                        }
+                        else {
+                            if (Date.parse(this.$.dpStartDatePropriedade.value) < Date.parse(this.data.dataPropriedadeLast)) {
+                                this._openToastError('A Data do Novo Estado tem que ser superior ou igual á data da ultima mudança da data de Propriedade.');
+                            }
+                            else {
+                                this.data.dataPropriedade = this.$.dpStartDatePropriedade.value;
+                                this.$.dlgPropriedade.close();
+                            }
+                        }
+                    }
+                },
+
+
 
             });
         });

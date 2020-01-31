@@ -334,11 +334,16 @@ namespace Hydra.Such.Portal.Controllers
             {
                 viatura = DBViaturas2.ParseToViewModel(DBViaturas2.GetByMatricula(data.Matricula));
 
-                viatura.IDEstadoOrinalDB = viatura.IDEstado;
-                viatura.IDLocalParqueamentoOriginalDB = viatura.IDLocalParqueamento;
+                viatura.IDEstadoOriginalDB = viatura.IDEstado;
+                viatura.DataEstadoLast = DBViaturas2Estados.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Estados.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
                 viatura.CodRegiaoOriginalDB = viatura.CodRegiao;
                 viatura.CodAreaFuncionalOriginalDB = viatura.CodAreaFuncional;
                 viatura.CodCentroResponsabilidadeOriginalDB = viatura.CodCentroResponsabilidade;
+                viatura.DataDimensaoLast = DBViaturas2Dimensoes.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Dimensoes.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
+                viatura.IDLocalParqueamentoOriginalDB = viatura.IDLocalParqueamento;
+                viatura.DataParqueamentoLast = DBViaturas2Parqueamento.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Parqueamento.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
+                viatura.IDPropriedadeOriginalDB = viatura.IDPropriedade;
+                viatura.DataPropriedadeLast = DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
 
                 List<ConfiguracaoTabelas> AllConfTabelas = DBConfiguracaoTabelas.GetAll();
                 List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
@@ -410,12 +415,6 @@ namespace Hydra.Such.Portal.Controllers
             {
                 TabDimensoes = DBViaturas2Dimensoes.ParseListToViewModel(DBViaturas2Dimensoes.GetByMatricula(viatura.Matricula));
 
-                TabDimensoes.ForEach(x =>
-                {
-                    if (x.IDTipoDimensao != null && x.IDTipoDimensao == 1) x.TipoDimensao = "Região";
-                    if (x.IDTipoDimensao != null && x.IDTipoDimensao == 2) x.TipoDimensao = "Área Funcional";
-                    if (x.IDTipoDimensao != null && x.IDTipoDimensao == 3) x.TipoDimensao = "Centro de Responsabilidade";
-                });
             }
             return Json(TabDimensoes.OrderByDescending(x => x.DataInicio));
         }
@@ -446,10 +445,12 @@ namespace Hydra.Such.Portal.Controllers
             {
                 TabPropriedades = DBViaturas2Propriedades.ParseListToViewModel(DBViaturas2Propriedades.GetByMatricula(viatura.Matricula));
 
+                List<ConfiguracaoTabelas> AllTiposPropriedades = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_TIPO_PROPRIEDADE");
                 List<ConfiguracaoTabelas> AllPropriedades = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_PROPRIEDADE");
 
                 TabPropriedades.ForEach(x =>
                 {
+                    if (x.IDTipoPropriedade != null) x.TipoPropriedade = AllTiposPropriedades.Where(y => y.ID == x.IDTipoPropriedade).FirstOrDefault().Descricao;
                     if (x.IDPropriedade != null) x.Propriedade = AllPropriedades.Where(y => y.ID == x.IDPropriedade).FirstOrDefault().Descricao;
                 });
             }
@@ -628,27 +629,47 @@ namespace Hydra.Such.Portal.Controllers
                                     else
                                     {
                                         //Viaturas2
-
-
-
-
-                                        Viaturas2Parqueamento Parqueamento = new Viaturas2Parqueamento();
-
-                                        Parqueamento.Matricula = data.Matricula;
-                                        Parqueamento.IDLocal = data.IDLocalParqueamento;
-                                        Parqueamento.DataInicio = (DateTime)data.DataAquisicao;
-                                        Parqueamento.UtilizadorCriacao = User.Identity.Name;
-
-                                        if (DBViaturas2Parqueamento.Create(Parqueamento) != null)
+                                        Viaturas2Estados Estado = new Viaturas2Estados
                                         {
-                                            data.eReasonCode = 1;
-                                            data.eMessage = "Viatura criada com sucesso.";
-                                        }
-                                        else
+                                            Matricula = data.Matricula,
+                                            IDEstado = data.IDEstado,
+                                            DataInicio = (DateTime)data.DataAquisicao,
+                                            UtilizadorCriacao = User.Identity.Name
+                                        };
+                                        DBViaturas2Estados.Create(Estado);
+
+                                        Viaturas2Dimensoes Dimensao = new Viaturas2Dimensoes()
                                         {
-                                            data.eReasonCode = 3;
-                                            data.eMessage = "Ocorreu um erro ao criar o Parqueamento.";
-                                        }
+                                            Matricula = data.Matricula,
+                                            Regiao = data.CodRegiao,
+                                            Area = data.CodAreaFuncional,
+                                            Cresp = data.CodCentroResponsabilidade,
+                                            DataInicio = (DateTime)data.DataAquisicao,
+                                            UtilizadorCriacao = User.Identity.Name
+                                        };
+                                        DBViaturas2Dimensoes.Create(Dimensao);
+
+                                        Viaturas2Parqueamento Parqueamento = new Viaturas2Parqueamento
+                                        {
+                                            Matricula = data.Matricula,
+                                            IDLocal = data.IDLocalParqueamento,
+                                            DataInicio = (DateTime)data.DataAquisicao,
+                                            UtilizadorCriacao = User.Identity.Name
+                                        };
+                                        DBViaturas2Parqueamento.Create(Parqueamento);
+
+                                        Viaturas2Propriedades Propriedade = new Viaturas2Propriedades
+                                        {
+                                            Matricula = data.Matricula,
+                                            IDTipoPropriedade = data.IDTipoPropriedade,
+                                            IDPropriedade = data.IDPropriedade,
+                                            DataInicio = (DateTime)data.DataAquisicao,
+                                            UtilizadorCriacao = User.Identity.Name
+                                        };
+                                        DBViaturas2Propriedades.Create(Propriedade);
+
+                                        data.eReasonCode = 1;
+                                        data.eMessage = "Viatura criada com sucesso.";
                                     }
                                 }
                                 else
@@ -838,7 +859,7 @@ namespace Hydra.Such.Portal.Controllers
                     }
                 }
 
-                if (!string.IsNullOrEmpty(data.NoProjeto) && (data.IDEstadoOrinalDB != data.IDEstado || data.CodRegiaoOriginalDB != data.CodRegiao ||
+                if (!string.IsNullOrEmpty(data.NoProjeto) && (data.IDEstadoOriginalDB != data.IDEstado || data.CodRegiaoOriginalDB != data.CodRegiao ||
                     data.CodAreaFuncionalOriginalDB != data.CodCentroResponsabilidade || data.CodCentroResponsabilidadeOriginalDB != data.CodCentroResponsabilidade))
                 {
                     int CountNAV2017 = 0;
@@ -992,38 +1013,115 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     //ESTADO
-                    if (data.IDEstado != data.IDEstadoOrinalDB)
+                    if (data.IDEstadoOriginalDB != data.IDEstado)
                     {
-                        data.DataEstado = DateTime.Now;
+                        if (data.DataEstado <= DateTime.Now && data.DataEstado >= data.DataEstadoLast)
+                        {
+                            if (data.DataEstado == data.DataEstadoLast)
+                            {
+                                Viaturas2Estados Estado = DBViaturas2Estados.GetByMatriculaRecent(data.Matricula);
+                                Estado.IDEstado = data.IDEstado;
+                                Estado.UtilizadorModificacao = User.Identity.Name;
+                                DBViaturas2Estados.Update(Estado);
+                            }
+                            else
+                            {
+                                Viaturas2Estados Estado = new Viaturas2Estados
+                                {
+                                    Matricula = data.Matricula,
+                                    IDEstado = data.IDEstado,
+                                    DataInicio = (DateTime)data.DataEstado,
+                                    UtilizadorCriacao = User.Identity.Name
+                                };
+                                DBViaturas2Estados.Create(Estado);
+                            }
+                        }
                     }
 
+                    //DIMENSAO
+                    if (data.CodRegiaoOriginalDB != data.CodRegiao || data.CodAreaFuncionalOriginalDB != data.CodAreaFuncional || data.CodCentroResponsabilidadeOriginalDB != data.CodCentroResponsabilidade)
+                    {
+                        if (data.DataDimensao <= DateTime.Now && data.DataDimensao >= data.DataDimensaoLast)
+                        {
+                            if (data.DataDimensao == data.DataDimensaoLast)
+                            {
+                                Viaturas2Dimensoes Dimensao = DBViaturas2Dimensoes.GetByMatriculaRecent(data.Matricula);
+                                Dimensao.Regiao = data.CodRegiao;
+                                Dimensao.Area = data.CodAreaFuncional;
+                                Dimensao.Cresp = data.CodCentroResponsabilidade;
+                                Dimensao.UtilizadorModificacao = User.Identity.Name;
+                                DBViaturas2Dimensoes.Update(Dimensao);
+                            }
+                            else
+                            {
+                                Viaturas2Dimensoes Dimensao = new Viaturas2Dimensoes
+                                {
+                                    Matricula = data.Matricula,
+                                    Regiao = data.CodRegiao,
+                                    Area = data.CodAreaFuncional,
+                                    Cresp = data.CodCentroResponsabilidade,
+                                    DataInicio = (DateTime)data.DataDimensao,
+                                    UtilizadorCriacao = User.Identity.Name
+                                };
+                                DBViaturas2Dimensoes.Create(Dimensao);
+                            }
+                        }
+                    }
+                    
                     //PARQUEAMENTO
                     if (data.IDLocalParqueamentoOriginalDB != data.IDLocalParqueamento)
                     {
-                        DateTime UltimoDataInicio = DBViaturas2Parqueamento.GetByMatricula(data.Matricula).OrderByDescending(x => x.DataInicio).FirstOrDefault() != null ? (DateTime)DBViaturas2Parqueamento.GetByMatricula(data.Matricula).OrderByDescending(x => x.DataInicio).FirstOrDefault().DataInicio : DateTime.MinValue;
-                        if (data.DataParqueamento <= DateTime.Now && data.DataParqueamento >= UltimoDataInicio)
+                        if (data.DataParqueamento <= DateTime.Now && data.DataParqueamento >= data.DataParqueamentoLast)
                         {
-                            if (data.DataParqueamento == UltimoDataInicio)
+                            if (data.DataParqueamento == data.DataParqueamentoLast)
                             {
                                 Viaturas2Parqueamento Parqueamento = DBViaturas2Parqueamento.GetByMatriculaRecent(data.Matricula);
                                 Parqueamento.IDLocal = data.IDLocalParqueamento;
                                 Parqueamento.UtilizadorModificacao = User.Identity.Name;
-
                                 DBViaturas2Parqueamento.Update(Parqueamento);
                             }
                             else
                             {
-                                Viaturas2Parqueamento Parqueamento = new Viaturas2Parqueamento();
-                                Parqueamento.Matricula = data.Matricula;
-                                Parqueamento.IDLocal = data.IDLocalParqueamento;
-                                Parqueamento.DataInicio = (DateTime)data.DataParqueamento;
-                                Parqueamento.UtilizadorCriacao = User.Identity.Name;
-
+                                Viaturas2Parqueamento Parqueamento = new Viaturas2Parqueamento
+                                {
+                                    Matricula = data.Matricula,
+                                    IDLocal = data.IDLocalParqueamento,
+                                    DataInicio = (DateTime)data.DataParqueamento,
+                                    UtilizadorCriacao = User.Identity.Name
+                                };
                                 DBViaturas2Parqueamento.Create(Parqueamento);
                             }
                         }
                     }
 
+                    //PROPRIEDADE
+                    if (data.IDPropriedadeOriginalDB != data.IDPropriedade)
+                    {
+                        if (data.DataPropriedade <= DateTime.Now && data.DataPropriedade >= data.DataPropriedadeLast)
+                        {
+                            if (data.DataPropriedade == data.DataPropriedadeLast)
+                            {
+                                Viaturas2Propriedades Propriedade = DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula);
+                                Propriedade.IDTipoPropriedade = data.IDTipoPropriedade;
+                                Propriedade.IDPropriedade = data.IDPropriedade;
+                                Propriedade.UtilizadorModificacao = User.Identity.Name;
+                                DBViaturas2Propriedades.Update(Propriedade);
+                            }
+                            else
+                            {
+                                Viaturas2Propriedades Propriedade = new Viaturas2Propriedades
+                                {
+                                    Matricula = data.Matricula,
+                                    IDTipoPropriedade = data.IDTipoPropriedade,
+                                    IDPropriedade = data.IDPropriedade,
+                                    DataInicio = (DateTime)data.DataPropriedade,
+                                    UtilizadorCriacao = User.Identity.Name
+                                };
+                                DBViaturas2Propriedades.Create(Propriedade);
+                            }
+                        }
+                    }
+                    
                     //VIATURA
                     Viaturas2 viatura = DBViaturas2.ParseToDB(data);
                     viatura.UtilizadorModificacao = User.Identity.Name;

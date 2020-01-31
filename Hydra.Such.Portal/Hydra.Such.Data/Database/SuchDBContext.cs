@@ -11290,11 +11290,16 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Matricula")
                     .HasMaxLength(20);
 
-                entity.Property(e => e.IDTipoDimensao)
-                    .HasColumnName("IDTipoDimensao");
+                entity.Property(e => e.Regiao)
+                    .HasColumnName("Regiao")
+                    .HasMaxLength(20);
 
-                entity.Property(e => e.Dimensao)
-                    .HasColumnName("Dimensao")
+                entity.Property(e => e.Area)
+                    .HasColumnName("Area")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Cresp)
+                    .HasColumnName("Cresp")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.DataInicio)
@@ -11334,6 +11339,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Matricula)
                     .HasColumnName("Matricula")
                     .HasMaxLength(20);
+
+                entity.Property(e => e.IDTipoPropriedade)
+                    .HasColumnName("IDTipoPropriedade");
 
                 entity.Property(e => e.IDPropriedade)
                     .HasColumnName("IDPropriedade");

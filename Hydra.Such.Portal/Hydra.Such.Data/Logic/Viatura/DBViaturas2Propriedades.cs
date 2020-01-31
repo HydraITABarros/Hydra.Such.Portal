@@ -134,6 +134,7 @@ namespace Hydra.Such.Data.Logic.Viatura
             {
                 ID = x.ID,
                 Matricula = x.Matricula,
+                IDTipoPropriedade = x.IDTipoPropriedade,
                 IDPropriedade = x.IDPropriedade,
                 DataInicio = x.DataInicio,
                 DataFim = x.DataFim,
@@ -166,6 +167,7 @@ namespace Hydra.Such.Data.Logic.Viatura
             {
                 ID = x.ID,
                 Matricula = x.Matricula,
+                IDTipoPropriedade = x.IDTipoPropriedade,
                 IDPropriedade = x.IDPropriedade,
                 DataInicio = x.DataInicio,
                 DataFim = x.DataFim,
