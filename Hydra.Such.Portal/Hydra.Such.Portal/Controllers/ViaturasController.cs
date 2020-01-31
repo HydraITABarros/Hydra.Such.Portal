@@ -390,6 +390,24 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2TabGestor([FromBody] Viaturas2InspecoesViewModel viatura)
+        {
+            List<Viaturas2GestoresViewModel> TabGestores = new List<Viaturas2GestoresViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabGestores = DBViaturas2Gestores.ParseListToViewModel(DBViaturas2Gestores.GetByMatricula(viatura.Matricula));
+
+                List<Viaturas2GestoresGestor> AllGestores = DBViaturas2GestoresGestor.GetAll();
+
+                TabGestores.ForEach(x =>
+                {
+                    if (x.IDGestor != null) x.Gestor = AllGestores.Where(y => y.ID == x.IDGestor).FirstOrDefault().Gestor;
+                });
+            }
+            return Json(TabGestores.OrderByDescending(x => x.DataInicio));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2TabEstado([FromBody] Viaturas2InspecoesViewModel viatura)
         {
             List<Viaturas2EstadosViewModel> TabEstados = new List<Viaturas2EstadosViewModel>();

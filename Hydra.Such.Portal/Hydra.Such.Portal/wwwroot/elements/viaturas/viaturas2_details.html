@@ -165,6 +165,7 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaSegmentacoes" last-response="{{ListaSegmentacoes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaLocaisParqueamento" last-response="{{ListaLocaisParqueamento}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2InspecoesResultados" last-response="{{ListaInspecoesResultados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaResponsaveis" last-response="{{ListaResponsaveis}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{ListaProjetos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -219,6 +220,33 @@
                    handle-as="json"
                    id="page_DeleteViaturas2Inspecao_ajax"
                    on-response="_responseDeleteViaturas2Inspecao"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--GESTORES-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabGestor"
+                   last-response="{{tabGestor}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabgestor_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Gestor"
+                   last-response="{{createViaturas2GestorResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Gestor_ajax"
+                   on-response="_responseCreateViaturas2Gestor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Gestor"
+                   last-response="{{deleteViaturas2GestorResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Gestor_ajax"
+                   on-response="_responseDeleteViaturas2Gestor"
                    content-type="application/json">
         </iron-ajax>
 
@@ -1694,34 +1722,44 @@
 
                                 <!--Responsáveis-->
                                 <paper-collapse-item class="panel-heading" header="Responsáveis" closed>
-                                    <vaadin-grid id="gridGestores" aria-label="gridGestores" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="gridGestores" aria-label="gridGestores" items="{{ tabGestor }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="nomeGestor">Nome do Responsável</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="nomeGestor" />
+                                                <vaadin-grid-sorter path="gestor">Nome do Responsável</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="gestor" />
                                             </template>
                                             <template>
-                                                {{item.nomeGestor}}
+                                                {{item.gestor}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="datainicio">Data Início</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="datainicio" />
+                                                <vaadin-grid-sorter path="dataInicioTexto">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicioTexto" />
                                             </template>
                                             <template>
-                                                {{item.datainicio}}
+                                                {{item.dataInicioTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataFim" />
+                                                <vaadin-grid-sorter path="dataFimTexto">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFimTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataFim}}
+                                                {{item.dataFimTexto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteGestor" class="btnRemove tableBtn" raised on-tap="_deleteGestor" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
@@ -1729,12 +1767,19 @@
                                     <div style="padding-left:50px">
                                         <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
-                                                <div class="col-md-2">
-                                                    <vaadin-text-field id="gestor_nomeGestor" name="gestor_nomeGestor" label="Nome do Responsável" value=""></vaadin-text-field>
+                                                <div class="col-md-4">
+                                                    <such-selectbox id="gestor_idGestor" name="gestor_idGestor" value="" label="Nome do Responsável"
+                                                                    items="[[ListaResponsaveis]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Responsável"}, {"field":"extra", "name":"Nº Mecanográfico"}, {"field":"extra2", "name":"Mail"}]'
+                                                                    required error-message="O campo Responsável é de preenchimento obrigatório"
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="gestor_datainicio" name="gestor_datainicio" label="Data Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="gestor_datainicio" name="gestor_datainicio" label="Data Início" value="" placeholder="dd/MM/aaaa" required error-message="O campo Data Início é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -1742,7 +1787,7 @@
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
-                                                    <paper-button raised id="btnGestores" class="btnSave" on-tap="_createGestores" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                    <paper-button raised id="btnGestores" class="btnSave" on-tap="_createGestor" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -2709,6 +2754,10 @@
                     this.$.page_tabinspecao_ajax.generateRequest();
                     this.$.gridInspecao.clearCache();
 
+                    this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabgestor_ajax.generateRequest();
+                    this.$.gridGestores.clearCache();
+
                     this.$.page_tabestado_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabestado_ajax.generateRequest();
                     this.$.gridEstado.clearCache();
@@ -3098,6 +3147,60 @@
                         this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabinspecao_ajax.generateRequest();
                         this.$.gridInspecao.clearCache();
+
+                        this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabgestor_ajax.generateRequest();
+                        this.$.gridGestores.clearCache();
+
+                        this.$.page_tabestado_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabestado_ajax.generateRequest();
+                        this.$.gridEstado.clearCache();
+
+                        this.$.page_tabdimensao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabdimensao_ajax.generateRequest();
+                        this.$.gridDimensao.clearCache();
+
+                        this.$.page_tabparqueamento_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabparqueamento_ajax.generateRequest();
+                        this.$.gridParqueamento.clearCache();
+
+                        this.$.page_tabpropriedade_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabpropriedade_ajax.generateRequest();
+                        this.$.gridPropriedade.clearCache();
+                    } else {
+                        this._openToastError(this.createViaturas2InspecaoResult.eMessage);
+                    }
+                },
+
+                _createGestor: function () {
+                    if (this._validateDataResponsavel()) {
+                        this.$.page_CreateViaturas2Gestor_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+                            idGestor: this.$.gestor_idGestor.value,
+                            dataInicio: this.$.gestor_datainicio.value,
+                            dataFim: this.$.gestor_datafim.value
+                        });
+                        this.$.page_CreateViaturas2Gestor_ajax.generateRequest();
+                        this.$.gridGestores.clearCache();
+                    }
+                },
+                _responseCreateResponsavel: function () {
+                    if (this.createViaturas2InspecaoResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2InspecaoResult.eMessage);
+
+                        this.$.inspecao_dataInspecao.value = "";
+                        this.$.inspecao_kmInspecao.value = "";
+                        this.$.inspecao_resultado.value = "";
+                        this.$.inspecao_proximaInspecao.value = "";
+                        this.$.inspecao_observacoes.value = "";
+
+                        this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabinspecao_ajax.generateRequest();
+                        this.$.gridInspecao.clearCache();
+
+                        this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabgestor_ajax.generateRequest();
+                        this.$.gridGestores.clearCache();
 
                         this.$.page_tabestado_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabestado_ajax.generateRequest();

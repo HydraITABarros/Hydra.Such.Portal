@@ -2162,6 +2162,25 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2ListaResponsaveis()
+        {
+            List<Viaturas2GestoresGestor> AllResponsaveis = DBViaturas2GestoresGestor.GetByTipo(1);
+            List<DDMessageRelatedInt> result = new List<DDMessageRelatedInt>();
+
+            if (AllResponsaveis != null && AllResponsaveis.Count > 0)
+            {
+                result = AllResponsaveis.Select(x => new DDMessageRelatedInt()
+                {
+                    id = x.ID,
+                    value = x.Gestor,
+                    extra = x.NoMecanografico,
+                    extra2 = x.Mail
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2Centros([FromBody] string areaCode)
         {
             List<NAVDimValueViewModel> AllCentros = new List<NAVDimValueViewModel>();
