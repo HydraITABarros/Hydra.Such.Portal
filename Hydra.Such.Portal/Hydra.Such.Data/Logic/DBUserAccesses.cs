@@ -183,7 +183,8 @@ namespace Hydra.Such.Data.Logic
                 Create = false,
                 Read = false,
                 Update = false,
-                Delete = false
+                Delete = false,
+                VerTudo = false
             };
 
             try
@@ -199,6 +200,7 @@ namespace Hydra.Such.Data.Logic
                         userAccess.Read = true;
                         userAccess.Update = true;
                         userAccess.Delete = true;
+                        userAccess.VerTudo = true;
                     }
                     else
                     {
@@ -210,6 +212,7 @@ namespace Hydra.Such.Data.Logic
                             userAccess.Read = userAccessess.Any(x => x.Leitura.Value);
                             userAccess.Update = userAccessess.Any(x => x.Modificação.Value);
                             userAccess.Delete = userAccessess.Any(x => x.Eliminação.Value);
+                            userAccess.VerTudo = userAccessess.Any(x => x.VerTudo.Value);
                         }
                     }
                 }
@@ -230,7 +233,8 @@ namespace Hydra.Such.Data.Logic
                     Create = false,
                     Read = false,
                     Update = false,
-                    Delete = false
+                    Delete = false,
+                    VerTudo = false
                 };
             }
             else
@@ -243,7 +247,8 @@ namespace Hydra.Such.Data.Logic
                     Create = x.Inserção,
                     Read = x.Leitura,
                     Update = x.Modificação,
-                    Delete = x.Eliminação
+                    Delete = x.Eliminação,
+                    VerTudo = x.VerTudo
                 };
             }
 

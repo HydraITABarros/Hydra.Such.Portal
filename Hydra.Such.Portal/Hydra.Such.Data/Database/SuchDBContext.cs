@@ -166,6 +166,11 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas2Parqueamento> Viaturas2Parqueamento { get; set; }
         public virtual DbSet<Viaturas2ParqueamentoLocal> Viaturas2ParqueamentoLocal { get; set; }
         public virtual DbSet<Viaturas2Inspecoes> Viaturas2Inspecoes { get; set; }
+        public virtual DbSet<Viaturas2Gestores> Viaturas2Gestores { get; set; }
+        public virtual DbSet<Viaturas2GestoresGestor> Viaturas2GestoresGestor { get; set; }
+        public virtual DbSet<Viaturas2Estados> Viaturas2Estados { get; set; }
+        public virtual DbSet<Viaturas2Dimensoes> Viaturas2Dimensoes { get; set; }
+        public virtual DbSet<Viaturas2Propriedades> Viaturas2Propriedades { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
         public virtual DbSet<PedidosPagamento> PedidosPagamento { get; set; }
         public virtual DbSet<TabelaLog> TabelaLog { get; set; }
@@ -11110,27 +11115,236 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("ID");
 
                 entity.Property(e => e.Matricula)
-                .HasColumnName("Matricula")
-                .HasMaxLength(20);
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.DataInspecao)
-                .HasColumnName("DataInspecao")
-                .HasColumnType("date");
+                    .HasColumnName("DataInspecao")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.KmInspecao)
-                .HasColumnName("KmInspecao")
-                .HasColumnType("decimal(18, 0)");
+                    .HasColumnName("KmInspecao")
+                    .HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.IDResultado)
-                .HasColumnName("IDResultado");
+                    .HasColumnName("IDResultado");
 
                 entity.Property(e => e.ProximaInspecao)
-                .HasColumnName("ProximaInspecao")
-                .HasColumnType("date");
+                    .HasColumnName("ProximaInspecao")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.Observacao)
-                .HasColumnName("Observacao")
-                .HasMaxLength(200);
+                    .HasColumnName("Observacao")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataModificacao)
+                    .HasColumnName("DataModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Viaturas2Gestores>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Viaturas2_Gestores");
+
+                entity.Property(e => e.ID)
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.IDGestor)
+                .HasColumnName("IDGestor");
+
+                entity.Property(e => e.DataInicio)
+                    .HasColumnName("DataInicio")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataFim)
+                    .HasColumnName("DataFim")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataModificacao)
+                    .HasColumnName("DataModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Viaturas2GestoresGestor>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Viaturas2_Gestores_Gestor");
+
+                entity.Property(e => e.ID)
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.Gestor)
+                    .HasColumnName("Gestor")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.NoMecanografico)
+                    .HasColumnName("NoMecanografico")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Mail)
+                    .HasColumnName("Mail")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.IDTipo)
+                    .HasColumnName("IDTipo");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataModificacao)
+                    .HasColumnName("DataModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Viaturas2Estados>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Viaturas2_Estados");
+
+                entity.Property(e => e.ID)
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.IDEstado)
+                    .HasColumnName("IDEstado");
+
+                entity.Property(e => e.DataInicio)
+                    .HasColumnName("DataInicio")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataFim)
+                    .HasColumnName("DataFim")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataModificacao)
+                    .HasColumnName("DataModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Viaturas2Dimensoes>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Viaturas2_Dimensoes");
+
+                entity.Property(e => e.ID)
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.IDTipoDimensao)
+                    .HasColumnName("IDTipoDimensao");
+
+                entity.Property(e => e.Dimensao)
+                    .HasColumnName("Dimensao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataInicio)
+                    .HasColumnName("DataInicio")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataFim)
+                    .HasColumnName("DataFim")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataModificacao)
+                    .HasColumnName("DataModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Viaturas2Propriedades>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Viaturas2_Propriedades");
+
+                entity.Property(e => e.ID)
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.IDPropriedade)
+                    .HasColumnName("IDPropriedade");
+
+                entity.Property(e => e.DataInicio)
+                    .HasColumnName("DataInicio")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataFim)
+                    .HasColumnName("DataFim")
+                    .HasColumnType("date");
 
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")

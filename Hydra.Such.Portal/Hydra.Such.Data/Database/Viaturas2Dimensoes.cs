@@ -2,11 +2,12 @@
 
 namespace Hydra.Such.Data.Database
 {
-    public partial class Viaturas2Parqueamento
+    public partial class Viaturas2Dimensoes
     {
         public int ID { get; set; }
         public string Matricula { get; set; }
-        public int? IDLocal { get; set; }
+        public int? IDTipoDimensao { get; set; }
+        public string Dimensao { get; set; }
         public DateTime? DataInicio { get; set; }
         public DateTime? DataFim { get; set; }
         public string UtilizadorCriacao { get; set; }

@@ -5,18 +5,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace Hydra.Such.Data.Logic.Viatura
 {
-    public static class DBViaturas2Parqueamento
+    public static class DBViaturas2Estados
     {
-        public static List<Viaturas2Parqueamento> GetAll()
+        public static List<Viaturas2Estados> GetAll()
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Viaturas2Parqueamento.ToList();
+                    return ctx.Viaturas2Estados.ToList();
                 }
             }
             catch (Exception e)
@@ -25,13 +24,13 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static Viaturas2Parqueamento GetByID(int ID)
+        public static Viaturas2Estados GetByID(int ID)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Viaturas2Parqueamento.Where(p => p.ID == ID).FirstOrDefault();
+                    return ctx.Viaturas2Estados.Where(p => p.ID == ID).FirstOrDefault();
                 }
             }
             catch (Exception e)
@@ -40,13 +39,13 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static List<Viaturas2Parqueamento> GetByMatricula(string Matricula)
+        public static List<Viaturas2Estados> GetByMatricula(string Matricula)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Viaturas2Parqueamento.Where(p => p.Matricula == Matricula).ToList();
+                    return ctx.Viaturas2Estados.Where(p => p.Matricula == Matricula).ToList();
                 }
             }
             catch (Exception e)
@@ -55,13 +54,13 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static Viaturas2Parqueamento GetByMatriculaRecent(string Matricula)
+        public static Viaturas2Estados GetByMatriculaRecent(string Matricula)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Viaturas2Parqueamento.Where(p => p.Matricula == Matricula).OrderByDescending(x => x.DataInicio).FirstOrDefault();
+                    return ctx.Viaturas2Estados.Where(p => p.Matricula == Matricula).OrderByDescending(x => x.DataInicio).FirstOrDefault();
                 }
             }
             catch (Exception e)
@@ -70,14 +69,14 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static Viaturas2Parqueamento Create(Viaturas2Parqueamento ObjectToCreate)
+        public static Viaturas2Estados Create(Viaturas2Estados ObjectToCreate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToCreate.DataCriacao = DateTime.Now;
-                    ctx.Viaturas2Parqueamento.Add(ObjectToCreate);
+                    ctx.Viaturas2Estados.Add(ObjectToCreate);
                     ctx.SaveChanges();
                 }
 
@@ -90,13 +89,13 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static bool Delete(Viaturas2Parqueamento ObjectToDelete)
+        public static bool Delete(Viaturas2Estados ObjectToDelete)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    ctx.Viaturas2Parqueamento.Remove(ObjectToDelete);
+                    ctx.Viaturas2Estados.Remove(ObjectToDelete);
                     ctx.SaveChanges();
                 }
 
@@ -109,14 +108,14 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static Viaturas2Parqueamento Update(Viaturas2Parqueamento ObjectToUpdate)
+        public static Viaturas2Estados Update(Viaturas2Estados ObjectToUpdate)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
                     ObjectToUpdate.DataModificacao = DateTime.Now;
-                    ctx.Viaturas2Parqueamento.Update(ObjectToUpdate);
+                    ctx.Viaturas2Estados.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
 
@@ -129,13 +128,13 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static Viaturas2Parqueamento ParseToDB(Viaturas2ParqueamentoViewModel x)
+        public static Viaturas2Estados ParseToDB(Viaturas2EstadosViewModel x)
         {
-            Viaturas2Parqueamento Parqueamento = new Viaturas2Parqueamento()
+            Viaturas2Estados Parqueamento = new Viaturas2Estados()
             {
                 ID = x.ID,
                 Matricula = x.Matricula,
-                IDLocal = x.IDLocal,
+                IDEstado = x.IDEstado,
                 DataInicio = x.DataInicio,
                 DataFim = x.DataFim,
                 UtilizadorCriacao = x.UtilizadorCriacao,
@@ -152,22 +151,22 @@ namespace Hydra.Such.Data.Logic.Viatura
             return Parqueamento;
         }
 
-        public static List<Viaturas2Parqueamento> ParseListToViewModel(List<Viaturas2ParqueamentoViewModel> x)
+        public static List<Viaturas2Estados> ParseListToViewModel(List<Viaturas2EstadosViewModel> x)
         {
-            List<Viaturas2Parqueamento> Viaturas2Parqueamento = new List<Viaturas2Parqueamento>();
+            List<Viaturas2Estados> Viaturas2Estados = new List<Viaturas2Estados>();
 
-            x.ForEach(y => Viaturas2Parqueamento.Add(ParseToDB(y)));
+            x.ForEach(y => Viaturas2Estados.Add(ParseToDB(y)));
 
-            return Viaturas2Parqueamento;
+            return Viaturas2Estados;
         }
 
-        public static Viaturas2ParqueamentoViewModel ParseToViewModel(Viaturas2Parqueamento x)
+        public static Viaturas2EstadosViewModel ParseToViewModel(Viaturas2Estados x)
         {
-            Viaturas2ParqueamentoViewModel Parqueamento = new Viaturas2ParqueamentoViewModel()
+            Viaturas2EstadosViewModel Parqueamento = new Viaturas2EstadosViewModel()
             {
                 ID = x.ID,
                 Matricula = x.Matricula,
-                IDLocal = x.IDLocal,
+                IDEstado = x.IDEstado,
                 DataInicio = x.DataInicio,
                 DataFim = x.DataFim,
                 UtilizadorCriacao = x.UtilizadorCriacao,
@@ -184,13 +183,13 @@ namespace Hydra.Such.Data.Logic.Viatura
             return Parqueamento;
         }
 
-        public static List<Viaturas2ParqueamentoViewModel> ParseListToViewModel(List<Viaturas2Parqueamento> x)
+        public static List<Viaturas2EstadosViewModel> ParseListToViewModel(List<Viaturas2Estados> x)
         {
-            List<Viaturas2ParqueamentoViewModel> Viaturas2Parqueamento = new List<Viaturas2ParqueamentoViewModel>();
+            List<Viaturas2EstadosViewModel> Viaturas2Estados = new List<Viaturas2EstadosViewModel>();
 
-            x.ForEach(y => Viaturas2Parqueamento.Add(ParseToViewModel(y)));
+            x.ForEach(y => Viaturas2Estados.Add(ParseToViewModel(y)));
 
-            return Viaturas2Parqueamento;
+            return Viaturas2Estados;
         }
     }
 }

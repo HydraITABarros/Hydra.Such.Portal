@@ -13,5 +13,6 @@ namespace Hydra.Such.Data.ViewModel
         public bool? Create { get; set; }
         public bool? Update { get; set; }
         public bool? Delete { get; set; }
+        public bool? VerTudo { get; set; }
     }
 }

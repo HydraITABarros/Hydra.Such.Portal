@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public int? IDEstado { get; set; }
         public int? IDEstadoOrinalDB { get; set; }
         public string Estado { get; set; }
+        public DateTime? DataEstado { get; set; }
         public int? IDMarca { get; set; }
         public string Marca { get; set; }
         public int? IDModelo { get; set; }
@@ -42,12 +43,11 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string PneuRetaguarda { get; set; }
         public string Observacoes { get; set; }
         public string NomeImagem { get; set; }
-        public DateTime? DataEstado { get; set; }
-        public string DataEstadoTexto { get; set; }
         public int? IDTipoPropriedade { get; set; }
         public string TipoPropriedade { get; set; }
         public int? IDPropriedade { get; set; }
         public string Propriedade { get; set; }
+        public DateTime? DataPropriedade { get; set; }
         public int? IDSegmentacao { get; set; }
         public string Segmentacao { get; set; }
         public DateTime? DataProximaInspecao { get; set; }
@@ -55,16 +55,19 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public int? IntervaloRevisoes { get; set; }
         public int? IDLocalParqueamento { get; set; }
         public int? IDLocalParqueamentoOriginalDB { get; set; }
+        public DateTime? DataParqueamento { get; set; }
         public int? IDLocal { get; set; }
         public string LocalParqueamento { get; set; }
         public bool? AlvaraLicenca { get; set; }
         public string AlvaraLicencaTexto { get; set; }
         public string CodRegiao { get; set; }
         public string CodRegiaoOriginalDB { get; set; }
+        public DateTime? DataRegiao { get; set; }
         public string CodAreaFuncional { get; set; }
         public string CodAreaFuncionalOriginalDB { get; set; }
         public string CodCentroResponsabilidade { get; set; }
         public string CodCentroResponsabilidadeOriginalDB { get; set; }
+        public DateTime? DataCentroResponsabilidade { get; set; }
         public string NoProjeto { get; set; }
         public string Projeto { get; set; }
         public DateTime? DataAquisicao { get; set; }

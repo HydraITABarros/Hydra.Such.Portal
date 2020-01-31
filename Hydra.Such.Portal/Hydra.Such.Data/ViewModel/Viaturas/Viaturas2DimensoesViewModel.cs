@@ -2,12 +2,13 @@
 
 namespace Hydra.Such.Data.ViewModel.Viaturas
 {
-    public class Viaturas2ParqueamentoViewModel : ErrorHandler
+    public class Viaturas2DimensoesViewModel : ErrorHandler
     {
         public int ID { get; set; }
         public string Matricula { get; set; }
-        public int? IDLocal { get; set; }
-        public string Local { get; set; }
+        public int? IDTipoDimensao { get; set; }
+        public string TipoDimensao { get; set; }
+        public string Dimensao { get; set; }
         public DateTime? DataInicio { get; set; }
         public string DataInicioTexto { get; set; }
         public DateTime? DataFim { get; set; }

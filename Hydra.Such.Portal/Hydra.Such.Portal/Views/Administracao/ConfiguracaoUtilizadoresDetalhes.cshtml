@@ -539,6 +539,9 @@
                     <div class="col-lg-1 alignPoga">
                         <vaadin-checkbox id="_chkDelete" checked="{{chkDelete}}"> Eliminação</vaadin-checkbox>
                     </div>
+                    <div class="col-lg-1 alignPoga">
+                        <vaadin-checkbox id="_chkVerTudo" checked="{{chkVerTudo}}"> Ver Tudo</vaadin-checkbox>
+                    </div>
                     <div class="col-lg-2 alignPoga">
                         <center>
                             <paper-button class="btnSave" raised on-tap="_createUserAccess"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
@@ -614,6 +617,18 @@
                     <template>
                         <center>
                             <vaadin-checkbox checked="{{item.delete}}"></vaadin-checkbox>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="12%">
+                    <template class="header">
+                        <center>
+                            Ver Tudo
+                        </center>
+                    </template>
+                    <template>
+                        <center>
+                            <vaadin-checkbox checked="{{item.verTudo}}"></vaadin-checkbox>
                         </center>
                     </template>
                 </vaadin-grid-column>
@@ -887,6 +902,11 @@
                         notify: true,
                         value: true
                     },
+                    chkVerTudo: {
+                        type: Boolean,
+                        notify: true,
+                        value: true
+                    },
                     ddDimension: {
                         type: Number,
                         notify: true,
@@ -1128,7 +1148,7 @@
                     } else {
                         this.$.page_createuseraccess_ajax.body = JSON.stringify({
                             idUser: this.data.idUser, feature: this.ddFeature,
-                            read: this.chkRead, create: this.chkCreate, update: this.chkUpdate, delete: this.chkDelete });
+                            read: this.chkRead, create: this.chkCreate, update: this.chkUpdate, delete: this.chkDelete, verTudo: this.chkVerTudo });
                         this.$.page_createuseraccess_ajax.generateRequest();
                         this.$.gridUserAccesses.clearCache();
                     }

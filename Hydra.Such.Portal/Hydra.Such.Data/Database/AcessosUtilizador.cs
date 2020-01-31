@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.Database
         public bool? Inserção { get; set; }
         public bool? Modificação { get; set; }
         public bool? Eliminação { get; set; }
+        public bool? VerTudo { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }

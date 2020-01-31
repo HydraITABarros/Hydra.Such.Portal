@@ -182,7 +182,8 @@ namespace Hydra.Such.Portal.Controllers
                     Create = x.Inserção,
                     Read = x.Leitura,
                     Update = x.Modificação,
-                    Delete = x.Eliminação
+                    Delete = x.Eliminação,
+                    VerTudo = x.VerTudo
                 }).ToList();
 
                 result.UserProfiles = DBProfileModels.GetByUserId(data.IdUser).Select(x => new ProfileModelsViewModel()
@@ -379,6 +380,7 @@ namespace Hydra.Such.Portal.Controllers
                         updatedUA.Inserção = userAccess.Create.HasValue ? userAccess.Create.Value : false;
                         updatedUA.Leitura = userAccess.Read.HasValue ? userAccess.Read.Value : false;
                         updatedUA.Modificação = userAccess.Update.HasValue ? userAccess.Update.Value : false;
+                        updatedUA.VerTudo = userAccess.VerTudo.HasValue ? userAccess.VerTudo.Value : false;
 
                         updatedUA.UtilizadorModificação = User.Identity.Name;
                         updatedUA.DataHoraModificação = DateTime.Now;
@@ -597,6 +599,7 @@ namespace Hydra.Such.Portal.Controllers
                 userAccess.Inserção = data.Create;
                 userAccess.Leitura = data.Read;
                 userAccess.Modificação = data.Update;
+                userAccess.VerTudo = data.VerTudo;
                 userAccess.UtilizadorCriação = User.Identity.Name;
                 userAccess.DataHoraCriação = DateTime.Now;
 
@@ -1911,6 +1914,83 @@ namespace Hydra.Such.Portal.Controllers
                 DBConfiguracaoTabelas.Update(tiposViatura);
             });
             return Json(data);
+        }
+
+
+        #endregion
+
+        #region Gestores_Gestor
+        public IActionResult Viaturas2GestoresGestor(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminViaturasTelemoveis);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetAllGestores()
+        {
+            List<Viaturas2GestoresGestorViewModel> AllGestores = DBViaturas2GestoresGestor.ParseListToViewModel(DBViaturas2GestoresGestor.GetAll());
+
+            List<ConfiguracaoTabelas> AllTipos = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_GESTORES_TIPO");
+
+            AllGestores.ForEach(x =>
+            {
+                if (x.IDTipo != null) x.Tipo = AllTipos.Where(y => y.ID == x.IDTipo).FirstOrDefault().Descricao;
+            });
+
+            return Json(AllGestores.OrderBy(x => x.Gestor));
+        }
+
+        [HttpPost]
+        public JsonResult GetAllTiposGestores()
+        {
+            List<ConfiguracaoTabelas> AllTiposGestores = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_GESTORES_TIPO");
+
+            return Json(AllTiposGestores.OrderBy(x => x.Descricao));
+        }
+
+        [HttpPost]
+        public JsonResult CreateGestor([FromBody] Viaturas2GestoresGestorViewModel gestor)
+        {
+            Viaturas2GestoresGestor gestorToCreate = new Viaturas2GestoresGestor();
+
+            gestorToCreate = DBViaturas2GestoresGestor.ParseToDB(gestor);
+            gestorToCreate.UtilizadorCriacao = User.Identity.Name;
+            DBViaturas2GestoresGestor.Create(gestorToCreate);
+
+            return Json(gestor);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteGestor([FromBody] Viaturas2GestoresGestorViewModel gestor)
+        {
+            var result = DBViaturas2GestoresGestor.Delete(DBViaturas2GestoresGestor.ParseToDB(gestor));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateGestores([FromBody] List<Viaturas2GestoresGestorViewModel> gestores)
+        {
+            List<Viaturas2GestoresGestorViewModel> AllGestores = DBViaturas2GestoresGestor.ParseListToViewModel(DBViaturas2GestoresGestor.GetAll());
+            gestores.RemoveAll(x => AllGestores.Any(u => u.ID == x.ID && u.Gestor == x.Gestor && u.NoMecanografico == x.NoMecanografico && u.Mail == x.Mail && u.IDTipo == x.IDTipo));
+
+            gestores.ForEach(x =>
+            {
+                Viaturas2GestoresGestor gestorToUpdate = DBViaturas2GestoresGestor.ParseToDB(x);
+                gestorToUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBViaturas2GestoresGestor.Update(gestorToUpdate);
+            });
+            return Json(gestores);
         }
 
 
