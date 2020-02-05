@@ -332,6 +332,8 @@ namespace Hydra.Such.Portal.Controllers
             Viaturas2ViewModel viatura = new Viaturas2ViewModel();
             if (data != null && !string.IsNullOrEmpty(data.Matricula))
             {
+                int IDGestor = 0;
+                int IDCondutor = 0;
                 viatura = DBViaturas2.ParseToViewModel(DBViaturas2.GetByMatricula(data.Matricula));
 
                 viatura.IDEstadoOriginalDB = viatura.IDEstado;
@@ -345,7 +347,14 @@ namespace Hydra.Such.Portal.Controllers
                 viatura.IDPropriedadeOriginalDB = viatura.IDPropriedade;
                 viatura.DataPropriedadeLast = DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
 
-                List<ConfiguracaoTabelas> AllConfTabelas = DBConfiguracaoTabelas.GetAll();
+                IDGestor = DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 1) != null ? (int)DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 1).IDGestor : 0;
+                if (IDGestor > 0) viatura.Gestor = DBViaturas2GestoresGestor.GetByID(IDGestor) != null ? DBViaturas2GestoresGestor.GetByID(IDGestor).Gestor : "";
+                IDCondutor = DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 2) != null ? (int)DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 2).IDGestor : 0;
+                if (IDCondutor > 0) viatura.Condutor = DBViaturas2GestoresGestor.GetByID(IDCondutor) != null ? DBViaturas2GestoresGestor.GetByID(IDCondutor).Gestor : "";
+
+                viatura.DataProximaInspecaoTexto = DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula) != null ? DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula).ProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
+
+                List <ConfiguracaoTabelas> AllConfTabelas = DBConfiguracaoTabelas.GetAll();
                 List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
                 List<Viaturas2Modelos> AllModelos = DBViaturas2Modelos.GetAll();
                 List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, "");
@@ -390,12 +399,30 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2TabCondutor([FromBody] Viaturas2InspecoesViewModel viatura)
+        {
+            List<Viaturas2GestoresViewModel> TabGestores = new List<Viaturas2GestoresViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabGestores = DBViaturas2Gestores.ParseListToViewModel(DBViaturas2Gestores.GetByMatriculaTipo(viatura.Matricula, 2));
+
+                List<Viaturas2GestoresGestor> AllGestores = DBViaturas2GestoresGestor.GetAll();
+
+                TabGestores.ForEach(x =>
+                {
+                    if (x.IDGestor != null) x.Gestor = AllGestores.Where(y => y.ID == x.IDGestor).FirstOrDefault().Gestor;
+                });
+            }
+            return Json(TabGestores.OrderByDescending(x => x.DataInicio));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2TabGestor([FromBody] Viaturas2InspecoesViewModel viatura)
         {
             List<Viaturas2GestoresViewModel> TabGestores = new List<Viaturas2GestoresViewModel>();
             if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
             {
-                TabGestores = DBViaturas2Gestores.ParseListToViewModel(DBViaturas2Gestores.GetByMatricula(viatura.Matricula));
+                TabGestores = DBViaturas2Gestores.ParseListToViewModel(DBViaturas2Gestores.GetByMatriculaTipo(viatura.Matricula, 1));
 
                 List<Viaturas2GestoresGestor> AllGestores = DBViaturas2GestoresGestor.GetAll();
 
@@ -780,6 +807,84 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateViaturas2Condutor([FromBody] Viaturas2GestoresViewModel condutor)
+        {
+            try
+            {
+                if (condutor != null && !string.IsNullOrEmpty(condutor.Matricula) && condutor.DataInicio.HasValue)
+                {
+                    Viaturas2Gestores condutorToCreate = new Viaturas2Gestores();
+
+                    condutorToCreate = DBViaturas2Gestores.ParseToDB(condutor);
+                    condutorToCreate.IDTipo = 2; //Condutor
+                    condutorToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Gestores.Create(condutorToCreate) != null)
+                    {
+                        condutor.eReasonCode = 1;
+                        condutor.eMessage = "Condutor criado com sucesso.";
+                    }
+                    else
+                    {
+                        condutor.eReasonCode = 3;
+                        condutor.eMessage = "Ocorreu um erro ao criar o Condutor no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    condutor.eReasonCode = 3;
+                    condutor.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                condutor.eReasonCode = 4;
+                condutor.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(condutor);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2Gestor([FromBody] Viaturas2GestoresViewModel gestor)
+        {
+            try
+            {
+                if (gestor != null && !string.IsNullOrEmpty(gestor.Matricula) && gestor.DataInicio.HasValue)
+                {
+                    Viaturas2Gestores gestorToCreate = new Viaturas2Gestores();
+
+                    gestorToCreate = DBViaturas2Gestores.ParseToDB(gestor);
+                    gestorToCreate.IDTipo = 1; //Responsável
+                    gestorToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Gestores.Create(gestorToCreate) != null)
+                    {
+                        gestor.eReasonCode = 1;
+                        gestor.eMessage = "Responsável criado com sucesso.";
+                    }
+                    else
+                    {
+                        gestor.eReasonCode = 3;
+                        gestor.eMessage = "Ocorreu um erro ao criar o Responsável no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    gestor.eReasonCode = 3;
+                    gestor.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                gestor.eReasonCode = 4;
+                gestor.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(gestor);
+        }
+
+        [HttpPost]
         public JsonResult DeleteViaturas2Inspecao([FromBody] Viaturas2InspecoesViewModel inspecao)
         {
             try
@@ -822,6 +927,96 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(inspecao);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Condutor([FromBody] Viaturas2InspecoesViewModel Condutor)
+        {
+            try
+            {
+                if (Condutor != null && !string.IsNullOrEmpty(Condutor.Matricula))
+                {
+                    Viaturas2Gestores CondutorToDelete = new Viaturas2Gestores();
+
+                    CondutorToDelete = DBViaturas2Gestores.GetByID(Condutor.ID);
+
+                    if (CondutorToDelete != null)
+                    {
+                        if (DBViaturas2Gestores.Delete(CondutorToDelete) == true)
+                        {
+                            Condutor.eReasonCode = 1;
+                            Condutor.eMessage = "Condutor Eliminado com sucesso.";
+                        }
+                        else
+                        {
+                            Condutor.eReasonCode = 3;
+                            Condutor.eMessage = "Ocorreu um erro ao Eliminar o Condutor no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Condutor.eReasonCode = 3;
+                        Condutor.eMessage = "Ocorreu um erro ao Eliminar ao ler o Condutor.";
+                    }
+                }
+                else
+                {
+                    Condutor.eReasonCode = 3;
+                    Condutor.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Condutor.eReasonCode = 4;
+                Condutor.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Condutor);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Gestor([FromBody] Viaturas2InspecoesViewModel Gestor)
+        {
+            try
+            {
+                if (Gestor != null && !string.IsNullOrEmpty(Gestor.Matricula))
+                {
+                    Viaturas2Gestores GestorToDelete = new Viaturas2Gestores();
+
+                    GestorToDelete = DBViaturas2Gestores.GetByID(Gestor.ID);
+
+                    if (GestorToDelete != null)
+                    {
+                        if (DBViaturas2Gestores.Delete(GestorToDelete) == true)
+                        {
+                            Gestor.eReasonCode = 1;
+                            Gestor.eMessage = "Responsável Eliminado com sucesso.";
+                        }
+                        else
+                        {
+                            Gestor.eReasonCode = 3;
+                            Gestor.eMessage = "Ocorreu um erro ao Eliminar o Responsável no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Gestor.eReasonCode = 3;
+                        Gestor.eMessage = "Ocorreu um erro ao Eliminar ao ler o Responsável.";
+                    }
+                }
+                else
+                {
+                    Gestor.eReasonCode = 3;
+                    Gestor.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Gestor.eReasonCode = 4;
+                Gestor.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Gestor);
         }
 
         [HttpPost]

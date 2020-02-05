@@ -165,6 +165,7 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaSegmentacoes" last-response="{{ListaSegmentacoes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaLocaisParqueamento" last-response="{{ListaLocaisParqueamento}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2InspecoesResultados" last-response="{{ListaInspecoesResultados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCondutores" last-response="{{ListaCondutores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaResponsaveis" last-response="{{ListaResponsaveis}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -220,6 +221,33 @@
                    handle-as="json"
                    id="page_DeleteViaturas2Inspecao_ajax"
                    on-response="_responseDeleteViaturas2Inspecao"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--CONDUTORES-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabCondutor"
+                   last-response="{{tabCondutor}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabcondutor_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Condutor"
+                   last-response="{{createViaturas2CondutorResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Condutor_ajax"
+                   on-response="_responseCreateViaturas2Condutor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Condutor"
+                   last-response="{{deleteViaturas2CondutorResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Condutor_ajax"
+                   on-response="_responseDeleteViaturas2Condutor"
                    content-type="application/json">
         </iron-ajax>
 
@@ -394,11 +422,11 @@
 
                                         <div class="row break_clear">
                                             <div class="col-md-6">
-                                                <vaadin-text-field id="info_gestor" name="info_gestor" label="Responsável" value="" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="info_gestor" name="info_gestor" label="Responsável" value="{{data.gestor}}" disabled></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-6">
-                                                <vaadin-text-field id="info_condutor" name="info_condutor" label="Condutor" value="" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="info_condutor" name="info_condutor" label="Condutor" value="{{data.condutor}}" disabled></vaadin-text-field>
                                             </div>
                                         </div>
 
@@ -1665,55 +1693,72 @@
 
                                 <!--Condutores-->
                                 <paper-collapse-item class="panel-heading" header="Condutores" closed>
-                                    <vaadin-grid id="gridCondutores" aria-label="gridCondutores" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="gridCondutores" aria-label="gridCondutores" items="{{ tabCondutor }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="nomeCondutor">Nome do Condutor</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="nomeCondutor" />
+                                                <vaadin-grid-sorter path="gestor">Nome do Responsável</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="gestor" />
                                             </template>
                                             <template>
-                                                {{item.nomeCondutor}}
+                                                {{item.gestor}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="datainicio">Data Início</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="datainicio" />
+                                                <vaadin-grid-sorter path="dataInicioTexto">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicioTexto" />
                                             </template>
                                             <template>
-                                                {{item.datainicio}}
+                                                {{item.dataInicioTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataFim" />
+                                                <vaadin-grid-sorter path="dataFimTexto">Data Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFimTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataFim}}
+                                                {{item.dataFimTexto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteCondutor" class="btnRemove tableBtn" raised on-tap="_deleteCondutor" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
-                                                <div class="col-md-2">
-                                                    <vaadin-text-field id="nomeCondutor" name="nomeCondutor" label="Nome do Condutor" value=""></vaadin-text-field>
+                                                <div class="col-md-4">
+                                                    <such-selectbox id="condutor_idCondutor" name="condutor_idCondutor" value="" label="Nome do Condutor"
+                                                                    items="[[ListaCondutores]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Condutor"}, {"field":"extra", "name":"Nº Mecanográfico"}, {"field":"extra2", "name":"Mail"}]'
+                                                                    required error-message="O campo Condutor é de preenchimento obrigatório"
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="datainicio" name="datainicio" label="Data Início" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="condutor_dataInicio" name="condutor_dataInicio" label="Data Início" value="" placeholder="dd/MM/aaaa" required error-message="O campo Data Início é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="condutor_dataFim" name="condutor_dataFim" label="Data Fim" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
-                                                    <paper-button raised id="btnCondutores" class="btnSave" on-tap="_createCondutores" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                    <paper-button raised id="btnCondutores" class="btnSave" on-tap="_createCondutor" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -1779,7 +1824,7 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="gestor_datainicio" name="gestor_datainicio" label="Data Início" value="" placeholder="dd/MM/aaaa" required error-message="O campo Data Início é de preenchimento obrigatório"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="gestor_dataInicio" name="gestor_dataInicio" label="Data Início" value="" placeholder="dd/MM/aaaa" required error-message="O campo Data Início é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -2754,6 +2799,10 @@
                     this.$.page_tabinspecao_ajax.generateRequest();
                     this.$.gridInspecao.clearCache();
 
+                    this.$.page_tabcondutor_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabcondutor_ajax.generateRequest();
+                    this.$.gridGestores.clearCache();
+
                     this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabgestor_ajax.generateRequest();
                     this.$.gridGestores.clearCache();
@@ -3144,14 +3193,6 @@
                         this.$.inspecao_proximaInspecao.value = "";
                         this.$.inspecao_observacoes.value = "";
 
-                        this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabinspecao_ajax.generateRequest();
-                        this.$.gridInspecao.clearCache();
-
-                        this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabgestor_ajax.generateRequest();
-                        this.$.gridGestores.clearCache();
-
                         this.$.page_tabestado_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabestado_ajax.generateRequest();
                         this.$.gridEstado.clearCache();
@@ -3172,54 +3213,108 @@
                     }
                 },
 
+                _createCondutor: function () {
+                    debugger;
+                    if (this._validateDataCondutor()) {
+                        this.$.page_CreateViaturas2Condutor_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+                            idGestor: this.$.condutor_idCondutor.value,
+                            dataInicio: this.$.condutor_dataInicio.value,
+                            dataFim: this.$.condutor_dataFim.value
+                        });
+                        this.$.page_CreateViaturas2Condutor_ajax.generateRequest();
+                        this.$.gridCondutores.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Condutor: function () {
+                    debugger;
+                    if (this.createViaturas2CondutorResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2CondutorResult.eMessage);
+
+                        this.$.condutor_idCondutor._clearSelection();
+                        this.$.condutor_dataInicio.value = "";
+                        this.$.condutor_dataFim.value = "";
+
+                        this.$.page_tabcondutor_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabcondutor_ajax.generateRequest();
+                        this.$.gridCondutores.clearCache();
+                    } else {
+                        this._openToastError(this.createViaturas2CondutorResult.eMessage);
+                    }
+                },
+
+                _validateDataCondutor: function () {
+                    debugger;
+                    if (this.$.condutor_idCondutor.value == null || this.$.condutor_idCondutor.value == "") {
+                        this.$.condutor_idCondutor.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.condutor_dataInicio.value == null || this.$.condutor_dataInicio.value == "") {
+                        this.$.condutor_dataInicio.validate();
+                        errors = errors + 1;
+                    }
+
+                    if ((this.$.condutor_dataInicio.value != null && this.$.condutor_dataInicio.value != "") && (this.$.condutor_dataFim.value != null && this.$.condutor_dataFim.value != "")) {
+                        var dataInicio = Date.parse(this.$.condutor_dataInicio.value)
+                        var dataFim = Date.parse(this.$.condutor_dataFim.value)
+                        if (dataInicio > dataFim) {
+                            this._openToastError("A data Fim tem que ser superior ou igual à data Início.");
+                            errors = errors + 1;
+                        }
+                    }
+
+                    return true;
+                },
+
                 _createGestor: function () {
-                    if (this._validateDataResponsavel()) {
+                    if (this._validateDataGestor()) {
                         this.$.page_CreateViaturas2Gestor_ajax.body = JSON.stringify({
                             matricula: this._matricula,
                             idGestor: this.$.gestor_idGestor.value,
-                            dataInicio: this.$.gestor_datainicio.value,
-                            dataFim: this.$.gestor_datafim.value
+                            dataInicio: this.$.gestor_dataInicio.value,
+                            dataFim: this.$.gestor_dataFim.value
                         });
                         this.$.page_CreateViaturas2Gestor_ajax.generateRequest();
                         this.$.gridGestores.clearCache();
                     }
                 },
-                _responseCreateResponsavel: function () {
-                    if (this.createViaturas2InspecaoResult.eReasonCode == 1) {
-                        this._openToast(this.createViaturas2InspecaoResult.eMessage);
+                _responseCreateViaturas2Gestor: function () {
+                    if (this.createViaturas2GestorResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2GestorResult.eMessage);
 
-                        this.$.inspecao_dataInspecao.value = "";
-                        this.$.inspecao_kmInspecao.value = "";
-                        this.$.inspecao_resultado.value = "";
-                        this.$.inspecao_proximaInspecao.value = "";
-                        this.$.inspecao_observacoes.value = "";
-
-                        this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabinspecao_ajax.generateRequest();
-                        this.$.gridInspecao.clearCache();
+                        this.$.gestor_idGestor._clearSelection();
+                        this.$.gestor_dataInicio.value = "";
+                        this.$.gestor_dataFim.value = "";
 
                         this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabgestor_ajax.generateRequest();
                         this.$.gridGestores.clearCache();
-
-                        this.$.page_tabestado_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabestado_ajax.generateRequest();
-                        this.$.gridEstado.clearCache();
-
-                        this.$.page_tabdimensao_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabdimensao_ajax.generateRequest();
-                        this.$.gridDimensao.clearCache();
-
-                        this.$.page_tabparqueamento_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabparqueamento_ajax.generateRequest();
-                        this.$.gridParqueamento.clearCache();
-
-                        this.$.page_tabpropriedade_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabpropriedade_ajax.generateRequest();
-                        this.$.gridPropriedade.clearCache();
                     } else {
-                        this._openToastError(this.createViaturas2InspecaoResult.eMessage);
+                        this._openToastError(this.createViaturas2GestorResult.eMessage);
                     }
+                },
+
+                _validateDataGestor: function () {
+                    if (this.$.gestor_idGestor.value == null || this.$.gestor_idGestor.value == "") {
+                        this.$.gestor_idGestor.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.gestor_dataInicio.value == null || this.$.gestor_dataInicio.value == "") {
+                        this.$.gestor_dataInicio.validate();
+                        errors = errors + 1;
+                    }
+
+                    if ((this.$.gestor_dataInicio.value != null && this.$.gestor_dataInicio.value != "") && (this.$.gestor_dataFim.value != null && this.$.gestor_dataFim.value != "")) {
+                        var dataInicio = Date.parse(this.$.gestor_dataInicio.value)
+                        var dataFim = Date.parse(this.$.gestor_dataFim.value)
+                        if (dataInicio > dataFim) {
+                            this._openToastError("A data Fim tem que ser superior ou igual à data Início.");
+                            errors = errors + 1;
+                        }
+                    }
+                    return true;
                 },
 
                 _validateDataInspecao: function () {
@@ -3298,8 +3393,7 @@
                         this._openToastError(this.deleteViaturas2InspecaoResult.eMessage);
                     }
                 },
-
-
+                
                 _openDlgEstado: function () {
                     if (this._isCreate == false && this.$.geral_estado.value != "" && this.data.idEstadoOriginalDB != this.$.geral_estado.value)
                         this.$.dlgEstado.open();
@@ -3419,8 +3513,111 @@
                     }
                 },
 
+                _deleteCondutor: function (e) {
+                    if (this._permissions.delete == true) {
+                        var index = this.tabCondutor.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var condutor = e.model.item.gestor;
+                        var ajax_request = this.$.page_DeleteViaturas2Condutor_ajax;
 
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Condutor " + condutor + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteCondutor) {
+                                if (deleteCondutor) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
 
+                                    this.$.gridInspecao.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Condutores.');
+                    }
+                },
+                _responseDeleteViaturas2Condutor: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2CondutorResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2CondutorResult.eMessage);
+
+                        this.$.page_tabcondutor_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabcondutor_ajax.generateRequest();
+                        this.$.gridCondutores.clearCache();
+                    } else {
+                        this._openToastError(this.deleteViaturas2CondutorResult.eMessage);
+                    }
+                },
+
+                _deleteGestor: function (e) {
+                    if (this._permissions.delete == true) {
+                        var index = this.tabGestor.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var Gestor = e.model.item.gestor;
+                        var ajax_request = this.$.page_DeleteViaturas2Gestor_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Gestor " + Gestor + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteGestor) {
+                                if (deleteGestor) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridInspecao.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Gestores.');
+                    }
+                },
+                _responseDeleteViaturas2Gestor: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2GestorResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2GestorResult.eMessage);
+
+                        this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabgestor_ajax.generateRequest();
+                        this.$.gridGestores.clearCache();
+                    } else {
+                        this._openToastError(this.Gestor.eMessage);
+                    }
+                },
             });
         });
     </script>

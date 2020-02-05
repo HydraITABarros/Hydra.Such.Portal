@@ -6,6 +6,7 @@ namespace Hydra.Such.Data.Database
     {
         public int ID { get; set; }
         public string Gestor { get; set; }
+        public string SearchName { get; set; }
         public string NoMecanografico { get; set; }
         public string Mail { get; set; }
         public int? IDTipo { get; set; }

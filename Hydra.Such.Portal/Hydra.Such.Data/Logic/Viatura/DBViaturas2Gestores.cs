@@ -39,13 +39,28 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
-        public static List<Viaturas2Gestores> GetByMatricula(string Matricula)
+        public static List<Viaturas2Gestores> GetByMatriculaTipo(string Matricula, int Tipo)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.Viaturas2Gestores.Where(p => p.Matricula == Matricula).ToList();
+                    return ctx.Viaturas2Gestores.Where(p => p.Matricula == Matricula && p.IDTipo == Tipo).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static Viaturas2Gestores GetByMatriculaGestorRecent(string Matricula, DateTime Data, int Tipo)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Viaturas2Gestores.Where(p => p.Matricula == Matricula && (p.DataInicio <= Data && p.DataFim.HasValue ? p.DataFim >= Data : DateTime.Now >= Data) && p.IDTipo == Tipo).OrderByDescending(x => x.DataFim.HasValue ? x.DataFim : x.DataInicio).FirstOrDefault();
                 }
             }
             catch (Exception e)
@@ -119,6 +134,7 @@ namespace Hydra.Such.Data.Logic.Viatura
             {
                 ID = x.ID,
                 Matricula = x.Matricula,
+                IDTipo = x.IDTipo,
                 IDGestor = x.IDGestor,
                 DataInicio = x.DataInicio,
                 DataFim = x.DataFim,
@@ -151,6 +167,7 @@ namespace Hydra.Such.Data.Logic.Viatura
             {
                 ID = x.ID,
                 Matricula = x.Matricula,
+                IDTipo = x.IDTipo,
                 IDGestor = x.IDGestor,
                 DataInicio = x.DataInicio,
                 DataFim = x.DataFim,

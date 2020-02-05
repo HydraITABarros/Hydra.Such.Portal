@@ -4570,7 +4570,7 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Não é possivel faturar projetos iguais de grupos diferentes.";
+                result.eMessage = "Não é possivel faturar projetos iguais de grupos diferentes ou não existe dados para faturar.";
             }
 
             return Json(result);

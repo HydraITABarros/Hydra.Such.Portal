@@ -54,6 +54,21 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
+        public static Viaturas2Inspecoes GetByMatriculaProximaInspecaoRecent(string Matricula)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Viaturas2Inspecoes.Where(p => p.Matricula == Matricula).OrderByDescending(x => x.ProximaInspecao).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static Viaturas2Inspecoes Create(Viaturas2Inspecoes ObjectToCreate)
         {
             try

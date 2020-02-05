@@ -11167,8 +11167,11 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Matricula")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.IDTipo)
+                    .HasColumnName("IDTipo");
+
                 entity.Property(e => e.IDGestor)
-                .HasColumnName("IDGestor");
+                    .HasColumnName("IDGestor");
 
                 entity.Property(e => e.DataInicio)
                     .HasColumnName("DataInicio")
@@ -11206,6 +11209,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.Gestor)
                     .HasColumnName("Gestor")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.SearchName)
+                    .HasColumnName("SearchName")
                     .HasMaxLength(200);
 
                 entity.Property(e => e.NoMecanografico)

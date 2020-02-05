@@ -84,6 +84,9 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string DataModificacaoTexto { get; set; }
 
         public string Idade { get; set; }
+        public string Condutor { get; set; }
+        public string Gestor { get; set; }
+
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
