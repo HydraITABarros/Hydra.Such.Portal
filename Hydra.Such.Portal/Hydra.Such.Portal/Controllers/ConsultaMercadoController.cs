@@ -250,6 +250,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
+                    data.UtilizadorModificacao = User.Identity.Name;
                     ConsultaMercado consultaMercado = DBConsultaMercado.Update(data);
                     if (consultaMercado == null)
                     {
@@ -349,6 +350,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             CM.UserHistoricoToAtivo = User.Identity.Name;
                             CM.Historico = false;
+                            CM.UtilizadorModificacao = User.Identity.Name;
 
                             if (DBConsultaMercado.Update(CM) != null)
                             {
@@ -441,6 +443,7 @@ namespace Hydra.Such.Portal.Controllers
                 consultaMercado.Urgente = data.Urgente;
                 consultaMercado.Historico = data.Historico;
                 consultaMercado.Obs = data.Obs;
+                consultaMercado.UtilizadorModificacao = User.Identity.Name;
 
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
@@ -506,6 +509,8 @@ namespace Hydra.Such.Portal.Controllers
                     consultaMercado.Fase = Fases[4].Id;
 
                     consultaMercado.Historico = true;
+                    consultaMercado.UserToHistorico = User.Identity.Name;
+                    consultaMercado.UtilizadorModificacao = User.Identity.Name;
                     consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
                     ////Criar uma versão no histórico, com versão incrementada em 1
@@ -1150,6 +1155,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         ConsultaMercado consultaMercado = DBConsultaMercado.CastConsultaMercadoViewToConsultaMercado(data);
                         consultaMercado.Historico = true;
+                        consultaMercado.UtilizadorModificacao = User.Identity.Name;
                         DBConsultaMercado.Update(consultaMercado);
                         data.Historico = true;
                     }
@@ -1356,6 +1362,7 @@ namespace Hydra.Such.Portal.Controllers
                     data.eMessage = "Email enviado com sucesso para:" + Environment.NewLine + email;
 
                     data.EmailEnviado = true;
+                    data.UtilizadorModificacao = User.Identity.Name;
                     DBConsultaMercado.Update(data);
                 }
                 else
@@ -1449,6 +1456,7 @@ namespace Hydra.Such.Portal.Controllers
             data.eMessage = "Email enviado com sucesso para:" + Environment.NewLine + email;
 
             data.EmailEnviado = true;
+            data.UtilizadorModificacao = User.Identity.Name;
             DBConsultaMercado.Update(data);
 
             //Actualizar Tabela "Seleccao_Entidades", com Data de Envio Ao Fornecedor e com Utilizador Envio

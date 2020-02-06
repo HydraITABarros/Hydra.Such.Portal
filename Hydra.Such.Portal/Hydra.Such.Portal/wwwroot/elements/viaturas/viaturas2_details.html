@@ -197,6 +197,60 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--Km-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabKm"
+                   last-response="{{tabKm}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabKm_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Km"
+                   last-response="{{createViaturas2KmResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Km_ajax"
+                   on-response="_responseCreateViaturas2Km"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Km"
+                   last-response="{{deleteViaturas2KmResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Km_ajax"
+                   on-response="_responseDeleteViaturas2Km"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--Manutencao-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabManutencao"
+                   last-response="{{tabManutencao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabManutencao_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Manutencao"
+                   last-response="{{createViaturas2ManutencaoResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Manutencao_ajax"
+                   on-response="_responseCreateViaturas2Manutencao"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Manutencao"
+                   last-response="{{deleteViaturas2ManutencaoResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Manutencao_ajax"
+                   on-response="_responseDeleteViaturas2Manutencao"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--INSPEÇÕES-->
         <iron-ajax url="/Viaturas/GetViaturas2TabInspecao"
                    last-response="{{tabInspecao}}"
@@ -221,6 +275,87 @@
                    handle-as="json"
                    id="page_DeleteViaturas2Inspecao_ajax"
                    on-response="_responseDeleteViaturas2Inspecao"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--CartaVerde-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabCartaVerde"
+                   last-response="{{tabCartaVerde}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabCartaVerde_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2CartaVerde"
+                   last-response="{{createViaturas2CartaVerdeResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2CartaVerde_ajax"
+                   on-response="_responseCreateViaturas2CartaVerde"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2CartaVerde"
+                   last-response="{{deleteViaturas2CartaVerdeResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2CartaVerde_ajax"
+                   on-response="_responseDeleteViaturas2CartaVerde"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--Acidentes-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabAcidentes"
+                   last-response="{{tabAcidentes}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabAcidentes_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Acidentes"
+                   last-response="{{createViaturas2AcidentesResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Acidentes_ajax"
+                   on-response="_responseCreateViaturas2Acidentes"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Acidentes"
+                   last-response="{{deleteViaturas2AcidentesResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Acidentes_ajax"
+                   on-response="_responseDeleteViaturas2Acidentes"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--ContraOrdenacoes-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabContraOrdenacoes"
+                   last-response="{{tabContraOrdenacoes}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabContraOrdenacoes_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2ContraOrdenacoes"
+                   last-response="{{createViaturas2ContraOrdenacoesResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2ContraOrdenacoes_ajax"
+                   on-response="_responseCreateViaturas2ContraOrdenacoes"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2ContraOrdenacoes"
+                   last-response="{{deleteViaturas2ContraOrdenacoesResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2ContraOrdenacoes_ajax"
+                   on-response="_responseDeleteViaturas2ContraOrdenacoes"
                    content-type="application/json">
         </iron-ajax>
 
@@ -850,7 +985,7 @@
                             <div>
                                 <!--Km-->
                                 <paper-collapse-item class="panel-heading" header="Km" closed>
-                                    <vaadin-grid id="gridKmHistorico" aria-label="gridKmHistorico" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="gridKm" aria-label="gridKm" items="{{ tabKm }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="km">Km</vaadin-grid-sorter>
@@ -863,28 +998,38 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="data" />
+                                                <vaadin-grid-sorter path="dataTexto">Data</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataTexto" />
                                             </template>
                                             <template>
-                                                {{item.data}}
+                                                {{item.dataTexto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteKm" class="btnRemove tableBtn" raised on-tap="_deleteKm" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="km" name="km" label="Km" value=""><div slot="suffix">km</div></vaadin-text-field>
+                                                    <vaadin-text-field id="km_km" name="km_km" label="Km" value="" type="number" class="alignRight" required error-message="O campo Km é de preenchimento obrigatório"><div slot="suffix">km</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="data" name="data" label="Data" value="" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="km_data" name="km_data" label="Data" value="" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
-                                                    <paper-button raised id="btnKmHistorico" class="btnSave" on-tap="_createKmHistorico" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                    <paper-button raised id="btn_createKm" class="btnSave" on-tap="_createKm" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -992,45 +1137,45 @@
                                                 <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
                                                     <div class="row break_clear">
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="localDeAbastecimento" name="localDeAbastecimento" label="Local de Abastecimento" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                            <vaadin-text-field id="localDeAbastecimento" name="localDeAbastecimento" label="Local de Abastecimento" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-date-picker id="data" name="data" label="Data" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                            <vaadin-date-picker id="data" name="data" label="Data" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="hora" name="hora" label="Hora" value="" disabled="{{ !_permissions.update }}" placeholder="hh:mm"></vaadin-text-field>
+                                                            <vaadin-text-field id="hora" name="hora" label="Hora" value="" disabled="{{ _lockFields }}" placeholder="hh:mm"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="noCartao" name="noCartao" label="Nº Cartão" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                            <vaadin-text-field id="noCartao" name="noCartao" label="Nº Cartão" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="combustivel" name="combustivel" label="Combustível" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                            <vaadin-text-field id="combustivel" name="combustivel" label="Combustível" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="km" name="km" label="Km" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">km</div></vaadin-text-field>
+                                                            <vaadin-text-field id="km" name="km" label="Km" value="" disabled="{{ _lockFields }}"><div slot="suffix">km</div></vaadin-text-field>
                                                         </div>
                                                     </div>
 
                                                     <div class="row break_clear">
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="litros" name="litros" label="Litros" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">l</div></vaadin-text-field>
+                                                            <vaadin-text-field id="litros" name="litros" label="Litros" value="" disabled="{{ _lockFields }}"><div slot="suffix">l</div></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="condutor" name="condutor" label="Condutor" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                            <vaadin-text-field id="condutor" name="condutor" label="Condutor" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2">
-                                                            <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                            <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
                                                         </div>
 
                                                         <div class="col-md-2" style="padding-top:15px">
-                                                            <paper-button raised id="btnAbastecimentosSUCH" class="btnSave" on-tap="_createAbastecimentosSUCH" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                            <paper-button raised id="btnAbastecimentosSUCH" class="btnSave" on-tap="_createAbastecimentosSUCH" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                         </div>
                                                     </div>
                                                 </paper-collapse-item>
@@ -1191,7 +1336,7 @@
 
                                 <!--Manutenção-->
                                 <paper-collapse-item class="panel-heading" header="Manutenção" closed>
-                                    <vaadin-grid id="gridManutencao" aria-label="gridManutencao" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="gridManutencao" aria-label="gridManutencao" items="{{ tabManutencao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
@@ -1204,42 +1349,66 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataInicio" />
+                                                <vaadin-grid-sorter path="dataInicioTexto">Data de Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicioTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataInicio}}
+                                                {{item.dataInicioTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataFim" />
+                                                <vaadin-grid-sorter path="dataFimTexto">Data de Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFimTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataFim}}
+                                                {{item.dataFimTexto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoes" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoes}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteManutencao" class="btnRemove tableBtn" raised on-tap="_deleteManutencao" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
-                                                <div class="col-md-2">
-                                                    <vaadin-text-field id="dlocal" name="dlocal" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="manutencao_local" name="manutencao_local" label="Local" value="" disabled="{{ _lockFields }}" maxlength="200" required error-message="O campo Local é de preenchimento obrigatório"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="manutencao_dataInicio" name="manutencao_dataInicio" label="Data de Início" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data de Início é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="manutencao_dataFim" name="manutencao_dataFim" label="Data de Fim" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
-                                                <div class="col-md-2" style="padding-top:15px">
-                                                    <paper-button raised id="btnAcidentes" class="btnSave" on-tap="_createAcidentes" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="manutencao_observacoes" name="manutencao_observacoes" label="Observações" value="" disabled="{{ _lockFields }}" maxlength="2000"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btn_createManutencao" class="btnSave" on-tap="_createManutencao" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -1251,7 +1420,7 @@
                                     <vaadin-grid id="gridInspecao" name="gridInspecao" aria-label="gridInspecao" items="{{ tabInspecao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInspecaoTexto">Data Inspeção</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="dataInspecaoTexto">Data da Inspeção</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="dataInspecaoTexto" />
                                             </template>
                                             <template>
@@ -1314,7 +1483,7 @@
                                         <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="inspecao_dataInspecao" name="inspecao_dataInspecao" label="Data Inspeção" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data Inspeção é de preenchimento obrigatório"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="inspecao_dataInspecao" name="inspecao_dataInspecao" label="Data da Inspeção" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data da Inspeção é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-1">
@@ -1351,14 +1520,14 @@
 
                                 <!--Carta Verde-->
                                 <paper-collapse-item class="panel-heading" header="Carta Verde" closed>
-                                    <vaadin-grid id="gridCartaVerde" aria-label="gridCartaVerde" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="gridCartaVerde" aria-label="gridCartaVerde" items="{{ tabCartaVerde }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="noDaApolice">Nº da Apólice</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="noDaApolice" />
+                                                <vaadin-grid-sorter path="noApolice">Nº da Apólice</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noApolice" />
                                             </template>
                                             <template>
-                                                {{item.noDaApolice}}
+                                                {{item.noApolice}}
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1374,60 +1543,70 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataInicio" />
+                                                <vaadin-grid-sorter path="dataInicioTexto">Data de Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicioTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataInicio}}
+                                                {{item.dataInicioTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataFim" />
+                                                <vaadin-grid-sorter path="dataFimTexto">Data de Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFimTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataFim}}
+                                                {{item.dataFimTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="valorPremio">Valor Prémio</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="valorPremio" />
+                                                <vaadin-grid-sorter path="valorPremioSeguro">Valor do Prémio</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="valorPremioSeguro" />
                                             </template>
                                             <template>
-                                                {{item.valorPremio}} €
+                                                {{item.valorPremioSeguro}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteCartaVerde" class="btnRemove tableBtn" raised on-tap="_deleteCartaVerde" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="noDaApolice" name="noDaApolice" label="Nº da Apólice" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="cartaverde_noDaApolice" name="cartaverde_noDaApolice" label="Nº da Apólice" value="" disabled="{{ _lockFields }}" maxlength="200" required error-message="O campo Nº da Apólice é de preenchimento obrigatório"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="cartaverde_seguradora" name="cartaverde_seguradora" label="Seguradora" value="" disabled="{{ _lockFields }}" required error-message="O campo Seguradora é de preenchimento obrigatório"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="seguradora" name="seguradora" label="Seguradora" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    <vaadin-date-picker id="cartaverde_dataInicio" name="cartaverde_dataInicio" label="Data de Início" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data de Início é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="cartaverde_dataFim" name="cartaverde_dataFim" label="Data de Fim" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-text-field id="cartaverde_valorPremioSeguro" name="cartaverde_valorPremioSeguro" label="Valor do Prémio" value="" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
-                                                <div class="col-md-2">
-                                                    <vaadin-text-field id="valorPremio" name="valorPremio" label="Valor Prémio" value="" disabled="{{ !_permissions.update }}"><div slot="suffix">€</div></vaadin-text-field>
-                                                </div>
-
-                                                <div class="col-md-2" style="padding-top:15px">
-                                                    <paper-button raised id="btnCartaVerde" class="btnSave" on-tap="_createCartaVerde" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btn_createCartaVerde" class="btnSave" on-tap="_createCartaVerde" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -1436,7 +1615,7 @@
 
                                 <!--Acidentes-->
                                 <paper-collapse-item class="panel-heading" header="Acidentes" closed>
-                                    <vaadin-grid id="gridAcidentes" aria-label="gridAcidentes" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="gridAcidentes" aria-label="gridAcidentes" items="{{ tabAcidentes }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
@@ -1449,42 +1628,80 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataInicio" />
+                                                <vaadin-grid-sorter path="dataTexto">Data</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataInicio}}
+                                                {{item.dataTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataFim" />
+                                                <vaadin-grid-sorter path="condutor">Condutor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="condutor" />
                                             </template>
                                             <template>
-                                                {{item.dataFim}}
+                                                {{item.condutor}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="responsabilidade">Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="responsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.responsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoes" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoes}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteAcidentes" class="btnRemove tableBtn" raised on-tap="_deleteAcidentes" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="dlocal" name="dlocal" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="acidentes_local" name="acidentes_local" label="Local" value="" disabled="{{ _lockFields }}" maxlength="200" required error-message="O campo Local é de preenchimento obrigatório"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-date-picker id="acidentes_data" name="acidentes_data" label="Data" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório"></vaadin-date-picker>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <vaadin-text-field id="acidentes_idCondutor" name="acidentes_idCondutor" label="Condutor" value="" disabled="{{ _lockFields }}" required error-message="O campo Condutor é de preenchimento obrigatório"></vaadin-text-field>
                                                 </div>
 
-                                                <div class="col-md-2" style="padding-top:15px">
-                                                    <paper-button raised id="btnAcidentes" class="btnSave" on-tap="_createAcidentes" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="acidentes_idresponsabilidade" name="acidentes_idresponsabilidade" label="Responsabilidade" value="" disabled="{{ _lockFields }}" required error-message="O campo Responsabilidade é de preenchimento obrigatório"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="acidentes_observacoes" name="acidentes_observacoes" label="Observações" value="" disabled="{{ _lockFields }}" maxlength="2000"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btn_createAcidentes" class="btnSave" on-tap="_createAcidentes" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -1493,7 +1710,7 @@
 
                                 <!--Contraordenações-->
                                 <paper-collapse-item class="panel-heading" header="Contraordenações" closed>
-                                    <vaadin-grid id="gridContraordenacoes" aria-label="gridContraordenacoes" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                    <vaadin-grid id="gridContraordenacoes" aria-label="gridContraordenacoes" items="{{ tabContraOrdenacoes }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
                                                 <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
@@ -1506,42 +1723,96 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataInicio" />
+                                                <vaadin-grid-sorter path="dataTexto">Data</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataTexto" />
                                             </template>
                                             <template>
-                                                {{item.dataInicio}}
+                                                {{item.dataTexto}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataFim" />
+                                                <vaadin-grid-sorter path="condutor">Condutor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="condutor" />
                                             </template>
                                             <template>
-                                                {{item.dataFim}}
+                                                {{item.condutor}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="responsabilidade">Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="responsabilidade" />
+                                            </template>
+                                            <template>
+                                                {{item.responsabilidade}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="valor">Valor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="valor" />
+                                            </template>
+                                            <template>
+                                                {{item.valor}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoes">Observacoes</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoes" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoes}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteContraordenacoes" class="btnRemove tableBtn" raised on-tap="_deleteContraordenacoes" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
                                             </template>
                                         </vaadin-grid-column>
                                     </vaadin-grid>
 
                                     <div style="padding-left:50px">
-                                        <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-4">
+                                                    <vaadin-text-field id="contraordenacoes_local" name="contraordenacoes_local" label="Local" value="" disabled="{{ _lockFields }}" maxlength="200" required error-message="O campo Local é de preenchimento obrigatório"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="contraordenacoes_data" name="contraordenacoes_data" label="Data" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="contraordenacoes_idCondutor" name="contraordenacoes_idCondutor" label="Condutor" value="" disabled="{{ _lockFields }}" required error-message="O campo Condutor é de preenchimento obrigatório"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="contraordenacoes_idresponsabilidade" name="contraordenacoes_idresponsabilidade" label="Responsabilidade" value="" disabled="{{ _lockFields }}" required error-message="O campo Responsabilidade é de preenchimento obrigatório"></vaadin-text-field>
+                                                </div>
+                                            </div>
+
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="local" name="local" label="Local" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="contraordenacoes_valor" name="contraordenacoes_valor" label="Valor" value="" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
                                                 </div>
 
-                                                <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataInicio" name="dataInicio" label="Data Início" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                                </div>
-
-                                                <div class="col-md-2">
-                                                    <vaadin-date-picker id="dataFim" name="dataFim" label="Data Fim" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                <div class="col-md-9">
+                                                    <vaadin-text-field id="contraordenacoes_observacoes" name="contraordenacoes_observacoes" label="Observações" value="" disabled="{{ _lockFields }}" maxlength="2000"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
-                                                    <paper-button raised id="btnContraOrdenacoes" class="btnSave" on-tap="_createContraOrdenacoes" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                    <paper-button raised id="btn_createContraOrdenacoes" class="btnSave" on-tap="_createContraOrdenacoes" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
                                         </paper-collapse-item>
@@ -2795,8 +3066,28 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_databound_ajax.generateRequest();
 
+                    this.$.page_tabKm_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabKm_ajax.generateRequest();
+                    this.$.gridInspecao.clearCache();
+
+                    this.$.page_tabManutencao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabManutencao_ajax.generateRequest();
+                    this.$.gridInspecao.clearCache();
+
                     this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabinspecao_ajax.generateRequest();
+                    this.$.gridInspecao.clearCache();
+
+                    this.$.page_tabCartaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabCartaVerde_ajax.generateRequest();
+                    this.$.gridInspecao.clearCache();
+
+                    this.$.page_tabAcidentes_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabAcidentes_ajax.generateRequest();
+                    this.$.gridInspecao.clearCache();
+
+                    this.$.page_tabContraOrdenacoes_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabContraOrdenacoes_ajax.generateRequest();
                     this.$.gridInspecao.clearCache();
 
                     this.$.page_tabcondutor_ajax.body = JSON.stringify({ "matricula": this._matricula });

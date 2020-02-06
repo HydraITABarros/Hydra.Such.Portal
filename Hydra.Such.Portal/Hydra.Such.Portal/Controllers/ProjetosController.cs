@@ -4570,7 +4570,7 @@ namespace Hydra.Such.Portal.Controllers
             else
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Não é possivel faturar projetos iguais de grupos diferentes ou não existe dados para faturar.";
+                result.eMessage = "É necessário anular a linha e voltar a autorizar a faturação.";
             }
 
             return Json(result);
@@ -4644,16 +4644,9 @@ namespace Hydra.Such.Portal.Controllers
             //Remove Project Authorized
             using (SuchDBContext ctx = new SuchDBContext())
             {
-                bool hasChanges = false;
-                var authorizedProj = ctx.ProjectosAutorizados.Where(x => x.GrupoFactura == data[0].GrupoFactura && x.CodProjeto == data[0].CodProjeto).ToList();
-                if (authorizedProj.Count > 0)
-                {
-                    ctx.ProjectosAutorizados.RemoveRange(authorizedProj);
-                    hasChanges = true;
-                }
-
                 var ProjectMovements = ctx.MovimentosDeProjeto.Where(x => x.GrupoFatura == data[0].GrupoFactura && x.NºProjeto == data[0].CodProjeto).ToList();
                 List<MovimentosProjectoAutorizados> authorizedProjMovements = new List<MovimentosProjectoAutorizados>();
+
                 if (ProjectMovements.Count > 0)
                 {
                     MovimentosProjectoAutorizados movAutProject;
@@ -4670,28 +4663,44 @@ namespace Hydra.Such.Portal.Controllers
                         authorizedProjMovements.Add(movAutProject);
                     });
                     ctx.MovimentosDeProjeto.UpdateRange(ProjectMovements);
-                    ctx.MovimentosProjectoAutorizados.RemoveRange(authorizedProjMovements);
-                    hasChanges = true;
-                }
-                if (hasChanges)
-                {
                     try
                     {
                         ctx.SaveChanges();
-                        result.eReasonCode = 1;
-                        result.eMessage = "Os registo foram anulados com sucesso.";
                     }
                     catch (Exception ex)
                     {
                         result.eReasonCode = 2;
-                        result.eMessage = "Não existem movimentos para anular";
-                        result.eMessages.Add(new TraceInformation(TraceType.Exception, ex.Message));
+                        result.eMessage = "Ocorreu um erro ao atualizar os Movimentos de Projeto.";
+                        return Json(result);
+                    }
+
+                    ctx.MovimentosProjectoAutorizados.RemoveRange(authorizedProjMovements);
+                    try
+                    {
+                        ctx.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao eliminar os Movimentos de Projeto Autorizados.";
+                        return Json(result);
                     }
                 }
-                else
+
+                var authorizedProj = ctx.ProjectosAutorizados.Where(x => x.GrupoFactura == data[0].GrupoFactura && x.CodProjeto == data[0].CodProjeto).ToList();
+                if (authorizedProj.Count > 0)
                 {
-                    result.eReasonCode = 2;
-                    result.eMessage = "Não existem registos para anular";
+                    ctx.ProjectosAutorizados.RemoveRange(authorizedProj);
+                    try
+                    {
+                        ctx.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao eliminar o Projeto Autorizados.";
+                        return Json(result);
+                    }
                 }
             }
             return Json(result);

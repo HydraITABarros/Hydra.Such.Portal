@@ -212,18 +212,18 @@ namespace Hydra.Such.Portal.Controllers
 
             result.ForEach(x =>
             {
-                if (x.IDEstado != null) x.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == x.IDEstado).FirstOrDefault().Descricao;
-                if (x.IDMarca != null) x.Marca = AllMarcas.Where(y => y.ID == x.IDMarca).FirstOrDefault().Marca;
-                if (x.IDModelo != null) x.Modelo = AllModelos.Where(y => y.ID == x.IDModelo).FirstOrDefault().Modelo;
-                if (x.IDTipoCaixa != null) x.TipoCaixa = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_CAIXA" && y.ID == x.IDTipoCaixa).FirstOrDefault().Descricao;
-                if (x.IDCategoria != null) x.Categoria = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_CATEGORIA" && y.ID == x.IDCategoria).FirstOrDefault().Descricao;
-                if (x.IDTipo != null) x.Tipo = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO" && y.ID == x.IDTipo).FirstOrDefault().Descricao;
-                if (x.IDCombustivel != null) x.Combustivel = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_COMBUSTIVEL" && y.ID == x.IDCombustivel).FirstOrDefault().Descricao;
-                if (x.IDTipoPropriedade != null) x.TipoPropriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_PROPRIEDADE" && y.ID == x.IDTipoPropriedade).FirstOrDefault().Descricao;
-                if (x.IDPropriedade != null) x.Propriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_PROPRIEDADE" && y.ID == x.IDPropriedade).FirstOrDefault().Descricao;
-                if (x.IDSegmentacao != null) x.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == x.IDSegmentacao).FirstOrDefault().Descricao;
+                if (x.IDEstado != null && x.IDEstado > 0) x.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == x.IDEstado).FirstOrDefault().Descricao;
+                if (x.IDMarca != null && x.IDMarca > 0) x.Marca = AllMarcas.Where(y => y.ID == x.IDMarca).FirstOrDefault().Marca;
+                if (x.IDModelo != null && x.IDModelo > 0) x.Modelo = AllModelos.Where(y => y.ID == x.IDModelo).FirstOrDefault().Modelo;
+                if (x.IDTipoCaixa != null && x.IDTipoCaixa > 0) x.TipoCaixa = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_CAIXA" && y.ID == x.IDTipoCaixa).FirstOrDefault().Descricao;
+                if (x.IDCategoria != null && x.IDCategoria > 0) x.Categoria = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_CATEGORIA" && y.ID == x.IDCategoria).FirstOrDefault().Descricao;
+                if (x.IDTipo != null && x.IDTipo > 0) x.Tipo = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO" && y.ID == x.IDTipo).FirstOrDefault().Descricao;
+                if (x.IDCombustivel != null && x.IDCombustivel > 0) x.Combustivel = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_COMBUSTIVEL" && y.ID == x.IDCombustivel).FirstOrDefault().Descricao;
+                if (x.IDTipoPropriedade != null && x.IDTipoPropriedade > 0) x.TipoPropriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_PROPRIEDADE" && y.ID == x.IDTipoPropriedade).FirstOrDefault().Descricao;
+                if (x.IDPropriedade != null && x.IDPropriedade > 0) x.Propriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_PROPRIEDADE" && y.ID == x.IDPropriedade).FirstOrDefault().Descricao;
+                if (x.IDSegmentacao != null && x.IDSegmentacao > 0) x.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == x.IDSegmentacao).FirstOrDefault().Descricao;
                 if (x.AlvaraLicenca == true) x.AlvaraLicencaTexto = "Sim"; else x.AlvaraLicencaTexto = "Não";
-                if (x.IDLocalParqueamento != null) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == x.IDLocalParqueamento).FirstOrDefault().Local;
+                if (x.IDLocalParqueamento != null && x.IDLocalParqueamento > 0) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == x.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description : "";
 
                 if (x.Data1Matricula.HasValue) x.Idade = (DateTime.Now.Year - Convert.ToDateTime(x.Data1Matricula).Year).ToString() + " ano(s)";
@@ -361,23 +361,45 @@ namespace Hydra.Such.Portal.Controllers
                 List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll();
                 List<Viaturas2ParqueamentoLocal> AllPArqueamentosLocais = DBViaturas2ParqueamentoLocal.GetAll();
 
-                if (viatura.IDEstado != null) viatura.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == viatura.IDEstado).FirstOrDefault().Descricao;
-                if (viatura.IDMarca != null) viatura.Marca = AllMarcas.Where(y => y.ID == viatura.IDMarca).FirstOrDefault().Marca;
-                if (viatura.IDModelo != null) viatura.Modelo = AllModelos.Where(y => y.ID == viatura.IDModelo).FirstOrDefault().Modelo;
-                if (viatura.IDTipoCaixa != null) viatura.TipoCaixa = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_CAIXA" && y.ID == viatura.IDTipoCaixa).FirstOrDefault().Descricao;
-                if (viatura.IDCategoria != null) viatura.Categoria = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_CATEGORIA" && y.ID == viatura.IDCategoria).FirstOrDefault().Descricao;
-                if (viatura.IDTipo != null) viatura.Tipo = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO" && y.ID == viatura.IDTipo).FirstOrDefault().Descricao;
-                if (viatura.IDCombustivel != null) viatura.Combustivel = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_COMBUSTIVEL" && y.ID == viatura.IDCombustivel).FirstOrDefault().Descricao;
-                if (viatura.IDTipoPropriedade != null) viatura.TipoPropriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_PROPRIEDADE" && y.ID == viatura.IDTipoPropriedade).FirstOrDefault().Descricao;
-                if (viatura.IDPropriedade != null) viatura.Propriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_PROPRIEDADE" && y.ID == viatura.IDPropriedade).FirstOrDefault().Descricao;
-                if (viatura.IDSegmentacao != null) viatura.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == viatura.IDSegmentacao).FirstOrDefault().Descricao;
+                if (viatura.IDEstado != null && viatura.IDEstado > 0) viatura.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == viatura.IDEstado).FirstOrDefault().Descricao;
+                if (viatura.IDMarca != null && viatura.IDMarca > 0) viatura.Marca = AllMarcas.Where(y => y.ID == viatura.IDMarca).FirstOrDefault().Marca;
+                if (viatura.IDModelo != null && viatura.IDModelo > 0) viatura.Modelo = AllModelos.Where(y => y.ID == viatura.IDModelo).FirstOrDefault().Modelo;
+                if (viatura.IDTipoCaixa != null && viatura.IDTipoCaixa > 0) viatura.TipoCaixa = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_CAIXA" && y.ID == viatura.IDTipoCaixa).FirstOrDefault().Descricao;
+                if (viatura.IDCategoria != null && viatura.IDCategoria > 0) viatura.Categoria = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_CATEGORIA" && y.ID == viatura.IDCategoria).FirstOrDefault().Descricao;
+                if (viatura.IDTipo != null && viatura.IDTipo > 0) viatura.Tipo = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO" && y.ID == viatura.IDTipo).FirstOrDefault().Descricao;
+                if (viatura.IDCombustivel != null && viatura.IDCombustivel > 0) viatura.Combustivel = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_COMBUSTIVEL" && y.ID == viatura.IDCombustivel).FirstOrDefault().Descricao;
+                if (viatura.IDTipoPropriedade != null && viatura.IDTipoPropriedade > 0) viatura.TipoPropriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_TIPO_PROPRIEDADE" && y.ID == viatura.IDTipoPropriedade).FirstOrDefault().Descricao;
+                if (viatura.IDPropriedade != null && viatura.IDPropriedade > 0) viatura.Propriedade = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_PROPRIEDADE" && y.ID == viatura.IDPropriedade).FirstOrDefault().Descricao;
+                if (viatura.IDSegmentacao != null && viatura.IDSegmentacao > 0) viatura.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == viatura.IDSegmentacao).FirstOrDefault().Descricao;
                 if (viatura.AlvaraLicenca == true) viatura.AlvaraLicencaTexto = "Sim"; else viatura.AlvaraLicencaTexto = "Não";
-                if (viatura.IDLocalParqueamento != null) viatura.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == viatura.IDLocalParqueamento).FirstOrDefault().Local;
+                if (viatura.IDLocalParqueamento != null && viatura.IDLocalParqueamento > 0) viatura.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == viatura.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(viatura.NoProjeto)) viatura.Projeto = AllProjects.Where(y => y.No == viatura.NoProjeto).FirstOrDefault().Description;
 
                 if (viatura.Data1Matricula.HasValue) viatura.Idade = (DateTime.Now.Year - Convert.ToDateTime(viatura.Data1Matricula).Year).ToString() + " ano(s)";
             }
             return Json(viatura);
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabKm([FromBody] Viaturas2InspecoesViewModel viatura)
+        {
+            List<Viaturas2KmViewModel> TabKm = new List<Viaturas2KmViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabKm = DBViaturas2Km.ParseListToViewModel(DBViaturas2Km.GetByMatricula(viatura.Matricula));
+            }
+            return Json(TabKm.OrderByDescending(x => x.Km));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabManutencao([FromBody] Viaturas2InspecoesViewModel viatura)
+        {
+            List<Viaturas2ManutencaoViewModel> TabManutencao = new List<Viaturas2ManutencaoViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabManutencao = DBViaturas2Manutencao.ParseListToViewModel(DBViaturas2Manutencao.GetByMatricula(viatura.Matricula));
+            }
+            return Json(TabManutencao.OrderByDescending(x => x.DataInicio));
         }
 
         [HttpPost]
@@ -396,6 +418,64 @@ namespace Hydra.Such.Portal.Controllers
                 });
             }
             return Json(TabInspecoes.OrderByDescending(x => x.DataInspecao));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabCartaVerde([FromBody] Viaturas2InspecoesViewModel viatura)
+        {
+            List<Viaturas2CartaVerdeViewModel> TabCartaVerde = new List<Viaturas2CartaVerdeViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabCartaVerde = DBViaturas2CartaVerde.ParseListToViewModel(DBViaturas2CartaVerde.GetByMatricula(viatura.Matricula));
+
+                List<Viaturas2CartaVerdeSeguradora> AllSeguradoras = DBViaturas2CartaVerdeSeguradora.GetAll();
+
+                TabCartaVerde.ForEach(x =>
+                {
+                    if (x.IDSeguradora != null && x.IDSeguradora > 0) x.Seguradora = AllSeguradoras.Where(y => y.ID == x.IDSeguradora).FirstOrDefault().Seguradora;
+                });
+            }
+            return Json(TabCartaVerde.OrderByDescending(x => x.DataInicio));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabAcidentes([FromBody] Viaturas2InspecoesViewModel viatura)
+        {
+            List<Viaturas2AcidentesViewModel> TabAcidentes = new List<Viaturas2AcidentesViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabAcidentes = DBViaturas2Acidentes.ParseListToViewModel(DBViaturas2Acidentes.GetByMatricula(viatura.Matricula));
+
+                List<Viaturas2GestoresGestor> AllCondutores = DBViaturas2GestoresGestor.GetByTipo(2); //Condutor
+                List<ConfiguracaoTabelas> AllResponsabilidades = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ACIDENTES_RESPONSABILIDADE");
+
+                TabAcidentes.ForEach(x =>
+                {
+                    if (x.IDCondutor != null && x.IDCondutor > 0) x.Condutor = AllCondutores.Where(y => y.ID == x.IDCondutor).FirstOrDefault().Gestor;
+                    if (x.IDResponsabilidade != null && x.IDResponsabilidade > 0) x.Responsabilidade = AllResponsabilidades.Where(y => y.ID == x.IDResponsabilidade).FirstOrDefault().Descricao;
+                });
+            }
+            return Json(TabAcidentes.OrderByDescending(x => x.Data));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabContraOrdenacoes([FromBody] Viaturas2InspecoesViewModel viatura)
+        {
+            List<Viaturas2ContraOrdenacoesViewModel> TabContraOrdenacoes = new List<Viaturas2ContraOrdenacoesViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabContraOrdenacoes = DBViaturas2ContraOrdenacoes.ParseListToViewModel(DBViaturas2ContraOrdenacoes.GetByMatricula(viatura.Matricula));
+
+                List<Viaturas2GestoresGestor> AllCondutores = DBViaturas2GestoresGestor.GetByTipo(2); //Condutor
+                List<ConfiguracaoTabelas> AllResponsabilidades = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CONTRAORDENACOES_RESPONSABILIDADE");
+
+                TabContraOrdenacoes.ForEach(x =>
+                {
+                    if (x.IDCondutor != null && x.IDCondutor > 0) x.Condutor = AllCondutores.Where(y => y.ID == x.IDCondutor).FirstOrDefault().Gestor;
+                    if (x.IDResponsabilidade != null && x.IDResponsabilidade > 0) x.Responsabilidade = AllResponsabilidades.Where(y => y.ID == x.IDResponsabilidade).FirstOrDefault().Descricao;
+                });
+            }
+            return Json(TabContraOrdenacoes.OrderByDescending(x => x.Data));
         }
 
         [HttpPost]

@@ -61,6 +61,13 @@ namespace Hydra.Such.Data.Database
         public bool? Historico { get; set; }
         public string Obs { get; set; }
         public string UserHistoricoToAtivo { get; set; }
+        public string UserToHistorico { get; set; }
+        public DateTime? DataHoraCriacao { get; set; }
+        public DateTime? DataHoraAlteracao { get; set; }
+        public string UtilizadorCriacao { get; set; }
+        public string UtilizadorModificacao { get; set; }
+
+
 
         public ICollection<CondicoesPropostasFornecedores> CondicoesPropostasFornecedores { get; set; }
         public ICollection<LinhasCondicoesPropostasFornecedores> LinhasCondicoesPropostasFornecedores { get; set; }

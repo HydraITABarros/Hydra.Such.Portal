@@ -1996,6 +1996,68 @@ namespace Hydra.Such.Portal.Controllers
 
         #endregion
 
+        #region Seguradoras
+        public IActionResult Viaturas2Seguradoras(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminViaturasTelemoveis);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult GetAllSeguradoras()
+        {
+            List<Viaturas2CartaVerdeSeguradoraViewModel> AllGestores = DBViaturas2CartaVerdeSeguradora.ParseListToViewModel(DBViaturas2CartaVerdeSeguradora.GetAll());
+
+            return Json(AllGestores.OrderBy(x => x.Seguradora));
+        }
+
+        [HttpPost]
+        public JsonResult CreateSeguradora([FromBody] Viaturas2CartaVerdeSeguradoraViewModel seguradora)
+        {
+            Viaturas2CartaVerdeSeguradora seguradoraToCreate = new Viaturas2CartaVerdeSeguradora();
+
+            seguradoraToCreate = DBViaturas2CartaVerdeSeguradora.ParseToDB(seguradora);
+            seguradoraToCreate.UtilizadorCriacao = User.Identity.Name;
+            DBViaturas2CartaVerdeSeguradora.Create(seguradoraToCreate);
+
+            return Json(seguradora);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteSeguradora([FromBody] Viaturas2CartaVerdeSeguradoraViewModel seguradora)
+        {
+            var result = DBViaturas2CartaVerdeSeguradora.Delete(DBViaturas2CartaVerdeSeguradora.ParseToDB(seguradora));
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateSeguradora([FromBody] List<Viaturas2CartaVerdeSeguradoraViewModel> seguradora)
+        {
+            List<Viaturas2CartaVerdeSeguradoraViewModel> AllSeguradoras = DBViaturas2CartaVerdeSeguradora.ParseListToViewModel(DBViaturas2CartaVerdeSeguradora.GetAll());
+            seguradora.RemoveAll(x => AllSeguradoras.Any(u => u.ID == x.ID && u.Seguradora == x.Seguradora));
+
+            seguradora.ForEach(x =>
+            {
+                Viaturas2CartaVerdeSeguradora seguradoraToUpdate = DBViaturas2CartaVerdeSeguradora.ParseToDB(x);
+                seguradoraToUpdate.UtilizadorModificacao = User.Identity.Name;
+                DBViaturas2CartaVerdeSeguradora.Update(seguradoraToUpdate);
+            });
+            return Json(seguradora);
+        }
+
+
+        #endregion
+
         #region Marcas
         public IActionResult Marcas(string id)
         {

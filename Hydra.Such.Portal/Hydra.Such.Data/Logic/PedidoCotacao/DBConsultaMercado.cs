@@ -488,6 +488,8 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
 
                 using (var ctx = new SuchDBContext())
                 {
+                    consultaMercado.DataHoraCriacao = DateTime.Now;
+                    consultaMercado.UtilizadorCriacao = UserID;
                     ctx.ConsultaMercado.Add(consultaMercado);
                     ctx.SaveChanges();
                 }
@@ -512,6 +514,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             {
                 using (var ctx = new SuchDBContext())
                 {
+                    ObjectToUpdate.DataHoraAlteracao = DateTime.Now;
                     ctx.ConsultaMercado.Update(ObjectToUpdate);
                     ctx.SaveChanges();
                 }
@@ -532,6 +535,7 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
             {
                 ConsultaMercado consultaMercado = CastConsultaMercadoViewToConsultaMercado(consultaMercadoView);
 
+                consultaMercado.DataHoraAlteracao = DateTime.Now;
                 _context.ConsultaMercado.Update(consultaMercado);
                 _context.SaveChanges();
                 
@@ -640,6 +644,11 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                         Historico = ConsultaMercado.Historico,
                         Obs = ConsultaMercado.Obs,
                         UserHistoricoToAtivo = ConsultaMercado.UserHistoricoToAtivo,
+                        UserToHistorico = ConsultaMercado.UserToHistorico,
+                        DataHoraCriacao = ConsultaMercado.DataHoraCriacao,
+                        DataHoraAlteracao = ConsultaMercado.DataHoraAlteracao,
+                        UtilizadorCriacao = ConsultaMercado.UtilizadorCriacao,
+                        UtilizadorModificacao = ConsultaMercado.UtilizadorModificacao,
                         Destino_Show = ConsultaMercado.Destino == 1 ? "Armazém" : ConsultaMercado.Destino == 2 ? "Projeto" : string.Empty,
                         Estado_Show = ConsultaMercado.Estado == 0 ? "Aberto" : ConsultaMercado.Estado == 1 ? "Liberto" : string.Empty,
                         Fase_Show = ConsultaMercado.Fase == 0 ? "Abertura" : ConsultaMercado.Fase == 1 ? "Consulta" : ConsultaMercado.Fase == 2 ? "Negociação e Contratação" : ConsultaMercado.Fase == 3 ? "Adjudicação" : ConsultaMercado.Fase == 4 ? "Fecho" : string.Empty,
@@ -740,6 +749,11 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 Historico = ObjectToTransform.Historico,
                 Obs = ObjectToTransform.Obs,
                 UserHistoricoToAtivo = ObjectToTransform.UserHistoricoToAtivo,
+                UserToHistorico = ObjectToTransform.UserToHistorico,
+                DataHoraCriacao = ObjectToTransform.DataHoraCriacao,
+                DataHoraAlteracao = ObjectToTransform.DataHoraAlteracao,
+                UtilizadorCriacao = ObjectToTransform.UtilizadorCriacao,
+                UtilizadorModificacao = ObjectToTransform.UtilizadorModificacao,
                 Destino_Show = ObjectToTransform.Destino == 1 ? "Armazém" : ObjectToTransform.Destino == 2 ? "Projeto" : string.Empty,
                 Estado_Show = ObjectToTransform.Estado == 0 ? "Aberto" : ObjectToTransform.Estado == 1 ? "Liberto" : string.Empty,
                 Fase_Show = ObjectToTransform.Fase == 0 ? "Abertura" : ObjectToTransform.Fase == 1 ? "Consulta" : ObjectToTransform.Fase == 2 ? "Negociação e Contratação" : ObjectToTransform.Fase == 3 ? "Adjudicação" : ObjectToTransform.Fase == 4 ? "Fecho" : string.Empty,
@@ -867,7 +881,12 @@ namespace Hydra.Such.Data.Logic.PedidoCotacao
                 Urgente = ObjectToTransform.Urgente,
                 Historico = ObjectToTransform.Historico,
                 Obs = ObjectToTransform.Obs,
-                UserHistoricoToAtivo = ObjectToTransform.UserHistoricoToAtivo
+                UserHistoricoToAtivo = ObjectToTransform.UserHistoricoToAtivo,
+                UserToHistorico = ObjectToTransform.UserToHistorico,
+                DataHoraCriacao = ObjectToTransform.DataHoraCriacao,
+                DataHoraAlteracao = ObjectToTransform.DataHoraAlteracao,
+                UtilizadorCriacao = ObjectToTransform.UtilizadorCriacao,
+                UtilizadorModificacao = ObjectToTransform.UtilizadorModificacao,
             };
 
             //Falta o cast das icollections
