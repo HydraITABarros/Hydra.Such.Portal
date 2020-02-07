@@ -10950,6 +10950,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("DataAquisicao")
                     .HasColumnType("date");
 
+                entity.Property(e => e.IDGestor)
+                    .HasColumnName("IDGestor");
+
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")
                     .HasMaxLength(50);

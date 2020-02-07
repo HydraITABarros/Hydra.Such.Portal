@@ -115,6 +115,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.gestor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="gestor">Responsável</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="gestor" value="[[filter.estado]]" />
+                </template>
+                <template>
+                    {{item.gestor}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.marca.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="marca">Marca</vaadin-grid-sorter>
@@ -609,6 +619,7 @@
                     var columns = {
                         "matricula": { hidden: false, label: "Matrícula" },
                         "estado": { hidden: false, label: "Estado" },
+                        "gestor": { hidden: false, label: "Responsável" },
                         "marca": { hidden: false, label: "Marca" },
                         "modelo": { hidden: false, label: "Modelo" },
                         "data1MatriculaTexto": { hidden: false, label: "Data 1ª Matrícula" },

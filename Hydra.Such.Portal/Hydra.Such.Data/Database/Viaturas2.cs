@@ -54,6 +54,7 @@ namespace Hydra.Such.Data.Database
         public string CodCentroResponsabilidade { get; set; }
         public string NoProjeto { get; set; }
         public DateTime? DataAquisicao { get; set; }
+        public int? IDGestor { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }

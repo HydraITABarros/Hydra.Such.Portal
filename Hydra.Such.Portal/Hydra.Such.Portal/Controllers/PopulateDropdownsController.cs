@@ -2200,6 +2200,57 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2ListaSeguradoras()
+        {
+            List<Viaturas2CartaVerdeSeguradora> AllSeguradoras = DBViaturas2CartaVerdeSeguradora.GetAll();
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllSeguradoras != null && AllSeguradoras.Count > 0)
+            {
+                result = AllSeguradoras.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Seguradora
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaAcidentesResponsabilidades()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ACIDENTES_RESPONSABILIDADE");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaContraOrdenacoesResponsabilidades()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CONTRAORDENACOES_RESPONSABILIDADE");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2Centros([FromBody] string areaCode)
         {
             List<NAVDimValueViewModel> AllCentros = new List<NAVDimValueViewModel>();

@@ -167,6 +167,11 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturas2InspecoesResultados" last-response="{{ListaInspecoesResultados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCondutores" last-response="{{ListaCondutores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaResponsaveis" last-response="{{ListaResponsaveis}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaSeguradoras" last-response="{{ListaSeguradoras}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaAcidentesResponsabilidades" last-response="{{ListaAcidentesResponsabilidades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaContraOrdenacoesResponsabilidades" last-response="{{ListaContraOrdenacoesResponsabilidades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{ListaProjetos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -256,7 +261,7 @@
                    last-response="{{tabInspecao}}"
                    method="post"
                    handle-as="json"
-                   id="page_tabinspecao_ajax"
+                   id="page_tabInspecao_ajax"
                    content-type="application/json">
         </iron-ajax>
 
@@ -567,21 +572,21 @@
 
                                         <div class="row break_clear">
                                             <div class="col-md-4">
-                                                <vaadin-text-field id="info_garantiaSituacao" name="info_garantiaSituacao" label="Garantia Situação" value="" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="info_garantiaSituacao" name="info_garantiaSituacao" label="Garantia Situação" value="{{data.garantiaSituacao}}" disabled></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-4">
-                                                <vaadin-text-field id="info_seguroSituacao" name="info_seguroSituacao" label="Seguro Situação" value="" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="info_seguroSituacao" name="info_seguroSituacao" label="Seguro Situação" value="{{data.seguroSituacao}}" disabled></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-4">
-                                                <vaadin-date-picker id="info_dataFimSeguro" name="info_dataFimSeguro" label="Data Fim Seguro" value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                <vaadin-date-picker id="info_dataFimSeguro" name="info_dataFimSeguro" label="Data Fim Seguro" value="{{data.dataFimSeguro}}" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                             </div>
                                         </div>
 
                                         <div class="row break_clear">
                                             <div class="col-md-2">
-                                                <vaadin-date-picker id="info_ultimaInspecao" name="info_ultimaInspecao" label="Última Inspeção" value="" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                <vaadin-date-picker id="info_ultimaInspecao" name="info_ultimaInspecao" label="Última Inspeção" value="{{data.ultimaInspecao}}" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                             </div>
 
                                             <div class="col-md-2">
@@ -589,7 +594,7 @@
                                             </div>
 
                                             <div class="col-md-2">
-                                                <vaadin-text-field id="info_iucMesSeguinte" name="info_iucMesSeguinte" label="IUC Mês Seguinte" value="" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="info_iucMesSeguinte" name="info_iucMesSeguinte" label="IUC até" value="" disabled></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-3">
@@ -1586,11 +1591,18 @@
                                         <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="cartaverde_noDaApolice" name="cartaverde_noDaApolice" label="Nº da Apólice" value="" disabled="{{ _lockFields }}" maxlength="200" required error-message="O campo Nº da Apólice é de preenchimento obrigatório"></vaadin-text-field>
+                                                    <vaadin-text-field id="cartaverde_noApolice" name="cartaverde_noApolice" label="Nº da Apólice" value="" disabled="{{ _lockFields }}" maxlength="200" required error-message="O campo Nº da Apólice é de preenchimento obrigatório"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="cartaverde_seguradora" name="cartaverde_seguradora" label="Seguradora" value="" disabled="{{ _lockFields }}" required error-message="O campo Seguradora é de preenchimento obrigatório"></vaadin-text-field>
+                                                    <such-selectbox id="cartaverde_seguradora" name="cartaverde_seguradora" value="" label="Seguradora"
+                                                                    items="[[ListaSeguradoras]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Seguradora"}]'
+                                                                    required error-message="O campo Seguradora é de preenchimento obrigatório"
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -1689,11 +1701,24 @@
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="acidentes_idCondutor" name="acidentes_idCondutor" label="Condutor" value="" disabled="{{ _lockFields }}" required error-message="O campo Condutor é de preenchimento obrigatório"></vaadin-text-field>
+                                                    <such-selectbox id="acidentes_idCondutor" name="acidentes_idCondutor" value="" label="Condutor"
+                                                                    items="[[ListaCondutores]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Condutor"}, {"field":"extra", "name":"Nº Mecanográfico"}, {"field":"extra2", "name":"Mail"}]'
+                                                                    required error-message="O campo Condutor é de preenchimento obrigatório"
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
                                                 </div>
 
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="acidentes_idresponsabilidade" name="acidentes_idresponsabilidade" label="Responsabilidade" value="" disabled="{{ _lockFields }}" required error-message="O campo Responsabilidade é de preenchimento obrigatório"></vaadin-text-field>
+                                                    <such-selectbox id="acidentes_idresponsabilidade" name="acidentes_idresponsabilidade" value="" label="Responsabilidade"
+                                                                    items="[[ListaAcidentesResponsabilidades]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Responsabilidade"}]'
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
                                                 </div>
 
                                                 <div class="col-md-3">
@@ -1776,7 +1801,7 @@
                                             </template>
                                             <template>
                                                 <center>
-                                                    <paper-button id="btn_deleteContraordenacoes" class="btnRemove tableBtn" raised on-tap="_deleteContraordenacoes" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    <paper-button id="btn_deleteContraOrdenacoes" class="btnRemove tableBtn" raised on-tap="_deleteContraOrdenacoes" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                 </center>
                                             </template>
                                         </vaadin-grid-column>
@@ -1794,11 +1819,24 @@
                                                 </div>
 
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="contraordenacoes_idCondutor" name="contraordenacoes_idCondutor" label="Condutor" value="" disabled="{{ _lockFields }}" required error-message="O campo Condutor é de preenchimento obrigatório"></vaadin-text-field>
+                                                    <such-selectbox id="contraordenacoes_idCondutor" name="contraordenacoes_idCondutor" value="" label="Condutor"
+                                                                    items="[[ListaCondutores]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Condutor"}, {"field":"extra", "name":"Nº Mecanográfico"}, {"field":"extra2", "name":"Mail"}]'
+                                                                    required error-message="O campo Condutor é de preenchimento obrigatório"
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
                                                 </div>
 
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="contraordenacoes_idresponsabilidade" name="contraordenacoes_idresponsabilidade" label="Responsabilidade" value="" disabled="{{ _lockFields }}" required error-message="O campo Responsabilidade é de preenchimento obrigatório"></vaadin-text-field>
+                                                    <such-selectbox id="contraordenacoes_idresponsabilidade" name="contraordenacoes_idresponsabilidade" value="" label="Responsabilidade"
+                                                                    items="[[ListaContraOrdenacoesResponsabilidades]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Responsabilidade"}]'
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
                                                 </div>
                                             </div>
 
@@ -2294,7 +2332,7 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInicioTexto">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="dataInicioTexto">Data</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="dataInicioTexto" />
                                             </template>
                                             <template>
@@ -2339,7 +2377,7 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInicioTexto">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="dataInicioTexto">Data</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="dataInicioTexto" />
                                             </template>
                                             <template>
@@ -2364,7 +2402,7 @@
 
                                         <vaadin-grid-column resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataInicioTexto">Data Início</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="dataInicioTexto">Data</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="dataInicioTexto" />
                                             </template>
                                             <template>
@@ -3074,8 +3112,8 @@
                     this.$.page_tabManutencao_ajax.generateRequest();
                     this.$.gridInspecao.clearCache();
 
-                    this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                    this.$.page_tabinspecao_ajax.generateRequest();
+                    this.$.page_tabInspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabInspecao_ajax.generateRequest();
                     this.$.gridInspecao.clearCache();
 
                     this.$.page_tabCartaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
@@ -3152,15 +3190,7 @@
 
 
                 _validateData: function () {
-                    debugger;
-                    //var polymerDom = Polymer.dom(this.root);
                     var errors = 0;
-                    //var formSelector = "vaadin-text-field, vaadin-date-picker, vaadin-combo-box";
-                    //var formFields = polymerDom.querySelectorAll(formSelector);
-
-                    //formFields.forEach(function (element) {
-                    //    if (!element.validate()) errors++;
-                    //});
 
                     if (this.$.geral_marca.value == null || this.$.geral_marca.value == "") {
                         this.$.geral_marca.validate();
@@ -3460,6 +3490,141 @@
                     window.location.href = "/Viaturas/Viaturas2Custos/" + "?matricula=" + this.data.matricula + "&noProjeto=" + this.data.noProjeto;
                 },
 
+                _validateDataKm: function () {
+                    var errors = 0;
+
+                    if (this.$.km_km.value == null || this.$.km_km.value == "") {
+                        this.$.km_km.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.km_data.value == null || this.$.km_data.value == "") {
+                        this.$.km_data.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createKm: function () {
+                    if (this._validateDataKm()) {
+                        this.$.page_CreateViaturas2Km_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+                            km: this.$.km_km.value,
+                            data: this.$.km_data.value
+                        });
+                        this.$.page_CreateViaturas2Km_ajax.generateRequest();
+                        this.$.gridKm.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Km: function () {
+                    if (this.createViaturas2KmResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2KmResult.eMessage);
+
+                        this.$.km_km.value = "";
+                        this.$.km_data.value = "";
+
+                        this.$.page_tabKm_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabKm_ajax.generateRequest();
+                        this.$.gridKm.clearCache();
+                    } else {
+                        this._openToastError(this.createViaturas2KmResult.eMessage);
+                    }
+                },
+
+                _validateDataManutencao: function () {
+                    var errors = 0;
+
+                    if (this.$.manutencao_local.value == null || this.$.manutencao_local.value == "") {
+                        this.$.manutencao_local.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.manutencao_dataInicio.value == null || this.$.manutencao_dataInicio.value == "") {
+                        this.$.manutencao_dataInicio.validate();
+                        errors = errors + 1;
+                    }
+
+                    if ((this.$.manutencao_dataInicio.value != null && this.$.manutencao_dataInicio.value != "") && (this.$.manutencao_dataFim.value != null && this.$.manutencao_dataFim.value != "")) {
+                        var dataInicio = Date.parse(this.$.manutencao_dataInicio.value)
+                        var dataFim = Date.parse(this.$.manutencao_dataFim.value)
+                        if (dataInicio > dataFim) {
+                            this._openToastError("A data Fim tem que ser superior ou igual à data Início.");
+                            errors = errors + 1;
+                        }
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createManutencao: function () {
+                    if (this._validateDataManutencao()) {
+                        this.$.page_CreateViaturas2Manutencao_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+                            local: this.$.manutencao_local.value,
+                            dataInicio: this.$.manutencao_dataInicio.value,
+                            dataFim: this.$.manutencao_dataFim.value,
+                            observacoes: this.$.manutencao_observacoes.value,
+                        });
+                        this.$.page_CreateViaturas2Manutencao_ajax.generateRequest();
+                        this.$.gridManutencao.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Manutencao: function () {
+                    if (this.createViaturas2ManutencaoResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2ManutencaoResult.eMessage);
+
+                        this.$.manutencao_local.value = "";
+                        this.$.manutencao_dataInicio.value = "";
+                        this.$.manutencao_dataFim.value = "";
+                        this.$.manutencao_observacoes.value = "";
+
+                        this.$.page_tabManutencao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabManutencao_ajax.generateRequest();
+                        this.$.gridManutencao.clearCache();
+                    } else {
+                        this._openToastError(this.createViaturas2ManutencaoResult.eMessage);
+                    }
+                },
+
+                _validateDataInspecao: function () {
+                    var errors = 0;
+
+                    if (this.$.inspecao_dataInspecao.value == null || this.$.inspecao_dataInspecao.value == "") {
+                        this.$.inspecao_dataInspecao.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.inspecao_kmInspecao.value == null || this.$.inspecao_kmInspecao.value == "") {
+                        this.$.inspecao_kmInspecao.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.inspecao_resultado.value == null || this.$.inspecao_resultado.value == "") {
+                        this.$.inspecao_resultado.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.inspecao_proximaInspecao.value == null || this.$.inspecao_proximaInspecao.value == "") {
+                        this.$.inspecao_proximaInspecao.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
                 _createInspecao: function () {
                     if (this._validateDataInspecao()) {
                         this.$.page_CreateViaturas2Inspecao_ajax.body = JSON.stringify({
@@ -3484,23 +3649,197 @@
                         this.$.inspecao_proximaInspecao.value = "";
                         this.$.inspecao_observacoes.value = "";
 
-                        this.$.page_tabestado_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabestado_ajax.generateRequest();
-                        this.$.gridEstado.clearCache();
-
-                        this.$.page_tabdimensao_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabdimensao_ajax.generateRequest();
-                        this.$.gridDimensao.clearCache();
-
-                        this.$.page_tabparqueamento_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabparqueamento_ajax.generateRequest();
-                        this.$.gridParqueamento.clearCache();
-
-                        this.$.page_tabpropriedade_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabpropriedade_ajax.generateRequest();
-                        this.$.gridPropriedade.clearCache();
+                        this.$.page_tabInspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabInspecao_ajax.generateRequest();
+                        this.$.gridInspecao.clearCache();
                     } else {
                         this._openToastError(this.createViaturas2InspecaoResult.eMessage);
+                    }
+                },
+
+                _validateDataCartaVerde: function () {
+                    var errors = 0;
+
+                    if (this.$.cartaverde_noApolice.value == null || this.$.cartaverde_noApolice.value == "") {
+                        this.$.cartaverde_noApolice.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.cartaverde_seguradora.value == null || this.$.cartaverde_seguradora.value == "") {
+                        this.$.cartaverde_seguradora.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.cartaverde_dataInicio.value == null || this.$.cartaverde_dataInicio.value == "") {
+                        this.$.cartaverde_dataInicio.validate();
+                        errors = errors + 1;
+                    }
+
+                    if ((this.$.cartaverde_dataInicio.value != null && this.$.cartaverde_dataInicio.value != "") && (this.$.cartaverde_dataFim.value != null && this.$.cartaverde_dataFim.value != "")) {
+                        var dataInicio = Date.parse(this.$.cartaverde_dataInicio.value)
+                        var dataFim = Date.parse(this.$.cartaverde_dataFim.value)
+                        if (dataInicio > dataFim) {
+                            this._openToastError("A data Fim tem que ser superior ou igual à data Início.");
+                            errors = errors + 1;
+                        }
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createCartaVerde: function () {
+                    debugger;
+                    if (this._validateDataCartaVerde()) {
+                        this.$.page_CreateViaturas2CartaVerde_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+
+                            noApolice: this.$.cartaverde_noApolice.value,
+                            idSeguradora: this.$.cartaverde_seguradora.value,
+                            dataInicio: this.$.cartaverde_dataInicio.value,
+                            dataFim: this.$.cartaverde_dataFim.value,
+                            valorPremioSeguro: this.$.cartaverde_valorPremioSeguro.value,
+                        });
+                        this.$.page_CreateViaturas2CartaVerde_ajax.generateRequest();
+                        this.$.gridCartaVerde.clearCache();
+                    }
+                },
+                _responseCreateViaturas2CartaVerde: function () {
+                    if (this.createViaturas2CartaVerdeResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2CartaVerdeResult.eMessage);
+
+                        this.$.cartaverde_noApolice.value = "";
+                        this.$.cartaverde_seguradora._clearSelection();
+                        this.$.cartaverde_dataInicio.value = "";
+                        this.$.cartaverde_dataFim.value = "";
+                        this.$.cartaverde_valorPremioSeguro.value = "";
+
+                        this.$.page_tabCartaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabCartaVerde_ajax.generateRequest();
+                        this.$.gridCartaVerde.clearCache();
+                    } else {
+                        this._openToastError(this.createViaturas2CartaVerdeResult.eMessage);
+                    }
+                },
+
+                _validateDataAcidentes: function () {
+                    var errors = 0;
+
+                    if (this.$.acidentes_local.value == null || this.$.acidentes_local.value == "") {
+                        this.$.acidentes_local.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.acidentes_data.value == null || this.$.acidentes_data.value == "") {
+                        this.$.acidentes_data.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.acidentes_idCondutor.value == null || this.$.acidentes_idCondutor.value == "") {
+                        this.$.acidentes_idCondutor.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createAcidentes: function () {
+                    if (this._validateDataAcidentes()) {
+                        this.$.page_CreateViaturas2Acidentes_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+
+                            local: this.$.acidentes_local.value,
+                            data: this.$.acidentes_data.value,
+                            idCondutor: this.$.acidentes_idCondutor.value,
+                            idresponsabilidade: this.$.acidentes_idresponsabilidade.value,
+                            observacoes: this.$.acidentes_observacoes.value,
+                        });
+                        this.$.page_CreateViaturas2Acidentes_ajax.generateRequest();
+                        this.$.gridAcidentes.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Acidentes: function () {
+                    if (this.createViaturas2AcidentesResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2AcidentesResult.eMessage);
+
+                        this.$.acidentes_local.value = "";
+                        this.$.acidentes_data.value = "";
+                        this.$.acidentes_idCondutor._clearSelection();
+                        this.$.acidentes_idresponsabilidade._clearSelection();
+                        this.$.acidentes_observacoes.value = "";
+
+                        this.$.page_tabAcidentes_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabAcidentes_ajax.generateRequest();
+                        this.$.gridAcidentes.clearCache();
+                    } else {
+                        this._openToastError(this.createViaturas2AcidentesResult.eMessage);
+                    }
+                },
+
+                _validateDataContraOrdenacoes: function () {
+                    var errors = 0;
+
+                    if (this.$.contraordenacoes_local.value == null || this.$.contraordenacoes_local.value == "") {
+                        this.$.contraordenacoes_local.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.contraordenacoes_data.value == null || this.$.contraordenacoes_data.value == "") {
+                        this.$.contraordenacoes_data.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.contraordenacoes_idCondutor.value == null || this.$.contraordenacoes_idCondutor.value == "") {
+                        this.$.contraordenacoes_idCondutor.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createContraOrdenacoes: function () {
+                    if (this._validateDataContraOrdenacoes()) {
+                        this.$.page_CreateViaturas2ContraOrdenacoes_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+
+                            local: this.$.contraordenacoes_local.value,
+                            data: this.$.contraordenacoes_data.value,
+                            idCondutor: this.$.contraordenacoes_idCondutor.value,
+                            idresponsabilidade: this.$.contraordenacoes_idresponsabilidade.value,
+                            valor: this.$.contraordenacoes_valor.value,
+                            observacoes: this.$.contraordenacoes_observacoes.value,
+                        });
+                        this.$.page_CreateViaturas2ContraOrdenacoes_ajax.generateRequest();
+                        this.$.gridContraOrdenacoes.clearCache();
+                    }
+                },
+                _responseCreateViaturas2ContraOrdenacoes: function () {
+                    if (this.createViaturas2ContraOrdenacoesResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2ContraOrdenacoesResult.eMessage);
+
+                        this.$.contraordenacoes_local.value = "";
+                        this.$.contraordenacoes_data.value = "";
+                        this.$.contraordenacoes_idCondutor._clearSelection();
+                        this.$.contraordenacoes_idresponsabilidade._clearSelection();
+                        this.$.contraordenacoes_valor.value = "";
+                        this.$.contraordenacoes_observacoes.value = "";
+
+                        this.$.page_tabContraOrdenacoes_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabContraOrdenacoes_ajax.generateRequest();
+                        this.$.gridContraOrdenacoes.clearCache();
+                    } else {
+                        this._openToastError(this.createViaturas2ContraOrdenacoesResult.eMessage);
                     }
                 },
 
@@ -3535,7 +3874,8 @@
                 },
 
                 _validateDataCondutor: function () {
-                    debugger;
+                    var errors = 0;
+
                     if (this.$.condutor_idCondutor.value == null || this.$.condutor_idCondutor.value == "") {
                         this.$.condutor_idCondutor.validate();
                         errors = errors + 1;
@@ -3553,6 +3893,11 @@
                             this._openToastError("A data Fim tem que ser superior ou igual à data Início.");
                             errors = errors + 1;
                         }
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
                     }
 
                     return true;
@@ -3587,6 +3932,8 @@
                 },
 
                 _validateDataGestor: function () {
+                    var errors = 0;
+
                     if (this.$.gestor_idGestor.value == null || this.$.gestor_idGestor.value == "") {
                         this.$.gestor_idGestor.validate();
                         errors = errors + 1;
@@ -3605,35 +3952,123 @@
                             errors = errors + 1;
                         }
                     }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
                     return true;
                 },
 
-                _validateDataInspecao: function () {
-                    if (this.$.inspecao_dataInspecao.value == null || this.$.inspecao_dataInspecao.value == "") {
-                        this.$.inspecao_dataInspecao.validate();
-                        errors = errors + 1;
-                    }
+                _deleteKm: function (e) {
+                    if (this._permissions.update == true) {
+                        var index = this.tabKm.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var km = e.model.item.km;
+                        var ajax_request = this.$.page_DeleteViaturas2Km_ajax;
 
-                    if (this.$.inspecao_kmInspecao.value == null || this.$.inspecao_kmInspecao.value == "") {
-                        this.$.inspecao_kmInspecao.validate();
-                        errors = errors + 1;
-                    }
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a linha do Km " + km + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteKm) {
+                                if (deleteKm) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
 
-                    if (this.$.inspecao_resultado.value == null || this.$.inspecao_resultado.value == "") {
-                        this.$.inspecao_resultado.validate();
-                        errors = errors + 1;
+                                    this.$.gridKm.clearCache();
+                                }
+                            }
+                        });
                     }
-
-                    if (this.$.inspecao_proximaInspecao.value == null || this.$.inspecao_proximaInspecao.value == "") {
-                        this.$.inspecao_proximaInspecao.validate();
-                        errors = errors + 1;
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Km.');
                     }
+                },
+                _responseDeleteViaturas2Km: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
 
-                    return true;
+                    if (this.deleteViaturas2KmResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2KmResult.eMessage);
+
+                        this.$.page_tabKm_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabKm_ajax.generateRequest();
+                        this.$.gridKm.clearCache();
+                    } else {
+                        this._openToastError(this.deleteViaturas2KmResult.eMessage);
+                    }
+                },
+
+                _deleteManutencao: function (e) {
+                    if (this._permissions.update == true) {
+                        var index = this.tabManutencao.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var local = e.model.item.local;
+                        var ajax_request = this.$.page_DeleteViaturas2Manutencao_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Manutenção no local " + local + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteManutencao) {
+                                if (deleteManutencao) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridManutencao.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Manutenção.');
+                    }
+                },
+                _responseDeleteViaturas2Manutencao: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2ManutencaoResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2ManutencaoResult.eMessage);
+
+                        this.$.page_tabManutencao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabManutencao_ajax.generateRequest();
+                        this.$.gridManutencao.clearCache();
+                    } else {
+                        this._openToastError(this.deleteViaturas2ManutencaoResult.eMessage);
+                    }
                 },
 
                 _deleteInspecao: function (e) {
-                    if (this._permissions.delete == true) {
+                    if (this._permissions.update == true) {
                         var index = this.tabInspecao.indexOf(e.model.item);
                         var matricula = this._matricula;
                         var id = e.model.item.id;
@@ -3677,14 +4112,173 @@
                     if (this.deleteViaturas2InspecaoResult.eReasonCode == 1) {
                         this._openToast(this.deleteViaturas2InspecaoResult.eMessage);
 
-                        this.$.page_tabinspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                        this.$.page_tabinspecao_ajax.generateRequest();
+                        this.$.page_tabInspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabInspecao_ajax.generateRequest();
                         this.$.gridInspecao.clearCache();
                     } else {
                         this._openToastError(this.deleteViaturas2InspecaoResult.eMessage);
                     }
                 },
                 
+                _deleteCartaVerde: function (e) {
+                    if (this._permissions.update == true) {
+                        var index = this.tabCartaVerde.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var noApolice = e.model.item.noApolice;
+                        var ajax_request = this.$.page_DeleteViaturas2CartaVerde_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Carta Verde com o Nº de Apólice " + noApolice + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteCartaVerde) {
+                                if (deleteCartaVerde) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridCartaVerde.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Cartas Verdes.');
+                    }
+                },
+                _responseDeleteViaturas2CartaVerde: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2CartaVerdeResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2CartaVerdeResult.eMessage);
+
+                        this.$.page_tabCartaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabCartaVerde_ajax.generateRequest();
+                        this.$.gridCartaVerde.clearCache();
+                    } else {
+                        this._openToastError(this.deleteViaturas2CartaVerdeResult.eMessage);
+                    }
+                },
+
+                _deleteAcidentes: function (e) {
+                    if (this._permissions.update == true) {
+                        var index = this.tabAcidentes.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var data = e.model.item.dataTexto;
+                        var ajax_request = this.$.page_DeleteViaturas2Acidentes_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Acidente do dia " + data + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteAcidentes) {
+                                if (deleteAcidentes) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridAcidentes.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Acidentes.');
+                    }
+                },
+                _responseDeleteViaturas2Acidentes: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2AcidentesResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2AcidentesResult.eMessage);
+
+                        this.$.page_tabAcidentes_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabAcidentes_ajax.generateRequest();
+                        this.$.gridAcidentes.clearCache();
+                    } else {
+                        this._openToastError(this.deleteViaturas2AcidentesResult.eMessage);
+                    }
+                },
+
+                _deleteContraOrdenacoes: function (e) {
+                    if (this._permissions.update == true) {
+                        var index = this.tabContraOrdenacoes.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var data = e.model.item.dataTexto;
+                        var ajax_request = this.$.page_DeleteViaturas2ContraOrdenacoes_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Contra Ordenação do dia " + data + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteContraOrdenacoes) {
+                                if (deleteContraOrdenacoes) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridContraOrdenacoes.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Contra Ordenações.');
+                    }
+                },
+                _responseDeleteViaturas2ContraOrdenacoes: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2ContraOrdenacoesResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2ContraOrdenacoesResult.eMessage);
+
+                        this.$.page_tabContraOrdenacoes_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabContraOrdenacoes_ajax.generateRequest();
+                        this.$.gridContraOrdenacoes.clearCache();
+                    } else {
+                        this._openToastError(this.deleteViaturas2ContraOrdenacoesResult.eMessage);
+                    }
+                },
+
                 _openDlgEstado: function () {
                     if (this._isCreate == false && this.$.geral_estado.value != "" && this.data.idEstadoOriginalDB != this.$.geral_estado.value)
                         this.$.dlgEstado.open();

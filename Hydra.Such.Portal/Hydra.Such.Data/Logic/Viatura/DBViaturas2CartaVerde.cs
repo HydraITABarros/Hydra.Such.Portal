@@ -54,6 +54,21 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
+        public static Viaturas2CartaVerde GetByMatriculaAndData(string Matricula, DateTime Data)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Viaturas2CartaVerde.Where(p => p.Matricula == Matricula && (p.DataInicio <= Data && p.DataFim.HasValue ? p.DataFim >= Data  : DateTime.Now >= Data)).OrderByDescending(x => x.DataInicio).FirstOrDefault();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static Viaturas2CartaVerde Create(Viaturas2CartaVerde ObjectToCreate)
         {
             try

@@ -209,6 +209,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll();
             List<Viaturas2ParqueamentoLocal> AllPArqueamentosLocais = DBViaturas2ParqueamentoLocal.GetAll();
+            List<Viaturas2GestoresGestor>  AllResponsaveis = DBViaturas2GestoresGestor.GetByTipo(1);
 
             result.ForEach(x =>
             {
@@ -225,6 +226,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (x.AlvaraLicenca == true) x.AlvaraLicencaTexto = "Sim"; else x.AlvaraLicencaTexto = "Não";
                 if (x.IDLocalParqueamento != null && x.IDLocalParqueamento > 0) x.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == x.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(x.NoProjeto)) x.Projeto = AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == x.NoProjeto).FirstOrDefault().Description : "";
+                if (x.IDGestor != null && x.IDGestor > 0) x.Gestor = AllResponsaveis.Where(y => y.ID == x.IDGestor).FirstOrDefault() != null ? AllResponsaveis.Where(y => y.ID == x.IDGestor).FirstOrDefault().Gestor : "";
 
                 if (x.Data1Matricula.HasValue) x.Idade = (DateTime.Now.Year - Convert.ToDateTime(x.Data1Matricula).Year).ToString() + " ano(s)";
             });
@@ -332,7 +334,6 @@ namespace Hydra.Such.Portal.Controllers
             Viaturas2ViewModel viatura = new Viaturas2ViewModel();
             if (data != null && !string.IsNullOrEmpty(data.Matricula))
             {
-                int IDGestor = 0;
                 int IDCondutor = 0;
                 viatura = DBViaturas2.ParseToViewModel(DBViaturas2.GetByMatricula(data.Matricula));
 
@@ -347,8 +348,6 @@ namespace Hydra.Such.Portal.Controllers
                 viatura.IDPropriedadeOriginalDB = viatura.IDPropriedade;
                 viatura.DataPropriedadeLast = DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
 
-                IDGestor = DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 1) != null ? (int)DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 1).IDGestor : 0;
-                if (IDGestor > 0) viatura.Gestor = DBViaturas2GestoresGestor.GetByID(IDGestor) != null ? DBViaturas2GestoresGestor.GetByID(IDGestor).Gestor : "";
                 IDCondutor = DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 2) != null ? (int)DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 2).IDGestor : 0;
                 if (IDCondutor > 0) viatura.Condutor = DBViaturas2GestoresGestor.GetByID(IDCondutor) != null ? DBViaturas2GestoresGestor.GetByID(IDCondutor).Gestor : "";
 
@@ -360,6 +359,7 @@ namespace Hydra.Such.Portal.Controllers
                 List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, "");
                 List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll();
                 List<Viaturas2ParqueamentoLocal> AllPArqueamentosLocais = DBViaturas2ParqueamentoLocal.GetAll();
+                List<Viaturas2GestoresGestor> AllResponsaveis = DBViaturas2GestoresGestor.GetByTipo(1);
 
                 if (viatura.IDEstado != null && viatura.IDEstado > 0) viatura.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == viatura.IDEstado).FirstOrDefault().Descricao;
                 if (viatura.IDMarca != null && viatura.IDMarca > 0) viatura.Marca = AllMarcas.Where(y => y.ID == viatura.IDMarca).FirstOrDefault().Marca;
@@ -374,8 +374,49 @@ namespace Hydra.Such.Portal.Controllers
                 if (viatura.AlvaraLicenca == true) viatura.AlvaraLicencaTexto = "Sim"; else viatura.AlvaraLicencaTexto = "Não";
                 if (viatura.IDLocalParqueamento != null && viatura.IDLocalParqueamento > 0) viatura.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == viatura.IDLocalParqueamento).FirstOrDefault().Local;
                 if (!string.IsNullOrEmpty(viatura.NoProjeto)) viatura.Projeto = AllProjects.Where(y => y.No == viatura.NoProjeto).FirstOrDefault().Description;
+                if (viatura.IDGestor != null && viatura.IDGestor > 0) viatura.Gestor = AllResponsaveis.Where(y => y.ID == viatura.IDGestor).FirstOrDefault() != null ? AllResponsaveis.Where(y => y.ID == viatura.IDGestor).FirstOrDefault().Gestor : "";
 
                 if (viatura.Data1Matricula.HasValue) viatura.Idade = (DateTime.Now.Year - Convert.ToDateTime(viatura.Data1Matricula).Year).ToString() + " ano(s)";
+
+                if (!viatura.Data1Matricula.HasValue || !viatura.NoAnosGarantia.HasValue)
+                {
+                    if (!viatura.Data1Matricula.HasValue)
+                        viatura.GarantiaSituacao = "Falta a Data da 1ª matrícula";
+                    if (!viatura.NoAnosGarantia.HasValue)
+                        viatura.GarantiaSituacao = "Falta a Garantia";
+                    if (!viatura.Data1Matricula.HasValue && !viatura.NoAnosGarantia.HasValue)
+                        viatura.GarantiaSituacao = "Falta a Data da 1ª matrícula e Garantia";
+                }
+                else
+                {
+                    if (viatura.Data1Matricula.HasValue && viatura.NoAnosGarantia.HasValue)
+                    {
+                        if (Convert.ToDateTime(viatura.Data1Matricula).AddYears((int)viatura.NoAnosGarantia) > DateTime.Now)
+                            viatura.GarantiaSituacao = "Com garantia";
+                        else
+                            viatura.GarantiaSituacao = "Sem garantia";
+                    }
+                }
+
+                Viaturas2CartaVerde seguro = DBViaturas2CartaVerde.GetByMatriculaAndData(data.Matricula, DateTime.Now);
+                if (seguro != null)
+                {
+                    viatura.SeguroSituacao = "Com seguro";
+                    if (seguro.DataFim.HasValue)
+                        viatura.DataFimSeguro = seguro.DataFim.Value.ToString("yyyy-MM-dd");
+                }
+                else
+                    viatura.SeguroSituacao = "Sem seguro";
+
+                Viaturas2Inspecoes LastInspecao = DBViaturas2Inspecoes.GetByMatriculaUltimaInspecaoRecent(data.Matricula);
+                if (LastInspecao != null && LastInspecao.DataInspecao.HasValue)
+                    viatura.UltimaInspecao = LastInspecao.DataInspecao.Value.ToString("yyyy-MM-dd");
+
+                if (viatura.DataMatricula.HasValue)
+                {
+                    if (Convert.ToDateTime(viatura.DataMatricula).AddDays(-30) <= DateTime.Now && Convert.ToDateTime(viatura.DataMatricula) >= DateTime.Now)
+                        viatura.IUCate = viatura.DataMatricula.Value.ToString("yyyy-MM-dd");
+                }
             }
             return Json(viatura);
         }
@@ -744,6 +785,11 @@ namespace Hydra.Such.Portal.Controllers
                                         }
                                     }
 
+                                    if (data.Data1Matricula.HasValue && !data.DataMatricula.HasValue)
+                                        data.DataMatricula = data.Data1Matricula;
+                                    if (!data.Data1Matricula.HasValue && data.DataMatricula.HasValue)
+                                        data.Data1Matricula = data.DataMatricula;
+
                                     Viaturas2 viaturaCreated = DBViaturas2.Create(DBViaturas2.ParseToDB(data));
 
                                     if (viaturaCreated == null)
@@ -849,6 +895,82 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateViaturas2Km([FromBody] Viaturas2KmViewModel Km)
+        {
+            try
+            {
+                if (Km != null && !string.IsNullOrEmpty(Km.Matricula))
+                {
+                    Viaturas2Km KmToCreate = new Viaturas2Km();
+
+                    KmToCreate = DBViaturas2Km.ParseToDB(Km);
+                    KmToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Km.Create(KmToCreate) != null)
+                    {
+                        Km.eReasonCode = 1;
+                        Km.eMessage = "Linha Km criada com sucesso.";
+                    }
+                    else
+                    {
+                        Km.eReasonCode = 3;
+                        Km.eMessage = "Ocorreu um erro ao criar a Linha Km no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    Km.eReasonCode = 3;
+                    Km.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Km.eReasonCode = 4;
+                Km.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Km);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2Manutencao([FromBody] Viaturas2ManutencaoViewModel Manutencao)
+        {
+            try
+            {
+                if (Manutencao != null && !string.IsNullOrEmpty(Manutencao.Matricula))
+                {
+                    Viaturas2Manutencao ManutencaoToCreate = new Viaturas2Manutencao();
+
+                    ManutencaoToCreate = DBViaturas2Manutencao.ParseToDB(Manutencao);
+                    ManutencaoToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Manutencao.Create(ManutencaoToCreate) != null)
+                    {
+                        Manutencao.eReasonCode = 1;
+                        Manutencao.eMessage = "Linha Manutencao criada com sucesso.";
+                    }
+                    else
+                    {
+                        Manutencao.eReasonCode = 3;
+                        Manutencao.eMessage = "Ocorreu um erro ao criar a Linha Manutencao no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    Manutencao.eReasonCode = 3;
+                    Manutencao.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Manutencao.eReasonCode = 4;
+                Manutencao.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Manutencao);
+        }
+
+        [HttpPost]
         public JsonResult CreateViaturas2Inspecao([FromBody] Viaturas2InspecoesViewModel inspecao)
         {
             try
@@ -884,6 +1006,120 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(inspecao);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2CartaVerde([FromBody] Viaturas2CartaVerdeViewModel CartaVerde)
+        {
+            try
+            {
+                if (CartaVerde != null && !string.IsNullOrEmpty(CartaVerde.Matricula))
+                {
+                    Viaturas2CartaVerde CartaVerdeToCreate = new Viaturas2CartaVerde();
+
+                    CartaVerdeToCreate = DBViaturas2CartaVerde.ParseToDB(CartaVerde);
+                    CartaVerdeToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2CartaVerde.Create(CartaVerdeToCreate) != null)
+                    {
+                        CartaVerde.eReasonCode = 1;
+                        CartaVerde.eMessage = "Linha Carta Verde criada com sucesso.";
+                    }
+                    else
+                    {
+                        CartaVerde.eReasonCode = 3;
+                        CartaVerde.eMessage = "Ocorreu um erro ao criar a Linha Carta Verde no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    CartaVerde.eReasonCode = 3;
+                    CartaVerde.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                CartaVerde.eReasonCode = 4;
+                CartaVerde.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(CartaVerde);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2Acidentes([FromBody] Viaturas2AcidentesViewModel Acidentes)
+        {
+            try
+            {
+                if (Acidentes != null && !string.IsNullOrEmpty(Acidentes.Matricula))
+                {
+                    Viaturas2Acidentes AcidentesToCreate = new Viaturas2Acidentes();
+
+                    AcidentesToCreate = DBViaturas2Acidentes.ParseToDB(Acidentes);
+                    AcidentesToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Acidentes.Create(AcidentesToCreate) != null)
+                    {
+                        Acidentes.eReasonCode = 1;
+                        Acidentes.eMessage = "Linha Acidentes criada com sucesso.";
+                    }
+                    else
+                    {
+                        Acidentes.eReasonCode = 3;
+                        Acidentes.eMessage = "Ocorreu um erro ao criar a Linha Acidentes no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    Acidentes.eReasonCode = 3;
+                    Acidentes.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Acidentes.eReasonCode = 4;
+                Acidentes.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Acidentes);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2ContraOrdenacoes([FromBody] Viaturas2ContraOrdenacoesViewModel ContraOrdenacoes)
+        {
+            try
+            {
+                if (ContraOrdenacoes != null && !string.IsNullOrEmpty(ContraOrdenacoes.Matricula))
+                {
+                    Viaturas2ContraOrdenacoes ContraOrdenacoesToCreate = new Viaturas2ContraOrdenacoes();
+
+                    ContraOrdenacoesToCreate = DBViaturas2ContraOrdenacoes.ParseToDB(ContraOrdenacoes);
+                    ContraOrdenacoesToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2ContraOrdenacoes.Create(ContraOrdenacoesToCreate) != null)
+                    {
+                        ContraOrdenacoes.eReasonCode = 1;
+                        ContraOrdenacoes.eMessage = "Linha Contra Ordenações criada com sucesso.";
+                    }
+                    else
+                    {
+                        ContraOrdenacoes.eReasonCode = 3;
+                        ContraOrdenacoes.eMessage = "Ocorreu um erro ao criar a Linha Contra Ordenações no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    ContraOrdenacoes.eReasonCode = 3;
+                    ContraOrdenacoes.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                ContraOrdenacoes.eReasonCode = 4;
+                ContraOrdenacoes.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(ContraOrdenacoes);
         }
 
         [HttpPost]
@@ -942,6 +1178,15 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         gestor.eReasonCode = 1;
                         gestor.eMessage = "Responsável criado com sucesso.";
+
+                        Viaturas2Gestores GestorRecent = DBViaturas2Gestores.GetByMatriculaGestorRecent(gestor.Matricula, DateTime.Now, 1);
+                        Viaturas2 Viatura = DBViaturas2.GetByMatricula(gestor.Matricula);
+                        if (Viatura != null)
+                        {
+                            Viatura.IDGestor = GestorRecent != null ? GestorRecent.IDGestor : 0;
+                            Viatura.UtilizadorModificacao = User.Identity.Name;
+                            DBViaturas2.Update(Viatura);
+                        }
                     }
                     else
                     {
@@ -965,11 +1210,101 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult DeleteViaturas2Km([FromBody] Viaturas2KmViewModel km)
+        {
+            try
+            {
+                if (km != null && km.ID > 0 && !string.IsNullOrEmpty(km.Matricula))
+                {
+                    Viaturas2Km kmToDelete = new Viaturas2Km();
+
+                    kmToDelete = DBViaturas2Km.GetByID(km.ID);
+
+                    if (kmToDelete != null)
+                    {
+                        if (DBViaturas2Km.Delete(kmToDelete) == true)
+                        {
+                            km.eReasonCode = 1;
+                            km.eMessage = "A linha Km Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            km.eReasonCode = 3;
+                            km.eMessage = "Ocorreu um erro ao Eliminar a linha Km no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        km.eReasonCode = 3;
+                        km.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Km.";
+                    }
+                }
+                else
+                {
+                    km.eReasonCode = 3;
+                    km.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                km.eReasonCode = 4;
+                km.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(km);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Manutencao([FromBody] Viaturas2ManutencaoViewModel Manutencao)
+        {
+            try
+            {
+                if (Manutencao != null && Manutencao.ID > 0 && !string.IsNullOrEmpty(Manutencao.Matricula))
+                {
+                    Viaturas2Manutencao ManutencaoToDelete = new Viaturas2Manutencao();
+
+                    ManutencaoToDelete = DBViaturas2Manutencao.GetByID(Manutencao.ID);
+
+                    if (ManutencaoToDelete != null)
+                    {
+                        if (DBViaturas2Manutencao.Delete(ManutencaoToDelete) == true)
+                        {
+                            Manutencao.eReasonCode = 1;
+                            Manutencao.eMessage = "Manutenção Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            Manutencao.eReasonCode = 3;
+                            Manutencao.eMessage = "Ocorreu um erro ao Eliminar a Manutenção no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Manutencao.eReasonCode = 3;
+                        Manutencao.eMessage = "Ocorreu um erro ao Eliminar ao ler a Manutenção.";
+                    }
+                }
+                else
+                {
+                    Manutencao.eReasonCode = 3;
+                    Manutencao.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Manutencao.eReasonCode = 4;
+                Manutencao.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Manutencao);
+        }
+
+        [HttpPost]
         public JsonResult DeleteViaturas2Inspecao([FromBody] Viaturas2InspecoesViewModel inspecao)
         {
             try
             {
-                if (inspecao != null && !string.IsNullOrEmpty(inspecao.Matricula))
+                if (inspecao != null && inspecao.ID > 0 && !string.IsNullOrEmpty(inspecao.Matricula))
                 {
                     Viaturas2Inspecoes inspecaoToDelete = new Viaturas2Inspecoes();
 
@@ -1007,6 +1342,141 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(inspecao);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2CartaVerde([FromBody] Viaturas2CartaVerdeViewModel CartaVerde)
+        {
+            try
+            {
+                if (CartaVerde != null && CartaVerde.ID > 0 && !string.IsNullOrEmpty(CartaVerde.Matricula))
+                {
+                    Viaturas2CartaVerde CartaVerdeToDelete = new Viaturas2CartaVerde();
+
+                    CartaVerdeToDelete = DBViaturas2CartaVerde.GetByID(CartaVerde.ID);
+
+                    if (CartaVerdeToDelete != null)
+                    {
+                        if (DBViaturas2CartaVerde.Delete(CartaVerdeToDelete) == true)
+                        {
+                            CartaVerde.eReasonCode = 1;
+                            CartaVerde.eMessage = "Carta Verde Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            CartaVerde.eReasonCode = 3;
+                            CartaVerde.eMessage = "Ocorreu um erro ao Eliminar a Carta Verde no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        CartaVerde.eReasonCode = 3;
+                        CartaVerde.eMessage = "Ocorreu um erro ao Eliminar ao ler a Carta Verde.";
+                    }
+                }
+                else
+                {
+                    CartaVerde.eReasonCode = 3;
+                    CartaVerde.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                CartaVerde.eReasonCode = 4;
+                CartaVerde.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(CartaVerde);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Acidentes([FromBody] Viaturas2AcidentesViewModel Acidentes)
+        {
+            try
+            {
+                if (Acidentes != null && Acidentes.ID > 0 && !string.IsNullOrEmpty(Acidentes.Matricula))
+                {
+                    Viaturas2Acidentes AcidentesToDelete = new Viaturas2Acidentes();
+
+                    AcidentesToDelete = DBViaturas2Acidentes.GetByID(Acidentes.ID);
+
+                    if (AcidentesToDelete != null)
+                    {
+                        if (DBViaturas2Acidentes.Delete(AcidentesToDelete) == true)
+                        {
+                            Acidentes.eReasonCode = 1;
+                            Acidentes.eMessage = "Acidente Eliminado com sucesso.";
+                        }
+                        else
+                        {
+                            Acidentes.eReasonCode = 3;
+                            Acidentes.eMessage = "Ocorreu um erro ao Eliminar o Acidente no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Acidentes.eReasonCode = 3;
+                        Acidentes.eMessage = "Ocorreu um erro ao Eliminar ao ler o Acidente.";
+                    }
+                }
+                else
+                {
+                    Acidentes.eReasonCode = 3;
+                    Acidentes.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Acidentes.eReasonCode = 4;
+                Acidentes.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Acidentes);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2ContraOrdenacoes([FromBody] Viaturas2ContraOrdenacoesViewModel ContraOrdenacoes)
+        {
+            try
+            {
+                if (ContraOrdenacoes != null && ContraOrdenacoes.ID > 0 && !string.IsNullOrEmpty(ContraOrdenacoes.Matricula))
+                {
+                    Viaturas2ContraOrdenacoes ContraOrdenacoesToDelete = new Viaturas2ContraOrdenacoes();
+
+                    ContraOrdenacoesToDelete = DBViaturas2ContraOrdenacoes.GetByID(ContraOrdenacoes.ID);
+
+                    if (ContraOrdenacoesToDelete != null)
+                    {
+                        if (DBViaturas2ContraOrdenacoes.Delete(ContraOrdenacoesToDelete) == true)
+                        {
+                            ContraOrdenacoes.eReasonCode = 1;
+                            ContraOrdenacoes.eMessage = "Contra Ordenações Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            ContraOrdenacoes.eReasonCode = 3;
+                            ContraOrdenacoes.eMessage = "Ocorreu um erro ao Eliminar a Contra Ordenações no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        ContraOrdenacoes.eReasonCode = 3;
+                        ContraOrdenacoes.eMessage = "Ocorreu um erro ao Eliminar ao ler a Contra Ordenações.";
+                    }
+                }
+                else
+                {
+                    ContraOrdenacoes.eReasonCode = 3;
+                    ContraOrdenacoes.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                ContraOrdenacoes.eReasonCode = 4;
+                ContraOrdenacoes.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(ContraOrdenacoes);
         }
 
         [HttpPost]
@@ -1071,6 +1541,15 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Gestor.eReasonCode = 1;
                             Gestor.eMessage = "Responsável Eliminado com sucesso.";
+
+                            Viaturas2Gestores GestorRecent = DBViaturas2Gestores.GetByMatriculaGestorRecent(Gestor.Matricula, DateTime.Now, 1);
+                            Viaturas2 Viatura = DBViaturas2.GetByMatricula(Gestor.Matricula);
+                            if (Viatura != null)
+                            {
+                                Viatura.IDGestor = GestorRecent != null ? GestorRecent.IDGestor : 0;
+                                Viatura.UtilizadorModificacao = User.Identity.Name;
+                                DBViaturas2.Update(Viatura);
+                            }
                         }
                         else
                         {
@@ -1904,6 +2383,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (dp["matricula"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Matrícula"); Col = Col + 1; }
                 if (dp["estado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado"); Col = Col + 1; }
+                if (dp["gestor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Responsável"); Col = Col + 1; }
                 if (dp["marca"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Marca"); Col = Col + 1; }
                 if (dp["modelo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Modelo"); Col = Col + 1; }
                 if (dp["data1MatriculaTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data 1ª Matrícula"); Col = Col + 1; }
@@ -1952,6 +2432,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (dp["matricula"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Matricula); Col = Col + 1; }
                         if (dp["estado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Estado); Col = Col + 1; }
+                        if (dp["gestor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Gestor); Col = Col + 1; }
                         if (dp["marca"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Marca); Col = Col + 1; }
                         if (dp["modelo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Modelo); Col = Col + 1; }
                         if (dp["data1MatriculaTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Data1MatriculaTexto); Col = Col + 1; }

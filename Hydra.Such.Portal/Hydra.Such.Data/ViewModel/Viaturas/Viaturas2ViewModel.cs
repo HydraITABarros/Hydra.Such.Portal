@@ -76,6 +76,8 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string Projeto { get; set; }
         public DateTime? DataAquisicao { get; set; }
         public string DataAquisicaoTexto { get; set; }
+        public int? IDGestor { get; set; }
+        public string Gestor { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string DataCriacaoTexto { get; set; }
@@ -85,7 +87,11 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
 
         public string Idade { get; set; }
         public string Condutor { get; set; }
-        public string Gestor { get; set; }
+        public string GarantiaSituacao { get; set; }
+        public string SeguroSituacao { get; set; }
+        public string DataFimSeguro { get; set; }
+        public string UltimaInspecao { get; set; }
+        public string IUCate { get; set; }
 
 
         //EXPORTAR PARA EXCEL
