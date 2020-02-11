@@ -348,7 +348,7 @@ namespace Hydra.Such.Portal.Controllers
                 viatura.IDPropriedadeOriginalDB = viatura.IDPropriedade;
                 viatura.DataPropriedadeLast = DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
 
-                IDCondutor = DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 2) != null ? (int)DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now, 2).IDGestor : 0;
+                IDCondutor = DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now.Date, 2) != null ? (int)DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now.Date, 2).IDGestor : 0;
                 if (IDCondutor > 0) viatura.Condutor = DBViaturas2GestoresGestor.GetByID(IDCondutor) != null ? DBViaturas2GestoresGestor.GetByID(IDCondutor).Gestor : "";
 
                 viatura.DataProximaInspecaoTexto = DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula) != null ? DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula).ProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
@@ -391,14 +391,14 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (viatura.Data1Matricula.HasValue && viatura.NoAnosGarantia.HasValue)
                     {
-                        if (Convert.ToDateTime(viatura.Data1Matricula).AddYears((int)viatura.NoAnosGarantia) > DateTime.Now)
+                        if (Convert.ToDateTime(viatura.Data1Matricula).AddYears((int)viatura.NoAnosGarantia) >= DateTime.Now.Date)
                             viatura.GarantiaSituacao = "Com garantia";
                         else
                             viatura.GarantiaSituacao = "Sem garantia";
                     }
                 }
 
-                Viaturas2CartaVerde seguro = DBViaturas2CartaVerde.GetByMatriculaAndData(data.Matricula, DateTime.Now);
+                Viaturas2CartaVerde seguro = DBViaturas2CartaVerde.GetByMatriculaAndData(data.Matricula, DateTime.Now.Date);
                 if (seguro != null)
                 {
                     viatura.SeguroSituacao = "Com seguro";
@@ -414,9 +414,14 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (viatura.DataMatricula.HasValue)
                 {
-                    if (Convert.ToDateTime(viatura.DataMatricula).AddDays(-30) <= DateTime.Now && Convert.ToDateTime(viatura.DataMatricula) >= DateTime.Now)
+                    if (Convert.ToDateTime(viatura.DataMatricula).AddDays(-30) <= DateTime.Now.Date && Convert.ToDateTime(viatura.DataMatricula) >= DateTime.Now.Date)
                         viatura.IUCate = viatura.DataMatricula.Value.ToString("yyyy-MM-dd");
                 }
+
+                Viaturas2Afetacao LastAfetacao = DBViaturas2Afetacao.GetByMatriculaRecent(data.Matricula);
+                if (LastAfetacao != null && LastAfetacao.IDAreaReal.HasValue && LastAfetacao.DataInicio.HasValue)
+                    if (Convert.ToDateTime(LastAfetacao.DataInicio) <= DateTime.Now.Date && (LastAfetacao.DataFim.HasValue ? Convert.ToDateTime(LastAfetacao.DataFim) : DateTime.Now.Date) >= DateTime.Now.Date)
+                        viatura.Afetacao = DBViaturas2AfetacaoAreaReal.GetByID((int)LastAfetacao.IDAreaReal).AreaReal;
             }
             return Json(viatura);
         }
@@ -462,7 +467,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetViaturas2TabCartaVerde([FromBody] Viaturas2InspecoesViewModel viatura)
+        public JsonResult GetViaturas2TabCartaVerde([FromBody] Viaturas2CartaVerdeViewModel viatura)
         {
             List<Viaturas2CartaVerdeViewModel> TabCartaVerde = new List<Viaturas2CartaVerdeViewModel>();
             if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
@@ -477,6 +482,24 @@ namespace Hydra.Such.Portal.Controllers
                 });
             }
             return Json(TabCartaVerde.OrderByDescending(x => x.DataInicio));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabViaVerde([FromBody] Viaturas2ViaVerdeViewModel viatura)
+        {
+            List<Viaturas2ViaVerdeViewModel> TabViaVerde = new List<Viaturas2ViaVerdeViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabViaVerde = DBViaturas2ViaVerde.ParseListToViewModel(DBViaturas2ViaVerde.GetByMatricula(viatura.Matricula));
+
+                List<ConfiguracaoTabelas> AllEmpresas = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_VIAVERDE_EMPRESA");
+
+                TabViaVerde.ForEach(x =>
+                {
+                    if (x.IDEmpresa != null && x.IDEmpresa > 0) x.Empresa = AllEmpresas.Where(y => y.ID == x.IDEmpresa).FirstOrDefault().Descricao;
+                });
+            }
+            return Json(TabViaVerde.OrderByDescending(x => x.Data));
         }
 
         [HttpPost]
@@ -520,6 +543,25 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2TabAfetacao([FromBody] Viaturas2AfetacaoViewModel viatura)
+        {
+            List<Viaturas2AfetacaoViewModel> TabAfetacao = new List<Viaturas2AfetacaoViewModel>();
+
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabAfetacao = DBViaturas2Afetacao.ParseListToViewModel(DBViaturas2Afetacao.GetByMatricula(viatura.Matricula));
+
+                List<Viaturas2AfetacaoAreaReal> AllAreasReais = DBViaturas2AfetacaoAreaReal.GetAll();
+
+                TabAfetacao.ForEach(x =>
+                {
+                    if (x.IDAreaReal != null && x.IDAreaReal > 0) x.AreaReal = AllAreasReais.Where(y => y.ID == x.IDAreaReal).FirstOrDefault().AreaReal;
+                });
+            }
+            return Json(TabAfetacao.OrderByDescending(x => x.DataInicio));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2TabCondutor([FromBody] Viaturas2InspecoesViewModel viatura)
         {
             List<Viaturas2GestoresViewModel> TabGestores = new List<Viaturas2GestoresViewModel>();
@@ -553,6 +595,42 @@ namespace Hydra.Such.Portal.Controllers
                 });
             }
             return Json(TabGestores.OrderByDescending(x => x.DataInicio));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabCartaoCombustivel([FromBody] Viaturas2CartaoCombustivelViewModel viatura)
+        {
+            List<Viaturas2CartaoCombustivelViewModel> TabCartaoCombustivel = new List<Viaturas2CartaoCombustivelViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabCartaoCombustivel = DBViaturas2CartaoCombustivel.ParseListToViewModel(DBViaturas2CartaoCombustivel.GetByMatricula(viatura.Matricula));
+
+                List<ConfiguracaoTabelas> AllEmpresas = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CARTAOCOMBUSTIVEL_EMPRESA");
+
+                TabCartaoCombustivel.ForEach(x =>
+                {
+                    if (x.IDEmpresa != null && x.IDEmpresa > 0) x.Empresa = AllEmpresas.Where(y => y.ID == x.IDEmpresa).FirstOrDefault().Descricao;
+                });
+            }
+            return Json(TabCartaoCombustivel.OrderByDescending(x => x.DataInicio));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabCarTrack([FromBody] Viaturas2CarTrackViewModel viatura)
+        {
+            List<Viaturas2CarTrackViewModel> TabCarTrack = new List<Viaturas2CarTrackViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabCarTrack = DBViaturas2CarTrack.ParseListToViewModel(DBViaturas2CarTrack.GetByMatricula(viatura.Matricula));
+
+                List<ConfiguracaoTabelas> AllEmpresas = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CARTRACK_EMPRESA");
+
+                TabCarTrack.ForEach(x =>
+                {
+                    if (x.IDEmpresa != null && x.IDEmpresa > 0) x.Empresa = AllEmpresas.Where(y => y.ID == x.IDEmpresa).FirstOrDefault().Descricao;
+                });
+            }
+            return Json(TabCarTrack.OrderByDescending(x => x.DataInicio));
         }
 
         [HttpPost]
@@ -1047,6 +1125,158 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateViaturas2Afetacao([FromBody] Viaturas2AfetacaoViewModel Afetacao)
+        {
+            try
+            {
+                if (Afetacao != null && !string.IsNullOrEmpty(Afetacao.Matricula))
+                {
+                    Viaturas2Afetacao AfetacaoToCreate = new Viaturas2Afetacao();
+
+                    AfetacaoToCreate = DBViaturas2Afetacao.ParseToDB(Afetacao);
+                    AfetacaoToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Afetacao.Create(AfetacaoToCreate) != null)
+                    {
+                        Afetacao.eReasonCode = 1;
+                        Afetacao.eMessage = "Linha Afetação criada com sucesso.";
+                    }
+                    else
+                    {
+                        Afetacao.eReasonCode = 3;
+                        Afetacao.eMessage = "Ocorreu um erro ao criar a Linha Afetação no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    Afetacao.eReasonCode = 3;
+                    Afetacao.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Afetacao.eReasonCode = 4;
+                Afetacao.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Afetacao);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2CartaoCombustivel([FromBody] Viaturas2CartaoCombustivelViewModel CartaoCombustivel)
+        {
+            try
+            {
+                if (CartaoCombustivel != null && !string.IsNullOrEmpty(CartaoCombustivel.Matricula))
+                {
+                    Viaturas2CartaoCombustivel CartaoCombustivelToCreate = new Viaturas2CartaoCombustivel();
+
+                    CartaoCombustivelToCreate = DBViaturas2CartaoCombustivel.ParseToDB(CartaoCombustivel);
+                    CartaoCombustivelToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2CartaoCombustivel.Create(CartaoCombustivelToCreate) != null)
+                    {
+                        CartaoCombustivel.eReasonCode = 1;
+                        CartaoCombustivel.eMessage = "Linha Cartão de Combústivel criada com sucesso.";
+                    }
+                    else
+                    {
+                        CartaoCombustivel.eReasonCode = 3;
+                        CartaoCombustivel.eMessage = "Ocorreu um erro ao criar a Linha Cartão de Combústivel no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    CartaoCombustivel.eReasonCode = 3;
+                    CartaoCombustivel.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                CartaoCombustivel.eReasonCode = 4;
+                CartaoCombustivel.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(CartaoCombustivel);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2CarTrack([FromBody] Viaturas2CarTrackViewModel CarTrack)
+        {
+            try
+            {
+                if (CarTrack != null && !string.IsNullOrEmpty(CarTrack.Matricula))
+                {
+                    Viaturas2CarTrack CarTrackToCreate = new Viaturas2CarTrack();
+
+                    CarTrackToCreate = DBViaturas2CarTrack.ParseToDB(CarTrack);
+                    CarTrackToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2CarTrack.Create(CarTrackToCreate) != null)
+                    {
+                        CarTrack.eReasonCode = 1;
+                        CarTrack.eMessage = "Linha CarTrack criada com sucesso.";
+                    }
+                    else
+                    {
+                        CarTrack.eReasonCode = 3;
+                        CarTrack.eMessage = "Ocorreu um erro ao criar a Linha CarTrack no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    CarTrack.eReasonCode = 3;
+                    CarTrack.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                CarTrack.eReasonCode = 4;
+                CarTrack.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(CarTrack);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2ViaVerde([FromBody] Viaturas2ViaVerdeViewModel ViaVerde)
+        {
+            try
+            {
+                if (ViaVerde != null && !string.IsNullOrEmpty(ViaVerde.Matricula))
+                {
+                    Viaturas2ViaVerde ViaVerdeToCreate = new Viaturas2ViaVerde();
+
+                    ViaVerdeToCreate = DBViaturas2ViaVerde.ParseToDB(ViaVerde);
+                    ViaVerdeToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2ViaVerde.Create(ViaVerdeToCreate) != null)
+                    {
+                        ViaVerde.eReasonCode = 1;
+                        ViaVerde.eMessage = "Linha Via Verde criada com sucesso.";
+                    }
+                    else
+                    {
+                        ViaVerde.eReasonCode = 3;
+                        ViaVerde.eMessage = "Ocorreu um erro ao criar a Linha Via Verde no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    ViaVerde.eReasonCode = 3;
+                    ViaVerde.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                ViaVerde.eReasonCode = 4;
+                ViaVerde.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(ViaVerde);
+        }
+
+        [HttpPost]
         public JsonResult CreateViaturas2Acidentes([FromBody] Viaturas2AcidentesViewModel Acidentes)
         {
             try
@@ -1387,6 +1617,186 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(CartaVerde);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Afetacao([FromBody] Viaturas2AfetacaoViewModel Afetacao)
+        {
+            try
+            {
+                if (Afetacao != null && Afetacao.ID > 0 && !string.IsNullOrEmpty(Afetacao.Matricula))
+                {
+                    Viaturas2Afetacao AfetacaoToDelete = new Viaturas2Afetacao();
+
+                    AfetacaoToDelete = DBViaturas2Afetacao.GetByID(Afetacao.ID);
+
+                    if (AfetacaoToDelete != null)
+                    {
+                        if (DBViaturas2Afetacao.Delete(AfetacaoToDelete) == true)
+                        {
+                            Afetacao.eReasonCode = 1;
+                            Afetacao.eMessage = "Linha Afetação Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            Afetacao.eReasonCode = 3;
+                            Afetacao.eMessage = "Ocorreu um erro ao Eliminar a linha Afetação no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Afetacao.eReasonCode = 3;
+                        Afetacao.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Afetação.";
+                    }
+                }
+                else
+                {
+                    Afetacao.eReasonCode = 3;
+                    Afetacao.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Afetacao.eReasonCode = 4;
+                Afetacao.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Afetacao);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2CartaoCombustivel([FromBody] Viaturas2CartaoCombustivelViewModel CartaoCombustivel)
+        {
+            try
+            {
+                if (CartaoCombustivel != null && CartaoCombustivel.ID > 0 && !string.IsNullOrEmpty(CartaoCombustivel.Matricula))
+                {
+                    Viaturas2CartaoCombustivel CartaoCombustivelToDelete = new Viaturas2CartaoCombustivel();
+
+                    CartaoCombustivelToDelete = DBViaturas2CartaoCombustivel.GetByID(CartaoCombustivel.ID);
+
+                    if (CartaoCombustivelToDelete != null)
+                    {
+                        if (DBViaturas2CartaoCombustivel.Delete(CartaoCombustivelToDelete) == true)
+                        {
+                            CartaoCombustivel.eReasonCode = 1;
+                            CartaoCombustivel.eMessage = "Linha Cartão Combústivel Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            CartaoCombustivel.eReasonCode = 3;
+                            CartaoCombustivel.eMessage = "Ocorreu um erro ao Eliminar a linha Cartão Combústivel no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        CartaoCombustivel.eReasonCode = 3;
+                        CartaoCombustivel.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Cartão Combústivel.";
+                    }
+                }
+                else
+                {
+                    CartaoCombustivel.eReasonCode = 3;
+                    CartaoCombustivel.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                CartaoCombustivel.eReasonCode = 4;
+                CartaoCombustivel.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(CartaoCombustivel);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2CarTrack([FromBody] Viaturas2CarTrackViewModel CarTrack)
+        {
+            try
+            {
+                if (CarTrack != null && CarTrack.ID > 0 && !string.IsNullOrEmpty(CarTrack.Matricula))
+                {
+                    Viaturas2CarTrack CarTrackToDelete = new Viaturas2CarTrack();
+
+                    CarTrackToDelete = DBViaturas2CarTrack.GetByID(CarTrack.ID);
+
+                    if (CarTrackToDelete != null)
+                    {
+                        if (DBViaturas2CarTrack.Delete(CarTrackToDelete) == true)
+                        {
+                            CarTrack.eReasonCode = 1;
+                            CarTrack.eMessage = "Linha Car Track Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            CarTrack.eReasonCode = 3;
+                            CarTrack.eMessage = "Ocorreu um erro ao Eliminar a linha Car Track no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        CarTrack.eReasonCode = 3;
+                        CarTrack.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Car Track.";
+                    }
+                }
+                else
+                {
+                    CarTrack.eReasonCode = 3;
+                    CarTrack.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                CarTrack.eReasonCode = 4;
+                CarTrack.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(CarTrack);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2ViaVerde([FromBody] Viaturas2ViaVerdeViewModel ViaVerde)
+        {
+            try
+            {
+                if (ViaVerde != null && ViaVerde.ID > 0 && !string.IsNullOrEmpty(ViaVerde.Matricula))
+                {
+                    Viaturas2ViaVerde ViaVerdeToDelete = new Viaturas2ViaVerde();
+
+                    ViaVerdeToDelete = DBViaturas2ViaVerde.GetByID(ViaVerde.ID);
+
+                    if (ViaVerdeToDelete != null)
+                    {
+                        if (DBViaturas2ViaVerde.Delete(ViaVerdeToDelete) == true)
+                        {
+                            ViaVerde.eReasonCode = 1;
+                            ViaVerde.eMessage = "Linha Via Verde Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            ViaVerde.eReasonCode = 3;
+                            ViaVerde.eMessage = "Ocorreu um erro ao Eliminar a linha Via Verde no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        ViaVerde.eReasonCode = 3;
+                        ViaVerde.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Via Verde.";
+                    }
+                }
+                else
+                {
+                    ViaVerde.eReasonCode = 3;
+                    ViaVerde.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                ViaVerde.eReasonCode = 4;
+                ViaVerde.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(ViaVerde);
         }
 
         [HttpPost]

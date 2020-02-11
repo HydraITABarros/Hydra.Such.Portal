@@ -2251,6 +2251,74 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2ListaCartaoCombustivelEmpresas()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CARTAOCOMBUSTIVEL_EMPRESA");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaCarTrackEmpresas()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CARTRACK_EMPRESA");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaViaVerdeEmpresas()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_VIAVERDE_EMPRESA");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaAfetacaoAreaReal()
+        {
+            List<Viaturas2AfetacaoAreaReal> AllAreasReais = DBViaturas2AfetacaoAreaReal.GetAll();
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllAreasReais != null && AllAreasReais.Count > 0)
+            {
+                result = AllAreasReais.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.AreaReal
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2Centros([FromBody] string areaCode)
         {
             List<NAVDimValueViewModel> AllCentros = new List<NAVDimValueViewModel>();

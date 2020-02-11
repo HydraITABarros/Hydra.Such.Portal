@@ -3995,11 +3995,13 @@ namespace Hydra.Such.Portal.Controllers
         {
             string contractId = requestParams["contractId"].ToString();
             int version = int.Parse(requestParams["versionNo"].ToString());
-            string percentage = requestParams["percentageToApllyInLines"].ToString();
+            string percentage = requestParams["percentageToApllyInLines"].ToString().Replace(".", ",");
             decimal percentageToApllyInLines = decimal.MinValue;
 
             if (!string.IsNullOrEmpty(percentage))
-                decimal.TryParse(requestParams["percentageToApllyInLines"].ToString(), out percentageToApllyInLines);
+            {
+                decimal.TryParse(percentage, out percentageToApllyInLines);
+            }
 
             ErrorHandler result = new ErrorHandler();
             try

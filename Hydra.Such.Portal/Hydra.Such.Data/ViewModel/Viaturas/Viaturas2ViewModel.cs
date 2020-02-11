@@ -92,6 +92,7 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string DataFimSeguro { get; set; }
         public string UltimaInspecao { get; set; }
         public string IUCate { get; set; }
+        public string Afetacao { get; set; }
 
 
         //EXPORTAR PARA EXCEL
