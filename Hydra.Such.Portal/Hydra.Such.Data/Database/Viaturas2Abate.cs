@@ -2,16 +2,17 @@
 
 namespace Hydra.Such.Data.Database
 {
-    public partial class Viaturas2Inspecoes
+    public partial class Viaturas2Abate
     {
         public int ID { get; set; }
         public string Matricula { get; set; }
 
-        public DateTime? DataInspecao { get; set; }
-        public Decimal? KmInspecao { get; set; }
-        public int? IDResultado { get; set; }
-        public DateTime? ProximaInspecao { get; set; }
-        public string Observacao { get; set; }
+        public int? IDTipoAtoAdministrativo { get; set; }
+        public string NoRegisto { get; set; }
+        public int? IDDescricaoAto { get; set; }
+        public string Fundamentacao { get; set; }
+        public string Autor { get; set; }
+        public DateTime? Data { get; set; }
 
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }

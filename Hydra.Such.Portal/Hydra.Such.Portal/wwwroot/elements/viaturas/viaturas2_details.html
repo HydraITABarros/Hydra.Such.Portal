@@ -173,6 +173,10 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCarTrackEmpresas" last-response="{{ListaCarTrackEmpresas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaViaVerdeEmpresas" last-response="{{ListaViaVerdeEmpresas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaAfetacaoAreaReal" last-response="{{ListaAfetacaoAreaReal}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaTipoAtoAdministrativo" last-response="{{ListaTipoAtoAdministrativo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaDescricaoAto" last-response="{{ListaDescricaoAto}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaAbastecimentosCombustiveis" last-response="{{ListaAbastecimentosCombustiveis}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{ListaRegioes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectNavList" last-response="{{ListaProjetos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -524,6 +528,60 @@
                    handle-as="json"
                    id="page_DeleteViaturas2CarTrack_ajax"
                    on-response="_responseDeleteViaturas2CarTrack"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--Abastecimentos-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabAbastecimentos"
+                   last-response="{{tabAbastecimentos}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabAbastecimentos_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Abastecimentos"
+                   last-response="{{createViaturas2AbastecimentosResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Abastecimentos_ajax"
+                   on-response="_responseCreateViaturas2Abastecimentos"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Abastecimentos"
+                   last-response="{{deleteViaturas2AbastecimentosResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Abastecimentos_ajax"
+                   on-response="_responseDeleteViaturas2Abastecimentos"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--Abate-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabAbate"
+                   last-response="{{tabAbate}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabAbate_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Abate"
+                   last-response="{{createViaturas2AbateResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Abate_ajax"
+                   on-response="_responseCreateViaturas2Abate"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Abate"
+                   last-response="{{deleteViaturas2AbateResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Abate_ajax"
+                   on-response="_responseDeleteViaturas2Abate"
                    content-type="application/json">
         </iron-ajax>
 
@@ -1149,6 +1207,226 @@
                                     </div>
                                 </paper-collapse-item>
 
+                                <!--Abastecimentos-->
+                                <paper-collapse-item class="panel-heading" header="Abastecimentos" closed>
+                                    <vaadin-grid id="gridAbastecimentos" aria-label="gridAbastecimentos" items="{{ tabAbastecimentos }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataTexto">Data</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataTexto" />
+                                            </template>
+                                            <template>
+                                                {{item.dataTexto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kms">Kms</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kms" />
+                                            </template>
+                                            <template>
+                                                {{item.kms}} km
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="litros">Litros</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="litros" />
+                                            </template>
+                                            <template>
+                                                {{item.litros}} l
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoUnitario">Preço Unitário</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoUnitario" />
+                                            </template>
+                                            <template>
+                                                {{item.precoUnitario}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="precoTotal">Preço Total</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="precoTotal" />
+                                            </template>
+                                            <template>
+                                                {{item.precoTotal}} €
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="combustivel">Combústivel</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="combustivel" />
+                                            </template>
+                                            <template>
+                                                {{item.combustivel}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="empresa">Empresa</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="empresa" />
+                                            </template>
+                                            <template>
+                                                {{item.empresa}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="cartao">Nº Cartão</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="cartao" />
+                                            </template>
+                                            <template>
+                                                {{item.cartao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="local">Local</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="local" />
+                                            </template>
+                                            <template>
+                                                {{item.local}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="condutor">Condutor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="condutor" />
+                                            </template>
+                                            <template>
+                                                {{item.condutor}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noDocumento">Nº Documento</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noDocumento" />
+                                            </template>
+                                            <template>
+                                                {{item.noDocumento}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoes" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoes}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteAbastecimentos" class="btnRemove tableBtn" raised on-tap="_deleteAbastecimentos" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="abastecimentos_data" name="abastecimentos_data" label="Data" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1">
+                                                    <vaadin-text-field id="abastecimentos_kms" name="abastecimentos_Kms" label="Kms" value="" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1">
+                                                    <vaadin-text-field id="abastecimentos_litros" name="abastecimentos_litros" label="Litros" value="" disabled="{{ _lockFields }}" class="alignRight" on-value-changed="_ConvertDecimals" required error-message="O campo Litros é de preenchimento obrigatório"><div slot="suffix">l</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1">
+                                                    <vaadin-text-field id="abastecimentos_precoUnitario" name="abastecimentos_precoUnitario" label="Preço Unitário" value="" disabled="{{ _lockFields }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1">
+                                                    <vaadin-text-field id="abastecimentos_precoTotal" name="abastecimentos_precoTotal" label="Preço Total" value="" disabled="{{ _lockFields }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <such-selectbox id="abastecimentos_idCombustivel" name="abastecimentos_idCombustivel" value="" label="Combústivel"
+                                                                    items="[[ListaAbastecimentosCombustiveis]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Combústivel"}]'
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <such-selectbox id="abastecimentos_idCartao" name="abastecimentos_idCartao" value="" label="Nº Cartão"
+                                                                    items="[[tabCartaoCombustivel]]"
+                                                                    text-path="noCartao"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"noCartao", "name":"Nº Cartão"}, {"field":"empresa", "name":"Empresa"}, {"field":"dataInicioTexto", "name":"Data Início"}, {"field":"dataFimTexto", "name":"Data Fim"}, {"field":"plafon", "name":"Plafon"}]'
+                                                                    disabled="{{ _lockFields }}"
+                                                                    on-value-changed="_updateAbastecimentosIDEmpresa">
+                                                    </such-selectbox>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <such-selectbox id="abastecimentos_idEmpresa" name="abastecimentos_idEmpresa" value="" label="Empresa"
+                                                                    items="[[ListaCartaoCombustivelEmpresas]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Empresa"}]'
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
+                                                </div>
+                                            </div>
+
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="abastecimentos_local" name="abastecimentos_local" label="Local" value="" disabled="{{ _lockFields }}" maxlength="200"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <such-selectbox id="abastecimentos_idCondutor" name="abastecimentos_idCondutor" value="" label="Condutor"
+                                                                    items="[[ListaCondutores]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Condutor"}, {"field":"extra", "name":"Nº Mecanográfico"}, {"field":"extra2", "name":"Mail"}]'
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="abastecimentos_noDocumento" name="abastecimentos_noDocumento" label="Nº Documento" value="" disabled="{{ _lockFields }}" maxlength="200"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                    <vaadin-text-field id="abastecimentos_observacoes" name="abastecimentos_observacoes" label="Observações" value="" disabled="{{ _lockFields }}" maxlength="2000"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btn_createAbastecimentos" class="btnSave" on-tap="_createAbastecimentos" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
+
                                 <!--Manutenção-->
                                 <paper-collapse-item class="panel-heading" header="Manutenção" closed>
                                     <vaadin-grid id="gridManutencao" aria-label="gridManutencao" items="{{ tabManutencao }}" class="grid" multi-sort="true" column-reordering-allowed>
@@ -1322,7 +1600,7 @@
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="inspecao_observacoes" name="inspecao_observacoes" label="Observações" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="inspecao_observacoes" name="inspecao_observacoes" label="Observações" value="" disabled="{{ _lockFields }}" maxlength="200"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-1" style="padding-top:15px">
@@ -1333,8 +1611,8 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <!--Seguro / Carta Verde-->
-                                <paper-collapse-item class="panel-heading" header="Seguro / Carta Verde" closed>
+                                <!--Seguro-->
+                                <paper-collapse-item class="panel-heading" header="Seguro" closed>
                                     <vaadin-grid id="gridCartaVerde" aria-label="gridCartaVerde" items="{{ tabCartaVerde }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
                                             <template class="header">
@@ -1435,7 +1713,7 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <!--Cartão Combustivel-->
+                                <!--Cartão Combústivel-->
                                 <paper-collapse-item class="panel-heading" header="Cartão Combústivel" closed>
                                     <vaadin-grid id="gridCartaoCombustivel" aria-label="gridCartaoCombustivel" items="{{ tabCartaoCombustivel }}" class="grid" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable>
@@ -1857,7 +2135,7 @@
                                                 <vaadin-grid-filter path="valor" />
                                             </template>
                                             <template>
-                                                {{item.valor}}
+                                                {{item.valor}} €
                                             </template>
                                         </vaadin-grid-column>
 
@@ -1917,7 +2195,7 @@
 
                                             <div class="row break_clear">
                                                 <div class="col-md-2">
-                                                    <vaadin-text-field id="contraordenacoes_valor" name="contraordenacoes_valor" label="Valor" value="" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
+                                                    <vaadin-text-field id="contraordenacoes_valor" name="contraordenacoes_valor" label="Valor" value="" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-9">
@@ -2001,7 +2279,7 @@
                                                 </div>
 
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="afetacao_localExato" name="afetacao_localExato" label="Local Exato" value="" disabled="{{ _lockFields }}" required error-message="O campo Local Exato é de preenchimento obrigatório"></vaadin-text-field>
+                                                    <vaadin-text-field id="afetacao_localExato" name="afetacao_localExato" label="Local Exato" value="" disabled="{{ _lockFields }}" maxlength="200" required error-message="O campo Local Exato é de preenchimento obrigatório"></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-2">
@@ -2168,300 +2446,127 @@
                                     </div>
                                 </paper-collapse-item>
 
-                                <!--Abastecimentos-->
-                                <paper-collapse-item class="panel-heading" header="Abastecimentos" closed>
+                                <!--Venda / Abate-->
+                                <paper-collapse-item class="panel-heading" header="Venda / Abate" closed>
+                                    <vaadin-grid id="gridAbate" aria-label="gridAbate" items="{{ tabAbate }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="tipoAtoAdministrativo">Tipo de ato administrativo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="tipoAtoAdministrativo" />
+                                            </template>
+                                            <template>
+                                                {{item.tipoAtoAdministrativo}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="noRegisto">Nº de Registo</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="noRegisto" />
+                                            </template>
+                                            <template>
+                                                {{item.noRegisto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="descricaoAto">Descrição do Ato</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="descricaoAto" />
+                                            </template>
+                                            <template>
+                                                {{item.descricaoAto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="fundamentacao">Fundamentação</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="fundamentacao" />
+                                            </template>
+                                            <template>
+                                                {{item.fundamentacao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="autor">Autor</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="autor" />
+                                            </template>
+                                            <template>
+                                                {{item.autor}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataTexto">Data</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataTexto" />
+                                            </template>
+                                            <template>
+                                                {{item.dataTexto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable>
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteAbate" class="btnRemove tableBtn" raised on-tap="_deleteAbate" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
                                     <div style="padding-left:50px">
-                                        <!--Abastecimentos SUCH-->
-                                        <paper-collapse-item class="panel-heading" header="Abastecimentos SUCH" closed>
-                                            <vaadin-grid id="gridAbastecimentosSUCH" aria-label="gridAbastecimentosSUCH" items="" class="grid" multi-sort="true" column-reordering-allowed>
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="localDeAbastecimento">Local de Abastecimento</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="localDeAbastecimento" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.localDeAbastecimento}}
-                                                    </template>
-                                                </vaadin-grid-column>
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <such-selectbox id="abate_idTipoAtoAdministrativo" name="abate_idTipoAtoAdministrativo" value="" label="Tipo de ato administrativo"
+                                                                    items="[[ListaTipoAtoAdministrativo]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Tipo de Ato Administrativo"}]'
+                                                                    required error-message="O campo Tipo de Ato Administrativo é de preenchimento obrigatório"
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
+                                                </div>
 
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="data" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.data}}
-                                                    </template>
-                                                </vaadin-grid-column>
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="abate_noRegisto" name="abate_noRegisto" label="Nº de Registo" value="" disabled="{{ _lockFields }}" maxlength="200"></vaadin-text-field>
+                                                </div>
 
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="hora">Hora</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="hora" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.hora}}
-                                                    </template>
-                                                </vaadin-grid-column>
+                                                <div class="col-md-2">
+                                                    <such-selectbox id="abate_idDescricaoAto" name="abate_idDescricaoAto" value="" label="Descrição do Ato"
+                                                                    items="[[ListaDescricaoAto]]"
+                                                                    text-path="value"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"value", "name":"Descrição do Ato"}]'
+                                                                    required error-message="O campo Descrição do Ato é de preenchimento obrigatório"
+                                                                    disabled="{{ _lockFields }}">
+                                                    </such-selectbox>
+                                                </div>
 
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="noCartao">Nº Cartão</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="noCartao" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.noCartao}}
-                                                    </template>
-                                                </vaadin-grid-column>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="abate_fundamentacao" name="abate_fundamentacao" label="Fundamentação" value="" disabled="{{ _lockFields }}" maxlength="200"></vaadin-text-field>
+                                                </div>
 
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="combustivel">Combustível</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="combustivel" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.combustivel}}
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="km">Km</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="km" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.km}} km
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="litros">Litros</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="litros" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.litros}} l
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="condutor">Condutor</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="condutor" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.condutor}}
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="observacoes" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.observacoes}}
-                                                    </template>
-                                                </vaadin-grid-column>
-                                            </vaadin-grid>
-
-                                            <div style="padding-left:50px">
-                                                <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
-                                                    <div class="row break_clear">
-                                                        <div class="col-md-2">
-                                                            <vaadin-text-field id="localDeAbastecimento" name="localDeAbastecimento" label="Local de Abastecimento" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
-                                                        </div>
-
-                                                        <div class="col-md-2">
-                                                            <vaadin-date-picker id="data" name="data" label="Data" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                                        </div>
-
-                                                        <div class="col-md-2">
-                                                            <vaadin-text-field id="hora" name="hora" label="Hora" value="" disabled="{{ _lockFields }}" placeholder="hh:mm"></vaadin-text-field>
-                                                        </div>
-
-                                                        <div class="col-md-2">
-                                                            <vaadin-text-field id="noCartao" name="noCartao" label="Nº Cartão" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
-                                                        </div>
-
-                                                        <div class="col-md-2">
-                                                            <vaadin-text-field id="combustivel" name="combustivel" label="Combustível" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
-                                                        </div>
-
-                                                        <div class="col-md-2">
-                                                            <vaadin-text-field id="km" name="km" label="Km" value="" disabled="{{ _lockFields }}"><div slot="suffix">km</div></vaadin-text-field>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row break_clear">
-                                                        <div class="col-md-2">
-                                                            <vaadin-text-field id="litros" name="litros" label="Litros" value="" disabled="{{ _lockFields }}"><div slot="suffix">l</div></vaadin-text-field>
-                                                        </div>
-
-                                                        <div class="col-md-2">
-                                                            <vaadin-text-field id="condutor" name="condutor" label="Condutor" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
-                                                        </div>
-
-                                                        <div class="col-md-2">
-                                                            <vaadin-text-field id="observacoes" name="observacoes" label="Observações" value="" disabled="{{ _lockFields }}"></vaadin-text-field>
-                                                        </div>
-
-                                                        <div class="col-md-2" style="padding-top:15px">
-                                                            <paper-button raised id="btnAbastecimentosSUCH" class="btnSave" on-tap="_createAbastecimentosSUCH" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                                        </div>
-                                                    </div>
-                                                </paper-collapse-item>
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="abate_autor" name="abate_autor" label="Autor" value="" disabled="{{ _lockFields }}" maxlength="200"></vaadin-text-field>
+                                                </div>
                                             </div>
-                                        </paper-collapse-item>
 
-                                        <!--Abastecimentos GALP (Apenas Consulta)-->
-                                        <paper-collapse-item class="panel-heading" header="Abastecimentos GALP (Apenas Consulta)" closed>
-                                            <vaadin-grid id="gridAbastecimentosGALP" aria-label="gridAbastecimentosGALP" items="" class="grid" multi-sort="true" column-reordering-allowed>
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="noCartao">Nº Cartão</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="noCartao" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.noCartao}}
-                                                    </template>
-                                                </vaadin-grid-column>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="abate_data" name="abate_data" label="Data" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Data é de preenchimento obrigatório"></vaadin-date-picker>
+                                                </div>
 
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="kmsActuais">Kms Actuais</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="kmsActuais" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.kmsActuais}} km
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="kmsRegistadosConsumo">Kms Registados Consumo</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="kmsRegistadosConsumo" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.kmsRegistadosConsumo}} km
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="diferencaKmsAbastAnterior">Diferença Kms Abast Anterior</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="diferencaKmsAbastAnterior" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.diferencaKmsAbastAnterior}} km
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="dataTransacao">Data Transação</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="dataTransacao" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.dataTransacao}}
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="horaTransação">Hora Transação</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="horaTransação" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.horaTransação}}
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="consumoMedio">Consumo Médio</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="consumoMedio" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.consumoMedio}} l/100
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="litrosAbastecidos">Litros Abastecidos</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="litrosAbastecidos" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.litrosAbastecidos}} l
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="valorLiquidoTotalComIVA">Valor Liq Total c/ IVA</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="valorLiquidoTotalComIVA" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.valorLiquidoTotalComIVA}} €
-                                                    </template>
-                                                </vaadin-grid-column>
-                                            </vaadin-grid>
-                                        </paper-collapse-item>
-
-                                        <!--União Abastecimentos SUCH e GALP (Apenas Consulta)-->
-                                        <paper-collapse-item class="panel-heading" header="União Abastecimentos SUCH e GALP (Apenas Consulta)" closed>
-                                            <vaadin-grid id="gridUniaoAbastecimentosSUCHeGALP" aria-label="gridUniaoAbastecimentosSUCHeGALP" items="" class="grid" multi-sort="true" column-reordering-allowed>
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="noCartao">Nº Cartão</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="noCartao" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.noCartao}}
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="data" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.data}}
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="hora">Hora</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="hora" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.hora}}
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="combustivel">Combustível</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="combustivel" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.combustivel}}
-                                                    </template>
-                                                </vaadin-grid-column>
-
-                                                <vaadin-grid-column resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="litros">Litros</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="litros" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.litros}} l
-                                                    </template>
-                                                </vaadin-grid-column>
-                                            </vaadin-grid>
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btn_createAbate" class="btnSave" on-tap="_createAbate" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
                                         </paper-collapse-item>
                                     </div>
                                 </paper-collapse-item>
@@ -2565,71 +2670,6 @@
                                             </div>
                                         </paper-collapse-item>
                                     </div>
-                                </paper-collapse-item>
-
-                                <!--Abate (Apenas Consulta)-->
-                                <paper-collapse-item class="panel-heading" header="Abate (Apenas Consulta)" closed>
-                                    <vaadin-grid id="gridAbate" aria-label="gridAbate" items="" class="grid" multi-sort="true" column-reordering-allowed>
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="tipoDeAtoAdministrativo">Tipo de Ato Administrativo</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="tipoDeAtoAdministrativo" />
-                                            </template>
-                                            <template>
-                                                {{item.tipoDeAtoAdministrativo}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="noDeRegisto">Nº de Registo</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="noDeRegisto" />
-                                            </template>
-                                            <template>
-                                                {{item.noDeRegisto}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="descricaoDoAto">Descrição do Ato</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="descricaoDoAto" />
-                                            </template>
-                                            <template>
-                                                {{item.descricaoDoAto}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="fundamentacao">Fundamentação</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="fundamentacao" />
-                                            </template>
-                                            <template>
-                                                {{item.fundamentacao}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="autor">Autor</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="autor" />
-                                            </template>
-                                            <template>
-                                                {{item.autor}}
-                                            </template>
-                                        </vaadin-grid-column>
-
-                                        <vaadin-grid-column resizable>
-                                            <template class="header">
-                                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="data" />
-                                            </template>
-                                            <template>
-                                                {{item.data}}
-                                            </template>
-                                        </vaadin-grid-column>
-                                    </vaadin-grid>
                                 </paper-collapse-item>
                             </div>
 
@@ -3438,9 +3478,25 @@
                     this.$.page_tabCartaVerde_ajax.generateRequest();
                     this.$.gridCartaVerde.clearCache();
 
+                    this.$.page_tabCartaoCombustivel_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabCartaoCombustivel_ajax.generateRequest();
+                    this.$.gridCartaoCombustivel.clearCache();
+
                     this.$.page_tabViaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabViaVerde_ajax.generateRequest();
                     this.$.gridViaVerde.clearCache();
+
+                    this.$.page_tabCarTrack_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabCarTrack_ajax.generateRequest();
+                    this.$.gridCarTrack.clearCache();
+
+                    this.$.page_tabAbastecimentos_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabAbastecimentos_ajax.generateRequest();
+                    this.$.gridAbastecimentos.clearCache();
+
+                    this.$.page_tabAbate_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabAbate_ajax.generateRequest();
+                    this.$.gridAbate.clearCache();
 
                     this.$.page_tabAcidentes_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabAcidentes_ajax.generateRequest();
@@ -3461,14 +3517,6 @@
                     this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabgestor_ajax.generateRequest();
                     this.$.gridGestores.clearCache();
-
-                    this.$.page_tabCartaoCombustivel_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                    this.$.page_tabCartaoCombustivel_ajax.generateRequest();
-                    this.$.gridCartaoCombustivel.clearCache();
-
-                    this.$.page_tabCarTrack_ajax.body = JSON.stringify({ "matricula": this._matricula });
-                    this.$.page_tabCarTrack_ajax.generateRequest();
-                    this.$.gridCarTrack.clearCache();
 
                     this.$.page_tabestado_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabestado_ajax.generateRequest();
@@ -3796,6 +3844,10 @@
                 _ConvertDecimals: function (e) {
                     var stringVal = "" + e.target.value;
                     e.target.value = stringVal.replace(",", ".");
+
+                    if (this.$.abastecimentos_litros.value != "" && this.$.abastecimentos_precoUnitario.value != "") {
+                        this.$.abastecimentos_precoTotal.value = (parseFloat(this.$.abastecimentos_litros.value) * parseFloat(this.$.abastecimentos_precoUnitario.value)).toFixed(2);
+                    }
                 },
 
                 _viewMenuItemSelected: function (e) {
@@ -3865,6 +3917,9 @@
                         this.$.page_tabKm_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabKm_ajax.generateRequest();
                         this.$.gridKm.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2KmResult.eMessage);
                     }
@@ -3924,6 +3979,9 @@
                         this.$.page_tabManutencao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabManutencao_ajax.generateRequest();
                         this.$.gridManutencao.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2ManutencaoResult.eMessage);
                     }
@@ -3986,6 +4044,9 @@
                         this.$.page_tabInspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabInspecao_ajax.generateRequest();
                         this.$.gridInspecao.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2InspecaoResult.eMessage);
                     }
@@ -4053,6 +4114,9 @@
                         this.$.page_tabCartaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabCartaVerde_ajax.generateRequest();
                         this.$.gridCartaVerde.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2CartaVerdeResult.eMessage);
                     }
@@ -4120,6 +4184,9 @@
                         this.$.page_tabCartaoCombustivel_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabCartaoCombustivel_ajax.generateRequest();
                         this.$.gridCartaoCombustivel.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2CartaoCombustivelResult.eMessage);
                     }
@@ -4176,6 +4243,9 @@
                         this.$.page_tabViaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabViaVerde_ajax.generateRequest();
                         this.$.gridViaVerde.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2ViaVerdeResult.eMessage);
                     }
@@ -4234,6 +4304,9 @@
                         this.$.page_tabCarTrack_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabCarTrack_ajax.generateRequest();
                         this.$.gridCarTrack.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2CarTrackResult.eMessage);
                     }
@@ -4299,6 +4372,9 @@
                         this.$.page_tabAfetacao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabAfetacao_ajax.generateRequest();
                         this.$.gridAfetacao.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2AfetacaoResult.eMessage);
                     }
@@ -4357,6 +4433,9 @@
                         this.$.page_tabAcidentes_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabAcidentes_ajax.generateRequest();
                         this.$.gridAcidentes.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2AcidentesResult.eMessage);
                     }
@@ -4417,6 +4496,9 @@
                         this.$.page_tabContraOrdenacoes_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabContraOrdenacoes_ajax.generateRequest();
                         this.$.gridContraOrdenacoes.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2ContraOrdenacoesResult.eMessage);
                     }
@@ -4445,6 +4527,9 @@
                         this.$.page_tabcondutor_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabcondutor_ajax.generateRequest();
                         this.$.gridCondutores.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2CondutorResult.eMessage);
                     }
@@ -4503,6 +4588,9 @@
                         this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabgestor_ajax.generateRequest();
                         this.$.gridGestores.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.createViaturas2GestorResult.eMessage);
                     }
@@ -4537,6 +4625,147 @@
 
                     return true;
                 },
+
+                _validateDataAbastecimentos: function () {
+                    var errors = 0;
+
+                    if (this.$.abastecimentos_data.value == null || this.$.abastecimentos_data.value == "") {
+                        this.$.abastecimentos_data.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.abastecimentos_litros.value == null || this.$.abastecimentos_litros.value == "") {
+                        this.$.abastecimentos_litros.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createAbastecimentos: function () {
+                    if (this._validateDataAbastecimentos()) {
+                        this.$.page_CreateViaturas2Abastecimentos_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+
+                            data: this.$.abastecimentos_data.value,
+                            kms: this.$.abastecimentos_kms.value,
+                            litros: this.$.abastecimentos_litros.value,
+                            precoUnitario: this.$.abastecimentos_precoUnitario.value,
+                            precoTotal: this.$.abastecimentos_precoTotal.value,
+                            idCombustivel: this.$.abastecimentos_idCombustivel.value,
+                            idEmpresa: this.$.abastecimentos_idEmpresa.value,
+                            idCartao: this.$.abastecimentos_idCartao.value,
+                            local: this.$.abastecimentos_local.value,
+                            idCondutor: this.$.abastecimentos_idCondutor.value,
+                            noDocumento: this.$.abastecimentos_noDocumento.value,
+                            observacoes: this.$.abastecimentos_observacoes.value,
+                        });
+                        this.$.page_CreateViaturas2Abastecimentos_ajax.generateRequest();
+                        this.$.gridAbastecimentos.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Abastecimentos: function () {
+                    if (this.createViaturas2AbastecimentosResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2AbastecimentosResult.eMessage);
+
+                        this.$.abastecimentos_data.value = "";
+                        this.$.abastecimentos_kms.value = "";
+                        this.$.abastecimentos_litros.value = "";
+                        this.$.abastecimentos_precoUnitario.value = "";
+                        this.$.abastecimentos_precoTotal.value = "";
+                        this.$.abastecimentos_idCombustivel._clearSelection();
+                        this.$.abastecimentos_idEmpresa._clearSelection();
+                        this.$.abastecimentos_idCartao._clearSelection();
+                        this.$.abastecimentos_local.value = "";
+                        this.$.abastecimentos_idCondutor._clearSelection();
+                        this.$.abastecimentos_noDocumento.value = "";
+                        this.$.abastecimentos_observacoes.value = "";
+
+                        this.$.page_tabAbastecimentos_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabAbastecimentos_ajax.generateRequest();
+                        this.$.gridAbastecimentos.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.createViaturas2AbastecimentosResult.eMessage);
+                    }
+                },
+
+                _validateDataAbate: function () {
+                    var errors = 0;
+
+                    if (this.$.abate_idTipoAtoAdministrativo.value == null || this.$.abate_idTipoAtoAdministrativo.value == "") {
+                        this.$.abate_idTipoAtoAdministrativo.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.abate_idDescricaoAto.value == null || this.$.abate_idDescricaoAto.value == "") {
+                        this.$.abate_idDescricaoAto.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.abate_data.value == null || this.$.abate_data.value == "") {
+                        this.$.abate_data.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createAbate: function () {
+                    if (this._validateDataAbate()) {
+                        this.$.page_CreateViaturas2Abate_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+
+                            idTipoAtoAdministrativo: this.$.abate_idTipoAtoAdministrativo.value,
+                            noRegisto: this.$.abate_noRegisto.value,
+                            idDescricaoAto: this.$.abate_idDescricaoAto.value,
+                            fundamentacao: this.$.abate_fundamentacao.value,
+                            autor: this.$.abate_autor.value,
+                            data: this.$.abate_data.value,
+                        });
+                        this.$.page_CreateViaturas2Abate_ajax.generateRequest();
+                        this.$.gridAbate.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Abate: function () {
+                    if (this.createViaturas2AbateResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2AbateResult.eMessage);
+
+                        this.$.abate_idTipoAtoAdministrativo._clearSelection();
+                        this.$.abate_noRegisto.value = "";
+                        this.$.abate_idDescricaoAto._clearSelection();
+                        this.$.abate_fundamentacao.value = "";
+                        this.$.abate_autor.value = "";
+                        this.$.abate_data.value = "";
+
+                        this.$.page_tabAbate_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabAbate_ajax.generateRequest();
+                        this.$.gridAbate.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.createViaturas2AbateResult.eMessage);
+                    }
+                },
+
+
+
+
+
+
+
+
 
                 _deleteKm: function (e) {
                     if (this._permissions.update == true) {
@@ -4586,6 +4815,9 @@
                         this.$.page_tabKm_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabKm_ajax.generateRequest();
                         this.$.gridKm.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2KmResult.eMessage);
                     }
@@ -4639,6 +4871,9 @@
                         this.$.page_tabManutencao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabManutencao_ajax.generateRequest();
                         this.$.gridManutencao.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2ManutencaoResult.eMessage);
                     }
@@ -4692,6 +4927,9 @@
                         this.$.page_tabInspecao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabInspecao_ajax.generateRequest();
                         this.$.gridInspecao.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2InspecaoResult.eMessage);
                     }
@@ -4745,6 +4983,9 @@
                         this.$.page_tabCartaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabCartaVerde_ajax.generateRequest();
                         this.$.gridCartaVerde.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2CartaVerdeResult.eMessage);
                     }
@@ -4798,6 +5039,9 @@
                         this.$.page_tabCartaoCombustivel_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabCartaoCombustivel_ajax.generateRequest();
                         this.$.gridCartaoCombustivel.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2CartaoCombustivelResult.eMessage);
                     }
@@ -4851,6 +5095,9 @@
                         this.$.page_tabViaVerde_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabViaVerde_ajax.generateRequest();
                         this.$.gridViaVerde.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2ViaVerdeResult.eMessage);
                     }
@@ -4904,6 +5151,9 @@
                         this.$.page_tabCarTrack_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabCarTrack_ajax.generateRequest();
                         this.$.gridCarTrack.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2CarTrackResult.eMessage);
                     }
@@ -4957,6 +5207,9 @@
                         this.$.page_tabAfetacao_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabAfetacao_ajax.generateRequest();
                         this.$.gridAfetacao.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2AfetacaoResult.eMessage);
                     }
@@ -5010,6 +5263,9 @@
                         this.$.page_tabAcidentes_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabAcidentes_ajax.generateRequest();
                         this.$.gridAcidentes.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2AcidentesResult.eMessage);
                     }
@@ -5063,6 +5319,9 @@
                         this.$.page_tabContraOrdenacoes_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabContraOrdenacoes_ajax.generateRequest();
                         this.$.gridContraOrdenacoes.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2ContraOrdenacoesResult.eMessage);
                     }
@@ -5233,6 +5492,9 @@
                         this.$.page_tabcondutor_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabcondutor_ajax.generateRequest();
                         this.$.gridCondutores.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.deleteViaturas2CondutorResult.eMessage);
                     }
@@ -5247,7 +5509,7 @@
                         var ajax_request = this.$.page_DeleteViaturas2Gestor_ajax;
 
                         bootbox.confirm({
-                            message: "Tem a certeza que pretende remover o Gestor " + Gestor + " ?",
+                            message: "Tem a certeza que pretende remover o Responsável " + Gestor + " ?",
                             buttons: {
                                 confirm: {
                                     label: 'Sim',
@@ -5272,7 +5534,7 @@
                         });
                     }
                     else {
-                        this._openToastError('Não têm permissões para eliminar Gestores.');
+                        this._openToastError('Não têm permissões para eliminar Responsáveis.');
                     }
                 },
                 _responseDeleteViaturas2Gestor: function (e) {
@@ -5286,10 +5548,150 @@
                         this.$.page_tabgestor_ajax.body = JSON.stringify({ "matricula": this._matricula });
                         this.$.page_tabgestor_ajax.generateRequest();
                         this.$.gridGestores.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.Gestor.eMessage);
                     }
                 },
+
+                _deleteAbastecimentos: function (e) {
+                    if (this._permissions.delete == true) {
+                        var index = this.tabAbastecimentos.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var data = e.model.item.dataTexto;
+                        var ajax_request = this.$.page_DeleteViaturas2Abastecimentos_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Abastecimento com a data" + data + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteAbastecimentos) {
+                                if (deleteAbastecimentos) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridInspecao.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Abastecimentos.');
+                    }
+                },
+                _responseDeleteViaturas2Abastecimentos: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2AbastecimentosResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2AbastecimentosResult.eMessage);
+
+                        this.$.page_tabAbastecimentos_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabAbastecimentos_ajax.generateRequest();
+                        this.$.gridAbastecimentoses.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.Abastecimentos.eMessage);
+                    }
+                },
+
+                _deleteAbate: function (e) {
+                    if (this._permissions.delete == true) {
+                        var index = this.tabAbate.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var data = e.model.item.dataTexto;
+                        var ajax_request = this.$.page_DeleteViaturas2Abate_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover o Abate da Data " + data + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteAbate) {
+                                if (deleteAbate) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridInspecao.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar Abates.');
+                    }
+                },
+                _responseDeleteViaturas2Abate: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2AbateResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2AbateResult.eMessage);
+
+                        this.$.page_tabAbate_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabAbate_ajax.generateRequest();
+                        this.$.gridAbatees.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.Abate.eMessage);
+                    }
+                },
+
+                _updateAbastecimentosIDEmpresa: function (e) {
+                    this.$.abastecimentos_idEmpresa._clearSelection();
+                    this.$.abastecimentos_idEmpresa.disabled = false;
+
+                    if (e != null && e != undefined) {
+                        var idCartao = this.$.abastecimentos_idCartao.value;
+
+                        if (idCartao != null && idCartao != "") {
+                            this.$.abastecimentos_idEmpresa.disabled = true;
+
+                            if (this.ListaCartaoCombustivelEmpresas != null) {
+                                var cartao = this.tabCartaoCombustivel.find(x => x.id == idCartao);
+
+                                if (cartao != null) {
+                                    this.$.abastecimentos_idEmpresa.value = cartao.idEmpresa;
+                                }
+                            }
+                        }
+                    }
+                },
+
+
+
+
             });
         });
     </script>

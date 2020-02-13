@@ -2319,6 +2319,57 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2ListaTipoAtoAdministrativo()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ABATE_ATO_ADMINISTRATIVO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaDescricaoAto()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ABATE_DESCRICAO_ATO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaAbastecimentosCombustiveis()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ABASTECIMENTOS_COMBUSTIVEL");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2Centros([FromBody] string areaCode)
         {
             List<NAVDimValueViewModel> AllCentros = new List<NAVDimValueViewModel>();

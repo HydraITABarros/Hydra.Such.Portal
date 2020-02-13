@@ -634,6 +634,50 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2TabAbastecimentos([FromBody] Viaturas2AbastecimentosViewModel viatura)
+        {
+            List<Viaturas2AbastecimentosViewModel> TabAbastecimentos = new List<Viaturas2AbastecimentosViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabAbastecimentos = DBViaturas2Abastecimentos.ParseListToViewModel(DBViaturas2Abastecimentos.GetByMatricula(viatura.Matricula));
+
+                List<ConfiguracaoTabelas> AllCombustiveis = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ABASTECIMENTOS_COMBUSTIVEL");
+                List<ConfiguracaoTabelas> AllEmpresas = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_CARTAOCOMBUSTIVEL_EMPRESA");
+                List<Viaturas2CartaoCombustivel> AllCartoes = DBViaturas2CartaoCombustivel.GetAll();
+                List<Viaturas2GestoresGestor> AllCondutores = DBViaturas2GestoresGestor.GetByTipo(2);
+
+                TabAbastecimentos.ForEach(x =>
+                {
+                    if (x.IDCombustivel != null && x.IDCombustivel > 0) x.Combustivel = AllCombustiveis.Where(y => y.ID == x.IDCombustivel).FirstOrDefault().Descricao;
+                    if (x.IDEmpresa != null && x.IDEmpresa > 0) x.Empresa = AllEmpresas.Where(y => y.ID == x.IDEmpresa).FirstOrDefault().Descricao;
+                    if (x.IDCartao != null && x.IDCartao > 0) x.Cartao = AllCartoes.Where(y => y.ID == x.IDCartao).FirstOrDefault().NoCartao;
+                    if (x.IDCondutor != null && x.IDCondutor > 0) x.Condutor = AllCondutores.Where(y => y.ID == x.IDCondutor).FirstOrDefault().Gestor;
+                });
+            }
+            return Json(TabAbastecimentos.OrderByDescending(x => x.Data));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabAbate([FromBody] Viaturas2AbateViewModel viatura)
+        {
+            List<Viaturas2AbateViewModel> TabAbate = new List<Viaturas2AbateViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabAbate = DBViaturas2Abate.ParseListToViewModel(DBViaturas2Abate.GetByMatricula(viatura.Matricula));
+
+                List<ConfiguracaoTabelas> AllAtosAdministrativos = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ABATE_ATO_ADMINISTRATIVO");
+                List<ConfiguracaoTabelas> AllDescricaoAtos = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ABATE_DESCRICAO_ATO");
+
+                TabAbate.ForEach(x =>
+                {
+                    if (x.IDTipoAtoAdministrativo != null && x.IDTipoAtoAdministrativo > 0) x.TipoAtoAdministrativo = AllAtosAdministrativos.Where(y => y.ID == x.IDTipoAtoAdministrativo).FirstOrDefault().Descricao;
+                    if (x.IDDescricaoAto != null && x.IDDescricaoAto > 0) x.DescricaoAto = AllDescricaoAtos.Where(y => y.ID == x.IDDescricaoAto).FirstOrDefault().Descricao;
+                });
+            }
+            return Json(TabAbate.OrderByDescending(x => x.Data));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2TabEstado([FromBody] Viaturas2InspecoesViewModel viatura)
         {
             List<Viaturas2EstadosViewModel> TabEstados = new List<Viaturas2EstadosViewModel>();
@@ -1239,6 +1283,82 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateViaturas2Abastecimentos([FromBody] Viaturas2AbastecimentosViewModel Abastecimentos)
+        {
+            try
+            {
+                if (Abastecimentos != null && !string.IsNullOrEmpty(Abastecimentos.Matricula))
+                {
+                    Viaturas2Abastecimentos AbastecimentosToCreate = new Viaturas2Abastecimentos();
+
+                    AbastecimentosToCreate = DBViaturas2Abastecimentos.ParseToDB(Abastecimentos);
+                    AbastecimentosToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Abastecimentos.Create(AbastecimentosToCreate) != null)
+                    {
+                        Abastecimentos.eReasonCode = 1;
+                        Abastecimentos.eMessage = "Linha Abastecimento criada com sucesso.";
+                    }
+                    else
+                    {
+                        Abastecimentos.eReasonCode = 3;
+                        Abastecimentos.eMessage = "Ocorreu um erro ao criar a Linha Abastecimento no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    Abastecimentos.eReasonCode = 3;
+                    Abastecimentos.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Abastecimentos.eReasonCode = 4;
+                Abastecimentos.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Abastecimentos);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2Abate([FromBody] Viaturas2AbateViewModel Abate)
+        {
+            try
+            {
+                if (Abate != null && !string.IsNullOrEmpty(Abate.Matricula))
+                {
+                    Viaturas2Abate AbateToCreate = new Viaturas2Abate();
+
+                    AbateToCreate = DBViaturas2Abate.ParseToDB(Abate);
+                    AbateToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Abate.Create(AbateToCreate) != null)
+                    {
+                        Abate.eReasonCode = 1;
+                        Abate.eMessage = "Linha Abate criada com sucesso.";
+                    }
+                    else
+                    {
+                        Abate.eReasonCode = 3;
+                        Abate.eMessage = "Ocorreu um erro ao criar a Linha Abate no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    Abate.eReasonCode = 3;
+                    Abate.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Abate.eReasonCode = 4;
+                Abate.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Abate);
+        }
+
+        [HttpPost]
         public JsonResult CreateViaturas2ViaVerde([FromBody] Viaturas2ViaVerdeViewModel ViaVerde)
         {
             try
@@ -1752,6 +1872,96 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(CarTrack);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Abastecimentos([FromBody] Viaturas2AbastecimentosViewModel Abastecimentos)
+        {
+            try
+            {
+                if (Abastecimentos != null && Abastecimentos.ID > 0 && !string.IsNullOrEmpty(Abastecimentos.Matricula))
+                {
+                    Viaturas2Abastecimentos AbastecimentosToDelete = new Viaturas2Abastecimentos();
+
+                    AbastecimentosToDelete = DBViaturas2Abastecimentos.GetByID(Abastecimentos.ID);
+
+                    if (AbastecimentosToDelete != null)
+                    {
+                        if (DBViaturas2Abastecimentos.Delete(AbastecimentosToDelete) == true)
+                        {
+                            Abastecimentos.eReasonCode = 1;
+                            Abastecimentos.eMessage = "Linha Abastecimentos Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            Abastecimentos.eReasonCode = 3;
+                            Abastecimentos.eMessage = "Ocorreu um erro ao Eliminar a linha Abastecimentos no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Abastecimentos.eReasonCode = 3;
+                        Abastecimentos.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Abastecimentos.";
+                    }
+                }
+                else
+                {
+                    Abastecimentos.eReasonCode = 3;
+                    Abastecimentos.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Abastecimentos.eReasonCode = 4;
+                Abastecimentos.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Abastecimentos);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Abate([FromBody] Viaturas2AbateViewModel Abate)
+        {
+            try
+            {
+                if (Abate != null && Abate.ID > 0 && !string.IsNullOrEmpty(Abate.Matricula))
+                {
+                    Viaturas2Abate AbateToDelete = new Viaturas2Abate();
+
+                    AbateToDelete = DBViaturas2Abate.GetByID(Abate.ID);
+
+                    if (AbateToDelete != null)
+                    {
+                        if (DBViaturas2Abate.Delete(AbateToDelete) == true)
+                        {
+                            Abate.eReasonCode = 1;
+                            Abate.eMessage = "Linha Abate Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            Abate.eReasonCode = 3;
+                            Abate.eMessage = "Ocorreu um erro ao Eliminar a linha Abate no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Abate.eReasonCode = 3;
+                        Abate.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Abate.";
+                    }
+                }
+                else
+                {
+                    Abate.eReasonCode = 3;
+                    Abate.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Abate.eReasonCode = 4;
+                Abate.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Abate);
         }
 
         [HttpPost]

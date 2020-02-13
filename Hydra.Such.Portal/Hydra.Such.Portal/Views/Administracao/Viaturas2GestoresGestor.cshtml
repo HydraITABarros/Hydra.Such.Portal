@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Viaturas - Lista de Gestores";
+    ViewData["Title"] = "Viaturas - Lista de Responsáveis / Condutores";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
@@ -113,7 +113,7 @@
                 <div class="panel-body">
                     <div class="row" id="gestorCreate">
                         <div class="col-lg-2">
-                            <vaadin-text-field id="ddGestor" value="{{ gestor }}" label="Gestor" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+                            <vaadin-text-field id="ddGestor" value="{{ gestor }}" label="Responsável / Condutor" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
                         </div>
 
                         <div class="col-lg-2">
@@ -159,7 +159,7 @@
 
             <vaadin-grid-column resizable width="150px">
                 <template class="header">
-                    <vaadin-grid-sorter path="gestor">Gestor</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="gestor">Responsável / Condutor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="gestor" />
                 </template>
                 <template>

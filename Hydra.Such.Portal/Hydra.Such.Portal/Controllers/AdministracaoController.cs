@@ -7736,44 +7736,6 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
-
-
-
-
-
-
-
-        public JsonResult TesteARomao()
-        {
-                EmailsAprovações EmailApproval = new EmailsAprovações()
-                {
-                    NºMovimento = 999999,
-                    EmailDestinatário = "ARomao@such.pt",
-                    NomeDestinatário = "ARomao@such.pt",
-                    Assunto = "eSUCH - Aprovação Pendente",
-                    DataHoraEmail = DateTime.Now,
-                    TextoEmail = "Existe uma nova tarefa pendente da sua aprovação no eSUCH!",
-                    Enviado = false
-                };
-
-
-                SendEmailApprovals Email = new SendEmailApprovals
-                {
-                    Subject = "eSUCH - Aprovação Pendente",
-                    From = "ARomao@such.pt"
-                };
-
-                Email.To.Add("ARomao@such.pt");
-
-                Email.Body = MakeEmailBodyContent("Existe uma nova tarefa pendente da sua aprovação no eSUCH!");
-
-                Email.IsBodyHtml = true;
-                Email.EmailApproval = EmailApproval;
-
-                Email.SendEmail();
-
-            return Json(null);
-        }
         public static string MakeEmailBodyContent(string BodyText)
         {
             string Body = @"<html>" +
