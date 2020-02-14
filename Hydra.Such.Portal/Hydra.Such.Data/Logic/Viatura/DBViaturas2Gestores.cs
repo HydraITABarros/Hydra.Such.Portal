@@ -39,6 +39,21 @@ namespace Hydra.Such.Data.Logic.Viatura
             }
         }
 
+        public static List<Viaturas2Gestores> GetByMatricula(string Matricula)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Viaturas2Gestores.Where(p => p.Matricula == Matricula).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
         public static List<Viaturas2Gestores> GetByMatriculaTipo(string Matricula, int Tipo)
         {
             try

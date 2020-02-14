@@ -427,6 +427,42 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2TabImobilizados([FromBody] Viaturas2ImobilizadosViewModel viatura)
+        {
+            List<Viaturas2ImobilizadosViewModel> TabImobilizados = new List<Viaturas2ImobilizadosViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabImobilizados = DBViaturas2Imobilizados.ParseListToViewModel(DBViaturas2Imobilizados.GetByMatricula(viatura.Matricula));
+
+                List<Viaturas2ImobilizadosViewModel> AllImobilizados = DBViaturas2Imobilizados.GetAllImobilizados(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                TabImobilizados.ForEach(x =>
+                {
+                    if (!string.IsNullOrEmpty(x.NoImobilizado))
+                    {
+                        Viaturas2ImobilizadosViewModel Imobilizado = AllImobilizados.Where(y => y.NoImobilizado == x.NoImobilizado).FirstOrDefault();
+                        if (Imobilizado != null)
+                        {
+                            x.Descricao = Imobilizado.Descricao;
+                            x.DataCompraTexto = Imobilizado.DataCompraTexto;
+                            x.DocumentoCompra = Imobilizado.DocumentoCompra;
+                            x.ValorCompra = Imobilizado.ValorCompra;
+                            x.DataIncioAmortizacaoTexto = Imobilizado.DataIncioAmortizacaoTexto;
+                            x.DataFinalAmortizacaoTexto = Imobilizado.DataFinalAmortizacaoTexto;
+                            x.ValorAmortizado = Imobilizado.ValorAmortizado;
+                            x.VendaAbate = Imobilizado.VendaAbate;
+                            x.DataVendaAbateTexto = Imobilizado.DataVendaAbateTexto;
+                            x.DocumentoVendaAbate = Imobilizado.DocumentoVendaAbate;
+                            x.ValorVendaAbate = Imobilizado.ValorVendaAbate;
+                            x.EstadoImobilizado = Imobilizado.EstadoImobilizado;
+                            x.Bloqueado = Imobilizado.Bloqueado;
+                        }
+                    }
+                });
+            }
+            return Json(TabImobilizados.OrderBy(x => x.NoImobilizado));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2TabKm([FromBody] Viaturas2InspecoesViewModel viatura)
         {
             List<Viaturas2KmViewModel> TabKm = new List<Viaturas2KmViewModel>();
@@ -1017,6 +1053,43 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateViaturas2Imobilizados([FromBody] Viaturas2ImobilizadosViewModel Imobilizados)
+        {
+            try
+            {
+                if (Imobilizados != null && !string.IsNullOrEmpty(Imobilizados.Matricula) && !string.IsNullOrEmpty(Imobilizados.NoImobilizado))
+                {
+                    List<Viaturas2ImobilizadosViewModel> AllImobilizados = DBViaturas2Imobilizados.GetAllImobilizados(_config.NAVDatabaseName, _config.NAVCompanyName, "").Where(x => x.PaiFilho == Imobilizados.NoImobilizado).ToList();
+
+                    foreach (Viaturas2ImobilizadosViewModel item in AllImobilizados)
+                    {
+                        Viaturas2Imobilizados ImobilizadosToCreate = new Viaturas2Imobilizados();
+                        ImobilizadosToCreate.Matricula = Imobilizados.Matricula;
+                        ImobilizadosToCreate.NoImobilizado = item.NoImobilizado;
+                        ImobilizadosToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                        DBViaturas2Imobilizados.Create(ImobilizadosToCreate);
+                    };
+
+                    Imobilizados.eReasonCode = 1;
+                    Imobilizados.eMessage = "Linha Imobilizado criada com sucesso.";
+                }
+                else
+                {
+                    Imobilizados.eReasonCode = 3;
+                    Imobilizados.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Imobilizados.eReasonCode = 4;
+                Imobilizados.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Imobilizados);
+        }
+
+        [HttpPost]
         public JsonResult CreateViaturas2Km([FromBody] Viaturas2KmViewModel Km)
         {
             try
@@ -1557,6 +1630,51 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(gestor);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Imobilizados([FromBody] Viaturas2ImobilizadosViewModel Imobilizados)
+        {
+            try
+            {
+                if (Imobilizados != null && Imobilizados.ID > 0 && !string.IsNullOrEmpty(Imobilizados.Matricula))
+                {
+                    Viaturas2Imobilizados ImobilizadosToDelete = new Viaturas2Imobilizados();
+
+                    ImobilizadosToDelete = DBViaturas2Imobilizados.GetByID(Imobilizados.ID);
+
+                    if (ImobilizadosToDelete != null)
+                    {
+                        if (DBViaturas2Imobilizados.Delete(ImobilizadosToDelete) == true)
+                        {
+                            Imobilizados.eReasonCode = 1;
+                            Imobilizados.eMessage = "A linha Imobilizado Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            Imobilizados.eReasonCode = 3;
+                            Imobilizados.eMessage = "Ocorreu um erro ao Eliminar a linha Imobilizado no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Imobilizados.eReasonCode = 3;
+                        Imobilizados.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Imobilizado.";
+                    }
+                }
+                else
+                {
+                    Imobilizados.eReasonCode = 3;
+                    Imobilizados.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Imobilizados.eReasonCode = 4;
+                Imobilizados.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Imobilizados);
         }
 
         [HttpPost]
@@ -2744,17 +2862,129 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (CounteSUCH > 0)
                 {
-                    Viaturas2 viatura = DBViaturas2.ParseToDB(data);
-                    if (DBViaturas2.Delete(viatura) == true)
+                    try
                     {
-                        data.eReasonCode = 1;
-                        data.eMessage = "Viatura eliminada com sucesso.";
-                        return Json(data);
+                        //Viaturas2_Abastecimentos
+                        List<Viaturas2Abastecimentos> All_Abastecimentos = DBViaturas2Abastecimentos.GetByMatricula(data.Matricula);
+                        if (All_Abastecimentos != null && All_Abastecimentos.Count > 0)
+                            foreach (Viaturas2Abastecimentos item in All_Abastecimentos)
+                                DBViaturas2Abastecimentos.Delete(item);
+
+                        //Viaturas2_Abate
+                        List<Viaturas2Abate> All_Abate = DBViaturas2Abate.GetByMatricula(data.Matricula);
+                        if (All_Abate != null && All_Abate.Count > 0)
+                            foreach (Viaturas2Abate item in All_Abate)
+                                DBViaturas2Abate.Delete(item);
+
+                        //Viaturas2_Acidentes
+                        List<Viaturas2Acidentes> All_Acidentes = DBViaturas2Acidentes.GetByMatricula(data.Matricula);
+                        if (All_Acidentes != null && All_Acidentes.Count > 0)
+                            foreach (Viaturas2Acidentes item in All_Acidentes)
+                                DBViaturas2Acidentes.Delete(item);
+
+                        //Viaturas2_Afetacao
+                        List<Viaturas2Afetacao> All_Afetacao = DBViaturas2Afetacao.GetByMatricula(data.Matricula);
+                        if (All_Afetacao != null && All_Afetacao.Count > 0)
+                            foreach (Viaturas2Afetacao item in All_Afetacao)
+                                DBViaturas2Afetacao.Delete(item);
+
+                        //Viaturas2_CartaoCombustivel
+                        List<Viaturas2CartaoCombustivel> All_CartaoCombustivel = DBViaturas2CartaoCombustivel.GetByMatricula(data.Matricula);
+                        if (All_CartaoCombustivel != null && All_CartaoCombustivel.Count > 0)
+                            foreach (Viaturas2CartaoCombustivel item in All_CartaoCombustivel)
+                                DBViaturas2CartaoCombustivel.Delete(item);
+
+                        //Viaturas2_CartaVerde
+                        List<Viaturas2CartaVerde> All_CartaVerde = DBViaturas2CartaVerde.GetByMatricula(data.Matricula);
+                        if (All_CartaVerde != null && All_CartaVerde.Count > 0)
+                            foreach (Viaturas2CartaVerde item in All_CartaVerde)
+                                DBViaturas2CartaVerde.Delete(item);
+
+                        //Viaturas2_CarTrack
+                        List<Viaturas2CarTrack> All_CarTrack = DBViaturas2CarTrack.GetByMatricula(data.Matricula);
+                        if (All_CarTrack != null && All_CarTrack.Count > 0)
+                            foreach (Viaturas2CarTrack item in All_CarTrack)
+                                DBViaturas2CarTrack.Delete(item);
+
+                        //Viaturas2_ContraOrdenacoes
+                        List<Viaturas2ContraOrdenacoes> All_ContraOrdenacoes = DBViaturas2ContraOrdenacoes.GetByMatricula(data.Matricula);
+                        if (All_ContraOrdenacoes != null && All_ContraOrdenacoes.Count > 0)
+                            foreach (Viaturas2ContraOrdenacoes item in All_ContraOrdenacoes)
+                                DBViaturas2ContraOrdenacoes.Delete(item);
+
+                        //Viaturas2_Dimensoes
+                        List<Viaturas2Dimensoes> All_Dimensoes = DBViaturas2Dimensoes.GetByMatricula(data.Matricula);
+                        if (All_Dimensoes != null && All_Dimensoes.Count > 0)
+                            foreach (Viaturas2Dimensoes item in All_Dimensoes)
+                                DBViaturas2Dimensoes.Delete(item);
+
+                        //Viaturas2_Estados
+                        List<Viaturas2Estados> All_Estados = DBViaturas2Estados.GetByMatricula(data.Matricula);
+                        if (All_Estados != null && All_Estados.Count > 0)
+                            foreach (Viaturas2Estados item in All_Estados)
+                                DBViaturas2Estados.Delete(item);
+
+                        //Viaturas2_Gestores
+                        List<Viaturas2Gestores> All_Gestores = DBViaturas2Gestores.GetByMatricula(data.Matricula);
+                        if (All_Gestores != null && All_Gestores.Count > 0)
+                            foreach (Viaturas2Gestores item in All_Gestores)
+                                DBViaturas2Gestores.Delete(item);
+
+                        //Viaturas2_Inspecao
+                        List<Viaturas2Inspecoes> All_Inspecao = DBViaturas2Inspecoes.GetByMatricula(data.Matricula);
+                        if (All_Inspecao != null && All_Inspecao.Count > 0)
+                            foreach (Viaturas2Inspecoes item in All_Inspecao)
+                                DBViaturas2Inspecoes.Delete(item);
+
+                        //Viaturas2_Km
+                        List<Viaturas2Km> All_Km = DBViaturas2Km.GetByMatricula(data.Matricula);
+                        if (All_Km != null && All_Km.Count > 0)
+                            foreach (Viaturas2Km item in All_Km)
+                                DBViaturas2Km.Delete(item);
+
+                        //Viaturas2_Manutencao
+                        List<Viaturas2Manutencao> All_Manutencao = DBViaturas2Manutencao.GetByMatricula(data.Matricula);
+                        if (All_Manutencao != null && All_Manutencao.Count > 0)
+                            foreach (Viaturas2Manutencao item in All_Manutencao)
+                                DBViaturas2Manutencao.Delete(item);
+
+                        //Viaturas2_Parqueamento
+                        List<Viaturas2Parqueamento> All_Parqueamento = DBViaturas2Parqueamento.GetByMatricula(data.Matricula);
+                        if (All_Parqueamento != null && All_Parqueamento.Count > 0)
+                            foreach (Viaturas2Parqueamento item in All_Parqueamento)
+                                DBViaturas2Parqueamento.Delete(item);
+
+                        //Viaturas2_Propriedades
+                        List<Viaturas2Propriedades> All_Propriedades = DBViaturas2Propriedades.GetByMatricula(data.Matricula);
+                        if (All_Propriedades != null && All_Propriedades.Count > 0)
+                            foreach (Viaturas2Propriedades item in All_Propriedades)
+                                DBViaturas2Propriedades.Delete(item);
+
+                        //Viaturas2_ViaVerde
+                        List<Viaturas2ViaVerde> All_ViaVerde = DBViaturas2ViaVerde.GetByMatricula(data.Matricula);
+                        if (All_ViaVerde != null && All_ViaVerde.Count > 0)
+                            foreach (Viaturas2ViaVerde item in All_ViaVerde)
+                                DBViaturas2ViaVerde.Delete(item);
+
+                        //Viaturas2
+                        Viaturas2 viatura = DBViaturas2.ParseToDB(data);
+                        if (DBViaturas2.Delete(viatura) == true)
+                        {
+                            data.eReasonCode = 1;
+                            data.eMessage = "Viatura eliminada com sucesso.";
+                            return Json(data);
+                        }
+                        else
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro na eliminação da viatura no e-SUCH.";
+                            return Json(data);
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
                         data.eReasonCode = 3;
-                        data.eMessage = "Ocorreu um erro na eliminação da viatura no e-SUCH.";
+                        data.eMessage = "Ocorreu um erro na eliminaçãonas nas tabelas auxiliares da viatura no e-SUCH.";
                         return Json(data);
                     }
                 }

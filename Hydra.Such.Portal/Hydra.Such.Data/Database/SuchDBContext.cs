@@ -184,6 +184,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<Viaturas2ViaVerde> Viaturas2ViaVerde { get; set; }
         public virtual DbSet<Viaturas2Abastecimentos> Viaturas2Abastecimentos { get; set; }
         public virtual DbSet<Viaturas2Abate> Viaturas2Abate { get; set; }
+        public virtual DbSet<Viaturas2Imobilizados> Viaturas2Imobilizados { get; set; }
         public virtual DbSet<WorkflowProcedimentosCcp> WorkflowProcedimentosCcp { get; set; }
         public virtual DbSet<PedidosPagamento> PedidosPagamento { get; set; }
         public virtual DbSet<TabelaLog> TabelaLog { get; set; }
@@ -11990,6 +11991,40 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Data)
                     .HasColumnName("Data")
                     .HasColumnType("date");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataModificacao)
+                    .HasColumnName("DataModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Viaturas2Imobilizados>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.ToTable("Viaturas2_Imobilizados");
+
+                entity.Property(e => e.ID)
+                    .HasColumnName("ID");
+
+                entity.Property(e => e.Matricula)
+                    .HasColumnName("Matricula")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoImobilizado)
+                    .HasColumnName("NoImobilizado")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.UtilizadorCriacao)
                     .HasColumnName("UtilizadorCriacao")

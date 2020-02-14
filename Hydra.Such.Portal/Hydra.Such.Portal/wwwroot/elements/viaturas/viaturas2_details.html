@@ -167,6 +167,7 @@
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCondutores" last-response="{{ListaCondutores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaResponsaveis" last-response="{{ListaResponsaveis}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaSeguradoras" last-response="{{ListaSeguradoras}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaImobilizadoNo" last-response="{{ListaImobilizadoNo}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaAcidentesResponsabilidades" last-response="{{ListaAcidentesResponsabilidades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaContraOrdenacoesResponsabilidades" last-response="{{ListaContraOrdenacoesResponsabilidades}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetViaturas2ListaCartaoCombustivelEmpresas" last-response="{{ListaCartaoCombustivelEmpresas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -204,6 +205,33 @@
                    method="post"
                    handle-as="json"
                    id="page_loadImage_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!--Imobilizados-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabImobilizados"
+                   last-response="{{tabImobilizados}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabImobilizados_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Imobilizados"
+                   last-response="{{createViaturas2ImobilizadosResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Imobilizados_ajax"
+                   on-response="_responseCreateViaturas2Imobilizados"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Imobilizados"
+                   last-response="{{deleteViaturas2ImobilizadosResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Imobilizados_ajax"
+                   on-response="_responseDeleteViaturas2Imobilizados"
                    content-type="application/json">
         </iron-ajax>
 
@@ -999,20 +1027,12 @@
                                     </div>
 
                                     <div>
+                                        <div class="col-md-4">
+                                            <vaadin-text-field id="geral_noQuadro" name="geral_noQuadro" value="{{data.noQuadro}}" label="Nº Quadro" disabled="{{ _lockFields }}" maxlength="50" required error-message="O campo Nº Quadro é de preenchimento obrigatório"></vaadin-text-field>
+                                        </div>
+
                                         <div class="col-md-2">
                                             <vaadin-text-field id="geral_distanciaEixos" name="geral_distanciaEixos" value="{{data.distanciaEixos}}" label="Distância entre Eixos" disabled="{{ _lockFields }}" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">m</div></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="geral_noLugares" name="geral_noLugares" value="{{data.noLugares}}" label="Nº de Lugares" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="geral_noAnosGarantia" name="geral_noAnosGarantia" value="{{data.noAnosGarantia}}" label="Nº de Anos Garantia" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="geral_noQuadro" name="geral_noQuadro" value="{{data.noQuadro}}" label="Nº Quadro" disabled="{{ _lockFields }}" maxlength="50" required error-message="O campo Nº Quadro é de preenchimento obrigatório"></vaadin-text-field>
                                         </div>
 
                                         <div class="col-md-2">
@@ -1027,6 +1047,15 @@
 
                                         <div class="col-md-2">
                                             <vaadin-text-field id="geral_cor" name="geral_cor" value="{{data.cor}}" label="Cor" disabled="{{ _lockFields }}" maxlength="40" required error-message="O campo Cor é de preenchimento obrigatório"></vaadin-text-field>
+                                        </div>
+
+
+                                        <div class="col-md-1">
+                                            <vaadin-text-field id="geral_noAnosGarantia" name="geral_noAnosGarantia" value="{{data.noAnosGarantia}}" label="Nº Anos Garantia" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                            <vaadin-text-field id="geral_noLugares" name="geral_noLugares" value="{{data.noLugares}}" label="Nº de Lugares" disabled="{{ _lockFields }}" type="number" class="alignRight"></vaadin-text-field>
                                         </div>
                                     </div>
                                 </div>
@@ -1066,8 +1095,9 @@
                                 </div>
 
                                 <div class="row break_clear">
+                                    <!--Imobilizado-->
                                     <paper-collapse-item class="panel-heading" header="Imobilizado">
-                                        <vaadin-grid id="gridImobilizado" aria-label="gridImobilizado" items="" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid id="gridImobilizado" aria-label="gridImobilizado" items="{{ tabImobilizados }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="noImobilizado">Nº Imobilizado</vaadin-grid-sorter>
@@ -1090,60 +1120,150 @@
 
                                             <vaadin-grid-column resizable>
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="dataCompra">data da compra</vaadin-grid-sorter>
-                                                    <vaadin-grid-filter path="dataCompra" />
+                                                    <vaadin-grid-sorter path="dataCompraTexto">Data Compra</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="dataCompraTexto" />
                                                 </template>
                                                 <template>
-                                                    {{item.dataCompra}}
+                                                    {{item.dataCompraTexto}}
                                                 </template>
                                             </vaadin-grid-column>
 
                                             <vaadin-grid-column resizable>
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="inicioAmortizacao">Início Amortização</vaadin-grid-sorter>
-                                                    <vaadin-grid-filter path="inicioAmortizacao" />
+                                                    <vaadin-grid-sorter path="documentoCompra">Documento Compra</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="documentoCompra" />
                                                 </template>
                                                 <template>
-                                                    {{item.inicioAmortizacao}}
+                                                    {{item.documentoCompra}}
                                                 </template>
                                             </vaadin-grid-column>
 
                                             <vaadin-grid-column resizable>
                                                 <template class="header">
-                                                    <vaadin-grid-sorter path="fimAmortizacao">Fim Amortização</vaadin-grid-sorter>
-                                                    <vaadin-grid-filter path="fimAmortizacao" />
+                                                    <vaadin-grid-sorter path="valorCompra">Valor Compra</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="valorCompra" />
                                                 </template>
                                                 <template>
-                                                    {{item.fimAmortizacao}}
+                                                    {{item.valorCompra}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="dataIncioAmortizacaoTexto">Data Incio Amortização</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="dataIncioAmortizacaoTexto" />
+                                                </template>
+                                                <template>
+                                                    {{item.dataIncioAmortizacaoTexto}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="dataFinalAmortizacaoTexto">Data Final Amortização</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="dataFinalAmortizacaoTexto" />
+                                                </template>
+                                                <template>
+                                                    {{item.dataFinalAmortizacaoTexto}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="valorAmortizado">Valor Amortizado</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="valorAmortizado" />
+                                                </template>
+                                                <template>
+                                                    {{item.valorAmortizado}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="vendaAbate">Venda / Abate</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="vendaAbate" />
+                                                </template>
+                                                <template>
+                                                    {{item.vendaAbate}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="dataVendaAbateTexto">Data Venda / Abate</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="dataVendaAbateTexto" />
+                                                </template>
+                                                <template>
+                                                    {{item.dataVendaAbateTexto}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="documentoVendaAbate">Documento Venda / Abate</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="documentoVendaAbate" />
+                                                </template>
+                                                <template>
+                                                    {{item.documentoVendaAbate}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="valorVendaAbate">Valor Venda / Abate</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="valorVendaAbate" />
+                                                </template>
+                                                <template>
+                                                    {{item.valorVendaAbate}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="estadoImobilizado">Estado Imobilizado</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="estadoImobilizado" />
+                                                </template>
+                                                <template>
+                                                    {{item.estadoImobilizado}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="bloqueado">Bloqueado</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="bloqueado" />
+                                                </template>
+                                                <template>
+                                                    {{item.bloqueado}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <paper-button id="btn_deleteImobilizados" class="btnRemove tableBtn" raised on-tap="_deleteImobilizados" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    </center>
                                                 </template>
                                             </vaadin-grid-column>
                                         </vaadin-grid>
 
                                         <div style="padding-left:50px">
-                                            <paper-collapse-item class="panel-heading" header="Inserir" closed hidden>
+                                            <paper-collapse-item class="panel-heading" header="Inserir" closed>
                                                 <div class="row break_clear">
-                                                    <div class="col-md-2">
-                                                        <vaadin-text-field id="noImobilizado" name="noImobilizado" label="Nº imobilizado" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <vaadin-text-field id="descricao" name="descricao" label="Descrição" value="" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <vaadin-date-picker id="dataCompra" name="dataCompra" label="Data da compra" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <vaadin-date-picker id="inicioAmortizacao" name="inicioAmortizacao" label="Início amortização" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        <vaadin-date-picker id="fimAmortizacao" name="fimAmortizacao" label="Fim amortização" value="" disabled="{{ !_permissions.update }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    <div class="col-md-4">
+                                                        <such-selectbox id="imobilizado_noImobilizado" name="imobilizado_noImobilizado" value="" label="Nº Imobilizado"
+                                                                        items="[[ListaImobilizadoNo]]"
+                                                                        text-path="descricao"
+                                                                        value-path="noImobilizado"
+                                                                        fields='[{"field":"noImobilizado", "name":"Nº Imobilizado"}, {"field":"descricao", "name":"Descrição"}]'
+                                                                        disabled="{{ _lockFields }}">
+                                                        </such-selectbox>
                                                     </div>
 
                                                     <div class="col-md-2" style="padding-top:15px">
-                                                        <paper-button raised id="btnCriarEstado" class="btnSave" on-tap="_createEstado" disabled="{{ !_permissions.update }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                        <paper-button raised id="btn_createImbilizados" class="btnSave" on-tap="_createImobilizados" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                     </div>
                                                 </div>
                                             </paper-collapse-item>
@@ -3462,6 +3582,10 @@
                     this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_databound_ajax.generateRequest();
 
+                    this.$.page_tabImobilizados_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabImobilizados_ajax.generateRequest();
+                    this.$.gridImobilizados.clearCache();
+
                     this.$.page_tabKm_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabKm_ajax.generateRequest();
                     this.$.gridKm.clearCache();
@@ -3735,7 +3859,6 @@
                             this._GetListaModelos();
                             this._GetListaCentros();
                             this._GetListaPropriedades();
-
                         }
 
                         else if (data.detail.url.indexOf("Create") !== -1) {
@@ -3769,10 +3892,10 @@
                     var self = this;
                     if (this.data.eReasonCode == 1) {
                         this._openToast(this.data.eMessage);
-                        setTimeout(
-                            function () {
-                                self._goRefresh();
-                            }, 1000);
+
+                        this.$.page_databound_ajax.url = "/Viaturas/GetViatura2Details"
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.data.eMessage);
                     }
@@ -3874,6 +3997,48 @@
 
                 _openCustos: function () {
                     window.location.href = "/Viaturas/Viaturas2Custos/" + "?matricula=" + this.data.matricula + "&noProjeto=" + this.data.noProjeto;
+                },
+
+                _validateDataImobilizados: function () {
+                    var errors = 0;
+
+                    if (this.$.imobilizado_noImobilizado.value == null || this.$.imobilizado_noImobilizado.value == "") {
+                        this.$.imobilizado_noImobilizado.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createImobilizados: function () {
+                    if (this._validateDataImobilizados()) {
+                        this.$.page_CreateViaturas2Imobilizados_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+                            noImobilizado: this.$.imobilizado_noImobilizado.value,
+                        });
+                        this.$.page_CreateViaturas2Imobilizados_ajax.generateRequest();
+                        this.$.gridImobilizados.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Imobilizados: function () {
+                    if (this.createViaturas2ImobilizadosResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2ImobilizadosResult.eMessage);
+
+                        this.$.imobilizado_noImobilizado._clearSelection();
+
+                        this.$.page_tabImobilizados_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabImobilizados_ajax.generateRequest();
+                        this.$.gridImobilizados.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.createViaturas2ImobilizadosResult.eMessage);
+                    }
                 },
 
                 _validateDataKm: function () {
@@ -4759,13 +4924,61 @@
                     }
                 },
 
+                _deleteImobilizados: function (e) {
+                    if (this._permissions.update == true) {
+                        var index = this.tabImobilizados.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var Imobilizado = e.model.item.noImobilizado;
+                        var ajax_request = this.$.page_DeleteViaturas2Imobilizados_ajax;
 
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a linha do Imobilizado Nº " + Imobilizado + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteImobilizados) {
+                                if (deleteImobilizados) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
 
+                                    this.$.gridImobilizados.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar a linha dos Imobilizados.');
+                    }
+                },
+                _responseDeleteViaturas2Imobilizados: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
 
+                    if (this.deleteViaturas2ImobilizadosResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2ImobilizadosResult.eMessage);
 
+                        this.$.page_tabImobilizados_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabImobilizados_ajax.generateRequest();
+                        this.$.gridImobilizados.clearCache();
 
-
-
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.deleteViaturas2ImobilizadosResult.eMessage);
+                    }
+                },
 
                 _deleteKm: function (e) {
                     if (this._permissions.update == true) {

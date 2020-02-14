@@ -2217,6 +2217,21 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2ListaImobilizadoNo()
+        {
+            List<Viaturas2ImobilizadosViewModel> result = new List<Viaturas2ImobilizadosViewModel>();
+            try
+            {
+                result = DBViaturas2Imobilizados.GetListPai(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty).ToList();
+                return Json(result);
+            }
+            catch (Exception e)
+            {
+                return Json(result);
+            }
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2ListaAcidentesResponsabilidades()
         {
             List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ACIDENTES_RESPONSABILIDADE");
