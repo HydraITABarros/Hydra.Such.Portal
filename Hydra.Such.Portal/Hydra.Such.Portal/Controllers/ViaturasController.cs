@@ -442,19 +442,19 @@ namespace Hydra.Such.Portal.Controllers
                         Viaturas2ImobilizadosViewModel Imobilizado = AllImobilizados.Where(y => y.NoImobilizado == x.NoImobilizado).FirstOrDefault();
                         if (Imobilizado != null)
                         {
-                            x.Descricao = Imobilizado.Descricao;
-                            x.DataCompraTexto = Imobilizado.DataCompraTexto;
-                            x.DocumentoCompra = Imobilizado.DocumentoCompra;
-                            x.ValorCompra = Imobilizado.ValorCompra;
-                            x.DataIncioAmortizacaoTexto = Imobilizado.DataIncioAmortizacaoTexto;
-                            x.DataFinalAmortizacaoTexto = Imobilizado.DataFinalAmortizacaoTexto;
-                            x.ValorAmortizado = Imobilizado.ValorAmortizado;
-                            x.VendaAbate = Imobilizado.VendaAbate;
-                            x.DataVendaAbateTexto = Imobilizado.DataVendaAbateTexto;
-                            x.DocumentoVendaAbate = Imobilizado.DocumentoVendaAbate;
-                            x.ValorVendaAbate = Imobilizado.ValorVendaAbate;
-                            x.EstadoImobilizado = Imobilizado.EstadoImobilizado;
-                            x.Bloqueado = Imobilizado.Bloqueado;
+                            x.Descricao = !string.IsNullOrEmpty(Imobilizado.Descricao) ? Imobilizado.Descricao : "";
+                            x.DataCompraTexto = !string.IsNullOrEmpty(Imobilizado.DataCompraTexto) ? Imobilizado.DataCompraTexto : "";
+                            x.DocumentoCompra = !string.IsNullOrEmpty(Imobilizado.DocumentoCompra) ? Imobilizado.DocumentoCompra : "";
+                            x.ValorCompra = !string.IsNullOrEmpty(Imobilizado.ValorCompra) ? Imobilizado.ValorCompra : "";
+                            x.DataIncioAmortizacaoTexto = !string.IsNullOrEmpty(Imobilizado.DataIncioAmortizacaoTexto) ? Imobilizado.DataIncioAmortizacaoTexto : "";
+                            x.DataFinalAmortizacaoTexto = !string.IsNullOrEmpty(Imobilizado.DataFinalAmortizacaoTexto) ? Imobilizado.DataFinalAmortizacaoTexto : "";
+                            x.ValorAmortizado = !string.IsNullOrEmpty(Imobilizado.ValorAmortizado) ? Imobilizado.ValorAmortizado : "";
+                            x.VendaAbate = !string.IsNullOrEmpty(Imobilizado.VendaAbate) ? Imobilizado.VendaAbate : "";
+                            x.DataVendaAbateTexto = !string.IsNullOrEmpty(Imobilizado.DataVendaAbateTexto) ? Imobilizado.DataVendaAbateTexto : "";
+                            x.DocumentoVendaAbate = !string.IsNullOrEmpty(Imobilizado.DocumentoVendaAbate) ? Imobilizado.DocumentoVendaAbate : "";
+                            x.ValorVendaAbate = !string.IsNullOrEmpty(Imobilizado.ValorVendaAbate) ? Imobilizado.ValorVendaAbate : "";
+                            x.EstadoImobilizado = !string.IsNullOrEmpty(Imobilizado.EstadoImobilizado) ? Imobilizado.EstadoImobilizado : "";
+                            x.Bloqueado = !string.IsNullOrEmpty(Imobilizado.Bloqueado) ? Imobilizado.Bloqueado : "";
                         }
                     }
                 });
@@ -2370,7 +2370,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
 
                 if (!string.IsNullOrEmpty(data.NoProjeto) && (data.IDEstadoOriginalDB != data.IDEstado || data.CodRegiaoOriginalDB != data.CodRegiao ||
-                    data.CodAreaFuncionalOriginalDB != data.CodCentroResponsabilidade || data.CodCentroResponsabilidadeOriginalDB != data.CodCentroResponsabilidade))
+                    data.CodAreaFuncionalOriginalDB != data.CodAreaFuncional || data.CodCentroResponsabilidadeOriginalDB != data.CodCentroResponsabilidade))
                 {
                     int CountNAV2017 = 0;
                     int CountNAV2009 = 0;
@@ -2479,6 +2479,84 @@ namespace Hydra.Such.Portal.Controllers
                             data.eMessage = "Erro ao atualizar: Não foi possivel atualizar o projeto no NAV2009";
                             return Json(data);
                         }
+                    }
+                }
+
+                //Update Viaturas on NAV2009
+                NAV2009Viaturas updateViaturaNAV2009 = new NAV2009Viaturas();
+                updateViaturaNAV2009 = DBNAV2009Viaturas.Get(data.Matricula);
+
+                if (updateViaturaNAV2009 != null)
+                {
+                    updateViaturaNAV2009.DataMatricula = data.DataMatricula.HasValue ? Convert.ToDateTime(data.DataMatriculaTexto) : updateViaturaNAV2009.DataMatricula;
+                    updateViaturaNAV2009.NoQuadro = !string.IsNullOrEmpty(data.NoQuadro) ? Convert.ToString(data.NoQuadro) : updateViaturaNAV2009.NoQuadro;
+                    updateViaturaNAV2009.PesoBruto = data.PesoBruto.HasValue ? Convert.ToString(data.PesoBruto) : updateViaturaNAV2009.PesoBruto;
+                    updateViaturaNAV2009.Tara = data.Tara.HasValue ? Convert.ToString(data.Tara) : updateViaturaNAV2009.Tara;
+                    updateViaturaNAV2009.Cilindrada = data.Cilindrada.HasValue ? Convert.ToString(data.Cilindrada) : updateViaturaNAV2009.Cilindrada;
+                    updateViaturaNAV2009.Potencia = data.Potencia.HasValue ? Convert.ToString(data.Potencia) : updateViaturaNAV2009.Potencia;
+                    updateViaturaNAV2009.NoLugares = data.NoLugares.HasValue ? Convert.ToString(data.NoLugares) : updateViaturaNAV2009.NoLugares;
+                    updateViaturaNAV2009.Cor = !string.IsNullOrEmpty(data.Cor) ? Convert.ToString(data.Cor) : updateViaturaNAV2009.Cor;
+                    updateViaturaNAV2009.DistanciaEntreEixos = data.DistanciaEixos.HasValue ? Convert.ToString(data.DistanciaEixos) : updateViaturaNAV2009.DistanciaEntreEixos;
+                    updateViaturaNAV2009.PneumaticosFrente = !string.IsNullOrEmpty(data.PneuFrente) ? Convert.ToString(data.PneuFrente) : updateViaturaNAV2009.PneumaticosFrente;
+                    updateViaturaNAV2009.PneumaticosRetaguarda = !string.IsNullOrEmpty(data.PneuRetaguarda) ? Convert.ToString(data.PneuRetaguarda) : updateViaturaNAV2009.PneumaticosRetaguarda;
+                    updateViaturaNAV2009.DataAquisicao = data.DataAquisicao.HasValue ? Convert.ToDateTime(data.DataAquisicaoTexto) : updateViaturaNAV2009.DataAquisicao;
+                    updateViaturaNAV2009.GlobalDimension1Code = !string.IsNullOrEmpty(data.CodRegiao) ? Convert.ToString(data.CodRegiao) : updateViaturaNAV2009.GlobalDimension1Code;
+                    updateViaturaNAV2009.GlobalDimension2Code = !string.IsNullOrEmpty(data.CodAreaFuncional) ? Convert.ToString(data.CodAreaFuncional) : updateViaturaNAV2009.GlobalDimension2Code;
+                    updateViaturaNAV2009.ShortcutDimension3Code = !string.IsNullOrEmpty(data.CodCentroResponsabilidade) ? Convert.ToString(data.CodCentroResponsabilidade) : updateViaturaNAV2009.ShortcutDimension3Code;
+                    updateViaturaNAV2009.Observacoes = !string.IsNullOrEmpty(data.Observacoes) ? Convert.ToString(data.Observacoes) : updateViaturaNAV2009.Observacoes;
+                    updateViaturaNAV2009.Utilizador = !string.IsNullOrEmpty(User.Identity.Name) ? Convert.ToString(User.Identity.Name) : updateViaturaNAV2009.Utilizador;
+                    updateViaturaNAV2009.DataAlteracao = DateTime.Now;
+                    updateViaturaNAV2009.IntervaloRevisoes = data.IntervaloRevisoes.HasValue ? Convert.ToInt32(data.IntervaloRevisoes) : updateViaturaNAV2009.IntervaloRevisoes;
+                    updateViaturaNAV2009.ConsumoIndicativoViatura = data.ConsumoReferencia.HasValue ? Convert.ToDecimal(data.ConsumoReferencia) : updateViaturaNAV2009.ConsumoIndicativoViatura;
+
+                    if (data.IDEstado.HasValue)
+                    {
+                        if (data.IDEstado == 1) //Ativo
+                            updateViaturaNAV2009.Estado = 0;
+                        if (data.IDEstado == 2) //Cedido
+                            updateViaturaNAV2009.Estado = 3;
+                        //if (data.IDEstado == 3) //Devolvido
+                        //    updateViaturaNAV2009.Estado = ;
+                        if (data.IDEstado == 4) //Vendido
+                            updateViaturaNAV2009.Estado = 1;
+                        if (data.IDEstado == 5) //Abatido
+                            updateViaturaNAV2009.Estado = 2;
+                        //if (data.IDEstado == 6) //Em reparação
+                        //    updateViaturaNAV2009.Estado = ;
+                    }
+
+                    if (data.IDCombustivel.HasValue)
+                    {
+                        if (data.IDCombustivel == 1) //Gasóleo
+                            updateViaturaNAV2009.Combustivel = 1;
+                        if (data.IDCombustivel == 2) //Gasolina
+                            updateViaturaNAV2009.Combustivel = 0;
+                        if (data.IDCombustivel == 3) //Elétrico
+                            updateViaturaNAV2009.Combustivel = 3;
+                        if (data.IDCombustivel == 4) //GPL
+                            updateViaturaNAV2009.Combustivel = 2;
+                        //if (data.IDCombustivel == 5) //Outro
+                        //    updateViaturaNAV2009.Combustivel = ;
+                    }
+
+                    if (data.IDTipoPropriedade.HasValue)
+                    {
+                        if (data.IDTipoPropriedade == 1) //SUCH
+                            updateViaturaNAV2009.TipoPropriedade = 0;
+                        if (data.IDTipoPropriedade == 2) //Renting
+                            updateViaturaNAV2009.TipoPropriedade = 1;
+                        if (data.IDTipoPropriedade == 3) //Leasing
+                            updateViaturaNAV2009.TipoPropriedade = 2;
+                    }
+
+                    if (data.IDLocalParqueamento.HasValue)
+                        updateViaturaNAV2009.LocalParqueamento = DBViaturas2ParqueamentoLocal.GetByID((int)data.IDLocalParqueamento).Local;
+
+                    if (DBNAV2009Viaturas.Update(updateViaturaNAV2009) == 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Erro ao atualizar: Não foi possivel atualizar a Viatura no NAV2009";
+                        return Json(data);
                     }
                 }
 
