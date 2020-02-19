@@ -5,6 +5,7 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
     public class Viaturas2ViewModel : ErrorHandler
     {
         public string Matricula { get; set; }
+
         public int? IDEstado { get; set; }
         public int? IDEstadoOriginalDB { get; set; }
         public string Estado { get; set; }
@@ -78,6 +79,7 @@ namespace Hydra.Such.Data.ViewModel.Viaturas
         public string DataAquisicaoTexto { get; set; }
         public int? IDGestor { get; set; }
         public string Gestor { get; set; }
+
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string DataCriacaoTexto { get; set; }

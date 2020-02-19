@@ -2120,7 +2120,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         id = x.ID,
                         value = x.Descricao
-                    }).ToList();
+                    }).Where(y => y.value.ToUpper() != "SUCH".ToUpper()).ToList();
                 }
             }
 
@@ -2371,6 +2371,23 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetViaturas2ListaAbastecimentosCombustiveis()
         {
             List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_ABASTECIMENTOS_COMBUSTIVEL");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaRentingPeriodicidade()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_RENTING_PERIODICIDADE");
             List<DDMessage> result = new List<DDMessage>();
 
             if (AllResults != null && AllResults.Count > 0)

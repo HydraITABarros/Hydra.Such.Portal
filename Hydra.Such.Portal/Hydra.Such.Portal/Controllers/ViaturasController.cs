@@ -714,6 +714,65 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetViaturas2TabRentingContrato([FromBody] Viaturas2RentingContratoViewModel viatura)
+        {
+            List<Viaturas2RentingContratoViewModel> TabRentingContrato = new List<Viaturas2RentingContratoViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+            {
+                TabRentingContrato = DBViaturas2RentingContrato.ParseListToViewModel(DBViaturas2RentingContrato.GetByMatricula(viatura.Matricula));
+
+                List<ConfiguracaoTabelas> AllFornecedores = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_PROPRIEDADE");
+                List<ConfiguracaoTabelas> AllPeriodicidades = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_RENTING_PERIODICIDADE");
+
+                TabRentingContrato.ForEach(x =>
+                {
+                    if (x.IDFornecedor != null && x.IDFornecedor > 0) x.Fornecedor = AllFornecedores.Where(y => y.ID == x.IDFornecedor).FirstOrDefault().Descricao;
+                    if (x.IDPeriodicidade != null && x.IDPeriodicidade > 0) x.Periodicidade = AllPeriodicidades.Where(y => y.ID == x.IDPeriodicidade).FirstOrDefault().Descricao;
+                });
+            }
+            return Json(TabRentingContrato.OrderByDescending(x => x.DataInicio));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabRentingContratoAlteracoes([FromBody] Viaturas2RentingContratoAlteracoesViewModel viatura)
+        {
+            List<Viaturas2RentingContratoAlteracoesViewModel> TabRentingContratoAlteracoes = new List<Viaturas2RentingContratoAlteracoesViewModel>();
+            if (viatura != null && viatura.IDContrato > 0)
+            {
+                TabRentingContratoAlteracoes = DBViaturas2RentingContratoAlteracoes.ParseListToViewModel(DBViaturas2RentingContratoAlteracoes.GetByIDContrato(viatura.IDContrato));
+
+                List<Viaturas2RentingContrato> AllContratos = DBViaturas2RentingContrato.GetAll();
+
+                TabRentingContratoAlteracoes.ForEach(x =>
+                {
+                    if (x.IDContrato != null && x.IDContrato > 0) x.NoContrato = AllContratos.Where(y => y.ID == x.IDContrato).FirstOrDefault().NoContrato;
+                });
+            }
+            return Json(TabRentingContratoAlteracoes.OrderByDescending(x => x.DataPedido));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2ListaRentingContrato([FromBody] Viaturas2RentingContratoViewModel viatura)
+        {
+            List<Viaturas2RentingContrato> AllResults = DBViaturas2RentingContrato.GetByMatricula(viatura.Matricula);
+            List<ConfiguracaoTabelas> AllFornecedores = DBConfiguracaoTabelas.GetAllByTabela("VIATURAS2_PROPRIEDADE");
+
+            List<DDMessageRelatedInt> result = new List<DDMessageRelatedInt>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessageRelatedInt()
+                {
+                    id = x.ID,
+                    value = x.NoContrato,
+                    extra = AllFornecedores.Where(y => y.ID == x.IDFornecedor).FirstOrDefault().Descricao,
+                    extra2 = x.KmInicio.ToString()
+                }).ToList();
+            }
+            return Json(result.OrderBy(x => x.value));
+        }
+
+        [HttpPost]
         public JsonResult GetViaturas2TabEstado([FromBody] Viaturas2InspecoesViewModel viatura)
         {
             List<Viaturas2EstadosViewModel> TabEstados = new List<Viaturas2EstadosViewModel>();
@@ -1432,6 +1491,82 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateViaturas2RentingContrato([FromBody] Viaturas2RentingContratoViewModel RentingContrato)
+        {
+            try
+            {
+                if (RentingContrato != null && !string.IsNullOrEmpty(RentingContrato.Matricula))
+                {
+                    Viaturas2RentingContrato RentingContratoToCreate = new Viaturas2RentingContrato();
+
+                    RentingContratoToCreate = DBViaturas2RentingContrato.ParseToDB(RentingContrato);
+                    RentingContratoToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2RentingContrato.Create(RentingContratoToCreate) != null)
+                    {
+                        RentingContrato.eReasonCode = 1;
+                        RentingContrato.eMessage = "Linha do Contrato criada com sucesso.";
+                    }
+                    else
+                    {
+                        RentingContrato.eReasonCode = 3;
+                        RentingContrato.eMessage = "Ocorreu um erro ao criar a Linha do Contrato no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    RentingContrato.eReasonCode = 3;
+                    RentingContrato.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                RentingContrato.eReasonCode = 4;
+                RentingContrato.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(RentingContrato);
+        }
+
+        [HttpPost]
+        public JsonResult CreateViaturas2RentingContratoAlteracoes([FromBody] Viaturas2RentingContratoAlteracoesViewModel RentingContratoAlteracoes)
+        {
+            try
+            {
+                if (RentingContratoAlteracoes != null && !string.IsNullOrEmpty(RentingContratoAlteracoes.Matricula))
+                {
+                    Viaturas2RentingContratoAlteracoes RentingContratoAlteracoesToCreate = new Viaturas2RentingContratoAlteracoes();
+
+                    RentingContratoAlteracoesToCreate = DBViaturas2RentingContratoAlteracoes.ParseToDB(RentingContratoAlteracoes);
+                    RentingContratoAlteracoesToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2RentingContratoAlteracoes.Create(RentingContratoAlteracoesToCreate) != null)
+                    {
+                        RentingContratoAlteracoes.eReasonCode = 1;
+                        RentingContratoAlteracoes.eMessage = "Linha de Alterações do Contrato criada com sucesso.";
+                    }
+                    else
+                    {
+                        RentingContratoAlteracoes.eReasonCode = 3;
+                        RentingContratoAlteracoes.eMessage = "Ocorreu um erro ao criar a Linha de Alterações do Contrato no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    RentingContratoAlteracoes.eReasonCode = 3;
+                    RentingContratoAlteracoes.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                RentingContratoAlteracoes.eReasonCode = 4;
+                RentingContratoAlteracoes.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(RentingContratoAlteracoes);
+        }
+
+        [HttpPost]
         public JsonResult CreateViaturas2ViaVerde([FromBody] Viaturas2ViaVerdeViewModel ViaVerde)
         {
             try
@@ -2083,6 +2218,96 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult DeleteViaturas2RentingContrato([FromBody] Viaturas2RentingContratoViewModel RentingContrato)
+        {
+            try
+            {
+                if (RentingContrato != null && RentingContrato.ID > 0 && !string.IsNullOrEmpty(RentingContrato.Matricula))
+                {
+                    Viaturas2RentingContrato RentingContratoToDelete = new Viaturas2RentingContrato();
+
+                    RentingContratoToDelete = DBViaturas2RentingContrato.GetByID(RentingContrato.ID);
+
+                    if (RentingContratoToDelete != null)
+                    {
+                        if (DBViaturas2RentingContrato.Delete(RentingContratoToDelete) == true)
+                        {
+                            RentingContrato.eReasonCode = 1;
+                            RentingContrato.eMessage = "Linha do Contrato Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            RentingContrato.eReasonCode = 3;
+                            RentingContrato.eMessage = "Ocorreu um erro ao Eliminar a linha do Contrato no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        RentingContrato.eReasonCode = 3;
+                        RentingContrato.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha do Contrato.";
+                    }
+                }
+                else
+                {
+                    RentingContrato.eReasonCode = 3;
+                    RentingContrato.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                RentingContrato.eReasonCode = 4;
+                RentingContrato.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(RentingContrato);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2RentingContratoAlteracoes([FromBody] Viaturas2RentingContratoAlteracoesViewModel RentingContratoAlteracoes)
+        {
+            try
+            {
+                if (RentingContratoAlteracoes != null && RentingContratoAlteracoes.ID > 0 && !string.IsNullOrEmpty(RentingContratoAlteracoes.Matricula))
+                {
+                    Viaturas2RentingContratoAlteracoes RentingContratoAlteracoesToDelete = new Viaturas2RentingContratoAlteracoes();
+
+                    RentingContratoAlteracoesToDelete = DBViaturas2RentingContratoAlteracoes.GetByID(RentingContratoAlteracoes.ID);
+
+                    if (RentingContratoAlteracoesToDelete != null)
+                    {
+                        if (DBViaturas2RentingContratoAlteracoes.Delete(RentingContratoAlteracoesToDelete) == true)
+                        {
+                            RentingContratoAlteracoes.eReasonCode = 1;
+                            RentingContratoAlteracoes.eMessage = "Linha de Alterações do Contrato Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            RentingContratoAlteracoes.eReasonCode = 3;
+                            RentingContratoAlteracoes.eMessage = "Ocorreu um erro ao Eliminar a linha de Alterações do Contrato no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        RentingContratoAlteracoes.eReasonCode = 3;
+                        RentingContratoAlteracoes.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha de Alterações do Contrato.";
+                    }
+                }
+                else
+                {
+                    RentingContratoAlteracoes.eReasonCode = 3;
+                    RentingContratoAlteracoes.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                RentingContratoAlteracoes.eReasonCode = 4;
+                RentingContratoAlteracoes.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(RentingContratoAlteracoes);
+        }
+
+        [HttpPost]
         public JsonResult DeleteViaturas2ViaVerde([FromBody] Viaturas2ViaVerdeViewModel ViaVerde)
         {
             try
@@ -2486,7 +2711,7 @@ namespace Hydra.Such.Portal.Controllers
                 NAV2009Viaturas updateViaturaNAV2009 = new NAV2009Viaturas();
                 updateViaturaNAV2009 = DBNAV2009Viaturas.Get(data.Matricula);
 
-                if (updateViaturaNAV2009 != null)
+                if (updateViaturaNAV2009 != null && !string.IsNullOrEmpty(updateViaturaNAV2009.Matricula))
                 {
                     updateViaturaNAV2009.DataMatricula = data.DataMatricula.HasValue ? Convert.ToDateTime(data.DataMatriculaTexto) : updateViaturaNAV2009.DataMatricula;
                     updateViaturaNAV2009.NoQuadro = !string.IsNullOrEmpty(data.NoQuadro) ? Convert.ToString(data.NoQuadro) : updateViaturaNAV2009.NoQuadro;
