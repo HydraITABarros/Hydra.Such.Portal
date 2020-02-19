@@ -414,9 +414,16 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (viatura.DataMatricula.HasValue)
                 {
-                    if (Convert.ToDateTime(viatura.DataMatricula).AddDays(-30) <= DateTime.Now.Date && Convert.ToDateTime(viatura.DataMatricula) >= DateTime.Now.Date)
-                        viatura.IUCate = viatura.DataMatricula.Value.ToString("yyyy-MM-dd");
+                    DateTime DataMatricula = Convert.ToDateTime(viatura.DataMatricula);
+                    DateTime DataIUC = Convert.ToDateTime(DateTime.Now.Year.ToString() + "-" + DataMatricula.Month.ToString() + "-" + DataMatricula.Day.ToString());
+
+                    if (DataIUC.AddDays(-30) <= DateTime.Now.Date && DataIUC >= DateTime.Now.Date)
+                        viatura.IUCate = DataIUC.ToString("yyyy-MM-dd");
                 }
+
+                Viaturas2Substituicao LastSubstituicao = DBViaturas2Substituicao.GetByMatriculaRecent(data.Matricula, DateTime.Now);
+                if (LastSubstituicao != null && !string.IsNullOrEmpty(LastSubstituicao.MatriculaSubstituicao))
+                        viatura.Substituicao = LastSubstituicao.MatriculaSubstituicao;
 
                 Viaturas2Afetacao LastAfetacao = DBViaturas2Afetacao.GetByMatriculaRecent(data.Matricula);
                 if (LastAfetacao != null && LastAfetacao.IDAreaReal.HasValue && LastAfetacao.DataInicio.HasValue)
@@ -711,6 +718,15 @@ namespace Hydra.Such.Portal.Controllers
                 });
             }
             return Json(TabAbate.OrderByDescending(x => x.Data));
+        }
+
+        [HttpPost]
+        public JsonResult GetViaturas2TabSubstituicao([FromBody] Viaturas2SubstituicaoViewModel viatura)
+        {
+            List<Viaturas2SubstituicaoViewModel> TabSubstituicao = new List<Viaturas2SubstituicaoViewModel>();
+            if (viatura != null && !string.IsNullOrEmpty(viatura.Matricula))
+                TabSubstituicao = DBViaturas2Substituicao.ParseListToViewModel(DBViaturas2Substituicao.GetByMatricula(viatura.Matricula));
+            return Json(TabSubstituicao.OrderByDescending(x => x.DataInicio));
         }
 
         [HttpPost]
@@ -1491,6 +1507,44 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CreateViaturas2Substituicao([FromBody] Viaturas2SubstituicaoViewModel Substituicao)
+        {
+            try
+            {
+                if (Substituicao != null && !string.IsNullOrEmpty(Substituicao.Matricula))
+                {
+                    Viaturas2Substituicao SubstituicaoToCreate = new Viaturas2Substituicao();
+
+                    SubstituicaoToCreate = DBViaturas2Substituicao.ParseToDB(Substituicao);
+                    SubstituicaoToCreate.UtilizadorCriacao = User.Identity.Name;
+
+                    if (DBViaturas2Substituicao.Create(SubstituicaoToCreate) != null)
+                    {
+                        Substituicao.eReasonCode = 1;
+                        Substituicao.eMessage = "Linha de Substituição criada com sucesso.";
+                    }
+                    else
+                    {
+                        Substituicao.eReasonCode = 3;
+                        Substituicao.eMessage = "Ocorreu um erro ao criar a Linha de Substituição no e-SUCH.";
+                    }
+                }
+                else
+                {
+                    Substituicao.eReasonCode = 3;
+                    Substituicao.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Substituicao.eReasonCode = 4;
+                Substituicao.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Substituicao);
+        }
+
+        [HttpPost]
         public JsonResult CreateViaturas2RentingContrato([FromBody] Viaturas2RentingContratoViewModel RentingContrato)
         {
             try
@@ -2215,6 +2269,51 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             return Json(Abate);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteViaturas2Substituicao([FromBody] Viaturas2SubstituicaoViewModel Substituicao)
+        {
+            try
+            {
+                if (Substituicao != null && Substituicao.ID > 0 && !string.IsNullOrEmpty(Substituicao.Matricula))
+                {
+                    Viaturas2Substituicao SubstituicaoToDelete = new Viaturas2Substituicao();
+
+                    SubstituicaoToDelete = DBViaturas2Substituicao.GetByID(Substituicao.ID);
+
+                    if (SubstituicaoToDelete != null)
+                    {
+                        if (DBViaturas2Substituicao.Delete(SubstituicaoToDelete) == true)
+                        {
+                            Substituicao.eReasonCode = 1;
+                            Substituicao.eMessage = "Linha Substituição Eliminada com sucesso.";
+                        }
+                        else
+                        {
+                            Substituicao.eReasonCode = 3;
+                            Substituicao.eMessage = "Ocorreu um erro ao Eliminar a linha Substituição no e-SUCH.";
+                        }
+                    }
+                    else
+                    {
+                        Substituicao.eReasonCode = 3;
+                        Substituicao.eMessage = "Ocorreu um erro ao Eliminar ao ler a linha Substituição.";
+                    }
+                }
+                else
+                {
+                    Substituicao.eReasonCode = 3;
+                    Substituicao.eMessage = "Ocorreu um erro nos dados.";
+                }
+            }
+            catch (Exception e)
+            {
+                Substituicao.eReasonCode = 4;
+                Substituicao.eMessage = "Ocorreu um erro.";
+            }
+
+            return Json(Substituicao);
         }
 
         [HttpPost]

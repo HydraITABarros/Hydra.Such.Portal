@@ -614,6 +614,33 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <!--Substituicao-->
+        <iron-ajax url="/Viaturas/GetViaturas2TabSubstituicao"
+                   last-response="{{tabSubstituicao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tabSubstituicao_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/CreateViaturas2Substituicao"
+                   last-response="{{createViaturas2SubstituicaoResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_CreateViaturas2Substituicao_ajax"
+                   on-response="_responseCreateViaturas2Substituicao"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Viaturas/DeleteViaturas2Substituicao"
+                   last-response="{{deleteViaturas2SubstituicaoResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DeleteViaturas2Substituicao_ajax"
+                   on-response="_responseDeleteViaturas2Substituicao"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--RentingContrato-->
         <iron-ajax url="/Viaturas/GetViaturas2TabRentingContrato"
                    last-response="{{tabRentingContrato}}"
@@ -668,7 +695,7 @@
                    on-response="_responseDeleteViaturas2RentingContratoAlteracoes"
                    content-type="application/json">
         </iron-ajax>
-        
+
         <iron-ajax url="/Viaturas/GetViaturas2ListaRentingContrato"
                    last-response="{{ListaRentingContrato}}"
                    method="post"
@@ -853,11 +880,11 @@
                                             </div>
 
                                             <div class="col-md-2">
-                                                <vaadin-text-field id="info_iucMesSeguinte" name="info_iucMesSeguinte" label="IUC" value="" disabled></vaadin-text-field>
+                                                <vaadin-date-picker id="info_iucMesSeguinte" name="info_iucMesSeguinte" label="IUC" value="{{data.iuCate}}" disabled placeholder="dd/MM/aaaa"></vaadin-date-picker>
                                             </div>
 
                                             <div class="col-md-3">
-                                                <vaadin-text-field id="info_substituicao" name="info_substituicao" label="Substituição" value="" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="info_substituicao" name="info_substituicao" label="Substituição" value="{{data.substituicao}}" disabled></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-3">
@@ -2755,6 +2782,115 @@
                                         </paper-collapse-item>
                                     </div>
                                 </paper-collapse-item>
+
+                                <!--Substituicao-->
+                                <paper-collapse-item class="panel-heading" header="Substituição Provisória de Viaturas Não Renting" closed>
+                                    <vaadin-grid id="gridSubstituicao" aria-label="gridSubstituicao" items="{{ tabSubstituicao }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="matriculaSubstituicao">Viatura de Substituição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="matriculaSubstituicao" />
+                                            </template>
+                                            <template>
+                                                {{item.matriculaSubstituicao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataInicioTexto">Início da Substituição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataInicioTexto" />
+                                            </template>
+                                            <template>
+                                                {{item.dataInicioTexto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmInicio">Km no Início</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmInicio" />
+                                            </template>
+                                            <template>
+                                                <div class="alignRight">{{item.kmInicio}} km</div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataFimTexto">Fim da Substituição</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataFimTexto" />
+                                            </template>
+                                            <template>
+                                                {{item.dataFimTexto}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="kmFim">Km no Fim</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="kmFim" />
+                                            </template>
+                                            <template>
+                                                <div class="alignRight">{{item.kmFim}} km</div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="observacoes" />
+                                            </template>
+                                            <template>
+                                                {{item.observacoes}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="100px">
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btn_deleteSubstituicao" class="btnRemove tableBtn" raised on-tap="_deleteSubstituicao" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+
+                                    <div style="padding-left:50px">
+                                        <paper-collapse-item class="panel-heading" header="Inserir" closed>
+                                            <div class="row break_clear">
+                                                <div class="col-md-2">
+                                                    <vaadin-text-field id="substituicao_matriculaSubstituicao" name="substituicao_matriculaSubstituicao" label="Viatura de Substituição" value="" disabled="{{ _lockFields }}" maxlength="20" required error-message="O campo Viatura de Substituição é de preenchimento obrigatório"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="substituicao_dataInicio" name="substituicao_dataInicio" label="Início da Substituição" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa" required error-message="O campo Início da Substituição é de preenchimento obrigatório"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1">
+                                                    <vaadin-text-field id="substituicao_kmInicio" name="substituicao_kmInicio" label="Km no Início" value="" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <vaadin-date-picker id="substituicao_dataFim" name="substituicao_dataFim" label="Fim da Substituição" value="" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                </div>
+
+                                                <div class="col-md-1">
+                                                    <vaadin-text-field id="substituicao_kmFim" name="substituicao_kmFim" label="Km no Fim" value="" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <vaadin-text-field id="substituicao_observacoes" name="substituicao_observacoes" label="Observações" value="" disabled="{{ _lockFields }}" maxlength="200"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-1" style="padding-top:15px">
+                                                    <paper-button raised id="btn_createSubstituicao" class="btnSave" on-tap="_createSubstituicao" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                </div>
+                                            </div>
+                                        </paper-collapse-item>
+                                    </div>
+                                </paper-collapse-item>
                             </div>
 
                             <!--Renting-->
@@ -3499,6 +3635,10 @@
                     this.$.page_tabAbate_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabAbate_ajax.generateRequest();
                     this.$.gridAbate.clearCache();
+
+                    this.$.page_tabSubstituicao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                    this.$.page_tabSubstituicao_ajax.generateRequest();
+                    this.$.gridSubstituicao.clearCache();
 
                     this.$.page_tabRentingContrato_ajax.body = JSON.stringify({ "matricula": this._matricula });
                     this.$.page_tabRentingContrato_ajax.generateRequest();
@@ -4825,6 +4965,73 @@
                     }
                 },
 
+                _validateDataSubstituicao: function () {
+                    var errors = 0;
+
+                    if (this.$.substituicao_matriculaSubstituicao.value == null || this.$.substituicao_matriculaSubstituicao.value == "") {
+                        this.$.substituicao_matriculaSubstituicao.validate();
+                        errors = errors + 1;
+                    }
+
+                    if (this.$.substituicao_dataInicio.value == null || this.$.substituicao_dataInicio.value == "") {
+                        this.$.substituicao_dataInicio.validate();
+                        errors = errors + 1;
+                    }
+
+                    if ((this.$.substituicao_dataInicio.value != null && this.$.substituicao_dataInicio.value != "") && (this.$.substituicao_dataFim.value != null && this.$.substituicao_dataFim.value != "")) {
+                        var dataInicio = Date.parse(this.$.substituicao_dataInicio.value)
+                        var dataFim = Date.parse(this.$.substituicao_dataFim.value)
+                        if (dataInicio > dataFim) {
+                            this._openToastError("A data Fim tem que ser superior ou igual à data Início.");
+                            errors = errors + 1;
+                        }
+                    }
+
+                    if (errors > 0) {
+                        this._openToastError("Verifique os dados inseridos.");
+                        return false;
+                    }
+
+                    return true;
+                },
+                _createSubstituicao: function () {
+                    if (this._validateDataSubstituicao()) {
+                        this.$.page_CreateViaturas2Substituicao_ajax.body = JSON.stringify({
+                            matricula: this._matricula,
+
+                            matriculaSubstituicao: this.$.substituicao_matriculaSubstituicao.value,
+                            dataInicio: this.$.substituicao_dataInicio.value,
+                            kmInicio: this.$.substituicao_kmInicio.value,
+                            dataFim: this.$.substituicao_dataFim.value,
+                            kmFim: this.$.substituicao_kmFim.value,
+                            observacoes: this.$.substituicao_observacoes.value,
+                        });
+                        this.$.page_CreateViaturas2Substituicao_ajax.generateRequest();
+                        this.$.gridSubstituicao.clearCache();
+                    }
+                },
+                _responseCreateViaturas2Substituicao: function () {
+                    if (this.createViaturas2SubstituicaoResult.eReasonCode == 1) {
+                        this._openToast(this.createViaturas2SubstituicaoResult.eMessage);
+
+                        this.$.substituicao_matriculaSubstituicao.value = "";
+                        this.$.substituicao_dataInicio.value = "";
+                        this.$.substituicao_kmInicio.value = "";
+                        this.$.substituicao_dataFim.value = "";
+                        this.$.substituicao_kmFim.value = "";
+                        this.$.substituicao_observacoes.value = "";
+
+                        this.$.page_tabSubstituicao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabSubstituicao_ajax.generateRequest();
+                        this.$.gridSubstituicao.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.createViaturas2SubstituicaoResult.eMessage);
+                    }
+                },
+
                 _validateDataRentingContrato: function () {
                     var errors = 0;
 
@@ -5918,6 +6125,62 @@
                         this.$.page_databound_ajax.generateRequest();
                     } else {
                         this._openToastError(this.Abate.eMessage);
+                    }
+                },
+
+                _deleteSubstituicao: function (e) {
+                    if (this._permissions.delete == true) {
+                        var index = this.tabSubstituicao.indexOf(e.model.item);
+                        var matricula = this._matricula;
+                        var id = e.model.item.id;
+                        var matriculaSubstituicao = e.model.item.matriculaSubstituicao;
+                        var ajax_request = this.$.page_DeleteViaturas2Substituicao_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a linha de Substituição da Viatura " + matriculaSubstituicao + " ?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteSubstituicao) {
+                                if (deleteSubstituicao) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula,
+                                        id: id
+                                    });
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridInspecao.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar a linha de Substituição.');
+                    }
+                },
+                _responseDeleteViaturas2Substituicao: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.deleteViaturas2SubstituicaoResult.eReasonCode == 1) {
+                        this._openToast(this.deleteViaturas2SubstituicaoResult.eMessage);
+
+                        this.$.page_tabSubstituicao_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_tabSubstituicao_ajax.generateRequest();
+                        this.$.gridSubstituicao.clearCache();
+
+                        this.$.page_databound_ajax.body = JSON.stringify({ "matricula": this._matricula });
+                        this.$.page_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.Substituicao.eMessage);
                     }
                 },
 
