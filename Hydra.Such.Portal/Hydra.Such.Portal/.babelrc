@@ -1,13 +1,32 @@
 {
-	"presets": [
-		"@babel/preset-env"
-	],
-	"plugins": [
-		["@babel/plugin-proposal-decorators", {
-			"legacy": true
-		}],
-		["@babel/plugin-proposal-class-properties", {
-			"loose": true
-		}]
-	]
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": false
+      }
+    ],
+    [
+      "babel-plugin-transform-imports",
+      {
+        "@material-ui/core": {
+          "transform": "@material-ui/core/esm/${member}",
+          "preventFullImport": true
+        },
+        "@material-ui/icons": {
+          "transform": "@material-ui/icons/esm/${member}",
+          "preventFullImport": true
+        }
+      }
+    ]
+  ]
 }
