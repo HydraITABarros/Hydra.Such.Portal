@@ -17,7 +17,11 @@ axios.defaults.headers.get['Accept'] = 'application/json';
 
 
 const ListContainer = styled.div`
-    
+    [class^="se-root"]{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+    }
 `
 const Hr = styled.hr`
     margin-bottom: 0;
@@ -107,6 +111,7 @@ class OrdensDeManutencaoLine extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         //return true;
+
         return nextState.isLoading !== this.state.isLoading ||
             nextState.equipmentsIsLoading !== this.state.equipmentsIsLoading ||
             nextState.equipmentsTotal !== this.state.equipmentsTotal ||
@@ -253,7 +258,7 @@ class OrdensDeManutencaoLine extends Component {
                 this.setState({tooltipReady: true});
                 Tooltip.Hidden.hide();
                 Tooltip.Hidden.rebuild();
-            }, 1200);
+            }, 400);
         });
     }
 
@@ -296,48 +301,40 @@ class OrdensDeManutencaoLine extends Component {
                                 }).join(',')}`);
                             }}
                         /> :
-                        <Header isLoading={this.state.isLoading}
-                                maintenanceOrder={this.state.maintenanceOrder}
-                                executed={this.state.ordersCountsLines.executed}
-                                toExecute={this.state.ordersCountsLines.toExecute}
-                                toSigning={this.state.ordersCountsLines.toSigning}
-                                orderId={this.state.orderId}/>
+                        <Header
+                            isLoading={this.state.isLoading}
+                            maintenanceOrder={this.state.maintenanceOrder}
+                            executed={this.state.ordersCountsLines.executed}
+                            toExecute={this.state.ordersCountsLines.toExecute}
+                            toSigning={this.state.ordersCountsLines.toSigning}
+                            orderId={this.state.orderId}/>
                     }
                 </div>
 
                 {this.state.listContainerStyle.marginTop &&
-                <ListContainer ref={el => this.listContainer = el} style={{...this.state.listContainerStyle}}
-                               className="om-details__list-container"
-                               onScroll={(e) => {
+                <ListContainer
+                    ref={el => this.listContainer = el} style={{...this.state.listContainerStyle}}
+                    className="om-details__list-container"
+                    onScroll={(e) => {
 
-                                   var scrollTop = e.target.scrollTop;
-                                   /*                                 
-                                    if (scrollTop - 20 <= 0) {
-                                        ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
-                                        headerCollapsed = false;
-                                    } else if (scrollTop > tableScrollTop) {
-                                        ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
-                                        headerCollapsed = true;
-                                    }
-                                    */
+                        var scrollTop = e.target.scrollTop;
 
-                                   setTimeout(() => {
-                                       if (scrollTop <= 10 || this.state.isLoading) {
-                                           ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
-                                           headerCollapsed = false;
-                                       } else if (scrollTop >= 10) {
-                                           ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
-                                           headerCollapsed = true;
-                                       }
-                                       tableScrollTop = scrollTop;
-                                   });
+                        setTimeout(() => {
+                            if (scrollTop <= 10 || this.state.isLoading) {
+                                ReactDOM.findDOMNode(this.highlightWrapper).classList.remove("om-details__header--collapsed");
+                                headerCollapsed = false;
+                            } else if (scrollTop >= 10) {
+                                ReactDOM.findDOMNode(this.highlightWrapper).classList.add("om-details__header--collapsed");
+                                headerCollapsed = true;
+                            }
+                            tableScrollTop = scrollTop;
+                        });
 
-
-                                   setTimeout(() => {
-                                       Tooltip.Hidden.hide();
-                                       Tooltip.Hidden.rebuild();
-                                   });
-                               }}>
+                        setTimeout(() => {
+                            Tooltip.Hidden.hide();
+                            Tooltip.Hidden.rebuild();
+                        });
+                    }}>
                     <PivotTable
                         onRef={el => this.table = el}
                         isLoading={this.state.equipmentsIsLoading}
@@ -472,6 +469,7 @@ class OrdensDeManutencaoLine extends Component {
                         </td>
                         }
                     />
+                    <Tooltip.Hidden/>
                 </ListContainer>
                 }
             </PageTemplate>
