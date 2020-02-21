@@ -36,7 +36,9 @@ const IsPerventive = (props) => {
                             <Icon comments style={{fontSize: '20px', top: "9px", position: "relative"}}/> :
                             props.value == 3 ?
                                 <Icon decline style={{fontSize: '20px', top: "9px", position: "relative"}}/> :
-                                <span></span>
+                                props.value == 4 ?
+                                    <Icon observacoes style={{fontSize: '20px', top: "9px", position: "relative"}}/> :
+                                    <span></span>
                 }
             </Text>
         </div>

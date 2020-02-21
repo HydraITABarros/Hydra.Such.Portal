@@ -22,7 +22,7 @@ import {
 } from 'components';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
-import {createMuiTheme} from '@material-ui/core/styles';
+import {createGenerateClassName, createMuiTheme, MuiThemeProvider, StylesProvider} from '@material-ui/core/styles';
 import MuiBadge from '@material-ui/core/Badge';
 
 import MuiTableCell from '@material-ui/core/TableCell';
@@ -39,10 +39,10 @@ import IsPreventiveTypeProvider from './isPreventiveDataType';
 import DefaultTypeProvider from './defaultDataType';
 import AvatarsTypeProvider from './avatarsDataType';
 import DateTypeProvider from './dateDataType';
-import OmStateTypeProvider from './omStateDataType'
-import OmSignedTypeProvider from './omSignedDataTyoe'
+import OmStateTypeProvider from './omStateDataType';
+import OmSignedTypeProvider from './omSignedDataTyoe';
 import {isMobile} from 'react-device-detect';
-import {useDrag, useScroll} from 'react-use-gesture'
+import {useDrag, useScroll} from 'react-use-gesture';
 
 import {
     Column,
@@ -62,7 +62,11 @@ import {
 } from '@devexpress/dx-react-grid-material-ui';
 import MenuItem from '@material-ui/core/MenuItem';
 import './index.scss';
+import {JssProvider} from "react-jss";
 
+const generateClassName = createGenerateClassName({
+    dangerouslyUseGlobalCSS: true, // won't minify CSS classnames when true
+});
 
 axios.defaults.headers.post['Accept'] = 'application/json';
 axios.defaults.headers.get['Accept'] = 'application/json';
@@ -250,6 +254,10 @@ injectGlobal`
 				opacity: 0;
 			}
 		} 
+		.MuiInput-root {
+           position: relative;
+	    }
+
 	}
 `
 
@@ -383,7 +391,7 @@ const SortLabel = styled(TableHeaderRow.SortLabel)`&& {
 		}
 	}
 	svg {
-	    left: 3px;
+	    left: 1px;
 	    position: relative;
 	}
 }
@@ -449,6 +457,18 @@ class eTable extends Component {
         }).map((item) => {
             return item.name;
         });
+
+        if (this.props.defaultSorting) {
+            this.state.sort = this.props.defaultSorting;
+        }
+
+        let hidden_columns = localStorage.getItem(window.location.pathname.replace('/', '') + '-hidden-columns');
+        try {
+            this.state.hiddenColumns = JSON.parse(hidden_columns) || [];
+        } catch (e) {
+            this.state.hiddenColumns = [];
+        }
+
     }
 
     handleRowPress(props) {
@@ -537,6 +557,7 @@ class eTable extends Component {
         //return true;
         // return this.props.rows !== nextProps.rows || nextProps.isLoading !== this.props.isLoading || nextState.isLoading !== this.state.isLoading
         // 	|| nextState.rows !== this.state.rows || nextProps.isLoading !== this.state.isLoading || this.state.rows !== nextProps.rows;
+
         if (!isToUpdate) {
             return false;
         }
@@ -707,7 +728,8 @@ class eTable extends Component {
                     style={{position: 'realtive', 'zIndex': 1000, background: 'transparent', boxShadow: 'none'}}
                     round
                     {..._.omit(props, ['getMessage', 'active'])}
-                    onClick={() => {
+                    onClick={(val) => {
+                        console.log('IMP', props, val)
                         props.onToggle()
                     }}>
                     <Icon row-menu style={{fontSize: '16px'}}/>
@@ -723,9 +745,12 @@ class eTable extends Component {
                 <VirtualTable.NoDataCell {...props} style={{
                     position: "absolute", textAlign: "center", top: "50%",
                     width: "100%", border: "none", padding: "0"
-                }} getMessage={() => <Text p
-                                           style={{color: this.props.theme.palette.primary.light, lineHeight: '1.4em'}}>
-                    <Inbox style={{fontSize: '48px'}}/><br/>Sem Dados</Text>
+                }} getMessage={() =>
+                    <Text
+                        p
+                        style={{color: this.props.theme.palette.primary.light, lineHeight: '1.4em'}}>
+                        <Inbox style={{fontSize: '48px'}}/><br/>Sem Dados
+                    </Text>
                 }/>
         )
     }
@@ -771,341 +796,445 @@ class eTable extends Component {
         // console.log('total', totalRowCount, totalMax, this.state.total);
 
         var retval = (
-            <div style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, maxWidth: '100%'}}
-                 className={'pivot-table'}>
-                <div style={{
-                    height: '100%',
-                    width: '100%',
-                    textAlign: 'center',
-                    position: 'absolute',
-                    zIndex: 1,
-                    pointerEvents: 'none'
-                }} className={isLoading ? "" : "hidden"}>
-                    <CircularProgress
-                        style={{position: 'relative', top: '55%', color: this.props.theme.palette.secondary.default}}/>
-                </div>
-                {this.props.searchEnabled &&
-                <div>
-                    <SearchWrapper width={this.props.groupingEnabled ? "33%" : "50%"}
-                                   right={this.props.groupingEnabled ? "33%" : "50%"}>
-                        {this.state.searchValues.map((val, index) => {
-                            return (
-                                <StyledBadge span key={index}>
-                                    {val}
-                                    <Icon decline
-                                          style={{
-                                              fontSize: '12px',
-                                              cursor: 'pointer',
-                                              position: 'relative',
-                                              top: '-1px',
-                                              left: '2px',
-                                              display: (this.state.selecting ? 'none' : 'inline-block')
-                                          }}
-                                          onClick={() => this.handleSearchOnClick(val)}
-                                    />
-                                </StyledBadge>
-                            )
-                        }).reverse()}
-                    </SearchWrapper>
-                    <SearchWrapper
-                        width={this.props.groupingEnabled ? "33%" : "50%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
-                        <TextField
-                            className="pivot-table__text-field"
-                            inputProps={{autoComplete: "off"}}
-                            id="oms-search"
-                            onKeyUp={this.handleRowKeyUp}
-                            onFocus={(e) => this.props.onSearchFocus ? this.props.onSearchFocus(e) : true}
-                            type="search"
-                            margin="none"
-                            endAdornment={
-                                <InputAdornment position="end" onClick={() => {
-                                    document.getElementById("oms-search").focus()
-                                }}>
-                                    <SearchButton round boxShadow={"none"}><Icon search/></SearchButton>
-                                </InputAdornment>
-                            }
-                        />
-                    </SearchWrapper>
-                </div>
-                }
-                {!this.state.clear &&
-                <TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]}>
-                    <SortingState sorting={this.state.sort} onSortingChange={this.handleOnSortingChange}
-                                  columnExtensions={columns}/>
-                    <SelectionState/>
-                    <GroupingState expandedGroups={defaultExpandedGroups} grouping={this.state.group}
-                                   columnExtensions={columns.map((item) => {
-                                       return {columnName: item.name, groupingEnabled: item.groupingEnabled}
-                                   })}
-                                   onGroupingChange={this.handleOnGroupChange}
-                    />
-                    <SearchState/>
-                    <IntegratedFiltering/><IntegratedSorting/><IntegratedSelection/>
-                    <IntegratedGrouping/>
-                    <DragDropProvider/>
-                    <VirtualTableState
-                        infiniteScrolling={false}
-                        loading={this.state.isLoading}
-                        totalRowCount={totalRowCount}
-                        pageSize={this.props.pageSize}
-                        skip={this.state.skip}
-                        getRows={this.fetchNext}/>
-                    {/*  */}
-                    <VirtualTable
-                        estimatedRowHeight={56}
-                        height="auto"
-                        noDataCellComponent={this.noDataCellComponent}
-                        columnExtensions={columns.map((item) => {
-                            return {columnName: item.name, width: item.width}
-                        })}
-                        rowComponent={(props) => {
-                            return (
-                                <VirtualTable.Row
-                                    {...props}
-                                    // key={props.tableRow.key}
-                                    className={"table--row--hoverable" + (props.row.selected ? " table--row--hoverable__selected" : "") + (this.props.rowClassName ? " " + this.props.rowClassName : "")}
 
-                                    {...useDrag(({first, last, down, movement, event}) => {
-
-                                        if (movement[0] !== 0 || movement[1] !== 0) {
-                                            // console.log("move", movement);
-                                            if (typeof this.props.onMove == 'function') {
-                                                //this.props.onMove(movement);
-                                            }
-                                            return this.handleRowTouchMove(props);
-                                        }
-                                        if (first) {
-                                            // console.log("FIRST", movement, down);
-                                            this.handleRowPress(props);
-                                        }
-                                        if (last) {
-                                            // console.log("LAST", movement, last, down);
-                                            return this.handleRowRelease(props)
-                                        }
-                                    }, {dragDelay: 0})()}
-                                />
-                            )
-                        }}
-
-                        cellComponent={(props) => {
-                            var value = props.value;
-                            return (<MuiTableCell {..._.omit(props, ['tableRow', 'tableColumn'])}
-                                                  style={{
-                                                      paddingLeft: (props.column.name == firstColumn.name ? '30px' : '12px'),
-                                                      paddingRight: '12px',
-                                                      paddingTop: '16px', paddingBottom: '15px',
-                                                      borderColor: this.props.theme.palette.primary.keylines,
-                                                      borderWidth: '1px',
-                                                      //color: this.props.theme.palette.primary.default,
-                                                      whiteSpace: "nowrap",
-                                                      overflow: 'hidden',
-                                                      textOverflow: 'ellipsis'
-                                                  }}
-                            >{(() => {
-                                switch (props.column.dataType) {
-                                    case "bold":
-                                        return (<BoldTypeProvider value={value}
-                                                                  searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
-                                    case "isPreventive":
-                                        return (<IsPreventiveTypeProvider value={value}
-                                                                          searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
-                                    case "omState":
-                                        return (<OmStateTypeProvider value={value}
-                                                                     searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
-                                    case "omSigned":
-                                        return (<OmSignedTypeProvider value={value}
-                                                                      searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
-                                    case "avatars":
-                                        return (<AvatarsTypeProvider value={value}
-                                                                     searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
-                                    case "date":
-                                        return (<DateTypeProvider value={value}
-                                                                  searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
-                                    default:
-                                        return (<DefaultTypeProvider value={value}
-                                                                     searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+            <StylesProvider generateClassName={generateClassName}>
+                <div style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, maxWidth: '100%'}}
+                     className={'pivot-table'}>
+                    <div style={{
+                        height: '100%',
+                        width: '100%',
+                        textAlign: 'center',
+                        position: 'absolute',
+                        zIndex: 1,
+                        pointerEvents: 'none'
+                    }} className={isLoading ? "" : "hidden"}>
+                        <CircularProgress
+                            style={{
+                                position: 'relative',
+                                top: '55%',
+                                color: this.props.theme.palette.secondary.default
+                            }}/>
+                    </div>
+                    {this.props.searchEnabled &&
+                    <div className={"search-wrapper-container"}>
+                        <SearchWrapper
+                            width={this.props.groupingEnabled ? "33%" : "50%"}
+                            right={this.props.groupingEnabled ? "33%" : "50%"}>
+                            {this.state.searchValues.map((val, index) => {
+                                return (
+                                    <StyledBadge span key={index}>
+                                        {val}
+                                        <Icon
+                                            decline
+                                            style={{
+                                                fontSize: '12px',
+                                                cursor: 'pointer',
+                                                position: 'relative',
+                                                top: '-1px',
+                                                left: '2px',
+                                                display: (this.state.selecting ? 'none' : 'inline-block')
+                                            }}
+                                            onClick={() => this.handleSearchOnClick(val)}
+                                        />
+                                    </StyledBadge>
+                                )
+                            }).reverse()}
+                        </SearchWrapper>
+                        <SearchWrapper
+                            width={this.props.groupingEnabled ? "33%" : "50%"} /*style={{ display: (this.state.selectionMode ? 'none' : 'inline-block') }}*/>
+                            <TextField
+                                className="pivot-table__text-field"
+                                inputProps={{autoComplete: "off"}}
+                                id="oms-search"
+                                onKeyUp={this.handleRowKeyUp}
+                                onFocus={(e) => this.props.onSearchFocus ? this.props.onSearchFocus(e) : true}
+                                type="search"
+                                margin="none"
+                                endAdornment={
+                                    <InputAdornment position="end" onClick={() => {
+                                        document.getElementById("oms-search").focus()
+                                    }}>
+                                        <SearchButton round boxShadow={"none"}><Icon search/></SearchButton>
+                                    </InputAdornment>
                                 }
-                            })()}
-                            </MuiTableCell>)
-                        }}
-                    />
-                    <TableHeaderRow
-                        titleComponent={(props) => {
-                            return <Text label {...props} style={{fontWeight: 500, marginTop: '6px'}} title=""
-                                         data-tip={props.children}>{props.children}</Text>
-                        }}
-                        sortLabelComponent={(props) => {
-                            if (props.column.sortingEnabled == false) {
-                                return <SortLabel {...props} className={"sorting-blocked"} onSort={() => {
-                                }} getMessage={() => ""}/>;
-                            }
-                            return <SortLabel  {...props} getMessage={() => ""} onSort={(e) => {
-                                props.onSort(e);
-                            }}/>
-                        }}
-                        rowComponent={(props) => {
-                            return (
-                                <TableRow
-                                    {..._.omit(props, ['tableRow'])}
-                                    onMouseOver={() => ""}
-                                    style={{background: this.props.theme.palette.bg.grey}}
-                                />
-                            )
-                        }}
-                        cellComponent={(props) => {
-                            return (<TableHeaderRow.Cell {...props}
-                                                         style={{
-                                                             paddingLeft: props.groupingEnabled ? (props.column.name == firstColumn.name ? '48px' : '24px') : (props.column.name == firstColumn.name ? '28px' : '12px'),
-                                                             position: 'relative',
-                                                         }}
-                                                         className={(props.column.name == firstColumn.name ? 'first-cell' : '') +
-                                                         (props.groupingEnabled ? 'grouping-enabled' : '')}/>)
-                        }}
-                        groupButtonComponent={(props) => {
-                            if (props.disabled) {
-                                return '';
-                            }
-                            return (<Icon observation onClick={props.onGroup}
-                                          style={{
-                                              position: 'absolute',
-                                              left: 0,
-                                              paddingLeft: '0',
-                                              paddingBottom: '2px',
-                                              fontSize: '22px'
-                                          }}/>)
-                        }}
-                        showGroupingControls showSortingControls
-                    />
-
-                    <TableGroupRow indentColumnWidth={1} showColumnsWhenGrouped={false}
-                                   rowComponent={(props) => {
-                                       var lastGroup = this.state.group[this.state.group.length - 1];
-                                       if (lastGroup.columnName != props.row.groupedBy) {
-                                           return (<tr></tr>);
-                                       }
-                                       var values = props.row.compoundKey.split('|');
-                                       props.row.value = props.row.value;
-                                       if (values.length == 1 && values[0] == "undefined") {
-                                           values[0] = " ";
-                                       }
-                                       return (
-                                           <TableRow {..._.omit(props, ['tableRow'])} className={"table--row--group"}
-                                                     style={{
-                                                         background: this.props.theme.palette.primary.default,
-                                                         paddingLeft: '12px', paddingRight: '12px',
-                                                         paddingTop: '16px', paddingBottom: '15px'
-                                                     }}>
-                                               <MuiTableCell colSpan={props.children.length}
-                                                             key={props.tableRow.key.trim()}
-                                                             style={{
-                                                                 paddingLeft: '30px', paddingRight: '12px',
-                                                                 paddingTop: '16px', paddingBottom: '15px',
-                                                                 color: 'white'
-                                                             }}
-                                               >
-                                                   <Wrapper inline style={{verticalAlign: 'middle', opacity: 0.5}}
-                                                            padding="0 15px 0 0"><Icon equipamentos/></Wrapper>
-                                                   {values.map((value, index) => {
-                                                       return (
-                                                           <span key={index}>{index > 0 ?
-                                                               <Icon arrow-right style={{
-                                                                   color: 'white',
-                                                                   verticalAlign: 'middle',
-                                                                   margin: '0 6px'
-                                                               }}/> : ''}
-                                                               <Text b
-                                                                     style={{color: 'white', verticalAlign: 'middle'}}
-                                                                     data-html={true} data-tip={renderToString(
-                                                                   <Highlighter searchWords={this.state.searchValues}
-                                                                                autoEscape={true}
-                                                                                textToHighlight={value}></Highlighter>
-                                                               )}
-                                                               >
-													<Highlighter searchWords={this.state.searchValues} autoEscape={true}
-                                                                 textToHighlight={value}></Highlighter>
-												</Text></span>);
-                                                   })}
-                                                   <Wrapper inline style={{
-                                                       verticalAlign: 'middle',
-                                                       float: 'right',
-                                                       width: '60px',
-                                                       textAlign: 'center',
-                                                       cursor: 'pointer'
-                                                   }}>
-                                                       {this.props.groupRowAction &&
-                                                       <Icon open onClick={() => {
-                                                           this.onGroupRowClick(this.state.group, values);
-                                                       }}/>
-                                                       }
-                                                   </Wrapper>
-                                               </MuiTableCell>
-                                           </TableRow>)
-                                   }}/>
-                    <Toolbar/>
-                    {this.props.groupingEnabled &&
-                    <GroupingPanel
-                        showSortingControls showGroupingControls
-                        emptyMessageComponent={(props) => <GroupingPanel.EmptyMessage
-                            getMessage={() => "Arraste um cabeçalho de coluna para agrupar."}/>}
-                        itemComponent={(props) => {
-                            if (!props.item.column.sortingEnabled) {
-                                return <GroupingPanel.Item {...props} onSort={(e) => {
-                                }} sortable={"false"}/>
-                            }
-                            return <GroupingPanel.Item {...props} />
-                        }}
-                    />
+                            />
+                        </SearchWrapper>
+                    </div>
                     }
+                    {!this.state.clear &&
+                    <TGrid rows={rows} columns={columns} getRowId={(item) => item[this.props.rowId]}>
+                        <SortingState
+                            sorting={this.state.sort}
+                            onSortingChange={this.handleOnSortingChange}
+                            columnExtensions={columns}
+                        />
+                        <SelectionState/>
+                        <GroupingState
+                            expandedGroups={defaultExpandedGroups} grouping={this.state.group}
+                            columnExtensions={columns.map((item) => {
+                                return {columnName: item.name, groupingEnabled: item.groupingEnabled}
+                            })}
+                            onGroupingChange={this.handleOnGroupChange}
+                        />
+                        <SearchState/>
+                        <IntegratedFiltering/><IntegratedSorting/><IntegratedSelection/>
+                        <IntegratedGrouping/>
+                        <DragDropProvider/>
+                        <VirtualTableState
+                            infiniteScrolling={false}
+                            loading={this.state.isLoading}
+                            totalRowCount={totalRowCount}
+                            pageSize={this.props.pageSize}
+                            skip={this.state.skip}
+                            getRows={this.fetchNext}/>
+                        {/*  */}
+                        <VirtualTable
+                            estimatedRowHeight={56}
+                            height="auto"
+                            noDataCellComponent={this.noDataCellComponent}
+                            columnExtensions={columns.map((item) => {
+                                return {columnName: item.name, width: item.width}
+                            })}
+                            rowComponent={(props) => {
+                                return (
+                                    <VirtualTable.Row
+                                        {...props}
+                                        // key={props.tableRow.key}
+                                        className={"table--row--hoverable" + (props.row.selected ? " table--row--hoverable__selected" : "") + (this.props.rowClassName ? " " + this.props.rowClassName : "")}
 
-                    <TableColumnVisibility defaultHiddenColumnNames={hiddenColumns}
-                                           onHiddenColumnNamesChange={(value) => {
-                                               hiddenColumns = value;
-                                           }}/>
-                    <TableColumnReordering defaultOrder={columns.map(column => column.name)}/>
-                    <ColumnChooser
-                        toggleButtonComponent={this.toggleButtonComponent}
-                        itemComponent={(props) => {
-                            if (props.item.column.selectionEnabled == false) {
-                                return '';
-                            }
-                            ;
-                            return <MenuItem style={{paddingLeft: '5px'}} onClick={props.onToggle}
-                                             value={props.item.column.name}><CheckBox
-                                checked={!(hiddenColumns.indexOf(props.item.column.name) >= 0)}/> &nbsp; {props.item.column.title}
-                            </MenuItem>;
-                        }}
-                        overlayComponent={(props) => {
-                            return <ColumnChooser.Overlay {...props} onHide={(e) => {
-                                this.setState({hiddenColumns});
-                                props.onHide(e);
+                                        {...useDrag(({first, last, down, movement, event}) => {
+
+                                            if (movement[0] !== 0 || movement[1] !== 0) {
+                                                // console.log("move", movement);
+                                                if (typeof this.props.onMove == 'function') {
+                                                    //this.props.onMove(movement);
+                                                }
+                                                return this.handleRowTouchMove(props);
+                                            }
+                                            if (first) {
+                                                // console.log("FIRST", movement, down);
+                                                this.handleRowPress(props);
+                                            }
+                                            if (last) {
+                                                // console.log("LAST", movement, last, down);
+                                                return this.handleRowRelease(props)
+                                            }
+                                        }, {dragDelay: 0})()}
+                                    />
+                                )
+                            }}
+                            cellComponent={(props) => {
+                                var value = props.value;
+                                return (<MuiTableCell
+                                    {..._.omit(props, ['tableRow', 'tableColumn'])}
+                                    style={{
+                                        paddingLeft: (props.column.name == firstColumn.name ? '30px' : '12px'),
+                                        paddingRight: '12px',
+                                        paddingTop: '16px', paddingBottom: '15px',
+                                        borderColor: this.props.theme.palette.primary.keylines,
+                                        borderWidth: '1px',
+                                        //color: this.props.theme.palette.primary.default,
+                                        whiteSpace: "nowrap",
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                    }}
+                                >{(() => {
+                                    switch (props.column.dataType) {
+                                        case "bold":
+                                            return (<BoldTypeProvider
+                                                value={value}
+                                                searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                        case "isPreventive":
+                                            return (<IsPreventiveTypeProvider
+                                                value={value}
+                                                searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                        case "omState":
+                                            return (<OmStateTypeProvider
+                                                value={value}
+                                                searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                        case "omSigned":
+                                            return (<OmSignedTypeProvider
+                                                value={value}
+                                                searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                        case "avatars":
+                                            return (<AvatarsTypeProvider
+                                                value={value}
+                                                searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                        case "date":
+                                            return (<DateTypeProvider
+                                                value={value}
+                                                searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                        default:
+                                            return (<DefaultTypeProvider
+                                                value={value}
+                                                searchValues={this.state.searchValues.concat([this.state.searchValue])}/>)
+                                    }
+                                })()}
+                                </MuiTableCell>)
+                            }}
+
+                            _containerComponent={(props) => {
+                                console.log('IMPORTANT', props)
+                                return <React.Fragment>
+                                    <VirtualTable.Container {...props} style={{
+                                        width: '100%',
+                                        overflow: 'auto',
+                                        flexGrow: 1,
+                                        WebkitOverflowScrolling: 'touch'
+                                    }}/>
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            top: "0px",
+                                            left: "0px",
+                                            height: "100%",
+                                            width: "100%",
+                                            overflow: "hidden",
+                                            zIndex: -1,
+                                            visibility: "hidden",
+                                            opacity: 0
+                                        }}>
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                top: "0px",
+                                                left: "0px",
+                                                height: "100%",
+                                                width: "100%",
+                                                overflow: "auto"
+                                            }}>
+                                            <div style={{width: "1144px", height: "840px"}}></div>
+                                        </div>
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                top: "0px",
+                                                left: "0px",
+                                                height: "100%",
+                                                width: "100%",
+                                                overflow: "auto",
+                                                minHeight: "1px",
+                                                minWidth: "1px"
+                                            }}>
+                                            <div
+                                                style={{
+                                                    position: "absolute",
+                                                    top: "0px",
+                                                    left: "0px",
+                                                    width: "200%",
+                                                    height: "200%",
+                                                    minHeight: "2px",
+                                                    minWidth: "2px"
+                                                }}></div>
+                                        </div>
+                                    </div>
+                                </React.Fragment>
+                            }}
+                        />
+                        <TableHeaderRow
+                            titleComponent={(props) => {
+                                return <Text label {...props} style={{fontWeight: 500, marginTop: '6px'}} title=""
+                                             data-tip={props.children}>{props.children}</Text>
+                            }}
+                            sortLabelComponent={(props) => {
+                                if (props.column.sortingEnabled == false) {
+                                    return <SortLabel {...props} className={"sorting-blocked"} onSort={() => {
+                                    }} getMessage={() => ""}/>;
+                                }
+                                return <SortLabel  {...props} getMessage={() => ""} onSort={(e) => {
+                                    props.onSort(e);
+                                }}/>
+                            }}
+                            rowComponent={(props) => {
+                                return (
+                                    <TableRow
+                                        {..._.omit(props, ['tableRow'])}
+                                        onMouseOver={() => ""}
+                                        style={{background: this.props.theme.palette.bg.grey}}
+                                    />
+                                )
+                            }}
+                            cellComponent={(props) => {
+                                return (<TableHeaderRow.Cell
+                                    {...props}
+                                    style={{
+                                        paddingLeft: props.groupingEnabled ? (props.column.name == firstColumn.name ? '48px' : '24px') : (props.column.name == firstColumn.name ? '28px' : '12px'),
+                                        position: 'relative',
+                                    }}
+                                    className={(props.column.name == firstColumn.name ? 'first-cell' : '') +
+                                    (props.groupingEnabled ? 'grouping-enabled' : '')}/>)
+                            }}
+                            groupButtonComponent={(props) => {
+                                if (props.disabled) {
+                                    return '';
+                                }
+                                return (<Icon
+                                    observation
+                                    onClick={props.onGroup}
+                                    style={{
+                                        position: 'absolute',
+                                        left: 0,
+                                        paddingLeft: '0',
+                                        paddingBottom: '2px',
+                                        fontSize: '22px'
+                                    }}/>)
+                            }}
+                            showGroupingControls showSortingControls
+                        />
+
+                        <TableGroupRow
+                            indentColumnWidth={1}
+                            showColumnsWhenGrouped={false}
+                            rowComponent={(props) => {
+                                var lastGroup = this.state.group[this.state.group.length - 1];
+                                if (lastGroup.columnName != props.row.groupedBy) {
+                                    return (<tr></tr>);
+                                }
+                                var values = props.row.compoundKey.split('|');
+                                props.row.value = props.row.value;
+                                if (values.length == 1 && values[0] == "undefined") {
+                                    values[0] = " ";
+                                }
+                                return (
+                                    <TableRow
+                                        {..._.omit(props, ['tableRow'])}
+                                        className={"table--row--group"}
+                                        style={{
+                                            background: this.props.theme.palette.primary.default,
+                                            paddingLeft: '12px', paddingRight: '12px',
+                                            paddingTop: '16px', paddingBottom: '15px'
+                                        }}>
+                                        <MuiTableCell
+                                            colSpan={props.children.length}
+                                            key={props.tableRow.key.trim()}
+                                            style={{
+                                                paddingLeft: '30px', paddingRight: '12px',
+                                                paddingTop: '16px', paddingBottom: '15px',
+                                                color: 'white'
+                                            }}
+                                        >
+                                            <Wrapper
+                                                inline
+                                                style={{verticalAlign: 'middle', opacity: 0.5}}
+                                                padding="0 15px 0 0"><Icon equipamentos/></Wrapper>
+                                            {values.map((value, index) => {
+                                                return (
+                                                    <span key={index}>{index > 0 ?
+                                                        <Icon arrow-right style={{
+                                                            color: 'white',
+                                                            verticalAlign: 'middle',
+                                                            margin: '0 6px'
+                                                        }}/> : ''}
+                                                        <Text
+                                                            b
+                                                            style={{color: 'white', verticalAlign: 'middle'}}
+                                                            data-html={true} data-tip={renderToString(
+                                                            <Highlighter
+                                                                searchWords={this.state.searchValues}
+                                                                autoEscape={true}
+                                                                textToHighlight={value}></Highlighter>
+                                                        )}
+                                                        >
+													<Highlighter
+                                                        searchWords={this.state.searchValues}
+                                                        autoEscape={true}
+                                                        textToHighlight={value}></Highlighter>
+												</Text></span>);
+                                            })}
+                                            <Wrapper
+                                                inline
+                                                style={{
+                                                    verticalAlign: 'middle',
+                                                    float: 'right',
+                                                    width: '60px',
+                                                    textAlign: 'center',
+                                                    cursor: 'pointer'
+                                                }}>
+                                                {this.props.groupRowAction &&
+                                                <Icon
+                                                    open
+                                                    onClick={() => {
+                                                        this.onGroupRowClick(this.state.group, values);
+                                                    }}/>
+                                                }
+                                            </Wrapper>
+                                        </MuiTableCell>
+                                    </TableRow>)
                             }}/>
-                        }}
-                        containerComponent={(props) => {
-                            var InnerCard = (InnerCardProps) => <div ref={el => this.teste = el} {...InnerCardProps}>
-                                <ColumnChooser.Container {...props} /></div>;
-                            var Card = ReactDOM.findDOMNode(this.teste) ? ReactDOM.findDOMNode(this.teste).parentNode : null;
-                            if (Card) {
-                                // var position = ReactDOM.findDOMNode(this.columnToggleRef).getBoundingClientRect();
-                                // Card.style.left = (position.right - Card.getBoundingClientRect().width + 17) + 'px';
-                                // Card.style.top = position.top + 'px';
-                                // Card.style.opacity = 1;
-                            } else {
-                                return <InnerCard  {...props} />;
-                            }
-                            return <InnerCard {...props} />;
-                        }}
-                    />
-                    <RowDetailState defaultExpandedRowIds={true}/>
-                </TGrid>
-                }
-                {!this.state.isLoading && (() => {
-                    setTimeout(() => {
-                        Tooltip.Hidden.hide();
-                        Tooltip.Hidden.rebuild();
-                    }, 400)
-                })()}
-                <Tooltip.Hidden id={'oms-tooltip'}/>
-            </div>
+                        <Toolbar/>
+                        {this.props.groupingEnabled &&
+                        <GroupingPanel
+                            showSortingControls showGroupingControls
+                            emptyMessageComponent={(props) =>
+                                <GroupingPanel.EmptyMessage
+                                    getMessage={() => "Arraste um cabeçalho de coluna para agrupar."}/>}
+                            itemComponent={(props) => {
+                                if (!props.item.column.sortingEnabled) {
+                                    return <GroupingPanel.Item {...props} onSort={(e) => {
+                                    }} sortable={"false"}/>
+                                }
+                                return <GroupingPanel.Item {...props} />
+                            }}
+                        />
+                        }
+
+                        <TableColumnVisibility
+                            defaultHiddenColumnNames={hiddenColumns}
+                            onHiddenColumnNamesChange={(value) => {
+                                hiddenColumns = value;
+                            }}/>
+                        <TableColumnReordering
+                            defaultOrder={columns.map(column => column.name)}/>
+                        <ColumnChooser
+                            toggleButtonComponent={this.toggleButtonComponent}
+                            itemComponent={(props) => {
+                                if (props.item.column.selectionEnabled == false) {
+                                    return '';
+                                }
+
+                                return <MenuItem
+                                    style={{paddingLeft: '5px'}} onClick={props.onToggle}
+                                    value={props.item.column.name}><CheckBox
+                                    checked={!(hiddenColumns.indexOf(props.item.column.name) >= 0)}/> &nbsp; {props.item.column.title}
+                                </MenuItem>;
+                            }}
+                            overlayComponent={(props) => {
+                                return <ColumnChooser.Overlay
+                                    {...props}
+                                    onHide={(e) => {
+                                        localStorage.setItem(window.location.pathname.replace('/', '') + '-hidden-columns', JSON.stringify(hiddenColumns));
+                                        this.setState({hiddenColumns});
+                                        props.onHide(e);
+                                    }}/>
+                            }}
+                            containerComponent={(props) => {
+                                var InnerCard = (InnerCardProps) => <div
+                                    ref={el => this.teste = el} {...InnerCardProps}>
+                                    <ColumnChooser.Container {...props} /></div>;
+                                var Card = ReactDOM.findDOMNode(this.teste) ? ReactDOM.findDOMNode(this.teste).parentNode : null;
+                                if (Card) {
+                                    // var position = ReactDOM.findDOMNode(this.columnToggleRef).getBoundingClientRect();
+                                    // Card.style.left = (position.right - Card.getBoundingClientRect().width + 17) + 'px';
+                                    // Card.style.top = position.top + 'px';
+                                    // Card.style.opacity = 1;
+                                } else {
+                                    return <InnerCard  {...props} />;
+                                }
+                                return <InnerCard {...props} />;
+                            }}
+                        />
+                        <RowDetailState defaultExpandedRowIds={true}/>
+                    </TGrid>
+                    }
+                    {!this.state.isLoading && (() => {
+                        setTimeout(() => {
+                            Tooltip.Hidden.hide();
+                            Tooltip.Hidden.rebuild();
+                        }, 400)
+                    })()}
+                    {/*<Tooltip.Hidden/>*/}
+                </div>
+            </StylesProvider>
         )
 
         return retval;
@@ -1155,16 +1284,17 @@ var getDefaultExpandedGroups = (lines, groups) => {
     })(groupedList, defaultExpandedGroups);
 
     return defaultExpandedGroups;
-}
+};
 
 const mapStateToProps = state => ({
     ...state
-})
+});
+
 const mapDispatchToProps = dispatch => ({
     dispatchState: (payload) => dispatch({
         type: "SET_STATE",
         payload: payload
     })
-})
+});
 
 export default withTheme(eTable);
