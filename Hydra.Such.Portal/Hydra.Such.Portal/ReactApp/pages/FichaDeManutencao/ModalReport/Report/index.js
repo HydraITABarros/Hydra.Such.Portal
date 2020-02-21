@@ -119,7 +119,7 @@ class Report extends Component {
         var maintenanceResponsible = (this.props.order && this.props.order.maintenanceResponsibleObj && this.props.order.maintenanceResponsibleObj.nome);
         var responsibleEmployee = (this.props.order && this.props.order.responsibleEmployeeObj && this.props.order.responsibleEmployeeObj.nome);
         return (
-            <div>
+            <div className={'report__wrapper__root'}>
                 <div className="report__wrapper report__wrapper--raw">
                     <div className="report">
 
