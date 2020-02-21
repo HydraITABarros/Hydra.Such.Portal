@@ -169,6 +169,11 @@ const ListContainer = styled.div`
             top: 0;
             bottom: 0;
     }
+    [class^="se-root"]{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+    }
 `
 const Hr = styled.hr`
     margin-bottom: 0;
@@ -612,12 +617,13 @@ class OrdensDeManutencao extends Component {
             technicalsSelectedOrder: {technicals: []},
             technicalsSelectedOrderOld: {technicals: []}
         }, () => {
+            Tooltip.Hidden.hide();
             Tooltip.Hidden.rebuild();
         });
     }
 
     setTableMarginTop() {
-        (() => setTimeout(() => {
+        (() => {
             if (typeof $ == 'undefined') {
                 return setTimeout(() => {
                     this.setTableMarginTop();
@@ -640,7 +646,7 @@ class OrdensDeManutencao extends Component {
                 }, () => {
                 })
             }
-        }, 100))();
+        })();
     }
 
     setDatePickerMarginTop() {
@@ -752,33 +758,27 @@ class OrdensDeManutencao extends Component {
                 </div>
 
                 {this.state.listContainerStyle.marginTop &&
-                <ListContainer ref={el => this.listContainer = el}
-                               className="om__list-container"
-                               style={{...this.state.listContainerStyle}}
-                               onScroll={(e) => {
-                                   var scrollTop = e.target.scrollTop;
+                <ListContainer
+                    ref={el => this.listContainer = el}
+                    className="om__list-container"
+                    style={{...this.state.listContainerStyle}}
+                    onScroll={(e) => {
+                        var scrollTop = e.target.scrollTop;
 
-                                   var basicreactcomponent = document.getElementById("basicreactcomponent");
-                                   //basicreactcomponent.scrollTop = basicreactcomponent.scrollTop + ((scrollTop - tableScrollTop) * 2);
-                                   //basicreactcomponent.scrollTop = (scrollTop / 2);
-                                   //e.target.scrollTop = (scrollTop / 2)
+                        var basicreactcomponent = document.getElementById("basicreactcomponent");
 
-                                   setTimeout(() => {
-                                       if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop <= 30 || scrollTop > (tableScrollTop + 900)) {
-                                           ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
-                                       } else if (scrollTop < tableScrollTop) {
-                                           ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
-                                       }
-                                   });
-                                   // var scrollTop = e.target.scrollTop;
-                                   // console.log(scrollTop);
-                                   //  if (scrollTop < 5 || isLoading) {
-                                   //  	ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
-                                   //  } else if (scrollTop > tableScrollTop) {
-                                   //  	ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
-                                   //  }
-                                   tableScrollTop = scrollTop;
-                               }}>
+                        setTimeout(() => {
+                            if (/*scrollTop + 50 < tableScrollTop ||*/ scrollTop <= 30 || scrollTop > (tableScrollTop + 900)) {
+                                ReactDOM.findDOMNode(this.parallaxHeader).classList.remove("om__header--collapsed");
+                            } else if (scrollTop < tableScrollTop) {
+                                ReactDOM.findDOMNode(this.parallaxHeader).classList.add("om__header--collapsed");
+                            }
+                            Tooltip.Hidden.hide();
+                            Tooltip.Hidden.rebuild();
+                        });
+                        
+                        tableScrollTop = scrollTop;
+                    }}>
                     <PivotTable
                         onRef={el => this.table = el}
                         isLoading={this.state.maintenenceOrdersIsLoading}
@@ -798,7 +798,7 @@ class OrdensDeManutencao extends Component {
                                 title: 'Tipo',
                                 width: 100,
                                 dataType: 'isPreventive',
-                                sortingEnabled: true,
+                                sortingEnabled: false,
                                 selectionEnabled: true,
                                 groupingEnabled: false
                             },
@@ -848,6 +848,9 @@ class OrdensDeManutencao extends Component {
                                 groupingEnabled: false
                             },
                         ]}
+                        defaultSorting={[
+                            {columnName: 'orderDate', direction: 'desc'}
+                        ]}
                         getRows={this.fetchMaintenenceOrders}
                         onRowSelectionChange={(e) => {
                             this.setState({
@@ -870,7 +873,8 @@ class OrdensDeManutencao extends Component {
                         allowMultiple={false}
                         rowClassName="bg-bg-white"
                     />
-                    <Tooltip.Hidden id={'oms-tooltip'}/>
+                    {/*<Tooltip.Hidden id={'oms-tooltip'}/>*/}
+                    <Tooltip.Hidden/>
                 </ListContainer>}
             </PageTemplate>
         )
@@ -879,14 +883,14 @@ class OrdensDeManutencao extends Component {
 
 const mapStateToProps = state => ({
     state: state
-})
+});
 
 const mapDispatchToProps = dispatch => ({
     dispatchState: (payload) => dispatch({
         type: "SET_STATE",
         payload: payload
     })
-})
+});
 
 const getOdataDateFilterExpression = (monthString = true, field, value, prefix) => {
     if (!value) {
@@ -930,6 +934,6 @@ const getOdataDateFilterExpression = (monthString = true, field, value, prefix) 
     });
 
     return retval != "" ? prefix + retval : retval;
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withTheme(OrdensDeManutencao)));
