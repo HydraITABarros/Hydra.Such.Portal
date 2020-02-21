@@ -198,8 +198,10 @@ namespace Hydra.Such.Portal.Controllers
 					if (plan != null)
 					{
 						item.Estado = plan.EstadoFinal.ToString();
-						item.Signed = (((plan.AssinaturaSieIgualCliente == null || plan.AssinaturaSieIgualCliente == false) && (plan.AssinaturaCliente != "" && plan.AssinaturaCliente != null)) || 
-						              (plan.AssinaturaSieIgualCliente == true && (plan.AssinaturaSie != "" || plan.AssinaturaSie != null))) && plan.EstadoFinal != 0 ? 1 : 0;
+						item.Signed = (
+							              ((plan.AssinaturaSieIgualCliente == null || plan.AssinaturaSieIgualCliente == false) && (plan.AssinaturaCliente != null && plan.AssinaturaCliente != "" )) || 
+						               (plan.AssinaturaSieIgualCliente == true && (plan.AssinaturaSie != "" && plan.AssinaturaSie != null))
+							              ) && plan.EstadoFinal != 0 ? 2 :plan.EstadoFinal != 0 ? 1: 0;
 					}
 				}
 
