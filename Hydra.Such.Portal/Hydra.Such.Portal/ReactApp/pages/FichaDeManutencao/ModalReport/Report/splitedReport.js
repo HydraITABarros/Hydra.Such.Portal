@@ -21,7 +21,6 @@ import {Grid} from '@material-ui/core';
 import functions from '../../../../helpers/functions';
 import _theme from '../../../../themes/default';
 import ReactDOM from 'react-dom';
-import reactElementToJSXString from 'react-element-to-jsx-string';
 import '../index.scss';
 
 const {DialogTitle, DialogContent, DialogActions} = ModalLarge;
@@ -187,7 +186,7 @@ class SplitedReport extends Component {
 
         return (
             <div className="report__wrapper">
-                <div className="report" id={"report"}>
+                <div className="report report-js" id={"report"}>
                     {report.map((item, index) => {
                         return (
                             <React.Fragment key={index}>
