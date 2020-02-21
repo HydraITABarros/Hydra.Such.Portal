@@ -24,6 +24,9 @@
   background: palette(bg, grey);
   position: relative;
 
+  border-top: 1px solid #E4E7EB;
+  border-bottom: 1px solid #E4E7EB;
+
   &__container {
     position: relative;
   }
@@ -45,7 +48,7 @@
 
   &__wrapper {
     overflow: auto;
-    max-height: 65vh;
+    //max-height: 65vh;
     width: 794px;
     //border-left: 1px solid palette(primary, keylines);
     display: inline-block;
@@ -56,14 +59,21 @@
     right: 0;
     bottom: 0;
     position: relative;
-    padding-left: 15px;
-    padding-right: 15px;
+    //padding-left: 15px;
+    //padding-right: 15px;
     min-width: 100%;
+    z-index: 10;
 
     &--raw {
       //z-index: 100;
       position: absolute;
       overflow: hidden;
+      z-index: -1 !important;
+    }
+
+    &__root {
+      padding: 15px 0;
+      background: palette(bg, grey);
     }
   }
 
