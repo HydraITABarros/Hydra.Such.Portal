@@ -163,7 +163,7 @@ class Circle extends React.Component {
                     }
 
                 </CircleWrapper>
-                {this.state.tooltipReady && !this.state.loading ? <Tooltip/> : ''}
+                {/*{this.state.tooltipReady && !this.state.loading ? <Tooltip/> : ''}*/}
             </div>
         )
     }
