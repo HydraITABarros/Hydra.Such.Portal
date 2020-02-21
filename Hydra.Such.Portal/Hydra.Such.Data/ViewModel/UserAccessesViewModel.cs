@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.ViewModel
         public string IdUser { get; set; }
         public int? Area { get; set; }
         public int Feature { get; set; }
+        public string FeatureNome { get; set; }
         public bool? Read { get; set; }
         public bool? Create { get; set; }
         public bool? Update { get; set; }

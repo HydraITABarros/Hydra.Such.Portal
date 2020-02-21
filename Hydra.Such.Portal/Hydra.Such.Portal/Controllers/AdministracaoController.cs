@@ -179,12 +179,13 @@ namespace Hydra.Such.Portal.Controllers
                     IdUser = x.IdUtilizador,
                     //Area = x.Área,
                     Feature = x.Funcionalidade,
+                    FeatureNome = EnumerablesFixed.Features.Where(y => y.Id == x.Funcionalidade).FirstOrDefault().Value,
                     Create = x.Inserção,
                     Read = x.Leitura,
                     Update = x.Modificação,
                     Delete = x.Eliminação,
                     VerTudo = x.VerTudo
-                }).ToList();
+                }).OrderBy(y => y.FeatureNome).ToList();
 
                 result.UserProfiles = DBProfileModels.GetByUserId(data.IdUser).Select(x => new ProfileModelsViewModel()
                 {
