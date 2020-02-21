@@ -94,6 +94,13 @@ injectGlobal`
 			background: ${_theme.palette.primary.medium};
 		}
 	}
+	
+	.fs-default {
+        [class*="MuiSelect-root"]  {
+            color: ${_theme.palette.bg.white};
+            background: ${_theme.palette.primary.default};
+        }
+    }
 `;
 
 const Spacer = styled.div`
@@ -118,14 +125,14 @@ class FinalState extends Component {
         return (
             <Root>
                 <ActionWrapper container
-                               className={this.state.value == 0 ? 'fs-grey' : this.state.value == 3 ? 'fs-red' : 'fs-green'}>
+                               className={this.state.value == 0 ? 'fs-grey' : this.state.value == 3 ? 'fs-red' : this.state.value == 4 ? 'fs-default' : 'fs-green'}>
                     <Select
                         disabled={props.disabled}
                         className={props.disabled ? 'disabled' : ''}
                         input={
                             <FinalInput
                                 value={this.state.value}
-                                bgcolor={this.state.value == 0 || this.state.value == null ? _theme.palette.primary.medium : this.state.value == 3 ? _theme.palette.alert.bad : _theme.palette.alert.good}
+                                bgcolor={this.state.value == 0 || this.state.value == null ? _theme.palette.primary.medium : this.state.value == 3 ? _theme.palette.alert.bad : this.state.value == 4 ? _theme.palette.primary.default : _theme.palette.alert.good}
                             />
                         }
                         onClose={() => {
@@ -166,6 +173,11 @@ class FinalState extends Component {
                         <MenuItem value={3} style={{padding: '11px', textAlign: 'center'}}>
                             <div style={{textAlign: 'center', width: '100%'}}>
                                 <span className={'va-m'}>3 &nbsp;&nbsp;</span><Icon decline className={'s-18'}/>
+                            </div>
+                        </MenuItem>
+                        <MenuItem value={4} style={{padding: '11px', textAlign: 'center'}}>
+                            <div style={{textAlign: 'center', width: '100%'}}>
+                                <span className={'va-m'}>4 &nbsp;&nbsp;</span><Icon observacoes className={'s-18'}/>
                             </div>
                         </MenuItem>
                     </Select>
