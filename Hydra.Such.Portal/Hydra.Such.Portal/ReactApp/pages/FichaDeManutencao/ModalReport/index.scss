@@ -15,6 +15,21 @@
   .modal-container {
     height: 65vh;
   }
+
+  &__group {
+    position: absolute;
+    left: 35px;
+    bottom: 15px;
+
+    .icon-validation {
+      color: palette(primary, 'dark');
+
+      &:before {
+        content: "\e906"
+      }
+    }
+  }
+
 }
 
 .padding-0 {
@@ -30,6 +45,7 @@
 
   &__container {
     position: relative;
+    max-height: 64vh;
   }
 
   &__page {
@@ -49,9 +65,7 @@
 
   &__wrapper {
     overflow: auto;
-    max-height: 65vh;
-    width: 794px;
-    //border-left: 1px solid palette(primary, keylines);
+    //max-height: 65vh;
     display: inline-block;
     width: auto;
     background: palette(bg, grey);
@@ -60,8 +74,8 @@
     right: 0;
     bottom: 0;
     position: relative;
-    padding-left: 15px;
-    padding-right: 15px;
+    //padding-left: 15px;
+    //padding-right: 15px;
 
     &--raw {
       //z-index: 100;
@@ -191,7 +205,7 @@
   }
 
   &__blank {
-    height: 20px;
+    //height: 20px;
     background: palette(bg, grey);
     border-top: 1px solid palette(primary, keylines);
     border-bottom: 1px solid palette(primary, keylines);
