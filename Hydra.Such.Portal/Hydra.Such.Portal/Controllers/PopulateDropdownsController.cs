@@ -1598,6 +1598,40 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllClientsComboGrid()
         {
             var result = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllAreasProjetoMovimentosList()
+        {
+            var result = DBNAV2017DimensionValues.GetByDimType(_config.NAVDatabaseName, _config.NAVCompanyName, 2).ToList();
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //FunctionalAreas
+            if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.Code));
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllTiposMovimentosProjetoMovimentosList()
+        {
+            var result = new List<EnumData>();
+
+            result.Add(new EnumData()
+            {
+                Id = (int)1,
+                Value = "Consumo",
+            });
+            result.Add(new EnumData()
+            {
+                Id = (int)2,
+                Value = "Venda",
+            });
+
             return Json(result);
         }
 

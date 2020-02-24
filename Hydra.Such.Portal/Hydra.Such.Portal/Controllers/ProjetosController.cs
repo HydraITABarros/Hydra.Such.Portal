@@ -6402,27 +6402,13 @@ namespace Hydra.Such.Portal.Controllers
             List<MovimentosDeProjeto> AllMovFilter = new List<MovimentosDeProjeto>();
             try
             {
-                int skip = 0;
-                int.TryParse(requestParams.GetValue("skip")?.ToString(), out skip);
+                string filtroArea = (string)requestParams.GetValue("area");
+                string filtroCliente = (string)requestParams.GetValue("cliente");
+                int filtroTipoMovimento = (string)requestParams.GetValue("tipomovimento") != "" ? Convert.ToInt32(requestParams.GetValue("tipomovimento")) : 0;
+                DateTime filtroDataInicio = (string)requestParams.GetValue("datainicio") != "" ? Convert.ToDateTime(requestParams.GetValue("datainicio")).Date : DateTime.MinValue.Date;
+                DateTime filtroDataFim = (string)requestParams.GetValue("datafim") != "" ? Convert.ToDateTime(requestParams.GetValue("datafim")).Date : DateTime.MaxValue.Date;
 
-                int year = 0;
-                int.TryParse(requestParams.GetValue("year")?.ToString(), out year);
-
-                int month = 0;
-                int.TryParse(requestParams.GetValue("month")?.ToString(), out month);
-
-                string cliente = (string)requestParams.GetValue("cliente");
-
-                string from = "";
-                string to = "";
-                if (year != 0)
-                {
-                    from = new DateTime((int)year, (month == 0 ? 1 : month), 1).ToString("yyyy-MM-dd");
-                    int days = DateTime.DaysInMonth((int)year, (month == 0 ? 12 : month));
-                    to = new DateTime((int)year, (month == 0 ? 12 : month), days).ToString("yyyy-MM-dd");
-                }
-
-                AllMovFilter = DBProjectMovements.GetAllByFilter(from, to, cliente, skip);
+                AllMovFilter = DBProjectMovements.GetAllByArea(filtroArea);
 
                 //Apply User Dimensions Validations
                 List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -6436,14 +6422,43 @@ namespace Hydra.Such.Portal.Controllers
                 if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                     AllMovFilter.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
-                result = AllMovFilter.ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName);
+                if (!string.IsNullOrEmpty(filtroCliente))
+                    AllMovFilter.RemoveAll(x => x.CodCliente != filtroCliente);
+
+                if (filtroTipoMovimento > 0)
+                    AllMovFilter.RemoveAll(x => x.TipoMovimento != filtroTipoMovimento);
+
+                if (filtroDataInicio > DateTime.MinValue)
+                    AllMovFilter.RemoveAll(x => Convert.ToDateTime(x.DataHoraCriação).Date < filtroDataInicio);
+
+                if (filtroDataFim > DateTime.MinValue)
+                    AllMovFilter.RemoveAll(x => Convert.ToDateTime(x.DataHoraCriação).Date > filtroDataFim);
+
+                if (AllMovFilter.Count <= 20000)
+                {
+                    result = AllMovFilter.ParseToViewModelTESTE(_config.NAVDatabaseName, _config.NAVCompanyName);
+
+                    List<EnumData> AllMovementType = EnumerablesFixed.ProjectDiaryMovements;
+                    List<EnumData> AllType = EnumerablesFixed.ProjectDiaryTypes;
+
+                    result.ForEach(x =>
+                    {
+                        x.MovementTypeText = x.MovementType != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault() != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault().Value : "" : "";
+                        x.TypeText = x.Type != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault() != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault().Value : "" : "";
+                        x.BillableText = x.Billable.HasValue ? x.Billable == true ? "Sim" : "Não" : "";
+                    });
+                }
+                else
+                {
+                    return Json(result);
+                }
             }
             catch (Exception ex)
             {
                 return Json(null);
             }
 
-            return Json(result);
+            return Json(result.OrderBy(x => x.ProjectNo).ThenBy(x => x.Date));
         }
 
 
@@ -7480,8 +7495,6 @@ namespace Hydra.Such.Portal.Controllers
                     Col = Col + 1;
                 }
 
-
-
                 if (dp != null)
                 {
                     int count = 1;
@@ -8160,6 +8173,127 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = _generalConfig.FileUploadFolder + "Projetos\\" + "tmp\\" + sFileName;
             //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Pré-Movimentos de Projetos.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_MovimentosList([FromBody] List<ProjectMovementViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Projetos\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Autorização de Faturação");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1;}
+                if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
+                if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Movimento"); Col = Col + 1; }
+                if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento"); Col = Col + 1; }
+                if (dp["typeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo"); Col = Col + 1; }
+                if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód."); Col = Col + 1; }
+                if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
+                if (dp["quantity"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Quantidade"); Col = Col + 1; }
+                if (dp["measurementUnitCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Unidade Medida"); Col = Col + 1; }
+                if (dp["unitCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1; }
+                if (dp["totalCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Custo Total"); Col = Col + 1; }
+                if (dp["unitPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Preço Unitário"); Col = Col + 1; }
+                if (dp["totalPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Preço Total"); Col = Col + 1; }
+                if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
+                if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["billableText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Faturável"); Col = Col + 1; }
+                if (dp["requestNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
+                if (dp["folhaHorasNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Folha Horas"); Col = Col + 1; }
+                if (dp["codigoTipoTrabalho"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Tipo Trabalho"); Col = Col + 1; }
+                if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Funcionário"); Col = Col + 1; }
+                if (dp["clientRequest"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Cliente"); Col = Col + 1; }
+                if (dp["serviceClientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Serviço Cliente"); Col = Col + 1; }
+                if (dp["residueGuideNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Guia Resíduos"); Col = Col + 1; }
+                if (dp["readingCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Ler"); Col = Col + 1; }
+                if (dp["mealTypeDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Refeição"); Col = Col + 1; }
+                if (dp["serviceGroupCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Grupo Serviço"); Col = Col + 1; }
+                if (dp["internalRequest"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Requisição Interna"); Col = Col + 1; }
+                if (dp["consumptionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Consumo"); Col = Col + 1; }
+                if (dp["autorizatedInvoiceDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Autorização Faturação"); Col = Col + 1; }
+                if (dp["authorizedBy"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Autorizado Por"); Col = Col + 1; }
+                if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Fatura"); Col = Col + 1; }
+                if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Fatura-a Nº Cliente"); Col = Col + 1; }
+                if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ProjectMovementViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
+                        if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Date); Col = Col + 1; }
+                        if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovementTypeText); Col = Col + 1; }
+                        if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentNo); Col = Col + 1; }
+                        if (dp["typeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TypeText); Col = Col + 1; }
+                        if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1; }
+                        if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1; }
+                        if (dp["quantity"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Quantity.ToString()); Col = Col + 1; }
+                        if (dp["measurementUnitCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MeasurementUnitCode); Col = Col + 1; }
+                        if (dp["unitCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1; }
+                        if (dp["totalCost"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TotalCost.ToString()); Col = Col + 1; }
+                        if (dp["unitPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.UnitPrice.ToString()); Col = Col + 1; }
+                        if (dp["totalPrice"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TotalPrice.ToString()); Col = Col + 1; }
+                        if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
+                        if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode); Col = Col + 1; }
+                        if (dp["billableText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.BillableText); Col = Col + 1; }
+                        if (dp["requestNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNo); Col = Col + 1; }
+                        if (dp["folhaHorasNo"]["hidden"].ToString() == "False") { /*row.CreateCell(Col).SetCellValue(item.FolhaHorasNo);*/ Col = Col + 1; }
+                        if (dp["codigoTipoTrabalho"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodigoTipoTrabalho); Col = Col + 1; }
+                        if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmployeeNo); Col = Col + 1; }
+                        if (dp["clientRequest"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientRequest); Col = Col + 1; }
+                        if (dp["serviceClientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ServiceClientCode); Col = Col + 1; }
+                        if (dp["residueGuideNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResidueGuideNo); Col = Col + 1; }
+                        if (dp["readingCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ReadingCode); Col = Col + 1; }
+                        if (dp["mealTypeDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MealTypeDescription); Col = Col + 1; }
+                        if (dp["serviceGroupCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ServiceGroupCode); Col = Col + 1; }
+                        if (dp["internalRequest"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InternalRequest); Col = Col + 1; }
+                        if (dp["consumptionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ConsumptionDate); Col = Col + 1; }
+                        if (dp["autorizatedInvoiceDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AutorizatedInvoiceDate); Col = Col + 1; }
+                        if (dp["authorizedBy"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AuthorizedBy); Col = Col + 1; }
+                        if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceGroup.ToString()); Col = Col + 1; }
+                        if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceToClientNo); Col = Col + 1; }
+                        if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.User); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_MovimentosList(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Projetos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Autorização de Faturação.xlsx");
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 

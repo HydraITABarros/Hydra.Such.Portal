@@ -703,6 +703,7 @@ namespace Hydra.Such.Portal.Controllers
                     CopiarAcesso.Inserção = Acesso.Inserção;
                     CopiarAcesso.Modificação = Acesso.Modificação;
                     CopiarAcesso.Eliminação = Acesso.Eliminação;
+                    CopiarAcesso.VerTudo = Acesso.VerTudo;
                     CopiarAcesso.DataHoraCriação = DateTime.Now;
                     CopiarAcesso.DataHoraModificação = (DateTime?)null;
                     CopiarAcesso.UtilizadorCriação = User.Identity.Name;

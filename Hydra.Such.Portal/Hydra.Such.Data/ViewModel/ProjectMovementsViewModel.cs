@@ -10,8 +10,10 @@ namespace Hydra.Such.Data.ViewModel
         public string ProjectNo { get; set; }
         public string Date { get; set; }
         public int? MovementType { get; set; }
+        public string MovementTypeText { get; set; }
         public string DocumentNo { get; set; }
         public int? Type { get; set; }
+        public string TypeText { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
         public string CodigoTipoTrabalho { get; set; }
@@ -28,6 +30,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? UnitPrice { get; set; }
         public decimal? TotalPrice { get; set; }
         public bool? Billable { get; set; }
+        public string BillableText { get; set; }
         public string ResidueGuideNo { get; set; }
         public string ExternalGuideNo { get; set; }
         public string InvoiceToClientNo { get; set; }
@@ -60,7 +63,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Driver { get; set; }
         public int? ResidueFinalDestinyCode { get; set; }
         public string OriginalDocument { get; set; }
-        public string AdjustedDocument { get; set; }
+        public string AdjustedDocument { get; set; }    
         public bool? AdjustedPrice { get; set; }
         public string AdjustedDocumentDate { get; set; }
         public bool? AutorizatedInvoice { get; set; }

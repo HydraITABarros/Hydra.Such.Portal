@@ -125,7 +125,8 @@
                 </template>
                 <template>
                     <div class="text-right">
-                        [[_formatCurrencyValue(item.custoUnitario)]]
+                        @*[[_formatCurrencyValue(item.custoUnitario)]]*@
+                        {{item.custoUnitario}} €
                     </div>
                 </template>
             </vaadin-grid-column>

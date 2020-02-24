@@ -43,13 +43,13 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             }
         }
 
-        public static List<MovimentosDeProjeto> GetAllByFilter(string from = null, string to = null, string cliente = "", int skip = 0)
+        public static List<MovimentosDeProjeto> GetAllByArea(string area = null)
         {
             try
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.MovimentosDeProjeto.Where(x => x.CodCliente.ToUpper().Contains(cliente.ToUpper()) && x.Data >= Convert.ToDateTime(from) && x.Data <= Convert.ToDateTime(to)).Skip(skip).Take(25).ToList();
+                    return ctx.MovimentosDeProjeto.Where(x => x.CódigoÁreaFuncional == area).ToList();
                 }
             }
             catch (Exception ex)
@@ -471,6 +471,8 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
         {
             if (item != null)
             {
+                //List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients("", navDatabaseName, navCompanyName);
+
                 ProjectMovementViewModel projMovement = new ProjectMovementViewModel();
 
                 projMovement.LineNo = item.NºLinha;
@@ -542,6 +544,8 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 //CommitmentNumber = Project.DBProjects.GetAllByProjectNumber(item.NºProjeto).NºCompromisso,
                 projMovement.ClientName = DBNAV2017Clients.GetClientNameByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName);
                 projMovement.ClientVATReg = DBNAV2017Clients.GetClientVATByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName);
+                //projMovement.ClientName = AllClients.Where(x => x.No_ == item.FaturaANºCliente).FirstOrDefault().Name;
+                //projMovement.ClientVATReg = AllClients.Where(x => x.VATRegistrationNo_ == item.FaturaANºCliente).FirstOrDefault().Name;
                 projMovement.CriarMovNav2017 = item.CriarMovNav2017;
                 projMovement.Selecionada = item.Selecionada;
                 projMovement.Fatura = item.Fatura;
@@ -549,6 +553,107 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 return projMovement;
             }
             return null;
+        }
+
+        public static ProjectMovementViewModel ParseToViewModelTESTE(this MovimentosDeProjeto item, NAVClientsViewModel cliente, NAVClientsViewModel clienteVATReg, string navDatabaseName, string navCompanyName)
+        {
+            if (item != null)
+            {
+                ProjectMovementViewModel projMovement = new ProjectMovementViewModel();
+
+                projMovement.LineNo = item.NºLinha;
+                projMovement.ProjectNo = item.NºProjeto;
+                projMovement.Date = item.Data == null ? String.Empty : item.Data.Value.ToString("yyyy-MM-dd");
+                projMovement.MovementType = item.TipoMovimento;
+                projMovement.DocumentNo = item.NºDocumento;
+                projMovement.Type = item.Tipo;
+                //TypeDescription
+                projMovement.Code = item.Código;
+                projMovement.Description = item.Descrição;
+                projMovement.CodigoTipoTrabalho = item.CodigoTipoTrabalho;
+                projMovement.Quantity = item.Quantidade;
+                projMovement.MeasurementUnitCode = item.CódUnidadeMedida;
+                projMovement.LocationCode = item.CódLocalização;
+                projMovement.ProjectContabGroup = item.GrupoContabProjeto;
+                projMovement.RegionCode = item.CódigoRegião;
+                projMovement.FunctionalAreaCode = item.CódigoÁreaFuncional;
+                projMovement.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
+                projMovement.User = item.Utilizador;
+                projMovement.UnitCost = item.CustoUnitário;
+                projMovement.TotalCost = item.CustoTotal;
+                projMovement.UnitPrice = item.PreçoUnitário;
+                projMovement.TotalPrice = item.PreçoTotal;
+                projMovement.UnitValueToInvoice = item.ValorUnitárioAFaturar;
+                projMovement.Currency = item.Moeda;
+                projMovement.Billable = item.Faturável.HasValue ? item.Faturável.Value : false;
+                projMovement.Billed = item.Faturada.HasValue ? item.Faturada.Value : false;
+                projMovement.Registered = item.Registado.HasValue ? item.Registado.Value : false;
+                projMovement.ResourceType = item.TipoRecurso;
+                projMovement.ServiceClientCode = item.CódServiçoCliente;
+                //ServiceClientDescription
+                projMovement.ServiceGroupCode = item.CódGrupoServiço;
+                projMovement.ExternalGuideNo = item.NºGuiaExterna;
+                projMovement.ConsumptionDate = item.DataConsumo?.ToString("yyyy-MM-dd");
+                projMovement.ResidueGuideNo = item.NºGuiaResíduos;
+                projMovement.AdjustedDocument = item.DocumentoCorrigido;
+                projMovement.AdjustedDocumentDate = item.DataDocumentoCorrigido?.ToString("yyyy-MM-dd");
+                projMovement.ResidueFinalDestinyCode = item.CódDestinoFinalResíduos;
+                projMovement.MealType = item.TipoRefeição;
+                //MealTypeDescription
+                projMovement.InvoiceToClientNo = item.FaturaANºCliente;
+                projMovement.CreateUser = item.UtilizadorCriação;
+                projMovement.CreateDate = item.DataHoraCriação;
+                projMovement.UpdateUser = item.UtilizadorModificação;
+                projMovement.UpdateDate = item.DataHoraModificação;
+                //ServiceData = item;
+                //ClientRequest = item;
+                projMovement.RequestNo = item.NºRequisição;
+                projMovement.RequestLineNo = item.NºLinhaRequisição;
+                projMovement.Driver = item.Motorista;
+                projMovement.OriginalDocument = item.DocumentoOriginal;
+                projMovement.AdjustedPrice = item.AcertoDePreços;
+                projMovement.AutorizatedInvoice = item.FaturaçãoAutorizada;
+                projMovement.AutorizatedInvoice2 = item.FaturaçãoAutorizada2;
+                projMovement.AutorizatedInvoiceDate = item.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd");
+                projMovement.AuthorizedBy = item.AutorizadoPor;
+                projMovement.TimesheetNo = item.NºFolhaHoras;
+                projMovement.InternalRequest = item.RequisiçãoInterna;
+                projMovement.EmployeeNo = item.NºFuncionário;
+                projMovement.QuantityReturned = item.QuantidadeDevolvida;
+                projMovement.CustomerNo = item.CodCliente;
+                projMovement.LicensePlate = item.Matricula;
+                projMovement.ReadingCode = item.CodigoLer;
+                projMovement.Group = item.Grupo;
+                projMovement.Operation = item.Operacao;
+                projMovement.InvoiceGroup = item.GrupoFatura;
+                projMovement.InvoiceGroupDescription = item.GrupoFaturaDescricao;
+                //CommitmentNumber = Project.DBProjects.GetAllByProjectNumber(item.NºProjeto).NºCompromisso,
+                //projMovement.ClientName = DBNAV2017Clients.GetClientNameByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName);
+                //projMovement.ClientVATReg = DBNAV2017Clients.GetClientVATByNo(item.FaturaANºCliente, navDatabaseName, navCompanyName);
+                projMovement.ClientName = cliente != null ? cliente.Name : "";
+                projMovement.ClientVATReg = clienteVATReg != null ? clienteVATReg.Name : "";
+                projMovement.CriarMovNav2017 = item.CriarMovNav2017;
+                projMovement.Selecionada = item.Selecionada;
+                projMovement.Fatura = item.Fatura;
+
+                return projMovement;
+            }
+            return null;
+        }
+
+        public static List<ProjectMovementViewModel> ParseToViewModelTESTE(this List<MovimentosDeProjeto> items, string navDatabaseName, string navCompanyName)
+        {
+            List<ProjectMovementViewModel> parsedItems = new List<ProjectMovementViewModel>();
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(navDatabaseName, navCompanyName, "");
+
+            if (items != null)
+                items.ForEach(x =>
+                {
+                    NAVClientsViewModel cliente = AllClients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() ?? null;
+                    NAVClientsViewModel clienteVATReg = AllClients.Where(y => y.VATRegistrationNo_ == x.FaturaANºCliente).FirstOrDefault() ?? null;
+                    parsedItems.Add(x.ParseToViewModelTESTE(cliente, clienteVATReg, navDatabaseName, navCompanyName));
+                });
+            return parsedItems;
         }
 
         public static List<ProjectMovementViewModel> ParseToViewModel(this List<MovimentosDeProjeto> items, string navDatabaseName, string navCompanyName)
