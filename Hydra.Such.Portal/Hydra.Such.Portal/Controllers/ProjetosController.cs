@@ -8202,12 +8202,13 @@ namespace Hydra.Such.Portal.Controllers
                 int Col = 0;
 
                 if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1;}
-                if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Projeto Descrição"); Col = Col + 1; }
+                if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição Projeto"); Col = Col + 1; }
+                if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
                 if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
                 if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Movimento"); Col = Col + 1; }
                 if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento"); Col = Col + 1; }
                 if (dp["typeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo"); Col = Col + 1; }
-                if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód."); Col = Col + 1; }
+                if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código"); Col = Col + 1; }
                 if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
                 if (dp["quantity"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Quantidade"); Col = Col + 1; }
                 if (dp["measurementUnitCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Unidade Medida"); Col = Col + 1; }
@@ -8220,7 +8221,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade"); Col = Col + 1; }
                 if (dp["billableText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Faturável"); Col = Col + 1; }
                 if (dp["requestNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
-                if (dp["folhaHorasNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Folha Horas"); Col = Col + 1; }
+                if (dp["timesheetNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Folha Horas"); Col = Col + 1; }
                 if (dp["codigoTipoTrabalho"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Tipo Trabalho"); Col = Col + 1; }
                 if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Funcionário"); Col = Col + 1; }
                 if (dp["clientRequest"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Cliente"); Col = Col + 1; }
@@ -8234,7 +8235,6 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["autorizatedInvoiceDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Autorização Faturação"); Col = Col + 1; }
                 if (dp["authorizedBy"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Autorizado Por"); Col = Col + 1; }
                 if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Fatura"); Col = Col + 1; }
-                if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Fatura-a Nº Cliente"); Col = Col + 1; }
                 if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador"); Col = Col + 1; }
 
                 if (dp != null)
@@ -8247,6 +8247,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
                         if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectDescription); Col = Col + 1; }
+                        if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceToClientNo); Col = Col + 1; }
                         if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Date); Col = Col + 1; }
                         if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovementTypeText); Col = Col + 1; }
                         if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentNo); Col = Col + 1; }
@@ -8264,7 +8265,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode); Col = Col + 1; }
                         if (dp["billableText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.BillableText); Col = Col + 1; }
                         if (dp["requestNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNo); Col = Col + 1; }
-                        if (dp["folhaHorasNo"]["hidden"].ToString() == "False") { /*row.CreateCell(Col).SetCellValue(item.FolhaHorasNo);*/ Col = Col + 1; }
+                        if (dp["timesheetNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TimesheetNo); Col = Col + 1; }
                         if (dp["codigoTipoTrabalho"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodigoTipoTrabalho); Col = Col + 1; }
                         if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmployeeNo); Col = Col + 1; }
                         if (dp["clientRequest"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientRequest); Col = Col + 1; }
@@ -8278,7 +8279,6 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["autorizatedInvoiceDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AutorizatedInvoiceDate); Col = Col + 1; }
                         if (dp["authorizedBy"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AuthorizedBy); Col = Col + 1; }
                         if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceGroup.ToString()); Col = Col + 1; }
-                        if (dp["invoiceToClientNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceToClientNo); Col = Col + 1; }
                         if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.User); Col = Col + 1; }
 
                         count++;

@@ -597,7 +597,7 @@ namespace Hydra.Such.Portal.Services
                 consultaMercado = DBConsultaMercado.Update(consultaMercado);
 
                 //Para cada linha da requisição
-                foreach (RequisitionLineViewModel requisitionLine in requisition.Lines.Where(p => p.CreateMarketSearch == true).Where(p => p.QueryCreatedMarketNo == null))
+                foreach (RequisitionLineViewModel requisitionLine in requisition.Lines.Where(p => p.CreateMarketSearch == true).Where(p => string.IsNullOrEmpty(p.QueryCreatedMarketNo)))
                 {
                     decimal _qty = requisitionLine.QuantityToRequire != null ? requisitionLine.QuantityToRequire.Value : 0;
                     decimal _custo = requisitionLine.UnitCost != null ? requisitionLine.UnitCost.Value : 0;

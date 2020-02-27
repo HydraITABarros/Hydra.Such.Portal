@@ -280,7 +280,8 @@ namespace Hydra.Such.Data.Logic.Contracts
 
                     if (userDimensions != null && userDimensions.Count > 0)
                     {
-                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) ||
+                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (
+                            //userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) ||
                             userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional) ||
                             userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade)) &&
                             x.TipoContrato == (int)contractType && x.Tipo == 2).Distinct().ToList();
@@ -325,7 +326,8 @@ namespace Hydra.Such.Data.Logic.Contracts
 
                     if (userDimensions != null && userDimensions.Count > 0)
                     {
-                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) ||
+                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (
+                            //userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) ||
                             userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional) ||
                             userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade)) &&
                             x.TipoContrato == (int)contractType && x.Tipo == 2).Distinct().ToList();

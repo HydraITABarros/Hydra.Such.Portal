@@ -445,9 +445,9 @@ namespace Hydra.Such.Portal.Controllers
 
             //Apply User Dimensions Validations
             //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            ////Regions
-            //if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
-            //    ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //Regions
+            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
 
             ////FunctionalAreas
             //if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)

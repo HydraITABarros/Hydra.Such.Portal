@@ -202,7 +202,7 @@
             </template>
         </div>
 
-        <vaadin-grid column-reordering-allowed aria-label="grid" id="grid" items="[[result]]" class="grid hide" ">
+        <vaadin-grid column-reordering-allowed aria-label="grid" id="grid" items="[[result]]" class="grid hide" active-item="{{activeItem}}">
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.projectNo.hidden }}">
                 <template class="header">
@@ -214,13 +214,23 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.projectDescription.hidden }}">
+            <vaadin-grid-column width="300px" resizable hidden$="{{ _columns.projectDescription.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="projectDescription">Projeto Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="projectDescription">Descrição Projeto</vaadin-grid-sorter>
                     <vaadin-grid-filter path="projectDescription" />
                 </template>
                 <template>
                     {{item.projectDescription}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="175px" resizable hidden$="{{ _columns.invoiceToClientNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="invoiceToClientNo">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="invoiceToClientNo" />
+                </template>
+                <template>
+                    {{item.invoiceToClientNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -266,7 +276,7 @@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.code.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="code">Cód.</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
@@ -404,13 +414,13 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.folhaHorasNo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.timesheetNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="folhaHorasNo">Nº Folha Horas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="folhaHorasNo" />
+                    <vaadin-grid-sorter path="timesheetNo">Nº Folha Horas</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="timesheetNo" />
                 </template>
                 <template>
-                    {{item.folhaHorasNo}}
+                    {{item.timesheetNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -546,16 +556,6 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="175px" resizable hidden$="{{ _columns.invoiceToClientNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="invoiceToClientNo">Fatura-a Nº Cliente</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="invoiceToClientNo" />
-                </template>
-                <template>
-                    {{item.invoiceToClientNo}}
-                </template>
-            </vaadin-grid-column>
-
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.user.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
@@ -585,6 +585,9 @@
                         notify: true,
                         value: 0
                     },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -610,6 +613,19 @@
                 created: function () {
                     this.filter = window.getGridFilter('projetos-movimentoslist');
                 },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        /*FILTROS*/
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('projetos-movimentoslist', filters || {});
+
+                        window.location.href = "/Projetos/Detalhes/" + item.projectNo;
+                    }
+                },
+
 
                 ready: function () {
                     window.handleGridListColumnsOrder(this.$.grid, 'Projetos');
@@ -670,12 +686,13 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "projectNo": { hidden: false, label: "Nº Projeto" },
-                        "projectDescription": { hidden: false, label: "Projeto Descrição" },
+                        "projectDescription": { hidden: false, label: "Descrição Projeto" },
+                        "invoiceToClientNo": { hidden: false, label: "Nº Cliente" },
                         "date": { hidden: false, label: "Data" },
                         "movementTypeText": { hidden: false, label: "Tipo Movimento" },
                         "documentNo": { hidden: false, label: "Nº Documento" },
                         "typeText": { hidden: false, label: "Tipo" },
-                        "code": { hidden: false, label: "Cód." },
+                        "code": { hidden: false, label: "Código" },
                         "description": { hidden: false, label: "Descrição" },
                         "quantity": { hidden: false, label: "Quantidade" },
                         "measurementUnitCode": { hidden: false, label: "Cód. Unidade Medida" },
@@ -688,7 +705,7 @@
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
                         "billableText": { hidden: false, label: "Faturável" },
                         "requestNo": { hidden: false, label: "Nº Requisição" },
-                        "folhaHorasNo": { hidden: false, label: "Nº Folha Horas" },
+                        "timesheetNo": { hidden: false, label: "Nº Folha Horas" },
                         "codigoTipoTrabalho": { hidden: false, label: "Cód. Tipo Trabalho" },
                         "employeeNo": { hidden: false, label: "Nº Funcionário" },
                         "clientRequest": { hidden: false, label: "Cód. Cliente" },
@@ -702,7 +719,6 @@
                         "autorizatedInvoiceDate": { hidden: false, label: "Data Autorização Faturação" },
                         "authorizedBy": { hidden: false, label: "Autorizado Por" },
                         "invoiceGroup": { hidden: false, label: "Grupo Fatura" },
-                        "invoiceToClientNo": { hidden: false, label: "Fatura-a Nº Cliente" },
                         "user": { hidden: false, label: "Utilizador" },
                     };
 
