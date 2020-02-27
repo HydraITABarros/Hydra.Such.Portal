@@ -191,6 +191,8 @@ namespace Hydra.Such.Data
             Orcamentos = 71,
             [Description("Fornecedores")]
             Fornecedores = 72,
+            [Description("Projetos - Lista de Movimentos")]
+            ProjetosListaMovimentos = 73,
 
 
 

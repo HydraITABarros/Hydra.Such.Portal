@@ -555,7 +555,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             return null;
         }
 
-        public static ProjectMovementViewModel ParseToViewModelTESTE(this MovimentosDeProjeto item, NAVClientsViewModel cliente, NAVClientsViewModel clienteVATReg, string navDatabaseName, string navCompanyName)
+        public static ProjectMovementViewModel ParseToViewModelMovimentList(this MovimentosDeProjeto item, NAVClientsViewModel cliente, NAVClientsViewModel clienteVATReg, string navDatabaseName, string navCompanyName)
         {
             if (item != null)
             {
@@ -641,7 +641,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
             return null;
         }
 
-        public static List<ProjectMovementViewModel> ParseToViewModelTESTE(this List<MovimentosDeProjeto> items, string navDatabaseName, string navCompanyName)
+        public static List<ProjectMovementViewModel> ParseToViewModelMovimentList(this List<MovimentosDeProjeto> items, string navDatabaseName, string navCompanyName)
         {
             List<ProjectMovementViewModel> parsedItems = new List<ProjectMovementViewModel>();
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(navDatabaseName, navCompanyName, "");
@@ -651,7 +651,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 {
                     NAVClientsViewModel cliente = AllClients.Where(y => y.No_ == x.CodCliente).FirstOrDefault() ?? null;
                     NAVClientsViewModel clienteVATReg = AllClients.Where(y => y.VATRegistrationNo_ == x.FaturaANºCliente).FirstOrDefault() ?? null;
-                    parsedItems.Add(x.ParseToViewModelTESTE(cliente, clienteVATReg, navDatabaseName, navCompanyName));
+                    parsedItems.Add(x.ParseToViewModelMovimentList(cliente, clienteVATReg, navDatabaseName, navCompanyName));
                 });
             return parsedItems;
         }

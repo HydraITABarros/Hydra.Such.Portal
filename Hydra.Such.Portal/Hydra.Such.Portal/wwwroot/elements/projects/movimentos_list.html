@@ -214,6 +214,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.projectDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="projectDescription">Projeto Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="projectDescription" />
+                </template>
+                <template>
+                    {{item.projectDescription}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.date.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -660,8 +670,9 @@
                 _startColumnToggle: function () {
                     var columns = {
                         "projectNo": { hidden: false, label: "Nº Projeto" },
+                        "projectDescription": { hidden: false, label: "Projeto Descrição" },
                         "date": { hidden: false, label: "Data" },
-                        "movementTypeText": { hidden: false, label: "ipo Movimento" },
+                        "movementTypeText": { hidden: false, label: "Tipo Movimento" },
                         "documentNo": { hidden: false, label: "Nº Documento" },
                         "typeText": { hidden: false, label: "Tipo" },
                         "code": { hidden: false, label: "Cód." },

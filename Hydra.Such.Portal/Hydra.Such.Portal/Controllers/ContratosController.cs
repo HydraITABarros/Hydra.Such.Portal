@@ -418,17 +418,24 @@ namespace Hydra.Such.Portal.Controllers
             if (requestParams["Historic"] != null)
                 Historic = int.Parse(requestParams["Historic"].ToString());
 
-            List<Contratos> ContractsList = null;
+            List<Contratos> ContractsList = new List<Contratos>();
+            List<ContractViewModel> result = new List<ContractViewModel>();
+
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
 
             if ((Archived == 0 || ContractNo == "") && (Historic == 0))
             {
                 int type = 1; //CONTRATOS
-                ContractsList = DBContracts.GetAllByContractTypeAndType(ContractType.Contract, type);
+                //ContractsList = DBContracts.GetAllByContractTypeAndType((int)ContractType.Contract, type);
+                ContractsList = DBContracts.GetAllListContractByContractTypeAndType(userDimensions, (int)ContractType.Contract, type);
+
+
                 ContractsList.RemoveAll(x => x.Arquivado.HasValue && x.Arquivado.Value);
             }
             else if (Historic == 1)
             {
-                ContractsList = DBContracts.GetAllHistoric((int)ContractType.Contract);
+                //ContractsList = DBContracts.GetAllHistoric((int)ContractType.Contract);
+                ContractsList = DBContracts.GetAllListContractHistoric(userDimensions, (int)ContractType.Contract);
                 ContractsList.RemoveAll(x => x.Tipo != 1);
             }
             else
@@ -437,21 +444,18 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             //Apply User Dimensions Validations
-            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            //Regions
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
-                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+            //List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            ////Regions
+            //if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+            //    ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
 
-            //FunctionalAreas
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.CódigoÁreaFuncional || string.IsNullOrEmpty(x.CódigoÁreaFuncional))));
+            ////FunctionalAreas
+            //if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+            //    ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && (y.ValorDimensão == x.CódigoÁreaFuncional || string.IsNullOrEmpty(x.CódigoÁreaFuncional))));
 
-            //ResponsabilityCenter
-            if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
-
-
-            List<ContractViewModel> result = new List<ContractViewModel>();
+            ////ResponsabilityCenter
+            //if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+            //    ContractsList.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && (y.ValorDimensão == x.CódigoCentroResponsabilidade || string.IsNullOrEmpty(x.CódigoCentroResponsabilidade))));
 
             ContractsList.ForEach(x => result.Add(DBContracts.ParseToViewModel(x)));
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");

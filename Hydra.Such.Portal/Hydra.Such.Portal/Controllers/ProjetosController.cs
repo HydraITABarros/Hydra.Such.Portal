@@ -111,7 +111,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Movimentos_List()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ProjetosListaMovimentos);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
@@ -6434,15 +6434,17 @@ namespace Hydra.Such.Portal.Controllers
                 if (filtroDataFim > DateTime.MinValue)
                     AllMovFilter.RemoveAll(x => Convert.ToDateTime(x.DataHoraCriação).Date > filtroDataFim);
 
-                if (AllMovFilter.Count <= 20000)
+                if (AllMovFilter.Count <= 15000)
                 {
-                    result = AllMovFilter.ParseToViewModelTESTE(_config.NAVDatabaseName, _config.NAVCompanyName);
+                    result = AllMovFilter.ParseToViewModelMovimentList(_config.NAVDatabaseName, _config.NAVCompanyName);
 
                     List<EnumData> AllMovementType = EnumerablesFixed.ProjectDiaryMovements;
                     List<EnumData> AllType = EnumerablesFixed.ProjectDiaryTypes;
+                    List<Projetos> AllProjects = DBProjects.GetAll();
 
                     result.ForEach(x =>
                     {
+                        x.ProjectDescription = AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault() != null ? AllProjects.Where(y => y.NºProjeto == x.ProjectNo).FirstOrDefault().Descrição : "";
                         x.MovementTypeText = x.MovementType != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault() != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault().Value : "" : "";
                         x.TypeText = x.Type != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault() != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault().Value : "" : "";
                         x.BillableText = x.Billable.HasValue ? x.Billable == true ? "Sim" : "Não" : "";
@@ -8200,6 +8202,7 @@ namespace Hydra.Such.Portal.Controllers
                 int Col = 0;
 
                 if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1;}
+                if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Projeto Descrição"); Col = Col + 1; }
                 if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
                 if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Movimento"); Col = Col + 1; }
                 if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento"); Col = Col + 1; }
@@ -8243,6 +8246,7 @@ namespace Hydra.Such.Portal.Controllers
                         row = excelSheet.CreateRow(count);
 
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
+                        if (dp["projectDescription"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectDescription); Col = Col + 1; }
                         if (dp["date"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Date); Col = Col + 1; }
                         if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovementTypeText); Col = Col + 1; }
                         if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentNo); Col = Col + 1; }

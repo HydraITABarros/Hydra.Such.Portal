@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Hydra.Such.Data.Extensions;
+using static Hydra.Such.Data.Enumerations;
+
 namespace Hydra.Such.Data.Logic.Contracts
 {
     public static class DBContracts
@@ -81,6 +83,38 @@ namespace Hydra.Such.Data.Logic.Contracts
                 return null;
             }
         }
+
+        public static List<Contratos> GetAllTESTE(string user, ContractType contractType, int Type)
+        {
+            try
+            {
+                List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(user);
+
+                using (var ctx = new SuchDBContext())
+                {
+                    List<Contratos> ListContratos = ctx.Contratos.Where(x => x.TipoContrato == (int)contractType && x.Tipo == Type).ToList();
+
+                    if (userDimensions != null && userDimensions.Count > 0)
+                    {
+                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) ||
+                            userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional) ||
+                            userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade)) &&
+                            x.TipoContrato == (int)contractType && x.Tipo == 2).Distinct().ToList();
+
+                        ListContratos.RemoveAll(x => !ListLinhasContratos.Any(y => y.NºContrato == x.NºDeContrato));
+                    }
+
+                    return ListContratos;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+
         public static Contratos GetActualContract(string ContractNo, string ClientNo)
         {
             try
@@ -236,6 +270,34 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static List<Contratos> GetAllListContractByContractTypeAndType(List<AcessosDimensões> userDimensions, int contractType, int Type)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<Contratos> ListContratos = ctx.Contratos.Where(x => x.TipoContrato == contractType && x.Tipo == Type).ToList();
+
+                    if (userDimensions != null && userDimensions.Count > 0)
+                    {
+                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) ||
+                            userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional) ||
+                            userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade)) &&
+                            x.TipoContrato == (int)contractType && x.Tipo == 2).Distinct().ToList();
+
+                        ListContratos.RemoveAll(x => !ListLinhasContratos.Any(y => y.NºContrato == x.NºDeContrato));
+                    }
+
+                    return ListContratos;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<Contratos> GetAllByContractTypeAndType(ContractType contractType, int Type)
         {
             try
@@ -244,6 +306,34 @@ namespace Hydra.Such.Data.Logic.Contracts
                 {
 
                     return ctx.Contratos.Where(x => x.TipoContrato == (int)contractType && x.Tipo == Type).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<Contratos> GetAllListContractHistoric(List<AcessosDimensões> userDimensions, int contractType)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    List<Contratos> ListContratos = ctx.Contratos.Where(x => x.TipoContrato == contractType && x.Historico == true).ToList();
+
+                    if (userDimensions != null && userDimensions.Count > 0)
+                    {
+                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) ||
+                            userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional) ||
+                            userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade)) &&
+                            x.TipoContrato == (int)contractType && x.Tipo == 2).Distinct().ToList();
+
+                        ListContratos.RemoveAll(x => !ListLinhasContratos.Any(y => y.NºContrato == x.NºDeContrato));
+                    }
+
+                    return ListContratos;
                 }
             }
             catch (Exception ex)
