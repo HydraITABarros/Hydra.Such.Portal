@@ -24,6 +24,7 @@
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <dom-module id="x-projectdetails">
     <template>
@@ -59,7 +60,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectTypes" last-response="{{LProjectTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetServiceObjects" last-response="{{LProjectServiceObjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes" last-response="{{LProjectCountabGroupTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-    <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+        <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -150,6 +151,37 @@
                     <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 </template>
 
+                <template is="dom-if" if="{{ data.verMenu }}">
+                    <paper-button id="btnProjectDiary" class="tablinks" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+
+                    <template is="dom-if" if="{{ _permissions.create }}">
+                        <paper-button id="btnInvoiceAut" class="tablinks" on-tap="_OpenInvoice"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Autorização Faturação</paper-button>
+                    </template>
+                </template>
+
+                <such-dropdown-menu on-value-changed="_viewMenuConsultarItemSelected" title="Consultar" items='[[ _viewMenuConsultarItems ]]'></such-dropdown-menu>
+                <such-dropdown-menu on-value-changed="_viewMenuPreMovItemSelected" title="Pré-Movimentos" items='[[ _viewMenuPreMovItems ]]'></such-dropdown-menu>
+
+                <template is="dom-if" if="{{ data.verMenu }}">
+                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_terminarProject"><i class="fa fa-remove" aria-hidden="true"></i>&nbsp; Terminar</paper-button>
+                </template>
+
+                <template is="dom-if" if="{{ data.enviarParaAprovacao }}">
+                    <paper-button id="btnEnviarAprovacao" class="tablinks" on-tap="_EnviarAprovacao"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp; Enviar Para Aprovação</paper-button>
+                </template>
+
+                <paper-button id="btn_imprimirMovimentos" class="tablinks" on-tap="_printMovimentos" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extrato</paper-button>
+
+                <template is="dom-if" if="{{ _projectclosed }}">
+                    <paper-button id="btnReabrirProjeto" class="tablinks" on-tap="_ReabrirProjeto"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Reabrir Projeto</paper-button>
+                </template>
+
+                <!--<paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                </template>
+
                 <paper-button id="btnProjectMovements" class="tablinks" on-tap="_OpenProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
 
                 <template is="dom-if" if="{{ data.verMenu }}">
@@ -172,7 +204,7 @@
 
                 <template is="dom-if" if="{{ _projectclosed }}">
                     <paper-button id="btnReabrirProjeto" class="tablinks" on-tap="_ReabrirProjeto"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Reabrir Projeto</paper-button>
-                </template>
+                </template>-->
             </div>
         </template>
 
@@ -447,7 +479,7 @@
             <template is="dom-if" if="{{ _isCreate }}">
                 <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </template>
-            
+
             <template is="dom-if" if="{{ !_isCreate }}">
                 <template is="dom-if" if="{{ _permissions.update }}">
                     <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update" hidden="{{ _bloqueado() }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
@@ -548,6 +580,16 @@
                     _reportserverurl: {
                         type: String,
                     },
+
+                    _viewMenuConsultarItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Movimentos Projeto" }, { value: 2, description: "Doc. Vendas Registados" }]
+                    },
+                    _viewMenuPreMovItems: {
+                        type: Array,
+                        value: [{ value: 1, description: "Diário Pré-Registos" }, { value: 2, description: "Pré-Movimentos Projeto" }]
+                    },
+
                 },
                 ready: function () {
                     //GET PROJECT DATA
@@ -974,8 +1016,45 @@
                     this.$.page_GetAllResponsabilityCenterCodeFilterByAreaCode_ajax.generateRequest();
                 },
 
+                _viewMenuConsultarItemSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
 
+                    if (item == null)
+                        return;
 
+                    switch (item.value) {
+                        case 1: //"Movimentos Projeto"
+                            this._OpenProjectMovements();
+                            break;
+                        case 2: //"Doc. Vendas Registados"
+                            this._GoFaturasNotas();
+                            break;
+                    }
+                },
+
+                _viewMenuPreMovItemSelected: function (e) {
+                    if (e.detail.value == 0)
+                        return;
+                    var item = e.detail.value;
+
+                    if (item == null)
+                        return;
+
+                    switch (item.value) {
+                        case 1: //"Diário Pré-Registos"
+                            this._OpenProjectPreRegistration();
+                            break;
+                        case 2: //"Pré-Movimentos Projeto"
+                            this._OpenPreProjectMovements();
+                            break;
+                    }
+                },
+
+                _GoFaturasNotas: function (url, data) {
+                    window.location.href = "/Projetos/FaturasNotas_List/" + this.data.projectNo;
+                },
 
             });
         });

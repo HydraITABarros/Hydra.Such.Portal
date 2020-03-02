@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using Hydra.Such.Data.ViewModel.Projects;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -200,5 +201,44 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static List<FaturasNotasViewModel> GetFaturasNotasByProject(string NAVDatabaseName, string NAVCompanyName, string ProjectNo)
+        {
+            try
+            {
+                List<FaturasNotasViewModel> result = new List<FaturasNotasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@ProjectNo", ProjectNo)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017ProjetosGetFaturasNotas @DBName, @CompanyName, @ProjectNo", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new FaturasNotasViewModel()
+                        {
+                            Type = temp.Type != null ? Convert.ToString(temp.Type) : "",
+                            DocumentNo = temp.DocumentNo != null ? Convert.ToString(temp.DocumentNo) : "",
+                            DocumentDate = temp.DocumentDate != null ? Convert.ToDateTime(temp.DocumentDate) : DateTime.MinValue,
+                            DocumentDateTexto = temp.DocumentDate != null ? Convert.ToDateTime(temp.DocumentDate).ToString("yyyy-MM-dd") : "",
+                            ValorSemIVA = Convert.ToDecimal(temp.ValorSemIVA),
+                            ValorComIVA = Convert.ToDecimal(temp.ValorComIVA),
+                            Parcial = temp.Parcial != null ? Convert.ToString(temp.Parcial): ""
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

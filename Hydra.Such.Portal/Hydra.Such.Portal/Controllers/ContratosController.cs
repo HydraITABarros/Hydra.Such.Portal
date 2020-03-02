@@ -3664,7 +3664,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     }
                                                 }
 
-                                                if (IVA > 0)
+                                                if (IVA > 0 && i == 1)
                                                     linha.PreçoUnitário = linha.PreçoUnitário * IVA;
                                             }
                                         }

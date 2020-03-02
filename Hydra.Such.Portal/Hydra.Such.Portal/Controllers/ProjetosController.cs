@@ -123,6 +123,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        public IActionResult FaturasNotas_List(string id)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Projetos);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.ProjectNo = id ?? "";
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
         #region Home
         [HttpPost]
         public JsonResult GetListProjectsByArea([FromBody] JObject requestParams)
@@ -5001,6 +5016,21 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult GetFaturasNotasList([FromBody] string ProjectNo)
+        {
+            try
+            {
+                List<FaturasNotasViewModel> result = DBNAV2017Projects.GetFaturasNotasByProject(_config.NAVDatabaseName, _config.NAVCompanyName, ProjectNo);
+
+                return Json(result);
+            }
+            catch (Exception e)
+            {
+                return Json(null);
+            }
+        }
+
         public IActionResult PreregistoProjetos(String id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.PreRegistos);
@@ -8295,6 +8325,71 @@ namespace Hydra.Such.Portal.Controllers
         }
         //2
         public IActionResult ExportToExcelDownload_MovimentosList(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Projetos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Autorização de Faturação.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_FaturasNotasList([FromBody] List<FaturasNotasViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Projetos\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Autorização de Faturação");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["type"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo"); Col = Col + 1; }
+                if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento"); Col = Col + 1; }
+                if (dp["documentDateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
+                if (dp["valorSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor sem IVA"); Col = Col + 1; }
+                if (dp["valorComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor com IVA"); Col = Col + 1; }
+                if (dp["parcial"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Total"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (FaturasNotasViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["type"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Type); Col = Col + 1; }
+                        if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentNo); Col = Col + 1; }
+                        if (dp["documentDateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentDateTexto); Col = Col + 1; }
+                        if (dp["valorSemIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ValorSemIVA.ToString()); Col = Col + 1; }
+                        if (dp["valorComIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ValorComIVA.ToString()); Col = Col + 1; }
+                        if (dp["parcial"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Parcial); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_FaturasNotasList(string sFileName)
         {
             sFileName = _generalConfig.FileUploadFolder + "Projetos\\" + "tmp\\" + sFileName;
             //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Autorização de Faturação.xlsx");

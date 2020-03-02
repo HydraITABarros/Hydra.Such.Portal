@@ -1,0 +1,354 @@
+﻿
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-column-reordering-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-faturasnotaslist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+
+                .panel-heading {
+                    padding: 0 !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Projetos/GetFaturasNotasList"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"
+                   on-response="_GetListMovimentosResponse"></iron-ajax>
+
+        <iron-ajax url="/Projetos/ExportToExcel_FaturasNotasList"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid column-reordering-allowed aria-label="grid" id="grid" items="[[result]]" class="grid">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.type.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="type" />
+                </template>
+                <template>
+                    {{item.type}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.documentNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="documentNo" />
+                </template>
+                <template>
+                    {{item.documentNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.documentDateTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="documentDateTexto">Data</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="documentDateTexto" />
+                </template>
+                <template>
+                    {{item.documentDateTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorSemIVA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorSemIVA">Valor sem IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorSemIVA" />
+                </template>
+                <template>
+                    <div class="alignRight">
+                        {{item.valorSemIVA}} €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorComIVA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="valorComIVA">Valor com IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="valorComIVA" />
+                </template>
+                <template>
+                    <div class="alignRight">
+                        {{item.valorComIVA}} €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.parcial.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="parcial">Valor Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="parcial" />
+                </template>
+                <template>
+                    {{item.parcial}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.verDocumento.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="verDocumento">Ver Documento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="verDocumento" />
+                </template>
+                <template>
+                    <div class="alignCenter">
+                        <paper-button id="btn_VerDocumento" class="btnRemove tableBtn" raised on-tap="_VerDocumento" title="Ver Documento"><i class="fa fa-eye" aria-hidden="true"></i></paper-button>
+                    </div>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-faturasnotaslist',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    _projectno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('projetos-faturasnotaslist');
+                },
+
+                ready: function () {
+                    window.handleGridListColumnsOrder(this.$.grid, 'Projetos');
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'projetos-faturasnotaslist');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        clearTimeout(gridToBottomTimeout);
+                        gridToBottomTimeout = setTimeout(function () { _this.fixGridToBottom(); }, 200);
+                    });
+                    $(window).trigger('resize');
+
+                    this.$.grid_databound_ajax.body = JSON.stringify(this._projectno);
+                    this.$.grid_databound_ajax.generateRequest();
+                    this.$.grid.clearCache();
+
+                },
+                fixGridToBottom: function () {
+                    var _this = this;
+                    setTimeout(function () {
+                        var grid_el = $(_this.$.grid);
+                        var parentHeight = $(_this).offsetParent().height();
+                        var windowHeight = $(window).height();
+                        var paddingTop = $(_this).offsetParent().css('padding-top').replace("px", "");
+                        var offsetTop = $(_this).offset().top;
+                        var height = windowHeight - offsetTop - paddingTop;
+                        $(_this.$.grid).height(height - $(_this.$.gridheader).height());
+                    }, 3600);
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _exportEXCEL: function () {
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '/Projetos/ExportToExcelDownload_FaturasNotasList?sFileName=' + FileName;
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "type": { hidden: false, label: "Tipo" },
+                        "documentNo": { hidden: false, label: "Nº Documento" },
+                        "documentDateTexto": { hidden: false, label: "Data" },
+                        "valorSemIVA": { hidden: false, label: "Valor sem IVA" },
+                        "valorComIVA": { hidden: false, label: "Valor com IVA" },
+                        "parcial": { hidden: false, label: "Parcial" },
+                    };
+
+                    if (localStorage["faturasnotaslist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["faturasnotaslist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["faturasnotaslist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+            });
+        });
+    </script>
+
+</dom-module>
