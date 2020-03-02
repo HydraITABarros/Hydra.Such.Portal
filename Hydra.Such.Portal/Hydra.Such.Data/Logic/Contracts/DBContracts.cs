@@ -280,11 +280,26 @@ namespace Hydra.Such.Data.Logic.Contracts
 
                     if (userDimensions != null && userDimensions.Count > 0)
                     {
-                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (
-                            //userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) ||
-                            userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional) ||
-                            userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade)) &&
-                            x.TipoContrato == (int)contractType && x.Tipo == 2).Distinct().ToList();
+                        //List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => (
+                        //    userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião) &&
+                        //    userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional) &&
+                        //    userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade)) &&
+                        //    x.TipoContrato == (int)contractType && x.Tipo == 2).Distinct().ToList();
+
+                        List<LinhasContratos> ListLinhasContratos = ctx.LinhasContratos.Where(x => x.TipoContrato == (int)contractType && x.Tipo == 2).Distinct().ToList();
+
+                        //Regions
+                        if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.Region).Count() > 0)
+                            ListLinhasContratos.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.CódigoRegião));
+
+                        //FunctionalAreas
+                        if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                            ListLinhasContratos.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.CódigoÁreaFuncional));
+
+                        //ResponsabilityCenter
+                        if (userDimensions.Where(x => x.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                            ListLinhasContratos.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
+
 
                         ListContratos.RemoveAll(x => !ListLinhasContratos.Any(y => y.NºContrato == x.NºDeContrato));
                     }
