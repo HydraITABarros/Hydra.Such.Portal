@@ -2424,14 +2424,29 @@ namespace Hydra.Such.Portal.Controllers
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
 
             //AMARO COMENTAR
-            //contractList.RemoveAll(x => x.NºDeContrato != "VC180097");
+            //contractList.RemoveAll(x => x.NºDeContrato != "VC190196");
 
             foreach (var item in contractList)
             {
-                //if (item.NºDeContrato == "VC180054" || item.NºDeContrato == "VC180097")
+                //if (item.NºDeContrato == "VC190196" || item.NºDeContrato == "VC190196")
                 //{
                 //    string teste = "";
                 //}
+
+                if (!string.IsNullOrEmpty(item.NºCliente))
+                {
+                    NAVClientsViewModel Client = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºCliente);
+                    if (Client != null)
+                    {
+                        if (Client.AbrigoLeiCompromisso == true)
+                            item.NºComprimissoObrigatório = false;
+                        else
+                            item.NºComprimissoObrigatório = true;
+
+                        DBContracts.Update(item);
+                    }
+
+                }
 
                 List<NAVSalesLinesViewModel> contractSalesLinesInNAV = DBNAV2017SalesLine.FindSalesLine(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºDeContrato, item.NºCliente);
                 List<LinhasContratos> contractLines = DBContractLines.GetAllByNoTypeVersion(item.NºDeContrato, item.TipoContrato, item.NºVersão, true);
@@ -2506,6 +2521,13 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 current = item.DataExpiração.Value;
                             }
+
+                            //Se a data do Fim de Compromisso nas Requisições de Cliente for inferior à data da Geração faturação fica esta como data limite para a Faturação
+                            RequisiçõesClienteContrato ReqClienteAux = DBContractClientRequisition.GetByContract(ContractNoDuplicate).
+                                OrderByDescending(x => x.DataFimCompromisso).ToList().
+                                Find(x => x.GrupoFatura == InvoiceGroupDuplicate && x.DataInícioCompromisso <= current);
+                            if (ReqClienteAux != null && ReqClienteAux.DataFimCompromisso.HasValue && current > ReqClienteAux.DataFimCompromisso)
+                                current = (DateTime)ReqClienteAux.DataFimCompromisso;
 
                             #region Obter Data ultima fatura
                             //Contratos com 1 única fatura - Tentar obter a data da ultima fatura a partir da Data da Ultima fatura do contrato;
