@@ -2422,6 +2422,7 @@ namespace Hydra.Such.Portal.Controllers
             DBAuthorizeInvoiceContracts.DeleteAllAllowedInvoiceAndLines();
 
             List<Contratos> contractList = DBContracts.GetAllAvencaFixa2();
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
 
             //AMARO COMENTAR
             //contractList.RemoveAll(x => x.NºDeContrato != "VC190196");
@@ -2435,7 +2436,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (!string.IsNullOrEmpty(item.NºCliente))
                 {
-                    NAVClientsViewModel Client = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, item.NºCliente);
+                    NAVClientsViewModel Client = AllClients.Where(x => x.No_ == item.NºCliente).FirstOrDefault();
                     if (Client != null)
                     {
                         if (Client.AbrigoLeiCompromisso == true)

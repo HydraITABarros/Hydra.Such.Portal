@@ -162,7 +162,7 @@
         </div>
 
         <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" items="[[result]]" id="gridContracts" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.contractNo.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contractNo" value="[[filter.contractNo]]" />
@@ -171,7 +171,7 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="120px" resizable hidden>
+            <vaadin-grid-column width="10%" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="oportunityNo" value="[[filter.oportunityNo]]" />
@@ -180,7 +180,7 @@
                     {{item.oportunityNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="120px" resizable hidden$="{{ _columns.type.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="type" value="[[filter.type]]" />
@@ -189,7 +189,7 @@
                     [[ _clType(item.type) ]]
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.startData.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
                     <vaadin-grid-filter path="startData" value="[[filter.startData]]" />
@@ -198,7 +198,7 @@
                     {{item.startData}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.dueDate.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dueDate" value="[[filter.dueDate]]" />
@@ -207,7 +207,7 @@
                     {{item.dueDate}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.clientNo.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientNo" value="[[filter.clientNo]]" />
@@ -216,7 +216,7 @@
                     {{item.clientNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable hidden$="{{ _columns.clientName.hidden }}">
+            <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.clientName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientName" value="[[filter.clientName]]" />
@@ -225,7 +225,7 @@
                     {{item.clientName}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.description.hidden }}">
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Âmbito dos Serviços</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" value="[[filter.description]]" />
@@ -234,7 +234,7 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.statusDescription.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.statusDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="statusDescription" value="[[filter.statusDescription]]" />
@@ -243,7 +243,7 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeRegion.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeRegion" value="[[filter.codeRegion]]" />
@@ -252,7 +252,7 @@
                     {{item.codeRegion}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeFunctionalArea" value="[[filter.codeFunctionalArea]]" />
@@ -261,7 +261,7 @@
                     {{item.codeFunctionalArea}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" value="[[filter.codeResponsabilityCenter]]" />
@@ -270,16 +270,18 @@
                     {{item.codeResponsabilityCenter}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.versionNo.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.versionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="versionNo" value="[[filter.versionNo]]" />
                 </template>
                 <template>
-                    {{item.versionNo}}
+                    <div class="text-right">
+                        {{item.versionNo}}
+                    </div>
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable id="ColunaReativar" hidden="{{_ifHistoric}}">
+            <vaadin-grid-column width="10%" resizable id="ColunaReativar" hidden="{{_ifHistoric}}">
                 <template class="header">
                 </template>
                 <template>

@@ -61,6 +61,60 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static int Create(NAV2009Viaturas Viatura)
+        {
+            try
+            {
+                int result = 0;
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@Matricula", Viatura.Matricula),
+                        new SqlParameter("@DataMatricula", Viatura.DataMatricula.ToString("yyyy-MM-dd")),
+                        new SqlParameter("@NoQuadro", Viatura.NoQuadro),
+                        new SqlParameter("@Estado", Viatura.Estado),
+                        new SqlParameter("@PesoBruto", Viatura.PesoBruto),
+                        new SqlParameter("@Tara", Viatura.Tara),
+                        new SqlParameter("@Cilindrada", Viatura.Cilindrada),
+                        new SqlParameter("@Potencia", Viatura.Potencia),
+                        new SqlParameter("@Combustivel", Viatura.Combustivel),
+                        new SqlParameter("@NoLugares", Viatura.NoLugares),
+                        new SqlParameter("@Cor", Viatura.Cor),
+                        new SqlParameter("@DistanciaEntreEixos", Viatura.DistanciaEntreEixos),
+                        new SqlParameter("@PneumaticosFrente", Viatura.PneumaticosFrente),
+                        new SqlParameter("@PneumaticosRetaguarda", Viatura.PneumaticosRetaguarda),
+                        new SqlParameter("@DataAquisicao", Viatura.DataAquisicao.ToString("yyyy-MM-dd")),
+                        new SqlParameter("@TipoPropriedade", Viatura.TipoPropriedade),
+                        new SqlParameter("@GlobalDimension1Code", Viatura.GlobalDimension1Code),
+                        new SqlParameter("@GlobalDimension2Code", Viatura.GlobalDimension2Code),
+                        new SqlParameter("@ShortcutDimension3Code", Viatura.ShortcutDimension3Code),
+                        new SqlParameter("@Observacoes", Viatura.Observacoes),
+                        new SqlParameter("@Utilizador", Viatura.Utilizador),
+                        new SqlParameter("@DataAlteracao", Viatura.DataAlteracao.ToString("yyyy-MM-dd")),
+                        new SqlParameter("@LocalParqueamento", Viatura.LocalParqueamento),
+                        new SqlParameter("@IntervaloRevisoes", Viatura.IntervaloRevisoes),
+                        new SqlParameter("@ConsumoIndicativoViatura", Viatura.ConsumoIndicativoViatura.ToString().Replace(",", "."))
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2009ViaturasCreate @Matricula, @DataMatricula, @NoQuadro, @Estado, @PesoBruto, @Tara, @Cilindrada, " +
+                        "@Potencia, @Combustivel, @NoLugares, @Cor, @DistanciaEntreEixos, @PneumaticosFrente, @PneumaticosRetaguarda, @DataAquisicao, @TipoPropriedade, " +
+                        "@GlobalDimension1Code, @GlobalDimension2Code, @ShortcutDimension3Code, @Observacoes, @Utilizador, @DataAlteracao, @LocalParqueamento, " +
+                        "@IntervaloRevisoes, @ConsumoIndicativoViatura", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result = temp.Result != null ? (int)temp.Result : (int)0;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
         public static int Update(NAV2009Viaturas Viatura)
         {
             try

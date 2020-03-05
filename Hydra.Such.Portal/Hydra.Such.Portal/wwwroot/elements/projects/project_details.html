@@ -60,7 +60,7 @@
         <iron-ajax url="/PopulateDropdowns/GetProjectTypes" last-response="{{LProjectTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetServiceObjects" last-response="{{LProjectServiceObjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetCountabGroupTypes" last-response="{{LProjectCountabGroupTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
+    <iron-ajax url="/PopulateDropdowns/GetCountabGroupTypesOM" last-response="{{LProjectCountabGroupTypesOM}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <!--<iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -143,6 +143,11 @@
                    id="address_ajax"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax
+                   url="/Projetos/GoFaturasNotas"
+                   id="ajax_GoFaturasNotas_ajax">
+        </iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -178,33 +183,33 @@
 
                 <!--<paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+            </template>
+
+            <paper-button id="btnProjectMovements" class="tablinks" on-tap="_OpenProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+
+            <template is="dom-if" if="{{ data.verMenu }}">
+                <paper-button id="btnPreProjectMovements" class="tablinks" on-tap="_OpenPreProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Movimentos Projeto</paper-button>
+                <paper-button id="btnProjectAdd" class="tablinks" on-tap="_terminarProject"><i class="fa fa-remove" aria-hidden="true"></i>&nbsp; Terminar</paper-button>
+
+                <paper-button id="btnProjectDiary" class="tablinks" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
+                <paper-button id="btnProjectPreRegistration" class="tablinks" on-tap="_OpenProjectPreRegistration"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Registo Projetos</paper-button>
+
                 <template is="dom-if" if="{{ _permissions.create }}">
-                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button id="btnInvoiceAut" class="tablinks" on-tap="_OpenInvoice"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Autorização Faturação</paper-button>
                 </template>
+            </template>
 
-                <paper-button id="btnProjectMovements" class="tablinks" on-tap="_OpenProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Movimentos do Projeto</paper-button>
+            <template is="dom-if" if="{{ data.enviarParaAprovacao }}">
+                <paper-button id="btnEnviarAprovacao" class="tablinks" on-tap="_EnviarAprovacao"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp; Enviar Para Aprovação</paper-button>
+            </template>
 
-                <template is="dom-if" if="{{ data.verMenu }}">
-                    <paper-button id="btnPreProjectMovements" class="tablinks" on-tap="_OpenPreProjectMovements"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Movimentos Projeto</paper-button>
-                    <paper-button id="btnProjectAdd" class="tablinks" on-tap="_terminarProject"><i class="fa fa-remove" aria-hidden="true"></i>&nbsp; Terminar</paper-button>
+            <paper-button id="btn_imprimirMovimentos" class="tablinks" on-tap="_printMovimentos" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extrato</paper-button>
 
-                    <paper-button id="btnProjectDiary" class="tablinks" on-tap="_OpenProjectDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Diário de Projeto</paper-button>
-                    <paper-button id="btnProjectPreRegistration" class="tablinks" on-tap="_OpenProjectPreRegistration"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Pré-Registo Projetos</paper-button>
-
-                    <template is="dom-if" if="{{ _permissions.create }}">
-                        <paper-button id="btnInvoiceAut" class="tablinks" on-tap="_OpenInvoice"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Autorização Faturação</paper-button>
-                    </template>
-                </template>
-
-                <template is="dom-if" if="{{ data.enviarParaAprovacao }}">
-                    <paper-button id="btnEnviarAprovacao" class="tablinks" on-tap="_EnviarAprovacao"><i class="fa fa-arrow-right" aria-hidden="true"></i>&nbsp; Enviar Para Aprovação</paper-button>
-                </template>
-
-                <paper-button id="btn_imprimirMovimentos" class="tablinks" on-tap="_printMovimentos" title="Imprimir"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Extrato</paper-button>
-
-                <template is="dom-if" if="{{ _projectclosed }}">
-                    <paper-button id="btnReabrirProjeto" class="tablinks" on-tap="_ReabrirProjeto"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Reabrir Projeto</paper-button>
-                </template>-->
+            <template is="dom-if" if="{{ _projectclosed }}">
+                <paper-button id="btnReabrirProjeto" class="tablinks" on-tap="_ReabrirProjeto"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Reabrir Projeto</paper-button>
+            </template>-->
             </div>
         </template>
 
@@ -1054,6 +1059,11 @@
 
                 _GoFaturasNotas: function (url, data) {
                     window.location.href = "/Projetos/FaturasNotas_List/" + this.data.projectNo;
+
+                    //debugger;
+
+                    //this.$.ajax_GoFaturasNotas_ajax.body = JSON.stringify(this.data.projectNo);
+                    //this.$.ajax_GoFaturasNotas_ajax.generateRequest();
                 },
 
             });

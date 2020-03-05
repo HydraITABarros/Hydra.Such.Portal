@@ -466,6 +466,37 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        public IActionResult GoFaturasNotas([FromBody] string ProjectNo)
+        {
+            return RedirectToAction("FaturasNotas_List", "Projetos", new { id = ProjectNo });
+        }
+
+        [HttpPost]
+        public JsonResult VerificarPDF([FromBody] string pdf)
+        {
+            string pdfPath = _generalConfig.FileUploadFolder + "Projetos\\Documentos\\" + pdf;
+
+            if (System.IO.File.Exists(pdfPath))
+                return Json(true);
+            else
+                return Json(false);
+        }
+
+        [Route("Projetos/LoadPDF/{pdf}")]
+        public ActionResult LoadPDF(string pdf)
+        {
+            string pdfPath = _generalConfig.FileUploadFolder + "Projetos\\Documentos\\" + pdf;
+
+            if (System.IO.File.Exists(pdfPath))
+            {
+                var stream = new FileStream(pdfPath, FileMode.Open, FileAccess.Read);
+                var result = new FileStreamResult(stream, "application/pdf");
+
+                return result;
+            }
+            else
+                return null;
+        }
 
 
         //eReason = 1 -> Sucess
@@ -3661,44 +3692,11 @@ namespace Hydra.Such.Portal.Controllers
                     if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                         AuthorizedProjectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
                 }
-
-                //List<ProjectMovementViewModel> projectMovements = new List<ProjectMovementViewModel>();
-
-                //projectMovements = DBProjectMovements.GetProjMovementsById(ProjNo, ProjGroup, Faturada)
-                //    .ParseToViewModel(_config.NAVDatabaseName, _config.NAVCompanyName)
-                //    .OrderBy(x => x.ClientName).ToList();
-
-                //if (projectMovements.Count > 0)
-                //{
-                //    var userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                //    foreach (var lst in projectMovements)
-                //    {
-                //        if (lst.MovementType == 3)
-                //        {
-                //            lst.Quantity = Math.Abs((decimal)lst.Quantity) * (-1);
-                //        }
-
-                //        if (!String.IsNullOrEmpty(lst.Currency))
-                //        {
-                //            lst.UnitPrice = lst.UnitValueToInvoice;
-                //        }
-                //    }
-                //    List<UserDimensionsViewModel> userDimensionsViewModel = userDimensions.ParseToViewModel();
-                //    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.Region).Count() > 0)
-                //        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.RegionCode));
-                //    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.FunctionalArea).Count() > 0)
-                //        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.FunctionalAreaCode));
-                //    if (userDimensionsViewModel.Where(x => x.Dimension == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                //        projectMovements.RemoveAll(x => !userDimensionsViewModel.Any(y => y.DimensionValue == x.ResponsabilityCenterCode));
-                //}
             }
             catch (Exception ex)
             {
-                //projectMovements = new List<ProjectMovementViewModel>();
-
                 AuthorizedProjectMovements = new List<MovementAuthorizedProjectViewModel>();
             }
-            //return Json(projectMovements);
 
             return Json(AuthorizedProjectMovements.OrderBy(x => x.ClientName));
         }
@@ -7130,7 +7128,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     row = excelSheet.CreateRow(count);
 
-                    row.CreateCell(0).SetCellValue(item.Date);
+                    row.CreateCell(0).SetCellValue(item.DateTexto);
                     //row.CreateCell(1).SetCellValue(item.MovementType.ToString());
                     row.CreateCell(1).SetCellValue(item.Type.ToString());
                     row.CreateCell(2).SetCellValue(item.Code);
@@ -7145,7 +7143,7 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(10).SetCellValue(item.DescServClient);
                     row.CreateCell(11).SetCellValue(item.CodServiceGroup);
                     row.CreateCell(12).SetCellValue(item.NumGuideExternal);
-                    row.CreateCell(13).SetCellValue(Convert.ToDateTime(item.DateConsume).ToShortDateString());
+                    row.CreateCell(13).SetCellValue(item.DateConsumeTexto);
                     row.CreateCell(14).SetCellValue(item.NumGuideResiduesGar);
                     //row.CreateCell(17).SetCellValue(item.AdjustedDocument);
                     //row.CreateCell(18).SetCellValue(item.AdjustedDocumentDate);

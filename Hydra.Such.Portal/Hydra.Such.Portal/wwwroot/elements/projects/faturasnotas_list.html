@@ -20,6 +20,9 @@
 <link rel="import" href="/lib/paper-button/paper-button.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
 
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
@@ -109,6 +112,15 @@
                    method="post"
                    handle-as="json"
                    on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Projetos/VerificarPDF"
+                   last-response="{{pdf}}"
+                   id="ajax_VerificarPDF_ajax"
+                   method="post"
+                   handle-as="json"
+                   on-response="_VerificarPDFResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -209,6 +221,17 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
+        <!-- Paper Dialog Ver Documento-->
+        <paper-dialog id="dlVerPDF" style="height:80%; width:60%">
+        <!--<paper-dialog id="dlVerPDF" style="height:800px; width:1200px">-->
+            <div id="divVerPDF" style="height:90%; width:100%">
+                <!--<embed id="embedVerPDF" src="/projetos/LoadPDF/{{ _documentoPDF }}" type="application/pdf" style="height:100%; width:100%" />-->
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -222,6 +245,11 @@
                         type: Array
                     },
                     _projectno: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _documentoPDF: {
                         type: String,
                         notify: true,
                         value: ""
@@ -347,6 +375,25 @@
                     });
                 },
                 /* end - ColumnToggle */
+
+                _VerDocumento: function (e) {
+                    this._documentoPDF = e.model.item.documentNo + ".pdf";
+                    this.$.ajax_VerificarPDF_ajax.body = JSON.stringify(this._documentoPDF);
+                    this.$.ajax_VerificarPDF_ajax.generateRequest();
+                },
+                _VerificarPDFResponse: function (e) {
+                    if (this.pdf == true) {
+                        this.$.divVerPDF.innerHTML = '<embed id="embedVerPDF" src="/projetos/LoadPDF/' + this._documentoPDF + '" type="application/pdf" style="height:100%; width:100%" />';
+                        this.$.dlVerPDF.open();
+                    }
+                    else {
+                        this._openToastError("Documento não desponível.");
+                    }
+                },
+
+
+
+
             });
         });
     </script>

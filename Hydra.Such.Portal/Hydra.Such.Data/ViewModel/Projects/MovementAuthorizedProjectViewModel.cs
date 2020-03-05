@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
     {
         public int NoMovement { get; set; }
         public DateTime Date { get; set; }
+        public string DateTexto { get; set; }
         public int Type { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
@@ -26,6 +27,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string NumGuideResiduesGar { get; set; }
         public string NumGuideExternal { get; set; }
         public DateTime? DateConsume { get; set; }
+        public string DateConsumeTexto { get; set; }
         public int TypeMeal { get; set; }
         public int TypeResourse { get; set; }
         public string NumDocument { get; set; }

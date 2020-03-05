@@ -77,7 +77,7 @@
         </div>
 
         <vaadin-grid id="grdContacts" aria-label="Contacts Table" items="[[Contacts]]" class="grid" active-item="{{activeItem}}" multi-sort="true" column-reordering-allowed>
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.no.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.no.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="no" value="[[filter.no]]" />
@@ -87,7 +87,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noCliente.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.noCliente.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="noCliente" value="[[filter.noCliente]]" />
@@ -97,7 +97,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteNome.hidden }}">
+            <vaadin-grid-column resizable width="20%" hidden$="{{ _columns.clienteNome.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clienteNome">Cliente Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteNome" value="[[filter.clienteNome]]" />
@@ -107,17 +107,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteNIF.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.clienteNIF.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clienteNIF">Cliente NIF</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteNIF" value="[[filter.clienteNIF]]" />
                 </template>
                 <template>
-                    {{item.clienteNIF}}
+                        {{item.clienteNIF}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteEndereco.hidden }}">
+            <vaadin-grid-column resizable width="20%" hidden$="{{ _columns.clienteEndereco.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clienteEndereco">Cliente Endereço</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteEndereco" value="[[filter.clienteEndereco]]" />
@@ -127,17 +127,19 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteCodigoPostal.hidden }}">
+            <vaadin-grid-column resizable width="15%" hidden$="{{ _columns.clienteCodigoPostal.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clienteCodigoPostal">Cliente Código Postal</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteCodigoPostal" value="[[filter.clienteCodigoPostal]]" />
                 </template>
                 <template>
-                    {{item.clienteCodigoPostal}}
+                    <div class="text-right">
+                        {{item.clienteCodigoPostal}}
+                    </div>
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteCidade.hidden }}">
+            <vaadin-grid-column resizable width="15%" hidden$="{{ _columns.clienteCidade.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clienteCidade">Cliente Cidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteCidade" value="[[filter.clienteCidade]]" />
@@ -147,27 +149,27 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteRegiao.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.clienteRegiao.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="clienteRegiao">Cliente Região</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="clienteRegiao">Cliente Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteRegiao" value="[[filter.clienteRegiao]]" />
                 </template>
                 <template>
-                    {{item.clienteRegiao}}
+                        {{item.clienteRegiao}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteTelefone.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.clienteTelefone.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clienteTelefone">Cliente Telefone</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteTelefone" value="[[filter.clienteTelefone]]" />
                 </template>
                 <template>
-                    {{item.clienteTelefone}}
+                        {{item.clienteTelefone}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.clienteEmail.hidden }}">
+            <vaadin-grid-column resizable width="20%" hidden$="{{ _columns.clienteEmail.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clienteEmail">Cliente Email</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteEmail" value="[[filter.clienteEmail]]" />
@@ -177,17 +179,7 @@
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noServico.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="noServico">Nº Serviço</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noServico" value="[[filter.noServico]]" />
-                </template>
-                <template>
-                    {{item.noServico}}
-                </template>
-            </vaadin-grid-column>*@
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.servicoNome.hidden }}">
+            <vaadin-grid-column resizable width="20%" hidden$="{{ _columns.servicoNome.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="servicoNome">Serviço</vaadin-grid-sorter>
                     <vaadin-grid-filter path="servicoNome" value="[[filter.servicoNome]]" />
@@ -197,17 +189,7 @@
                 </template>
             </vaadin-grid-column>
 
-            @*<vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noFuncao.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="noFuncao">Nº Função</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noFuncao" value="[[filter.noFuncao]]" />
-                </template>
-                <template>
-                    {{item.noFuncao}}
-                </template>
-            </vaadin-grid-column>*@
-
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.funcaoNome.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.funcaoNome.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="funcaoNome">Função</vaadin-grid-sorter>
                     <vaadin-grid-filter path="funcaoNome" value="[[filter.funcaoNome]]" />
@@ -217,7 +199,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.nome.hidden }}">
+            <vaadin-grid-column resizable width="20%" hidden$="{{ _columns.nome.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="nome">Nome</vaadin-grid-sorter>
                     <vaadin-grid-filter path="nome" value="[[filter.nome]]" />
@@ -227,37 +209,37 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.telefone.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.telefone.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="telefone">Telefone</vaadin-grid-sorter>
                     <vaadin-grid-filter path="telefone" value="[[filter.telefone]]" />
                 </template>
                 <template>
-                    {{item.telefone}}
+                        {{item.telefone}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.telemovel.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.telemovel.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="telemovel">Telemóvel</vaadin-grid-sorter>
                     <vaadin-grid-filter path="telemovel" value="[[filter.telemovel]]" />
                 </template>
                 <template>
-                    {{item.telemovel}}
+                        {{item.telemovel}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.fax.hidden }}">
+            <vaadin-grid-column resizable width="10%" hidden$="{{ _columns.fax.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="fax">Fax</vaadin-grid-sorter>
                     <vaadin-grid-filter path="fax" value="[[filter.fax]]" />
                 </template>
                 <template>
-                    {{item.fax}}
+                        {{item.fax}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.email.hidden }}">
+            <vaadin-grid-column resizable width="20%" hidden$="{{ _columns.email.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="email">Email</vaadin-grid-sorter>
                     <vaadin-grid-filter path="email" value="[[filter.email]]" />
@@ -267,7 +249,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.pessoa.hidden }}">
+            <vaadin-grid-column resizable width="20%" hidden$="{{ _columns.pessoa.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="pessoa">Pessoa</vaadin-grid-sorter>
                     <vaadin-grid-filter path="pessoa" value="[[filter.pessoa]]" />
@@ -277,7 +259,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.notas.hidden }}">
+            <vaadin-grid-column resizable width="20%" hidden$="{{ _columns.notas.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="notas">Notas</vaadin-grid-sorter>
                     <vaadin-grid-filter path="notas" value="[[filter.notas]]" />
@@ -288,11 +270,10 @@
             </vaadin-grid-column>
 
             <template is="dom-if" if="{{ _permissions.delete }}">
-                <vaadin-grid-column width="10%">
+                <vaadin-grid-column width="5%">
                     <template class="header">
                     </template>
                     <template>
-                        @*<paper-button raised id="btnCancel" class="btnRemove" on-tap="_deleteContact"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>*@
                         <center>
                             <paper-button id="btnCancel" class="btnRemove tableBtn" raised on-tap="_deleteContact" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                         </center>

@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Hydra.Such.Data.Logic.ProjectMovements
 {
@@ -143,6 +144,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 MovementAuthorizedProjectViewModel projMovement = new MovementAuthorizedProjectViewModel();
                 projMovement.NoMovement = item.NumMovimento;
                 projMovement.Date = item.DataRegisto;
+                projMovement.DateTexto = item.DataRegisto.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
                 projMovement.Type = item.Tipo;
                 projMovement.Code = item.Codigo;
                 projMovement.Description = item.Descricao;
@@ -161,6 +163,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.NumGuideResiduesGar = item.NumGuiaResiduosGar;
                 projMovement.NumGuideExternal = item.NumGuiaExterna;
                 projMovement.DateConsume = item.DataConsumo;
+                projMovement.DateConsumeTexto = item.DataConsumo.HasValue ? item.DataConsumo.Value != DateTime.MinValue ? item.DataConsumo.Value.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) : "" : "";
                 projMovement.TypeMeal = item.TipoRefeicao;
                 projMovement.TypeResourse = item.TipoRecurso;
                 projMovement.NumDocument = item.NumDocumento;
