@@ -474,7 +474,7 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult VerificarPDF([FromBody] string pdf)
         {
-            string pdfPath = _generalConfig.FileUploadFolder + "Projetos\\Documentos\\" + pdf;
+            string pdfPath = _generalConfig.FileUploadFolder + "FaturasClientes\\" + pdf.Replace("@", "\\");
 
             if (System.IO.File.Exists(pdfPath))
                 return Json(true);
@@ -485,7 +485,7 @@ namespace Hydra.Such.Portal.Controllers
         [Route("Projetos/LoadPDF/{pdf}")]
         public ActionResult LoadPDF(string pdf)
         {
-            string pdfPath = _generalConfig.FileUploadFolder + "Projetos\\Documentos\\" + pdf;
+            string pdfPath = _generalConfig.FileUploadFolder + "FaturasClientes\\" + pdf.Replace("@", "\\");
 
             if (System.IO.File.Exists(pdfPath))
             {

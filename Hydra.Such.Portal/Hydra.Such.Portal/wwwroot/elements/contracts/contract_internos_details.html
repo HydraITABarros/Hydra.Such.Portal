@@ -593,7 +593,7 @@
                                                         </template>
                                                         <!-- VAADIN GRID  Requisições Cliente -->
                                                         <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}">
-                                                            <vaadin-grid-column resizable>
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="startDate" />
@@ -602,7 +602,8 @@
                                                                     <vaadin-date-picker id="_CRGridStartDate" name="_CRGridStartDate" value="{{item.startDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="endDate">Fim Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="endDate" />
@@ -611,7 +612,8 @@
                                                                     <vaadin-date-picker id="_CRGridEndDate" name="_CRGridEndDate" value="{{item.endDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="clientRequisitionNo">Nº Requisição Cliente</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="clientRequisitionNo" />
@@ -620,7 +622,8 @@
                                                                     <vaadin-text-field value="{{item.clientRequisitionNo}}" id="_CRGridRequisitionNo" name="_CRGridRequisitionNo" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="requisitionDate" />
@@ -629,7 +632,8 @@
                                                                     <vaadin-date-picker id="_CRGridRequisitionDate" name="_CRGridRequisitionDate" value="{{item.requisitionDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="promiseNo">Nº Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="promiseNo" />
@@ -638,25 +642,29 @@
                                                                     <vaadin-text-field value="{{item.promiseNo}}" id="_CRGridPromiseNo" name="_CRGridPromiseNo" maxlength="50" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceGroup" />
                                                                 </template>
                                                                 <template>
-                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
-                                                                        <template>
-                                                                            <table width="180px">
-                                                                                <tr>
-                                                                                    <td width="20%">[[item.id]]</td>
-                                                                                    <td width="80%"> <b>[[item.value]]</b></td>
-                                                                                </tr>
-                                                                            </table>
-                                                                        </template>
-                                                                    </vaadin-combo-box>
+                                                                    <div class="alignRight">
+                                                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CRGridInvoiceGroup" name="_CRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
+                                                                            <template>
+                                                                                <table width="180px">
+                                                                                    <tr>
+                                                                                        <td width="20%">[[item.id]]</td>
+                                                                                        <td width="80%"> <b>[[item.value]]</b></td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </template>
+                                                                        </vaadin-combo-box>
+                                                                    </div>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="projectNo" />
@@ -673,7 +681,8 @@
                                                                     </vaadin-combo-box>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="lastInvoiceDate">Data Última Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="lastInvoiceDate" />
@@ -682,7 +691,8 @@
                                                                     <vaadin-date-picker id="_CRGridLastInvoiceDate" name="_CRGridLastInvoiceDate" value="{{item.lastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="5%" resizable>
                                                                 <template class="header">
                                                                 </template>
                                                                 <template>
@@ -707,11 +717,6 @@
                                 <div>
                                     <div class="row break_clear">
                                         <div class="col-md-2 ">
-                                            <!--<vaadin-combo-box items="[[CBShippingAddresses]]" item-value-path="id" item-label-path="value" id="codeShippingAddress" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio" on-value-changed="_getAddressByCode" disabled="{{ _lockFields }}">
-                <template>
-                    <b>[[item.value]]</b>
-                </template>
-            </vaadin-combo-box>-->
                                             <such-selectbox id="codeShippingAddress" value="{{data.codeShippingAddress}}" label="Cód. Endereço Envio"
                                                             items="[[CBShippingAddresses]]"
                                                             text-path="id"
@@ -906,38 +911,32 @@
 
                                                         <!-- VAADIN GRID  Textos Fatura -->
                                                         <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
-                                                            <vaadin-grid-column resizable>
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceGroup" />
                                                                 </template>
                                                                 <template>
-                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroup" name="_IRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
-                                                                        <template>
-                                                                            <paper-icon-item>
-                                                                                <paper-item-body two-line>
-                                                                                    <div>[[item.value]]</div>
-                                                                                </paper-item-body>
-                                                                            </paper-icon-item>
-                                                                        </template>
-                                                                    </vaadin-combo-box>
+                                                                    <div class="alignRight">
+                                                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroup" name="_IRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
+                                                                            <template>
+                                                                                <paper-icon-item>
+                                                                                    <paper-item-body two-line>
+                                                                                        <div>[[item.value]]</div>
+                                                                                    </paper-item-body>
+                                                                                </paper-icon-item>
+                                                                            </template>
+                                                                        </vaadin-combo-box>
+                                                                    </div>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="projectNo" />
                                                                 </template>
                                                                 <template>
-                                                                    <!--<vaadin-combo-box items="[[CBProjects]]" item-value-path="id" item-label-path="value" id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}">
-                                                                        <template>
-                                                                            <paper-icon-item>
-                                                                                <paper-item-body two-line>
-                                                                                    <div>[[item.value]]</div>
-                                                                                </paper-item-body>
-                                                                            </paper-icon-item>
-                                                                        </template>
-                                                                    </vaadin-combo-box>-->
                                                                     <such-selectbox id="_IRGridProjectNo" name="_IRGridProjectNo" value="{{item.projectNo}}" disabled="{{ _lockFields }}"
                                                                                     items="[[CBProjects]]"
                                                                                     text-path="id"
@@ -947,7 +946,8 @@
                                                                     </such-selectbox>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="15%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceText">Texto Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceText" />
@@ -956,7 +956,8 @@
                                                                     <vaadin-text-field value="{{item.invoiceText}}" id="_IRGridInvoiceText" name="_IRGridInvoiceText" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            <vaadin-grid-column resizable>
+                                                            
+                                                            <vaadin-grid-column width="5%" resizable>
                                                                 <template class="header">
                                                                 </template>
                                                                 <template>
@@ -1000,6 +1001,7 @@
                                                     <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
                                                 </template>
                                             </vaadin-grid-column>
+                                            
                                             <vaadin-grid-column width="20%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
@@ -1009,6 +1011,7 @@
                                                     {{item.createDateTime}}
                                                 </template>
                                             </vaadin-grid-column>
+                                            
                                             <vaadin-grid-column width="10%" resizable>
                                                 <template class="header">
                                                 </template>
@@ -1178,7 +1181,7 @@
 
                         <div class="row break_clear" style="display: {{ _showContractLines }};">
                             <vaadin-grid aria-label="ContractLines" id="grid_contractlines" name="grid_contractlines" items="[[dataLines.lines]]" class="grid" multi-sort="true" active-item="{{_SelectedLine}}">
-                                <vaadin-grid-column width="130px" resizable hidden>
+                                <vaadin-grid-column width="15%" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="type" />
@@ -1193,7 +1196,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="200px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="code" />
@@ -1216,7 +1219,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="200px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="description" />
@@ -1231,7 +1234,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="200px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="description2" />
@@ -1246,7 +1249,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="120px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="quantity" />
@@ -1254,7 +1257,7 @@
                                     <template>
                                         <div style="text-align:right">
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight"> </vaadin-text-field>
                                             </template>
 
                                             <template is="dom-if" if="{{ !item.selected }}">
@@ -1264,7 +1267,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="170px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeMeasureUnit">Cód. Uni. Medida</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeMeasureUnit" />
@@ -1279,7 +1282,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="150px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="unitPrice" />
@@ -1287,7 +1290,7 @@
                                     <template>
                                         <div style="text-align:right">
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"> <div slot="suffix">€</div></vaadin-text-field>
+                                                <vaadin-text-field value="{{item.unitPrice}}" id="_CLGridUnitPrice" name="_CLGridUnitPrice" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" class="alignRight"> <div slot="suffix">€</div></vaadin-text-field>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.unitPrice}} €
@@ -1296,7 +1299,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="125px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="lineDiscount">% Desconto Linha</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="lineDiscount" />
@@ -1304,7 +1307,7 @@
                                     <template>
                                         <div style="text-align:right">
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                                <vaadin-text-field value="{{item.lineDiscount}}" id="_CLGridDiscountLine" name="_CLGridDiscountLine" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight"> </vaadin-text-field>
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.lineDiscount}}%
@@ -1313,7 +1316,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="120px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="billable">Fáturavel</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="billable" />
@@ -1325,7 +1328,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="125px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeRegion" />
@@ -1344,13 +1347,12 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatRegion(item.codeRegion) ]]-->
                                             {{item.codeRegion}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="190px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeFunctionalArea">Cód. Area Funcional</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeFunctionalArea" />
@@ -1369,13 +1371,12 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]-->
                                             {{item.codeFunctionalArea}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="200px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -1394,58 +1395,63 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]-->
                                             {{item.codeResponsabilityCenter}}
                                         </template>
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="100px" resizable hidden>
+                                <vaadin-grid-column width="15%" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="frequency">Periodicidade</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="frequency" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.frequency}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.frequency}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="160px" resizable hidden>
+                                <vaadin-grid-column width="15%" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="interventionHours">Nº Horas Intervenção</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="interventionHours" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.interventionHours}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.interventionHours}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="150px" resizable hidden>
+                                <vaadin-grid-column width="15%" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="totalTechinicians">Nº Técnicos</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="totalTechinicians" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.totalTechinicians}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.totalTechinicians}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="150px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="versionStartDate">Data Inicio Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionStartDate" />
@@ -1462,7 +1468,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="150px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="versionEndDate">Data Fim Versão</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="versionEndDate" />
@@ -1479,7 +1485,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="200px" resizable hidden>
+                                <vaadin-grid-column width="15%" resizable hidden>
                                     <template class="header">
                                         <vaadin-grid-sorter path="responsibleNo">Nº Responsável</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="responsibleNo" />
@@ -1502,7 +1508,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="150px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="codeServiceCliente">Cód. Serviço Cliente</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="codeServiceCliente" />
@@ -1525,30 +1531,32 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="125px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="invoiceGroup" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLGridInvoiceGroup" name="_CLGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
-                                                <template>
-                                                    <paper-icon-item>
-                                                        <paper-item-body two-line>
-                                                            <div>[[item.value]]</div>
-                                                        </paper-item-body>
-                                                    </paper-icon-item>
-                                                </template>
-                                            </vaadin-combo-box>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.invoiceGroup}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_CLGridInvoiceGroup" name="_CLGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.invoiceGroup}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="100px" resizable>
+                                <vaadin-grid-column width="15%" resizable>
                                     <template class="header">
                                         <vaadin-grid-sorter path="createContract">Cria Contrato</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="createContract" />
@@ -1559,8 +1567,9 @@
                                         </center>
                                     </template>
                                 </vaadin-grid-column>
+                                
                                 <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <vaadin-grid-column resizable>
+                                    <vaadin-grid-column width="5%" resizable>
                                         <template class="header">
                                         </template>
                                         <template>
@@ -1588,6 +1597,7 @@
                 </iron-form>
             </div>
         </div>
+
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageMultiple" duration="8000" horizontalAlign="right" class="toastMultiple">
@@ -1641,7 +1651,7 @@
         <paper-dialog id="dlgContratInvoiceList" class="dialgoBox" modal>
             <div>
                 <vaadin-grid aria-label="InvoiceList" id="grid_contractInvoiceList" items="[[invoiceList]]" class="grid" multi-sort="true">
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
                             <vaadin-grid-filter path="no_" />
@@ -1650,13 +1660,16 @@
                             {{item.no_}}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="valorContrato">Valor Contrato</vaadin-grid-sorter>
                             <vaadin-grid-filter path="valorContrato" />
                         </template>
                         <template>
-                            {{item.valorContrato}}
+                            <div class="alignRight">
+                                {{item.valorContrato}} €
+                            </div>
                         </template>
                     </vaadin-grid-column>
                 </vaadin-grid>
@@ -1670,7 +1683,7 @@
         <paper-dialog id="dlgContratInvoiceLinesList" class="dialgoBox" modal>
             <div>
                 <vaadin-grid aria-label="InvoiceLinesList" id="grid_contractInvoiceLinesList" items="[[invoiceLinesList]]" class="grid" multi-sort="true">
-                    <vaadin-grid-column resizable>
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
                             <vaadin-grid-filter path="no_" />
@@ -1679,7 +1692,8 @@
                             {{item.no_}}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="docNo">Código</vaadin-grid-sorter>
                             <vaadin-grid-filter path="docNo" />
@@ -1688,7 +1702,8 @@
                             {{item.docNo}}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                             <vaadin-grid-filter path="description" />
@@ -1697,7 +1712,8 @@
                             {{item.description}}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
                             <vaadin-grid-filter path="description2" />
@@ -1706,7 +1722,8 @@
                             {{item.description2}}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="unitOfMeasure">Unidade Medida</vaadin-grid-sorter>
                             <vaadin-grid-filter path="unitOfMeasure" />
@@ -1715,43 +1732,56 @@
                             {{item.unitOfMeasure}}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                             <vaadin-grid-filter path="quantity" />
                         </template>
                         <template>
-                            {{item.quantity}}
+                            <div class="alignRight">
+                                {{item.quantity}}
+                            </div>
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                             <vaadin-grid-filter path="unitPrice" />
                         </template>
                         <template>
-                            {{item.unitPrice}}
+                            <div class="alignRight">
+                                {{item.unitPrice}} €
+                            </div>
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="amount">Valor sem IVA</vaadin-grid-sorter>
                             <vaadin-grid-filter path="amount" />
                         </template>
                         <template>
-                            {{item.amount}}
+                            <div class="alignRight">
+                                {{item.amount}} €
+                            </div>
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="amountIncludingVAT">Valor com IVA</vaadin-grid-sorter>
                             <vaadin-grid-filter path="amountIncludingVAT" />
                         </template>
                         <template>
-                            {{item.amountIncludingVAT}}
+                            <div class="alignRight">
+                                {{item.amountIncludingVAT}} €
+                            </div>
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="jobNo">Nº Projeto</vaadin-grid-sorter>
                             <vaadin-grid-filter path="jobNo" />
@@ -1760,7 +1790,8 @@
                             {{item.jobNo}}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="externalShipmentNo_">Nº Guia Externa</vaadin-grid-sorter>
                             <vaadin-grid-filter path="externalShipmentNo_" />
@@ -1769,7 +1800,8 @@
                             {{item.externalShipmentNo_}}
                         </template>
                     </vaadin-grid-column>
-                    <vaadin-grid-column resizable>
+                    
+                    <vaadin-grid-column width="15%" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo Diário</vaadin-grid-sorter>
                             <vaadin-grid-filter path="dataRegistoDiarioSTR" />

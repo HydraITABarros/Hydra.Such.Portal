@@ -638,9 +638,8 @@
                         <vaadin-grid-filter path="totalPrice" />
                     </template>
                     <template>
-
                         <div class="text-right">
-                            <span slot="suffix">[[_formatValue(item.totalPrice)]]€</span>
+                            <span slot="suffix">[[_formatValue(item.totalPrice)]] €</span>
                         </div>
                     </template>
                 </vaadin-grid-column>
@@ -652,7 +651,6 @@
                     </template>
                     <template>
                         [[ _parseResourceTypes(item.typeResourse) ]]
-
                     </template>
                 </vaadin-grid-column>
 
@@ -745,7 +743,7 @@
                     </template>
                     <template>
                         <div class="text-right">
-                            <span slot="suffix">[[_formatValue(item.costPrice)]]€</span>
+                            <span slot="suffix">[[_formatValue(item.costPrice)]] €</span>
                         </div>
                     </template>
                 </vaadin-grid-column>
@@ -757,7 +755,7 @@
                     </template>
                     <template>
                         <div class="text-right">
-                            <span slot="suffix">[[_formatValue(item.costTotal)]]€</span>
+                            <span slot="suffix">[[_formatValue(item.costTotal)]] €</span>
                         </div>
                     </template>
                 </vaadin-grid-column>
@@ -837,7 +835,6 @@
             <div class="buttons">
                 <paper-button class="btnSave" on-tap="_exportDetalhesAutorizacaoEXCEL" title="Exportar para Excel Detalhes de Autorização"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
                 <paper-button class="btnRemove" on-tap="_closeDetalhesAutorizacaoDialog" title="Fechar"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
-                <!--<paper-button dialog-dismiss>Fechar</paper-button>-->
             </div>
         </paper-dialog>
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>

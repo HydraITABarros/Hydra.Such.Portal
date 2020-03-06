@@ -269,6 +269,7 @@
                     {{item.date}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.movementType.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="movementType">Tipo Movimento</vaadin-grid-sorter>
@@ -286,6 +287,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -303,6 +305,7 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.code.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -312,6 +315,7 @@
                     {{item.code}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
@@ -321,15 +325,19 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.quantity.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="quantity" />
                 </template>
                 <template>
-                    {{item.quantity}}
+                    <div class="alignRight">
+                        {{item.quantity}}
+                    </div>
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.measurementUnitCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="measurementUnitCode">Cód. Unidade Medida</vaadin-grid-sorter>
@@ -339,6 +347,7 @@
                     {{item.measurementUnitCode}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.locationCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
@@ -348,6 +357,7 @@
                     {{item.locationCode}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
@@ -357,6 +367,7 @@
                     {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Código Área</vaadin-grid-sorter>
@@ -366,6 +377,7 @@
                     {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Código Centro Responsabilidade</vaadin-grid-sorter>
@@ -375,42 +387,55 @@
                     {{item.responsabilityCenterCode}}
                 </template>
             </vaadin-grid-column>
+            
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.unitCost.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitCost" />
                 </template>
                 <template>
-                    <span slot="suffix">{{item.unitCost}}€</span>
+                    <div class="alignRight">
+                        <span slot="suffix">{{item.unitCost}} €</span>
+                    </div>
                 </template>
             </vaadin-grid-column>
+            
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalCost.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalCost" />
                 </template>
                 <template>
-                    <span slot="suffix">{{item.totalCost}}€</span>
+                    <div class="alignRight">
+                        <span slot="suffix">{{item.totalCost}} €</span>
+                    </div>
                 </template>
             </vaadin-grid-column>
+            
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.unitPrice.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                     <vaadin-grid-filter path="unitPrice" />
                 </template>
                 <template>
-                    <span slot="suffix">{{item.unitPrice}}€</span>
+                    <div class="alignRight">
+                        <span slot="suffix">{{item.unitPrice}} €</span>
+                    </div>
                 </template>
             </vaadin-grid-column>
+            
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.totalPrice.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="totalPrice">Preço Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="totalPrice" />
                 </template>
                 <template>
-                    <span slot="suffix">{{item.totalPrice}}€</span>
+                    <div class="alignRight">
+                        <span slot="suffix">{{item.totalPrice}} €</span>
+                    </div>
                 </template>
             </vaadin-grid-column>
+            
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.commitmentNumber.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
@@ -421,6 +446,7 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+        
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageMultiple" duration="8000" horizontalAlign="right" class="toastMultiple">
@@ -456,9 +482,7 @@
                 <paper-button raised class="btnRemove" dialog-dismiss>Cancelar</paper-button>
             </div>
         </paper-dialog>
-
     </template>
-
 
     <script>
         document.addEventListener('WebComponentsReady', function () {

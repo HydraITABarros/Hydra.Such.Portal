@@ -696,17 +696,19 @@
 
                 <div class="panel-body">
                     <vaadin-grid id="tabPercurso" aria-label="TabelaPercursos" items="{{ data.folhaDeHorasPercurso }}" class="editGrid" multi-sort="true">
-                        <vaadin-grid-column resizable hidden>
+                        <vaadin-grid-column width="5%" resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="noLinha"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPercursoLinhaNo" id="tabPercursoLinhaNo" value="{{item.noLinha}}" maxlength="200" disabled="true"></vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field name="tabPercursoLinhaNo" id="tabPercursoLinhaNo" value="{{item.noLinha}}" maxlength="200" disabled="true"></vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="25px" resizable>
+                        <vaadin-grid-column width="5%" resizable>
                             <template class="header">
                             </template>
                             <template>
@@ -716,7 +718,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="125px" resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="noProjeto" style="text-align:center;">Nº Ordem/Projecto</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="noProjeto"></vaadin-grid-filter>
@@ -733,13 +735,12 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codOrigem" style="text-align:center;">Código Origem</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codOrigem"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field id="tabPercursoOrigem" value="{{item.codOrigem}}" maxlength="200" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPercurso"></vaadin-text-field>-->
                                 <such-selectbox id="tabPercursoOrigem" value="{{item.codOrigem}}"
                                                 items="[[LFolhaDeHoraPercursoOrigemDestino]]"
                                                 text-path="id"
@@ -751,7 +752,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoOrigem" style="text-align:center;">Descrição Origem</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoOrigem"></vaadin-grid-filter>
@@ -761,13 +762,12 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codDestino" style="text-align:center;">Código Destino</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codDestino"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field id="tabPercursoDestino" value="{{item.codDestino}}" maxlength="200" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPercurso"></vaadin-text-field>-->
                                 <such-selectbox id="tabPercursoDestino" value="{{item.codDestino}}"
                                                 items="[[LFolhaDeHoraPercursoOrigemDestino]]"
                                                 text-path="id"
@@ -779,7 +779,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoDestino" style="text-align:center;">Descrição Destino</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoDestino"></vaadin-grid-filter>
@@ -789,7 +789,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Viagem</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dataDespesaTexto"></vaadin-grid-filter>
@@ -799,7 +799,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacao" style="text-align:center;">Justificação</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="observacao"></vaadin-grid-filter>
@@ -809,60 +809,67 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="distancia" style="text-align:center;">Distância Efectuada</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="distancia"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPercursoDistancia" value="{{item.distancia}}" type="number" maxlength="9" pattern="[0-9]*" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;">
-                                    <div slot="suffix">km</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field name="tabPercursoDistancia" value="{{item.distancia}}" type="number" maxlength="9" pattern="[0-9]*" on-blur="_updateLinhaPercurso" disabled="{{ !_permissions.update }}" style="text-align:right;">
+                                        <div slot="suffix">km</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="distanciaPrevista" style="text-align:center;">Distância Prevista</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="distanciaPrevista"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabPercursoDistanciaPrevista" value="{{item.distanciaPrevista}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" disabled="true">
-                                    <div slot="suffix">km</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field name="tabPercursoDistanciaPrevista" value="{{item.distanciaPrevista}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" disabled="true">
+                                        <div slot="suffix">km</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoUnitario"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" type="number" on-blur="_updateLinhaPercurso" disabled="true" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field id="GridtabPercursoCustoUnitario" name="tabPercursoCustoUnitario" value="{{item.custoUnitario}}" type="number" on-blur="_updateLinhaPercurso" disabled="true" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoTotal" style="text-align:center;">Custo Total</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoTotal"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" type="number" on-blur="_updateLinhaPercurso" disabled="true" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field id="GridtabPercursoCustoTotal" name="tabPercursoCustoTotal" value="{{item.custoTotal}}" type="number" on-blur="_updateLinhaPercurso" disabled="true" on-value-changed="_ConvertDecimals" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="5%" resizable>
                             <template class="header">
                             </template>
                             <template>
                                 <center>
-                                    <!--<paper-button id="btn_deletePercurso" class="btnRemove" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
                                     <paper-button id="btn_deletePercurso" class="btnRemove tableBtn" raised on-tap="_deletePercurso" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
@@ -953,17 +960,19 @@
 
                 <div class="panel-body">
                     <vaadin-grid id="tabAjuda" aria-label="Tabela Ajudas de Custo/Despesas" items="{{ data.folhaDeHorasAjuda }}" class="editGrid">
-                        <vaadin-grid-column resizable hidden>
+                        <vaadin-grid-column width="5%" resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="noLinha" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="noLinha"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabAjudaLinhaNo" id="tabAjudaLinhaNo" value="{{item.noLinha}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field name="tabAjudaLinhaNo" id="tabAjudaLinhaNo" value="{{item.noLinha}}" maxlength="200" disabled="true" style="text-align:right;"></vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="15px" resizable>
+                        <vaadin-grid-column width="5%"  resizable>
                             <template class="header">
                             </template>
                             <template>
@@ -973,7 +982,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="125px" resizable>
+                        <vaadin-grid-column width="10%"  resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="noProjeto" style="text-align:center;">Nº Ordem/Projecto</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="noProjeto"></vaadin-grid-filter>
@@ -990,7 +999,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoTipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoTipoCusto"></vaadin-grid-filter>
@@ -1000,7 +1009,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="descricaoCodTipoCusto" style="text-align:center;">Tipo Custo</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="descricaoCodTipoCusto"></vaadin-grid-filter>
@@ -1010,65 +1019,75 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="quantidade" style="text-align:center;">Quantidade</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="quantidade"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field name="tabAjudaQuantidade" value="{{item.quantidade}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field name="tabAjudaQuantidade" value="{{item.quantidade}}" type="number" maxlength="9" pattern="[0-9]*" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitario" style="text-align:center;">Custo Unitário</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoUnitario"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" type="number" maxlength="12" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field id="GridtabAjudaCustoUnitario" name="tabAjudaCustoUnitario" value="{{item.custoUnitario}}" type="number" maxlength="12" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoTotal" style="text-align:center;">Custo Total</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoTotal"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaCustoTotal" name="tabAjudaCustoTotal" value="{{item.custoTotal}}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" disabled="true" style="text-align:right;">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field id="GridtabAjudaCustoTotal" name="tabAjudaCustoTotal" value="{{item.custoTotal}}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" disabled="true" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoUnitario" style="text-align:center;">Preço Unitário</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="precoUnitario"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaPrecoUnitario" name="tabAjudaPrecoUnitario" value="{{item.precoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field id="GridtabAjudaPrecoUnitario" name="tabAjudaPrecoUnitario" value="{{item.precoUnitario}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoVenda" style="text-align:center;">Preço Venda</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="precoVenda"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabAjudaPrecoVenda" name="tabAjudaPrecoVenda" value="{{item.precoVenda}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field id="GridtabAjudaPrecoVenda" name="tabAjudaPrecoVenda" value="{{item.precoVenda}}" on-blur="_updateLinhaAjuda" disabled="{{ !_permissions.update }}" type="number" maxlength="18" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dataDespesaTexto" style="text-align:center;">Data Despesa</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dataDespesaTexto"></vaadin-grid-filter>
@@ -1078,7 +1097,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacao" style="text-align:center;">Justificação</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="observacao"></vaadin-grid-filter>
@@ -1088,12 +1107,11 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="5%" resizable>
                             <template class="header">
                             </template>
                             <template>
                                 <center>
-                                    <!--<paper-button class="btnRemove" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
                                     <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAjuda" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
@@ -1174,7 +1192,6 @@
 
                             <div class="row break_clear">
                                 <div class="col-sm-2">
-                                    <!--<vaadin-text-field id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
                                     <vaadin-time-picker step="1800" id="maoDeObraHoraInicio" label="Hora de Início" on-blur="_MaoDeObraHoraInicioValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
 
@@ -1183,7 +1200,6 @@
                                 </div>
 
                                 <div class="col-sm-2">
-                                    <!--<vaadin-text-field id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" type="time" maxlength="8" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"></vaadin-text-field>-->
                                     <vaadin-time-picker step="1800" id="maoDeObraHoraFim" label="Hora de Fim" on-blur="_MaoDeObraHoraFimValidar" disabled="{{ !_permissions.update }}" required></vaadin-time-picker>
                                 </div>
 
@@ -1203,7 +1219,7 @@
 
                 <div class="panel-body">
                     <vaadin-grid id="tabMaoDeObra" aria-label="Tabela Mão de Obra" items="{{ data.folhaDeHorasMaoDeObra }}" class="editGrid">
-                        <vaadin-grid-column resizable hidden>
+                        <vaadin-grid-column width="5%" resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="linhaNo" style="text-align:center;">Nº Linha</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="linhaNo"></vaadin-grid-filter>
@@ -1213,7 +1229,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="15px" resizable>
+                        <vaadin-grid-column width="5%" resizable>
                             <template class="header">
                             </template>
                             <template>
@@ -1223,7 +1239,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dateTexto">Data</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dateTexto"></vaadin-grid-filter>
@@ -1233,7 +1249,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="projetoNo" style="text-align:center;">Nº Obra</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="projetoNo"></vaadin-grid-filter>
@@ -1251,7 +1267,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoRecurso" style="text-align:center;">Recurso</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoRecurso"></vaadin-grid-filter>
@@ -1261,114 +1277,99 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoTipoTrabalho" style="text-align:center;">Tp Trabalho</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoTipoTrabalho"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-combo-box items="[[LFolhaDeHoraTipoTrabalhoNo]]" id="tabMaoDeObraCodigoTipoTrabalho" item-value-path="id" item-label-path="value" value="{{item.codigoTipoTrabalho}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>-->
                                 {{item.codigoTipoTrabalho}}
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horaInicioTexto" style="text-align:center;">Início</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horaInicioTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field name="tabMaoDeObraHoraInicioTexto" value="{{item.horaInicioTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
                                 <vaadin-time-picker step="1800" name="tabMaoDeObraHoraInicioTexto" value="{{item.horaInicioTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horarioAlmoco" style="text-align:center;">H Almoço</vaadin-grid-sorter>
                             </template>
                             <template>
-                                <vaadin-checkbox checked="{{item.horarioAlmoco}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
+                                <div class="alignCenter">
+                                    <vaadin-checkbox checked="{{item.horarioAlmoco}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horaFimTexto" style="text-align:center;">Fim</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horaFimTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field name="tabMaoDeObraHoraFimTexto" value="{{item.horaFimTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
                                 <vaadin-time-picker step="1800" name="tabMaoDeObraHoraFimTexto" value="{{item.horaFimTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horarioJantar" style="text-align:center;">H Jantar</vaadin-grid-sorter>
                             </template>
                             <template>
-                                <vaadin-checkbox checked="{{item.horarioJantar}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
+                                <div class="alignCenter">
+                                    <vaadin-checkbox checked="{{item.horarioJantar}}" on-blur="_updateLinhaMaoDeObra" disabled="{{ !_permissions.update }}" style="text-align:center;"></vaadin-checkbox>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoFamiliaRecurso" style="text-align:center;">Família Recurso</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoFamiliaRecurso"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-combo-box items="[[LFolhaDeHoraGetRHRecursosFH]]" id="tabMaoDeObraCodigoFamiliaRecurso" item-value-path="id" item-label-path="value" value="{{item.codigoFamiliaRecurso}}" on-blur="_updateLinhaMaoDeObra" disabled="true" style="text-align:left;">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>-->
                                 {{item.codigoFamiliaRecurso}}
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="horasNoTexto" style="text-align:center;">Nº Horas</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="horasNoTexto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field name="tabMaoDeObraHorasNoTexto" value="{{item.horasNoTexto}}" on-blur="_updateLinhaMaoDeObra" type="time" maxlength="8" disabled="true" style="text-align:right;"></vaadin-text-field>-->
                                 <vaadin-time-picker step="1800" name="tabMaoDeObraHorasNoTexto" value="{{item.horasNoTexto}}" on-blur="_updateLinhaMaoDeObra" disabled="true"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="custoUnitarioDireto" style="text-align:center;">Custo Unit. Directo</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="custoUnitarioDireto"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabMaoDeObraCustoUnitarioDireto" name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" type="number" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field id="GridtabMaoDeObraCustoUnitarioDireto" name="tabMaoDeObraCustoUnitarioDireto" value="{{item.custoUnitarioDireto}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" type="number" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoCentroResponsabilidade" style="text-align:center;">Centro Responsabilidade</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="codigoCentroResponsabilidade"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <such-selectbox id="tabMaoDeObraCodigoCentroResponsabilidade" name="tabMaoDeObraCodigoCentroResponsabilidade" value="{{item.codigoCentroResponsabilidade}}" disabled="true" style="margin-top:-20px"
+                                <such-selectbox id="tabMaoDeObraCodigoCentroResponsabilidade" name="tabMaoDeObraCodigoCentroResponsabilidade" value="{{item.codigoCentroResponsabilidade}}" disabled="true" style="padding:12px"
                                                 items="[[CBResponsabilityCenterCodes]]"
                                                 text-path="value"
                                                 value-path="id"
@@ -1377,19 +1378,21 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="precoTotal" style="text-align:center;">Preço Total</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="precoTotal"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <vaadin-text-field id="GridtabMaoDeObraPrecoTotal" name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" type="number" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
+                                <div class="alignRight">
+                                    <vaadin-text-field id="GridtabMaoDeObraPrecoTotal" name="tabMaoDeObraPrecoTotal" value="{{item.precoTotal}}" on-blur="_updateLinhaMaoDeObra" disabled="true" on-value-changed="_ConvertDecimals" type="number" pattern="[0-9]+([\.][0-9]+)?" maxlength="18" style="text-align:right;">
+                                        <div slot="suffix">€</div>
+                                    </vaadin-text-field>
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="5%" resizable>
                             <template class="header">
                             </template>
                             <template>
@@ -1469,7 +1472,7 @@
 
                 <div class="panel-body">
                     <vaadin-grid id="tabPresenca" aria-label="Tabela Presenças" items="{{ data.folhaDeHorasPresenca }}" class="editGrid">
-                        <vaadin-grid-column resizable hidden>
+                        <vaadin-grid-column width="5%" resizable hidden>
                             <template class="header">
                                 <vaadin-grid-sorter path="folhaDeHorasNo" style="text-align:center;">Nº Folha de Horas</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="folhaDeHorasNo"></vaadin-grid-filter>
@@ -1479,7 +1482,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="dataTexto" style="text-align:center;">Data</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="dataTexto"></vaadin-grid-filter>
@@ -1489,51 +1492,47 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora1Entrada" style="text-align:center;">1ª Entrada</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="hora1Entrada"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field id="tabPresencaHora1Entrada" name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
                                 <vaadin-time-picker step="1800" id="tabPresencaHora1Entrada" name="tabPresencaHora1Entrada" value="{{item.hora1Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora1Saida" style="text-align:center;">1ª Saída</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="hora1Saida"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field id="tabPresencaHora1Saida" name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
                                 <vaadin-time-picker step="1800" id="tabPresencaHora1Saida" name="tabPresencaHora1Saida" value="{{item.hora1Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora2Entrada" style="text-align:center;">2ª Entrada</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="hora2Entrada"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field id="tabPresencaHora2Entrada" name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
                                 <vaadin-time-picker step="1800" id="tabPresencaHora2Entrada" name="tabPresencaHora2Entrada" value="{{item.hora2Entrada}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="hora2Saida" style="text-align:center;">2ª Saída</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="hora2Saida"></vaadin-grid-filter>
                             </template>
                             <template>
-                                <!--<vaadin-text-field id="tabPresencaHora2Saida" name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca" type="time" maxlength="8" style="text-align:right;"></vaadin-text-field>-->
                                 <vaadin-time-picker step="1800" id="tabPresencaHora2Saida" name="tabPresencaHora2Saida" value="{{item.hora2Saida}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPresenca"></vaadin-time-picker>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="observacoes" style="text-align:center;">Observações</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="observacoes"></vaadin-grid-filter>
@@ -1543,12 +1542,11 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column resizable>
+                        <vaadin-grid-column width="5%" resizable>
                             <template class="header">
                             </template>
                             <template>
                                 <center>
-                                    <!--<paper-button class="btnRemove" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}">Eliminar</paper-button>-->
                                     <paper-button class="btnRemove tableBtn" raised on-tap="_deletePresenca" disabled="{{ !_permissions.delete }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                 </center>
                             </template>
@@ -1603,16 +1601,6 @@
                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
                                             required error-message="Este campo é obrigatório">
                             </such-selectbox>
-                            <!--<vaadin-combo-box items="[[LFolhaDeHoraRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.codigoRegiao}}" disabled="{{ !_permissions.update }}" label="Região" required error-message="Este campo é obrigatório">
-                            <template>
-                                <table width="300px">
-                                    <tr>
-                                        <td width="15%">[[item.id]]</td>
-                                        <td width="85%"> <b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>-->
                         </div>
 
                         <div class="col-sm-3">

@@ -144,7 +144,7 @@
         </div>
 
         <vaadin-grid column-reordering-allowed aria-label="grid" id="grid" items="[[result]]" class="grid">
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.type.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="type" />
@@ -154,7 +154,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.documentNo.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.documentNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="documentNo" />
@@ -164,7 +164,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.documentDateTexto.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.documentDateTexto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="documentDateTexto">Data</vaadin-grid-sorter>
                     <vaadin-grid-filter path="documentDateTexto" />
@@ -174,7 +174,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorSemIVA.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.valorSemIVA.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valorSemIVA">Valor sem IVA</vaadin-grid-sorter>
                     <vaadin-grid-filter path="valorSemIVA" />
@@ -186,7 +186,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.valorComIVA.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.valorComIVA.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="valorComIVA">Valor com IVA</vaadin-grid-sorter>
                     <vaadin-grid-filter path="valorComIVA" />
@@ -198,17 +198,17 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.parcial.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.parcial.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="parcial">Valor Total</vaadin-grid-sorter>
                     <vaadin-grid-filter path="parcial" />
                 </template>
                 <template>
-                    {{item.parcial}}
+                        {{item.parcial}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.verDocumento.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.verDocumento.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="verDocumento">Ver Documento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="verDocumento" />
@@ -223,7 +223,6 @@
 
         <!-- Paper Dialog Ver Documento-->
         <paper-dialog id="dlVerPDF" style="height:80%; width:60%">
-        <!--<paper-dialog id="dlVerPDF" style="height:800px; width:1200px">-->
             <div id="divVerPDF" style="height:90%; width:100%">
                 <!--<embed id="embedVerPDF" src="/projetos/LoadPDF/{{ _documentoPDF }}" type="application/pdf" style="height:100%; width:100%" />-->
             </div>
@@ -377,11 +376,19 @@
                 /* end - ColumnToggle */
 
                 _VerDocumento: function (e) {
-                    this._documentoPDF = e.model.item.documentNo + ".pdf";
+                    debugger;
+                    var DocumentoData = new Date(e.model.item.documentDate);
+                    var ano = DocumentoData.getFullYear() - 2000;
+                    var mes = DocumentoData.getMonth() + 1;
+                    if (mes < 10) mes = "0" + mes;
+
+                    this._documentoPDF = ano.toString() + mes.toString() + "@" + e.model.item.documentNo + ".pdf";
+
                     this.$.ajax_VerificarPDF_ajax.body = JSON.stringify(this._documentoPDF);
                     this.$.ajax_VerificarPDF_ajax.generateRequest();
                 },
                 _VerificarPDFResponse: function (e) {
+                    debugger;
                     if (this.pdf == true) {
                         this.$.divVerPDF.innerHTML = '<embed id="embedVerPDF" src="/projetos/LoadPDF/' + this._documentoPDF + '" type="application/pdf" style="height:100%; width:100%" />';
                         this.$.dlVerPDF.open();

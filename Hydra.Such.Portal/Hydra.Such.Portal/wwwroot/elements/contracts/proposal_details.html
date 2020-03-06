@@ -251,7 +251,7 @@
         <paper-dialog id="dialog_proposals" class="dialgoBox" modal>
             <h2 class="dialogTitle">Propostas</h2>
             <vaadin-grid aria-label="ContractsGrid" items="[[result_proposals]]" class="grid" active-item="{{_activeProposal}}" multi-sort="true">
-                <vaadin-grid-column width="120px">
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="contractNo">Nº Proposta</vaadin-grid-sorter>
                         <vaadin-grid-filter path="contractNo" />
@@ -260,7 +260,8 @@
                         {{item.contractNo}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="120px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
                         <vaadin-grid-filter path="oportunityNo" />
@@ -269,7 +270,8 @@
                         {{item.oportunityNo}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="110px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="startData">Data Inicio</vaadin-grid-sorter>
                         <vaadin-grid-filter path="startData" />
@@ -278,7 +280,8 @@
                         {{item.startData}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="110px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="dueDate">Data Fim</vaadin-grid-sorter>
                         <vaadin-grid-filter path="dueDate" />
@@ -287,7 +290,8 @@
                         {{item.dueDate}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="110px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                         <vaadin-grid-filter path="clientNo" />
@@ -296,7 +300,8 @@
                         {{item.clientNo}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="110px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
                         <vaadin-grid-filter path="clientName" />
@@ -305,7 +310,8 @@
                         {{item.clientName}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="200px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="contactNoText">Nome Contacto</vaadin-grid-sorter>
                         <vaadin-grid-filter path="contactNoText" />
@@ -314,7 +320,8 @@
                         {{item.contactNoText}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="160px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                         <vaadin-grid-filter path="description" />
@@ -323,7 +330,8 @@
                         {{item.description}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="150px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
                         <vaadin-grid-filter path="status" />
@@ -332,7 +340,8 @@
                         {{item.statusDescription}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="200px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                         <vaadin-grid-filter path="codeRegion" />
@@ -341,7 +350,8 @@
                         {{item.codeRegion}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="200px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
                         <vaadin-grid-filter path="codeFunctionalArea" />
@@ -350,7 +360,8 @@
                         {{item.codeFunctionalArea}}
                     </template>
                 </vaadin-grid-column>
-                <vaadin-grid-column width="200px">
+                
+                <vaadin-grid-column width="15%">
                     <template class="header">
                         <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                         <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -660,6 +671,7 @@
                                                     <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
                                                 </template>
                                             </vaadin-grid-column>
+                                            
                                             <vaadin-grid-column width="20%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
@@ -669,6 +681,7 @@
                                                     {{item.createDateTime}}
                                                 </template>
                                             </vaadin-grid-column>
+                                            
                                             <vaadin-grid-column width="10%" resizable>
                                                 <template class="header">
                                                 </template>
@@ -1008,7 +1021,6 @@
                                             <template is="dom-if" if="{{ item.selected }}">
                                                 <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                             </template>
-
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.quantity}}
                                             </template>
@@ -1096,7 +1108,6 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatRegion(item.codeRegion) ]]-->
                                             {{item.codeRegion}}
                                         </template>
                                     </template>
@@ -1109,7 +1120,6 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-
                                             <such-selectbox id="_CLGridFunctionalArea" name="_CLGridFunctionalArea" value="{{item.codeFunctionalArea}}" disabled="{{ !_permissions.update }}"
                                                             items="[[CBFunctionalAreas]]"
                                                             text-path="value"
@@ -1119,7 +1129,6 @@
 
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]-->
                                             {{item.codeFunctionalArea}}
                                         </template>
                                     </template>
@@ -1144,7 +1153,6 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]-->
                                             {{item.codeResponsabilityCenter}}
                                         </template>
                                     </template>
@@ -1156,12 +1164,14 @@
                                         <vaadin-grid-filter path="frequency" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.frequency}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.frequency}}" id="_CLGridFrequency" name="_CLGridFrequency" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.frequency}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
                                 
@@ -1171,12 +1181,14 @@
                                         <vaadin-grid-filter path="interventionHours" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.interventionHours}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.interventionHours}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
                                 
@@ -1186,12 +1198,14 @@
                                         <vaadin-grid-filter path="totalTechinicians" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.totalTechinicians}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ !_permissions.update }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.totalTechinicians}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
                                 
@@ -1202,7 +1216,6 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<input type="date" id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">-->
                                             <vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
@@ -1220,10 +1233,8 @@
                                     </template>
                                     <template>
                                         <template is="dom-if" if="{{ item.selected }}">
-                                            <!--<input type="date" id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionStartDate}}" disabled="{{ !_permissions.update }}">-->
                                             <vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </template>
-
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.versionEndDate}}
                                         </template>
@@ -1314,9 +1325,6 @@
                                 </template>
                             </vaadin-grid>
                         </div>
-                        <!--<div class="marginSpace" style="display: {{ _showContractLines }};">
-                        <paper-button raised hidden="{{ _readOnly }}" id="btnSaveLine" class="btnSave" on-tap="_updateContractLines" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                    </div>-->
                     </div>
                 </iron-form>
             </div>

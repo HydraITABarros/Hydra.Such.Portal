@@ -357,19 +357,18 @@
                                 </div>
                                 <div class="row break_clear">
                                     <vaadin-grid column-reordering-allowed id="grdProjectMovements" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="Tabela Autorização Faturação" items="[[result.value]]" inverted$="[[inverted]]" class="editGrid">
-
-                                        <vaadin-grid-column width="60px" flex-grow="0">
+                                        <vaadin-grid-column width="10%" flex-grow="0">
                                             <template class="header">
                                                 <input aria-label="Selecionar Todos" type="checkbox" disabled="[[!_billable]]" on-click="_invert" checked="[[_isChecked(inverted, indeterminate)]]" indeterminate="[[indeterminate]]">
                                             </template>
                                             <template>
-                                                <!--AMARO-->
-                                                <!--<input aria-label="Selecionar" type="checkbox" checked="{{item.selecionada}}" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">-->
-                                                <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
+                                                <div class="alignCenter">
+                                                    <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
+                                                </div>
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.date.hidden }}">
+                                        <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.date.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="date" />
@@ -425,7 +424,9 @@
                                                 <vaadin-grid-filter path="quantity" />
                                             </template>
                                             <template>
-                                                {{item.quantity}}
+                                                <div class="alignRight">
+                                                    {{item.quantity}}
+                                                </div>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -445,7 +446,7 @@
                                                 <vaadin-grid-filter path="unitPrice" />
                                             </template>
                                             <template>
-                                                <vaadin-text-field rows="5" value="{{item.unitPrice}}" id="txtUnitPrice" maxlength="18" pattern="[0-9]+([\.\,][0-9]+)?" on-blur="_updateLinhaMovimentoNumerico"> </vaadin-text-field>
+                                                <vaadin-text-field rows="5" value="{{item.unitPrice}}" id="txtUnitPrice" maxlength="18" pattern="[0-9]+([\.\,][0-9]+)?" on-blur="_updateLinhaMovimentoNumerico" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -455,7 +456,9 @@
                                                 <vaadin-grid-filter path="totalPrice" />
                                             </template>
                                             <template>
-                                                <span slot="suffix">{{item.totalPrice}}€</span>
+                                                <div class="alignRight">
+                                                    <span slot="suffix">{{item.totalPrice}} €</span>
+                                                </div>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -465,7 +468,9 @@
                                                 <vaadin-grid-filter path="billable" />
                                             </template>
                                             <template>
-                                                <vaadin-checkbox checked="{{item.billable}}" on-blur="_updateLinhaMovimento"></vaadin-checkbox>
+                                                <div class="alignCenter">
+                                                    <vaadin-checkbox checked="{{item.billable}}" on-blur="_updateLinhaMovimento"></vaadin-checkbox>
+                                                </div>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -637,7 +642,9 @@
                                                 <vaadin-grid-filter path="unitCost" />
                                             </template>
                                             <template>
-                                                <span slot="suffix">{{item.unitCost}}€</span>
+                                                <div class="alignRight">
+                                                    <span slot="suffix">{{item.unitCost}} €</span>
+                                                </div>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -647,7 +654,9 @@
                                                 <vaadin-grid-filter path="totalCost" />
                                             </template>
                                             <template>
-                                                <span slot="suffix">{{item.totalCost}}€</span>
+                                                <div class="alignRight">
+                                                    <span slot="suffix">{{item.totalCost}} €</span>
+                                                </div>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -721,7 +730,7 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column width="140px" resizable hidden$="{{ _columns.serviceGroupCode.hidden }}">
+                                        <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.serviceGroupCode.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="serviceGroupCode">Cód. Grupo Serviço</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="serviceGroupCode" />
@@ -731,7 +740,7 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createDateText.hidden }}">
+                                        <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.createDateText.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="createDateText">Data Criação</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="createDateText" />
@@ -741,7 +750,7 @@
                                             </template>
                                         </vaadin-grid-column>
 
-                                        <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.createHourText.hidden }}">
+                                        <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.createHourText.hidden }}">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="createHourText">Hora Criação</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="createHourText" />
@@ -750,22 +759,7 @@
                                                 {{item.createHourText}}
                                             </template>
                                         </vaadin-grid-column>
-
-                                        <!--<vaadin-grid-column width="15%" resizable hidden$="{{ _columns.commitmentNumber.hidden }}">
-                                        <template class="header">
-                                            <vaadin-grid-sorter path="commitmentNumber">Nº Compromisso</vaadin-grid-sorter>
-                                            <vaadin-grid-filter path="commitmentNumber" />
-                                        </template>
-                                        <template>
-                                            {{item.commitmentNumber}}
-                                        </template>
-                                    </vaadin-grid-column>-->
                                     </vaadin-grid>
-                                </div>
-                                <div class="marginSpace">
-                                    <!--<paper-button raised id="btnSave" class="btnSave" on-tap="_updateMovements" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>-->
-
-
                                 </div>
                             </div>
                         </iron-form>

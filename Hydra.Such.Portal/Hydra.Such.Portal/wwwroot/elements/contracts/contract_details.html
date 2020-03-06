@@ -1064,15 +1064,17 @@
                                                                     <vaadin-grid-filter path="invoiceGroup" />
                                                                 </template>
                                                                 <template>
-                                                                    <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroup" name="_IRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
-                                                                        <template>
-                                                                            <paper-icon-item>
-                                                                                <paper-item-body two-line>
-                                                                                    <div>[[item.value]]</div>
-                                                                                </paper-item-body>
-                                                                            </paper-icon-item>
-                                                                        </template>
-                                                                    </vaadin-combo-box>
+                                                                    <div class="alignRight">
+                                                                        <vaadin-combo-box items="[[CBInvoiceGroups]]" id="_IRGridInvoiceGroup" name="_IRGridInvoiceGroup" item-value-path="id" item-label-path="value" value="{{item.invoiceGroup}}" disabled="{{ _lockFields }}">
+                                                                            <template>
+                                                                                <paper-icon-item>
+                                                                                    <paper-item-body two-line>
+                                                                                        <div>[[item.value]]</div>
+                                                                                    </paper-item-body>
+                                                                                </paper-icon-item>
+                                                                            </template>
+                                                                        </vaadin-combo-box>
+                                                                    </div>
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             
@@ -1146,6 +1148,7 @@
                                                     <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
                                                 </template>
                                             </vaadin-grid-column>
+                                            
                                             <vaadin-grid-column width="10%" resizable hidden="{{ !_permissions.update }}">
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="visivel">Vísivel</vaadin-grid-sorter>
@@ -1156,6 +1159,7 @@
                                                     </center>
                                                 </template>
                                             </vaadin-grid-column>
+                                            
                                             <vaadin-grid-column width="10%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
@@ -1165,6 +1169,7 @@
                                                     {{item.createDateTime}}
                                                 </template>
                                             </vaadin-grid-column>
+                                            
                                             <vaadin-grid-column width="5%" resizable>
                                                 <template class="header">
                                                 </template>
@@ -1412,7 +1417,6 @@
                                             <template is="dom-if" if="{{ item.selected }}">
                                                 <vaadin-text-field value="{{item.quantity}}" id="_CLGridQuantity" name="_CLGridQuantity" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
                                             </template>
-
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 {{item.quantity}}
                                             </template>
@@ -1500,7 +1504,6 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatRegion(item.codeRegion) ]]-->
                                             {{item.codeRegion}}
                                         </template>
                                     </template>
@@ -1525,7 +1528,6 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatFunctionalArea(item.codeFunctionalArea) ]]-->
                                             {{item.codeFunctionalArea}}
                                         </template>
                                     </template>
@@ -1550,7 +1552,6 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatResponsabilityCenter(item.codeResponsabilityCenter) ]]-->
                                             {{item.codeResponsabilityCenter}}
                                         </template>
                                     </template>
@@ -1577,12 +1578,14 @@
                                         <vaadin-grid-filter path="interventionHours" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.interventionHours}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.interventionHours}}" id="_CLGridInterventionHours" name="_CLGridInterventionHours" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.interventionHours}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1592,12 +1595,14 @@
                                         <vaadin-grid-filter path="totalTechinicians" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?"> </vaadin-text-field>
-                                        </template>
-                                        <template is="dom-if" if="{{ !item.selected }}">
-                                            {{item.totalTechinicians}}
-                                        </template>
+                                        <div class="alignRight">
+                                            <template is="dom-if" if="{{ item.selected }}">
+                                                <vaadin-text-field value="{{item.totalTechinicians}}" id="_CLGridTotalTechnicians" name="_CLGridTotalTechnicians" disabled="{{ _lockFields }}" on-value-changed="_ConvertDecimals" pattern="[0-9]+([\.][0-9]+)?" class="alignRight"> </vaadin-text-field>
+                                            </template>
+                                            <template is="dom-if" if="{{ !item.selected }}">
+                                                {{item.totalTechinicians}}
+                                            </template>
+                                        </div>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1676,7 +1681,6 @@
                                             </vaadin-combo-box>
                                         </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
-                                            <!--[[ _clFormatServiceClient(item.serviceClientNo) ]]-->
                                             {{item.serviceClientNo}}
                                         </template>
                                     </template>
@@ -1736,14 +1740,6 @@
                                 </template>
                             </vaadin-grid>
                         </div>
-
-                        <!--<div class="marginSpace" style="display: {{ _showContractLines }};">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <template is="dom-if" if="{{ !_lockFields }}">
-                                    <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateContractLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                </template>
-                            </template>
-                        </div>-->
                     </div>
                 </iron-form>
             </div>
@@ -1810,6 +1806,7 @@
                         {{item.no_}}
                     </template>
                 </vaadin-grid-column>
+                
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="valorContrato">Valor</vaadin-grid-sorter>
@@ -1821,6 +1818,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
+                
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>

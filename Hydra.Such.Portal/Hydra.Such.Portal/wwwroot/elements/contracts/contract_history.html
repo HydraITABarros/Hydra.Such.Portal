@@ -49,7 +49,7 @@
                    content-type="application/json"></iron-ajax>
 
         <vaadin-grid id="grdContractsGrid" aria-label="ContractsGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="120px" resizable>
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contractNo" />
@@ -58,7 +58,8 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="startDate">Data Inicio</vaadin-grid-sorter>
                     <vaadin-grid-filter path="startDate" />
@@ -67,7 +68,8 @@
                     {{item.startData}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="endDate">Data Fim</vaadin-grid-sorter>
                     <vaadin-grid-filter path="endDate" />
@@ -76,7 +78,8 @@
                     {{item.dueDate}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientNo" />
@@ -85,7 +88,8 @@
                     {{item.clientNo}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="110px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clientName" />
@@ -94,7 +98,8 @@
                     {{item.clientName}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="160px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="description">Âmbito dos Serviços</vaadin-grid-sorter>
                     <vaadin-grid-filter path="description" />
@@ -103,7 +108,8 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="150px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="status" />
@@ -112,7 +118,8 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeRegion" />
@@ -121,7 +128,8 @@
                     {{item.codeRegion}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeFunctionalArea" />
@@ -130,7 +138,8 @@
                     {{item.codeFunctionalArea}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
                     <vaadin-grid-filter path="codeResponsabilityCenter" />
@@ -139,13 +148,16 @@
                     {{item.codeResponsabilityCenter}}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column width="200px" resizable>
+            
+            <vaadin-grid-column width="15%" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
                     <vaadin-grid-filter path="versionNo" />
                 </template>
                 <template>
-                    {{item.versionNo}}
+                    <div class="alignRight">
+                        {{item.versionNo}}
+                    </div>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
