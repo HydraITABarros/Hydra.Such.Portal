@@ -7,4 +7,8 @@
 @*<h1 class="title">Clientes</h1>*@
 <link rel="import" href="~/elements/clients/client_list.html">
 
-<x-clientlist _areaid="4" _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-clientlist>
+<x-clientlist
+              _areaid="4"
+              _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+              _permissionsmovimentos='@Html.Raw(Json.Serialize(ViewBag.UPermissionsMovimentos))'>
+</x-clientlist>

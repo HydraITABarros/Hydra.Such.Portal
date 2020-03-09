@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using WSCustomerNAV;
+using Hydra.Such.Data.ViewModel.Clients;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -21,7 +22,7 @@ namespace Hydra.Such.Data.Logic
 
         public static List<NAVClientsViewModel> GetClients(string NAVDatabaseName, string NAVCompanyName, IEnumerable<string> navCustomerIds)
         {
-            string navCustomerIdsFilter = string.Join(",", navCustomerIds); 
+            string navCustomerIdsFilter = string.Join(",", navCustomerIds);
             List<NAVClientsViewModel> customers = GetClients(NAVDatabaseName, NAVCompanyName, navCustomerIdsFilter);
             return customers;
         }
@@ -65,7 +66,7 @@ namespace Hydra.Such.Data.Logic
                             RegiaoCliente = (Regiao_Cliente)temp.RegiaoCliente,
                             AbrigoLeiCompromisso = ((int)temp.AbrigoLeiCompromisso > 0 ? true : false),
                             AssociadoAN = temp.AssociadoAN.Equals(DBNull.Value) ? "" : (string)temp.AssociadoAN,
-                            Blocked = (Blocked)temp.Blocked,
+                            Blocked = (WSCustomerNAV.Blocked)temp.Blocked,
                             ClienteAssociado = ((int)temp.ClienteAssociado > 0 ? true : false),
                             ClienteInterno = ((int)temp.ClienteInterno > 0 ? true : false),
                             ClienteNacional = ((int)temp.ClienteNacional > 0 ? true : false),
@@ -73,12 +74,12 @@ namespace Hydra.Such.Data.Logic
                             EMail = temp.EMail.Equals(DBNull.Value) ? "" : (string)temp.EMail,
                             FaxNo = temp.FaxNo.Equals(DBNull.Value) ? "" : (string)temp.FaxNo,
                             HomePage = temp.HomePage.Equals(DBNull.Value) ? "" : (string)temp.HomePage,
-                            NaturezaCliente = (Natureza_Cliente)temp.NaturezaCliente,
+                            NaturezaCliente = (WSCustomerNAV.Natureza_Cliente)temp.NaturezaCliente,
                             NoFornecedorAssoc = temp.ResponsabilityCenterCode.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenterCode,
                             NoSeries = temp.NoSeries.Equals(DBNull.Value) ? "" : (string)temp.NoSeries,
                             PhoneNo = temp.PhoneNo.Equals(DBNull.Value) ? "" : (string)temp.PhoneNo,
                             TaxaAprovisionamento = (decimal)temp.TaxaAprovisionamento,
-                            TipoCliente = (Tipo_Cliente)temp.TipoCliente,
+                            TipoCliente = (WSCustomerNAV.Tipo_Cliente)temp.TipoCliente,
                             VATBusinessPostingGroup = temp.VATBusinessPostingGroup.Equals(DBNull.Value) ? "" : (string)temp.VATBusinessPostingGroup
                         });
                     }
@@ -159,33 +160,33 @@ namespace Hydra.Such.Data.Logic
         }
 
         public static string GetClientVATByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
+        {
+            try
             {
-                try
+                string result = "";
+                using (var ctx = new SuchDBContextExtention())
                 {
-                    string result = "";
-                    using (var ctx = new SuchDBContextExtention())
-                    {
-                        var parameters = new[]{
+                    var parameters = new[]{
                         new SqlParameter("@DBName", NAVDatabaseName),
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@NoCliente", NoClient)
                     };
 
-                        IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Clientes @DBName, @CompanyName, @NoCliente", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017Clientes @DBName, @CompanyName, @NoCliente", parameters);
 
-                        foreach (dynamic temp in data)
-                        {
-                            result = (string)temp.VATRegistrationNo;
-                        }
+                    foreach (dynamic temp in data)
+                    {
+                        result = (string)temp.VATRegistrationNo;
                     }
+                }
 
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    return "";
-                }
+                return result;
             }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
 
         public static string GetClientCurrencyByNo(string NoClient, string NAVDatabaseName, string NAVCompanyName)
         {
@@ -297,7 +298,7 @@ namespace Hydra.Such.Data.Logic
                             Obs = temp.Obs.Equals(DBNull.Value) ? "" : (string)temp.Obs,
                             PostingDate = (DateTime?)temp.PostingDate,
                             RemainingAmount = (decimal?)temp.RemainingAmount,
-                            SinalizacaoRec = (int?)temp.SinalizacaoRec == 0 || (int?)temp.SinalizacaoRec == null ? false : true ,
+                            SinalizacaoRec = (int?)temp.SinalizacaoRec == 0 || (int?)temp.SinalizacaoRec == null ? false : true,
                             DocumentDate = (DateTime?)temp.DocumentDate,
                             DueDate = (DateTime?)temp.DueDate,
                             FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
@@ -401,7 +402,7 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
-        
+
         public static List<NAVClientesInvoicesDetailsViewModel> GetCrMemoDetails(string NAVDatabaseName, string NAVCompanyName, string No)
         {
             try
@@ -455,6 +456,45 @@ namespace Hydra.Such.Data.Logic
                     }
                     return result;
                 }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<ListMovimentosAllClientsViewModel> GetListMovAllClients(string dataFiltro)
+        {
+            try
+            {
+                List<ListMovimentosAllClientsViewModel> result = new List<ListMovimentosAllClientsViewModel>();
+
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]
+                    {
+                    new SqlParameter("@DataFiltro", dataFiltro)
+                };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec MovAllClientesIntegrado @DataFiltro", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new ListMovimentosAllClientsViewModel()
+                        {
+                            CustomerNo = temp.CustomerNo.Equals(DBNull.Value) ? "" : (string)temp.CustomerNo.ToString(),
+                            DateTexto = Convert.ToDateTime(temp.Date).ToShortDateString(),
+                            DueDateTexto = Convert.ToDateTime(temp.DueDate).ToShortDateString(),
+                            DocumentType = temp.DocumentType.Equals(DBNull.Value) ? "" : (string)temp.DocumentType.ToString(),
+                            DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo.ToString(),
+                            DimensionValue = temp.DimensionValue.Equals(DBNull.Value) ? "" : (string)temp.DimensionValue.ToString(),
+                            Value = Convert.ToDecimal(temp.Value),
+                            FactoringSemRecurso = temp.FactoringSemRecurso.Equals(DBNull.Value) ? "" : (string)temp.FactoringSemRecurso.ToString()
+                        });
+                    }
+                }
+
+                return result;
             }
             catch (Exception ex)
             {

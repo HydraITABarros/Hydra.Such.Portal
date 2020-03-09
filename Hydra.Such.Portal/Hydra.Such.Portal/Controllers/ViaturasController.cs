@@ -929,6 +929,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateViatura2([FromBody] Viaturas2ViewModel data)
         {
+            data.eReasonCode = 3;
+            data.eMessage = "Ocorreu um erro.";
+
             try
             {
                 if (data != null)
@@ -989,6 +992,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2017.";
+                                return Json(data);
                             }
 
                             if (TCreateNavProj.IsCompletedSuccessfully)
@@ -1107,6 +1111,7 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         data.eReasonCode = 3;
                                         data.eMessage = "Ocorreu um erro ao criar a Viatura no e-SUCH.";
+                                        return Json(data);
                                     }
                                     else
                                     {
@@ -1151,19 +1156,22 @@ namespace Hydra.Such.Portal.Controllers
                                         DBViaturas2Propriedades.Create(Propriedade);
 
                                         data.eReasonCode = 1;
-                                        data.eMessage = "Viatura criada com sucesso.";
+                                        data.eMessage = "Viatura criada com sucesso no e-SUCH.";
+                                        return Json(data);
                                     }
                                 }
                                 else
                                 {
                                     data.eReasonCode = 3;
                                     data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2009.";
+                                    return Json(data);
                                 }
                             }
                             else
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2017.";
+                                return Json(data);
                             }
                         }
                         else
@@ -1172,21 +1180,25 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Já existe uma viatura no e-SUCH com a matricula " + data.Matricula;
+                                return Json(data);
                             }
                             if (CountNAV2017 != 0)
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Já existe um projeto no NAV2017 com o código " + data.NoProjeto;
+                                return Json(data);
                             }
                             if (CountNAV2009 != 0)
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Já existe um projeto no NAV2009 com o código " + data.NoProjeto;
+                                return Json(data);
                             }
                             if (CountVIA2009 != 0)
                             {
                                 data.eReasonCode = 3;
                                 data.eMessage = "Já existe uma viatura no NAV2009 com a matricula " + data.Matricula;
+                                return Json(data);
                             }
                         }
                     }
@@ -1194,18 +1206,21 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         data.eReasonCode = 3;
                         data.eMessage = "O campo matricula é de preenchimento obrigatório";
+                        return Json(data);
                     }
                 }
                 else
                 {
                     data.eReasonCode = 3;
                     data.eMessage = "Erro na obtensão dos dados.";
+                    return Json(data);
                 }
             }
             catch (Exception e)
             {
-                data.eReasonCode = 4;
+                data.eReasonCode = 3;
                 data.eMessage = "Ocorreu um erro.";
+                return Json(data);
             }
             return Json(data);
         }

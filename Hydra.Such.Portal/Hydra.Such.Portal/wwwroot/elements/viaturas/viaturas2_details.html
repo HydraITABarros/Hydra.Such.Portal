@@ -3808,17 +3808,17 @@
                     }
                 },
 
-                _createParqueamento: function () {
-                    if (this.$.dpStartDateParqueamentoCreate.value != null && this.$.dpStartDateParqueamentoCreate.value != "") {
-                        this.data.dataParqueamento = this.$.dpStartDateParqueamentoCreate.value;
-                        this._executeRequest("/Viaturas/CreateViatura2", this.data);
-                        this.$.dlgParqueamento.close();
-                    }
-                    else {
-                        this.$.dpStartDateParqueamentoCreate.validate();
-                        this._openToastError("O campo Data do novo Parqueamento é de preenchimento obrigatório.");
-                    }
-                },
+                //_createParqueamento: function () {
+                //    if (this.$.dpStartDateParqueamentoCreate.value != null && this.$.dpStartDateParqueamentoCreate.value != "") {
+                //        this.data.dataParqueamento = this.$.dpStartDateParqueamentoCreate.value;
+                //        this._executeRequest("/Viaturas/CreateViatura2", this.data);
+                //        this.$.dlgParqueamento.close();
+                //    }
+                //    else {
+                //        this.$.dpStartDateParqueamentoCreate.validate();
+                //        this._openToastError("O campo Data do novo Parqueamento é de preenchimento obrigatório.");
+                //    }
+                //},
 
                 _update: function () {
                     if (this._validateData()) {
@@ -3826,20 +3826,20 @@
                     }
                 },
 
-                _updateParqueamento: function () {
-                    if (this.$.dpStartDateParqueamentoUpdate.value != null && this.$.dpStartDateParqueamentoUpdate.value != "") {
-                        this.data.dataParqueamento = this.$.dpStartDateParqueamentoUpdate.value;
-                        this._executeRequest("/Viaturas/UpdateViatura2", this.data)
-                        this.$.dlgParqueamentoUpdate.close();
-                    }
-                    else {
-                        this.$.dpStartDateParqueamentoUpdate.validate();
-                        this._openToastError("O campo Data do novo Parqueamento é de preenchimento obrigatório.");
-                    }
-                },
-                _closeDlgParqueamentoUpdate: function () {
-                    this.$.dlgParqueamentoUpdate.close();
-                },
+                //_updateParqueamento: function () {
+                //    if (this.$.dpStartDateParqueamentoUpdate.value != null && this.$.dpStartDateParqueamentoUpdate.value != "") {
+                //        this.data.dataParqueamento = this.$.dpStartDateParqueamentoUpdate.value;
+                //        this._executeRequest("/Viaturas/UpdateViatura2", this.data)
+                //        this.$.dlgParqueamentoUpdate.close();
+                //    }
+                //    else {
+                //        this.$.dpStartDateParqueamentoUpdate.validate();
+                //        this._openToastError("O campo Data do novo Parqueamento é de preenchimento obrigatório.");
+                //    }
+                //},
+                //_closeDlgParqueamentoUpdate: function () {
+                //    this.$.dlgParqueamentoUpdate.close();
+                //},
 
                 _delete: function () {
                     var viatura = this.data;

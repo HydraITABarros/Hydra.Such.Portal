@@ -47,9 +47,13 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult Index()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Clientes); //4, 47);
+            UserAccessesViewModel UPermMovimentos = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ClientesListaMovimentos); //4, 47);
+
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.UPermissions = UPerm;
+                ViewBag.UPermissionsMovimentos = UPermMovimentos;
+
                 return View();
             }
             else
@@ -66,6 +70,20 @@ namespace Hydra.Such.Portal.Controllers
                 ViewBag.No = id ?? "";
                 ViewBag.reportServerURL = _config.ReportServerURL;
                 ViewBag.userLogin = User.Identity.Name.ToString();
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public IActionResult ListMovimentosAllClients()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ClientesListaMovimentos); //4, 47);
+            if (UPerm != null && UPerm.Read.Value)
+            {
                 ViewBag.UPermissions = UPerm;
                 return View();
             }
@@ -306,6 +324,91 @@ namespace Hydra.Such.Portal.Controllers
                     return Json("Existe pelo menos um Cliente ( " + AllClients.Where(x => x.No_ != data.No && x.VATRegistrationNo_ == data.VAT_Registration_No).FirstOrDefault().No_ + " ) com este Nº Contribuinte.");
             }
             return Json("");
+        }
+        #endregion
+
+        #region ListMovimentosAllClients
+        [HttpPost]
+        public JsonResult GetListMovimentosAllClients([FromBody] JObject requestParams)
+        {
+            //int AreaId = int.Parse(requestParams["areaid"].ToString());
+            JToken data;
+            string DataFiltro = DateTime.Now.ToString();
+            if (requestParams != null)
+            {
+                if (requestParams.TryGetValue("data", out data))
+                    DataFiltro = Convert.ToString(data);
+            }
+            List<ListMovimentosAllClientsViewModel> result = new List<ListMovimentosAllClientsViewModel>();
+
+            result = DBNAV2017Clients.GetListMovAllClients(DataFiltro);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_ListMovimentosAllClients([FromBody] List<ListMovimentosAllClientsViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Clientes");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nº"); Col = Col + 1; }
+                if (dp["dateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
+                if (dp["dueDateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Vencimento"); Col = Col + 1; }
+                if (dp["documentType"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Documento"); Col = Col + 1; }
+                if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Documento Nº"); Col = Col + 1; }
+                if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unidade Prestação"); Col = Col + 1; }
+                if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ListMovimentosAllClientsViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustomerNo); Col = Col + 1; }
+                        if (dp["dateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DateTexto); Col = Col + 1; }
+                        if (dp["dueDateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DueDateTexto); Col = Col + 1; }
+                        if (dp["documentType"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentType); Col = Col + 1; }
+                        if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentNo); Col = Col + 1; }
+                        if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DimensionValue); Col = Col + 1; }
+                        if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Value.ToString()); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_ListMovimentosAllClients(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         #endregion
 

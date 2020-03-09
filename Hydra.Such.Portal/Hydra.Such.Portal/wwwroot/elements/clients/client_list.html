@@ -90,6 +90,9 @@
             </paper-menu-button>
             <!--end ColumnToggle-->
 
+            <template is="dom-if" if="{{ _permissionsmovimentos.read }}">
+                <paper-button id="btnListMovimentosAllClients" class="tablinks" on-tap="_GoListMovimentosAllClients" title="Movimentos"><i class="fa fa-list" aria-hidden="true"></i>&nbsp; Movimentos Pendentes</paper-button>
+            </template>
         </div>
         
         <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
@@ -337,8 +340,6 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-
     </template>
 
     <script>
@@ -347,6 +348,9 @@
                 is: 'x-clientlist',
                 properties: {
                     _permissions: {
+                        type: Array
+                    },
+                    _permissionsmovimentos: {
                         type: Array
                     },
                     activeItem: {
@@ -512,8 +516,12 @@
                 },
                 formatBool: function (value) {
                     return value ? "Sim" : "Não";
-                }
+                },
                 /* end - ColumnToggle */
+
+                _GoListMovimentosAllClients: function () {
+                    window.location.href = "/Clientes/ListMovimentosAllClients/";
+                },
             });
         });
     </script>
