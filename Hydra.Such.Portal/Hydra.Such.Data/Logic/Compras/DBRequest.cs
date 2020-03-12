@@ -44,6 +44,37 @@ namespace Hydra.Such.Data.Logic.Request
                 return null;
             }
         }
+
+        public static List<Requisição> GetAllByViatura(string Matricula)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x => x.Viatura == Matricula).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Requisição> GetAllByProjeto(string Projeto)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição.Where(x => x.NºProjeto == Projeto).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<Requisição> GetByState(int TipoReq, RequisitionStates state)
         {
             try

@@ -2156,6 +2156,15 @@ namespace Hydra.Such.Portal.Controllers
                         value = x.Descricao
                     }).Where(y => y.value.ToUpper() != "SUCH".ToUpper()).ToList();
                 }
+
+                if (tipoPropriedade == 4) //"N/A"
+                {
+                    result = AllResults.Select(x => new DDMessage()
+                    {
+                        id = x.ID,
+                        value = x.Descricao
+                    }).Where(y => y.id == 4).ToList();
+                }
             }
 
             return Json(result.OrderBy(x => x.value));

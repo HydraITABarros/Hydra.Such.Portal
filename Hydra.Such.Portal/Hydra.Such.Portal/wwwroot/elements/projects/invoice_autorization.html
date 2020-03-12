@@ -995,6 +995,8 @@
                     }
                     else {
                         if (this.selectedItems != null && this.selectedItems.length > 0) {
+                            this.$.btnConfirm.disabled = true;
+
                             this.validationMessages = [];
                             var validationRequest = {
                                 "projectNo": this._projectno,
@@ -1016,6 +1018,8 @@
                     }
                 },
                 _closedlgValidationDlg: function () {
+                    this.$.btnConfirm.disabled = false;
+
                     this.$.dlgValidation.close();
                     this._resetDialogContent();
                 },

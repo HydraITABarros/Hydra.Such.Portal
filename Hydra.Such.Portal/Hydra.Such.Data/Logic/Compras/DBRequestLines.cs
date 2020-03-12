@@ -56,6 +56,36 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static List<LinhasRequisição> GetAllByViatura(string Matricula)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasRequisição.Where(x => x.Viatura == Matricula).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<LinhasRequisição> GetAllByProjeto(string Projeto)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.LinhasRequisição.Where(x => x.NºProjeto == Projeto).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static LinhasRequisição Create(LinhasRequisição ObjectToCreate)
         {
             try

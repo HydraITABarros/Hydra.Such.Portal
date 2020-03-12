@@ -82,7 +82,7 @@ namespace Hydra.Such.Data.NAV
                     Location_Code = preInvoiceToCreate.LocationCode,
                     No_Compromisso = preInvoiceToCreate.CommitmentNumber,
                     Observacoes = preInvoiceToCreate.Comments,
-                    Responsibility_Center= CUsers.CentroDeResponsabilidade,
+                    Responsibility_Center = CUsers.CentroDeResponsabilidade,
                     //Order_Date
                     Payment_Method_Code = preInvoiceToCreate.CodMetodoPagamento,
                     Payment_Terms_Code = preInvoiceToCreate.CodTermosPagamento,
@@ -92,6 +92,7 @@ namespace Hydra.Such.Data.NAV
                     Document_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
                     Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
                     External_Document_No = preInvoiceToCreate.ProjectNo,
+                    User_pre_registo_2009 = preInvoiceToCreate.CreateUser,
 
                     Ship_to_Address = preInvoiceToCreate.Ship_to_Address,
                     Ship_to_Address_2 = preInvoiceToCreate.Ship_to_Address_2,

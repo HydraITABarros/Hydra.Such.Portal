@@ -47,6 +47,21 @@ namespace Hydra.Such.Data.Logic.FolhaDeHora
             }
         }
 
+        public static List<FolhasDeHoras> GetAllByViatura(string Matricula)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.FolhasDeHoras.Where(x => x.Matrícula == Matricula).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static FolhasDeHoras Create(FolhasDeHoras ObjectToCreate)
         {
             try

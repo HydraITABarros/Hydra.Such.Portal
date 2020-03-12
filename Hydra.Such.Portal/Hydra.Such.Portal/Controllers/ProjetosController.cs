@@ -303,7 +303,11 @@ namespace Hydra.Such.Portal.Controllers
                         CompanyName = _config.NAVCompanyName,
                         ObservacoesAutorizarFaturacao = "",
                         FaturaPrecosIvaIncluido = cProject.FaturaPrecosIvaIncluido,
-                        FechoAutomatico = cProject.FechoAutomatico
+                        FechoAutomatico = cProject.FechoAutomatico,
+                        CreateUser = cProject.UtilizadorCriação,
+                        CreateDate = cProject.DataHoraCriação,
+                        UpdateUser = cProject.UtilizadorModificação,
+                        UpdateDate = cProject.DataHoraModificação
                     };
 
                     string TextoFatura = "";
@@ -731,7 +735,7 @@ namespace Hydra.Such.Portal.Controllers
                         catch (Exception ex)
                         {
                             data.eReasonCode = 3;
-                            data.eMessage = "Erro ao atualizar: Não foi possivel obter o Pronjeto a partir do NAV.";
+                            data.eMessage = "Erro ao atualizar: Não foi possivel obter o Projeto a partir do NAV.";
                             return Json(data);
                         }
 
@@ -8526,6 +8530,42 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        //[HttpPost]
+        //public JsonResult ResetProjeto([FromBody] List<AuthorizedProjectViewModel> authProjectMovements)
+        //{
+        //    ErrorHandler result = new ErrorHandler();
+        //    try
+        //    {
+        //        if (authProjectMovements != null && authProjectMovements.Count > 0)
+        //        {
+        //            //Read NAV Project Key
+        //            Task<WSCreatePreInvoice.Read_Result> TReadPreInvoice = WSPreInvoice.CreateContractInvoice   .GetNavProject(data.ProjectNo, _configws);
+        //            try
+        //            {
+        //                TReadNavProj.Wait();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                data.eReasonCode = 3;
+        //                data.eMessage = "Erro ao atualizar: Não foi possivel obter o Projeto a partir do NAV.";
+        //                return Json(data);
+        //            }
+
+        //        }
+        //        else
+        //        {
+        //            result.eReasonCode = 3;
+        //            result.eMessage = "Os Pré-registos a serem eliminados não mpdem ser nulos.";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        result.eReasonCode = 99;
+        //        result.eMessage = "Ocorreu um erro.";
+        //    }
+
+        //    return Json(result);
+        //}
 
 
 

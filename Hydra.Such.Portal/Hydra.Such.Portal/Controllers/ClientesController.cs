@@ -24,6 +24,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System.ComponentModel;
 using Hydra.Such.Portal.Extensions;
+using NPOI.HSSF.UserModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -362,10 +363,13 @@ namespace Hydra.Such.Portal.Controllers
             var memory = new MemoryStream();
             using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
             {
-                IWorkbook workbook;
-                workbook = new XSSFWorkbook();
+                IWorkbook workbook = new XSSFWorkbook();
                 ISheet excelSheet = workbook.CreateSheet("Clientes");
                 IRow row = excelSheet.CreateRow(0);
+                ICellStyle dataCustomStyle = workbook.CreateCellStyle();
+                IDataFormat dataFormatCustom = workbook.CreateDataFormat();
+
+                dataCustomStyle.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
                 int Col = 0;
 
                 if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nº"); Col = Col + 1; }
@@ -384,17 +388,18 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CustomerNo); Col = Col + 1; }
-                        if (dp["dateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DateTexto); Col = Col + 1; }
-                        if (dp["dueDateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DueDateTexto); Col = Col + 1; }
-                        if (dp["documentType"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentType); Col = Col + 1; }
-                        if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DocumentNo); Col = Col + 1; }
-                        if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DimensionValue); Col = Col + 1; }
-                        if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Value.ToString()); Col = Col + 1; }
+                        if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerNo); Col = Col + 1; }
+                        if (dp["dateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(Convert.ToDateTime(item.DateTexto)); row.Cells[Col].CellStyle = dataCustomStyle; Col = Col + 1; }
+                        if (dp["dueDateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(Convert.ToDateTime(item.DueDateTexto)); row.Cells[Col].CellStyle = dataCustomStyle; Col = Col + 1; }
+                        if (dp["documentType"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DocumentType); Col = Col + 1; }
+                        if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DocumentNo); Col = Col + 1; }
+                        if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DimensionValue); Col = Col + 1; }
+                        if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.Numeric).SetCellValue(Convert.ToDouble(item.Value.ToString())); Col = Col + 1; }
 
                         count++;
                     }
                 }
+
                 workbook.Write(fs);
             }
             using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))

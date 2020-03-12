@@ -122,8 +122,8 @@
             
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.statusDescription.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="status">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="status" value="[[filter.statusDescription]]" />
+                    <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="statusDescription" value="[[filter.statusDescription]]" />
                 </template>
                 <template>
                     {{item.statusDescription}}

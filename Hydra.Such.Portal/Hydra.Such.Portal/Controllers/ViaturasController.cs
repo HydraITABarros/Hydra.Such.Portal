@@ -337,29 +337,33 @@ namespace Hydra.Such.Portal.Controllers
                 int IDCondutor = 0;
                 viatura = DBViaturas2.ParseToViewModel(DBViaturas2.GetByMatricula(data.Matricula));
 
-                viatura.IDEstadoOriginalDB = viatura.IDEstado;
-                viatura.DataEstadoLast = DBViaturas2Estados.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Estados.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
-                viatura.CodRegiaoOriginalDB = viatura.CodRegiao;
-                viatura.CodAreaFuncionalOriginalDB = viatura.CodAreaFuncional;
-                viatura.CodCentroResponsabilidadeOriginalDB = viatura.CodCentroResponsabilidade;
-                viatura.DataDimensaoLast = DBViaturas2Dimensoes.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Dimensoes.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
-                viatura.IDLocalParqueamentoOriginalDB = viatura.IDLocalParqueamento;
-                viatura.DataParqueamentoLast = DBViaturas2Parqueamento.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Parqueamento.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
-                viatura.IDPropriedadeOriginalDB = viatura.IDPropriedade;
-                viatura.DataPropriedadeLast = DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula) != null ? DBViaturas2Propriedades.GetByMatriculaRecent(data.Matricula).DataInicio : DateTime.MinValue;
+                List<Viaturas2Estados> AllEstados = DBViaturas2Estados.GetAll().OrderByDescending(x => x.DataInicio).ToList();
+                List<Viaturas2Dimensoes> AllDimensoes = DBViaturas2Dimensoes.GetAll().OrderByDescending(x => x.DataInicio).ToList();
+                List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll().OrderByDescending(x => x.DataInicio).ToList();
+                List<Viaturas2Propriedades> AllPropriedades = DBViaturas2Propriedades.GetAll().OrderByDescending(x => x.DataInicio).ToList();
+                List<Viaturas2Gestores> AllGestores = DBViaturas2Gestores.GetAll().OrderByDescending(x => x.DataInicio).ToList();
 
-                IDCondutor = DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now.Date, 2) != null ? (int)DBViaturas2Gestores.GetByMatriculaGestorRecent(data.Matricula, DateTime.Now.Date, 2).IDGestor : 0;
-                if (IDCondutor > 0) viatura.Condutor = DBViaturas2GestoresGestor.GetByID(IDCondutor) != null ? DBViaturas2GestoresGestor.GetByID(IDCondutor).Gestor : "";
-
-                viatura.DataProximaInspecaoTexto = DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula) != null ? DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula).ProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
-
-                List <ConfiguracaoTabelas> AllConfTabelas = DBConfiguracaoTabelas.GetAll();
+                List<ConfiguracaoTabelas> AllConfTabelas = DBConfiguracaoTabelas.GetAll();
                 List<Viaturas2Marcas> AllMarcas = DBViaturas2Marcas.GetAll();
                 List<Viaturas2Modelos> AllModelos = DBViaturas2Modelos.GetAll();
                 List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, "");
-                List<Viaturas2Parqueamento> AllParquamentos = DBViaturas2Parqueamento.GetAll();
                 List<Viaturas2ParqueamentoLocal> AllPArqueamentosLocais = DBViaturas2ParqueamentoLocal.GetAll();
                 List<Viaturas2GestoresGestor> AllResponsaveis = DBViaturas2GestoresGestor.GetByTipo(1);
+
+                viatura.IDEstadoOriginalDB = viatura.IDEstado;
+                viatura.DataEstadoLast = AllEstados.Where(x => x.Matricula == data.Matricula).FirstOrDefault() != null ? AllEstados.Where(x => x.Matricula == data.Matricula).FirstOrDefault().DataInicio : DateTime.MinValue;
+                viatura.CodRegiaoOriginalDB = viatura.CodRegiao;
+                viatura.CodAreaFuncionalOriginalDB = viatura.CodAreaFuncional;
+                viatura.CodCentroResponsabilidadeOriginalDB = viatura.CodCentroResponsabilidade;
+                viatura.DataDimensaoLast = AllDimensoes.Where(x => x.Matricula == data.Matricula).FirstOrDefault() != null ? AllDimensoes.Where(x => x.Matricula == data.Matricula).FirstOrDefault().DataInicio : DateTime.MinValue;
+                viatura.IDLocalParqueamentoOriginalDB = viatura.IDLocalParqueamento;
+                viatura.DataParqueamentoLast = AllParquamentos.Where(x => x.Matricula == data.Matricula).FirstOrDefault() != null ? AllParquamentos.Where(x => x.Matricula == data.Matricula).FirstOrDefault().DataInicio : DateTime.MinValue;
+                viatura.IDPropriedadeOriginalDB = viatura.IDPropriedade;
+                viatura.DataPropriedadeLast = AllPropriedades.Where(x => x.Matricula == data.Matricula).FirstOrDefault() != null ? AllPropriedades.Where(x => x.Matricula == data.Matricula).FirstOrDefault().DataInicio : DateTime.MinValue;
+                IDCondutor = AllGestores.Where(x => x.Matricula == data.Matricula && x.IDTipo == 2 && x.DataInicio <= DateTime.Now).FirstOrDefault() != null ? (int)AllGestores.Where(x => x.Matricula == data.Matricula && x.IDTipo == 2 && x.DataInicio <= DateTime.Now).FirstOrDefault().IDGestor : 0;
+                if (IDCondutor > 0) viatura.Condutor = DBViaturas2GestoresGestor.GetByID(IDCondutor) != null ? DBViaturas2GestoresGestor.GetByID(IDCondutor).Gestor : "";
+
+                viatura.DataProximaInspecaoTexto = DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula) != null ? DBViaturas2Inspecoes.GetByMatriculaProximaInspecaoRecent(data.Matricula).ProximaInspecao.Value.ToString("yyyy-MM-dd") : "";
 
                 if (viatura.IDEstado != null && viatura.IDEstado > 0) viatura.Estado = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_ESTADO" && y.ID == viatura.IDEstado).FirstOrDefault().Descricao;
                 if (viatura.IDMarca != null && viatura.IDMarca > 0) viatura.Marca = AllMarcas.Where(y => y.ID == viatura.IDMarca).FirstOrDefault().Marca;
@@ -373,7 +377,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (viatura.IDSegmentacao != null && viatura.IDSegmentacao > 0) viatura.Segmentacao = AllConfTabelas.Where(y => y.Tabela == "VIATURAS2_SEGMENTACAO" && y.ID == viatura.IDSegmentacao).FirstOrDefault().Descricao;
                 if (viatura.AlvaraLicenca == true) viatura.AlvaraLicencaTexto = "Sim"; else viatura.AlvaraLicencaTexto = "Não";
                 if (viatura.IDLocalParqueamento != null && viatura.IDLocalParqueamento > 0) viatura.LocalParqueamento = AllPArqueamentosLocais.Where(y => y.ID == viatura.IDLocalParqueamento).FirstOrDefault().Local;
-                if (!string.IsNullOrEmpty(viatura.NoProjeto)) viatura.Projeto = AllProjects.Where(y => y.No == viatura.NoProjeto).FirstOrDefault().Description;
+                if (!string.IsNullOrEmpty(viatura.NoProjeto)) viatura.Projeto = AllProjects.Where(y => y.No == viatura.NoProjeto).FirstOrDefault() != null ? AllProjects.Where(y => y.No == viatura.NoProjeto).FirstOrDefault().Description : "";
                 if (viatura.IDGestor != null && viatura.IDGestor > 0) viatura.Gestor = AllResponsaveis.Where(y => y.ID == viatura.IDGestor).FirstOrDefault() != null ? AllResponsaveis.Where(y => y.ID == viatura.IDGestor).FirstOrDefault().Gestor : "";
 
                 if (viatura.Data1Matricula.HasValue) viatura.Idade = (DateTime.Now.Year - Convert.ToDateTime(viatura.Data1Matricula).Year).ToString() + " ano(s)";
@@ -934,280 +938,319 @@ namespace Hydra.Such.Portal.Controllers
 
             try
             {
-                if (data != null)
+                if (data != null && !string.IsNullOrEmpty(data.Matricula.Trim()))
                 {
-                    if (data.Matricula != null && !string.IsNullOrEmpty(data.Matricula))
+                    data.Matricula = data.Matricula.Trim().ToUpper();
+
+                    if (data.DataAquisicao > DateTime.Now)
                     {
-                        if (data.DataAquisicao > DateTime.Now)
+                        data.eReasonCode = 3;
+                        data.eMessage = "A Data de Aquisição não pode ser superior á data atual.";
+                        return Json(data);
+                    }
+
+                    data.NoProjeto = "V" + data.Matricula;
+                    int CounteSUCH = 0;
+                    int CountNAV2017 = 0;
+                    int CountNAV2009 = 0;
+                    int CountVIA2009 = 0;
+
+                    Viaturas2 Viatura = DBViaturas2.GetByMatricula(data.Matricula);
+                    if (Viatura != null)
+                        CounteSUCH = 1;
+
+                    List<NAVProjectsViewModel> AllProjectsNAV2017 = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto);
+                    if (AllProjectsNAV2017 != null)
+                        CountNAV2017 = AllProjectsNAV2017.Count;
+
+                    List<NAVProjectsViewModel> AllProjectsNAV2009 = DBNAV2009Projects.GetAll(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto);
+                    if (AllProjectsNAV2009 != null)
+                        CountNAV2009 = AllProjectsNAV2009.Count;
+
+                    NAV2009Viaturas Via2009 = DBNAV2009Viaturas.Get(data.Matricula);
+                    if (Via2009 != null && !string.IsNullOrEmpty(Via2009.Matricula))
+                        CountVIA2009 = 1;
+
+                    if (CounteSUCH != 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Já existe uma viatura no e-SUCH com a matricula " + data.Matricula;
+                        return Json(data);
+                    }
+                    if (CountNAV2017 != 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Já existe um projeto no NAV2017 com o código " + data.NoProjeto;
+                        return Json(data);
+                    }
+                    if (CountNAV2009 != 0)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Já existe um projeto no NAV2009 com o código " + data.NoProjeto;
+                        return Json(data);
+                    }
+                    //if (CountVIA2009 != 0)
+                    //{
+                    //    data.eReasonCode = 3;
+                    //    data.eMessage = "Já existe uma viatura no NAV2009 com a matricula " + data.Matricula;
+                    //    return Json(data);
+                    //}
+
+                    //Criar Viatur no e-SUCH
+                    data.IDSegmentacao = 0;
+                    if (data.IDCategoria.HasValue && data.IDTipo.HasValue)
+                    {
+                        if (data.IDCategoria == 1) //Viatura Ligeira
+                        {
+                            if (data.IDTipo == 1) //Passageiros
+                                data.IDSegmentacao = 1; //Viaturas Ligeiras de Passageiros
+                            if (data.IDTipo == 2) //Mercadorias
+                            {
+                                if (data.PesoBruto.HasValue)
+                                {
+                                    if (data.PesoBruto <= 2200)
+                                        data.IDSegmentacao = 2; //Viaturas de Mercadorias – Peso Bruto ≤ 2.200 Kg
+                                    if (data.PesoBruto > 2200 && data.PesoBruto <= 3500)
+                                        data.IDSegmentacao = 3; //Viaturas de Mercadorias – 2.200 Kg <Peso Bruto ≤ 3.500 Kg
+                                    if (data.PesoBruto > 3500 && data.PesoBruto <= 12000)
+                                        data.IDSegmentacao = 4; //Viaturas de Mercadorias – 3.500 Kg <Peso Bruto ≤ 12.000 Kg
+                                    if (data.PesoBruto > 12000 && data.PesoBruto <= 19000)
+                                        data.IDSegmentacao = 5; //Viaturas de Mercadorias – 12.000 Kg <Peso Bruto ≤ 19.000 Kg
+                                }
+                            }
+                        }
+                    }
+
+                    data.UtilizadorCriacao = User.Identity.Name;
+
+                    if (data.Data1Matricula.HasValue && !data.DataMatricula.HasValue)
+                        data.DataMatricula = data.Data1Matricula;
+                    if (!data.Data1Matricula.HasValue && data.DataMatricula.HasValue)
+                        data.Data1Matricula = data.DataMatricula;
+
+                    if (DBViaturas2.Create(DBViaturas2.ParseToDB(data)) == null)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro ao criar a Viatura no e-SUCH.";
+                        return Json(data);
+                    }
+
+                    DateTime DataInicio = DateTime.Now;
+                    if (!string.IsNullOrEmpty(data.DataAquisicaoTexto))
+                        DataInicio = Convert.ToDateTime(data.DataAquisicaoTexto);
+
+                    //Histórico - Estado
+                    if (!string.IsNullOrEmpty(data.Matricula) && data.IDEstado.HasValue)
+                    {
+                        Viaturas2Estados Estado = new Viaturas2Estados
+                        {
+                            Matricula = data.Matricula,
+                            IDEstado = data.IDEstado,
+                            DataInicio = DataInicio,
+                            UtilizadorCriacao = User.Identity.Name,
+                            DataCriacao = DateTime.Now
+                        };
+                        if (DBViaturas2Estados.Create(Estado) == null)
                         {
                             data.eReasonCode = 3;
-                            data.eMessage = "A Data de Aquisição não pode ser superior á data atual.";
+                            data.eMessage = "Ocorreu um erro ao criar o Estado em Histórico no e-SUCH.";
                             return Json(data);
                         }
+                    }
 
-                        data.Matricula = data.Matricula.ToUpper();
-                        data.NoProjeto = "V" + data.Matricula;
-                        int CounteSUCH = 0;
-                        int CountNAV2017 = 0;
-                        int CountNAV2009 = 0;
-                        int CountVIA2009 = 0;
-
-                        Viaturas2 Viatura = DBViaturas2.GetByMatricula(data.Matricula);
-                        if (Viatura != null)
-                            CounteSUCH = 1;
-
-                        List<NAVProjectsViewModel> AllProjectsNAV2017 = DBNAV2017Projects.GetAllInDB(_config.NAVDatabaseName, _config.NAVCompanyName, data.NoProjeto);
-                        if (AllProjectsNAV2017 != null)
-                            CountNAV2017 = AllProjectsNAV2017.Count;
-
-                        List<NAVProjectsViewModel> AllProjectsNAV2009 = DBNAV2009Projects.GetAll(_config.NAV2009ServerName, _config.NAV2009DatabaseName, _config.NAV2009CompanyName, data.NoProjeto);
-                        if (AllProjectsNAV2009 != null)
-                            CountNAV2009 = AllProjectsNAV2009.Count;
-
-                        NAV2009Viaturas Via2009 = DBNAV2009Viaturas.Get(data.Matricula);
-                        if (Via2009 != null)
-                            CountVIA2009 = 1;
-
-                        if (CounteSUCH == 0 && CountNAV2017 == 0 && CountNAV2009 == 0 && CountVIA2009 == 0)
+                    //Histórico - Dimensões
+                    if (!string.IsNullOrEmpty(data.Matricula) &&
+                        (!string.IsNullOrEmpty(data.CodRegiao) || !string.IsNullOrEmpty(data.CodAreaFuncional) || !string.IsNullOrEmpty(data.CodCentroResponsabilidade)))
+                    {
+                        Viaturas2Dimensoes Dimensao = new Viaturas2Dimensoes()
                         {
-                            //NAV2017
-                            ProjectDetailsViewModel ProjectToCreate = new ProjectDetailsViewModel()
-                            {
-                                ProjectNo = data.NoProjeto,
-                                Description = "CONTROLO CUSTOS VIATURAS: " + data.Matricula,
-                                ClientNo = "999992",
-                                Status = (EstadoProjecto)1, //ENCOMENDA
-                                RegionCode = data.CodRegiao,
-                                FunctionalAreaCode = data.CodAreaFuncional,
-                                ResponsabilityCenterCode = data.CodCentroResponsabilidade,
-                                Visivel = true
-                            };
-
-                            Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(ProjectToCreate, _configws);
-                            try
-                            {
-                                TCreateNavProj.Wait();
-                            }
-                            catch (Exception ex)
-                            {
-                                data.eReasonCode = 3;
-                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2017.";
-                                return Json(data);
-                            }
-
-                            if (TCreateNavProj.IsCompletedSuccessfully)
-                            {
-                                //NAV2009
-                                int resultNAV2009 = DBNAV2009Projects.Create(data.Matricula, data.CodRegiao, data.CodAreaFuncional, data.CodCentroResponsabilidade, User.Identity.Name);
-
-                                if (resultNAV2009 == 1)
-                                {
-                                    //Create Viaturas on NAV2009
-                                    NAV2009Viaturas createViaturaNAV2009 = new NAV2009Viaturas();
-                                    createViaturaNAV2009.DataMatricula = data.DataMatricula.HasValue ? Convert.ToDateTime(data.DataMatriculaTexto) : createViaturaNAV2009.DataMatricula;
-                                    createViaturaNAV2009.NoQuadro = !string.IsNullOrEmpty(data.NoQuadro) ? Convert.ToString(data.NoQuadro) : createViaturaNAV2009.NoQuadro;
-                                    createViaturaNAV2009.PesoBruto = data.PesoBruto.HasValue ? Convert.ToString(data.PesoBruto) : createViaturaNAV2009.PesoBruto;
-                                    createViaturaNAV2009.Tara = data.Tara.HasValue ? Convert.ToString(data.Tara) : createViaturaNAV2009.Tara;
-                                    createViaturaNAV2009.Cilindrada = data.Cilindrada.HasValue ? Convert.ToString(data.Cilindrada) : createViaturaNAV2009.Cilindrada;
-                                    createViaturaNAV2009.Potencia = data.Potencia.HasValue ? Convert.ToString(data.Potencia) : createViaturaNAV2009.Potencia;
-                                    createViaturaNAV2009.NoLugares = data.NoLugares.HasValue ? Convert.ToString(data.NoLugares) : createViaturaNAV2009.NoLugares;
-                                    createViaturaNAV2009.Cor = !string.IsNullOrEmpty(data.Cor) ? Convert.ToString(data.Cor) : createViaturaNAV2009.Cor;
-                                    createViaturaNAV2009.DistanciaEntreEixos = data.DistanciaEixos.HasValue ? Convert.ToString(data.DistanciaEixos) : createViaturaNAV2009.DistanciaEntreEixos;
-                                    createViaturaNAV2009.PneumaticosFrente = !string.IsNullOrEmpty(data.PneuFrente) ? Convert.ToString(data.PneuFrente) : createViaturaNAV2009.PneumaticosFrente;
-                                    createViaturaNAV2009.PneumaticosRetaguarda = !string.IsNullOrEmpty(data.PneuRetaguarda) ? Convert.ToString(data.PneuRetaguarda) : createViaturaNAV2009.PneumaticosRetaguarda;
-                                    createViaturaNAV2009.DataAquisicao = data.DataAquisicao.HasValue ? Convert.ToDateTime(data.DataAquisicaoTexto) : createViaturaNAV2009.DataAquisicao;
-                                    createViaturaNAV2009.GlobalDimension1Code = !string.IsNullOrEmpty(data.CodRegiao) ? Convert.ToString(data.CodRegiao) : createViaturaNAV2009.GlobalDimension1Code;
-                                    createViaturaNAV2009.GlobalDimension2Code = !string.IsNullOrEmpty(data.CodAreaFuncional) ? Convert.ToString(data.CodAreaFuncional) : createViaturaNAV2009.GlobalDimension2Code;
-                                    createViaturaNAV2009.ShortcutDimension3Code = !string.IsNullOrEmpty(data.CodCentroResponsabilidade) ? Convert.ToString(data.CodCentroResponsabilidade) : createViaturaNAV2009.ShortcutDimension3Code;
-                                    createViaturaNAV2009.Observacoes = !string.IsNullOrEmpty(data.Observacoes) ? Convert.ToString(data.Observacoes) : createViaturaNAV2009.Observacoes;
-                                    createViaturaNAV2009.Utilizador = !string.IsNullOrEmpty(User.Identity.Name) ? Convert.ToString(User.Identity.Name) : createViaturaNAV2009.Utilizador;
-                                    createViaturaNAV2009.DataAlteracao = DateTime.Now;
-                                    createViaturaNAV2009.IntervaloRevisoes = data.IntervaloRevisoes.HasValue ? Convert.ToInt32(data.IntervaloRevisoes) : createViaturaNAV2009.IntervaloRevisoes;
-                                    createViaturaNAV2009.ConsumoIndicativoViatura = data.ConsumoReferencia.HasValue ? Convert.ToDecimal(data.ConsumoReferencia) : createViaturaNAV2009.ConsumoIndicativoViatura;
-
-                                    if (data.IDEstado.HasValue)
-                                    {
-                                        if (data.IDEstado == 1) //Ativo
-                                            createViaturaNAV2009.Estado = 0;
-                                        if (data.IDEstado == 2) //Cedido
-                                            createViaturaNAV2009.Estado = 3;
-                                        //if (data.IDEstado == 3) //Devolvido
-                                        //    createViaturaNAV2009.Estado = ;
-                                        if (data.IDEstado == 4) //Vendido
-                                            createViaturaNAV2009.Estado = 1;
-                                        if (data.IDEstado == 5) //Abatido
-                                            createViaturaNAV2009.Estado = 2;
-                                        //if (data.IDEstado == 6) //Em reparação
-                                        //    createViaturaNAV2009.Estado = ;
-                                    }
-
-                                    if (data.IDCombustivel.HasValue)
-                                    {
-                                        if (data.IDCombustivel == 1) //Gasóleo
-                                            createViaturaNAV2009.Combustivel = 1;
-                                        if (data.IDCombustivel == 2) //Gasolina
-                                            createViaturaNAV2009.Combustivel = 0;
-                                        if (data.IDCombustivel == 3) //Elétrico
-                                            createViaturaNAV2009.Combustivel = 3;
-                                        if (data.IDCombustivel == 4) //GPL
-                                            createViaturaNAV2009.Combustivel = 2;
-                                        //if (data.IDCombustivel == 5) //Outro
-                                        //    createViaturaNAV2009.Combustivel = ;
-                                    }
-
-                                    if (data.IDTipoPropriedade.HasValue)
-                                    {
-                                        if (data.IDTipoPropriedade == 1) //SUCH
-                                            createViaturaNAV2009.TipoPropriedade = 0;
-                                        if (data.IDTipoPropriedade == 2) //Renting
-                                            createViaturaNAV2009.TipoPropriedade = 1;
-                                        if (data.IDTipoPropriedade == 3) //Leasing
-                                            createViaturaNAV2009.TipoPropriedade = 2;
-                                    }
-
-                                    if (data.IDLocalParqueamento.HasValue)
-                                        createViaturaNAV2009.LocalParqueamento = DBViaturas2ParqueamentoLocal.GetByID((int)data.IDLocalParqueamento).Local;
-
-                                    if (DBNAV2009Viaturas.Create(createViaturaNAV2009) == 0)
-                                    {
-                                        data.eReasonCode = 3;
-                                        data.eMessage = "Erro ao criar: Não foi possivel criar a Viatura no NAV2009";
-                                        return Json(data);
-                                    }
-                                    
-                                    //e-SUCH
-                                    data.IDSegmentacao = 0;
-                                    if (data.IDCategoria.HasValue && data.IDTipo.HasValue)
-                                    {
-                                        if (data.IDCategoria == 1) //Viatura Ligeira
-                                        {
-                                            if (data.IDTipo == 1) //Passageiros
-                                                data.IDSegmentacao = 1; //Viaturas Ligeiras de Passageiros
-                                            if (data.IDTipo == 2) //Mercadorias
-                                            {
-                                                if (data.PesoBruto.HasValue)
-                                                {
-                                                    if (data.PesoBruto <= 2200)
-                                                        data.IDSegmentacao = 2; //Viaturas de Mercadorias – Peso Bruto ≤ 2.200 Kg
-                                                    if (data.PesoBruto > 2200 && data.PesoBruto <= 3500)
-                                                        data.IDSegmentacao = 3; //Viaturas de Mercadorias – 2.200 Kg <Peso Bruto ≤ 3.500 Kg
-                                                    if (data.PesoBruto > 3500 && data.PesoBruto <= 12000)
-                                                        data.IDSegmentacao = 4; //Viaturas de Mercadorias – 3.500 Kg <Peso Bruto ≤ 12.000 Kg
-                                                    if (data.PesoBruto > 12000 && data.PesoBruto <= 19000)
-                                                        data.IDSegmentacao = 5; //Viaturas de Mercadorias – 12.000 Kg <Peso Bruto ≤ 19.000 Kg
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if (data.Data1Matricula.HasValue && !data.DataMatricula.HasValue)
-                                        data.DataMatricula = data.Data1Matricula;
-                                    if (!data.Data1Matricula.HasValue && data.DataMatricula.HasValue)
-                                        data.Data1Matricula = data.DataMatricula;
-
-                                    Viaturas2 viaturaCreated = DBViaturas2.Create(DBViaturas2.ParseToDB(data));
-
-                                    if (viaturaCreated == null)
-                                    {
-                                        data.eReasonCode = 3;
-                                        data.eMessage = "Ocorreu um erro ao criar a Viatura no e-SUCH.";
-                                        return Json(data);
-                                    }
-                                    else
-                                    {
-                                        //Viaturas2
-                                        Viaturas2Estados Estado = new Viaturas2Estados
-                                        {
-                                            Matricula = data.Matricula,
-                                            IDEstado = data.IDEstado,
-                                            DataInicio = (DateTime)data.DataAquisicao,
-                                            UtilizadorCriacao = User.Identity.Name
-                                        };
-                                        DBViaturas2Estados.Create(Estado);
-
-                                        Viaturas2Dimensoes Dimensao = new Viaturas2Dimensoes()
-                                        {
-                                            Matricula = data.Matricula,
-                                            Regiao = data.CodRegiao,
-                                            Area = data.CodAreaFuncional,
-                                            Cresp = data.CodCentroResponsabilidade,
-                                            DataInicio = (DateTime)data.DataAquisicao,
-                                            UtilizadorCriacao = User.Identity.Name
-                                        };
-                                        DBViaturas2Dimensoes.Create(Dimensao);
-
-                                        Viaturas2Parqueamento Parqueamento = new Viaturas2Parqueamento
-                                        {
-                                            Matricula = data.Matricula,
-                                            IDLocal = data.IDLocalParqueamento,
-                                            DataInicio = (DateTime)data.DataAquisicao,
-                                            UtilizadorCriacao = User.Identity.Name
-                                        };
-                                        DBViaturas2Parqueamento.Create(Parqueamento);
-
-                                        Viaturas2Propriedades Propriedade = new Viaturas2Propriedades
-                                        {
-                                            Matricula = data.Matricula,
-                                            IDTipoPropriedade = data.IDTipoPropriedade,
-                                            IDPropriedade = data.IDPropriedade,
-                                            DataInicio = (DateTime)data.DataAquisicao,
-                                            UtilizadorCriacao = User.Identity.Name
-                                        };
-                                        DBViaturas2Propriedades.Create(Propriedade);
-
-                                        data.eReasonCode = 1;
-                                        data.eMessage = "Viatura criada com sucesso no e-SUCH.";
-                                        return Json(data);
-                                    }
-                                }
-                                else
-                                {
-                                    data.eReasonCode = 3;
-                                    data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2009.";
-                                    return Json(data);
-                                }
-                            }
-                            else
-                            {
-                                data.eReasonCode = 3;
-                                data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2017.";
-                                return Json(data);
-                            }
+                            Matricula = data.Matricula,
+                            Regiao = !string.IsNullOrEmpty(data.CodRegiao) ? data.CodRegiao : "",
+                            Area = !string.IsNullOrEmpty(data.CodAreaFuncional) ? data.CodAreaFuncional : "",
+                            Cresp = !string.IsNullOrEmpty(data.CodCentroResponsabilidade) ? data.CodCentroResponsabilidade : "",
+                            DataInicio = DataInicio,
+                            UtilizadorCriacao = User.Identity.Name,
+                            DataCriacao = DateTime.Now
+                        };
+                        if (DBViaturas2Dimensoes.Create(Dimensao) == null)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao criar as Dimensões em Histórico no e-SUCH.";
+                            return Json(data);
                         }
-                        else
+                    }
+
+                    //Histórico - Parqueamento
+                    if (!string.IsNullOrEmpty(data.Matricula) && data.IDLocalParqueamento.HasValue)
+                    {
+                        Viaturas2Parqueamento Parqueamento = new Viaturas2Parqueamento
                         {
-                            if (CounteSUCH != 0)
-                            {
-                                data.eReasonCode = 3;
-                                data.eMessage = "Já existe uma viatura no e-SUCH com a matricula " + data.Matricula;
-                                return Json(data);
-                            }
-                            if (CountNAV2017 != 0)
-                            {
-                                data.eReasonCode = 3;
-                                data.eMessage = "Já existe um projeto no NAV2017 com o código " + data.NoProjeto;
-                                return Json(data);
-                            }
-                            if (CountNAV2009 != 0)
-                            {
-                                data.eReasonCode = 3;
-                                data.eMessage = "Já existe um projeto no NAV2009 com o código " + data.NoProjeto;
-                                return Json(data);
-                            }
-                            if (CountVIA2009 != 0)
-                            {
-                                data.eReasonCode = 3;
-                                data.eMessage = "Já existe uma viatura no NAV2009 com a matricula " + data.Matricula;
-                                return Json(data);
-                            }
+                            Matricula = data.Matricula,
+                            IDLocal = data.IDLocalParqueamento,
+                            DataInicio = DataInicio,
+                            UtilizadorCriacao = User.Identity.Name,
+                            DataCriacao = DateTime.Now
+                        };
+                        if (DBViaturas2Parqueamento.Create(Parqueamento) == null)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao criar o Parqueamento em Histórico no e-SUCH.";
+                            return Json(data);
+                        }
+                    }
+
+                    //Histórico - Propriedade
+                    if (!string.IsNullOrEmpty(data.Matricula) && (data.IDTipoPropriedade.HasValue || data.IDPropriedade.HasValue))
+                    {
+                        Viaturas2Propriedades Propriedade = new Viaturas2Propriedades
+                        {
+                            Matricula = data.Matricula,
+                            IDTipoPropriedade = data.IDTipoPropriedade.HasValue ? data.IDTipoPropriedade : 0,
+                            IDPropriedade = data.IDPropriedade.HasValue ? data.IDPropriedade : 0,
+                            DataInicio = DataInicio,
+                            UtilizadorCriacao = User.Identity.Name,
+                            DataCriacao = DateTime.Now
+                        };
+                        if (DBViaturas2Propriedades.Create(Propriedade) == null)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao criar a Propriedade em Histórico no e-SUCH.";
+                            return Json(data);
+                        }
+                    }
+
+                    //Criar o Projeto no NAV2017
+                    ProjectDetailsViewModel ProjectToCreate = new ProjectDetailsViewModel()
+                    {
+                        ProjectNo = data.NoProjeto,
+                        Description = "CONTROLO CUSTOS VIATURAS: " + data.Matricula,
+                        ClientNo = "999992",
+                        Status = (EstadoProjecto)1, //ENCOMENDA
+                        RegionCode = !string.IsNullOrEmpty(data.CodRegiao) ? data.CodRegiao : "",
+                        FunctionalAreaCode = !string.IsNullOrEmpty(data.CodAreaFuncional) ? data.CodAreaFuncional : "",
+                        ResponsabilityCenterCode = !string.IsNullOrEmpty(data.CodCentroResponsabilidade) ? data.CodCentroResponsabilidade : "",
+                        Visivel = true
+                    };
+
+                    Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(ProjectToCreate, _configws);
+                    try
+                    {
+                        TCreateNavProj.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro ao criar o projeto no NAV2017.";
+                        return Json(data);
+                    }
+
+                    if (!TCreateNavProj.IsCompletedSuccessfully)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Não foi possivel criar o Projeto " + data.NoProjeto + " no NAV2017.";
+                        return Json(data);
+                    }
+
+                    //Criar o Projeto no NAV2009
+                    int resultNAV2009 = DBNAV2009Projects.Create(data.Matricula, data.CodRegiao, data.CodAreaFuncional, data.CodCentroResponsabilidade, User.Identity.Name);
+
+                    if (resultNAV2009 != 1)
+                    {
+                        data.eReasonCode = 3;
+                        data.eMessage = "Ocorreu um erro ao criar o Projeto " + data.NoProjeto + " no NAV2009.";
+                        return Json(data);
+                    }
+
+                    //Create a Viaturas no NAV2009
+                    NAV2009Viaturas ViaturaNAV2009 = new NAV2009Viaturas();
+
+                    ViaturaNAV2009.Matricula = data.Matricula;
+                    if (!string.IsNullOrEmpty(data.DataMatriculaTexto)) ViaturaNAV2009.DataMatricula = Convert.ToDateTime(data.DataMatriculaTexto); else ViaturaNAV2009.DataMatricula = Convert.ToDateTime("1753-01-01");
+                    if (!string.IsNullOrEmpty(data.NoQuadro)) ViaturaNAV2009.NoQuadro = data.NoQuadro;
+                    if (data.PesoBruto.HasValue) ViaturaNAV2009.PesoBruto = data.PesoBruto.ToString();
+                    if (data.Tara.HasValue) ViaturaNAV2009.Tara = data.Tara.ToString();
+                    if (data.Cilindrada.HasValue) ViaturaNAV2009.Cilindrada = data.Cilindrada.ToString();
+                    if (data.Potencia.HasValue) ViaturaNAV2009.Potencia = data.Potencia.ToString();
+                    if (data.NoLugares.HasValue) ViaturaNAV2009.NoLugares = data.NoLugares.ToString();
+                    if (!string.IsNullOrEmpty(data.Cor)) ViaturaNAV2009.Cor = data.Cor.ToUpper();
+                    if (data.DistanciaEixos.HasValue) ViaturaNAV2009.DistanciaEntreEixos = data.DistanciaEixos.ToString();
+                    if (!string.IsNullOrEmpty(data.PneuFrente)) ViaturaNAV2009.PneumaticosFrente = data.PneuFrente;
+                    if (!string.IsNullOrEmpty(data.PneuRetaguarda)) ViaturaNAV2009.PneumaticosRetaguarda = data.PneuRetaguarda;
+                    if (!string.IsNullOrEmpty(data.DataAquisicaoTexto)) ViaturaNAV2009.DataAquisicao = Convert.ToDateTime(data.DataAquisicaoTexto); else ViaturaNAV2009.DataAquisicao = Convert.ToDateTime("1753-01-01");
+                    if (!string.IsNullOrEmpty(data.CodRegiao)) ViaturaNAV2009.GlobalDimension1Code = data.CodRegiao;
+                    if (!string.IsNullOrEmpty(data.CodAreaFuncional)) ViaturaNAV2009.GlobalDimension2Code = data.CodAreaFuncional;
+                    if (!string.IsNullOrEmpty(data.CodCentroResponsabilidade)) ViaturaNAV2009.ShortcutDimension3Code = data.CodCentroResponsabilidade;
+                    if (!string.IsNullOrEmpty(data.Observacoes)) ViaturaNAV2009.Observacoes = data.Observacoes;
+                    ViaturaNAV2009.Utilizador = User.Identity.Name;
+                    ViaturaNAV2009.DataAlteracao = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+                    if (data.IntervaloRevisoes.HasValue) ViaturaNAV2009.IntervaloRevisoes = Convert.ToInt32(data.IntervaloRevisoes);
+                    if (data.ConsumoReferencia.HasValue) ViaturaNAV2009.ConsumoIndicativoViatura = Convert.ToDecimal(data.ConsumoReferencia);
+
+                    if (data.IDEstado.HasValue)
+                    {
+                        if (data.IDEstado == 1) //Ativo
+                            ViaturaNAV2009.Estado = 0; //Ativo
+                        if (data.IDEstado == 2) //Cedido
+                            ViaturaNAV2009.Estado = 3; //Cedido
+                        if (data.IDEstado == 3) //Devolvido
+                            ViaturaNAV2009.Estado = 1; //Bloqueado
+                        if (data.IDEstado == 4) //Vendido
+                            ViaturaNAV2009.Estado = 1; //Bloqueado
+                        if (data.IDEstado == 5) //Abatido
+                            ViaturaNAV2009.Estado = 2; //Abatido
+                        if (data.IDEstado == 6) //Em reparação
+                            ViaturaNAV2009.Estado = 0; //Ativo
+                    }
+
+                    if (data.IDCombustivel.HasValue)
+                    {
+                        if (data.IDCombustivel == 1) //Gasóleo
+                            ViaturaNAV2009.Combustivel = 1;
+                        if (data.IDCombustivel == 2) //Gasolina
+                            ViaturaNAV2009.Combustivel = 0;
+                        if (data.IDCombustivel == 3) //Elétrico
+                            ViaturaNAV2009.Combustivel = 3;
+                        if (data.IDCombustivel == 4) //GPL
+                            ViaturaNAV2009.Combustivel = 2;
+                        //if (data.IDCombustivel == 5) //Outro
+                        //    ViaturaNAV2009.Combustivel = ;
+                    }
+
+                    if (data.IDTipoPropriedade.HasValue)
+                    {
+                        if (data.IDTipoPropriedade == 1) //SUCH
+                            ViaturaNAV2009.TipoPropriedade = 0;
+                        if (data.IDTipoPropriedade == 2) //Renting
+                            ViaturaNAV2009.TipoPropriedade = 1;
+                        if (data.IDTipoPropriedade == 3) //Leasing
+                            ViaturaNAV2009.TipoPropriedade = 2;
+                    }
+
+                    if (data.IDLocalParqueamento.HasValue)
+                        ViaturaNAV2009.LocalParqueamento = DBViaturas2ParqueamentoLocal.GetByID((int)data.IDLocalParqueamento).Local;
+
+                    if (CountVIA2009 != 0)
+                    {
+                        if (DBNAV2009Viaturas.Update(ViaturaNAV2009) != 1)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Erro ao criar: Não foi possivel atualizar a Viatura no NAV2009";
+                            return Json(data);
                         }
                     }
                     else
                     {
-                        data.eReasonCode = 3;
-                        data.eMessage = "O campo matricula é de preenchimento obrigatório";
-                        return Json(data);
+                        if (DBNAV2009Viaturas.Create(ViaturaNAV2009) != 1)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Erro ao criar: Não foi possivel criar a Viatura no NAV2009";
+                            return Json(data);
+                        }
                     }
+
+                    data.eReasonCode = 1;
+                    data.eMessage = "Viatura criada com sucesso.";
+                    return Json(data);
                 }
                 else
                 {
@@ -1222,7 +1265,6 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro.";
                 return Json(data);
             }
-            return Json(data);
         }
 
         [HttpPost]
@@ -2841,9 +2883,9 @@ namespace Hydra.Such.Portal.Controllers
                             Description = "CONTROLO CUSTOS VIATURAS: " + data.Matricula,
                             ClientNo = "999992",
                             Status = (EstadoProjecto)EstadoProjetoNAV2017, //ENCOMENDA
-                            RegionCode = data.CodRegiao,
-                            FunctionalAreaCode = data.CodAreaFuncional,
-                            ResponsabilityCenterCode = data.CodCentroResponsabilidade,
+                            RegionCode = !string.IsNullOrEmpty(data.CodRegiao) ? data.CodRegiao : "",
+                            FunctionalAreaCode = !string.IsNullOrEmpty(data.CodAreaFuncional) ? data.CodAreaFuncional : "",
+                            ResponsabilityCenterCode = !string.IsNullOrEmpty(data.CodCentroResponsabilidade) ? data.CodCentroResponsabilidade : "",
                             Visivel = true
                         };
 
@@ -2910,43 +2952,43 @@ namespace Hydra.Such.Portal.Controllers
 
                 if (updateViaturaNAV2009 != null && !string.IsNullOrEmpty(updateViaturaNAV2009.Matricula))
                 {
-                    updateViaturaNAV2009.DataMatricula = data.DataMatricula.HasValue ? Convert.ToDateTime(data.DataMatriculaTexto) : updateViaturaNAV2009.DataMatricula;
-                    updateViaturaNAV2009.NoQuadro = !string.IsNullOrEmpty(data.NoQuadro) ? Convert.ToString(data.NoQuadro) : updateViaturaNAV2009.NoQuadro;
-                    updateViaturaNAV2009.PesoBruto = data.PesoBruto.HasValue ? Convert.ToString(data.PesoBruto) : updateViaturaNAV2009.PesoBruto;
-                    updateViaturaNAV2009.Tara = data.Tara.HasValue ? Convert.ToString(data.Tara) : updateViaturaNAV2009.Tara;
-                    updateViaturaNAV2009.Cilindrada = data.Cilindrada.HasValue ? Convert.ToString(data.Cilindrada) : updateViaturaNAV2009.Cilindrada;
-                    updateViaturaNAV2009.Potencia = data.Potencia.HasValue ? Convert.ToString(data.Potencia) : updateViaturaNAV2009.Potencia;
-                    updateViaturaNAV2009.NoLugares = data.NoLugares.HasValue ? Convert.ToString(data.NoLugares) : updateViaturaNAV2009.NoLugares;
-                    updateViaturaNAV2009.Cor = !string.IsNullOrEmpty(data.Cor) ? Convert.ToString(data.Cor) : updateViaturaNAV2009.Cor;
-                    updateViaturaNAV2009.DistanciaEntreEixos = data.DistanciaEixos.HasValue ? Convert.ToString(data.DistanciaEixos) : updateViaturaNAV2009.DistanciaEntreEixos;
-                    updateViaturaNAV2009.PneumaticosFrente = !string.IsNullOrEmpty(data.PneuFrente) ? Convert.ToString(data.PneuFrente) : updateViaturaNAV2009.PneumaticosFrente;
-                    updateViaturaNAV2009.PneumaticosRetaguarda = !string.IsNullOrEmpty(data.PneuRetaguarda) ? Convert.ToString(data.PneuRetaguarda) : updateViaturaNAV2009.PneumaticosRetaguarda;
-                    updateViaturaNAV2009.DataAquisicao = data.DataAquisicao.HasValue ? Convert.ToDateTime(data.DataAquisicaoTexto) : updateViaturaNAV2009.DataAquisicao;
-                    updateViaturaNAV2009.GlobalDimension1Code = !string.IsNullOrEmpty(data.CodRegiao) ? Convert.ToString(data.CodRegiao) : updateViaturaNAV2009.GlobalDimension1Code;
-                    updateViaturaNAV2009.GlobalDimension2Code = !string.IsNullOrEmpty(data.CodAreaFuncional) ? Convert.ToString(data.CodAreaFuncional) : updateViaturaNAV2009.GlobalDimension2Code;
-                    updateViaturaNAV2009.ShortcutDimension3Code = !string.IsNullOrEmpty(data.CodCentroResponsabilidade) ? Convert.ToString(data.CodCentroResponsabilidade) : updateViaturaNAV2009.ShortcutDimension3Code;
-                    updateViaturaNAV2009.Observacoes = !string.IsNullOrEmpty(data.Observacoes) ? Convert.ToString(data.Observacoes) : updateViaturaNAV2009.Observacoes;
-                    updateViaturaNAV2009.Utilizador = !string.IsNullOrEmpty(User.Identity.Name) ? Convert.ToString(User.Identity.Name) : updateViaturaNAV2009.Utilizador;
-                    updateViaturaNAV2009.DataAlteracao = DateTime.Now;
-                    updateViaturaNAV2009.IntervaloRevisoes = data.IntervaloRevisoes.HasValue ? Convert.ToInt32(data.IntervaloRevisoes) : updateViaturaNAV2009.IntervaloRevisoes;
-                    updateViaturaNAV2009.ConsumoIndicativoViatura = data.ConsumoReferencia.HasValue ? Convert.ToDecimal(data.ConsumoReferencia) : updateViaturaNAV2009.ConsumoIndicativoViatura;
+                    updateViaturaNAV2009.Matricula = data.Matricula;
+                    if (!string.IsNullOrEmpty(data.DataMatriculaTexto)) updateViaturaNAV2009.DataMatricula = Convert.ToDateTime(data.DataMatriculaTexto); else updateViaturaNAV2009.DataMatricula = Convert.ToDateTime("1753-01-01");
+                    if (!string.IsNullOrEmpty(data.NoQuadro)) updateViaturaNAV2009.NoQuadro = data.NoQuadro;
+                    if (data.PesoBruto.HasValue) updateViaturaNAV2009.PesoBruto = data.PesoBruto.ToString();
+                    if (data.Tara.HasValue) updateViaturaNAV2009.Tara = data.Tara.ToString();
+                    if (data.Cilindrada.HasValue) updateViaturaNAV2009.Cilindrada = data.Cilindrada.ToString();
+                    if (data.Potencia.HasValue) updateViaturaNAV2009.Potencia = data.Potencia.ToString();
+                    if (data.NoLugares.HasValue) updateViaturaNAV2009.NoLugares = data.NoLugares.ToString();
+                    if (!string.IsNullOrEmpty(data.Cor)) updateViaturaNAV2009.Cor = data.Cor.ToUpper();
+                    if (data.DistanciaEixos.HasValue) updateViaturaNAV2009.DistanciaEntreEixos = data.DistanciaEixos.ToString();
+                    if (!string.IsNullOrEmpty(data.PneuFrente)) updateViaturaNAV2009.PneumaticosFrente = data.PneuFrente;
+                    if (!string.IsNullOrEmpty(data.PneuRetaguarda)) updateViaturaNAV2009.PneumaticosRetaguarda = data.PneuRetaguarda;
+                    if (!string.IsNullOrEmpty(data.DataAquisicaoTexto)) updateViaturaNAV2009.DataAquisicao = Convert.ToDateTime(data.DataAquisicaoTexto); else updateViaturaNAV2009.DataAquisicao = Convert.ToDateTime("1753-01-01");
+                    if (!string.IsNullOrEmpty(data.CodRegiao)) updateViaturaNAV2009.GlobalDimension1Code = data.CodRegiao;
+                    if (!string.IsNullOrEmpty(data.CodAreaFuncional)) updateViaturaNAV2009.GlobalDimension2Code = data.CodAreaFuncional;
+                    if (!string.IsNullOrEmpty(data.CodCentroResponsabilidade)) updateViaturaNAV2009.ShortcutDimension3Code = data.CodCentroResponsabilidade;
+                    if (!string.IsNullOrEmpty(data.Observacoes)) updateViaturaNAV2009.Observacoes = data.Observacoes;
+                    updateViaturaNAV2009.Utilizador = User.Identity.Name;
+                    updateViaturaNAV2009.DataAlteracao = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+                    if (data.IntervaloRevisoes.HasValue) updateViaturaNAV2009.IntervaloRevisoes = Convert.ToInt32(data.IntervaloRevisoes);
+                    if (data.ConsumoReferencia.HasValue) updateViaturaNAV2009.ConsumoIndicativoViatura = Convert.ToDecimal(data.ConsumoReferencia);
 
                     if (data.IDEstado.HasValue)
                     {
                         if (data.IDEstado == 1) //Ativo
-                            updateViaturaNAV2009.Estado = 0;
+                            updateViaturaNAV2009.Estado = 0; //Ativo
                         if (data.IDEstado == 2) //Cedido
-                            updateViaturaNAV2009.Estado = 3;
-                        //if (data.IDEstado == 3) //Devolvido
-                        //    updateViaturaNAV2009.Estado = ;
+                            updateViaturaNAV2009.Estado = 3; //Cedido
+                        if (data.IDEstado == 3) //Devolvido
+                            updateViaturaNAV2009.Estado = 1; //Bloqueado
                         if (data.IDEstado == 4) //Vendido
-                            updateViaturaNAV2009.Estado = 1;
+                            updateViaturaNAV2009.Estado = 1; //Bloqueado
                         if (data.IDEstado == 5) //Abatido
-                            updateViaturaNAV2009.Estado = 2;
-                        //if (data.IDEstado == 6) //Em reparação
-                        //    updateViaturaNAV2009.Estado = ;
+                            updateViaturaNAV2009.Estado = 2; //Abatido
+                        if (data.IDEstado == 6) //Em reparação
+                            updateViaturaNAV2009.Estado = 0; //Ativo
                     }
-
                     if (data.IDCombustivel.HasValue)
                     {
                         if (data.IDCombustivel == 1) //Gasóleo
@@ -3188,15 +3230,20 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (data != null && !string.IsNullOrEmpty(data.Matricula))
             {
-                List<FolhasDeHoras> AllFolhasHoras = DBFolhasDeHoras.GetAll();
-                List<PréRequisição> AllPreReq = DBPreRequesition.GetAll();
-                List<LinhasPréRequisição> AllPreReqLines = DBPreRequesitionLines.GetAll();
-                List<Requisição> AllReq = DBRequest.GetAll();
-                List<LinhasRequisição> AllReqLines = DBRequestLine.GetAll();
+                List<FolhasDeHoras> AllFolhasHorasVia = DBFolhasDeHoras.GetAllByViatura(data.Matricula);
+                List<PréRequisição> AllPreReqVia = DBPreRequesition.GetAllByViatura(data.Matricula);
+                List<LinhasPréRequisição> AllPreReqLinesVia = DBPreRequesitionLines.GetAllByViatura(data.Matricula);
+                List<Requisição> AllReqVia = DBRequest.GetAllByViatura(data.Matricula);
+                List<LinhasRequisição> AllReqLinesVia = DBRequestLine.GetAllByViatura(data.Matricula);
+
+                List<PréRequisição> AllPreReqProj = DBPreRequesition.GetAllByProjeto(data.NoProjeto);
+                List<LinhasPréRequisição> AllPreReqLinesProj = DBPreRequesitionLines.GetAllByProjeto(data.NoProjeto);
+                List<Requisição> AllReqProj = DBRequest.GetAllByProjeto(data.NoProjeto);
+                List<LinhasRequisição> AllReqLinesProj = DBRequestLine.GetAllByProjeto(data.NoProjeto);
 
                 //FOLHAS DE HORAS
                 int CountFH = 0;
-                CountFH = AllFolhasHoras.Where(x => x.Matrícula == data.Matricula).Count();
+                CountFH = AllFolhasHorasVia.Count();
                 if (CountFH > 0)
                 {
                     data.eReasonCode = 3;
@@ -3206,7 +3253,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 //PRÉ-REQUISIÇÕES
                 int CountPreRQ = 0;
-                CountPreRQ = AllPreReq.Where(x => x.Viatura == data.Matricula).Count();
+                CountPreRQ = AllPreReqVia.Count();
                 if (CountPreRQ > 0)
                 {
                     data.eReasonCode = 3;
@@ -3214,7 +3261,7 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(data);
                 }
                 int CountPreRQLines = 0;
-                CountPreRQLines = AllPreReqLines.Where(x => x.Viatura == data.Matricula).Count();
+                CountPreRQLines = AllPreReqLinesVia.Count();
                 if (CountPreRQLines > 0)
                 {
                     data.eReasonCode = 3;
@@ -3224,7 +3271,7 @@ namespace Hydra.Such.Portal.Controllers
 
                 //REQUISIÇÕES
                 int CountRQ = 0;
-                CountRQ = AllReq.Where(x => x.Viatura == data.Matricula).Count();
+                CountRQ = AllReqVia.Count();
                 if (CountRQ > 0)
                 {
                     data.eReasonCode = 3;
@@ -3232,7 +3279,7 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(data);
                 }
                 int CountRQLines = 0;
-                CountRQLines = AllReqLines.Where(x => x.Viatura == data.Matricula).Count();
+                CountRQLines = AllReqLinesVia.Count();
                 if (CountRQLines > 0)
                 {
                     data.eReasonCode = 3;
@@ -3245,7 +3292,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     //PRÉ-REQUISIÇÕES
                     int CountPreRQProj = 0;
-                    CountPreRQProj = AllPreReq.Where(x => x.NºProjeto == data.NoProjeto).Count();
+                    CountPreRQProj = AllPreReqProj.Count();
                     if (CountPreRQProj > 0)
                     {
                         data.eReasonCode = 3;
@@ -3253,7 +3300,7 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(data);
                     }
                     int CountPreRQLinesProj = 0;
-                    CountPreRQLinesProj = AllPreReqLines.Where(x => x.NºProjeto == data.NoProjeto).Count();
+                    CountPreRQLinesProj = AllPreReqLinesProj.Count();
                     if (CountPreRQLinesProj > 0)
                     {
                         data.eReasonCode = 3;
@@ -3263,7 +3310,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     //REQUISIÇÕES
                     int CountRQProj = 0;
-                    CountRQProj = AllReq.Where(x => x.NºProjeto == data.NoProjeto).Count();
+                    CountRQProj = AllReqProj.Count();
                     if (CountRQProj > 0)
                     {
                         data.eReasonCode = 3;
@@ -3271,7 +3318,7 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(data);
                     }
                     int CountRQLinesProj = 0;
-                    CountRQLinesProj = AllReqLines.Where(x => x.NºProjeto == data.NoProjeto).Count();
+                    CountRQLinesProj = AllReqLinesProj.Count();
                     if (CountRQLinesProj > 0)
                     {
                         data.eReasonCode = 3;

@@ -87,6 +87,36 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
+        public static List<PréRequisição> GetAllByViatura(string Matricula)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PréRequisição.Where(x => x.Viatura == Matricula).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<PréRequisição> GetAllByProjeto(string Projeto)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.PréRequisição.Where(x => x.NºProjeto == Projeto).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static PréRequisição Create(PréRequisição ObjectToCreate)
         {
             try

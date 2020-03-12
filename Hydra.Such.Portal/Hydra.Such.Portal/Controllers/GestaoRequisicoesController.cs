@@ -730,6 +730,14 @@ namespace Hydra.Such.Portal.Controllers
         {
             if (item != null)
             {
+                Requisição Original_REQ = DBRequest.GetById(item.RequisitionNo);
+                if (Original_REQ.Estado != (int)item.State)
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Não é possivel atualizar a Requisição, pois o Esado na Base de Dados é diferente do atual.";
+                    return Json(item);
+                }
+
                 if (item.StockReplacement == true)
                 {
                     item.Attachment = false;
