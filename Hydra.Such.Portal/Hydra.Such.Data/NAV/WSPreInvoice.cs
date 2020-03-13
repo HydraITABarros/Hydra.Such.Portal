@@ -55,6 +55,11 @@ namespace Hydra.Such.Data.NAV
                 PostingNoSeries = CUsers.NumSerieFaturas;
             }
 
+            string username = preInvoiceToCreate.CreateUser.ToUpper();
+            int index = username.IndexOf("@");
+            if (index > 0)
+                username = username.Substring(0, index);
+
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
                 WSPreInvoice = new WSCreatePreInvoice.WSPreInvoice() {
@@ -92,7 +97,8 @@ namespace Hydra.Such.Data.NAV
                     Document_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
                     Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
                     External_Document_No = preInvoiceToCreate.ProjectNo,
-                    User_pre_registo_2009 = preInvoiceToCreate.CreateUser,
+
+                    User_pre_registo_2009 = username,
 
                     Ship_to_Address = preInvoiceToCreate.Ship_to_Address,
                     Ship_to_Address_2 = preInvoiceToCreate.Ship_to_Address_2,
@@ -418,5 +424,44 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
+        public static async Task<WSCreatePreInvoice.Read_Result> GetPreInvoice(string PreInvoiceNo, string Document_Type, NAVWSConfigurations WSConfigurations)
+        {
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoice.Read_Result result = await WS_Client.ReadAsync(Document_Type, PreInvoiceNo);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public static async Task<WSCreatePreInvoice.Delete_Result> DeletePreInvoice(string PreInvoiceKey, NAVWSConfigurations WSConfigurations)
+        {
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoice.Delete_Result result = await WS_Client.DeleteAsync(PreInvoiceKey);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

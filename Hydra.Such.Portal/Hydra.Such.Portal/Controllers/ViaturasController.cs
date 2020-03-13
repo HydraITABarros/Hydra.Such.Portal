@@ -1123,7 +1123,7 @@ namespace Hydra.Such.Portal.Controllers
                     ProjectDetailsViewModel ProjectToCreate = new ProjectDetailsViewModel()
                     {
                         ProjectNo = data.NoProjeto,
-                        Description = "CONTROLO CUSTOS VIATURAS: " + data.Matricula,
+                        Description = "Controlo Custos Viaturas: " + data.Matricula.ToUpper(),
                         ClientNo = "999992",
                         Status = (EstadoProjecto)1, //ENCOMENDA
                         RegionCode = !string.IsNullOrEmpty(data.CodRegiao) ? data.CodRegiao : "",
@@ -2880,7 +2880,7 @@ namespace Hydra.Such.Portal.Controllers
                         ProjectDetailsViewModel ProjectToUpdate = new ProjectDetailsViewModel()
                         {
                             ProjectNo = data.NoProjeto,
-                            Description = "CONTROLO CUSTOS VIATURAS: " + data.Matricula,
+                            Description = "Controlo Custos Viaturas: " + data.Matricula.ToUpper(),
                             ClientNo = "999992",
                             Status = (EstadoProjecto)EstadoProjetoNAV2017, //ENCOMENDA
                             RegionCode = !string.IsNullOrEmpty(data.CodRegiao) ? data.CodRegiao : "",

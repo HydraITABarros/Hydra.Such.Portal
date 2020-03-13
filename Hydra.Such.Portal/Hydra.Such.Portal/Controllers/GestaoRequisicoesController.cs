@@ -1373,6 +1373,38 @@ namespace Hydra.Such.Portal.Controllers
                     //    line.QuantityToProvide = line.QuantityToRequire;
                     //};
 
+                    if (!string.IsNullOrEmpty(item.Vehicle))
+                    {
+                        Viaturas viatura = DBViatura.GetByMatricula(item.Vehicle);
+                        if (viatura != null)
+                        {
+                            item.ProjectNo = !string.IsNullOrEmpty(viatura.NoProjeto) ? viatura.NoProjeto : "";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(item.ProjectNo))
+                    {
+                        Projetos projeto = DBProjects.GetById(item.ProjectNo);
+                        if (projeto != null)
+                        {
+                            item.RegionCode = !string.IsNullOrEmpty(projeto.CódigoRegião) ? projeto.CódigoRegião : "";
+                            item.FunctionalAreaCode = !string.IsNullOrEmpty(projeto.CódigoÁreaFuncional) ? projeto.CódigoÁreaFuncional : "";
+                            item.CenterResponsibilityCode = !string.IsNullOrEmpty(projeto.CódigoCentroResponsabilidade) ? projeto.CódigoCentroResponsabilidade : "";
+                        }
+                        else
+                        {
+                            item.RegionCode = "";
+                            item.FunctionalAreaCode = "";
+                            item.CenterResponsibilityCode = "";
+                        }
+                    }
+                    else
+                    {
+                        item.RegionCode = "";
+                        item.FunctionalAreaCode = "";
+                        item.CenterResponsibilityCode = "";
+                    }
+
                     if (DBRequestLine.Update(item.Lines.ParseToDB()))
                     {
                         item.Lines.ForEach(x => x.Selected = false);

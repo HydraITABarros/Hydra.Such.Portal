@@ -8538,19 +8538,64 @@ namespace Hydra.Such.Portal.Controllers
         //    {
         //        if (authProjectMovements != null && authProjectMovements.Count > 0)
         //        {
-        //            //Read NAV Project Key
-        //            Task<WSCreatePreInvoice.Read_Result> TReadPreInvoice = WSPreInvoice.CreateContractInvoice   .GetNavProject(data.ProjectNo, _configws);
-        //            try
+        //            foreach (AuthorizedProjectViewModel item in authProjectMovements)
         //            {
-        //                TReadNavProj.Wait();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                data.eReasonCode = 3;
-        //                data.eMessage = "Erro ao atualizar: Não foi possivel obter o Projeto a partir do NAV.";
-        //                return Json(data);
-        //            }
 
+        //                if (item.ValorAutorizado >= 0)
+        //                List<MovimentosProjectoAutorizados> AllMovements = DBAuthorizedProjectMovements.GetMovementById(item.GrupoFactura, item.CodProjeto);
+
+        //                int sum = AllMovements.Sum(x => x.aut)
+
+        //                //Read NAV2017 PreInvoice Key
+        //                Task<WSCreatePreInvoice.Read_Result> TReadPreInvoice = WSPreInvoice.GetPreInvoice(item.ti  .get.CreatePreInvoice(header, _configws, dataFormulario, codproject, Ship);
+
+        //                Task<WSCreatePreInvoiceLine.Read_Result> TReadPreInvoiceLine = WSPreInvoiceLine..CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
+
+
+        //                Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.NoProjeto, _configws);
+        //                try
+        //                {
+        //                    TReadNavProj.Wait();
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    result.eReasonCode = 3;
+        //                    result.eMessage = "Erro ao atualizar: Não foi possivel obter o Projeto a partir do NAV2017.";
+        //                    return Json(result);
+        //                }
+
+        //                if (TReadNavProj.IsCompletedSuccessfully)
+        //                {
+        //                    if (TReadNavProj.Result.WSJob == null)
+        //                    {
+        //                        result.eReasonCode = 3;
+        //                        result.eMessage = "Erro ao atualizar: O projeto não existe no NAV2017";
+        //                        return Json(result);
+        //                    }
+        //                    else
+        //                    {
+        //                        //Update Project on NAV2017
+        //                        Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, ProjectToUpdate, _configws);
+        //                        try
+        //                        {
+        //                            TUpdateNavProj.Wait();
+        //                        }
+        //                        catch (Exception ex)
+        //                        {
+        //                            result.eReasonCode = 3;
+        //                            result.eMessage = ex.InnerException.Message;
+        //                            return Json(result);
+        //                        }
+
+        //                        if (!TUpdateNavProj.IsCompletedSuccessfully)
+        //                        {
+        //                            result.eReasonCode = 3;
+        //                            result.eMessage = "Erro ao atualizar: Não foi possivel atualizar o projeto no NAV2017";
+        //                            return Json(result);
+        //                        }
+        //                    }
+        //                }
+        //            }
         //        }
         //        else
         //        {
