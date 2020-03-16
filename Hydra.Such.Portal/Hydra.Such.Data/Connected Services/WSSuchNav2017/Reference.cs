@@ -27,6 +27,9 @@ namespace WSSuchNav2017
         
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017:WSForcaRegistoGuia", ReplyAction="*")]
         System.Threading.Tasks.Task<WSSuchNav2017.WSForcaRegistoGuia_Result> WSForcaRegistoGuiaAsync(WSSuchNav2017.WSForcaRegistoGuia request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017:WSgetNumPreRegisto", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSSuchNav2017.WSgetNumPreRegisto_Result> WSgetNumPreRegistoAsync(WSSuchNav2017.WSgetNumPreRegisto request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -197,6 +200,50 @@ namespace WSSuchNav2017
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="WSgetNumPreRegisto", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", IsWrapped=true)]
+    public partial class WSgetNumPreRegisto
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=0)]
+        public string pProjeto;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=1)]
+        public int pGrupoFatura;
+        
+        public WSgetNumPreRegisto()
+        {
+        }
+        
+        public WSgetNumPreRegisto(string pProjeto, int pGrupoFatura)
+        {
+            this.pProjeto = pProjeto;
+            this.pGrupoFatura = pGrupoFatura;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="WSgetNumPreRegisto_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", IsWrapped=true)]
+    public partial class WSgetNumPreRegisto_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=0)]
+        public string return_value;
+        
+        public WSgetNumPreRegisto_Result()
+        {
+        }
+        
+        public WSgetNumPreRegisto_Result(string return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public interface WSNAV2017_PortChannel : WSSuchNav2017.WSNAV2017_Port, System.ServiceModel.IClientChannel
     {
@@ -301,6 +348,20 @@ namespace WSSuchNav2017
             return ((WSSuchNav2017.WSNAV2017_Port)(this)).WSForcaRegistoGuiaAsync(inValue);
         }
         
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSSuchNav2017.WSgetNumPreRegisto_Result> WSSuchNav2017.WSNAV2017_Port.WSgetNumPreRegistoAsync(WSSuchNav2017.WSgetNumPreRegisto request)
+        {
+            return base.Channel.WSgetNumPreRegistoAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSSuchNav2017.WSgetNumPreRegisto_Result> WSgetNumPreRegistoAsync(string pProjeto, int pGrupoFatura)
+        {
+            WSSuchNav2017.WSgetNumPreRegisto inValue = new WSSuchNav2017.WSgetNumPreRegisto();
+            inValue.pProjeto = pProjeto;
+            inValue.pGrupoFatura = pGrupoFatura;
+            return ((WSSuchNav2017.WSNAV2017_Port)(this)).WSgetNumPreRegistoAsync(inValue);
+        }
+        
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
@@ -329,7 +390,8 @@ namespace WSSuchNav2017
         {
             if ((endpointConfiguration == EndpointConfiguration.WSNAV2017_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH%20-%20QUALIDADE/Codeunit/WSNAV2017");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Codeunit/WSNAV201" +
+                        "7");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

@@ -24,11 +24,11 @@ namespace Hydra.Such.Data.NAV
             navWSBinding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
             navWSBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Windows;
             navWSBinding.MaxReceivedMessageSize = int.MaxValue;
-            
-    }
+
+        }
 
 
-        
+
         public static async Task<WSNovaGuiaTransporte_Result> CreateAsync(string userId, NAVWSConfigurations WSConfigurations)
         {
             if (userId == null || userId == "")
