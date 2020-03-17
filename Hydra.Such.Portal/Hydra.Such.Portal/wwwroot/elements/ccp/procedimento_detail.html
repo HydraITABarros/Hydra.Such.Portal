@@ -5374,7 +5374,7 @@
                 _confirmAutorizacaoAdjudicacao_Confirmar: function () {
                     var ajax_request = this.$.ajax_confirmAutorizacaoAdjudicacao_Confirmar;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
-                    debugger
+                    //debugger
                     if ((this.data.imobilizado) && (this.data.valorAdjudicacaoAtual > 5000) && (this.data.nome_Utilizador != "CASUCH")) {
                         this._confirmAndExecuteActionToast_NR(
                             "O Valor do procedimento é superior a 5.000, pretende ratificar em CA?",
@@ -5401,7 +5401,7 @@
 
                 //NR 20180322
                 _rejectAberturaProcedimento: function () {
-                    debugger;
+                    //debugger;
                     var ajax_request = this.$.ajax_rejectAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5431,7 +5431,7 @@
                     }
                 },
                 _suspendAberturaProcedimento: function () {
-                    debugger;
+                    //debugger;
                     var ajax_request = this.$.ajax_suspendAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5464,7 +5464,7 @@
 
                 //NR 20180323
                 _confirmAberturaProcedimento: function () {
-                    debugger
+                    //debugger
                     var ajax_request = this.$.ajax_confirmAberturaProcedimento;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 
@@ -5494,7 +5494,7 @@
                 },
 
                 _rejectAutorizarImobilizado: function () {
-                    debugger;
+                    //debugger;
                     var ajax_request = this.$.ajax_rejectAutorizarImobilizado;
                     ajax_request.body = JSON.stringify({ "No": this.data.no });
 

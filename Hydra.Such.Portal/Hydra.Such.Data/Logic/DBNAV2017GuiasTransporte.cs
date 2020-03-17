@@ -1,17 +1,12 @@
-﻿using Hydra.Such.Data;
-using Hydra.Such.Data.Database;
+﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.GuiaTransporte;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data.SqlClient;
 using System.Linq;
-using static Hydra.Such.Data.Enumerations;
-using Hydra.Such.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Hydra.Such.Data.ViewModel.ProjectView;
-using Hydra.Such.Data.Logic.Project;
+using PTlocalizationSecurityProvider;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -143,7 +138,7 @@ namespace Hydra.Such.Data.Logic
                     result = result.Where(c => userCResps.Contains(c.GlobalDimension3Code) || c.GlobalDimension3Code == null).ToList();
                 }
 
-               
+                
                 return result;
             }
             catch (Exception ex)

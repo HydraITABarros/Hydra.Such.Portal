@@ -1248,7 +1248,7 @@
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
                         this.$.page_databound_ajax.generateRequest();
                     } else {
-                        this._openToast("Apenas para edição de guias que não esetejam em histórico!")
+                        this._openToast("Apenas para edição de guias que não estejam em histórico!")
                         window.location.href = "/GuiasTransporteNav";
                     }
                     
@@ -2423,7 +2423,7 @@
                     this._skipMsg = true;
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
                     this.$.ajax_update_guia.generateRequest();
-
+                    debugger;;
                     if (this._lastCheckBeforeRegister(this.data)) {
                         var ajax_request = this.$.register_guia_ajax;
 
