@@ -643,7 +643,7 @@
                             setTimeout(
                                 function () {
                                     window.location.reload();
-                                }, 30000);
+                                }, 5000);
                             // zpgm.16092019_1400.e
                         }
                     } else {
@@ -656,7 +656,7 @@
                     var fiscalDocCodeId = this.data.fiscalCommunicationLog.documentCodeId;
 
                     if (fiscalDocCodeId != undefined && fiscalDocCodeId != null && fiscalDocCodeId != "") {
-                        debugger;;
+                        //debugger;;
                         this._openToastError("Guia de Transporte " + this.data.noGuiaTransporte + " já foi registada (" + fiscalDocCodeId + ")");
                         return;
                     }
@@ -715,7 +715,7 @@
                 },
 
                 _menuActionsItemSelected: function (e) {
-                    debugger;;
+                    //debugger;;
                     var item = e.detail.value;
 
                     if (item == null)
