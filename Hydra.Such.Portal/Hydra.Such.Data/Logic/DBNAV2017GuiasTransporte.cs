@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using PTlocalizationSecurityProvider;
+//using PTlocalizationSecurityProvider;
 
 namespace Hydra.Such.Data.Logic
 {
