@@ -2438,6 +2438,7 @@
                 },
                 _DataInicioChangedResponseProcessor: function () {
                     if (this.dataInicioResult == true) {
+                        this.$.contractLines_databound_ajax.url = "/Contratos/GetContractLines";
                         this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
                         this.$.contractLines_databound_ajax.generateRequest();
                     } else {
@@ -2470,6 +2471,7 @@
                 },
                 _DataFimChangedResponseProcessor: function () {
                     if (this.dataFimResult == true) {
+                        this.$.contractLines_databound_ajax.url = "/Contratos/GetContractLines";
                         this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
                         this.$.contractLines_databound_ajax.generateRequest();
                     } else {

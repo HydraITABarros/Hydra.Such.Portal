@@ -424,26 +424,26 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        public static async Task<WSCreatePreInvoice.Read_Result> GetPreInvoice(string PreInvoiceNo, string Document_Type, NAVWSConfigurations WSConfigurations)
-        {
+        //public static async Task<WSCreatePreInvoice.Read_Result> GetPreInvoice(string CodProjeto, int GrupoFactura, NAVWSConfigurations WSConfigurations)
+        //{
 
-            //Configure NAV Client
-            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
-            WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
-            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
-            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+        //    //Configure NAV Client
+        //    EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+        //    WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+        //    WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+        //    WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-            try
-            {
-                WSCreatePreInvoice.Read_Result result = await WS_Client.ReadAsync(Document_Type, PreInvoiceNo);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+        //    try
+        //    {
+        //        WSCreatePreInvoice.Read_Result result = await WS_Client.ReadAsync(Document_Type, PreInvoiceNo);
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
 
-        }
+        //}
 
         public static async Task<WSCreatePreInvoice.Delete_Result> DeletePreInvoice(string PreInvoiceKey, NAVWSConfigurations WSConfigurations)
         {

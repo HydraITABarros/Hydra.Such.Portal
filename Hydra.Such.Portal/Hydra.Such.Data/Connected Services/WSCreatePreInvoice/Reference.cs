@@ -198,6 +198,10 @@ namespace WSCreatePreInvoice
         
         private bool prices_Including_VATFieldSpecified;
         
+        private int grupo_FaturaField;
+        
+        private bool grupo_FaturaFieldSpecified;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -1107,6 +1111,34 @@ namespace WSCreatePreInvoice
                 this.prices_Including_VATFieldSpecified = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=51)]
+        public int Grupo_Fatura
+        {
+            get
+            {
+                return this.grupo_FaturaField;
+            }
+            set
+            {
+                this.grupo_FaturaField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Grupo_FaturaSpecified
+        {
+            get
+            {
+                return this.grupo_FaturaFieldSpecified;
+            }
+            set
+            {
+                this.grupo_FaturaFieldSpecified = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -1329,6 +1361,9 @@ namespace WSCreatePreInvoice
         
         /// <remarks/>
         Prices_Including_VAT,
+        
+        /// <remarks/>
+        Grupo_Fatura,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

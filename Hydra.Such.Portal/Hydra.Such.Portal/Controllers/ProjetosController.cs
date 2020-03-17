@@ -8540,14 +8540,8 @@ namespace Hydra.Such.Portal.Controllers
         //        {
         //            foreach (AuthorizedProjectViewModel item in authProjectMovements)
         //            {
-
-        //                if (item.ValorAutorizado >= 0)
-        //                List<MovimentosProjectoAutorizados> AllMovements = DBAuthorizedProjectMovements.GetMovementById(item.GrupoFactura, item.CodProjeto);
-
-        //                int sum = AllMovements.Sum(x => x.aut)
-
         //                //Read NAV2017 PreInvoice Key
-        //                Task<WSCreatePreInvoice.Read_Result> TReadPreInvoice = WSPreInvoice.GetPreInvoice(item.ti  .get.CreatePreInvoice(header, _configws, dataFormulario, codproject, Ship);
+        //                Task<WSCreatePreInvoice.Read_Result> TReadPreInvoice = WSPreInvoice.GetPreInvoice(item.CodProjeto, item.GrupoFactura ,_configws);
 
         //                Task<WSCreatePreInvoiceLine.Read_Result> TReadPreInvoiceLine = WSPreInvoiceLine..CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
 

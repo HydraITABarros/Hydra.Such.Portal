@@ -2882,7 +2882,7 @@ namespace Hydra.Such.Portal.Controllers
                             ProjectNo = data.NoProjeto,
                             Description = "Controlo Custos Viaturas: " + data.Matricula.ToUpper(),
                             ClientNo = "999992",
-                            Status = (EstadoProjecto)EstadoProjetoNAV2017, //ENCOMENDA
+                            Status = (EstadoProjecto)EstadoProjetoNAV2017, 
                             RegionCode = !string.IsNullOrEmpty(data.CodRegiao) ? data.CodRegiao : "",
                             FunctionalAreaCode = !string.IsNullOrEmpty(data.CodAreaFuncional) ? data.CodAreaFuncional : "",
                             ResponsabilityCenterCode = !string.IsNullOrEmpty(data.CodCentroResponsabilidade) ? data.CodCentroResponsabilidade : "",

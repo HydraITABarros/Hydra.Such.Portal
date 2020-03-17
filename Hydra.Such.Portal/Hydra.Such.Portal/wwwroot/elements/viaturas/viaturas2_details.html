@@ -800,21 +800,17 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <paper-tabs id="tabViatura" name="tabViatura" fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                            <template is="dom-if" if="{{ !_isCreate }}">
-                                <paper-tab>Informação</paper-tab>
-                            </template>
+                            <paper-tab hidden$="{{_isCreate}}">Informação</paper-tab>
                             <paper-tab>Geral</paper-tab>
-                            <template is="dom-if" if="{{ !_isCreate }}">
-                                <paper-tab>Utilização</paper-tab>
-                                <paper-tab hidden$="{{_hideRenting}}">Renting</paper-tab>
-                                <paper-tab>Histórico</paper-tab>
-                            </template>
+                            <paper-tab hidden$="{{_isCreate}}">Utilização</paper-tab>
+                            <paper-tab hidden$="{{_hideRenting}}">Renting</paper-tab>
+                            <paper-tab hidden$="{{_isCreate}}">Histórico</paper-tab>
                         </paper-tabs>
 
                         <iron-pages selected="{{selected}}">
                             <!--Informação-->
-                            <template is="dom-if" if="{{ !_isCreate }}">
-                                <div>
+                            <div>
+                                <div hidden="{{ _isCreate }}">
                                     <div class="row break_clear">
                                         <div class="col-md-9">
                                             <div class="row break_clear">
@@ -916,7 +912,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </template>
+                            </div>
 
                             <!--Geral-->
                             <div>
@@ -1033,60 +1029,58 @@
                                 </div>
 
                                 <div class="row break_clear">
-                                    <div>
-                                        <div class="col-md-2">
-                                            <such-selectbox id="geral_categoria" name="geral_categoria" value="{{data.idCategoria}}" label="Categoria"
-                                                            items="[[ListaCategorias]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"value", "name":"Categoria"}]'
-                                                            required error-message="O campo Categoria é de preenchimento obrigatório"
-                                                            disabled="{{ _lockFields }}">
-                                            </such-selectbox>
-                                        </div>
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_categoria" name="geral_categoria" value="{{data.idCategoria}}" label="Categoria"
+                                                        items="[[ListaCategorias]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"value", "name":"Categoria"}]'
+                                                        required error-message="O campo Categoria é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
 
-                                        <div class="col-md-2">
-                                            <such-selectbox id="geral_tipo" name="geral_tipo" value="{{data.idTipo}}" label="Tipo"
-                                                            items="[[ListaTipos]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"value", "name":"Tipo"}]'
-                                                            required error-message="O campo Tipo é de preenchimento obrigatório"
-                                                            disabled="{{ _lockFields }}">
-                                            </such-selectbox>
-                                        </div>
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_tipo" name="geral_tipo" value="{{data.idTipo}}" label="Tipo"
+                                                        items="[[ListaTipos]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"value", "name":"Tipo"}]'
+                                                        required error-message="O campo Tipo é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
 
-                                        <div class="col-md-2">
-                                            <such-selectbox id="geral_tipoPropriedade" name="geral_tipoPropriedade" value="{{data.idTipoPropriedade}}" label="Tipo de Propriedade"
-                                                            items="[[ListaTiposPropriedades]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"value", "name":"Tipo"}]'
-                                                            on-value-changed="_GetListaPropriedades"
-                                                            required error-message="O campo Tipo de Propriedade é de preenchimento obrigatório"
-                                                            disabled="{{ _lockFields }}">
-                                            </such-selectbox>
-                                        </div>
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_tipoPropriedade" name="geral_tipoPropriedade" value="{{data.idTipoPropriedade}}" label="Tipo de Propriedade"
+                                                        items="[[ListaTiposPropriedades]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"value", "name":"Tipo"}]'
+                                                        on-value-changed="_GetListaPropriedades"
+                                                        required error-message="O campo Tipo de Propriedade é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
 
-                                        <div class="col-md-2">
-                                            <such-selectbox id="geral_propriedade" name="geral_propriedade" value="{{data.idPropriedade}}" label="Propriedade"
-                                                            items="[[ListaPropriedades]]"
-                                                            text-path="value"
-                                                            value-path="id"
-                                                            fields='[{"field":"value", "name":"Tipo"}]'
-                                                            required error-message="O campo Propriedade é de preenchimento obrigatório"
-                                                            on-value-changed="_openDlgPropriedade"
-                                                            disabled="{{ _lockFields }}">
-                                            </such-selectbox>
-                                        </div>
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_propriedade" name="geral_propriedade" value="{{data.idPropriedade}}" label="Propriedade"
+                                                        items="[[ListaPropriedades]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"value", "name":"Tipo"}]'
+                                                        required error-message="O campo Propriedade é de preenchimento obrigatório"
+                                                        on-value-changed="_openDlgPropriedade"
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
 
-                                        <div class="col-md-2">
-                                            <vaadin-date-picker id="geral_dataAquisicao" name="geral_dataAquisicao" value="{{data.dataAquisicaoTexto}}" label="Data de Aquisição" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                        </div>
+                                    <div class="col-md-2">
+                                        <vaadin-date-picker id="geral_dataAquisicao" name="geral_dataAquisicao" value="{{data.dataAquisicaoTexto}}" label="Data de Aquisição" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                    </div>
 
-                                        <div class="col-md-2">
-                                            <vaadin-text-field id="geral_intervaloRevisoes" name="geral_intervaloRevisoes" value="{{data.intervaloRevisoes}}" label="Intervalo entre Revisões" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
-                                        </div>
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="geral_intervaloRevisoes" name="geral_intervaloRevisoes" value="{{data.intervaloRevisoes}}" label="Intervalo entre Revisões" disabled="{{ _lockFields }}" type="number" class="alignRight"><div slot="suffix">km</div></vaadin-text-field>
                                     </div>
                                 </div>
 
@@ -1194,7 +1188,7 @@
                                     </div>
                                 </div>
 
-                                <template is="dom-if" if="{{ !_isCreate }}">
+                                <div hidden="{{ _isCreate }}">
                                     <div class="row break_clear">
                                         <!--Imobilizado-->
                                         <paper-collapse-item class="panel-heading" header="Imobilizado">
@@ -1371,13 +1365,13 @@
                                             </div>
                                         </paper-collapse-item>
                                     </div>
-                                </template>
+                                </div>
                             </div>
 
-                            <template is="dom-if" if="{{ !_isCreate }}">
-                                <!--Utilização-->
-                                <div>
-                                    <!--Kms-->
+                            <!--Utilização-->
+                            <div>
+                                <!--Kms-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Kms" closed>
                                         <vaadin-grid id="gridKm" aria-label="gridKm" items="{{ tabKm }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -1429,8 +1423,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Abastecimentos-->
+                                <!--Abastecimentos-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Abastecimentos" closed>
                                         <vaadin-grid id="gridAbastecimentos" aria-label="gridAbastecimentos" items="{{ tabAbastecimentos }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -1649,8 +1645,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Manutenção-->
+                                <!--Manutenção-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Manutenção" closed>
                                         <vaadin-grid id="gridManutencao" aria-label="gridManutencao" items="{{ tabManutencao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -1730,8 +1728,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Inspeção-->
+                                <!--Inspeção-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Inspeção" closed>
                                         <vaadin-grid id="gridInspecao" name="gridInspecao" aria-label="gridInspecao" items="{{ tabInspecao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -1833,8 +1833,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Seguro-->
+                                <!--Seguro-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Seguro" closed>
                                         <vaadin-grid id="gridCartaVerde" aria-label="gridCartaVerde" items="{{ tabCartaVerde }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -1935,8 +1937,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Cartão Combústivel-->
+                                <!--Cartão Combústivel-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Cartão Combústivel" closed>
                                         <vaadin-grid id="gridCartaoCombustivel" aria-label="gridCartaoCombustivel" items="{{ tabCartaoCombustivel }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2037,8 +2041,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Via Verde-->
+                                <!--Via Verde-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Via Verde" closed>
                                         <vaadin-grid id="gridViaVerde" aria-label="gridViaVerde" items="{{ tabViaVerde }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2126,8 +2132,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--CarTrack-->
+                                <!--CarTrack-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="CarTrack" closed>
                                         <vaadin-grid id="gridCarTrack" aria-label="gridCarTrack" items="{{ tabCarTrack }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2200,8 +2208,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Acidentes-->
+                                <!--Acidentes-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Acidentes" closed>
                                         <vaadin-grid id="gridAcidentes" aria-label="gridAcidentes" items="{{ tabAcidentes }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2308,8 +2318,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Contraordenações-->
+                                <!--Contraordenações-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Contraordenações" closed>
                                         <vaadin-grid id="gridContraOrdenacoes" aria-label="gridContraOrdenacoes" items="{{ tabContraOrdenacoes }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2432,8 +2444,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Afetação-->
+                                <!--Afetação-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Afetação" closed>
                                         <vaadin-grid id="gridAfetacao" aria-label="gridAfetacao" items="{{ tabAfetacao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2520,8 +2534,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Condutores-->
+                                <!--Condutores-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Condutores" closed>
                                         <vaadin-grid id="gridCondutores" aria-label="gridCondutores" items="{{ tabCondutor }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2594,8 +2610,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Responsáveis-->
+                                <!--Responsáveis-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Responsáveis" closed>
                                         <vaadin-grid id="gridGestores" aria-label="gridGestores" items="{{ tabGestor }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2668,8 +2686,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Venda / Abate-->
+                                <!--Venda / Abate-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Venda / Abate" closed>
                                         <vaadin-grid id="gridAbate" aria-label="gridAbate" items="{{ tabAbate }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2793,8 +2813,10 @@
                                             </paper-collapse-item>
                                         </div>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Substituicao-->
+                                <!--Substituicao-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Substituição Provisória de Viaturas Não Renting" closed>
                                         <vaadin-grid id="gridSubstituicao" aria-label="gridSubstituicao" items="{{ tabSubstituicao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -2903,9 +2925,11 @@
                                         </div>
                                     </paper-collapse-item>
                                 </div>
+                            </div>
 
-                                <!--Renting-->
-                                <div id="div_Renting">
+                            <!--Renting-->
+                            <div id="div_Renting">
+                                <div hidden="{{ _isCreate }}">
                                     <!--RentingContrato-->
                                     <vaadin-grid id="gridRentingContrato" aria-label="gridRentingContrato" items="{{ tabRentingContrato }}" class="grid" active-item="{{activeItemRentingContrato}}" multi-sort="true" column-reordering-allowed>
                                         <vaadin-grid-column resizable width="150px">
@@ -3211,11 +3235,12 @@
                                                     <paper-button raised id="btn_createRentingContrato" class="btnSave" on-tap="_createRentingContrato" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                 </div>
                                             </div>
-
                                         </paper-collapse-item>
                                     </div>
+                                </div>
 
-                                    <!--RentingContratoAlteracoes-->
+                                <!--RentingContratoAlteracoes-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Alterações ao Contrato" closed>
                                         <vaadin-grid id="gridRentingContratoAlteracoes" aria-label="gridRentingContratoAlteracoes" items="{{ tabRentingContratoAlteracoes }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -3347,10 +3372,12 @@
                                         </div>
                                     </paper-collapse-item>
                                 </div>
+                            </div>
 
-                                <!--Histórico-->
-                                <div>
-                                    <!--Estado-->
+                            <!--Histórico-->
+                            <div>
+                                <!--Estado-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Estado">
                                         <vaadin-grid id="gridEstado" aria-label="gridEstado" items="{{ tabEstado }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -3374,8 +3401,10 @@
                                             </vaadin-grid-column>
                                         </vaadin-grid>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Dimensões-->
+                                <!--Dimensões-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Dimensões">
                                         <vaadin-grid id="gridDimensao" aria-label="gridDimensao" items="{{ tabDimensao }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -3419,8 +3448,10 @@
                                             </vaadin-grid-column>
                                         </vaadin-grid>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Parqueamento-->
+                                <!--Parqueamento-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Parqueamento" closed>
                                         <vaadin-grid id="gridParqueamento" aria-label="gridParqueamento" items="{{ tabParqueamento }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -3444,8 +3475,10 @@
                                             </vaadin-grid-column>
                                         </vaadin-grid>
                                     </paper-collapse-item>
+                                </div>
 
-                                    <!--Propriedade-->
+                                <!--Propriedade-->
+                                <div hidden="{{ _isCreate }}">
                                     <paper-collapse-item class="panel-heading" header="Propriedade" closed>
                                         <vaadin-grid id="gridPropriedade" aria-label="gridPropriedade" items="{{ tabPropriedade }}" class="grid" multi-sort="true" column-reordering-allowed>
                                             <vaadin-grid-column resizable width="150px">
@@ -3480,11 +3513,11 @@
                                         </vaadin-grid>
                                     </paper-collapse-item>
                                 </div>
-                            </template>
-                        </iron-pages>
-                    </div>
+                            </div>
+                    </iron-pages>
                 </div>
             </div>
+        </div>
         </div>
 
         <paper-dialog id="dlgEstado" modal style="width:300px; height:175px">
@@ -4916,6 +4949,7 @@
                 },
 
                 _validateDataAbate: function () {
+                    debugger;
                     var errors = 0;
 
                     if (this.$.abate_idTipoAtoAdministrativo.value == null || this.$.abate_idTipoAtoAdministrativo.value == "") {
@@ -4941,6 +4975,7 @@
                     return true;
                 },
                 _createAbate: function () {
+                    debugger;
                     if (this._validateDataAbate()) {
                         this.$.page_CreateViaturas2Abate_ajax.body = JSON.stringify({
                             matricula: this._matricula,
@@ -4957,6 +4992,7 @@
                     }
                 },
                 _responseCreateViaturas2Abate: function () {
+                    debugger;
                     if (this.createViaturas2AbateResult.eReasonCode == 1) {
                         this._openToast(this.createViaturas2AbateResult.eMessage);
 
