@@ -282,6 +282,16 @@ namespace Hydra.Such.Portal.Services
                 if (requisitionLines.Any(x => string.IsNullOrEmpty(x.SupplierNo) || !x.UnitCost.HasValue || x.UnitCost.Value == 0))
                     throw new Exception("É obrigatório o preenchimento do fornecedor e do custo unitário nas linhas");
 
+                if (!string.IsNullOrEmpty(requisition.ProjectNo) && (string.IsNullOrEmpty(requisition.RegionCode) || string.IsNullOrEmpty(requisition.FunctionalAreaCode) || string.IsNullOrEmpty(requisition.CenterResponsibilityCode)))
+                {
+                    NAVProjectsViewModel REQProject = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, requisition.ProjectNo).FirstOrDefault();
+                    if (REQProject != null)
+                    {
+                        requisition.RegionCode = REQProject.RegionCode;
+                        requisition.FunctionalAreaCode = REQProject.AreaCode;
+                        requisition.CenterResponsibilityCode = REQProject.CenterResponsibilityCode;
+                    }
+                }
 
                 List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
                 List<DBNAV2017SupplierProductRef.SuppliersProductsRefs> supplierProductRef = new List<DBNAV2017SupplierProductRef.SuppliersProductsRefs>();

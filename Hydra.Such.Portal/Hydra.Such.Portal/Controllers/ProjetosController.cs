@@ -34,6 +34,7 @@ using Hydra.Such.Data.ViewModel.Clients;
 using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.ProjectView;
+using System.ServiceModel;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -8541,15 +8542,11 @@ namespace Hydra.Such.Portal.Controllers
         //            foreach (AuthorizedProjectViewModel item in authProjectMovements)
         //            {
         //                //Read NAV2017 PreInvoice Key
-        //                Task<WSCreatePreInvoice.Read_Result> TReadPreInvoice = WSPreInvoice.GetPreInvoice(item.CodProjeto, item.GrupoFactura ,_configws);
-
-        //                Task<WSCreatePreInvoiceLine.Read_Result> TReadPreInvoiceLine = WSPreInvoiceLine..CreatePreInvoiceLineListProject(header.Items, headerNo, OptionInvoice, _configws);
-
-
-        //                Task<WSCreateNAVProject.Read_Result> TReadNavProj = WSProject.GetNavProject(data.NoProjeto, _configws);
+        //                //Task<WSSuchNav2017.WSgetNumPreRegisto_Result> TReadPreInvoice =  WSPreInvoice.GetPreInvoice(item.CodProjeto, item.GrupoFactura, _configws);
+        //                Task<WSSuchNav2017.WSgetNumPreRegisto_Result> TReadPreInvoice = WSPreInvoice.GetPreInvoice("PJ110536", 24, _configws);
         //                try
         //                {
-        //                    TReadNavProj.Wait();
+        //                    TReadPreInvoice.Wait();
         //                }
         //                catch (Exception ex)
         //                {
@@ -8558,34 +8555,49 @@ namespace Hydra.Such.Portal.Controllers
         //                    return Json(result);
         //                }
 
-        //                if (TReadNavProj.IsCompletedSuccessfully)
+        //                if (TReadPreInvoice.IsCompletedSuccessfully)
         //                {
-        //                    if (TReadNavProj.Result.WSJob == null)
+        //                    string NoPreInvoice = TReadPreInvoice.Result.return_value;
+        //                    string TypePreInvoice = "2";
+
+        //                    if (!string.IsNullOrEmpty(NoPreInvoice) && !string.IsNullOrEmpty(TypePreInvoice))
         //                    {
-        //                        result.eReasonCode = 3;
-        //                        result.eMessage = "Erro ao atualizar: O projeto não existe no NAV2017";
-        //                        return Json(result);
-        //                    }
-        //                    else
-        //                    {
-        //                        //Update Project on NAV2017
-        //                        Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, ProjectToUpdate, _configws);
+        //                        //Read NAV PreInvoice Key
+        //                        Task<WSCreatePreInvoice.Read_Result> TReadNavPreInvoice = WSPreInvoice.GetNavPreInvoice(TypePreInvoice, NoPreInvoice, _configws);
         //                        try
         //                        {
-        //                            TUpdateNavProj.Wait();
+        //                            TReadNavPreInvoice.Wait();
         //                        }
         //                        catch (Exception ex)
         //                        {
-        //                            result.eReasonCode = 3;
-        //                            result.eMessage = ex.InnerException.Message;
+        //                            result.eReasonCode = 5;
+        //                            result.eMessage = "Ocorreu um erro ao ler a Fatura do NAV.";
         //                            return Json(result);
         //                        }
 
-        //                        if (!TUpdateNavProj.IsCompletedSuccessfully)
+        //                        if (TReadNavPreInvoice.IsCompletedSuccessfully)
         //                        {
-        //                            result.eReasonCode = 3;
-        //                            result.eMessage = "Erro ao atualizar: Não foi possivel atualizar o projeto no NAV2017";
-        //                            return Json(result);
+        //                            Task<WSCreatePreInvoice.Delete_Result> TDeleteNavPreInvoice = WSPreInvoice.DeletePreInvoice(TReadNavPreInvoice.Result.WSPreInvoice.Key, _configws);
+        //                            try
+        //                            {
+        //                                TDeleteNavPreInvoice.Wait();
+
+        //                                if (!TDeleteNavPreInvoice.IsCompletedSuccessfully)
+        //                                {
+        //                                    result.eReasonCode = 5;
+        //                                    result.eMessage = "Não é possivel remover a fatura no nav.";
+        //                                    return Json(result);
+        //                                }
+        //                                else
+        //                                {
+        //                                }
+        //                            }
+        //                            catch (Exception ex)
+        //                            {
+        //                                result.eReasonCode = 5;
+        //                                result.eMessage = "Ocorreu um erro ao ler a Fatura do NAV.";
+        //                                return Json(result);
+        //                            }
         //                        }
         //                    }
         //                }

@@ -424,26 +424,47 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        //public static async Task<WSCreatePreInvoice.Read_Result> GetPreInvoice(string CodProjeto, int GrupoFactura, NAVWSConfigurations WSConfigurations)
-        //{
+        public static async Task<WSSuchNav2017.WSgetNumPreRegisto_Result> GetPreInvoice(string CodProjeto, int GrupoFactura, NAVWSConfigurations WSConfigurations)
+        {
 
-        //    //Configure NAV Client
-        //    EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
-        //    WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
-        //    WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
-        //    WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.Ws_SuchNav2017_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSSuchNav2017.WSNAV2017_PortClient WS_Client = new WSSuchNav2017.WSNAV2017_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-        //    try
-        //    {
-        //        WSCreatePreInvoice.Read_Result result = await WS_Client.ReadAsync(Document_Type, PreInvoiceNo);
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
+            try
+            {
+                WSSuchNav2017.WSgetNumPreRegisto_Result result = await WS_Client.WSgetNumPreRegistoAsync(CodProjeto, GrupoFactura);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
-        //}
+        }
+
+        public static async Task<WSCreatePreInvoice.Read_Result> GetNavPreInvoice(string PreInvoice, string DocumentType, NAVWSConfigurations WSConfigurations)
+        {
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_Job_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoice.Read_Result result = await WS_Client.ReadAsync(DocumentType, PreInvoice);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
 
         public static async Task<WSCreatePreInvoice.Delete_Result> DeletePreInvoice(string PreInvoiceKey, NAVWSConfigurations WSConfigurations)
         {

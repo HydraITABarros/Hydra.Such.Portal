@@ -204,7 +204,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        
+
         <iron-ajax url="/GestaoRequisicoes/ValidateRequisition"
                    last-response="{{Requisition}}"
                    id="validaterequisition_datasource"
@@ -212,7 +212,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        
+
         <iron-ajax url="/GestaoRequisicoes/ValidateRequisition"
                    last-response="{{Requisition}}"
                    id="validaterequisitionImprimir_datasource"
@@ -220,7 +220,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        
+
         <iron-ajax url="/GestaoRequisicoes/AprovarRequisition"
                    last-response="{{Requisition}}"
                    id="aprovarRequisition_datasource"
@@ -228,7 +228,7 @@
                    method="post"
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
-        
+
         <iron-ajax url="/GestaoRequisicoes/RegistByType"
                    last-response="{{regist}}"
                    id="regist_datasource"
@@ -364,6 +364,14 @@
                    on-response="_loadAttachResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/PreRequisicoes/GetProjectDim"
+                   last-response="{{ProjectDims}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_getProject_ajax"
+                   on-response="_getProjectDimsResponse"
+                   content-type="application/json"></iron-ajax>
+
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -432,6 +440,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <such-selectbox id="CBHeaderProjects" name="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled="{{ !_permissions.update }}"
+                                                            on-value-changed="_setProjectDim"
                                                             items="[[Projects]]"
                                                             text-path="no"
                                                             value-path="no"
@@ -1459,7 +1468,7 @@
                                         <template is="dom-if" if="{{ item.selected }}">
                                             <such-selectbox id="_CLGridProjectNo" name="_CLGridProjectNo" value="{{item.projectNo}}" disabled="{{ !_permissions.update }}"
                                                             items="[[Projects]]"
-                                                            on-blur="_updateRequisitionLinesNew"
+                                                            on-change="_updateRequisitionLinesNew"
                                                             text-path="no"
                                                             value-path="no"
                                                             fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'>
@@ -2321,6 +2330,10 @@
                 _UpdateLinhaRequisicao_ResponseProcessor: function (e) {
                     if (this.updateLinhaRequisicaoResponse.eReasonCode == 1) {
                         this._openToast(this.updateLinhaRequisicaoResponse.eMessage);
+
+                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                        this.$.requisition_datasource.generateRequest();
+                        this.$.grdRequisitionLines.clearCache();
                     }
                     else {
                         this._openDlgMessageError(this.updateLinhaRequisicaoResponse.eMessage);
@@ -3340,6 +3353,43 @@
                     }
                 },
 
+                _setProjectDim: function (e) {
+                    var projectNo = this.$.CBHeaderProjects.value;
+                    if (projectNo != "") {
+                        this.$.page_getProject_ajax.body = JSON.stringify(projectNo);
+                        this.$.page_getProject_ajax.generateRequest();
+                    }
+                    else {
+                        this.$.RegionCode._clearSelection();
+                        this.$.FunctionalAreaCode._clearSelection();
+                        this.$.ResponsabilityCenterCode._clearSelection();
+                    }
+                },
+                _getProjectDimsResponse: function (e) {
+                    if (e.detail.status === 200) {
+
+                        if (this.ProjectDims.regionCode != "") {
+                            this.$.RegionCode.value = this.ProjectDims.regionCode;
+                        }
+                        else {
+                            this.$.RegionCode._clearSelection();
+                        }
+
+                        if (this.ProjectDims.functionalAreaCode != "") {
+                            this.$.FunctionalAreaCode.value = this.ProjectDims.functionalAreaCode;
+                        }
+                        else {
+                            this.$.FunctionalAreaCode._clearSelection();
+                        }
+
+                        if (this.ProjectDims.responsabilityCenterCode != "") {
+                            this.$.ResponsabilityCenterCode.value = this.ProjectDims.responsabilityCenterCode;
+                        }
+                        else {
+                            this.$.ResponsabilityCenterCode._clearSelection();
+                        }
+                    }
+                },
 
             });
         });
