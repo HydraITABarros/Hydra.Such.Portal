@@ -115,6 +115,8 @@ namespace Hydra.Such.Data.ViewModel.Projects
         //public string CodTermosPagamento { get; set; }
         //public string CodMetodoPagamento { get; set; }
 
+        public int GrupoFatura { get; set; }
+
         public List<SPInvoiceListViewModel> Items { get; set; }
 
         
