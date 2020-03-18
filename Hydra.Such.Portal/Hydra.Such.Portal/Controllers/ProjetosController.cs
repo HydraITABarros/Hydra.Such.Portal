@@ -8537,146 +8537,146 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult ResetProjeto([FromBody] List<AuthorizedProjectViewModel> authProjectMovements)
         {
             ErrorHandler result = new ErrorHandler();
-            //try
-            //{
-            //    if (authProjectMovements != null && authProjectMovements.Count == 1)
-            //    {
-            //        foreach (AuthorizedProjectViewModel item in authProjectMovements)
-            //        {
-            //            //Read NAV2017 PreInvoice Key
-            //            Task<WSSuchNav2017.WSgetNumPreRegisto_Result> TReadPreInvoice =  WSPreInvoice.GetPreInvoice(item.CodProjeto, item.GrupoFactura, _configws);
-            //            try
-            //            {
-            //                TReadPreInvoice.Wait();
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                result.eReasonCode = 5;
-            //                result.eMessage = "Erro: Não foi possivel obter o Nº da Fatura do NAV2017.";
-            //                return Json(result);
-            //            }
+            try
+            {
+                if (authProjectMovements != null && authProjectMovements.Count == 1)
+                {
+                    foreach (AuthorizedProjectViewModel item in authProjectMovements)
+                    {
+                        //Read NAV2017 PreInvoice Key
+                        Task<WSSuchNav2017.WSgetNumPreRegisto_Result> TReadPreInvoice = WSPreInvoice.GetPreInvoice(item.CodProjeto, item.GrupoFactura, _configws);
+                        try
+                        {
+                            TReadPreInvoice.Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            result.eReasonCode = 5;
+                            result.eMessage = "Erro: Não foi possivel obter o Nº da Fatura do NAV2017.";
+                            return Json(result);
+                        }
 
-            //            if (TReadPreInvoice.IsCompletedSuccessfully)
-            //            {
-            //                string NoPreInvoice = TReadPreInvoice.Result.return_value.ToString();
-            //                string TypePreInvoice = "";
+                        if (TReadPreInvoice.IsCompletedSuccessfully)
+                        {
+                            string NoPreInvoice = TReadPreInvoice.Result.return_value.ToString();
+                            string TypePreInvoice = "";
 
-            //                if (string.IsNullOrEmpty(NoPreInvoice))
-            //                {
-            //                    result.eReasonCode = 5;
-            //                    result.eMessage = "Não foi possivel obter o Nº da Fatura do NAV2017.";
-            //                    return Json(result);
-            //                }
-            //                if (NoPreInvoice == "1")
-            //                {
-            //                    result.eReasonCode = 5;
-            //                    result.eMessage = "Não pode anular esta autorização. O documento de venda já não está disponível no pré-registo.";
-            //                    return Json(result);
-            //                }
-            //                if (NoPreInvoice == "2")
-            //                {
-            //                    result.eReasonCode = 5;
-            //                    result.eMessage = "Não é possível anular a autorização por incluir vários Projetos/OMs.";
-            //                    return Json(result);
-            //                }
-            //                if (NoPreInvoice.Length < 5)
-            //                {
-            //                    result.eReasonCode = 5;
-            //                    result.eMessage = "Não foi possivel obter o Nº da Fatura do NAV2017.";
-            //                    return Json(result);
-            //                }
+                            if (string.IsNullOrEmpty(NoPreInvoice))
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Não foi possivel obter o Nº da Fatura do NAV2017.";
+                                return Json(result);
+                            }
+                            if (NoPreInvoice == "1")
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Não pode anular esta autorização. O documento de venda já não está disponível no pré-registo.";
+                                return Json(result);
+                            }
+                            if (NoPreInvoice == "2")
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Não é possível anular a autorização por incluir vários Projetos/OMs.";
+                                return Json(result);
+                            }
+                            if (NoPreInvoice.Length < 5)
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Não foi possivel obter o Nº da Fatura do NAV2017.";
+                                return Json(result);
+                            }
 
-            //                if (item.ValorAutorizado >= 0)
-            //                    TypePreInvoice = "2";
-            //                else
-            //                    TypePreInvoice = "3";
+                            if (item.ValorAutorizado >= 0)
+                                TypePreInvoice = "2";
+                            else
+                                TypePreInvoice = "3";
 
-            //                if (!string.IsNullOrEmpty(NoPreInvoice) && !string.IsNullOrEmpty(TypePreInvoice))
-            //                {
-            //                    //Read NAV PreInvoice Key
-            //                    Task<WSCreatePreInvoice.Read_Result> TReadNavPreInvoice = WSPreInvoice.GetNavPreInvoice(NoPreInvoice, TypePreInvoice, _configws);
-            //                    try
-            //                    {
-            //                        TReadNavPreInvoice.Wait();
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        result.eReasonCode = 5;
-            //                        result.eMessage = "Ocorreu um erro ao ler a chave da Fatura do NAV2017.";
-            //                        return Json(result);
-            //                    }
+                            if (!string.IsNullOrEmpty(NoPreInvoice) && !string.IsNullOrEmpty(TypePreInvoice))
+                            {
+                                //Read NAV PreInvoice Key
+                                Task<WSCreatePreInvoice.Read_Result> TReadNavPreInvoice = WSPreInvoice.GetNavPreInvoice(NoPreInvoice, TypePreInvoice, _configws);
+                                try
+                                {
+                                    TReadNavPreInvoice.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Ocorreu um erro ao ler a chave da Fatura do NAV2017.";
+                                    return Json(result);
+                                }
 
-            //                    if (TReadNavPreInvoice.IsCompletedSuccessfully)
-            //                    {
-            //                        Task<WSCreatePreInvoice.Delete_Result> TDeleteNavPreInvoice = WSPreInvoice.DeletePreInvoice(TReadNavPreInvoice.Result.WSPreInvoice.Key, _configws);
-            //                        try
-            //                        {
-            //                            TDeleteNavPreInvoice.Wait();
+                                if (TReadNavPreInvoice.IsCompletedSuccessfully)
+                                {
+                                    Task<WSCreatePreInvoice.Delete_Result> TDeleteNavPreInvoice = WSPreInvoice.DeletePreInvoice(TReadNavPreInvoice.Result.WSPreInvoice.Key, _configws);
+                                    try
+                                    {
+                                        TDeleteNavPreInvoice.Wait();
 
-            //                            if (!TDeleteNavPreInvoice.IsCompletedSuccessfully)
-            //                            {
-            //                                result.eReasonCode = 5;
-            //                                result.eMessage = "Não é possivel eliminar a Fatura no NAV2017.";
-            //                                return Json(result);
-            //                            }
-            //                            else
-            //                            {
-            //                                result.eReasonCode = 1;
-            //                                result.eMessage = "A Fatura foi eliminada com sucesso do NAV2017.";
-            //                                return Json(result);
-            //                            }
-            //                        }
-            //                        catch (Exception ex)
-            //                        {
-            //                            result.eReasonCode = 5;
-            //                            result.eMessage = "Ocorreu um erro ao eliminar a Fatura do NAV2017.";
-            //                            return Json(result);
-            //                        }
-            //                    }
-            //                    else
-            //                    {
-            //                        result.eReasonCode = 5;
-            //                        result.eMessage = "Não foi possivel obter a chave da fatura do NAV2017.";
-            //                        return Json(result);
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                    result.eReasonCode = 5;
-            //                    result.eMessage = "Não foi possivel obter o código da fatura do NAV2017.";
-            //                    return Json(result);
-            //                }
-            //            }
-            //            else
-            //            {
-            //                result.eReasonCode = 5;
-            //                result.eMessage = "Erro: Não foi possivel obter o Nº da Fatura do NAV2017.";
-            //                return Json(result);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (authProjectMovements == null)
-            //        {
-            //            result.eReasonCode = 5;
-            //            result.eMessage = "Têm que escolher 1 movimento de faturação.";
-            //            return Json(result);
-            //        }
+                                        if (!TDeleteNavPreInvoice.IsCompletedSuccessfully)
+                                        {
+                                            result.eReasonCode = 5;
+                                            result.eMessage = "Não é possivel eliminar a Fatura no NAV2017.";
+                                            return Json(result);
+                                        }
+                                        else
+                                        {
+                                            result.eReasonCode = 1;
+                                            result.eMessage = "A Fatura foi eliminada com sucesso do NAV2017.";
+                                            return Json(result);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        result.eReasonCode = 5;
+                                        result.eMessage = "Ocorreu um erro ao eliminar a Fatura do NAV2017.";
+                                        return Json(result);
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Não foi possivel obter a chave da fatura do NAV2017.";
+                                    return Json(result);
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Não foi possivel obter o código da fatura do NAV2017.";
+                                return Json(result);
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 5;
+                            result.eMessage = "Erro: Não foi possivel obter o Nº da Fatura do NAV2017.";
+                            return Json(result);
+                        }
+                    }
+                }
+                else
+                {
+                    if (authProjectMovements == null)
+                    {
+                        result.eReasonCode = 5;
+                        result.eMessage = "Têm que escolher 1 movimento de faturação.";
+                        return Json(result);
+                    }
 
-            //        if (authProjectMovements.Count != 1)
-            //        {
-            //            result.eReasonCode = 5;
-            //            result.eMessage = "Só pode escolher 1 movimento de faturação.";
-            //            return Json(result);
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    result.eReasonCode = 99;
-            //    result.eMessage = "Ocorreu um erro.";
-            //}
+                    if (authProjectMovements.Count != 1)
+                    {
+                        result.eReasonCode = 5;
+                        result.eMessage = "Só pode escolher 1 movimento de faturação.";
+                        return Json(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
 
             return Json(result);
         }
@@ -8685,175 +8685,175 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UndoProjeto([FromBody] List<AuthorizedProjectViewModel> authProjectMovements)
         {
             ErrorHandler result = new ErrorHandler();
-            //try
-            //{
-            //    if (authProjectMovements != null && authProjectMovements.Count == 1)
-            //    {
-            //        foreach (AuthorizedProjectViewModel item in authProjectMovements)
-            //        {
-            //            ProjectosAutorizados AuthorizedProject = null;
-            //            using (SuchDBContext ctx = new SuchDBContext())
-            //            {
-            //                AuthorizedProject = ctx.ProjectosAutorizados
-            //                    .Where(x => x.Faturado == true && x.CodProjeto == item.CodProjeto && x.GrupoFactura == item.GrupoFactura)
-            //                    .FirstOrDefault();
-            //            }
+            try
+            {
+                if (authProjectMovements != null && authProjectMovements.Count == 1)
+                {
+                    foreach (AuthorizedProjectViewModel item in authProjectMovements)
+                    {
+                        ProjectosAutorizados AuthorizedProject = null;
+                        using (SuchDBContext ctx = new SuchDBContext())
+                        {
+                            AuthorizedProject = ctx.ProjectosAutorizados
+                                .Where(x => x.Faturado == true && x.CodProjeto == item.CodProjeto && x.GrupoFactura == item.GrupoFactura)
+                                .FirstOrDefault();
+                        }
 
-            //            if (AuthorizedProject != null)
-            //            {
-            //                //Read NAV2017 PreInvoice Key
-            //                Task<WSSuchNav2017.WSgetNumPreRegisto_Result> TReadPreInvoice = WSPreInvoice.GetPreInvoice(item.CodProjeto, item.GrupoFactura, _configws);
-            //                try
-            //                {
-            //                    TReadPreInvoice.Wait();
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    result.eReasonCode = 5;
-            //                    result.eMessage = "Erro: Não foi possivel obter o Nº da Fatura do NAV2017.";
-            //                    return Json(result);
-            //                }
+                        if (AuthorizedProject != null)
+                        {
+                            //Read NAV2017 PreInvoice Key
+                            Task<WSSuchNav2017.WSgetNumPreRegisto_Result> TReadPreInvoice = WSPreInvoice.GetPreInvoice(item.CodProjeto, item.GrupoFactura, _configws);
+                            try
+                            {
+                                TReadPreInvoice.Wait();
+                            }
+                            catch (Exception ex)
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Erro: Não foi possivel obter o Nº da Fatura do NAV2017.";
+                                return Json(result);
+                            }
 
-            //                if (TReadPreInvoice.IsCompletedSuccessfully)
-            //                {
-            //                    string NoPreInvoice = TReadPreInvoice.Result.return_value.ToString();
-            //                    string TypePreInvoice = "";
+                            if (TReadPreInvoice.IsCompletedSuccessfully)
+                            {
+                                string NoPreInvoice = TReadPreInvoice.Result.return_value.ToString();
+                                string TypePreInvoice = "";
 
-            //                    if (string.IsNullOrEmpty(NoPreInvoice))
-            //                    {
-            //                        result.eReasonCode = 5;
-            //                        result.eMessage = "Não foi possivel obter o Nº da Fatura do NAV2017.";
-            //                        return Json(result);
-            //                    }
-            //                    if (NoPreInvoice == "1")
-            //                    {
-            //                        result.eReasonCode = 5;
-            //                        result.eMessage = "Não pode anular esta autorização. O documento de venda já não está disponível no pré-registo.";
-            //                        return Json(result);
-            //                    }
-            //                    if (NoPreInvoice == "2")
-            //                    {
-            //                        result.eReasonCode = 5;
-            //                        result.eMessage = "Não é possível anular a autorização por incluir vários Projetos/OMs.";
-            //                        return Json(result);
-            //                    }
-            //                    if (NoPreInvoice.Length < 5)
-            //                    {
-            //                        result.eReasonCode = 5;
-            //                        result.eMessage = "Não foi possivel obter o Nº da Fatura do NAV2017.";
-            //                        return Json(result);
-            //                    }
+                                if (string.IsNullOrEmpty(NoPreInvoice))
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Não foi possivel obter o Nº da Fatura do NAV2017.";
+                                    return Json(result);
+                                }
+                                if (NoPreInvoice == "1")
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Não pode anular esta autorização. O documento de venda já não está disponível no pré-registo.";
+                                    return Json(result);
+                                }
+                                if (NoPreInvoice == "2")
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Não é possível anular a autorização por incluir vários Projetos/OMs.";
+                                    return Json(result);
+                                }
+                                if (NoPreInvoice.Length < 5)
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Não foi possivel obter o Nº da Fatura do NAV2017.";
+                                    return Json(result);
+                                }
 
 
-            //                    if (item.ValorAutorizado >= 0)
-            //                        TypePreInvoice = "2";
-            //                    else
-            //                        TypePreInvoice = "3";
+                                if (item.ValorAutorizado >= 0)
+                                    TypePreInvoice = "2";
+                                else
+                                    TypePreInvoice = "3";
 
-            //                    if (!string.IsNullOrEmpty(NoPreInvoice) && !string.IsNullOrEmpty(TypePreInvoice))
-            //                    {
-            //                        //Read NAV PreInvoice Key
-            //                        Task<WSCreatePreInvoice.Read_Result> TReadNavPreInvoice = WSPreInvoice.GetNavPreInvoice(NoPreInvoice, TypePreInvoice, _configws);
-            //                        try
-            //                        {
-            //                            TReadNavPreInvoice.Wait();
-            //                        }
-            //                        catch (Exception ex)
-            //                        {
-            //                            result.eReasonCode = 5;
-            //                            result.eMessage = "Ocorreu um erro ao ler a chave da Fatura do NAV2017.";
-            //                            return Json(result);
-            //                        }
+                                if (!string.IsNullOrEmpty(NoPreInvoice) && !string.IsNullOrEmpty(TypePreInvoice))
+                                {
+                                    //Read NAV PreInvoice Key
+                                    Task<WSCreatePreInvoice.Read_Result> TReadNavPreInvoice = WSPreInvoice.GetNavPreInvoice(NoPreInvoice, TypePreInvoice, _configws);
+                                    try
+                                    {
+                                        TReadNavPreInvoice.Wait();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        result.eReasonCode = 5;
+                                        result.eMessage = "Ocorreu um erro ao ler a chave da Fatura do NAV2017.";
+                                        return Json(result);
+                                    }
 
-            //                        if (TReadNavPreInvoice.IsCompletedSuccessfully)
-            //                        {
-            //                            //Anular a Autorização
-            //                            AuthorizedProject.Faturado = false;
+                                    if (TReadNavPreInvoice.IsCompletedSuccessfully)
+                                    {
+                                        //Anular a Autorização
+                                        AuthorizedProject.Faturado = false;
 
-            //                            if (DBAuthotizedProjects.Update(AuthorizedProject) == null)
-            //                            {
-            //                                result.eReasonCode = 5;
-            //                                result.eMessage = "Não foi possivel anular a Autorização no e-SUCH.";
-            //                                return Json(result);
-            //                            }
+                                        if (DBAuthotizedProjects.Update(AuthorizedProject) == null)
+                                        {
+                                            result.eReasonCode = 5;
+                                            result.eMessage = "Não foi possivel anular a Autorização no e-SUCH.";
+                                            return Json(result);
+                                        }
 
-            //                            //Delete Pre Invoice
-            //                            Task<WSCreatePreInvoice.Delete_Result> TDeleteNavPreInvoice = WSPreInvoice.DeletePreInvoice(TReadNavPreInvoice.Result.WSPreInvoice.Key, _configws);
-            //                            try
-            //                            {
-            //                                TDeleteNavPreInvoice.Wait();
+                                        //Delete Pre Invoice
+                                        Task<WSCreatePreInvoice.Delete_Result> TDeleteNavPreInvoice = WSPreInvoice.DeletePreInvoice(TReadNavPreInvoice.Result.WSPreInvoice.Key, _configws);
+                                        try
+                                        {
+                                            TDeleteNavPreInvoice.Wait();
 
-            //                                if (!TDeleteNavPreInvoice.IsCompletedSuccessfully)
-            //                                {
-            //                                    result.eReasonCode = 5;
-            //                                    result.eMessage = "Não é possivel eliminar a Fatura no NAV2017.";
-            //                                    return Json(result);
-            //                                }
-            //                                else
-            //                                {
-            //                                    result.eReasonCode = 1;
-            //                                    result.eMessage = "Autorização anulada com sucesso.";
-            //                                    return Json(result);
-            //                                }
-            //                            }
-            //                            catch (Exception ex)
-            //                            {
-            //                                result.eReasonCode = 5;
-            //                                result.eMessage = "Ocorreu um erro ao eliminar a Fatura do NAV2017.";
-            //                                return Json(result);
-            //                            }
-            //                        }
-            //                        else
-            //                        {
-            //                            result.eReasonCode = 5;
-            //                            result.eMessage = "Não foi possivel obter a chave da fatura do NAV2017.";
-            //                            return Json(result);
-            //                        }
-            //                    }
-            //                    else
-            //                    {
-            //                        result.eReasonCode = 5;
-            //                        result.eMessage = "Não foi possivel obter o código da fatura do NAV2017.";
-            //                        return Json(result);
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                    result.eReasonCode = 5;
-            //                    result.eMessage = "Erro: Não foi possivel obter o Nº da Fatura do NAV2017.";
-            //                    return Json(result);
-            //                }
-            //            }
-            //            else
-            //            {
-            //                result.eReasonCode = 5;
-            //                result.eMessage = "Erro: Não foi possivel obter a Autorização no e-SUCH.";
-            //                return Json(result);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (authProjectMovements == null)
-            //        {
-            //            result.eReasonCode = 5;
-            //            result.eMessage = "Têm que escolher 1 movimento de faturação.";
-            //            return Json(result);
-            //        }
+                                            if (!TDeleteNavPreInvoice.IsCompletedSuccessfully)
+                                            {
+                                                result.eReasonCode = 5;
+                                                result.eMessage = "Não é possivel eliminar a Fatura no NAV2017.";
+                                                return Json(result);
+                                            }
+                                            else
+                                            {
+                                                result.eReasonCode = 1;
+                                                result.eMessage = "Autorização anulada com sucesso.";
+                                                return Json(result);
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            result.eReasonCode = 5;
+                                            result.eMessage = "Ocorreu um erro ao eliminar a Fatura do NAV2017.";
+                                            return Json(result);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 5;
+                                        result.eMessage = "Não foi possivel obter a chave da fatura do NAV2017.";
+                                        return Json(result);
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 5;
+                                    result.eMessage = "Não foi possivel obter o código da fatura do NAV2017.";
+                                    return Json(result);
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 5;
+                                result.eMessage = "Erro: Não foi possivel obter o Nº da Fatura do NAV2017.";
+                                return Json(result);
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 5;
+                            result.eMessage = "Erro: Não foi possivel obter a Autorização no e-SUCH.";
+                            return Json(result);
+                        }
+                    }
+                }
+                else
+                {
+                    if (authProjectMovements == null)
+                    {
+                        result.eReasonCode = 5;
+                        result.eMessage = "Têm que escolher 1 movimento de faturação.";
+                        return Json(result);
+                    }
 
-            //        if (authProjectMovements.Count != 1)
-            //        {
-            //            result.eReasonCode = 5;
-            //            result.eMessage = "Só pode escolher 1 movimento de faturação.";
-            //            return Json(result);
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    result.eReasonCode = 99;
-            //    result.eMessage = "Ocorreu um erro.";
-            //}
+                    if (authProjectMovements.Count != 1)
+                    {
+                        result.eReasonCode = 5;
+                        result.eMessage = "Só pode escolher 1 movimento de faturação.";
+                        return Json(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
 
             return Json(result);
         }

@@ -49,11 +49,11 @@
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
             <template is="dom-if" if="{{isBillingList}}">
                 <paper-button class="tablinks" id="btnHistory" on-tap="_getHistory"><i class="fa fa-archive" aria-hidden="true"></i> Histórico</paper-button>
-                <paper-button class="tablinks" id="btnReset" on-tap="_Reset" hidden><i class="fa fa-undo" aria-hidden="true"></i> Eliminar Pré-Registo</paper-button>
+                <paper-button class="tablinks" id="btnReset" on-tap="_Reset"><i class="fa fa-undo" aria-hidden="true"></i> Eliminar Pré-Registo</paper-button>
             </template>
             <template is="dom-if" if="{{isNot(isBillingList)}}">
                 <paper-button class="tablinks" id="btnHistory" on-tap="_getToBilling"><i class="fa fa-list-alt" aria-hidden="true"></i> Não Faturados</paper-button>
-                <paper-button class="tablinks" id="btnHistoryUndo" on-tap="_HistoryUndo" hidden><i class="fa fa-undo" aria-hidden="true"></i> Anular Autorização</paper-button>
+                <paper-button class="tablinks" id="btnHistoryUndo" on-tap="_HistoryUndo"><i class="fa fa-undo" aria-hidden="true"></i> Anular Autorização</paper-button>
             </template>
 
             <!--start ColumnToggle-->
