@@ -4653,6 +4653,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CancelLines([FromBody] List<AuthorizedProjectViewModel> data)
         {
             ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 2;
+            result.eMessage = "Ocorreu um erro!!!";
 
             if (data == null)
             {
@@ -4722,6 +4724,9 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(result);
                     }
                 }
+
+                result.eReasonCode = 1;
+                result.eMessage = "Linha anulada com sucesso.";
             }
             return Json(result);
         }
@@ -8537,6 +8542,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult ResetProjeto([FromBody] List<AuthorizedProjectViewModel> authProjectMovements)
         {
             ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 99;
+            result.eMessage = "Ocorreu um erro.";
             try
             {
                 if (authProjectMovements != null && authProjectMovements.Count == 1)
@@ -8570,7 +8577,7 @@ namespace Hydra.Such.Portal.Controllers
                             if (NoPreInvoice == "1")
                             {
                                 result.eReasonCode = 5;
-                                result.eMessage = "Não pode anular esta autorização. O documento de venda já não está disponível no pré-registo.";
+                                result.eMessage = "Não pode anular esta autorização. O documento de venda não está disponível no pré-registo.";
                                 return Json(result);
                             }
                             if (NoPreInvoice == "2")
@@ -8685,6 +8692,8 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult UndoProjeto([FromBody] List<AuthorizedProjectViewModel> authProjectMovements)
         {
             ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 99;
+            result.eMessage = "Ocorreu um erro.";
             try
             {
                 if (authProjectMovements != null && authProjectMovements.Count == 1)
