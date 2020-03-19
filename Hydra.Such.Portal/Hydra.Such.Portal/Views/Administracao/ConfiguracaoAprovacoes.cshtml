@@ -237,7 +237,7 @@
         <br />
 
         <vaadin-grid id="gridApprovals" aria-label="gridApprovals" items="[[result]]" class="grid" multi-sort="true">
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="5%" hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="id">Código</vaadin-grid-sorter>
                     <vaadin-grid-filter path="id" />
@@ -247,7 +247,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                     <vaadin-grid-filter path="type" />
@@ -267,46 +267,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="functionalArea">Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="functionalArea" />
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[ddFunctionalAreasData]]" item-value-path="id" item-label-path="id" value="{{item.functionalArea}}" disabled="{{ _permissionsCreate }}">
-                        <template>
-                            <table width="500px">
-                                <tr>
-                                    <td width="10%">[[item.id]]</td>
-                                    <td width="90%"> <b>[[item.value]]</b></td>
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>
-            
-            <vaadin-grid-column resizable width="150px">
-                <template class="header">
-                    <vaadin-grid-sorter path="responsabilityCenter">Centro de Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="responsabilityCenter" />
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[ddResponsabilityCenterData]]" item-value-path="id" item-label-path="id" value="{{item.responsabilityCenter}}" disabled="{{ _permissionsCreate }}">
-                        <template>
-                            <table width="500px">
-                                <tr>
-                                    <td width="15%">[[item.id]]</td>
-                                    <td width="85%"> <b>[[item.value]]</b></td>
-
-                                </tr>
-                            </table>
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>
-            
-            <vaadin-grid-column resizable width="150px">
+            <vaadin-grid-column resizable width="7%">
                 <template class="header">
                     <vaadin-grid-sorter path="region">Região</vaadin-grid-sorter>
                     <vaadin-grid-filter path="region" />
@@ -325,8 +286,47 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column resizable width="150px">
+
+            <vaadin-grid-column resizable width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalArea">Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalArea" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[ddFunctionalAreasData]]" item-value-path="id" item-label-path="id" value="{{item.functionalArea}}" disabled="{{ _permissionsCreate }}">
+                        <template>
+                            <table width="500px">
+                                <tr>
+                                    <td width="10%">[[item.id]]</td>
+                                    <td width="90%"> <b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="10%">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsabilityCenter">Centro de Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenter" />
+                </template>
+                <template>
+                    <vaadin-combo-box items="[[ddResponsabilityCenterData]]" item-value-path="id" item-label-path="id" value="{{item.responsabilityCenter}}" disabled="{{ _permissionsCreate }}">
+                        <template>
+                            <table width="500px">
+                                <tr>
+                                    <td width="15%">[[item.id]]</td>
+                                    <td width="85%"> <b>[[item.value]]</b></td>
+
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="7%">
                 <template class="header">
                     <vaadin-grid-sorter path="level">Nivel Aprovação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="level" />
@@ -335,8 +335,8 @@
                     <vaadin-text-field value="{{item.level}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column resizable width="150px">
+
+            <vaadin-grid-column resizable width="7%">
                 <template class="header">
                     <vaadin-grid-sorter path="approvalValue">Valor Aprovação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="approvalValue" />
@@ -345,8 +345,8 @@
                     <vaadin-text-field value="{{item.approvalValue}}" disabled="{{ _permissionsUpdate }}"></vaadin-text-field>
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column resizable width="150px">
+
+            <vaadin-grid-column resizable width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="approvalUser">Utilizador Aprovação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="approvalUser" />
@@ -365,8 +365,8 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column resizable width="150px">
+
+            <vaadin-grid-column resizable width="10%">
                 <template class="header">
                     <vaadin-grid-sorter path="approvalGroup">Grupo Aprovação</vaadin-grid-sorter>
                     <vaadin-grid-filter path="approvalGroupText" />
@@ -386,36 +386,33 @@
                     </vaadin-combo-box>
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column resizable width="150px">
+
+            <vaadin-grid-column resizable width="11%">
                 <template class="header">
                     <vaadin-grid-sorter path="startDate">Data Inicial</vaadin-grid-sorter>
                     <vaadin-grid-filter path="startDate" />
                 </template>
                 <template>
-                    <!--input type="date" id="_StartDate" name="_StartDate" value="{{item.startDate}}" disabled="{{  _permissionsUpdate  }}"-->
                     <vaadin-date-picker id="_StartDate" name="_StartDate" value="{{item.startDate}}" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
-            
-            <vaadin-grid-column resizable width="150px">
+
+            <vaadin-grid-column resizable width="11%">
                 <template class="header">
                     <vaadin-grid-sorter path="endDate">Data Final</vaadin-grid-sorter>
                     <vaadin-grid-filter path="endDate" />
                 </template>
                 <template>
-                    <!--input type="date" id="_EndDate" name="_EndDate" value="{{item.endDate}}" disabled="{{  _permissionsUpdate  }}"-->
                     <vaadin-date-picker id="_EndDate" name="_EndDate" value="{{item.endDate}}" disabled="{{ _permissionsUpdate }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
-            
+
             <template is="dom-if" if="{{ _permissions.delete }}">
-                <vaadin-grid-column resizable width="150px">
+                <vaadin-grid-column resizable width="5%">
                     <template class="header">
                     </template>
                     <template>
                         <center>
-                            @*<paper-button class="btnRemove" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}">Eliminar</paper-button>*@
                             <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAccessProfile" disabled="{{_permissionsDelete}}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                         </center>
                     </template>
