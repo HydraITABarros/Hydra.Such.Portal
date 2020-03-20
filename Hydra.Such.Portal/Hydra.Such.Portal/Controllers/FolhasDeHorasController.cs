@@ -677,7 +677,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             FolhaDeHorasNo = Presenca.FolhaDeHorasNo,
                             Data = Presenca.Data,
-                            DataTexto = Presenca.Data.HasValue ? Presenca.Data.Value.ToString("yyyy-MM-dd")  : "",
+                            DataTexto = Presenca.Data.HasValue ? Presenca.Data.Value.ToString("yyyy-MM-dd") : "",
                             Hora1Entrada = Convert.ToDateTime(string.Concat("1900/01/01 " + Presenca.Hora1Entrada)).ToShortTimeString(),
                             Hora1Saida = Convert.ToDateTime(string.Concat("1900/01/01 " + Presenca.Hora1Saida)).ToShortTimeString(),
                             Hora2Entrada = Convert.ToDateTime(string.Concat("1900/01/01 " + Presenca.Hora2Entrada)).ToShortTimeString(),
@@ -1944,7 +1944,7 @@ namespace Hydra.Such.Portal.Controllers
                     result = 2;
                 }
                 else
-                { 
+                {
                     LinhasFolhaHoras AjudaCopia = new LinhasFolhaHoras();
 
                     int noLinha;
@@ -3266,6 +3266,13 @@ namespace Hydra.Such.Portal.Controllers
                     List<LinhasFolhaHorasViewModel> Ajudas = DBLinhasFolhaHoras.GetAllByAjudaToList(data.FolhaDeHorasNo);
                     List<MaoDeObraFolhaDeHorasViewModel> MaoDeObra = DBMaoDeObraFolhaDeHoras.GetAllByMaoDeObraToList(data.FolhaDeHorasNo);
 
+                    //if (MaoObraValidarNoHoras(data) != true)
+                    //{
+                    //    resultApprovalMovement.eReasonCode = 9;
+                    //    resultApprovalMovement.eMessage = "Não pode Terminar a Folha de Horas, pois existe(m) dia(s) com mais de 10 horas registadas num dia na Mão de Obra.";
+                    //    return Json(resultApprovalMovement);
+                    //}
+
                     if ((Percursos == null || Percursos.Count() == 0) && (Ajudas == null || Ajudas.Count() == 0) && (MaoDeObra == null || MaoDeObra.Count() == 0))
                     {
                         resultApprovalMovement.eReasonCode = 9;
@@ -3709,7 +3716,7 @@ namespace Hydra.Such.Portal.Controllers
                                         }
 
                                         if (Estado == 1)
-                                        { 
+                                        {
                                             ErrorHandler approvalResult = new ErrorHandler();
 
                                             //Approve Movement
@@ -4091,7 +4098,7 @@ namespace Hydra.Such.Portal.Controllers
                                         }
 
                                         if (Estado == 1)
-                                        { 
+                                        {
                                             ErrorHandler approvalResult = new ErrorHandler();
 
                                             //Approve Movement
@@ -5021,6 +5028,48 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(null);
         }
+
+        //public bool MaoObraValidarNoHoras(FolhaDeHorasViewModel data)
+        //{
+        //    Boolean Ok = true;
+        //    try
+        //    {
+        //        if (data != null && !string.IsNullOrEmpty(data.FolhaDeHorasNo))
+        //        {
+        //            string FolhaHorasNo = data.FolhaDeHorasNo;
+        //            List<MãoDeObraFolhaDeHoras> ListMaoObra = DBMaoDeObraFolhaDeHoras.GetByFolhaHoraNo(FolhaHorasNo);
+
+        //            if (ListMaoObra != null && ListMaoObra.Count > 0)
+        //            {
+        //                DateTime PrimeiroDia = !string.IsNullOrEmpty(data.DataPartidaTexto) ? Convert.ToDateTime(data.DataPartidaTexto) : DateTime.MinValue;
+        //                DateTime UltimoDia = !string.IsNullOrEmpty(data.DataChegadaTexto) ? Convert.ToDateTime(data.DataChegadaTexto) : DateTime.MinValue;
+        //                TimeSpan TotalHorasDia = TimeSpan.Zero;
+
+        //                for (DateTime dia = PrimeiroDia; dia <= UltimoDia && Ok == true; dia = dia.AddDays(1))
+        //                {
+        //                    TotalHorasDia = TimeSpan.Zero;
+        //                    List<MãoDeObraFolhaDeHoras> MaoObraDia = ListMaoObra.Where(x => x.Date == dia).ToList();
+
+        //                    if (MaoObraDia != null && MaoObraDia.Count > 0)
+        //                    {
+        //                        MaoObraDia.ForEach(MaoObra =>
+        //                        {
+        //                            TotalHorasDia = TotalHorasDia + (TimeSpan)MaoObra.NºDeHoras;
+        //                        });
+
+        //                        if (TotalHorasDia > new TimeSpan(10, 0, 0))
+        //                            Ok = false;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Ok = false;
+        //    }
+        //    return Ok;
+        //}
 
     }
 }

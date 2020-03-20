@@ -469,6 +469,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/FolhasDeHoras/TesteHoras"
+                   last-response="{{testeHoras}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_TesteHoras_ajax"
+                   on-response="_TesteHorasResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.create }}" title="Calcular Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj. Custo</paper-button>
@@ -577,16 +586,16 @@
                         </div>
 
                         <!--<div class="col-sm-3"> Alterado no dia 10/12/2019 a Pedido do Marco Marcelo
-                            <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" on-blur="_updateAutoFH" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo km">
-                                <template>
-                                    <paper-icon-item>
-                                        <paper-item-body two-line>
-                                            <div>[[item.value]]</div>
-                                        </paper-item-body>
-                                    </paper-icon-item>
-                                </template>
-                            </vaadin-combo-box>
-                        </div>-->
+                        <vaadin-combo-box items="[[LFolhaDeHoraCodeTypeKms]]" id="codigoTipoKms" item-value-path="id" item-label-path="value" on-blur="_updateAutoFH" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório" value="{{data.codigoTipoKms}}" label="Tipo km">
+                            <template>
+                                <paper-icon-item>
+                                    <paper-item-body two-line>
+                                        <div>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </vaadin-combo-box>
+                    </div>-->
 
                         <div class="col-sm-3">
                             <vaadin-combo-box items="[[LFolhaDeHoraViaturaMatricula]]" id="matricula" item-value-path="id" item-label-path="value" value="{{data.matricula}}" on-blur="_validacaoTipoDeslocacao" label="Matricula" disabled="{{ !_permissions.update }}">
@@ -972,7 +981,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="5%"  resizable>
+                        <vaadin-grid-column width="5%" resizable>
                             <template class="header">
                             </template>
                             <template>
@@ -982,7 +991,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="10%"  resizable>
+                        <vaadin-grid-column width="10%" resizable>
                             <template class="header">
                                 <vaadin-grid-sorter path="noProjeto" style="text-align:center;">Nº Ordem/Projecto</vaadin-grid-sorter>
                                 <vaadin-grid-filter path="noProjeto"></vaadin-grid-filter>
