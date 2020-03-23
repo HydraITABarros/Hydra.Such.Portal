@@ -97,6 +97,8 @@ namespace Hydra.Such.Data.NAV
                     Document_Date = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()) ? DateTime.Parse(preInvoiceToCreate.Posting_Date.ToString()) : DateTime.MinValue,
                     Document_DateSpecified = !string.IsNullOrEmpty(preInvoiceToCreate.Posting_Date.ToString()),
                     External_Document_No = preInvoiceToCreate.ProjectNo,
+                    Grupo_Fatura = (int)preInvoiceToCreate.InvoiceGroup,
+                    Grupo_FaturaSpecified = true,
 
                     User_pre_registo_2009 = username,
 
@@ -154,7 +156,7 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto, SPInvoiceListViewModel Ship)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto, SPInvoiceListViewModel Ship, int GrupoFatura)
         {
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
@@ -178,6 +180,7 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.Posting_Date = Convert.ToDateTime(dataFormulario);
             invoiceHeader.ProjectNo = projeto;
             invoiceHeader.MovementType = billingHeader.MovementType;
+            invoiceHeader.InvoiceGroup = GrupoFatura;
 
             invoiceHeader.Ship_to_Code = Ship.Ship_to_Code;
             //invoiceHeader.Ship_to_Address = Ship.Ship_to_Address;
@@ -424,31 +427,52 @@ namespace Hydra.Such.Data.NAV
             }
         }
 
-        //public static async Task<WSCreatePreInvoice.Read_Result> GetPreInvoice(string CodProjeto, int GrupoFactura, NAVWSConfigurations WSConfigurations)
-        //{
+        public static async Task<WSSuchNav2017.WSgetNumPreRegisto_Result> GetPreInvoice(string CodProjeto, int GrupoFactura, NAVWSConfigurations WSConfigurations)
+        {
 
-        //    //Configure NAV Client
-        //    EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
-        //    WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
-        //    WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
-        //    WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.Ws_SuchNav2017_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSSuchNav2017.WSNAV2017_PortClient WS_Client = new WSSuchNav2017.WSNAV2017_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
 
-        //    try
-        //    {
-        //        WSCreatePreInvoice.Read_Result result = await WS_Client.ReadAsync(Document_Type, PreInvoiceNo);
-        //        return result;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
+            try
+            {
+                WSSuchNav2017.WSgetNumPreRegisto_Result result = await WS_Client.WSgetNumPreRegistoAsync(CodProjeto, GrupoFactura);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
 
-        //}
+        }
+
+        public static async Task<WSCreatePreInvoice.Read_Result> GetNavPreInvoice(string PreInvoice, string DocumentType, NAVWSConfigurations WSConfigurations)
+        {
+
+            //Configure NAV Client
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoice_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
+            WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCreatePreInvoice.Read_Result result = await WS_Client.ReadAsync(DocumentType, PreInvoice);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
 
         public static async Task<WSCreatePreInvoice.Delete_Result> DeletePreInvoice(string PreInvoiceKey, NAVWSConfigurations WSConfigurations)
         {
             //Configure NAV Client
-            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoiceLine_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            EndpointAddress WS_URL = new EndpointAddress(WSConfigurations.WS_PreInvoice_URL.Replace("Company", WSConfigurations.WS_User_Company));
             WSCreatePreInvoice.WSPreInvoice_PortClient WS_Client = new WSCreatePreInvoice.WSPreInvoice_PortClient(navWSBinding, WS_URL);
             WS_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
             WS_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);

@@ -1599,6 +1599,7 @@
                     this.$.page_databound_ajax.url = "/Projetos/GetAuthorizedMovementsHistoric";
                     this.$.page_databound_ajax.generateRequest();
                     this.authorizedMovements = [];
+                    this.selectedItems = [];
                     this.$.projectInvoiceAutorization._loading = true;
                     this.isBillingList = false;
                 },
@@ -1606,30 +1607,47 @@
                     this.$.page_databound_ajax.url = "/Projetos/GetAuthorizedMovements";
                     this.$.page_databound_ajax.generateRequest();
                     this.authorizedMovements = [];
+                    this.selectedItems = [];
                     this.$.projectInvoiceAutorization._loading = true;
                     this.isBillingList = true;
 
                 },
 
-
-
-
-
                 _Reset: function (selectedItem, selectedItems) {
-                    if (this.selectedItems.length != 0) {
+                    if (this.selectedItems.length == 1) {
                         this.$.resetProjeto_ajax.body = JSON.stringify(this.selectedItems);
                         this.$.resetProjeto_ajax.generateRequest();
                     } else {
-                        this.openToastError("Selecione pelo menos um projeto!");
+                        this.openToastError("Só pode selecionar um projeto!");
+                    }
+                },
+                _ResetProjetoResponse: function () {
+                    if (this.ResetProjetoResponse.eReasonCode == 1) {
+                        this.openToast(this.ResetProjetoResponse.eMessage);
+
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.openToastError(this.ResetProjetoResponse.eMessage);
                     }
                 },
 
                 _HistoryUndo: function (selectedItem, selectedItems) {
-                    if (this.selectedItems.length != 0) {
+                    if (this.selectedItems.length == 1) {
                         this.$.undoProjeto_ajax.body = JSON.stringify(this.selectedItems);
                         this.$.undoProjeto_ajax.generateRequest();
                     } else {
-                        this.openToastError("Selecione pelo menos um projeto!");
+                        this.openToastError("Só pode selecionar um projeto!");
+                    }
+                },
+                _UndoProjetoResponse: function () {
+                    if (this.UndoProjetoResponse.eReasonCode == 1) {
+                        this.openToast(this.UndoProjetoResponse.eMessage);
+
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.openToastError(this.UndoProjetoResponse.eMessage);
                     }
                 },
 
