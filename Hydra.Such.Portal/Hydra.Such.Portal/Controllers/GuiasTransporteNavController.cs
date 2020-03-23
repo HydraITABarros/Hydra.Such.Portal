@@ -112,6 +112,15 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetListGuiasTransporteNavToCopyFrom()
+        {
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            List<GuiaTransporteNavViewModel> result = DBNAV2017GuiasTransporte.GetListByDim(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, true);
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetDetailsGuia([FromBody] JObject requestParams)
         {
             string noGuia = requestParams["No"] == null ? "" : requestParams["No"].ToString();
@@ -242,7 +251,23 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
-        
+        [HttpPost]
+        public JsonResult CopyLinhasGuiaTransporte([FromBody] JObject requestParams)
+        {
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+
+            string noGuia = requestParams["noGuia"] == null ? "" : (string)requestParams["noGuia"];
+            string noGuiaToCopyFrom = requestParams["noGuiaToCopyFrom"] == null ? "" : (string)requestParams["noGuiaToCopyFrom"];
+            
+
+            if (noGuia == "" || noGuiaToCopyFrom == "")
+                return Json(false);
+
+            
+
+            return Json(null);
+        }
+
         [HttpPost]
         public JsonResult GetShipToAddr([FromBody] JObject requestParams)
         {
@@ -364,6 +389,22 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             
+        }
+
+        [HttpPost]
+        public JsonResult DeleteGuia([FromBody] JObject param)
+        {
+            if (param["noGuia"] == null)
+                return Json(null);
+
+            string noGuia = (string)param["noGuia"];
+
+            if (noGuia == "")
+                return Json(null);
+
+            bool result = DBNAV2017GuiasTransporte.DeleteGuiaTransporte(_config.NAVDatabaseName, _config.NAVCompanyName, noGuia);
+
+            return Json(result);
         }
 
         [HttpPost]

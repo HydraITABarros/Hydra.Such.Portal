@@ -26,6 +26,7 @@
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <dom-module id="x-newguiatransportenav">
     <template>
@@ -134,6 +135,18 @@
             vaadin-time-picker {
                 --vaadin-combo-box-overlay-max-height: 250px;
             }
+            such-dropdown-menu {
+                box-shadow: inset 0px -3px 7px 0px #71BCC1;
+                background-color: transparent;
+                border-radius: 3px;
+                /*border: 1px solid #0b0e07;*/
+                padding: 0px 20px 0px 0px;
+                display: inline-block;
+                cursor: pointer;
+                text-decoration: none;
+                text-shadow: 0px 1px 0px #263666;
+            }
+               
         </style>
 
         <iron-ajax url="/GuiasTransporteNav/GetDetailsGuia"
@@ -174,7 +187,7 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCodesForUser"
                    last-response="{{CBFunctionalAreas}}"
                    on-response="_functionalAreasResponse"
-                   auto method="post" 
+                   auto method="post"
                    handle-as="json"
                    content-type="application/json">
         </iron-ajax>
@@ -309,6 +322,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/DeleteGuia"
+                   last-response="{{ guiaDeleted }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_delete_guia"
+                   on-response="_deleteGuiaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/GuiasTransporteNav/Register"
                    last-response="{{ registerReturnCode }}"
                    method="post"
@@ -335,10 +357,29 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/GetListGuiasTransporteNavToCopyFrom"
+                   last-response="{{ guiasRegistadas }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_guias_to_copy_from"
+                   on-response="_guiasToCopyFromResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/GuiasTransporteNav/CopyLinhasGuiaTransporte"
+                   last-response="{{ linesCopied }}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_copy_lines_from_guia"
+                   on-response="_copyLinesFromGuiaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
-            <paper-button id="btnCopyReqLines" class="tablinks" on-tap="_copyLines"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp; Copiar Linhas Requisição</paper-button>
-            <paper-button raised id="btnClearLines" class="tablinks" on-tap="_clearShipmentLines" title="Limpar Linhas" style="background-color:#FF3A51"><i class="fa fa-eraser" aria-hidden="true"></i>&nbsp; Limpar Linhas</paper-button>
+            <such-dropdown-menu raised id="actionsButton" on-value-changed="_menuActionsItemSelected" title=" Funções " items="[[_menuActionsItems]]"></such-dropdown-menu>
+            <!--<paper-button id="btnCopyReqLines" class="tablinks" on-tap="_copyLines"><i class="fa fa-clone" aria-hidden="true"></i>&nbsp; Copiar Linhas Requisição</paper-button>-->
+            <!--<paper-button raised id="btnClearLines" class="tablinks" on-tap="_clearShipmentLines" title="Limpar Linhas" style="background-color:#FF3A51"><i class="fa fa-eraser" aria-hidden="true"></i>&nbsp; Limpar Linhas</paper-button>-->
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Gravar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
             <paper-button raised id="btnRegister" class="tablinks" on-tap="_registerDocument" title="Registar" style="background-color:#EF842D; font-weight:bold"><i class="fa fa-institution" aria-hidden="true"></i>&nbsp; Registar</paper-button>
         </div>
@@ -1031,6 +1072,115 @@
             </div>
         </paper-dialog>
 
+        <paper-dialog id="copyFromGuiaRegistada" class="dialgoBox">
+            <h2>Copiar de Guia Transporte Registada</h2>
+            <vaadin-grid aria-label="gridGuiasRegistadas" items="[[guiasRegistadas]]" class="grid" multi-sort="true">
+                <vaadin-grid-column>
+                    <template class="header">
+                    </template>
+                    <template>
+                        <center>
+                            <paper-button class="btnSave fa fa-caret-square-o-down" raised on-tap="_copyLinesFromGuia"></paper-button>
+                        </center>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="noGuiaTransporte">Nº</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="noGuiaTransporte" value="[[filter.noGuiaTransporte]]" />
+                    </template>
+                    <template>
+                        {{item.noGuiaTransporte}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="documentCodeId">Código AT</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="documentCodeId" value="[[filter.documentCodeId]]" />
+                    </template>
+                    <template>
+                        {{item.fiscalCommunicationLog.documentCodeId}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataGuia">Data Guia</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataGuia" value="[[filter.dataGuia]]" />
+                    </template>
+                    <template>
+                        {{item.dataGuia}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="noProjecto">Nº Projecto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="noProjecto" value="[[filter.noProjecto]]" />
+                    </template>
+                    <template>
+                        {{item.noProjecto}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="utilizador">Utilizador</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="utilizador" value="[[filter.utilizador]]" />
+                    </template>
+                    <template>
+                        {{item.utilizador}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="noCliente" value="[[filter.noCliente]]" />
+                    </template>
+                    <template>
+                        {{item.noCliente}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="nomeCliente">Nome Cliente</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="nomeCliente" value="[[filter.nomeCliente]]" />
+                    </template>
+                    <template>
+                        {{item.nomeCliente}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="globalDimension1Code">Região</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="globalDimension1Code" value="[[filter.globalDimension1Code]]" />
+                    </template>
+                    <template>
+                        {{item.globalDimension1Code}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="globalDimension2Code">Área Funcional</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="globalDimension2Code" value="[[filter.globalDimension2Code]]" />
+                    </template>
+                    <template>
+                        {{item.globalDimension2Code}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="110px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="userEmail">Email Criação</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="userEmail" value="[[filter.userEmail]]" />
+                    </template>
+                    <template>
+                        {{item.userEmail}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
         <paper-dialog id="selectPostCode" class="dialgoBox">
             <h2>Código Postal</h2>
             <vaadin-grid id="postCodeGrid" aria-label="gridPostCode" items="[[postCodeList]]" class="grid" multi-sort="true" active-item="{{_SelectedPostCode}}">
@@ -1105,6 +1255,15 @@
                         type: Number,
                         value: -1
                     },
+                    _menuActionsItems: {
+                        type: Array,
+                        value: [
+                            { value: 1, description: "Copiar Linhas Requisição" },
+                           // { value: 2, description: "Copiar Linhas Guia Registada"},
+                            { value: 3, description: "Limpar Linhas" },
+                            { value: 4, description: "Eliminar Guia"}
+                        ],
+                    },
                     _SelectedLine: {
                         observer: '_activeItemChanged'
                     },
@@ -1171,6 +1330,25 @@
                     
                 },
 
+                _menuActionsItemSelected: function (e) {
+                    var item = e.detail.value;
+                    debugger;;
+                    if (item == null)
+                        return;
+
+                    switch (item.value) {
+                        case 1: this._copyLines();
+                            break;
+                        case 2:
+                            this._copyFromGuia();
+                            break;
+                        case 3: this._clearShipmentLines();
+                            break;
+                        case 4:
+                            this._delete();
+                            break;
+                    }
+                },
                 _functionalAreasResponse: function (e) {
                 },
 
@@ -1381,6 +1559,22 @@
                     this._skipMsg = false;
                 },
 
+                _delete: function () {
+                    var ajax_request = this.$.ajax_delete_guia;
+                    ajax_request.body = JSON.stringify({ "noGuia": this.data.noGuiaTransporte });
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a eliminação da Guia de Transporte no. " + this.data.noGuiaTransporte + "?",
+                        ajax_request);
+                },
+
+                _deleteGuiaResponse: function (e) {
+                    if (this.guiaDeleted) {
+                        window.location.href = "/GuiasTransporteNav";
+                    } else {
+                        this._openToastError("Não foi possível eliminar a Guia de Transporte!");
+                    }
+                },
+
                 _onTipoGuiaChanged: function (e) {
                     if (this.data != undefined) {
                         var tipoG = this.$.tipoGuia.value;
@@ -1559,6 +1753,14 @@
                         this.$.localDescarga.value = details.address;
                         this.$.localDescarga.valueText = details.address;
 
+                        // zpgm.23032020,b
+                        if (this.data.localDescarga1 == null || this.data.localDescarga1 == "") {
+                            this.data.localDescarga1 = details.city;
+                            this.$.localDescarga1.value = details.city; 
+                            this.$.localDescarga1.valueText = details.city;
+                        }
+                        // zpgm.23032020.e
+
                         this.data.nifCliente = details.vatRegistrationNo;
                         this.data.vatRegistrationNo = details.vatRegistrationNo;
                         // zpgm.12112019.b
@@ -1643,6 +1845,16 @@
                         this.data.localDescarga = "";
                         this.$.localDescarga.value = "";
                         this.$.localDescarga.valueText = "";
+
+                        // zpgm.23032020.b
+                        this.data.localDescarga1 = "";
+                        this.$.localDescarga1.value = "";
+                        this.$.localDescarga1.valueText = "";
+
+                        this.data.codPostalDescarga = "";
+                        this.$.codPostalDescarga.value = "";
+                        this.$.codPostalDescarga.valueText = "";
+                        // zpgm.23032020.e
 
                         this.data.nifCliente = "";
                         this.data.vatRegistrationNo = "";
@@ -2202,6 +2414,7 @@
                 },
 
                 _clearShipmentLines: function (e) {
+                    debugger;;
                     var linesLength = this.data.linhasGuiaTransporte.length;
 
                     this.data.linhasGuiaTransporte.splice(0, linesLength);
@@ -2254,12 +2467,6 @@
                 },
 
 
-                _copyLines: function (e) {
-                    this.$.ajax_requisitions.generateRequest();
-                    this.$.copyLinesFromReq.open();
-                    
-                },
-
                 _clFormatState: function (param) {
                     if (param != undefined) {
                         var sel = this.CBStatus.find(x => x.id == param);
@@ -2270,6 +2477,12 @@
                     return param;
                 },
 
+                _copyLines: function (e) {
+                    this.$.ajax_requisitions.generateRequest();
+                    this.$.copyLinesFromReq.open();
+                    
+                },
+                
                 _copyLinesFromRequisition: function (e) {
 
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
@@ -2298,6 +2511,27 @@
                     } else {
                         this._openToastError("Não foi possível copiar as linhas da Requisição!");
                     }
+                },
+
+                _copyFromGuia: function (e) {
+                    debugger;;  
+                    this.$.ajax_guias_to_copy_from.generateRequest();
+                    this.$.copyFromGuiaRegistada.open();
+                },
+
+                _guiasToCopyFromResponse: function (e) {
+                    debugger;;
+                    if (this.guiasRegistadas == null) {
+                        window.alert("Erro!!");
+                    }
+                },
+
+                _copyLinesFromGuia: function (e) {
+                    this.$.ajax_update_guia.body = JSON.stringify(this.data);
+                    this.$.ajax_update_guia.generateRequest();
+                },
+
+                _copyFromGuiaRegistadaResponse: function (e) {
                 },
 
                 _lastCheckBeforeRegister: function (guia) {

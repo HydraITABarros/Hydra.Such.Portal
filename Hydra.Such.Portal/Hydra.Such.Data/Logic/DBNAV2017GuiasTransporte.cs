@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using PTlocalizationSecurityProvider;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -694,6 +693,39 @@ namespace Hydra.Such.Data.Logic
             return true;
         }
 
+        public static bool DeleteGuiaTransporte(string NAVDatabase, string NAVCompany, string noGuia)
+        {
+            try
+            {
+                //SuchDBContext _context = new SuchDBContext();
+                SuchDBContextExtention _contextExt = new SuchDBContextExtention();
+
+                var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabase),
+                        new SqlParameter("@CompanyName", NAVCompany),
+                        new SqlParameter("@NoGuia", noGuia)
+                };
+
+                //string sqlString = string.Format("EXEC {0} {1}, {2}, {3}", "NAV2017GuiaTransporte_Delete", "@DBName", "@CompanyName", "@NoGuia");
+
+                try
+                {
+                    //_context.Database.ExecuteSqlCommand(sqlString, parameters);
+                    int? ret = _contextExt.execStoredProcedureNQ("exec NAV2017GuiaTransporte_Delete @DBName, @CompanyName, @NoGuia", parameters);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
         public static bool UpdateLinhasGuiaTransporte(List<LinhaGuiaTransporteNavViewModel> linhas)
         {
             if(linhas == null)
@@ -820,6 +852,8 @@ namespace Hydra.Such.Data.Logic
             }
             
         }
+
+        
 
         public static bool DeleteLinhaGuiaTransporte(string NAVDatabase, string NAVCompany, string noGuia, int noLinha)
         {
