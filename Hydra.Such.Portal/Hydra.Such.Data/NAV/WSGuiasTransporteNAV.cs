@@ -81,6 +81,31 @@ namespace Hydra.Such.Data.NAV
 
         }
 
+        public static async Task<WSCopiaLinhasGuia_Result> CopyLinesAsync(string guiaOrigem, string guiaDestino, NAVWSConfigurations WSConfigurations)
+        {
+            WSCopiaLinhasGuia copyObject = new WSCopiaLinhasGuia()
+            {
+                noGuiaDestino = guiaDestino,
+                noGuiaOrigem = guiaOrigem
+            };
+
+            EndpointAddress ws_URL = new EndpointAddress(WSConfigurations.Ws_SuchNav2017_URL.Replace("Company", WSConfigurations.WS_User_Company));
+            WSNAV2017_PortClient ws_Client = new WSNAV2017_PortClient(navWSBinding, ws_URL);
+            ws_Client.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Delegation;
+            ws_Client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(WSConfigurations.WS_User_Login, WSConfigurations.WS_User_Password, WSConfigurations.WS_User_Domain);
+
+            try
+            {
+                WSCopiaLinhasGuia_Result result = await ws_Client.WSCopiaLinhasGuiaAsync(guiaOrigem, guiaDestino);
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static async Task<WSForcaRegistoGuia_Result> ForceDocumentRegistry(string noGuia, NAVWSConfigurations WSConfigurations)
         {
             WSForcaRegistoGuia noGuiaRegistar = new WSForcaRegistoGuia()
@@ -104,5 +129,6 @@ namespace Hydra.Such.Data.NAV
                 return null;
             }
         }
+
     }
 }

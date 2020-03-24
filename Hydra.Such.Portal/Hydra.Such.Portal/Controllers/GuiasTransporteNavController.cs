@@ -261,11 +261,34 @@ namespace Hydra.Such.Portal.Controllers
             
 
             if (noGuia == "" || noGuiaToCopyFrom == "")
-                return Json(false);
+                return Json(null);
 
-            
 
-            return Json(null);
+            try
+            {
+                var copyLinesTask = WSGuiasTransporteNAV.CopyLinesAsync(noGuiaToCopyFrom, noGuia, _configws);
+                var result = copyLinesTask.Result;
+
+                if (result == null)
+                    return Json(null);
+
+                bool isInt = Int32.TryParse(result.return_value, out int num);
+
+                if (isInt)
+                {
+                    return Json(num);
+                }
+                else
+                {
+                    return Json(null);
+                }
+   
+            }
+            catch (Exception e)
+            {
+
+                return Json(null);
+            }
         }
 
         [HttpPost]
@@ -386,9 +409,7 @@ namespace Hydra.Such.Portal.Controllers
             {
 
                 return Json(null);
-            }
-
-            
+            }           
         }
 
         [HttpPost]

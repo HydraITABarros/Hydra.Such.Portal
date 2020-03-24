@@ -28,6 +28,9 @@ namespace WSSuchNav2017
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017:WSForcaRegistoGuia", ReplyAction="*")]
         System.Threading.Tasks.Task<WSSuchNav2017.WSForcaRegistoGuia_Result> WSForcaRegistoGuiaAsync(WSSuchNav2017.WSForcaRegistoGuia request);
         
+        [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017:WSCopiaLinhasGuia", ReplyAction="*")]
+        System.Threading.Tasks.Task<WSSuchNav2017.WSCopiaLinhasGuia_Result> WSCopiaLinhasGuiaAsync(WSSuchNav2017.WSCopiaLinhasGuia request);
+        
         [System.ServiceModel.OperationContractAttribute(Action="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017:WSgetNumPreRegisto", ReplyAction="*")]
         System.Threading.Tasks.Task<WSSuchNav2017.WSgetNumPreRegisto_Result> WSgetNumPreRegistoAsync(WSSuchNav2017.WSgetNumPreRegisto request);
     }
@@ -203,6 +206,50 @@ namespace WSSuchNav2017
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="WSCopiaLinhasGuia", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", IsWrapped=true)]
+    public partial class WSCopiaLinhasGuia
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=0)]
+        public string noGuiaOrigem;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=1)]
+        public string noGuiaDestino;
+        
+        public WSCopiaLinhasGuia()
+        {
+        }
+        
+        public WSCopiaLinhasGuia(string noGuiaOrigem, string noGuiaDestino)
+        {
+            this.noGuiaOrigem = noGuiaOrigem;
+            this.noGuiaDestino = noGuiaDestino;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(WrapperName="WSCopiaLinhasGuia_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", IsWrapped=true)]
+    public partial class WSCopiaLinhasGuia_Result
+    {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", Order=0)]
+        public string return_value;
+        
+        public WSCopiaLinhasGuia_Result()
+        {
+        }
+        
+        public WSCopiaLinhasGuia_Result(string return_value)
+        {
+            this.return_value = return_value;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="WSgetNumPreRegisto", WrapperNamespace="urn:microsoft-dynamics-schemas/codeunit/WSNAV2017", IsWrapped=true)]
     public partial class WSgetNumPreRegisto
     {
@@ -349,6 +396,20 @@ namespace WSSuchNav2017
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        System.Threading.Tasks.Task<WSSuchNav2017.WSCopiaLinhasGuia_Result> WSSuchNav2017.WSNAV2017_Port.WSCopiaLinhasGuiaAsync(WSSuchNav2017.WSCopiaLinhasGuia request)
+        {
+            return base.Channel.WSCopiaLinhasGuiaAsync(request);
+        }
+        
+        public System.Threading.Tasks.Task<WSSuchNav2017.WSCopiaLinhasGuia_Result> WSCopiaLinhasGuiaAsync(string noGuiaOrigem, string noGuiaDestino)
+        {
+            WSSuchNav2017.WSCopiaLinhasGuia inValue = new WSSuchNav2017.WSCopiaLinhasGuia();
+            inValue.noGuiaOrigem = noGuiaOrigem;
+            inValue.noGuiaDestino = noGuiaDestino;
+            return ((WSSuchNav2017.WSNAV2017_Port)(this)).WSCopiaLinhasGuiaAsync(inValue);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<WSSuchNav2017.WSgetNumPreRegisto_Result> WSSuchNav2017.WSNAV2017_Port.WSgetNumPreRegistoAsync(WSSuchNav2017.WSgetNumPreRegisto request)
         {
             return base.Channel.WSgetNumPreRegistoAsync(request);
@@ -390,8 +451,7 @@ namespace WSSuchNav2017
         {
             if ((endpointConfiguration == EndpointConfiguration.WSNAV2017_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.101.1.13:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Codeunit/WSNAV201" +
-                        "7");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.11:7047/DynamicsNAV100/WS/SUCH/Codeunit/WSNAV2017");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

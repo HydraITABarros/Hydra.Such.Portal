@@ -367,7 +367,7 @@
         </iron-ajax>
 
         <iron-ajax url="/GuiasTransporteNav/CopyLinhasGuiaTransporte"
-                   last-response="{{ linesCopied }}"
+                   last-response="{{ linesGtCopied }}"
                    method="post"
                    handle-as="json"
                    id="ajax_copy_lines_from_guia"
@@ -1259,7 +1259,7 @@
                         type: Array,
                         value: [
                             { value: 1, description: "Copiar Linhas Requisição" },
-                           // { value: 2, description: "Copiar Linhas Guia Registada"},
+                            { value: 2, description: "Copiar Linhas Guia Registada"},
                             { value: 3, description: "Limpar Linhas" },
                             { value: 4, description: "Eliminar Guia"}
                         ],
@@ -2522,16 +2522,55 @@
                 _guiasToCopyFromResponse: function (e) {
                     debugger;;
                     if (this.guiasRegistadas == null) {
-                        window.alert("Erro!!");
+                        //window.alert("Erro!!");
                     }
                 },
 
                 _copyLinesFromGuia: function (e) {
+                    debugger;;
+
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
                     this.$.ajax_update_guia.generateRequest();
+
+                    debugger;;
+
+                    this.$.ajax_copy_lines_from_guia.body = JSON.stringify({
+                        "noGuia": this.data.noGuiaTransporte, "noGuiaToCopyFrom": e.model.item.noGuiaTransporte
+                    });
+
+                    this.$.ajax_copy_lines_from_guia.generateRequest();
                 },
 
-                _copyFromGuiaRegistadaResponse: function (e) {
+                _copyLinesFromGuiaResponse: function (e) {
+                    debugger;;
+
+                    if (this.linesGtCopied == 0 || this.linesGtCopied == "0") {
+                        this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
+                        this.$.page_databound_ajax.generateRequest();
+
+                        this._openToast("Linhas copiadas com sucesso!");
+                    } else {
+                        var return_value = this.linesGtCopied;
+
+                        if (return_value == null) {
+                            this._openToastError("Falha ao executar o webservice! Contacte o Centro de Suporte!");
+                            return;
+                        }
+                        if (return_value == -1 || return_value == "-1") {
+                            this._openToastError("Não foi possível obter o No. Guia de Origem e/ou de Destino!")
+                            return;
+                        }
+
+                        if (return_value == -10 || return_value == "-10") {
+                            this._openToastError("Não existe a Guia de Transporte de Destino!");
+                            return;
+                        }
+
+                        if (return_value == -20 || return_value == "-20") {
+                            this._openToastError("Não existe a Guia de Transporte registada!");
+                            return;
+                        }
+                    }
                 },
 
                 _lastCheckBeforeRegister: function (guia) {
