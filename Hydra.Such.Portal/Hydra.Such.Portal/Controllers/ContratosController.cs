@@ -4384,7 +4384,7 @@ namespace Hydra.Such.Portal.Controllers
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
                             }
 
-                            Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
+                            Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);//, Codgroup);
                             InvoiceHeader.Wait();
 
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
@@ -4494,7 +4494,12 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                 }
                             }
-
+                            else
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Não foi piossivel obter dados do NAV na criação da fatura.";
+                                return Json(result);
+                            }
                         }
                     }
                     else
@@ -4645,7 +4650,7 @@ namespace Hydra.Such.Portal.Controllers
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
                             }
 
-                            Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);
+                            Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws); //, group);
                             InvoiceHeader.Wait();
                             if (InvoiceHeader.IsCompletedSuccessfully && InvoiceHeader.Result != null)
                             {
@@ -4755,7 +4760,12 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                 }
                             }
-
+                            else
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Não foi piossivel obter dados do NAV na criação da fatura.";
+                                return Json(result);
+                            }
                         }
                     }
                 }
