@@ -661,7 +661,7 @@
 
                                                         <!-- VAADIN GRID  Requisições Cliente -->
                                                         <vaadin-grid aria-label="ClientRequisitions" id="grid_ClientRequisitions" items="[[data.clientRequisitions]]" class="grid" multi-sort="true" disabled="{{ _lockFields }}" active-item="{{_SelectedLineRequisicao}}">
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="startDate">Inicio Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="startDate" />
@@ -676,7 +676,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="endDate">Fim Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="endDate" />
@@ -706,7 +706,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="requisitionDate" />
@@ -721,7 +721,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="promiseNo">Nº Compromisso</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="promiseNo" />
@@ -736,7 +736,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="5%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceGroup" />
@@ -807,7 +807,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="lastInvoiceDate">Data Última Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="lastInvoiceDate" />
@@ -1002,7 +1002,7 @@
 
                                                         <div class="">
                                                             <div class="col-md-6">
-                                                                <such-textarea rows="5" value="{{data.textoFatura}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" disabled="{{ _lockFields }}"> </such-textarea>
+                                                                <such-textarea rows="5" value="{{data.textoFatura}}" id="_LastInvoiceDate" name="_LastInvoiceDate" label="Texto Fatura" maxlength="420" disabled="{{ _lockFields }}"> </such-textarea>
                                                             </div>
                                                         </div>
 
@@ -1047,7 +1047,7 @@
                                                                 </div>
 
                                                                 <div class="col-md-6 ">
-                                                                    <such-textarea rows="5" value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" disabled="{{ _lockFields }}">lo </</such-textarea>
+                                                                    <such-textarea rows="5" value="{{_IRInvoiceText}}" id="_IRInvoiceText" name="_IRInvoiceText" label="Texto Fatura" maxlength="420" disabled="{{ _lockFields }}"></</such-textarea>
                                                                 </div>
 
                                                                 <div class="col-lg-1" style="padding-top:100px">
@@ -1058,7 +1058,7 @@
                                                         <!--</template>-->
                                                         <!-- VAADIN GRID  Textos Fatura -->
                                                         <vaadin-grid aria-label="InvoiceTexts" id="grid_invoiceTexts" items="[[data.invoiceTexts]]" class="grid" multi-sort="true">
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="5%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceGroup" />
@@ -1094,7 +1094,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="80%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceText">Texto Fatura</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="invoiceText" />
@@ -1104,7 +1104,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
                                                             
-                                                            <vaadin-grid-column width="3%" resizable>
+                                                            <vaadin-grid-column width="5%" resizable>
                                                                 <template class="header">
                                                                 </template>
                                                                 <template>

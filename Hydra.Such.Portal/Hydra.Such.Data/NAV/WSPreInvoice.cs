@@ -86,7 +86,8 @@ namespace Hydra.Such.Data.NAV
                     ResponsabilityCenterCode20 = preInvoiceToCreate.ResponsabilityCenterCode,
                     Location_Code = preInvoiceToCreate.LocationCode,
                     No_Compromisso = preInvoiceToCreate.CommitmentNumber,
-                    Observacoes = preInvoiceToCreate.Comments,
+                    Observacoes = !string.IsNullOrEmpty(preInvoiceToCreate.Comments) ? preInvoiceToCreate.Comments : "",
+                    Observações_1 = !string.IsNullOrEmpty(preInvoiceToCreate.Comments2) ? preInvoiceToCreate.Comments2 : "",
                     Responsibility_Center = CUsers.CentroDeResponsabilidade,
                     //Order_Date
                     Payment_Method_Code = preInvoiceToCreate.CodMetodoPagamento,
@@ -158,6 +159,28 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoice(AuthorizedCustomerBillingHeader billingHeader, NAVWSConfigurations WSConfigurations, string dataFormulario, string projeto, SPInvoiceListViewModel Ship, int GrupoFatura)
         {
+            string Observacoes = billingHeader.Comments;
+            string Observacoes1 = billingHeader.Comments;
+            string Observacoes2 = "";
+            int ultimoSpace = 0;
+            int tamanhoFinal = 0;
+
+            if (Observacoes.Length > 250)
+            {
+                Observacoes1 = Observacoes.Substring(0, 250);
+                ultimoSpace = Observacoes1.LastIndexOf(' ');
+
+                Observacoes1 = Observacoes.Substring(0, ultimoSpace);
+
+                if ((Observacoes.Length - ultimoSpace) > 250)
+                    tamanhoFinal = 250;
+                else
+                    tamanhoFinal = Observacoes.Length - ultimoSpace;
+
+                Observacoes2 = Observacoes.Substring(ultimoSpace + 1, tamanhoFinal);
+            }
+
+
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
             invoiceHeader.Date = billingHeader.Date;
@@ -173,7 +196,8 @@ namespace Hydra.Such.Data.NAV
             invoiceHeader.FunctionalAreaCode = billingHeader.FunctionalAreaCode;
             invoiceHeader.ResponsabilityCenterCode = billingHeader.ResponsabilityCenterCode;
             invoiceHeader.LocationCode = billingHeader.LocationCode;
-            invoiceHeader.Comments = billingHeader.Comments;
+            invoiceHeader.Comments = !string.IsNullOrEmpty(Observacoes1) ? Observacoes1 : "";
+            invoiceHeader.Comments2 = !string.IsNullOrEmpty(Observacoes2) ? Observacoes2 : "";
             invoiceHeader.CodTermosPagamento = billingHeader.CodTermosPagamento;
             invoiceHeader.CodMetodoPagamento = billingHeader.CodMetodoPagamento;
             invoiceHeader.CreateUser = billingHeader.CreateUser;
@@ -199,8 +223,29 @@ namespace Hydra.Such.Data.NAV
 
         }
 
-        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoiceHeader(NAVSalesHeaderViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations)
+        public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoiceHeader(NAVSalesHeaderViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations) //, int GrupoFatura)
         {
+            string Observacoes = PreInvoiceToCreate.Observacoes;
+            string Observacoes1 = PreInvoiceToCreate.Observacoes;
+            string Observacoes2 = "";
+            int ultimoSpace = 0;
+            int tamanhoFinal = 0;
+
+            if (Observacoes.Length > 250)
+            {
+                Observacoes1 = Observacoes.Substring(0, 250);
+                ultimoSpace = Observacoes1.LastIndexOf(' ');
+
+                Observacoes1 = Observacoes.Substring(0, ultimoSpace);
+
+                if ((Observacoes.Length - ultimoSpace) > 250)
+                    tamanhoFinal = 250;
+                else
+                    tamanhoFinal = Observacoes.Length - ultimoSpace;
+
+                Observacoes2 = Observacoes.Substring(ultimoSpace + 1, tamanhoFinal);
+            }
+
             WSCreatePreInvoice.Create NAVCreate = new WSCreatePreInvoice.Create()
             {
 
@@ -233,12 +278,14 @@ namespace Hydra.Such.Data.NAV
                     Codigo_Pedido = PreInvoiceToCreate.CodigoPedido,
                     Data_Encomenda = PreInvoiceToCreate.DataEncomenda,
                     Data_Serv_Prestado = PreInvoiceToCreate.DataServ_Prestado,
-                    Observacoes = PreInvoiceToCreate.Observacoes,
+                    Observacoes = Observacoes1,
+                    Observações_1 = Observacoes2,
                     Contract_No = PreInvoiceToCreate.ContractNo,
                     Document_Type = WSCreatePreInvoice.Document_Type.Invoice,
                     Factura_CAF= PreInvoiceToCreate.FacturaCAF,
                     User_pre_registo_2009=PreInvoiceToCreate.Userpreregisto2009,
                     Posting_Date= PreInvoiceToCreate.PostingDate,                   
+                    //Grupo_Fatura= GrupoFatura,
                     Document_TypeSpecified = true,
                     Posting_DateSpecified=true,
                     Shipment_DateSpecified=true,
@@ -252,6 +299,7 @@ namespace Hydra.Such.Data.NAV
                     Data_EncomendaSpecified=true,
                     CommentSpecified=true,
                     Debit_MemoSpecified=true,
+                    //Grupo_FaturaSpecified=true,
                     
                     //Dimensions
                     ResponsabilityCenterCode20 = PreInvoiceToCreate.ResponsabilityCenterCode20,

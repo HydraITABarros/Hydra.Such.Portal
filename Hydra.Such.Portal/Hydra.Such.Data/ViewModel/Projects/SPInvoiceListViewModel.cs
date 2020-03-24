@@ -75,6 +75,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string SituacoesPendentes { get; set; }
         public int? Opcao { get; set; }
         public string Comments { get; set; }
+        public string Comments2 { get; set; }
         public DateTime Posting_Date { get; set; }
 
         public string Ship_to_Address { get; set; }
