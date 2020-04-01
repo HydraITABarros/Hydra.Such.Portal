@@ -231,6 +231,18 @@
                     </div>
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="5%" resizable hidden$="{{ _columns.factoringSemRecurso.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="factoringSemRecurso">Factoring sem Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="factoringSemRecurso" value="[[filter.factoringSemRecurso]]" />
+                </template>
+                <template>
+                    <div class="alignCenter">
+                        {{item.factoringSemRecurso}}
+                    </div>
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -375,6 +387,7 @@
                         "documentNo": { hidden: false, label: "Documento Nº" },
                         "dimensionValue": { hidden: false, label: "Unidade Prestação" },
                         "value": { hidden: false, label: "Valor" },
+                        "factoringSemRecurso": { hidden: false, label: "Factoring sem Recurso" },
                     };
 
                     if (localStorage["listmovimentosallclients.ToggleColumn"]) {
