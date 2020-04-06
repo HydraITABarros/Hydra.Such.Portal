@@ -2976,6 +2976,9 @@ namespace Hydra.Such.Portal.Controllers
             if (result.eReasonCode != 1)
                 return Json(result);
 
+            result.eReasonCode = 2;
+            result.eMessage = "Ocorreu um erro ao autorizar.";
+
             try
             {
                 #region HTTP Params
@@ -3178,8 +3181,6 @@ namespace Hydra.Such.Portal.Controllers
                         try
                         {
                             ctx.SaveChanges();
-                            result.eReasonCode = 1;
-                            result.eMessage = "Movimentos autorizados com o Grupo Fatura " + invoiceGroup.ToString();
                         }
                         catch (Exception ex)
                         {
@@ -3192,6 +3193,8 @@ namespace Hydra.Such.Portal.Controllers
                         try
                         {
                             ctx.SaveChanges();
+                            result.eReasonCode = 1;
+                            result.eMessage = "Movimentos autorizados com o Grupo Fatura " + invoiceGroup.ToString();
                         }
                         catch (Exception ex)
                         {
@@ -3221,6 +3224,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult ValidateMovementsForAuthorization([FromBody] JObject requestParams)
         {
             var result = ValidateMovements(requestParams);
+
             return Json(result);
         }
 
@@ -3390,21 +3394,17 @@ namespace Hydra.Such.Portal.Controllers
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar a área de residuos."));
                 }
                 else
-                {
-                    result.eReasonCode = 2;
-                    result.eMessage = "Não foi possivel obter detalhes do projeto.";
-                }
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi possivel obter detalhes do projeto."));
             }
             catch (Exception ex)
             {
-                result.eReasonCode = 2;
                 result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar os movimentos: " + ex.Message + "."));
             }
             bool hasErrors = result.eMessages.Any(x => x.Type == TraceType.Error);
             if (hasErrors || result.eReasonCode > 1)
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Foram detetados erros nos movimentos submetidos.";
+                result.eMessages.Add(new TraceInformation(TraceType.Error, "Foram detetados erros nos movimentos submetidos."));
             }
             else
             {

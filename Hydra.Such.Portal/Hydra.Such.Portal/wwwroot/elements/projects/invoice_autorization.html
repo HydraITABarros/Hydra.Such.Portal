@@ -988,6 +988,7 @@
                     }
                 },
                 _openDlg: function () {
+                    debugger;
                     if (this._commitmentNo == null)
                         this._commitmentNo = "";
                     if (this._commitmentNo.length > 50) {
@@ -1066,6 +1067,7 @@
                     this._resizeDialogToContent();
                 },
                 _projMovValidationResponse: function (e) {
+                    debugger;
                     if (e.detail.status === 200) {
                         this._validationMessages = [];
                         if (this.projMovValResponse.eReasonCode == 1) {
