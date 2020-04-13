@@ -70,6 +70,7 @@
     <Report Include="FolhaCaixa.rdl" />
     <Report Include="FolhaHora.rdl" />
     <Report Include="GuiaTransporteNav.rdl" />
+    <Report Include="GuiaTransporte_TESTE.rdl" />
     <Report Include="LinhasAcordoPrecos.rdl" />
     <Report Include="MovimentosProjetoFaturados.rdl" />
     <Report Include="OpotunidadeProposta_Contrato.rdl" />

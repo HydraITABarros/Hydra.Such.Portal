@@ -2584,7 +2584,27 @@
 
                     const _DATE = _TODAY.toLocaleDateString("en-US").replace(new RegExp("/", 'g'), "-");
                     const _TIME = _TODAY.toLocaleTimeString().match(/\d{2}:\d{2}|[AMP]+/g).join('-');                  
-                    
+
+                    // zpgm.13042020.b
+                    if (guia.address == null || guia.address == "") {
+                        this._openToastError("Verifique o preenchimento do Endereço de envio!");
+                        return false;
+                    }
+
+                    if (guia.city == null || guia.city == "") {
+                        this._openToastError("Verifique o preenchimento da Cidade de envio!");
+                        return false;
+                    }
+
+                    var codPostalEnvioFilled =
+                        (guia.postCode != null && guia.postCode != "" && guia.postCode.length == 8) && (guia.postCode.indexOf("-") == 4) ? true : false;      // correct format
+
+                    if (!codPostalEnvioFilled) {
+                        this._openToastError("Verifique o Código Postal de Envio!");
+                        return false;
+                    } 
+                    // zpgm.13042020.e
+
                     //  1. Check destination details
                     var localDescFilled =
                         (guia.localDescarga1 != null && guia.localDescarga1 != "") &&
