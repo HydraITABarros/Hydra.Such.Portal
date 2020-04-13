@@ -379,6 +379,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Documento Nº"); Col = Col + 1; }
                 if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unidade Prestação"); Col = Col + 1; }
                 if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor"); Col = Col + 1; }
+                if (dp["factoringSemRecurso"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Factoring sem Recurso"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -395,6 +396,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DocumentNo); Col = Col + 1; }
                         if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DimensionValue); Col = Col + 1; }
                         if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.Numeric).SetCellValue(Convert.ToDouble(item.Value.ToString())); Col = Col + 1; }
+                        if (dp["factoringSemRecurso"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.FactoringSemRecurso); Col = Col + 1; }
 
                         count++;
                     }

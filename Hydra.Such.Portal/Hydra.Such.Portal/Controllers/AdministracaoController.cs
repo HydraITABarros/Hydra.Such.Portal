@@ -356,6 +356,20 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         data.eMessage = "Ocorreu um erro ao eliminar os acessos do utilizador.";
                     }
+                    else
+                    {
+                        foreach (AcessosUtilizador item in userAccessesToDelete)
+                        {
+                            TabelaLog TabLog = new TabelaLog
+                            {
+                                Tabela = "[dbo].[Acessos Utilizador]",
+                                Descricao = "Delete - [Id Utilizador]: " + item.IdUtilizador + " [Funcionalidade]: " + item.Funcionalidade.ToString(),
+                                Utilizador = User.Identity.Name,
+                                DataHora = DateTime.Now
+                            };
+                            DBTabelaLog.Create(TabLog);
+                        }
+                    }
                 }
 
                 //Create (for changed keys) or Update existing
@@ -410,6 +424,20 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         data.eMessage = "Ocorreu um erro ao eliminar os perfis do utilizador.";
                     }
+                    else
+                    {
+                        foreach (PerfisUtilizador item in userProfilesToDelete)
+                        {
+                            TabelaLog TabLog = new TabelaLog
+                            {
+                                Tabela = "[dbo].[Perfis Utilizador]",
+                                Descricao = "Delete - [Id Utilizador]: " + item.IdUtilizador + " [Id Perfil]: " + item.IdPerfil.ToString(),
+                                Utilizador = User.Identity.Name,
+                                DataHora = DateTime.Now
+                            };
+                            DBTabelaLog.Create(TabLog);
+                        }
+                    }
                 }
 
                 //Create (for changed keys) or Update existing
@@ -458,6 +486,20 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         data.eMessage = "Ocorreu um erro ao eliminar as dimensões permitidas ao utilizador.";
                     }
+                    else
+                    {
+                        foreach (AcessosDimensões item in userDimensionsToDelete)
+                        {
+                            TabelaLog TabLog = new TabelaLog
+                            {
+                                Tabela = "[dbo].[Acessos Dimensões]",
+                                Descricao = "Delete - [Id Utilizador]: " + item.IdUtilizador + " [Dimensão]: " + item.Dimensão.ToString() + " [Valor Dimensão]: " + item.ValorDimensão,
+                                Utilizador = User.Identity.Name,
+                                DataHora = DateTime.Now
+                            };
+                            DBTabelaLog.Create(TabLog);
+                        }
+                    }
                 }
 
                 //Create (for changed keys) or Update existing
@@ -497,29 +539,34 @@ namespace Hydra.Such.Portal.Controllers
             ConfigUtilizadores UCObj = DBUserConfigurations.GetById(data.IdUser);
 
             //Remover os acessos os acessos
+            List<AcessosUtilizador> UserAccessesToDelete = DBUserAccesses.GetByUserId(data.IdUser);
+            foreach(AcessosUtilizador item in UserAccessesToDelete)
+            {
+                TabelaLog TabLog_AU = new TabelaLog
+                {
+                    Tabela = "[dbo].[Acessos Utilizador]",
+                    Descricao = "Delete - [Id Utilizador]: " + item.IdUtilizador + " [Funcionalidade]: " + item.Funcionalidade.ToString(),
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(TabLog_AU);
+            }
             DBUserAccesses.DeleteAllFromUser(data.IdUser);
 
-            TabelaLog TabLog_AU = new TabelaLog
-            {
-                Tabela = "[Acessos Utilizador]",
-                Descricao = "Delete - [Id Utilizador]: " + data.IdUser.ToString(),
-                Utilizador = User.Identity.Name,
-                DataHora = DateTime.Now
-            };
-            DBTabelaLog.Create(TabLog_AU);
-
-
             //Remover os acessos às dimensões
-            DBUserDimensions.DeleteAllFromUser(data.IdUser);
-
-            TabelaLog TabLog_UD = new TabelaLog
+            List<AcessosDimensões> UserDimensionsToDelete = DBUserDimensions.GetByUserId(data.IdUser);
+            foreach (AcessosDimensões item in UserDimensionsToDelete)
             {
-                Tabela = "[dbo].[Acessos Dimensões]",
-                Descricao = "Delete - [Id Utilizador]: " + data.IdUser.ToString(),
-                Utilizador = User.Identity.Name,
-                DataHora = DateTime.Now
-            };
-            DBTabelaLog.Create(TabLog_UD);
+                TabelaLog TabLog_UD = new TabelaLog
+                {
+                    Tabela = "[dbo].[Acessos Dimensões]",
+                    Descricao = "Delete - [Id Utilizador]: " + item.IdUtilizador + " [Dimensão]: " + item.Dimensão.ToString() + " [Valor Dimensão]: " + item.ValorDimensão,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(TabLog_UD);
+            }
+            DBUserDimensions.DeleteAllFromUser(data.IdUser);
 
             UCObj.Ativo = false;
 
@@ -554,6 +601,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteUserDimension([FromBody] UserDimensionsViewModel data)
         {
             var userDimension = DBUserDimensions.GetById(data.UserId, data.Dimension, data.DimensionValue);
+            if (userDimension != null)
+            {
+                TabelaLog TabLog = new TabelaLog
+                {
+                    Tabela = "[dbo].[Acessos Dimensões]",
+                    Descricao = "Delete - [Id Utilizador]: " + userDimension.IdUtilizador + " [Dimensão]: " + userDimension.Dimensão.ToString() + " [Valor Dimensão]: " + userDimension.ValorDimensão,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(TabLog);
+            }
             return Json(userDimension != null ? DBUserDimensions.Delete(userDimension) : false);
         }
 
@@ -583,6 +641,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteUserAcessosLocalizacoes([FromBody] AcessosLocalizacoes data)
         {
             var userAcessosLocalizacoes = DBAcessosLocalizacoes.GetById(data.IdUtilizador, data.Localizacao);
+            if (userAcessosLocalizacoes != null)
+            {
+                TabelaLog TabLog = new TabelaLog
+                {
+                    Tabela = "[dbo].[AcessosLocalizacoes]",
+                    Descricao = "Delete - [Id Utilizador]: " + userAcessosLocalizacoes.IdUtilizador + " [Localizacao]: " + userAcessosLocalizacoes.Localizacao,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(TabLog);
+            }
             return Json(userAcessosLocalizacoes != null ? DBAcessosLocalizacoes.Delete(userAcessosLocalizacoes) : false);
         }
 
@@ -636,6 +705,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteUserGruposAprovacao([FromBody] ApprovalUserGroupViewModel data)
         {
             UtilizadoresGruposAprovação UserGrupo = DBApprovalUserGroup.GetById(data.ApprovalGroup, data.ApprovalUser);
+            if (UserGrupo != null)
+            {
+                TabelaLog TabLog = new TabelaLog
+                {
+                    Tabela = "[dbo].[Utilizadores Grupos Aprovação]",
+                    Descricao = "Delete - [Grupo Aprovação]: " + UserGrupo.GrupoAprovação.ToString() + " [Utilizador Aprovação]: " + UserGrupo.UtilizadorAprovação,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(TabLog);
+            }
             bool result = DBApprovalUserGroup.Delete(UserGrupo);
 
             return Json(result);
@@ -645,6 +725,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteUserProfile([FromBody] UserProfileViewModel data)
         {
             var userProfile = DBUserProfiles.GetById(data.UserId, data.Id);
+            if (userProfile != null)
+            {
+                TabelaLog log = new TabelaLog
+                {
+                    Tabela = "[dbo].[Perfis Utilizador]",
+                    Descricao = "Delete - [Id Utilizador]: " + userProfile.IdUtilizador + " [Id Perfil]: " + userProfile.IdPerfil.ToString(),
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log);
+            }
             return Json(userProfile != null ? DBUserProfiles.Delete(userProfile) : false);
         }
 
@@ -674,6 +765,17 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteUserAccess([FromBody] UserAccessesViewModel data)
         {
             var userAccess = DBUserAccesses.GetById(data.IdUser, data.Feature);
+            if (userAccess != null)
+            {
+                TabelaLog log = new TabelaLog
+                {
+                    Tabela = "[dbo].[Acessos Utilizador]",
+                    Descricao = "Delete - [Id Utilizador]: " + userAccess.IdUtilizador + " [Funcionalidade]: " + userAccess.Funcionalidade.ToString(),
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log);
+            }
             return Json(userAccess != null ? DBUserAccesses.Delete(userAccess) : false);
         }
 
@@ -901,10 +1003,31 @@ namespace Hydra.Such.Portal.Controllers
             PerfisModelo PMObj = DBProfileModels.GetById(data.Id);
 
             //Remover os acessos os acessos
+            List<AcessosPerfil> AccessProfilesToDelete = DBAccessProfiles.GetByProfileModelId(data.Id);
+            foreach(AcessosPerfil item in AccessProfilesToDelete)
+            {
+                TabelaLog TabLog = new TabelaLog
+                {
+                    Tabela = "[dbo].[Acessos Perfil]",
+                    Descricao = "Delete - [Id Perfil]: " + item.IdPerfil.ToString() + " [Área]: " + item.Área.ToString() + " [Funcionalidade]: " +item.Funcionalidade.ToString(),
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(TabLog);
+            }
             DBAccessProfiles.DeleteAllFromProfile(data.Id);
 
             if (DBProfileModels.Delete(PMObj))
             {
+                TabelaLog TabLog_PM = new TabelaLog
+                {
+                    Tabela = "[dbo].[Perfis Modelo]",
+                    Descricao = "Delete - [Id]: " + PMObj.Id.ToString(),
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(TabLog_PM);
+
                 data.Id = 0;
             }
             return Json(data);
@@ -917,6 +1040,15 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (DBAccessProfiles.Delete(data.ParseToDB()))
                 {
+                    TabelaLog TabLog = new TabelaLog
+                    {
+                        Tabela = "[dbo].[Acessos Perfil]",
+                        Descricao = "Delete - [Id Perfil]: " + data.IdProfile.ToString() + " [Área]: " + data.Area.ToString() + " [Funcionalidade]: " + data.Feature.ToString(),
+                        Utilizador = User.Identity.Name,
+                        DataHora = DateTime.Now
+                    };
+                    DBTabelaLog.Create(TabLog);
+
                     data.eReasonCode = 1;
                     data.eMessage = "Registo eliminado com sucesso.";
                 }
@@ -1816,6 +1948,18 @@ namespace Hydra.Such.Portal.Controllers
             {
                 List<ServiçosCliente> results = DBClientServices.GetAll();
                 results.RemoveAll(x => data.Any(u => u.ClientNumber == x.NºCliente && u.ServiceCode == x.CódServiço));
+
+                foreach (ServiçosCliente item in results)
+                {
+                    TabelaLog log = new TabelaLog
+                    {
+                        Tabela = "[dbo].[Serviços Cliente]",
+                        Descricao = "Delete - [Nº Cliente]: " + item.NºCliente + " [Cód. Serviço]: " + item.CódServiço,
+                        Utilizador = User.Identity.Name,
+                        DataHora = DateTime.Now
+                    };
+                    DBTabelaLog.Create(log);
+                }
                 results.ForEach(x => DBClientServices.Delete(x.CódServiço, x.NºCliente));
                 return Json(data);
             }
@@ -1901,6 +2045,15 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteTiposViaturas([FromBody] ConfiguracaoTabelasViewModel data)
         {
             var result = DBConfiguracaoTabelas.Delete(DBConfiguracaoTabelas.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Configuracao Tabelas]",
+                Descricao = "Delete - [Tabela]: " + data.Tabela + " [ID]: " + data.ID.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(result);
         }
 
@@ -1977,6 +2130,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteGestor([FromBody] Viaturas2GestoresGestorViewModel gestor)
         {
             var result = DBViaturas2GestoresGestor.Delete(DBViaturas2GestoresGestor.ParseToDB(gestor));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Viaturas2_Gestores_Gestor]",
+                Descricao = "Delete - [ID]: " + gestor.ID.ToString() + " [Gestor]: " + gestor.Gestor,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -2039,6 +2200,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteSeguradora([FromBody] Viaturas2CartaVerdeSeguradoraViewModel seguradora)
         {
             var result = DBViaturas2CartaVerdeSeguradora.Delete(DBViaturas2CartaVerdeSeguradora.ParseToDB(seguradora));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Viaturas2_CartaVerde_Seguradora]",
+                Descricao = "Delete - [ID]: " + seguradora.ID.ToString() + " [Seguradora]: " + seguradora.Seguradora,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -2098,6 +2267,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteMarca([FromBody] Viaturas2MarcasViewModel data)
         {
             var result = DBViaturas2Marcas.Delete(DBViaturas2Marcas.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Viaturas2_Marcas]",
+                Descricao = "Delete - [ID]: " + data.ID.ToString() + " [Marca]: " + data.Marca,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -2159,6 +2336,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteModelo([FromBody] Viaturas2ModelosViewModel data)
         {
             var result = DBViaturas2Modelos.Delete(DBViaturas2Modelos.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Viaturas2_Modelos]",
+                Descricao = "Delete - [ID]: " + data.ID.ToString() + " [IDMarca]: " + data.IDMarca.ToString() + " [Modelo]: " + data.Modelo,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -2217,6 +2402,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteCartoesEApolices([FromBody] CartoesEApolicesViewModel data)
         {
             var result = DBCartoesEApolices.Delete(DBCartoesEApolices.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Cartões e Apólices]",
+                Descricao = "Delete - [Tipo]: " + data.Tipo.ToString() + " [Número]: " + data.Numero,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -2293,6 +2486,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteConfiguracaoAjudaCusto([FromBody] ConfiguracaoAjudaCustoViewModel data)
         {
             var result = DBConfiguracaoAjudaCusto.Delete(DBConfiguracaoAjudaCusto.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Configuracao Ajuda Custo]",
+                Descricao = "Delete - [CodigoTipoCusto]: " + data.CodigoTipoCusto + " [CodigoRefCusto]: " + data.CodigoRefCusto + " [DataChegadaDataPartida]: " + data.DataChegadaDataPartida.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -2372,6 +2573,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteTipoTrabalhoFH([FromBody] TipoTrabalhoFHViewModel data)
         {
             var result = DBTipoTrabalhoFH.Delete(DBTipoTrabalhoFH.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Tipo_Trabalho_FH]",
+                Descricao = "Delete - [Codigo]: " + data.Codigo + " [Descricao]: " + data.Descricao,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -2463,6 +2672,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeletePrecoVendaRecursoFH([FromBody] PrecoVendaRecursoFHViewModel data)
         {
             var result = DBPrecoVendaRecursoFH.Delete(DBPrecoVendaRecursoFH.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Preco_Venda_Recurso_FH]",
+                Descricao = "Delete - [Code]: " + data.Code + " [CodTipoTrabalho]: " + data.CodTipoTrabalho + " [StartingDate]: " + data.StartingDate.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -3679,6 +3896,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeletePrecoCustoRecursoFH([FromBody] PrecoCustoRecursoViewModel data)
         {
             var result = DBPrecoCustoRecursoFH.Delete(DBPrecoCustoRecursoFH.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Preco_Custo_Recurso_FH]",
+                Descricao = "Delete - [Code]: " + data.Code + " [CodTipoTrabalho]: " + data.CodTipoTrabalho + " [StartingDate]: " + data.StartingDate.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -3808,6 +4033,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteRHRecursosFH([FromBody] RHRecursosViewModel data)
         {
             var result = DBRHRecursosFH.Delete(DBRHRecursosFH.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[RH_Recursos_FH]",
+                Descricao = "Delete - [NoEmpregado]: " + data.NoEmpregado + " [Recurso]: " + data.Recurso,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -4129,6 +4362,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteAutorizacaoFHRH([FromBody] AutorizacaoFHRHViewModel data)
         {
             var result = DBAutorizacaoFHRH.Delete(DBAutorizacaoFHRH.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Autorizacao_FH_RH]",
+                Descricao = "Delete - [No_Empregado]: " + data.NoEmpregado,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -4218,6 +4459,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteOrigemDestinoFH([FromBody] OrigemDestinoFHViewModel data)
         {
             var result = DBOrigemDestinoFh.Delete(DBOrigemDestinoFh.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Origem_Destino_FH]",
+                Descricao = "Delete - [Código]: " + data.Codigo,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -4301,6 +4550,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteDistanciaFH([FromBody] DistanciaFHViewModel data)
         {
             var result = DBDistanciaFh.Delete(DBDistanciaFh.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Distancia_FH]",
+                Descricao = "Delete - [Código_Origem]: " + data.Origem + " [Código_Destino]: " + data.Destino,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -4384,6 +4641,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteConfiguracaoRecursosFolhaHoras([FromBody] TabelaConfRecursosFHViewModel data)
         {
             var result = DBTabelaConfRecursosFh.Delete(DBTabelaConfRecursosFh.ParseToDB(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Tabela_Conf_Recursos_FH]",
+                Descricao = "Delete - [Tipo]: " + data.Tipo.ToString() + " [Cod_Recurso]: " + data.CodigoRecurso,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -4602,6 +4867,15 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (DBComprador.Delete(CPD.ParseToDB()) == true)
                     {
+                        TabelaLog log = new TabelaLog
+                        {
+                            Tabela = "[dbo].[Comprador]",
+                            Descricao = "Delete - [Cod_Comprador]: " + CPD.CodComprador + " [Nome_Comprador]: " + CPD.NomeComprador,
+                            Utilizador = User.Identity.Name,
+                            DataHora = DateTime.Now
+                        };
+                        DBTabelaLog.Create(log);
+
                         CPD.eReasonCode = 1;
                         CPD.eMessage = "O Comprador foi eliminado com sucesso.";
                     }
@@ -4767,6 +5041,15 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (DBConfigEmailFornecedores.Delete(config) == true)
                     {
+                        TabelaLog log = new TabelaLog
+                        {
+                            Tabela = "[dbo].[Configuração Email Fornecedores]",
+                            Descricao = "Delete - [CodFornecedor]: " + config.CodFornecedor + " [CResp]: " + config.Cresp,
+                            Utilizador = User.Identity.Name,
+                            DataHora = DateTime.Now
+                        };
+                        DBTabelaLog.Create(log);
+
                         result.eReasonCode = 1;
                         result.eMessage = "A Configuração Email Fornecedor foi eliminada com sucesso.";
                     }
@@ -4832,6 +5115,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeteleApprovalConfig([FromBody] ApprovalConfigurationsViewModel data)
         {
             var result = DBApprovalConfigurations.Delete(DBApprovalConfigurations.ParseToDatabase(data));
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Configuração Aprovações]",
+                Descricao = "Delete - [Id]: " + data.Id.ToString() + " [Tipo]: " + data.Type.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
             return Json(result);
         }
 
@@ -4940,14 +5231,36 @@ namespace Hydra.Such.Portal.Controllers
                 results2.ForEach(x =>
                 {
                     if (x.GrupoAprovação == data.Code)
+                    {
                         DBApprovalUserGroup.Delete(x);
+
+                        TabelaLog log = new TabelaLog
+                        {
+                            Tabela = "[dbo].[Utilizadores Grupos Aprovação]",
+                            Descricao = "Delete - [Grupo Aprovação]: " + x.GrupoAprovação.ToString() + " [Utilizador Aprovação]: " + x.UtilizadorAprovação,
+                            Utilizador = User.Identity.Name,
+                            DataHora = DateTime.Now
+                        };
+                        DBTabelaLog.Create(log);
+                    }
                 });
 
                 List<GruposAprovação> results = DBApprovalGroups.GetAll();
                 results.ForEach(x =>
                 {
                     if (x.Código == data.Code)
+                    {
                         DBApprovalGroups.Delete(x);
+
+                        TabelaLog log = new TabelaLog
+                        {
+                            Tabela = "[dbo].[Grupos Aprovação]",
+                            Descricao = "Delete - [Código]: " + x.Código.ToString() + " [Descrição]: " + x.Descrição,
+                            Utilizador = User.Identity.Name,
+                            DataHora = DateTime.Now
+                        };
+                        DBTabelaLog.Create(log);
+                    }
                 });
                 eReasonCode = "100";
             }
@@ -5036,6 +5349,15 @@ namespace Hydra.Such.Portal.Controllers
         {
             var result = DBApprovalUserGroup.Delete(DBApprovalUserGroup.ParseToDb(data));
 
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Utilizadores Grupos Aprovação]",
+                Descricao = "Delete - [Grupo Aprovação]: " + data.ApprovalGroup.ToString() + " [Utilizador Aprovação]: " + data.ApprovalUser,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(data);
         }
         #endregion
@@ -5078,6 +5400,16 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeletePlace([FromBody] PlacesViewModel data)
         {
             var result = DBPlaces.Delete(DBPlaces.ParseToDB(data));
+
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Locais]",
+                Descricao = "Delete - [Código]: " + data.Code.ToString() + " [Descrição]: " + data.Description,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(result);
         }
 
@@ -5156,6 +5488,16 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteFetcUnit([FromBody] FetcUnitViewModel data)
         {
             var result = DBFetcUnit.Delete(DBFetcUnit.ParseToDB(data));
+
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Unidade Prestação]",
+                Descricao = "Delete - [Código]: " + data.Code.ToString() + " [Descrição]: " + data.Description,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(result);
         }
 
@@ -5286,6 +5628,16 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteUnidadeMedida([FromBody] UnidadeMedidaViewModel data)
         {
             var result = DBUnidadeMedida.Delete(DBUnidadeMedida.ParseToDatabase(data));
+
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Unidade Medida]",
+                Descricao = "Delete - [Code]: " + data.Code.ToString() + " [Description]: " + data.Description,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(result);
         }
 
@@ -5361,6 +5713,16 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteUnidadeMedidaProduto([FromBody] UnitMeasureProductViewModel data)
         {
             var result = DBUnitMeasureProduct.Delete(DBUnitMeasureProduct.ParseToDb(data));
+
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Unidade Medida Produto]",
+                Descricao = "Delete - [Nº Produto]: " + data.ProductNo + " [Código]: " + data.Code,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(result);
         }
 
@@ -5669,11 +6031,38 @@ namespace Hydra.Such.Portal.Controllers
 
             try
             {
+                LinhasAcordoPrecos LinhaAP = DBLinhasAcordoPrecos.GetAllByNoProcedimento(data.NoProcedimento).FirstOrDefault();
                 dbDeleteLinhaResult = DBLinhasAcordoPrecos.DeleteByProcedimento(data.NoProcedimento);
+                TabelaLog log = new TabelaLog
+                {
+                    Tabela = "[dbo].[LinhasAcordoPrecos]",
+                    Descricao = "Delete - [NoProcedimento]: " + LinhaAP.NoProcedimento + " [NoFornecedor]: " + LinhaAP.NoFornecedor + " [CodProduto]: " + LinhaAP.CodProduto + " [DtValidadeInicio]: " + LinhaAP.DtValidadeInicio.ToString() + " [Cresp]: " + LinhaAP.Cresp + " [Localizacao]: " + LinhaAP.Localizacao,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log);
 
+                FornecedoresAcordoPrecos FornecedorAP = DBFornecedoresAcordoPrecos.GetByNoProcedimento(data.NoProcedimento);
                 dbDeleteFornecedorResult = DBFornecedoresAcordoPrecos.DeleteByProcedimento(data.NoProcedimento);
+                TabelaLog log_FAP = new TabelaLog
+                {
+                    Tabela = "[dbo].[FornecedoresAcordoPrecos]",
+                    Descricao = "Delete - [NoProcedimento]: " + FornecedorAP.NoProcedimento + " [NoFornecedor]: " + FornecedorAP.NoFornecedor,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log_FAP);
 
+                AcordoPrecos AcordoPreco = DBAcordoPrecos.GetById(data.NoProcedimento);
                 dbDeleteAcordoPrecoResult = DBAcordoPrecos.Delete(data.NoProcedimento);
+                TabelaLog log_AP = new TabelaLog
+                {
+                    Tabela = "[dbo].[AcordoPrecos]",
+                    Descricao = "Delete - [NoProcedimento]: " + AcordoPreco.NoProcedimento,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log_AP);
 
                 if (!dbDeleteAcordoPrecoResult)
                     result = 1;
@@ -5695,6 +6084,15 @@ namespace Hydra.Such.Portal.Controllers
             {
                 dbDeleteLinhaResult = DBLinhasAcordoPrecos.Delete(data.NoProcedimento, data.NoFornecedor, data.CodProduto, data.DtValidadeInicio, data.Cresp, data.Localizacao);
 
+                TabelaLog log = new TabelaLog
+                {
+                    Tabela = "[dbo].[LinhasAcordoPrecos]",
+                    Descricao = "Delete - [NoProcedimento]: " + data.NoProcedimento + " [NoFornecedor]: " + data.NoFornecedor + " [CodProduto]: " + data.CodProduto + " [DtValidadeInicio]: " + data.DtValidadeInicio.ToString() + " [Cresp]: " + data.Cresp + " [Localizacao]: " + data.Localizacao,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log);
+
                 if (!dbDeleteLinhaResult)
                     result = 1;
             }
@@ -5714,6 +6112,15 @@ namespace Hydra.Such.Portal.Controllers
             try
             {
                 dbDeleteFornecedorResult = DBFornecedoresAcordoPrecos.Delete(data.NoProcedimento, data.NoFornecedor);
+
+                TabelaLog log = new TabelaLog
+                {
+                    Tabela = "[dbo].[FornecedoresAcordoPrecos]",
+                    Descricao = "Delete - [NoProcedimento]: " + data.NoProcedimento + " [NoFornecedor]: " + data.NoFornecedor,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log);
 
                 if (!dbDeleteFornecedorResult)
                     result = 1;
@@ -6277,6 +6684,15 @@ namespace Hydra.Such.Portal.Controllers
             {
                 dbDeleteAnexosErrosResult = DBAnexosErros.Delete(Convert.ToInt32(AnexoErro.CodeTexto));
 
+                TabelaLog log = new TabelaLog
+                {
+                    Tabela = "[dbo].[AnexosErros]",
+                    Descricao = "Delete - [ID]: " + AnexoErro.CodeTexto,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log);
+
                 if (!dbDeleteAnexosErrosResult)
                     result = 1;
             }
@@ -6464,6 +6880,15 @@ namespace Hydra.Such.Portal.Controllers
             // Delete Group
             var result = DBClassificationFilesTechniques.Delete(DBClassificationFilesTechniques.ParseToDatabase(data));
 
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Classificação Fichas Técnicas]",
+                Descricao = "Delete - [Código]: " + data.Code,
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(result);
         }
 
@@ -6525,6 +6950,16 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult DeleteConfectionProcedure([FromBody] ProceduresConfectionViewModel data)
         {
             var result = ProceduresConfection.Delete(ProceduresConfection.ParseToDatabase(data));
+
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Procedimentos de Confeção]",
+                Descricao = "Delete - [Nº Prato]: " + data.orderNo.ToString() + " [Código Ação]: " + data.actionNo.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(result);
         }
 
@@ -6581,6 +7016,16 @@ namespace Hydra.Such.Portal.Controllers
             if (ProceduresConfection.GetAllbyActionNo(data.Code).Count() == 0)
             {
                 var result = DBActionsConfection.Delete(DBActionsConfection.ParseToDb(data));
+
+                TabelaLog log = new TabelaLog
+                {
+                    Tabela = "[dbo].[Ações de Confeção]",
+                    Descricao = "Delete - [Código]: " + data.Code.ToString() + " [Descrição]: " + data.Description,
+                    Utilizador = User.Identity.Name,
+                    DataHora = DateTime.Now
+                };
+                DBTabelaLog.Create(log);
+
                 return Json(result);
             }
             else
@@ -6844,6 +7289,15 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(false);
             }
 
+            TabelaLog log = new TabelaLog
+            {
+                Tabela = "[dbo].[Configuração Tempos CCP]",
+                Descricao = "Delete - [Tipo]: " + data.Tipo.ToString(),
+                Utilizador = User.Identity.Name,
+                DataHora = DateTime.Now
+            };
+            DBTabelaLog.Create(log);
+
             return Json(DBConfiguracaoCCP.DeleteConfiguracaoTempo(data.Tipo));
         }
 
@@ -7034,6 +7488,15 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (DBConfigMercadoLocal.Delete(linha) == false)
                 {
+                    TabelaLog log = new TabelaLog
+                    {
+                        Tabela = "[dbo].[Config Mercado Local]",
+                        Descricao = "Delete - [RegiaoMercadoLocal]: " + linha.RegiaoMercadoLocal,
+                        Utilizador = User.Identity.Name,
+                        DataHora = DateTime.Now
+                    };
+                    DBTabelaLog.Create(log);
+
                     result.eReasonCode = 1;
                     result.eMessage = "Ocorreu um erro ao Eliminar a linha Config Mercado Local.";
                 }

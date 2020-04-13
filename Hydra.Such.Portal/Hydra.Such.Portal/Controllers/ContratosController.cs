@@ -4366,11 +4366,11 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             if (!string.IsNullOrEmpty(obs))
                             {
-                                PreInvoiceToCreate.Observacoes = obs;
+                                PreInvoiceToCreate.Observacoes = !string.IsNullOrEmpty(obs) ? obs : "";
                             }
                             else
                             {
-                                PreInvoiceToCreate.Observacoes = Contract.TextoFatura;
+                                PreInvoiceToCreate.Observacoes = !string.IsNullOrEmpty(Contract.TextoFatura) ? Contract.TextoFatura : "";
                             }
                             obs = "";
 
@@ -4627,11 +4627,11 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (!string.IsNullOrEmpty(obs))
                             {
-                                PreInvoiceToCreate.Observacoes = obs;
+                                PreInvoiceToCreate.Observacoes = !string.IsNullOrEmpty(obs) ? obs : "";
                             }
                             else
                             {
-                                PreInvoiceToCreate.Observacoes = Contract.TextoFatura;
+                                PreInvoiceToCreate.Observacoes = !string.IsNullOrEmpty(Contract.TextoFatura) ? Contract.TextoFatura : "";
                             }
                             obs = "";
 

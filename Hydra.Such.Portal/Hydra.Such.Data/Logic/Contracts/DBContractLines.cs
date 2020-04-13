@@ -307,7 +307,7 @@ namespace Hydra.Such.Data.Logic.Contracts
             return parsedItems;
         }
 
-            public static LinhasContratos ParseToDB(ContractLineViewModel x)
+        public static LinhasContratos ParseToDB(ContractLineViewModel x)
         {
             return new LinhasContratos()
             {

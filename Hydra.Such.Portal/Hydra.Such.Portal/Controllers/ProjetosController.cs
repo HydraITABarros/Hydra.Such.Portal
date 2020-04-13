@@ -2976,6 +2976,9 @@ namespace Hydra.Such.Portal.Controllers
             if (result.eReasonCode != 1)
                 return Json(result);
 
+            result.eReasonCode = 2;
+            result.eMessage = "Ocorreu um erro ao autorizar.";
+
             try
             {
                 #region HTTP Params
@@ -3178,8 +3181,6 @@ namespace Hydra.Such.Portal.Controllers
                         try
                         {
                             ctx.SaveChanges();
-                            result.eReasonCode = 1;
-                            result.eMessage = "Movimentos autorizados com o Grupo Fatura " + invoiceGroup.ToString();
                         }
                         catch (Exception ex)
                         {
@@ -3192,6 +3193,8 @@ namespace Hydra.Such.Portal.Controllers
                         try
                         {
                             ctx.SaveChanges();
+                            result.eReasonCode = 1;
+                            result.eMessage = "Movimentos autorizados com o Grupo Fatura " + invoiceGroup.ToString();
                         }
                         catch (Exception ex)
                         {
@@ -3221,6 +3224,7 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult ValidateMovementsForAuthorization([FromBody] JObject requestParams)
         {
             var result = ValidateMovements(requestParams);
+
             return Json(result);
         }
 
@@ -3390,21 +3394,17 @@ namespace Hydra.Such.Portal.Controllers
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar a área de residuos."));
                 }
                 else
-                {
-                    result.eReasonCode = 2;
-                    result.eMessage = "Não foi possivel obter detalhes do projeto.";
-                }
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi possivel obter detalhes do projeto."));
             }
             catch (Exception ex)
             {
-                result.eReasonCode = 2;
                 result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao validar os movimentos: " + ex.Message + "."));
             }
             bool hasErrors = result.eMessages.Any(x => x.Type == TraceType.Error);
             if (hasErrors || result.eReasonCode > 1)
             {
                 result.eReasonCode = 2;
-                result.eMessage = "Foram detetados erros nos movimentos submetidos.";
+                result.eMessages.Add(new TraceInformation(TraceType.Error, "Foram detetados erros nos movimentos submetidos."));
             }
             else
             {
@@ -8600,51 +8600,56 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (!string.IsNullOrEmpty(NoPreInvoice) && !string.IsNullOrEmpty(TypePreInvoice))
                             {
-                                //Read NAV PreInvoice Key
-                                Task<WSCreatePreInvoice.Read_Result> TReadNavPreInvoice = WSPreInvoice.GetNavPreInvoice(NoPreInvoice, TypePreInvoice, _configws);
-                                try
+                                bool wsOK = true;
+                                while (wsOK == true)
                                 {
-                                    TReadNavPreInvoice.Wait();
-                                }
-                                catch (Exception ex)
-                                {
-                                    result.eReasonCode = 5;
-                                    result.eMessage = "Ocorreu um erro ao ler a chave da Fatura do NAV2017.";
-                                    return Json(result);
-                                }
-
-                                if (TReadNavPreInvoice.IsCompletedSuccessfully)
-                                {
-                                    Task<WSCreatePreInvoice.Delete_Result> TDeleteNavPreInvoice = WSPreInvoice.DeletePreInvoice(TReadNavPreInvoice.Result.WSPreInvoice.Key, _configws);
+                                    //Read NAV PreInvoice Key
+                                    Task<WSCreatePreInvoice.Read_Result> TReadNavPreInvoice = WSPreInvoice.GetNavPreInvoice(NoPreInvoice, TypePreInvoice, _configws);
                                     try
                                     {
-                                        TDeleteNavPreInvoice.Wait();
-
-                                        if (!TDeleteNavPreInvoice.IsCompletedSuccessfully)
-                                        {
-                                            result.eReasonCode = 5;
-                                            result.eMessage = "Não é possivel eliminar a Fatura no NAV2017.";
-                                            return Json(result);
-                                        }
-                                        else
-                                        {
-                                            result.eReasonCode = 1;
-                                            result.eMessage = "A Fatura foi eliminada com sucesso do NAV2017.";
-                                            return Json(result);
-                                        }
+                                        TReadNavPreInvoice.Wait();
                                     }
                                     catch (Exception ex)
                                     {
                                         result.eReasonCode = 5;
-                                        result.eMessage = "Ocorreu um erro ao eliminar a Fatura do NAV2017.";
+                                        result.eMessage = "Ocorreu um erro ao ler a chave da Fatura do NAV2017.";
                                         return Json(result);
                                     }
-                                }
-                                else
-                                {
-                                    result.eReasonCode = 5;
-                                    result.eMessage = "Não foi possivel obter a chave da fatura do NAV2017.";
-                                    return Json(result);
+
+                                    if (TReadNavPreInvoice.IsCompletedSuccessfully && !string.IsNullOrEmpty(TReadNavPreInvoice.Result.WSPreInvoice.Key))
+                                    {
+                                        Task<WSCreatePreInvoice.Delete_Result> TDeleteNavPreInvoice = WSPreInvoice.DeletePreInvoice(TReadNavPreInvoice.Result.WSPreInvoice.Key, _configws);
+                                        try
+                                        {
+                                            TDeleteNavPreInvoice.Wait();
+
+                                            if (!TDeleteNavPreInvoice.IsCompletedSuccessfully)
+                                            {
+                                                result.eReasonCode = 5;
+                                                result.eMessage = "Não é possivel eliminar a Fatura no NAV2017.";
+                                                return Json(result);
+                                            }
+                                            else
+                                            {
+                                                result.eReasonCode = 1;
+                                                result.eMessage = "A Fatura foi eliminada com sucesso do NAV2017.";
+                                                //return Json(result);
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            result.eReasonCode = 5;
+                                            result.eMessage = "Ocorreu um erro ao eliminar a Fatura do NAV2017.";
+                                            return Json(result);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        wsOK = false;
+                                        //result.eReasonCode = 5;
+                                        //result.eMessage = "Não foi possivel obter a chave da fatura do NAV2017.";
+                                        //return Json(result);
+                                    }
                                 }
                             }
                             else

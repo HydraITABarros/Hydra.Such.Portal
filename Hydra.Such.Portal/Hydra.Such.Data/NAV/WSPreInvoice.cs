@@ -225,13 +225,13 @@ namespace Hydra.Such.Data.NAV
 
         public static async Task<WSCreatePreInvoice.Create_Result> CreatePreInvoiceHeader(NAVSalesHeaderViewModel PreInvoiceToCreate, NAVWSConfigurations WSConfigurations) //, int GrupoFatura)
         {
-            string Observacoes = PreInvoiceToCreate.Observacoes;
-            string Observacoes1 = PreInvoiceToCreate.Observacoes;
+            string Observacoes = !string.IsNullOrEmpty(PreInvoiceToCreate.Observacoes) ? PreInvoiceToCreate.Observacoes : "";
+            string Observacoes1 = !string.IsNullOrEmpty(PreInvoiceToCreate.Observacoes) ? PreInvoiceToCreate.Observacoes : "";
             string Observacoes2 = "";
             int ultimoSpace = 0;
             int tamanhoFinal = 0;
 
-            if (Observacoes.Length > 250)
+            if (!string.IsNullOrEmpty(Observacoes) && Observacoes.Length > 250)
             {
                 Observacoes1 = Observacoes.Substring(0, 250);
                 ultimoSpace = Observacoes1.LastIndexOf(' ');

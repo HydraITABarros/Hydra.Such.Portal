@@ -1284,7 +1284,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (!string.IsNullOrEmpty(item.ProjectNo))
             {
-                NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAllInDB(config.NAVDatabaseName, config.NAVCompanyName, item.ProjectNo).FirstOrDefault();
+                NAVProjectsViewModel PROJ = DBNAV2017Projects.GetAllInDB(config.NAVDatabaseName, config.NAVCompanyName, item.ProjectNo) != null ? DBNAV2017Projects.GetAllInDB(config.NAVDatabaseName, config.NAVCompanyName, item.ProjectNo).FirstOrDefault() : null;
                 if (PROJ != null && !string.IsNullOrEmpty(PROJ.CustomerNo))
                 {
                     NAVClientsViewModel CLIENT = DBNAV2017Clients.GetClientById(config.NAVDatabaseName, config.NAVCompanyName, PROJ.CustomerNo);
