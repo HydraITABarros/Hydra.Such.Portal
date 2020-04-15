@@ -1332,7 +1332,7 @@
 
                 _menuActionsItemSelected: function (e) {
                     var item = e.detail.value;
-                    debugger;;
+                    //debugger;;
                     if (item == null)
                         return;
 
@@ -1507,7 +1507,7 @@
                 },
 
                 _update: function () {
-                    debugger;;
+                    //debugger;;
 
                     this.data.vatRegistrationNo = this.data.vatRegistrationNo == null ? "" : this.data.vatRegistrationNo;
 
@@ -1525,7 +1525,7 @@
                 },
 
                 _updateGuiaResponse: function (e) {
-                    debugger;;
+                    //debugger;;
 
                     if (this.guiaUpdated) {
                         if (this.$.tipoGuia.value == "") {
@@ -2414,7 +2414,7 @@
                 },
 
                 _clearShipmentLines: function (e) {
-                    debugger;;
+                    //debugger;;
                     var linesLength = this.data.linhasGuiaTransporte.length;
 
                     this.data.linhasGuiaTransporte.splice(0, linesLength);
@@ -2514,25 +2514,25 @@
                 },
 
                 _copyFromGuia: function (e) {
-                    debugger;;  
+                    //debugger;;  
                     this.$.ajax_guias_to_copy_from.generateRequest();
                     this.$.copyFromGuiaRegistada.open();
                 },
 
                 _guiasToCopyFromResponse: function (e) {
-                    debugger;;
+                    //debugger;;
                     if (this.guiasRegistadas == null) {
                         //window.alert("Erro!!");
                     }
                 },
 
                 _copyLinesFromGuia: function (e) {
-                    debugger;;
+                    //debugger;;
 
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
                     this.$.ajax_update_guia.generateRequest();
 
-                    debugger;;
+                    //debugger;;
 
                     this.$.ajax_copy_lines_from_guia.body = JSON.stringify({
                         "noGuia": this.data.noGuiaTransporte, "noGuiaToCopyFrom": e.model.item.noGuiaTransporte
@@ -2542,7 +2542,7 @@
                 },
 
                 _copyLinesFromGuiaResponse: function (e) {
-                    debugger;;
+                    //debugger;;
 
                     if (this.linesGtCopied == 0 || this.linesGtCopied == "0") {
                         this.$.page_databound_ajax.body = JSON.stringify({ "No": this._guiatransporteid, "Historic": this._history });
@@ -2635,6 +2635,25 @@
                         return false;
                     }
 
+                    // zpgm.14042020.b
+                    //debugger;;
+                    if (guia.vatRegistrationNo.length != 9) {
+                        this._openToastError("Nif Cliente inválido!");
+                        return false;
+                    }
+
+                    var vatRegistrationNo = Number(guia.vatRegistrationNo);
+                    if (isNaN(vatRegistrationNo)) {
+                        this._openToastError("Nif Cliente inválido!");
+                        return false;
+                    }
+                    
+                    if (!this.__checkVatNumber(guia.vatRegistrationNo)) {
+                        this._openToastError("Nif Cliente inválido!");
+                        return false;
+                    } 
+                    // zpgm.14042020.e
+
                     // 4. Check Date fields values
                     if (guia.dataGuiaTxt == null || guia.dataGuiaTxt == "") {
                         this._openToastError("Data da Guia não preenchida!");
@@ -2716,7 +2735,7 @@
                     this._skipMsg = true;
                     this.$.ajax_update_guia.body = JSON.stringify(this.data);
                     this.$.ajax_update_guia.generateRequest();
-                    debugger;;
+                    //debugger;;
                     if (this._lastCheckBeforeRegister(this.data)) {
                         var ajax_request = this.$.register_guia_ajax;
 
@@ -2763,6 +2782,11 @@
 
                     if (this.registerReturnCode === -50) {
                         this._openToastError(errorMsg + "Nif não preenchido!");
+                        return;
+                    }
+
+                    if (this.registerReturnCode === -51) {
+                        this._openToastError(errorMsg + "Nif inválido!");
                         return;
                     }
 
@@ -2972,6 +2996,28 @@
                     }
 
                     return -9;  // comparison could not be made! (/!\/!\*** check cause ***/!\/!\ )
+                },
+
+                __checkVatNumber: function (vatnumber) {
+                    // Checks the check digits of a Portuguese VAT number. 
+                    var total = 0;
+                    var multipliers = [9, 8, 7, 6, 5, 4, 3, 2];
+
+                    // Extract the next digit and multiply by the counter.
+                    for (var i = 0; i < 8; i++)
+                        total += Number(vatnumber.charAt(i)) * multipliers[i];
+
+                    // Establish check digits subtracting modulus 11 from 11.
+                    total = 11 - total % 11;
+                    if (total > 9) {
+                        total = 0;
+                    };
+
+                    // Compare it with the last character of the VAT number. If it's the same, then it's valid.
+                    if (total == vatnumber.slice(8, 9))
+                        return true
+                    else
+                        return false;
                 }
                 
             });

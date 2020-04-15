@@ -11,6 +11,37 @@ namespace Hydra.Such.Data.Logic
 {
     public class DBNAV2017GuiasTransporte
     {
+        public static bool VatValidation(string vatNo)
+        {
+            if (vatNo.Length != 9)
+                return false;
+
+            if (!Int32.TryParse(vatNo, out int vatNumber))
+            {
+                return false;
+            }
+
+            int thisValue = 0;
+            int validateThis = 0;
+
+            for (int i = 0; i < vatNo.Length - 1; i++)
+            {
+                thisValue = int.Parse(vatNo.Substring(i, 1));
+                validateThis = validateThis + thisValue * (10 - (i + 1));
+            }
+
+            validateThis = validateThis - (int)Math.Floor(Convert.ToDouble(validateThis / 11)) * 11;
+
+            validateThis = (validateThis == 0 || validateThis == 1) ? 0 : 11 - validateThis;
+
+            thisValue = int.Parse(vatNo.Substring(vatNo.Length - 1, 1));
+            if (thisValue != validateThis)
+            {
+                return false;
+            }
+
+            return true;
+        }
         public static List<GuiaTransporteNavViewModel> GetListByDim(string NAVDatabase, string NAVCompany, List<AcessosDimensões> Dimensions, bool isHistoric)
         {
             try
