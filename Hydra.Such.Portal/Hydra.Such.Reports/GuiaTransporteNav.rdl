@@ -415,7 +415,7 @@
               </TablixColumns>
               <TablixRows>
                 <TablixRow>
-                  <Height>0.83333cm</Height>
+                  <Height>0.5cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -429,7 +429,7 @@
                                   <Value>No</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
-                                    <FontSize>9pt</FontSize>
+                                    <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -454,8 +454,6 @@
                             <FontFamily />
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -472,7 +470,7 @@
                                   <Value>Descricao</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
-                                    <FontSize>9pt</FontSize>
+                                    <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -497,8 +495,6 @@
                             <FontFamily />
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -515,7 +511,7 @@
                                   <Value>Quant.</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
-                                    <FontSize>9pt</FontSize>
+                                    <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -543,8 +539,6 @@
                             <FontFamily />
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -561,7 +555,7 @@
                                   <Value>U.M.</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
-                                    <FontSize>9pt</FontSize>
+                                    <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -587,8 +581,6 @@
                             </BottomBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -596,7 +588,7 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.83333cm</Height>
+                  <Height>0.4cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -610,7 +602,7 @@
                                   <Value>=Fields!No.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
-                                    <FontSize>9pt</FontSize>
+                                    <FontSize>7pt</FontSize>
                                     <Color>#333333</Color>
                                   </Style>
                                 </TextRun>
@@ -626,8 +618,6 @@
                             <FontFamily />
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -644,7 +634,7 @@
                                   <Value>=Fields!Descricao.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
-                                    <FontSize>9pt</FontSize>
+                                    <FontSize>7pt</FontSize>
                                     <Color>#333333</Color>
                                   </Style>
                                 </TextRun>
@@ -660,8 +650,6 @@
                             <FontFamily />
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -678,7 +666,7 @@
                                   <Value>=Fields!QuantidadeEnviar.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
-                                    <FontSize>9pt</FontSize>
+                                    <FontSize>7pt</FontSize>
                                     <Format>0.00</Format>
                                     <Color>#333333</Color>
                                   </Style>
@@ -697,8 +685,6 @@
                             <FontFamily />
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -715,7 +701,7 @@
                                   <Value>=Fields!CodUnidadeMedida.Value</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
-                                    <FontSize>9pt</FontSize>
+                                    <FontSize>7pt</FontSize>
                                     <Color>#333333</Color>
                                   </Style>
                                 </TextRun>
@@ -732,8 +718,6 @@
                             </Border>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -741,7 +725,7 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.83333cm</Height>
+                  <Height>0.4cm</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -787,6 +771,7 @@
                                   <Value>Sub-total</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
+                                    <FontSize>7pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Color>#333333</Color>
                                   </Style>
@@ -804,8 +789,6 @@
                             </Border>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -822,6 +805,7 @@
                                   <Value>=Sum(Fields!QuantidadeEnviar.Value)</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
+                                    <FontSize>7pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>0.00</Format>
                                   </Style>
@@ -842,8 +826,6 @@
                             </TopBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
-                            <PaddingTop>2pt</PaddingTop>
-                            <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
                       </CellContents>
@@ -909,7 +891,7 @@
                                 <Value>Cod Unidade Medida</Value>
                                 <Style>
                                   <FontFamily />
-                                  <FontSize>11pt</FontSize>
+                                  <FontSize>8pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
                                   <Color>#666666</Color>
                                 </Style>
@@ -937,8 +919,6 @@
                           </BottomBorder>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
-                          <PaddingTop>2pt</PaddingTop>
-                          <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
                     </CellContents>
@@ -987,6 +967,7 @@
                                     <Value>=Fields!CodUnidadeMedida.Value</Value>
                                     <Style>
                                       <FontFamily />
+                                      <FontSize>7pt</FontSize>
                                       <Color>#333333</Color>
                                     </Style>
                                   </TextRun>
@@ -1004,8 +985,6 @@
                               </Border>
                               <PaddingLeft>2pt</PaddingLeft>
                               <PaddingRight>2pt</PaddingRight>
-                              <PaddingTop>2pt</PaddingTop>
-                              <PaddingBottom>2pt</PaddingBottom>
                             </Style>
                           </Textbox>
                         </CellContents>
@@ -1035,18 +1014,18 @@
             <KeepTogether>true</KeepTogether>
             <DataSetName>GTLines</DataSetName>
             <Left>0.08015cm</Left>
-            <Height>2.5cm</Height>
-            <Width>18.66543cm</Width>
+            <Height>1.3cm</Height>
+            <Width>18.66544cm</Width>
             <Style />
           </Tablix>
         </ReportItems>
-        <Height>3.05972cm</Height>
+        <Height>1.31167cm</Height>
         <Style />
       </Body>
       <Width>19.03952cm</Width>
       <Page>
         <PageHeader>
-          <Height>11.37716cm</Height>
+          <Height>8.44028cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1056,6 +1035,7 @@
                   <Source>Embedded</Source>
                   <Value>SUCH2</Value>
                   <Sizing>FitProportional</Sizing>
+                  <Left>0.0009cm</Left>
                   <Height>2.29375cm</Height>
                   <Width>6.23605cm</Width>
                   <Style>
@@ -1074,7 +1054,7 @@
                           <Value>=First(Fields!NoGuiaTransporte.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial Black</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>8pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1083,9 +1063,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>NoGuiaTransporte</rd:DefaultName>
-                  <Top>3.14744cm</Top>
-                  <Left>13.51925cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>2.20881cm</Top>
+                  <Left>13.4884cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.07537cm</Width>
                   <ZIndex>1</ZIndex>
                   <Style>
@@ -1094,8 +1074,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="InfoName">
@@ -1108,7 +1086,7 @@
                           <Value>=First(Fields!InfoName.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>8pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1118,8 +1096,8 @@
                   </Paragraphs>
                   <rd:DefaultName>InfoName</rd:DefaultName>
                   <Top>2.29375cm</Top>
-                  <Left>0.01074cm</Left>
-                  <Height>0.6cm</Height>
+                  <Left>0.01164cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>8.28164cm</Width>
                   <ZIndex>2</ZIndex>
                   <Style>
@@ -1128,8 +1106,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="InfoEndereco">
@@ -1142,7 +1118,7 @@
                           <Value>=First(Fields!InfoEndereco.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1151,8 +1127,8 @@
                   </Paragraphs>
                   <rd:DefaultName>InfoEndereco</rd:DefaultName>
                   <Top>2.89375cm</Top>
-                  <Left>0.01074cm</Left>
-                  <Height>0.6cm</Height>
+                  <Left>0.01164cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>8.28164cm</Width>
                   <ZIndex>3</ZIndex>
                   <Style>
@@ -1161,8 +1137,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="InfoLocal">
@@ -1175,7 +1149,7 @@
                           <Value>=First(Fields!InfoLocal.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1183,9 +1157,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>InfoLocal</rd:DefaultName>
-                  <Top>3.49375cm</Top>
-                  <Left>0.01074cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>3.39375cm</Top>
+                  <Left>0.01164cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>8.28164cm</Width>
                   <ZIndex>4</ZIndex>
                   <Style>
@@ -1194,8 +1168,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="DataGuia">
@@ -1208,7 +1180,7 @@
                           <Value>=First(Fields!DataGuia.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1216,9 +1188,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>DataGuia</rd:DefaultName>
-                  <Top>3.78271cm</Top>
-                  <Left>13.51925cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>2.91667cm</Top>
+                  <Left>13.4884cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.07537cm</Width>
                   <ZIndex>5</ZIndex>
                   <Style>
@@ -1241,7 +1213,7 @@
                           <Value>=First(Fields!DataSaida.Value, "GTHeader") + " " + First(Fields!ShipmentStartTime.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1249,9 +1221,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>DataSaida</rd:DefaultName>
-                  <Top>4.4568cm</Top>
-                  <Left>13.51925cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>3.42903cm</Top>
+                  <Left>13.4884cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>4.14559cm</Width>
                   <ZIndex>6</ZIndex>
                   <Style>
@@ -1260,8 +1232,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="GuiaTransporteNo">
@@ -1274,7 +1244,7 @@
                           <Value>Guia Transporte No.</Value>
                           <Style>
                             <FontFamily>Arial Black</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>8pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1282,9 +1252,9 @@
                       <Style />
                     </Paragraph>
                   </Paragraphs>
-                  <Top>3.14744cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>2.20881cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.82292cm</Width>
                   <ZIndex>7</ZIndex>
                   <Style>
@@ -1293,8 +1263,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox1">
@@ -1307,7 +1275,7 @@
                           <Value>Data Guia</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1316,9 +1284,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox1</rd:DefaultName>
-                  <Top>3.78271cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>2.91667cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.82292cm</Width>
                   <ZIndex>8</ZIndex>
                   <Style>
@@ -1327,8 +1295,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox3">
@@ -1341,7 +1307,7 @@
                           <Value>Data Saída</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1350,9 +1316,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox3</rd:DefaultName>
-                  <Top>4.44444cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>3.41667cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.82292cm</Width>
                   <ZIndex>9</ZIndex>
                   <Style>
@@ -1361,8 +1327,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox15">
@@ -1375,7 +1339,7 @@
                           <Value>Contribuinte No.</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1383,9 +1347,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox15</rd:DefaultName>
-                  <Top>4.81579cm</Top>
-                  <Left>0.01074cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>3.93614cm</Top>
+                  <Left>0.01164cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.72049cm</Width>
                   <ZIndex>10</ZIndex>
                   <Style>
@@ -1394,8 +1358,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="InfoCompanyVAT">
@@ -1408,7 +1370,7 @@
                           <Value>=First(Fields!InfoCompanyVAT.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1416,9 +1378,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>InfoCompanyVAT</rd:DefaultName>
-                  <Top>4.80868cm</Top>
-                  <Left>2.80179cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>3.92903cm</Top>
+                  <Left>2.85387cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.5cm</Width>
                   <ZIndex>11</ZIndex>
                   <Style>
@@ -1427,8 +1389,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="InfoFax">
@@ -1441,7 +1401,7 @@
                           <Value>=First(Fields!InfoFax.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1449,9 +1409,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>InfoFax</rd:DefaultName>
-                  <Top>5.40868cm</Top>
-                  <Left>6.62174cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.49958cm</Top>
+                  <Left>6.63572cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.5cm</Width>
                   <ZIndex>12</ZIndex>
                   <Style>
@@ -1460,8 +1420,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox19">
@@ -1474,7 +1432,7 @@
                           <Value>Fax</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1482,9 +1440,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox19</rd:DefaultName>
-                  <Top>5.40868cm</Top>
-                  <Left>5.34412cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.49958cm</Top>
+                  <Left>5.3581cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>1.20354cm</Width>
                   <ZIndex>13</ZIndex>
                   <Style>
@@ -1493,8 +1451,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="InfoTelefone">
@@ -1507,7 +1463,7 @@
                           <Value>=First(Fields!InfoTelefone.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1515,9 +1471,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>InfoTelefone</rd:DefaultName>
-                  <Top>5.41579cm</Top>
-                  <Left>2.80531cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.50669cm</Top>
+                  <Left>2.81929cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.5cm</Width>
                   <ZIndex>14</ZIndex>
                   <Style>
@@ -1526,8 +1482,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox18">
@@ -1540,7 +1494,7 @@
                           <Value>Telefone</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1548,9 +1502,8 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox18</rd:DefaultName>
-                  <Top>5.41579cm</Top>
-                  <Left>0.0372cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.50669cm</Top>
+                  <Height>0.5cm</Height>
                   <Width>2.72049cm</Width>
                   <ZIndex>15</ZIndex>
                   <Style>
@@ -1559,8 +1512,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="NomeCliente">
@@ -1573,7 +1524,7 @@
                           <Value>=First(Fields!NomeCliente.Value, "GTHeader") + " " + First(Fields!NomeCliente2.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1581,10 +1532,10 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>NomeCliente</rd:DefaultName>
-                  <Top>5.49725cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
-                  <Width>8.03906cm</Width>
+                  <Top>3.92903cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
+                  <Width>8.61336cm</Width>
                   <ZIndex>16</ZIndex>
                   <Style>
                     <Border>
@@ -1592,8 +1543,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="MoradaCliente">
@@ -1606,7 +1555,7 @@
                           <Value>=First(Fields!MoradaCliente.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1614,9 +1563,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>MoradaCliente</rd:DefaultName>
-                  <Top>6.17486cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.42903cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>8.03906cm</Width>
                   <ZIndex>17</ZIndex>
                   <Style>
@@ -1625,8 +1574,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="MoradaCliente2">
@@ -1639,6 +1586,7 @@
                           <Value>=First(Fields!MoradaCliente2.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1646,9 +1594,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>MoradaCliente2</rd:DefaultName>
-                  <Top>6.84542cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.9643cm</Top>
+                  <Left>9.56318cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>8.03906cm</Width>
                   <ZIndex>18</ZIndex>
                   <Style>
@@ -1657,8 +1605,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="CodPostal">
@@ -1671,7 +1617,7 @@
                           <Value>=First(Fields!CodPostal.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1679,10 +1625,10 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>CodPostal</rd:DefaultName>
-                  <Top>7.52303cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
-                  <Width>2.5cm</Width>
+                  <Top>5.49958cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
+                  <Width>2.76047cm</Width>
                   <ZIndex>19</ZIndex>
                   <Style>
                     <Border>
@@ -1690,8 +1636,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Cidade">
@@ -1704,7 +1648,7 @@
                           <Value>=First(Fields!Cidade.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1712,10 +1656,10 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Cidade</rd:DefaultName>
-                  <Top>7.52303cm</Top>
-                  <Left>12.16106cm</Left>
-                  <Height>0.6cm</Height>
-                  <Width>5.50379cm</Width>
+                  <Top>5.49958cm</Top>
+                  <Left>12.39832cm</Left>
+                  <Height>0.5cm</Height>
+                  <Width>5.20392cm</Width>
                   <ZIndex>20</ZIndex>
                   <Style>
                     <Border>
@@ -1723,11 +1667,9 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
-                <Textbox Name="InfoVAT">
+                <Textbox Name="VatRegistrationNo">
                   <CanGrow>true</CanGrow>
                   <KeepTogether>true</KeepTogether>
                   <Paragraphs>
@@ -1737,17 +1679,16 @@
                           <Value>=First(Fields!InfoVAT.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
                       <Style />
                     </Paragraph>
                   </Paragraphs>
-                  <rd:DefaultName>InfoVAT</rd:DefaultName>
-                  <Top>8.41732cm</Top>
-                  <Left>12.42917cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>5.99958cm</Top>
+                  <Left>12.39832cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.29375cm</Width>
                   <ZIndex>21</ZIndex>
                   <Style>
@@ -1756,8 +1697,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox10">
@@ -1770,7 +1709,7 @@
                           <Value>Contribuinte No.</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1779,9 +1718,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox10</rd:DefaultName>
-                  <Top>8.41732cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>5.99958cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.76458cm</Width>
                   <ZIndex>22</ZIndex>
                   <Style>
@@ -1790,8 +1729,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Telefone">
@@ -1804,7 +1741,7 @@
                           <Value>=First(Fields!Telefone.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1812,9 +1749,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Telefone</rd:DefaultName>
-                  <Top>9.08788cm</Top>
-                  <Left>12.42917cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>6.49958cm</Top>
+                  <Left>12.39832cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.29375cm</Width>
                   <ZIndex>23</ZIndex>
                   <Style>
@@ -1823,8 +1760,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox13">
@@ -1837,7 +1772,7 @@
                           <Value>Telefone</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1846,9 +1781,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox13</rd:DefaultName>
-                  <Top>9.08788cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>6.49958cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.76458cm</Width>
                   <ZIndex>24</ZIndex>
                   <Style>
@@ -1857,8 +1792,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Requisicao">
@@ -1871,7 +1804,7 @@
                           <Value>=First(Fields!Requisicao.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1879,9 +1812,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Requisicao</rd:DefaultName>
-                  <Top>9.72315cm</Top>
-                  <Left>12.42917cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>7.03486cm</Top>
+                  <Left>12.39832cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.29375cm</Width>
                   <ZIndex>25</ZIndex>
                   <Style>
@@ -1890,8 +1823,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox16">
@@ -1904,7 +1835,7 @@
                           <Value>V/Requisição</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1913,9 +1844,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox16</rd:DefaultName>
-                  <Top>9.72315cm</Top>
-                  <Left>9.62578cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>7.03486cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.76458cm</Width>
                   <ZIndex>26</ZIndex>
                   <Style>
@@ -1924,8 +1855,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox17">
@@ -1938,7 +1867,7 @@
                           <Value>Reportado Por</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -1947,9 +1876,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox16</rd:DefaultName>
-                  <Top>10.39371cm</Top>
-                  <Left>9.59403cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>7.60542cm</Top>
+                  <Left>9.59493cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.76458cm</Width>
                   <ZIndex>27</ZIndex>
                   <Style>
@@ -1958,8 +1887,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Requisicao2">
@@ -1972,7 +1899,7 @@
                           <Value>=First(Fields!ReportedBy.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -1980,9 +1907,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Requisicao</rd:DefaultName>
-                  <Top>10.39371cm</Top>
-                  <Left>12.42917cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>7.60542cm</Top>
+                  <Left>12.39832cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>3.29375cm</Width>
                   <ZIndex>28</ZIndex>
                   <Style>
@@ -1991,8 +1918,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="UserID">
@@ -2005,7 +1930,7 @@
                           <Value>=User!UserID</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>7pt</FontSize>
+                            <FontSize>6pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2016,8 +1941,8 @@
                   </Paragraphs>
                   <rd:DefaultName>UserID</rd:DefaultName>
                   <Top>0.19416cm</Top>
-                  <Left>15.73914cm</Left>
-                  <Height>0.6cm</Height>
+                  <Left>15.74004cm</Left>
+                  <Height>0.4cm</Height>
                   <Width>2.5cm</Width>
                   <ZIndex>29</ZIndex>
                   <Style>
@@ -2040,7 +1965,7 @@
                           <Value>=Globals!ExecutionTime</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>7pt</FontSize>
+                            <FontSize>6pt</FontSize>
                             <Format>dd-MM-yyyy HH:mm:ss</Format>
                           </Style>
                         </TextRun>
@@ -2051,9 +1976,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>ExecutionTime</rd:DefaultName>
-                  <Top>0.8365cm</Top>
-                  <Left>15.39518cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>0.59416cm</Top>
+                  <Left>15.40638cm</Left>
+                  <Height>0.4cm</Height>
                   <Width>2.84396cm</Width>
                   <ZIndex>30</ZIndex>
                   <Style>
@@ -2076,7 +2001,7 @@
                           <Value>=First(Fields!Via.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial Black</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>8pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -2087,9 +2012,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Via</rd:DefaultName>
-                  <Top>2.13825cm</Top>
-                  <Left>9.63136cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>1.56769cm</Top>
+                  <Left>9.60051cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>4.11274cm</Width>
                   <ZIndex>31</ZIndex>
                   <Visibility>
@@ -2101,8 +2026,6 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="OverallTotalPages">
@@ -2114,7 +2037,8 @@
                         <TextRun>
                           <Value>= "Pág. " &amp; Globals!PageNumber &amp; "/" &amp; Globals!TotalPages</Value>
                           <Style>
-                            <FontSize>7pt</FontSize>
+                            <FontFamily>Arial</FontFamily>
+                            <FontSize>6pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2124,9 +2048,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>OverallTotalPages</rd:DefaultName>
-                  <Top>1.51411cm</Top>
-                  <Left>15.39518cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>0.99416cm</Top>
+                  <Left>15.36433cm</Left>
+                  <Height>0.4cm</Height>
                   <Width>2.88601cm</Width>
                   <ZIndex>32</ZIndex>
                   <Style>
@@ -2141,9 +2065,9 @@
                 </Textbox>
               </ReportItems>
               <KeepTogether>true</KeepTogether>
-              <Left>0.22634cm</Left>
-              <Height>11.05721cm</Height>
-              <Width>18.42869cm</Width>
+              <Left>0.22544cm</Left>
+              <Height>8.22618cm</Height>
+              <Width>18.42959cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -2158,15 +2082,15 @@
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>8.71536cm</Height>
+          <Height>6.01661cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Rectangle Name="Rectangle4">
               <ReportItems>
                 <Line Name="Line1">
-                  <Top>0.37508cm</Top>
-                  <Left>0.08015cm</Left>
+                  <Top>0.10583cm</Top>
+                  <Left>0.22544cm</Left>
                   <Height>0cm</Height>
                   <Width>18.58528cm</Width>
                   <Style>
@@ -2195,9 +2119,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox115</rd:DefaultName>
-                  <Top>0.37508cm</Top>
-                  <Left>0.08015cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>0.10583cm</Top>
+                  <Left>0.2519cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>4.07856cm</Width>
                   <ZIndex>1</ZIndex>
                   <Style>
@@ -2215,8 +2139,8 @@
                   <Source>Embedded</Source>
                   <Value>Logo_APCER</Value>
                   <Sizing>FitProportional</Sizing>
-                  <Top>5.84734cm</Top>
-                  <Left>15.78209cm</Left>
+                  <Top>4.02306cm</Top>
+                  <Left>15.88533cm</Left>
                   <Height>1.75677cm</Height>
                   <Width>2.88334cm</Width>
                   <ZIndex>2</ZIndex>
@@ -2235,7 +2159,7 @@
                           <Value>Carga</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2243,9 +2167,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox117</rd:DefaultName>
-                  <Top>1.11125cm</Top>
-                  <Left>0.35267cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>0.74694cm</Top>
+                  <Left>0.48237cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>1.4446cm</Width>
                   <ZIndex>3</ZIndex>
                   <Style>
@@ -2255,8 +2179,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Address">
@@ -2269,7 +2191,7 @@
                           <Value>=First(Fields!Address.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2277,10 +2199,10 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Address</rd:DefaultName>
-                  <Top>1.11125cm</Top>
-                  <Left>1.97939cm</Left>
-                  <Height>0.6cm</Height>
-                  <Width>8.86402cm</Width>
+                  <Top>0.71167cm</Top>
+                  <Left>2.12584cm</Left>
+                  <Height>0.5cm</Height>
+                  <Width>10.9284cm</Width>
                   <ZIndex>4</ZIndex>
                   <Style>
                     <Border>
@@ -2293,8 +2215,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="DataCarga">
@@ -2306,7 +2226,7 @@
                           <Value>=First(Fields!DataCarga.Value, "GTHeader") + " " + First(Fields!HoraCarga.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2314,9 +2234,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>DataCarga</rd:DefaultName>
-                  <Top>1.11125cm</Top>
-                  <Left>11.63375cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>0.71167cm</Top>
+                  <Left>13.68808cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>5.00382cm</Width>
                   <ZIndex>5</ZIndex>
                   <Style>
@@ -2326,8 +2246,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox120">
@@ -2339,7 +2257,7 @@
                           <Value>H</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2347,9 +2265,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox120</rd:DefaultName>
-                  <Top>1.11125cm</Top>
-                  <Left>11.1763cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>0.71167cm</Top>
+                  <Left>13.23063cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>0.32632cm</Width>
                   <ZIndex>6</ZIndex>
                   <Style>
@@ -2359,7 +2277,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox121">
@@ -2372,7 +2289,7 @@
                           <Value>Descarga</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2380,9 +2297,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox121</rd:DefaultName>
-                  <Top>1.91586cm</Top>
-                  <Left>0.35561cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>1.3175cm</Top>
+                  <Left>0.48531cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>1.44166cm</Width>
                   <ZIndex>7</ZIndex>
                   <Style>
@@ -2392,8 +2309,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Address2">
@@ -2406,7 +2321,7 @@
                           <Value>=First(Fields!LocalDescarga.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2414,10 +2329,10 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Address</rd:DefaultName>
-                  <Top>1.91586cm</Top>
-                  <Left>1.97939cm</Left>
-                  <Height>0.6cm</Height>
-                  <Width>8.86402cm</Width>
+                  <Top>1.3175cm</Top>
+                  <Left>2.10909cm</Left>
+                  <Height>0.5cm</Height>
+                  <Width>10.94515cm</Width>
                   <ZIndex>8</ZIndex>
                   <Style>
                     <Border>
@@ -2430,8 +2345,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="DataCarga2">
@@ -2444,7 +2357,7 @@
                           <Value>=First(Fields!DataDescarga.Value, "GTHeader") + " " + First(Fields!HoraDescarga.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2452,9 +2365,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>DataCarga</rd:DefaultName>
-                  <Top>1.91586cm</Top>
-                  <Left>11.60845cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>1.3175cm</Top>
+                  <Left>13.64603cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>5.02912cm</Width>
                   <ZIndex>9</ZIndex>
                   <Style>
@@ -2464,8 +2377,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox122">
@@ -2478,7 +2389,7 @@
                           <Value>H</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2486,9 +2397,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox120</rd:DefaultName>
-                  <Top>1.91586cm</Top>
-                  <Left>11.1763cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>1.3175cm</Top>
+                  <Left>13.21388cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>0.32632cm</Width>
                   <ZIndex>10</ZIndex>
                   <Style>
@@ -2498,7 +2409,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox125">
@@ -2511,7 +2421,7 @@
                           <Value>Viatura</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2519,9 +2429,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox125</rd:DefaultName>
-                  <Top>2.64611cm</Top>
-                  <Left>0.06692cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>1.99389cm</Top>
+                  <Left>0.26103cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>1.25199cm</Width>
                   <ZIndex>11</ZIndex>
                   <Style>
@@ -2531,8 +2441,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Viatura">
@@ -2545,7 +2453,7 @@
                           <Value>=First(Fields!Viatura.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2553,9 +2461,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Viatura</rd:DefaultName>
-                  <Top>2.64611cm</Top>
-                  <Left>1.38946cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>1.99389cm</Top>
+                  <Left>1.58357cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.5cm</Width>
                   <ZIndex>12</ZIndex>
                   <Style>
@@ -2569,8 +2477,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox127">
@@ -2583,7 +2489,7 @@
                           <Value>O Colaborador</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2591,9 +2497,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox127</rd:DefaultName>
-                  <Top>4.37266cm</Top>
-                  <Left>0.92293cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>3.27611cm</Top>
+                  <Left>1.19082cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.20093cm</Width>
                   <ZIndex>13</ZIndex>
                   <Style>
@@ -2603,13 +2509,11 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Line Name="Line2">
-                  <Top>4.95242cm</Top>
-                  <Left>3.17718cm</Left>
+                  <Top>3.79634cm</Top>
+                  <Left>3.3116cm</Left>
                   <Height>0cm</Height>
                   <Width>6.10363cm</Width>
                   <ZIndex>14</ZIndex>
@@ -2629,7 +2533,7 @@
                           <Value>O Cliente</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2637,9 +2541,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox127</rd:DefaultName>
-                  <Top>4.35242cm</Top>
-                  <Left>9.63226cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>3.27611cm</Top>
+                  <Left>9.76668cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.20093cm</Width>
                   <ZIndex>15</ZIndex>
                   <Style>
@@ -2649,13 +2553,11 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Line Name="Line3">
-                  <Top>4.93219cm</Top>
-                  <Left>11.88651cm</Left>
+                  <Top>3.77611cm</Top>
+                  <Left>12.02093cm</Left>
                   <Height>0cm</Height>
                   <Width>5.6728cm</Width>
                   <ZIndex>16</ZIndex>
@@ -2675,7 +2577,7 @@
                           <Value>Peso Total</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -2684,9 +2586,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox129</rd:DefaultName>
-                  <Top>3.42249cm</Top>
-                  <Left>0.0381cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>2.59972cm</Top>
+                  <Left>0.23457cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>1.75917cm</Width>
                   <ZIndex>17</ZIndex>
                   <Style>
@@ -2696,8 +2598,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="PesoTotal">
@@ -2710,7 +2610,7 @@
                           <Value>=First(Fields!PesoTotal.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>8pt</FontSize>
+                            <FontSize>7pt</FontSize>
                             <Format>0.00</Format>
                           </Style>
                         </TextRun>
@@ -2719,9 +2619,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>PesoTotal</rd:DefaultName>
-                  <Top>3.42249cm</Top>
-                  <Left>1.83255cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>2.59972cm</Top>
+                  <Left>2.02902cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.5cm</Width>
                   <ZIndex>18</ZIndex>
                   <Style>
@@ -2731,12 +2631,11 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Line Name="Line4">
-                  <Top>5.16995cm</Top>
+                  <Top>3.9525cm</Top>
+                  <Left>0.20811cm</Left>
                   <Height>0cm</Height>
                   <Width>18.66543cm</Width>
                   <ZIndex>19</ZIndex>
@@ -2757,6 +2656,7 @@
                           <Value>=First(Fields!InfoATCode.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -2765,9 +2665,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>InfoATCode</rd:DefaultName>
-                  <Top>6.16484cm</Top>
-                  <Left>2.92442cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.59361cm</Top>
+                  <Left>2.84922cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>6.45836cm</Width>
                   <ZIndex>20</ZIndex>
                   <Style>
@@ -2777,8 +2677,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="Textbox132">
@@ -2791,6 +2689,7 @@
                           <Value>Código AT</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
+                            <FontSize>7pt</FontSize>
                             <FontWeight>Bold</FontWeight>
                           </Style>
                         </TextRun>
@@ -2799,9 +2698,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>Textbox132</rd:DefaultName>
-                  <Top>6.16484cm</Top>
-                  <Left>0.28331cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.59361cm</Top>
+                  <Left>0.20811cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>2.5cm</Width>
                   <ZIndex>21</ZIndex>
                   <Style>
@@ -2811,8 +2710,6 @@
                     <VerticalAlign>Bottom</VerticalAlign>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
                 <Textbox Name="InfoSignature">
@@ -2825,7 +2722,7 @@
                           <Value>=First(Fields!InfoSignature.Value, "GTHeader")</Value>
                           <Style>
                             <FontFamily>Arial</FontFamily>
-                            <FontSize>9pt</FontSize>
+                            <FontSize>7pt</FontSize>
                           </Style>
                         </TextRun>
                       </TextRuns>
@@ -2833,9 +2730,9 @@
                     </Paragraph>
                   </Paragraphs>
                   <rd:DefaultName>InfoSignature</rd:DefaultName>
-                  <Top>5.34634cm</Top>
-                  <Left>0.28331cm</Left>
-                  <Height>0.6cm</Height>
+                  <Top>4.05833cm</Top>
+                  <Left>0.20811cm</Left>
+                  <Height>0.5cm</Height>
                   <Width>9.09947cm</Width>
                   <ZIndex>22</ZIndex>
                   <Style>
@@ -2844,15 +2741,14 @@
                     </Border>
                     <PaddingLeft>2pt</PaddingLeft>
                     <PaddingRight>2pt</PaddingRight>
-                    <PaddingTop>2pt</PaddingTop>
-                    <PaddingBottom>2pt</PaddingBottom>
                   </Style>
                 </Textbox>
               </ReportItems>
               <KeepTogether>true</KeepTogether>
-              <Left>0.22544cm</Left>
-              <Height>8.71536cm</Height>
-              <Width>18.66543cm</Width>
+              <Top>0cm</Top>
+              <Left>0.08015cm</Left>
+              <Height>5.82236cm</Height>
+              <Width>18.87354cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
