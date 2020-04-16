@@ -10,6 +10,8 @@ namespace Hydra.Such.Data.ViewModel.Clients
     public class ListMovimentosAllClientsViewModel : ErrorHandler
     {
         public string CustomerNo { get; set; }
+        public string CustomerName { get; set; }
+        public string CustomerRegion { get; set; }
         public DateTime? Date { get; set; }
         public string DateTexto { get; set; }
         public DateTime? DueDate { get; set; }

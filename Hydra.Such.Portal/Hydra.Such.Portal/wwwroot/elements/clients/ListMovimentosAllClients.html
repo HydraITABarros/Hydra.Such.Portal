@@ -232,6 +232,26 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="5%" resizable hidden$="{{ _columns.customerRegion.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerRegion">Região (do Cliente)</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerRegion" value="[[filter.customerRegion]]" />
+                </template>
+                <template>
+                    {{item.customerRegion}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.customerName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerName">Nome do Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerName" value="[[filter.customerName]]" />
+                </template>
+                <template>
+                    {{item.customerName}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="5%" resizable hidden$="{{ _columns.factoringSemRecurso.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="factoringSemRecurso">Factoring sem Recurso</vaadin-grid-sorter>
@@ -387,6 +407,8 @@
                         "documentNo": { hidden: false, label: "Documento Nº" },
                         "dimensionValue": { hidden: false, label: "Unidade Prestação" },
                         "value": { hidden: false, label: "Valor" },
+                        "customerRegion": { hidden: false, label: "Região (do Cliente)" },
+                        "customerName": { hidden: false, label: "Nome do Cliente" },
                         "factoringSemRecurso": { hidden: false, label: "Factoring sem Recurso" },
                     };
 

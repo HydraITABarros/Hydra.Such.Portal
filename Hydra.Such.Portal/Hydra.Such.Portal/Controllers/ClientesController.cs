@@ -344,6 +344,19 @@ namespace Hydra.Such.Portal.Controllers
 
             result = DBNAV2017Clients.GetListMovAllClients(DataFiltro);
 
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
+            foreach(ListMovimentosAllClientsViewModel MovClient in result)
+            {
+                NAVClientsViewModel client = AllClients.Where(x => x.No_ == MovClient.CustomerNo).FirstOrDefault();
+
+                if (client != null)
+                {
+                    MovClient.CustomerName = !string.IsNullOrEmpty(client.Name) ? client.Name : "";
+                    MovClient.CustomerRegion = !string.IsNullOrEmpty(client.RegionCode) ? client.RegionCode : "";
+                }
+            }
+
             return Json(result);
         }
 
@@ -379,6 +392,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Documento Nº"); Col = Col + 1; }
                 if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unidade Prestação"); Col = Col + 1; }
                 if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor"); Col = Col + 1; }
+                if (dp["customerRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região (do Cliente)"); Col = Col + 1; }
+                if (dp["customerName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome do Cliente"); Col = Col + 1; }
                 if (dp["factoringSemRecurso"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Factoring sem Recurso"); Col = Col + 1; }
 
                 if (dp != null)
@@ -396,6 +411,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DocumentNo); Col = Col + 1; }
                         if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DimensionValue); Col = Col + 1; }
                         if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.Numeric).SetCellValue(Convert.ToDouble(item.Value.ToString())); Col = Col + 1; }
+                        if (dp["customerRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerRegion); Col = Col + 1; }
+                        if (dp["customerName"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerName); Col = Col + 1; }
                         if (dp["factoringSemRecurso"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.FactoringSemRecurso); Col = Col + 1; }
 
                         count++;
