@@ -3235,9 +3235,10 @@ namespace Hydra.Such.Portal.Controllers
 
                         //Contratos Tipo Quotas
                         string MetdoPagamento = "";
-                        if (cont.TipoContrato == 3)
+                        if (cont != null && cont.TipoContrato == 3)
                         {
-                            MetdoPagamento = DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
+                            //MetdoPagamento = DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
+                            MetdoPagamento = !string.IsNullOrEmpty(cont.CódFormaPagamento) ? cont.CódFormaPagamento : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                         }
 
                         Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, MetdoPagamento, PricesIncludingVAT, Ship_to_Code);
@@ -3612,13 +3613,13 @@ namespace Hydra.Such.Portal.Controllers
 
                                 //Contratos Tipo Quotas
                                 string MetdoPagamento = "";
-                                if (cont.TipoContrato == 3)
+                                if (cont != null && cont.TipoContrato == 3)
                                 {
-                                    MetdoPagamento = DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
+                                    //MetdoPagamento = DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
+                                    MetdoPagamento = !string.IsNullOrEmpty(cont.CódFormaPagamento) ? cont.CódFormaPagamento : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                                 }
                                 
                                 //1
-                                //Task<WSCreatePreInvoiceNEW.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoiceNEW(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento);
                                 Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, MetdoPagamento, PricesIncludingVAT, Ship_to_Code);
                                 InvoiceHeader.Wait();
 
@@ -4353,6 +4354,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
                         PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
                         PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
+                        PreInvoiceToCreate.PaymentMethodCode = !string.IsNullOrEmpty(Contract.CodePaymentMethod) ? Contract.CodePaymentMethod : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
 
                         Codgroup = Convert.ToInt32(groupInvoice);
                         if (ContractLines.Find(x => x.InvoiceGroup == Codgroup) != null)
@@ -4616,6 +4618,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
                             PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
                             PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
+                            PreInvoiceToCreate.PaymentMethodCode = !string.IsNullOrEmpty(Contract.CodePaymentMethod) ? Contract.CodePaymentMethod : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
 
                             foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
                             {

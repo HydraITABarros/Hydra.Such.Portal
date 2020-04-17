@@ -1703,6 +1703,7 @@ namespace Hydra.Such.Portal.Controllers
                 string prodQuantityOverStock = "";
                 string ReqLineNotCreateDP = "";
                 int ReqLinesToHistCount = 0;
+                string prodQuantityOverStockErro = "";
 
                 switch (registType)
                 {
@@ -1915,6 +1916,14 @@ namespace Hydra.Such.Portal.Controllers
                                     if (quantityInStock < line.QuantityReceivable)
                                     {
                                         prodQuantityOverStock += line.Description + ";";
+                                        prodQuantityOverStockErro = prodQuantityOverStockErro + "Não é possível disponibilizar " + line.QuantityReceivable.ToString() + " " + line.UnitMeasureCode + 
+                                            " do produto " + line.Code + " - " + line.Description + ", porque só existem " + quantityInStock.ToString() + " em stock." + Environment.NewLine;
+
+                                        line.QuantityReceived = (line.QuantityReceived.HasValue ? line.QuantityReceived.Value : 0) + quantityInStock;
+                                        line.QuantityPending = (line.QuantityPending.HasValue ? line.QuantityPending.Value : 0) - quantityInStock;
+                                        line.QuantityReceivable -= quantityInStock;
+                                        line.UpdateUser = User.Identity.Name;
+                                        line.UpdateDateTime = DateTime.Now;
                                     }
                                     else
                                     {
@@ -2036,6 +2045,13 @@ namespace Hydra.Such.Portal.Controllers
                                                     item.eReasonCode = 14;
                                                     item.eMessage = "Ocorreu um erro ao fechar no Receber.";
                                                 }
+                                            }
+
+                                            if (!string.IsNullOrEmpty(prodQuantityOverStockErro))
+                                            {
+                                                item.eReasonCode = 20;
+                                                item.eMessage = prodQuantityOverStockErro;
+
                                             }
                                         }
                                         else

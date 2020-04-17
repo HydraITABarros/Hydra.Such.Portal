@@ -4324,9 +4324,13 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                             }
 
+                            //Contratos do tipo Quotas
+                            if (cont != null && cont.Tipo == 3)
+                            {
+                                header.CodMetodoPagamento = !string.IsNullOrEmpty(cont.CódFormaPagamento) ? cont.CódFormaPagamento : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
+                            }
 
                             Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, codproject, Ship, header.GrupoFatura);
-                            //Task<WSCreatePreInvoice.Create_Result> TCreatePreInvoice = WSPreInvoice.CreatePreInvoice(header, _configws, dataFormulario, projeto, Ship);
                             TCreatePreInvoice.Wait();
 
                             if (TCreatePreInvoice.IsCompletedSuccessfully)

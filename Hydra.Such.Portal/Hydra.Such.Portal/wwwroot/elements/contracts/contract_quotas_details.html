@@ -119,6 +119,8 @@
         <iron-ajax url="/PopulateDropdowns/GetContractTerminationDeadlineNotice" last-response="{{LTerminationDeadlineNotice}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContratTypes" last-response="{{CBContractType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/Contratos/GetContractNavData" last-response="{{dataNav}}" id="navData_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetPaymentForms" last-response="{{LPaymentMethodCode}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
 
         <!-- PROJECT CRUDS -->
         <iron-ajax url="/Contratos/GetContractDetailsQuotas"
@@ -490,7 +492,7 @@
                                                                     </such-selectbox>
 
                                                                 </div>
-                                                                <div class="col-lg-2"hidden>
+                                                                <div class="col-lg-2" hidden>
                                                                     <vaadin-date-picker label="Data Última Fatura" id="_CRLastInvoiceDate" name="_CRLastInvoiceDate" value="{{_CRLastInvoiceDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
                                                                 </div>
                                                             </div>
@@ -669,6 +671,14 @@
                                                 </vaadin-combo-box>
                                             </div>
 
+                                            <div class="col-lg-6">
+                                                <vaadin-combo-box items='[[ LPaymentMethodCode ]]' id="payment_Method_Code" disabled="{{ _lockFields }}" item-value-path="id" item-label-path="value" value="{{data.codePaymentMethod}}" label="Forma Pagamento" required error-message="Este campo é obrigatório">
+                                                    <template>
+                                                        &nbsp;[[item.value]]&nbsp;
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
                                             <div class="col-md-6  alignPoga">
                                                 <vaadin-checkbox checked="{{data.fixedVowsAgreement}}" id="contractAvencaFixa" disabled="{{ _lockFields }}">Contrato Avença Fixa</vaadin-checkbox>
                                             </div>
@@ -745,7 +755,7 @@
                                                     <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
                                                 </template>
                                             </vaadin-grid-column>
-                                            
+
                                             <vaadin-grid-column width="20%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
@@ -755,7 +765,7 @@
                                                     {{item.createDateTime}}
                                                 </template>
                                             </vaadin-grid-column>
-                                            
+
                                             <vaadin-grid-column width="10%" resizable>
                                                 <template class="header">
                                                 </template>
@@ -1164,12 +1174,12 @@
                                         <vaadin-grid-filter path="versionStartDate" />
                                     </template>
                                     <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.versionStartDate}}
-                                            </template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-date-picker id="_CLGridVersionStartDate" name="_CLGridVersionStartDate" value="{{item.versionStartDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.versionStartDate}}
+                                        </template>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1179,12 +1189,12 @@
                                         <vaadin-grid-filter path="versionEndDate" />
                                     </template>
                                     <template>
-                                            <template is="dom-if" if="{{ item.selected }}">
-                                                <vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
-                                            </template>
-                                            <template is="dom-if" if="{{ !item.selected }}">
-                                                {{item.versionEndDate}}
-                                            </template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <vaadin-date-picker id="_CLGridVersionEndDate" name="_CLGridVersionEndDate" value="{{item.versionEndDate}}" disabled="{{ _lockFields }}"></vaadin-date-picker>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            {{item.versionEndDate}}
+                                        </template>
                                     </template>
                                 </vaadin-grid-column>
 
@@ -1292,169 +1302,169 @@
         </paper-dialog>
 
         <paper-dialog id="dlgContratInvoiceList" class="dialgoBox">
-                <vaadin-grid aria-label="InvoiceList" id="grid_contractInvoiceList" items="[[invoiceList]]" class="grid" multi-sort="true" style="height:85%; width:100%">
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="no_" />
-                        </template>
-                        <template>
-                            {{item.no_}}
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="valorContrato">Valor Contrato</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="valorContrato" />
-                        </template>
-                        <template>
-                            <div class="alignRight">
-                                {{item.valorContrato}} €
-                            </div>
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
+            <vaadin-grid aria-label="InvoiceList" id="grid_contractInvoiceList" items="[[invoiceList]]" class="grid" multi-sort="true" style="height:85%; width:100%">
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="no_" />
+                    </template>
+                    <template>
+                        {{item.no_}}
+                    </template>
+                </vaadin-grid-column>
 
-                <div class="buttons">
-                    <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
-                </div>
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="valorContrato">Valor Contrato</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="valorContrato" />
+                    </template>
+                    <template>
+                        <div class="alignRight">
+                            {{item.valorContrato}} €
+                        </div>
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
         </paper-dialog>
 
         <paper-dialog id="dlgContratInvoiceLinesList" class="dialgoBox">
-                <vaadin-grid aria-label="InvoiceLinesList" id="grid_contractInvoiceLinesList" items="[[invoiceLinesList]]" class="grid" multi-sort="true" style="height:85%; width:100%">
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="no_" />
-                        </template>
-                        <template>
-                            {{item.no_}}
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="docNo">Código</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="docNo" />
-                        </template>
-                        <template>
-                            {{item.docNo}}
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="20%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="description" />
-                        </template>
-                        <template>
-                            {{item.description}}
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="20%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="description2" />
-                        </template>
-                        <template>
-                            {{item.description2}}
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="unitOfMeasure">Unidade Medida</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="unitOfMeasure" />
-                        </template>
-                        <template>
-                            {{item.unitOfMeasure}}
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="quantity" />
-                        </template>
-                        <template>
-                            <div class="alignRight">
-                                {{item.quantity}}
-                            </div>
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="unitPrice" />
-                        </template>
-                        <template>
-                            <div class="alignRight">
-                                {{item.unitPrice}} €
-                            </div>
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="amount">Valor sem IVA</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="amount" />
-                        </template>
-                        <template>
-                            <div class="alignRight">
-                                {{item.amount}} €
-                            </div>
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="amountIncludingVAT">Valor com IVA</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="amountIncludingVAT" />
-                        </template>
-                        <template>
-                            <div class="alignRight">
-                                {{item.amountIncludingVAT}} €
-                            </div>
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="jobNo">Nº Projeto</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="jobNo" />
-                        </template>
-                        <template>
-                            {{item.jobNo}}
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="externalShipmentNo_">Nº Guia Externa</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="externalShipmentNo_" />
-                        </template>
-                        <template>
-                            {{item.externalShipmentNo_}}
-                        </template>
-                    </vaadin-grid-column>
-                    
-                    <vaadin-grid-column width="10%" resizable>
-                        <template class="header">
-                            <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo Diário</vaadin-grid-sorter>
-                            <vaadin-grid-filter path="dataRegistoDiarioSTR" />
-                        </template>
-                        <template>
-                            {{item.dataRegistoDiarioSTR}}
-                        </template>
-                    </vaadin-grid-column>
-                </vaadin-grid>
+            <vaadin-grid aria-label="InvoiceLinesList" id="grid_contractInvoiceLinesList" items="[[invoiceLinesList]]" class="grid" multi-sort="true" style="height:85%; width:100%">
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="no_">Nº Fatura</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="no_" />
+                    </template>
+                    <template>
+                        {{item.no_}}
+                    </template>
+                </vaadin-grid-column>
 
-                <div class="buttons">
-                    <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
-                </div>
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="docNo">Código</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="docNo" />
+                    </template>
+                    <template>
+                        {{item.docNo}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="20%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description" />
+                    </template>
+                    <template>
+                        {{item.description}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="20%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="description2" />
+                    </template>
+                    <template>
+                        {{item.description2}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="unitOfMeasure">Unidade Medida</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="unitOfMeasure" />
+                    </template>
+                    <template>
+                        {{item.unitOfMeasure}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="quantity" />
+                    </template>
+                    <template>
+                        <div class="alignRight">
+                            {{item.quantity}}
+                        </div>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="unitPrice" />
+                    </template>
+                    <template>
+                        <div class="alignRight">
+                            {{item.unitPrice}} €
+                        </div>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="amount">Valor sem IVA</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="amount" />
+                    </template>
+                    <template>
+                        <div class="alignRight">
+                            {{item.amount}} €
+                        </div>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="amountIncludingVAT">Valor com IVA</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="amountIncludingVAT" />
+                    </template>
+                    <template>
+                        <div class="alignRight">
+                            {{item.amountIncludingVAT}} €
+                        </div>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="jobNo">Nº Projeto</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="jobNo" />
+                    </template>
+                    <template>
+                        {{item.jobNo}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="externalShipmentNo_">Nº Guia Externa</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="externalShipmentNo_" />
+                    </template>
+                    <template>
+                        {{item.externalShipmentNo_}}
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataRegistoDiarioSTR">Data Registo Diário</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataRegistoDiarioSTR" />
+                    </template>
+                    <template>
+                        {{item.dataRegistoDiarioSTR}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss><i class="fa fa-undo" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+            </div>
         </paper-dialog>
 
         <paper-dialog id="dlgUpdatePrices" modal style="height:300px; width:600px">
@@ -1794,7 +1804,8 @@
                         this.$.ShippingName.validate() &
                         this.$.shippingZipCode.validate() &
                         this.$.mBillingTypes.validate() &
-                        this.$.mInvoicePeriods.validate()) {
+                        this.$.mInvoicePeriods.validate() &
+                        this.$.payment_Method_Code.validate()) {
 
                         if (this.$.mClients.value == "" || this.$.mClients.value == undefined) {
                             this.$.mClients.validate();

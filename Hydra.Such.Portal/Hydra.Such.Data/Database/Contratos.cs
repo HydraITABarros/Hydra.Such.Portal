@@ -38,6 +38,7 @@ namespace Hydra.Such.Data.Database
         public string PróximoPeríodoFact { get; set; }
         public bool? LinhasContratoEmFact { get; set; }
         public string CódTermosPagamento { get; set; }
+        public string CódFormaPagamento { get; set; }
         public int? TipoProposta { get; set; }
         public int? TipoFaturação { get; set; }
         public int? TipoContratoManut { get; set; }

@@ -37,6 +37,7 @@ namespace Hydra.Such.Data.ViewModel.Contracts
         public string NextBillingPeriod { get; set; }
         public bool? ContractLinesInBilling { get; set; }
         public string CodePaymentTerms { get; set; }
+        public string CodePaymentMethod { get; set; }
         public int? ProposalType { get; set; }
         public int? BillingType { get; set; }
         public int? MaintenanceContractType { get; set; }

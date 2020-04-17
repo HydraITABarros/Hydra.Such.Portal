@@ -1887,6 +1887,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Cód. Termos Pagamento")
                     .HasMaxLength(10);
 
+                entity.Property(e => e.CódFormaPagamento)
+                    .HasColumnName("Cód. Forma Pagamento")
+                    .HasMaxLength(20);
+
                 entity.Property(e => e.CódigoCentroResponsabilidade)
                     .HasColumnName("Código Centro Responsabilidade")
                     .HasMaxLength(20);
