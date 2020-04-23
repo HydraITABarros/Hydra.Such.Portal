@@ -2592,6 +2592,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> ClientsList = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<TiposRefeição> MealList = DBMealTypes.GetAll();
             List<ClientServicesViewModel> AllServiceGroup = DBClientServices.GetAllServiceGroup(string.Empty, true);
+            List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "");
             List<ProjectDiaryViewModel> dp = new List<ProjectDiaryViewModel>();
 
             try
@@ -2677,7 +2678,8 @@ namespace Hydra.Such.Portal.Controllers
                         Utilizador = User.Identity.Name,
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
-                        Fatura = x.Fatura
+                        Fatura = x.Fatura,
+                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : ""
                     }).OrderByDescending(x => x.Date).ToList();
                 }
                 else
@@ -2763,7 +2765,8 @@ namespace Hydra.Such.Portal.Controllers
                         Utilizador = User.Identity.Name,
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
-                        Fatura = x.Fatura
+                        Fatura = x.Fatura,
+                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : ""
                     }).OrderByDescending(x => x.Date).ToList();
                 }
 
@@ -7317,6 +7320,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Grupo Contab. Projeto");
                     Col = Col + 1;
                 }
+                if (dp["productGroupCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Grupo de Produto");
+                    Col = Col + 1;
+                }
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Região");
@@ -7644,6 +7652,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["projectContabGroup"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ProjectContabGroup);
+                            Col = Col + 1;
+                        }
+                        if (dp["productGroupCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ProductGroupCode);
                             Col = Col + 1;
                         }
                         if (dp["regionCode"]["hidden"].ToString() == "False")

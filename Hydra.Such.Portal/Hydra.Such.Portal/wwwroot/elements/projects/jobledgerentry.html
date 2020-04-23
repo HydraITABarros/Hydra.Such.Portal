@@ -292,6 +292,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.productGroupCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="productGroupCode">Grupo de Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="productGroupCode" />
+                </template>
+                <template>
+                    {{item.productGroupCode}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
@@ -962,6 +972,7 @@
                         "measurementUnitCode": { hidden: false, label: "Cód. Unidade Medida" },
                         "locationCode": { hidden: false, label: "Cód. Localização" },
                         "projectContabGroup": { hidden: false, label: "Grupo Contab. Projeto" },
+                        "productGroupCode": { hidden: false, label: "Grupo de Produto" },
                         "regionCode": { hidden: false, label: "Cód. Região" },
                         "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
