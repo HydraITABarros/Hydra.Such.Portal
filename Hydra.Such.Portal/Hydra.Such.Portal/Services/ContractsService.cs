@@ -66,6 +66,19 @@ namespace Hydra.Such.Portal.Services
                             cContract.NºContrato = "";
                         }
 
+                        if (cContract.NºDeContrato.StartsWith("VCI"))
+                            cContract.Tipo = 2;
+                        else
+                        {
+                            if (cContract.NºDeContrato.StartsWith("QA"))
+                                cContract.Tipo = 3;
+                            else
+                            {
+                                if (cContract.NºDeContrato.StartsWith("VC"))
+                                    cContract.Tipo = 1;
+                            }
+                        }
+
                         cContract.DataHoraModificação = null;
                         cContract.Arquivado = false;
 

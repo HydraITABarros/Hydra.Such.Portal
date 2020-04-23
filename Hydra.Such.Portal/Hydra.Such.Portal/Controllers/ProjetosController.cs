@@ -1643,6 +1643,31 @@ namespace Hydra.Such.Portal.Controllers
                     return Json(response);
                 }
 
+                ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetById(13);
+                dp.ForEach(x =>
+                {
+                    List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
+
+                    if (dpObject != null && dpObject.Count > 0)
+                    {
+                        if (Parametro != null && Convert.ToDateTime(Parametro.Valor) > Convert.ToDateTime(x.Date))
+                        {
+                            response.eReasonCode = 6;
+                            response.eMessage = "Não é possivel Guardar, por existir pelo menos uma linha no diário onde a Data é a inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
+                        }
+                    }
+                    else
+                    {
+                        if (Parametro != null && Convert.ToDateTime(Parametro.Valor) > Convert.ToDateTime(x.Date))
+                        {
+                            response.eReasonCode = 6;
+                            response.eMessage = "Não é possivel Criar, por a Data ser inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
+                        }
+                    }
+                });
+                if (response.eReasonCode == 6)
+                    return Json(response);
+
                 dp.ForEach(x =>
                 {
                     List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
@@ -2173,6 +2198,18 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
+                        ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetById(13);
+                        dp.ForEach(x =>
+                        {
+                            if (x != null && Parametro != null && Convert.ToDateTime(Parametro.Valor) > Convert.ToDateTime(x.Date))
+                                {
+                                    result.eReasonCode = 6;
+                                    result.eMessage = "Não é possivel Registar, por existir pelo menos uma linha no diário onde a Data é a inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
+                                }
+                        });
+                        if (result.eReasonCode == 6)
+                            return Json(result);
+
                         Guid transactID = Guid.NewGuid();
                         try
                         {
