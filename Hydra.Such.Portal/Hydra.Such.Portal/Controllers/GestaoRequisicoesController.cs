@@ -2834,10 +2834,31 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (Requisicoes != null && Requisicoes.Count > 0)
                 {
-                    //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
-                    //if (UPerm.Create == true)
-                    //{
+                    //Preenchimento automático do campo Grupo Registo IVA Negócio nas linhas das requisições
+                    List<NAVVendorViewModel> AllFornecedores = DBNAV2017Vendor.GetVendor(config.NAVDatabaseName, config.NAVCompanyName);
 
+                    Requisicoes.ForEach(Requisicao =>
+                    {
+                        List<RequisitionLineViewModel> requisitionLines = Requisicao.Lines;
+
+                        if (requisitionLines != null && requisitionLines.Count > 0)
+                        {
+                            requisitionLines.ForEach(linha =>
+                            {
+                                if (string.IsNullOrEmpty(linha.VATBusinessPostingGroup))
+                                {
+                                    NAVVendorViewModel fornecedor = AllFornecedores.Where(x => x.No_ == linha.SupplierNo).FirstOrDefault();
+                                    if (fornecedor != null && !string.IsNullOrEmpty(fornecedor.VATBusinessPostingGroup))
+                                    {
+                                        linha.VATBusinessPostingGroup = fornecedor.VATBusinessPostingGroup;
+
+                                        linha.UpdateUser = User.Identity.Name;
+                                        DBRequestLine.Update(linha.ParseToDB());
+                                    }
+                                }
+                            });
+                        }
+                    });
 
                     Requisicoes.ForEach(Requisicao =>
                     {

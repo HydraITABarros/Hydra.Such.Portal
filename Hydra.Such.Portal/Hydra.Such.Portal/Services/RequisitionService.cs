@@ -279,8 +279,8 @@ namespace Hydra.Such.Portal.Services
                 requisitionLines.RemoveAll(x => x.CreatedOrderNo != "" && x.CreatedOrderNo != null);
                 //FIM
 
-                if (requisitionLines.Any(x => string.IsNullOrEmpty(x.SupplierNo) || !x.UnitCost.HasValue || x.UnitCost.Value == 0))
-                    throw new Exception("É obrigatório o preenchimento do fornecedor e do custo unitário nas linhas");
+                if (requisitionLines.Any(x => string.IsNullOrEmpty(x.SupplierNo) || !x.UnitCost.HasValue || x.UnitCost.Value == 0 || string.IsNullOrEmpty(x.VATBusinessPostingGroup)))
+                    throw new Exception("É obrigatório o preenchimento do Fornecedor, do Custo Unitário e do Grupo Registo IVA Negócio nas linhas");
 
                 if (!string.IsNullOrEmpty(requisition.ProjectNo) && (string.IsNullOrEmpty(requisition.RegionCode) || string.IsNullOrEmpty(requisition.FunctionalAreaCode) || string.IsNullOrEmpty(requisition.CenterResponsibilityCode)))
                 {
