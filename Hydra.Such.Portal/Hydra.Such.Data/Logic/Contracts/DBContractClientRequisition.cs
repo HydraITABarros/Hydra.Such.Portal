@@ -165,9 +165,14 @@ namespace Hydra.Such.Data.Logic.Contracts
                     //    lastInvoiceDate = x.DataÚltimaFatura.Value;
                     //else
                     //{
-                        var req = ctx.RequisiçõesClienteContrato.Where(x => x.NºContrato == contractNo && x.GrupoFatura == invoiceGroupNumber && x.DataÚltimaFatura.HasValue).OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
-                        if (req != null)
+                    var req = ctx.RequisiçõesClienteContrato.Where(x => x.NºContrato == contractNo && x.GrupoFatura == invoiceGroupNumber && x.DataÚltimaFatura.HasValue).OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
+                    if (req != null)
+                    {
+                        if (req.DataÚltimaFatura.HasValue)
                             lastInvoiceDate = req.DataÚltimaFatura.Value;
+                        else
+                            lastInvoiceDate = req.DataInícioCompromisso;
+                    }
                     //}
                    
                 }

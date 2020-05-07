@@ -2565,7 +2565,9 @@ namespace Hydra.Such.Portal.Controllers
 
                             //Se ainda não houver nenhuma fatura do contrato (data ultima fatura vazia) - Tentar obter a data da ultima fatura a partir da Data Inicio do Contrato. 
                             if (nextInvoiceDate.Equals(DateTime.MinValue))
+                            {
                                 nextInvoiceDate = item.DataInicial.HasValue ? item.DataInicial.Value.AddDays(-1) : lastDay;
+                            }
 
                             //Para a data de faturação, o utilizador insere o ultimo dia do mês. Adicionar um dia para evitar contabilizar o mês selecionado.
                             //TODO: Verificar se existe necessidade de aplicar regra mais sólida 
@@ -4258,7 +4260,9 @@ namespace Hydra.Such.Portal.Controllers
                                 DataFimFatura = ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura.HasValue ? (DateTime)ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura : DateTime.MinValue;
                                 if (DataFimFatura == DateTime.MinValue)
                                 {
-                                    DataFimFatura = !string.IsNullOrEmpty(Contract.StartData) ? Convert.ToDateTime(Contract.StartData) : DateTime.MinValue;
+                                    //ORIGINAL
+                                    //DataFimFatura = !string.IsNullOrEmpty(Contract.StartData) ? Convert.ToDateTime(Contract.StartData) : DateTime.MinValue;
+                                    DataFimFatura = ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataInícioCompromisso;
                                 }
                             }
                         }
@@ -4534,7 +4538,9 @@ namespace Hydra.Such.Portal.Controllers
                                     DataFimFatura = ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura.HasValue ? (DateTime)ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataÚltimaFatura : DateTime.MinValue;
                                     if (DataFimFatura == DateTime.MinValue)
                                     {
-                                        DataFimFatura = !string.IsNullOrEmpty(Contract.StartData) ? Convert.ToDateTime(Contract.StartData) : DateTime.MinValue;
+                                        //ORIGINAL
+                                        //DataFimFatura = !string.IsNullOrEmpty(Contract.StartData) ? Convert.ToDateTime(Contract.StartData) : DateTime.MinValue;
+                                        DataFimFatura = ClientRequisitionByContractAndGroup.OrderByDescending(x => x.DataÚltimaFatura).FirstOrDefault().DataInícioCompromisso;
                                     }
                                 }
                             }
