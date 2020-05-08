@@ -25,6 +25,7 @@ using NPOI.XSSF.UserModel;
 using System.ComponentModel;
 using Hydra.Such.Portal.Extensions;
 using NPOI.HSSF.UserModel;
+using Hydra.Such.Data.Logic.Approvals;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -235,12 +236,82 @@ namespace Hydra.Such.Portal.Controllers
                 var client = WSCustomerService.MapCustomerNAVToCustomerModel(result.WSCustomer);
                 if (client != null)
                 {
+                    //SUCESSO
                     client.eReasonCode = 1;
+
+                    //Envio de email
+                    ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetByParametro("AddClienteEmail");
+                    ConfigUtilizadores UserEmail = DBUserConfigurations.GetById(User.Identity.Name);
+
+                    if (Parametro != null && !string.IsNullOrEmpty(Parametro.Valor))
+                    {
+                        SendEmailApprovals Email = new SendEmailApprovals();
+
+                        Email.DisplayName = "e-SUCH - Cliente";
+                        Email.From = "esuch@such.pt";
+                        Email.To.Add(Parametro.Valor);
+                        Email.BCC.Add("MMarcelo@such.pt");
+                        //Email.BCC.Add("ARomao@such.pt");
+                        Email.Subject = "e-SUCH - Novo Cliente";
+                        Email.Body = MakeEmailBodyContent("Criado o Cliente:  " + client.No + " - " + client.Name, UserEmail.Nome);
+                        Email.IsBodyHtml = true;
+
+                        Email.SendEmail_Simple();
+                    }
+
                     return Json(client);
                 }
-
             }
             return Json(data);
+        }
+
+        public static string MakeEmailBodyContent(string BodyText, string BodyAssinatura)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Caro (a)," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyAssinatura +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço de Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
         }
 
         [HttpPost]
