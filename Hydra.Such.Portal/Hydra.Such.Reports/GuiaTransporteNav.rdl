@@ -305,6 +305,10 @@
           <DataField>InfoSignature</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="NumeroInternoGT">
+          <DataField>NumeroInternoGT</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
     </DataSet>
     <DataSet Name="GTLines">
@@ -2061,6 +2065,68 @@
                     <PaddingRight>2pt</PaddingRight>
                     <PaddingTop>2pt</PaddingTop>
                     <PaddingBottom>2pt</PaddingBottom>
+                  </Style>
+                </Textbox>
+                <Textbox Name="NumeroInternoGT">
+                  <CanGrow>true</CanGrow>
+                  <KeepTogether>true</KeepTogether>
+                  <Paragraphs>
+                    <Paragraph>
+                      <TextRuns>
+                        <TextRun>
+                          <Value>=First(Fields!NumeroInternoGT.Value, "GTHeader")</Value>
+                          <Style>
+                            <FontFamily>Arial</FontFamily>
+                            <FontSize>7pt</FontSize>
+                          </Style>
+                        </TextRun>
+                      </TextRuns>
+                      <Style />
+                    </Paragraph>
+                  </Paragraphs>
+                  <rd:DefaultName>NumeroInternoGT</rd:DefaultName>
+                  <Top>7.60542cm</Top>
+                  <Left>2.5822cm</Left>
+                  <Height>0.5cm</Height>
+                  <Width>3.65475cm</Width>
+                  <ZIndex>33</ZIndex>
+                  <Style>
+                    <Border>
+                      <Style>None</Style>
+                    </Border>
+                    <PaddingLeft>2pt</PaddingLeft>
+                    <PaddingRight>2pt</PaddingRight>
+                  </Style>
+                </Textbox>
+                <Textbox Name="Textbox8">
+                  <CanGrow>true</CanGrow>
+                  <KeepTogether>true</KeepTogether>
+                  <Paragraphs>
+                    <Paragraph>
+                      <TextRuns>
+                        <TextRun>
+                          <Value>N.º Interno</Value>
+                          <Style>
+                            <FontFamily>Arial</FontFamily>
+                            <FontSize>7pt</FontSize>
+                          </Style>
+                        </TextRun>
+                      </TextRuns>
+                      <Style />
+                    </Paragraph>
+                  </Paragraphs>
+                  <rd:DefaultName>Textbox8</rd:DefaultName>
+                  <Top>7.60542cm</Top>
+                  <Left>0.01164cm</Left>
+                  <Height>0.5cm</Height>
+                  <Width>2.5cm</Width>
+                  <ZIndex>34</ZIndex>
+                  <Style>
+                    <Border>
+                      <Style>None</Style>
+                    </Border>
+                    <PaddingLeft>2pt</PaddingLeft>
+                    <PaddingRight>2pt</PaddingRight>
                   </Style>
                 </Textbox>
               </ReportItems>
