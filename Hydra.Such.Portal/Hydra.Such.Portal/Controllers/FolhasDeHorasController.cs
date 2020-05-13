@@ -2970,13 +2970,11 @@ namespace Hydra.Such.Portal.Controllers
                 decimal NoDias = 0;
                 int noLinha;
 
-                List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().Where(x => x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo &&
-
-                    ((data.DataHoraPartida > x.DataHoraPartida && data.DataHoraChegada < x.DataHoraChegada) ||
-                    ((data.DataHoraPartida > x.DataHoraPartida && data.DataHoraPartida < x.DataHoraChegada) && data.DataHoraChegada > x.DataHoraChegada) ||
-
-                    (data.DataHoraPartida < x.DataHoraPartida && (data.DataHoraChegada < x.DataHoraChegada && data.DataHoraChegada > x.DataHoraPartida)) ||
-                    (data.DataHoraPartida < x.DataHoraPartida && data.DataHoraChegada > x.DataHoraChegada))
+                List<FolhasDeHoras> FH = DBFolhasDeHoras.GetAll().Where(x => x.NºFolhaDeHoras != data.FolhaDeHorasNo && x.NºEmpregado == data.EmpregadoNo && x.Eliminada == false &&
+                    ((data.DataHoraPartida >= x.DataHoraPartida && data.DataHoraChegada <= x.DataHoraChegada) ||
+                    ((data.DataHoraPartida >= x.DataHoraPartida && data.DataHoraPartida < x.DataHoraChegada) && data.DataHoraChegada >= x.DataHoraChegada) ||
+                    (data.DataHoraPartida <= x.DataHoraPartida && (data.DataHoraChegada <= x.DataHoraChegada && data.DataHoraChegada > x.DataHoraPartida)) ||
+                    (data.DataHoraPartida <= x.DataHoraPartida && data.DataHoraChegada >= x.DataHoraChegada))
                     ).ToList();
                 if (FH != null && FH.Count > 0)
                 {

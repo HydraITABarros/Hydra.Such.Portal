@@ -150,7 +150,6 @@
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{LProjectFunctionalAreaCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{LProjectResponsabilityCenterCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{LProjectRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{PurchaseHeaders}}" id="purchaseheader_ajax" on-response="_purchaseheaderresponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{GridPurchaseHeaders}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLines}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -555,7 +554,6 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        va
                                         <vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="[[Requisition.regionCode]]" label="Cód. Região" disabled="{{ !_permissions.update }}">
                                             <template>
                                                 <table width="200px">
@@ -592,6 +590,16 @@
                                                 </table>
                                             </template>
                                         </vaadin-combo-box>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <such-selectbox id="_CLSuppliers" label="Nº Fornecedor"
+                                                        items="[[Suppliers]]"
+                                                        text-path="name"
+                                                        value-path="no_"
+                                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                        disabled="{{ !_permissions.update }}">
+                                        </such-selectbox>
                                     </div>
 
                                     <div class="row break_clear" hidden="{{_isArchived}}">
@@ -834,6 +842,29 @@
                                     </template>
                                 </vaadin-grid-column>
 
+                                <vaadin-grid-column width="200px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="supplierNo">Fornecedor</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="supplierNo" />
+                                    </template>
+                                    <template>
+                                        <template is="dom-if" if="{{ item.selected }}">
+                                            <such-selectbox id="_CLGridSupplierNo"
+                                                            items="[[Suppliers]]"
+                                                            value="{{item.supplierNo}}"
+                                                            text-path="name"
+                                                            value-path="no_"
+                                                            fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                            on-change="_onSupplierInGridChanged"
+                                                            disabled="{{ !_permissions.update }}">
+                                            </such-selectbox>
+                                        </template>
+                                        <template is="dom-if" if="{{ !item.selected }}">
+                                            [[ _getSupplierDescription(item.supplierNo) ]]
+                                        </template>
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
                                     <template is="dom-if" if="{{ _permissions.delete }}">
                                         <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
@@ -1010,7 +1041,7 @@
                     //this.$.createMarketSearchId.checked = false;
                     //this.$.submitPrePurchaseId.checked = false;
                     //this.$.sendPrePurchaseId.checked = false;
-                    this.$.CBSuppliers._clearSelection();
+                    //this.$.CBSuppliers._clearSelection();
                     this.$.CBPurchaseHeader.value = "";
                     this.$.CBPurchaseHeader.value = "";
                     this.$.queryCreatedMarketNoId.value = "";
@@ -1180,7 +1211,8 @@
                                 projectNo: this.$.CBLineProjects.value,
                                 regionCode: this.$._CLRegion.value,
                                 functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value
+                                centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                supplierNo: this.$._CLSuppliers.value
                                 //vehicle: this.$.CBVehicles.value,
                                 //unitCostSould: this.$.unitCostsouldId.value,
                                 //budgetValue: this.$.budgetValueId.value,

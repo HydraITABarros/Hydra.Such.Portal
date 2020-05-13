@@ -457,6 +457,11 @@ namespace Hydra.Such.Portal.Controllers
                                         value = x.Name
                                     }).ToList();
 
+                            //Get fornecedor by code
+                            NAVSupplierViewModels fornecedor = new NAVSupplierViewModels();
+                            if (!string.IsNullOrEmpty(lr.NºFornecedor))
+                                fornecedor = DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, lr.NºFornecedor).FirstOrDefault();
+
                             //Get supplier value //ACORDO DE PREÇOS
                             //if (supplierval.Count == 1)
                             //{
@@ -509,8 +514,8 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Descricao2 = lr.Descrição2;
                             newdp.CódUnidadeMedida = lr.CódigoUnidadeMedida;
                             //newdp.CustoUnitárioDireto = lr.CustoUnitário;
-                            //newdp.NºFornecedor = lr.NºFornecedor; //ACORDO DE PREÇOS
-                            //newdp.NomeFornecedor = supVal;
+                            newdp.NºFornecedor = !string.IsNullOrEmpty(lr.NºFornecedor) ? lr.NºFornecedor : "";
+                            newdp.NomeFornecedor = fornecedor != null && !string.IsNullOrEmpty(fornecedor.Name) ? fornecedor.Name : "";
                             newdp.CodigoProdutoFornecedor = lr.CódigoProdutoFornecedor;
                             newdp.QuantidadePorUnidMedida = lr.QtdPorUnidadeDeMedida;
                             newdp.NºEncomendaAberto = lr.NºEncomendaAberto;
@@ -606,6 +611,20 @@ namespace Hydra.Such.Portal.Controllers
 
                     return Json(result);
                 }
+
+                List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+                data.ForEach(item =>
+                {
+                    NAVProductsViewModel Product = AllProducts.Where(x => x.Code == item.ProductNo).FirstOrDefault();
+
+                    if (Product == null)
+                    {
+                        result.eReasonCode = 22;
+                        result.eMessage = "Não é possivel criar a Requisição, por o produto Nº " + item.ProductNo + " - " + item.Description + " " + item.Description2 + " estar bloqueado no NAV2017.";
+                    }
+                });
+                if (result.eReasonCode == 22)
+                    return Json(result);
 
                 int? productivityUnitId = data.Where(x => x.ProductionUnitNo.HasValue).Select(x => x.ProductionUnitNo).FirstOrDefault();
                 DateTime expextedDate = data.Where(x => !string.IsNullOrEmpty(x.ExpectedReceptionDate)).Select(x => DateTime.Parse(x.ExpectedReceptionDate)).OrderBy(x => x).FirstOrDefault();

@@ -1885,6 +1885,20 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
+                        List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, string.Empty);
+                        PreRequesitionLines.ForEach(item =>
+                        {
+                            NAVProductsViewModel Product = AllProducts.Where(x => x.Code == item.Código).FirstOrDefault();
+
+                            if (Product == null)
+                            {
+                                data.eReasonCode = 22;
+                                data.eMessage = "Não é possivel criar a Requisição, por o produto Nº " + item.Código + " - " + item.Descrição + " " + item.Descrição2 + " estar bloqueado no NAV2017.";
+                            }
+                        });
+                        if (data.eReasonCode == 22)
+                            return Json(data);
+
                         //Get VATPostingGroup Info
                         List<string> productsInRequisitionIds = PreRequesitionLines.Select(y => y.Código).Distinct().ToList();
                         var productsInRequisition = DBNAV2017Products.GetProductsById(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, productsInRequisitionIds);
@@ -2237,6 +2251,22 @@ namespace Hydra.Such.Portal.Controllers
                     List<Anexos> FilesLoaded = DBAttachments.GetById(TipoOrigemAnexos.PreRequisicao, data.PreRequesitionsNo);
                     data.eMessage = "";
 
+                    if (PreRequesitionLines != null && PreRequesitionLines.Count > 0)
+                    {
+                        List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, string.Empty);
+                        PreRequesitionLines.ForEach(item =>
+                        {
+                            NAVProductsViewModel Product = AllProducts.Where(x => x.Code == item.Código).FirstOrDefault();
+
+                            if (Product == null)
+                            {
+                                data.eReasonCode = 22;
+                                data.eMessage = "Não é possivel criar a Requisição, por o produto Nº " + item.Código + " - " + item.Descrição + " " + item.Descrição2 + " estar bloqueado no NAV2017.";
+                            }
+                        });
+                        if (data.eReasonCode == 22)
+                            return Json(data);
+                    }
 
                     decimal sumCD = 0;
                     decimal sumCDLines = 0;
