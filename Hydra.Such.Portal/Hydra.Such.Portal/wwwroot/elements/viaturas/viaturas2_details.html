@@ -209,6 +209,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Viaturas/EliminarFoto"
+                   last-response="{{eliminarFotoResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_EliminarFoto_ajax"
+                   on-response="_responseEliminarFoto"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--Imobilizados-->
         <iron-ajax url="/Viaturas/GetViaturas2TabImobilizados"
                    last-response="{{tabImobilizados}}"
@@ -901,15 +910,23 @@
 
                                         <div class="col-md-3" align="center" style="width: 25%; height: 350px; background-size: contain;">
                                             <img id="info_imagem" name="info_imagem" src="/viaturas/loadimage/{{data.matricula}}" />
-                                            <vaadin-upload id="info_uploadimage" name="info_uploadimage"
-                                                           target="/Viaturas/UploadImage/{{data.matricula}}"
-                                                           method="POST"
-                                                           headers="{'Accept': 'application/json'}"
-                                                           accept=".jpg"
-                                                           hidden="{{ _lockFields }}"
-                                                           timeout=15000>
-                                            </vaadin-upload>
+
+                                            <div class="col-md-10">
+                                                <vaadin-upload id="info_uploadimage" name="info_uploadimage"
+                                                               target="/Viaturas/UploadImage/{{data.matricula}}"
+                                                               method="POST"
+                                                               headers="{'Accept': 'application/json'}"
+                                                               accept=".jpg"
+                                                               hidden="{{ _lockFields }}"
+                                                               timeout=15000>
+                                                </vaadin-upload>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <paper-button raised id="btn_EliminarFoto" class="btnRemove" on-tap="_EliminarFoto" disabled="{{ _lockFields }}" title="Remover Imagem"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                            </div>
                                         </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -3514,10 +3531,10 @@
                                     </paper-collapse-item>
                                 </div>
                             </div>
-                    </iron-pages>
+                        </iron-pages>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
 
         <paper-dialog id="dlgEstado" modal style="width:300px; height:175px">
@@ -6379,7 +6396,54 @@
                     }
                 },
 
+                _EliminarFoto: function (e) {
+                    if (this._permissions.create == true) {
+                        var matricula = this._matricula;
+                        var ajax_request = this.$.page_EliminarFoto_ajax;
 
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a Imagem?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (eliminarFoto) {
+                                if (eliminarFoto) {
+                                    ajax_request.body = JSON.stringify({
+                                        matricula: matricula
+                                    });
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para remover a Imagem.');
+                    }
+                },
+
+                _responseEliminarFoto: function (data) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.eliminarFotoResult == true) {
+                        var msg = document.querySelector("x-viaturas2details");
+
+                        msg._openToast("Imagem removida com sucesso.");
+                        msg.$.page_loadImage_ajax.url = "/Viaturas/loadimage/" + msg._matricula;
+                        msg.$.page_loadImage_ajax.generateRequest();
+                        msg.$.info_imagem.src = "/Viaturas/loadimage/" + msg._matricula
+                    } else {
+                        this._openToastError('Não foi possivel remover a Imagem.');
+                    }
+                },
             });
         });
     </script>

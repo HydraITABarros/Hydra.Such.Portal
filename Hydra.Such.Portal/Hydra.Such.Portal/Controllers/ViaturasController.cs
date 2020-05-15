@@ -329,6 +329,28 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult EliminarFoto([FromBody] Viaturas2ViewModel data)
+        {
+            try
+            {
+                if (data != null && !string.IsNullOrEmpty(data.Matricula))
+                {
+                    string imgPath = _generalConfig.FileUploadFolder + "Viaturas\\" + data.Matricula + ".jpg";
+                    if (System.IO.File.Exists(imgPath))
+                    {
+                        System.IO.File.Delete(imgPath);
+                        return Json(true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            return Json(false);
+        }
+
+        [HttpPost]
         public JsonResult GetViatura2Details([FromBody] Viaturas2ViewModel data)
         {
             Viaturas2ViewModel viatura = new Viaturas2ViewModel();
