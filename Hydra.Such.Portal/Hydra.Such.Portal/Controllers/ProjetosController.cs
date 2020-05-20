@@ -35,6 +35,7 @@ using Hydra.Such.Portal.Extensions;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.ProjectView;
 using System.ServiceModel;
+using Hydra.Such.Data.ViewModel.Contracts;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -358,6 +359,22 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
 
+                    //Valores Fixos de Contrato
+                    result.ValoresFixosContratos = false;
+                    if (cProject != null && !string.IsNullOrEmpty(cProject.NºContrato))
+                    {
+                        Contratos Contract = DBContracts.GetByIdLastVersion(cProject.NºContrato);
+                        if (Contract != null && Contract.TipoFaturação.HasValue && Contract.TipoFaturação == 4) //"Mensal+Consumo"
+                        //if (Contract != null && Contract.TipoFaturação.HasValue && Contract.TipoFaturação == 2) //"Consumo"
+                        {
+                            List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(Contract.NºDeContrato, Contract.NºVersão).Where(x => x.Faturável == true && x.Quantidade > 0).ToList();
+                            if (ContractLines != null && ContractLines.Count > 0)
+                            {
+                                result.ValoresFixosContratos = true;
+                            }
+                        }
+                    }
+
                     return Json(result);
                 }
 
@@ -378,6 +395,240 @@ namespace Hydra.Such.Portal.Controllers
                 return Json(finalr);
             }
             return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult GetListContractsLines([FromBody] ProjectDetailsViewModel data)
+        {
+            if (data != null && !string.IsNullOrEmpty(data.ProjectNo))
+            {
+                Projetos Project = DBProjects.GetById(data.ProjectNo);
+
+                if (Project != null && !string.IsNullOrEmpty(Project.NºContrato))
+                {
+                    Contratos Contract = DBContracts.GetByIdLastVersion(Project.NºContrato);
+                    if (Contract != null && Contract.TipoFaturação.HasValue && Contract.TipoFaturação == 4) //"Mensal+Consumo"
+                    //if (Contract != null && Contract.TipoFaturação.HasValue && Contract.TipoFaturação == 2) //"Consumo"
+                    {
+                        List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(Contract.NºDeContrato, Contract.NºVersão).Where(x => x.Faturável == true && x.Quantidade > 0).ToList();
+                        if (ContractLines != null && ContractLines.Count > 0)
+                        {
+                            List<ContractLineViewModel> result = new List<ContractLineViewModel>();
+
+                            ContractLines.ForEach(x => result.Add(DBContractLines.ParseToViewModel(x)));
+
+                            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                            List<EnumData> AllStatus = EnumerablesFixed.ContractALLStatus;
+                            List<EnumData> AllContractBillingTypes = EnumerablesFixed.ContractBillingTypes;
+                            //List<ClientServicesViewModel> AllClientServices = new List<ClientServicesViewModel>();
+
+                            result.ForEach(x =>
+                            {
+                                x.ContratoClienteCode = !string.IsNullOrEmpty(Contract.NºCliente) ? Contract.NºCliente : "";
+                                x.ContratoClienteNome = !string.IsNullOrEmpty(Contract.NºCliente) ? AllClients.Where(y => y.No_ == Contract.NºCliente) != null ? AllClients.Where(y => y.No_ == Contract.NºCliente).FirstOrDefault().Name : "" : "";
+
+                                x.ContractoEstado = Contract.Estado != null ? AllStatus.Where(y => y.Id == Contract.Estado) != null ? AllStatus.Where(y => y.Id == Contract.Estado).FirstOrDefault().Value : "" : "";
+                                x.ContractEndereco = !string.IsNullOrEmpty(Contract.EnvioAEndereço) ? Contract.EnvioAEndereço : "";
+                                x.ContratoCodigoPostal = !string.IsNullOrEmpty(Contract.EnvioACódPostal) ? Contract.EnvioACódPostal : "";
+                                x.ContratoTipo = Contract.TipoContrato != null ? Contract.TipoContrato.ToString() : "";
+                                x.ContratoAvencaFixa = Contract.ContratoAvençaFixa.HasValue ? Contract.ContratoAvençaFixa == true ? "Sim" : "Não" : "Não";
+                                x.ContratoDataExpiracao = Contract.DataExpiração.HasValue ? Convert.ToDateTime(Contract.DataExpiração).ToShortDateString() : "";
+                                x.ContratoTipoFaturacao = Contract.TipoFaturação != null ? AllContractBillingTypes.Where(y => y.Id == Contract.TipoFaturação) != null ? AllContractBillingTypes.Where(y => y.Id == Contract.TipoFaturação).FirstOrDefault().Value : "" : "";
+
+                                x.ContratoTipo = !string.IsNullOrEmpty(x.ContratoTipo) ? x.ContratoTipo == "1" ? "Oportunidade" : x.ContratoTipo == "2" ? "Proposta" : x.ContratoTipo == "3" ? "Contrato" : "" : "";
+                            });
+
+                            return Json(result.OrderBy(x => x.ContractNo).ThenBy(y => y.VersionNo).ThenBy(z => z.LineNo));
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        [HttpPost]
+        public JsonResult FaturarValoresFixosContratos([FromBody] List<ContractLineViewModel> Linhas)
+        {
+            ErrorHandler result = new ErrorHandler();
+            result.eReasonCode = 1;
+            result.eMessage = "Linhas do Contrato registadas com sucesso.";
+            string message = string.Empty;
+
+            try
+            {
+                if (Linhas != null && Linhas.Count > 0)
+                {
+                    //List<NAVResourcesViewModel> AllResources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").ToList();
+                    List<ProjectDiaryViewModel> dp = new List<ProjectDiaryViewModel>();
+
+                    Linhas.ForEach(line =>
+                    {
+                        //NAVResourcesViewModel Resource = AllResources.Where(x => x.Code == line.Code).FirstOrDefault();
+                        ProjectDiaryViewModel dpLine = new ProjectDiaryViewModel();
+
+                        dpLine.ProjectNo = line.ProjectNo;
+                        dpLine.Date = DateTime.Now.ToShortDateString();
+                        dpLine.MovementType = 1;
+                        dpLine.Type = line.Type;
+                        dpLine.Code = line.Code;
+                        dpLine.Description = line.Description;
+                        dpLine.Quantity = line.Quantity;
+                        dpLine.MeasurementUnitCode = line.CodeMeasureUnit;
+                        dpLine.LocationCode = "";
+                        dpLine.ProjectContabGroup = "PROJETO";
+                        dpLine.RegionCode = line.CodeRegion;
+                        dpLine.FunctionalAreaCode = line.CodeFunctionalArea;
+                        dpLine.ResponsabilityCenterCode = line.CodeResponsabilityCenter;
+                        dpLine.User = User.Identity.Name;
+                        //dpLine.UnitCost = Resource.UnitCost; //???
+                        //dpLine.TotalCost = line.Quantity * Resource.UnitCost; //???
+                        dpLine.UnitPrice = line.UnitPrice;
+                        dpLine.TotalPrice = line.Quantity * line.UnitPrice;
+                        dpLine.Billable = line.Billable;
+                        dpLine.ResidueGuideNo = "";
+                        dpLine.ExternalGuideNo = "";
+                        dpLine.InvoiceToClientNo = ""; //???
+                        //dpLine.MealType = 0; //???
+                        dpLine.ServiceGroupCode = "";
+                        dpLine.ConsumptionDate = DateTime.Now.ToShortDateString();
+                        dpLine.CreateDate = DateTime.Now;
+                        dpLine.CreateUser = User.Identity.Name;
+                        dpLine.Registered = false;
+                        dpLine.Billed = false;
+                        dpLine.ServiceClientCode = line.ServiceClientNo;
+                        dpLine.PreRegistered = false;
+                        dpLine.Coin = ""; // ???
+
+                        dp.Add(dpLine);
+                    });
+
+                    //SET INTEGRATED IN DB
+                    if (dp != null)
+                    {
+                        dp.RemoveAll(x => x.Quantity == null || x.Quantity == 0);
+
+                        bool hasItemsWithoutMealType = dp.Any(x => x.FunctionalAreaCode.StartsWith("5") && (!x.MealType.HasValue || x.MealType == 0));
+
+                        bool hasItemsWithoutDimensions = dp.Any(x => string.IsNullOrEmpty(x.RegionCode) ||
+                                                                    string.IsNullOrEmpty(x.FunctionalAreaCode) ||
+                                                                    string.IsNullOrEmpty(x.ResponsabilityCenterCode));
+
+                        if (hasItemsWithoutMealType)
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "Existem linhas inválidas: o campo Tipo de Refeição é de preenchimento obrigatório para a área da Alimentação.";
+                        }
+                        else
+                        {
+                            if (hasItemsWithoutDimensions)
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "Existem linhas inválidas: a Região, Área Funcional e Centro de Responsabilidade são obrigatórios.";
+                            }
+                            else
+                            {
+                                ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetById(13);
+                                dp.ForEach(x =>
+                                {
+                                    if (x != null && Parametro != null && Convert.ToDateTime(Parametro.Valor) > Convert.ToDateTime(x.Date))
+                                    {
+                                        result.eReasonCode = 6;
+                                        result.eMessage = "Não é possivel Registar, por existir pelo menos uma linha no diário onde a Data é a inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
+                                    }
+                                });
+                                if (result.eReasonCode == 6)
+                                    return Json(result);
+
+                                Guid transactID = Guid.NewGuid();
+                                try
+                                {
+                                    //Create Lines in NAV
+                                    Task<WSCreateProjectDiaryLine.CreateMultiple_Result> TCreateNavDiaryLine = WSProjectDiaryLine.CreateNavDiaryLines(dp, transactID, _configws);
+                                    TCreateNavDiaryLine.Wait();
+                                    try
+                                    {
+                                        Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> TRegisterNavDiaryLine = WSProjectDiaryLine.RegsiterNavDiaryLines(transactID, _configws);
+                                        TRegisterNavDiaryLine.Wait();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        WSProjectDiaryLine.DeleteNavDiaryLines(transactID, _configws);
+                                        result.eReasonCode = 2;
+                                        result.eMessage = "Não foi possivel registar: " + e.Message;
+                                        return Json(result);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "Não foi possivel registar: " + ex.Message;
+                                    return Json(result);
+                                }
+
+                                dp.ForEach(x =>
+                                {
+                                    if (x.Code != null)
+                                    {
+                                        MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
+                                        {
+                                            //NºLinha = x.NºLinha,
+                                            NºProjeto = x.ProjectNo,
+                                            Data = !string.IsNullOrEmpty(x.Date) ? Convert.ToDateTime(x.Date) : DateTime.Now,
+                                            TipoMovimento = 1, //CONSUMO
+                                            Tipo = x.Type,
+                                            Código = x.Code,
+                                            Descrição = x.Description,
+                                            Quantidade = x.Quantity,
+                                            CódUnidadeMedida = x.MeasurementUnitCode,
+                                            CódLocalização = x.LocationCode,
+                                            GrupoContabProjeto = x.ProjectContabGroup,
+                                            CódigoRegião = x.RegionCode,
+                                            CódigoÁreaFuncional = x.FunctionalAreaCode,
+                                            CódigoCentroResponsabilidade = x.ResponsabilityCenterCode,
+                                            Utilizador = User.Identity.Name,
+                                            CustoUnitário = x.UnitCost,
+                                            CustoTotal = x.Quantity * x.UnitCost, //x.CustoTotal,
+                                            PreçoUnitário = x.UnitPrice,
+                                            PreçoTotal = x.Quantity * x.UnitPrice, //x.PreçoTotal,
+                                            Faturável = x.Billable,
+                                            Registado = true,
+                                            Faturada = false,
+                                            FaturaANºCliente = x.InvoiceToClientNo,
+                                            Moeda = x.Coin,
+                                            ValorUnitárioAFaturar = x.UnitValueToInvoice,
+                                            TipoRefeição = x.MealType,
+                                            CódGrupoServiço = x.ServiceGroupCode,
+                                            NºGuiaResíduos = x.ResidueGuideNo,
+                                            NºGuiaExterna = x.ExternalGuideNo,
+                                            DataConsumo = !string.IsNullOrEmpty(x.ConsumptionDate) ? Convert.ToDateTime(x.ConsumptionDate) : DateTime.Now,
+                                            CódServiçoCliente = x.ServiceClientCode,
+                                            UtilizadorCriação = User.Identity.Name,
+                                            DataHoraCriação = DateTime.Now,
+                                            FaturaçãoAutorizada = false,
+                                            FaturaçãoAutorizada2 = false,
+                                            NºDocumento = "ES_" + x.ProjectNo,
+                                            CriarMovNav2017 = false
+                                        };
+
+                                        DBProjectMovements.Create(ProjectMovement);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não existem linhas de Diário para Registar.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 222;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
         }
 
         [HttpPost]

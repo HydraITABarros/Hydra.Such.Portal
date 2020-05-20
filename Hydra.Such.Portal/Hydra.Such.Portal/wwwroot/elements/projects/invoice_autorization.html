@@ -277,6 +277,24 @@
                    on-response="_getCommitmentResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Projetos/GetListContractsLines"
+                   last-response="{{resultVFC}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   on-response="_ResponseGetListContractsLines"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Projetos/FaturarValoresFixosContratos"
+                   last-response="{{resultFaturarVFC}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_FaturarValoresFixosContratos"
+                   on-response="_ResponseFaturarValoresFixosContratos"
+                   content-type="application/json">
+        </iron-ajax>
+
         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
             <paper-tab>Geral</paper-tab>
             <paper-tab>Observações</paper-tab>
@@ -777,9 +795,7 @@
             </div>
         </iron-pages>
 
-
         <paper-dialog id="dlgValidation" modal style="height:200px; width:500px">
-
             <div class="row break_clear">
                 <!--<div class="col-md-2 ">
                 <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
@@ -808,6 +824,290 @@
             <div class="buttons">
                 <paper-button raised class="btnEdit" on-tap="_confirm" id="btnConfirmAuthorization" hidden>Autorizar</paper-button>
                 <paper-button raised class="btnRemove" on-tap="_closedlgValidationDlg">Cancelar</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-dialog id="dlgValoresFixosContratos" modal style="height:500px; width:1500px">
+            <div class="col-md-12 ">
+                <vaadin-grid column-reordering-allowed aria-label="ContractsGrid" items="[[resultVFC]]" id="gridContractsLines" class="grid" selected-items={{selectedItemsVFC}} active-item="{{selectedItemVFC}}" multi-sort="true">
+                    <vaadin-grid-selection-column auto-select>
+                    </vaadin-grid-selection-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contratoClienteCode.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contratoClienteCode">Cliente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contratoClienteCode" value="[[filter.contratoClienteCode]]" />
+                        </template>
+                        <template>
+                            {{item.contratoClienteCode}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.contratoClienteNome.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contratoClienteNome">Nome Cliente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contratoClienteNome" value="[[filter.contratoClienteNome]]" />
+                        </template>
+                        <template>
+                            {{item.contratoClienteNome}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.contractEndereco.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contractEndereco">Endereço</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contractEndereco" value="[[filter.contractEndereco]]" />
+                        </template>
+                        <template>
+                            {{item.contractEndereco}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractNo.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contractNo">Nº Contrato</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contractNo" value="[[filter.contractNo]]" />
+                        </template>
+                        <template>
+                            {{item.contractNo}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.versionNo.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="versionNo" value="[[filter.versionNo]]" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                {{item.versionNo}}
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractoEstado.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contractoEstado">Estado</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contractoEstado" value="[[filter.contractoEstado]]" />
+                        </template>
+                        <template>
+                            {{item.contractoEstado}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contratoCodigoPostal.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contratoCodigoPostal">Código Postal</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contratoCodigoPostal" value="[[filter.contratoCodigoPostal]]" />
+                        </template>
+                        <template>
+                            {{item.contratoCodigoPostal}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contratoTipo.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contratoTipo">Tipo Contrato</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contratoTipo" value="[[filter.contratoTipo]]" />
+                        </template>
+                        <template>
+                            {{item.contratoTipo}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contratoAvencaFixa.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contratoAvencaFixa">Avença Fixa</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contratoAvencaFixa" value="[[filter.contratoAvencaFixa]]" />
+                        </template>
+                        <template>
+                            {{item.contratoAvencaFixa}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.lineNo.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="lineNo">Nº Linha</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="lineNo" value="[[filter.lineNo]]" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                {{item.lineNo}}
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.code.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="code">Nº</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="code" value="[[filter.code]]" />
+                        </template>
+                        <template>
+                            {{item.code}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contratoTipoFaturacao.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contratoTipoFaturacao">Tipo</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contratoTipoFaturacao" value="[[filter.contratoTipoFaturacao]]" />
+                        </template>
+                        <template>
+                            {{item.contratoTipoFaturacao}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.description.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="description" value="[[filter.description]]" />
+                        </template>
+                        <template>
+                            {{item.description}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.description2.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="description2" value="[[filter.description2]]" />
+                        </template>
+                        <template>
+                            {{item.description2}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.quantity.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="quantity" value="[[filter.quantity]]" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                <vaadin-text-field id="vfcQuantidade" name="vfcQuantidade" value="{{item.quantity}}" on-value-changed="_ConvertDecimals" placeholder="0.0000" maxlength="18" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"></vaadin-text-field>
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codeMeasureUnit.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="codeMeasureUnit">Cód. Unidade Medida</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codeMeasureUnit" value="[[filter.codeMeasureUnit]]" />
+                        </template>
+                        <template>
+                            {{item.codeMeasureUnit}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.unitPrice.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="unitPrice" value="[[filter.unitPrice]]" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                <vaadin-text-field id="vfcUnitPrice" name="vfcUnitPrice" value="{{item.unitPrice}}" on-value-changed="_ConvertDecimals" placeholder="0.0000" maxlength="18" pattern="^[0-9]\d*(\.[0-9]{1,4})?$"><div slot="suffix">€</div></vaadin-text-field>
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codeRegion.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="codeRegion">Código Região</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codeRegion" value="[[filter.codeRegion]]" />
+                        </template>
+                        <template>
+                            {{item.codeRegion}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="codeFunctionalArea">Código Área Funcional</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codeFunctionalArea" value="[[filter.codeFunctionalArea]]" />
+                        </template>
+                        <template>
+                            {{item.codeFunctionalArea}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="codeResponsabilityCenter">Código Centro Responsabilidade</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="codeResponsabilityCenter" value="[[filter.codeResponsabilityCenter]]" />
+                        </template>
+                        <template>
+                            {{item.codeResponsabilityCenter}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.serviceClientNo.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="serviceClientNo">Cod. Serv.Cliente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="serviceClientNo" value="[[filter.serviceClientNo]]" />
+                        </template>
+                        <template>
+                            {{item.serviceClientNo}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.serviceClientName.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="serviceClientName">Des.Serv.Cliente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="serviceClientName" value="[[filter.serviceClientName]]" />
+                        </template>
+                        <template>
+                            {{item.serviceClientName}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.invoiceGroup.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="invoiceGroup">Grupo Fatura</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="invoiceGroup" value="[[filter.invoiceGroup]]" />
+                        </template>
+                        <template>
+                            <div class="text-right">
+                                {{item.invoiceGroup}}
+                            </div>
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.versionStartDate.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="versionStartDate">Data Inicio Versao</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="versionStartDate" value="[[filter.versionStartDate]]" />
+                        </template>
+                        <template>
+                            {{item.versionStartDate}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.versionEndDate.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="versionEndDate">Data Fim Versao</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="versionEndDate" value="[[filter.versionEndDate]]" />
+                        </template>
+                        <template>
+                            {{item.versionEndDate}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.contratoDataExpiracao.hidden }}">
+                        <template class="header">
+                            <vaadin-grid-sorter path="contratoDataExpiracao">Data Expiração Contrato</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="contratoDataExpiracao" value="[[filter.contratoDataExpiracao]]" />
+                        </template>
+                        <template>
+                            {{item.contratoDataExpiracao}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+            </div>
+
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_faturarValoresFixosContratos" id="btnConfirmAuthorization">Faturar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeDlgValoresFixosContratos">Fechar</paper-button>
             </div>
         </paper-dialog>
 
@@ -909,7 +1209,13 @@
                     },
                     _permissions: {
                         type: Array,
-                    }
+                    },
+                    selectedItemVFC: {
+                        type: Array,
+                    },
+                    selectedItemsVFC: {
+                        type: Array,
+                    },
                 },
                 observers: ['_resetSelection(inverted)', '_onCacheLoaded( RegionData,FunctionalAreaCodeData,ResponsabilityCenterData)'],
 
@@ -1150,6 +1456,10 @@
                             this.$.getCustomerServices_ajax.body = JSON.stringify(this.Project.clientNo);
                             this.$.getCustomerServices_ajax.params = { "allProjs": false };
                             this.$.getCustomerServices_ajax.generateRequest();
+
+                            if (this.Project.valoresFixosContratos == true) {
+                                this._ValoresFixosContratos();
+                            }
                         }
                     }
                     else {
@@ -1575,6 +1885,73 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
+
+                _ValoresFixosContratos: function () {
+                    var dialog = this.$.dlgValoresFixosContratos;
+                    var ajax_request = this.$.grid_databound_ajax;
+                    var projectNo = this._projectno;
+
+                    bootbox.confirm({
+                        message: "Pretende faturar os valores Fixos do Contrato?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify({ "ProjectNo": projectNo });
+                                ajax_request.generateRequest();
+
+                                dialog.open();
+                            }
+                        }
+                    });
+                },
+
+                _closeDlgValoresFixosContratos: function () {
+                    this.$.dlgValoresFixosContratos.close();
+                },
+
+                _faturarValoresFixosContratos: function (selectedItemVFC, selectedItemsVFC) {
+                    if (this.selectedItemsVFC != null && this.selectedItemsVFC != "") {
+                        var selItms = this.selectedItemsVFC;
+                        var destinationProject = this._projectno;
+                        for (var i = 0; i < selItms.length; i++) {
+                            selItms[i].projectNo = destinationProject;
+                        }
+
+                        this.$.dlgValoresFixosContratos.close();
+                        this.$.ajax_FaturarValoresFixosContratos.body = JSON.stringify(selItms);
+                        this.$.ajax_FaturarValoresFixosContratos.generateRequest();
+
+                        this.$.dlgValoresFixosContratos.close();
+                    } else {
+                        this.openToastError("Não foi selecionada nenhuma linha.");
+                    }
+                },
+
+                _ResponseFaturarValoresFixosContratos: function () {
+                    if (this.resultFaturarVFC.eReasonCode == 1) {
+                        this.openToast(this.resultFaturarVFC.eMessage);
+
+                        this.$.gridContractsLines.selectedItemsVFC = [];
+                        this.$.grdProjectMovements.selectedItems = [];
+                        this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
+                        this.$.movements_databound_ajax.generateRequest();
+                    }
+                    else {
+                        this.openToastError(this.resultFaturarVFC.eMessage);
+                    }
+                },
+
+
+
 
 
 
