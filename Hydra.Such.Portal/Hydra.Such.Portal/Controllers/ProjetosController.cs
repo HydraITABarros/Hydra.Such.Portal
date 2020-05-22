@@ -408,7 +408,6 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     Contratos Contract = DBContracts.GetByIdLastVersion(Project.NºContrato);
                     if (Contract != null && Contract.TipoFaturação.HasValue && Contract.TipoFaturação == 4) //"Mensal+Consumo"
-                    //if (Contract != null && Contract.TipoFaturação.HasValue && Contract.TipoFaturação == 2) //"Consumo"
                     {
                         List<LinhasContratos> ContractLines = DBContractLines.GetAllByActiveContract(Contract.NºDeContrato, Contract.NºVersão).Where(x => x.Faturável == true && x.Quantidade > 0).ToList();
                         if (ContractLines != null && ContractLines.Count > 0)
@@ -420,7 +419,6 @@ namespace Hydra.Such.Portal.Controllers
                             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
                             List<EnumData> AllStatus = EnumerablesFixed.ContractALLStatus;
                             List<EnumData> AllContractBillingTypes = EnumerablesFixed.ContractBillingTypes;
-                            //List<ClientServicesViewModel> AllClientServices = new List<ClientServicesViewModel>();
 
                             result.ForEach(x =>
                             {
@@ -451,7 +449,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             ErrorHandler result = new ErrorHandler();
             result.eReasonCode = 1;
-            result.eMessage = "Linhas do Contrato registadas com sucesso.";
+            result.eMessage = "Linhas do Contrato Faturadas com sucesso.";
             string message = string.Empty;
 
             try
@@ -523,7 +521,7 @@ namespace Hydra.Such.Portal.Controllers
                             if (hasItemsWithoutDimensions)
                             {
                                 result.eReasonCode = 2;
-                                result.eMessage = "Existem linhas inválidas: a Região, Área Funcional e Centro de Responsabilidade são obrigatórios.";
+                                result.eMessage = "Existem linhas inválidas: a Região, Área Funcional e Centro de Responsabilidade são de preenchimento obrigatórios.";
                             }
                             else
                             {
@@ -533,7 +531,7 @@ namespace Hydra.Such.Portal.Controllers
                                     if (x != null && Parametro != null && Convert.ToDateTime(Parametro.Valor) > Convert.ToDateTime(x.Date))
                                     {
                                         result.eReasonCode = 6;
-                                        result.eMessage = "Não é possivel Registar, por existir pelo menos uma linha no diário onde a Data é a inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
+                                        result.eMessage = "Não é possivel Faturar, por existir pelo menos uma linha onde o campo Data é a inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
                                     }
                                 });
                                 if (result.eReasonCode == 6)
@@ -554,14 +552,14 @@ namespace Hydra.Such.Portal.Controllers
                                     {
                                         WSProjectDiaryLine.DeleteNavDiaryLines(transactID, _configws);
                                         result.eReasonCode = 2;
-                                        result.eMessage = "Não foi possivel registar: " + e.Message;
+                                        result.eMessage = "Não foi possivel Faturar: " + e.Message;
                                         return Json(result);
                                     }
                                 }
                                 catch (Exception ex)
                                 {
                                     result.eReasonCode = 2;
-                                    result.eMessage = "Não foi possivel registar: " + ex.Message;
+                                    result.eMessage = "Não foi possivel Faturar: " + ex.Message;
                                     return Json(result);
                                 }
 
@@ -619,7 +617,7 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         result.eReasonCode = 2;
-                        result.eMessage = "Não existem linhas de Diário para Registar.";
+                        result.eMessage = "Não existem linhas para Faturar.";
                     }
                 }
             }

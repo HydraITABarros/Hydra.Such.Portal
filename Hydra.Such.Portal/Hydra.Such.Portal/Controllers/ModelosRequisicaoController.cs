@@ -163,7 +163,6 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        
         public JsonResult UpdateRequisition([FromBody] RequisitionTemplateViewModel item)
         {
             if (item != null)
@@ -189,6 +188,76 @@ namespace Hydra.Such.Portal.Controllers
                 item.eReasonCode = 2;
                 item.eMessage = "Ocorreu um erro: o modelo de requisição não pode ser nulo.";
             }
+            return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult CopyRequisition([FromBody] RequisitionTemplateViewModel item)
+        {
+            try
+            {
+                if (item != null && !string.IsNullOrEmpty(item.RequisitionNo))
+                {
+                    //Get Numeration
+                    bool autoGenId = true;
+                    Configuração conf = DBConfigurations.GetById(1);
+                    int entityNumerationConfId = conf.NumeracaoModelosRequisicao.Value;
+                    string OriginalRequisitionNo = item.RequisitionNo;
+
+                    item.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
+
+                    if (!string.IsNullOrEmpty(item.RequisitionNo))
+                    {
+                        RequisitionTemplateViewModel copyItem = new RequisitionTemplateViewModel();
+
+                        copyItem = item;
+                        copyItem.CreateUser = User.Identity.Name;
+                        copyItem.Lines.ForEach(line =>
+                        {
+                            line.LineNo = 0;
+                        });
+
+                        var result = DBRequestTemplates.Create(copyItem.ParseToDB());
+                        if (result != null)
+                        {
+                            item = result.ParseToTemplateViewModel();
+                            if (autoGenId)
+                            {
+                                ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                                configNum.ÚltimoNºUsado = item.RequisitionNo;
+                                configNum.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(configNum);
+                            }
+
+                            item.eReasonCode = 1;
+                            item.eMessage = "Novo Modelo de Requisição criado com sucesso com o Nº " + item.RequisitionNo;
+                        }
+                        else
+                        {
+                            item = new RequisitionTemplateViewModel();
+                            item.eReasonCode = 2;
+                            item.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
+                        }
+                    }
+                    else
+                    {
+                        item.eReasonCode = 5;
+                        item.eMessage = "A numeração configurada não é compativel com a inserida.";
+                    }
+                }
+                else
+                {
+                    item = new RequisitionTemplateViewModel();
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro: o modelo de requisição não pode ser nulo.";
+                }
+            }
+            catch (Exception ex)
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
+            }
+
             return Json(item);
         }
 

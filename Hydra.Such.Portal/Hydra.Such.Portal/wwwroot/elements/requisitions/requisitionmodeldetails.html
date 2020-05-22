@@ -224,6 +224,10 @@
                 </template>
             </template>
 
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_copyReq"><i class="fa fa-copy" aria-hidden="true"></i>&nbsp; Copiar</paper-button>
+            </template>
+
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
 
             <!--start ColumnToggle-->
@@ -1166,6 +1170,34 @@
                         this.$.validateNumeration_ajax.generateRequest();
                     }
                 },
+                _copyReq: function () {
+                    if (this._validateReqHeaderInput()) {
+                        var url = "/ModelosRequisicao/CopyRequisition";
+                        var Requisition = JSON.stringify(this.Requisition);
+                        var ajax_request = this.$.requisition_datasource;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que deseja criar um novo Modelo de Requisição baseado neste Modelo?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.url = url;
+                                    ajax_request.body = Requisition;
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
                 _onNumValidationResponse: function (data) {
                     if (data.detail.status === 200) {
                         if (this.numValidationResponse == "") {
@@ -1324,6 +1356,14 @@
                                 setTimeout(function () {
                                     window.location.href = "/ModelosRequisicao";
                                 }, 2500);
+                            }
+                            else {
+                                this._openToastError(this.Requisition.eMessage);
+                            }
+                        }
+                        else if (data.detail.url.indexOf("CopyRequisition") !== -1) {
+                            if (this.Requisition.eReasonCode == "1") {
+                                this._openToast(this.Requisition.eMessage);
                             }
                             else {
                                 this._openToastError(this.Requisition.eMessage);
