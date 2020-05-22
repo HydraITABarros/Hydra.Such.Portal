@@ -192,73 +192,80 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult CopyRequisition([FromBody] RequisitionTemplateViewModel item)
+        public JsonResult CopyRequisition([FromBody] RequisitionTemplateViewModel itemOriginal)
         {
+            RequisitionTemplateViewModel result = new RequisitionTemplateViewModel();
             try
             {
-                if (item != null && !string.IsNullOrEmpty(item.RequisitionNo))
+                if (itemOriginal != null && !string.IsNullOrEmpty(itemOriginal.RequisitionNo))
                 {
                     //Get Numeration
                     bool autoGenId = true;
                     Configuração conf = DBConfigurations.GetById(1);
                     int entityNumerationConfId = conf.NumeracaoModelosRequisicao.Value;
-                    string OriginalRequisitionNo = item.RequisitionNo;
 
-                    item.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
+                    RequisitionTemplateViewModel copyItem = itemOriginal;
+                    copyItem.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
 
-                    if (!string.IsNullOrEmpty(item.RequisitionNo))
+                    if (!string.IsNullOrEmpty(copyItem.RequisitionNo))
                     {
-                        RequisitionTemplateViewModel copyItem = new RequisitionTemplateViewModel();
-
-                        copyItem = item;
                         copyItem.CreateUser = User.Identity.Name;
+                        copyItem.CreateDate = DateTime.Now.ToString();
+                        copyItem.UpdateUser = string.Empty;
+                        copyItem.UpdateDate = DateTime.MinValue;
                         copyItem.Lines.ForEach(line =>
                         {
                             line.LineNo = 0;
+                            line.CreateUser = User.Identity.Name;
+                            line.CreateDateTime = DateTime.Now;
+                            line.UpdateUser = string.Empty;
+                            line.UpdateDateTime = DateTime.MinValue;
                         });
 
-                        var result = DBRequestTemplates.Create(copyItem.ParseToDB());
+                        result = DBRequestTemplates.Create(copyItem.ParseToDB()).ParseToTemplateViewModel();
                         if (result != null)
                         {
-                            item = result.ParseToTemplateViewModel();
                             if (autoGenId)
                             {
                                 ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
-                                configNum.ÚltimoNºUsado = item.RequisitionNo;
+                                configNum.ÚltimoNºUsado = result.RequisitionNo;
                                 configNum.UtilizadorModificação = User.Identity.Name;
                                 DBNumerationConfigurations.Update(configNum);
                             }
 
-                            item.eReasonCode = 1;
-                            item.eMessage = "Novo Modelo de Requisição criado com sucesso com o Nº " + item.RequisitionNo;
+                            result = itemOriginal;
+                            result.eReasonCode = 1;
+                            result.eMessage = "Novo Modelo de Requisição criado com sucesso com o Nº " + copyItem.RequisitionNo;
                         }
                         else
                         {
-                            item = new RequisitionTemplateViewModel();
-                            item.eReasonCode = 2;
-                            item.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
+                            result = itemOriginal;
+                            result.eReasonCode = 2;
+                            result.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
                         }
                     }
                     else
                     {
-                        item.eReasonCode = 5;
-                        item.eMessage = "A numeração configurada não é compativel com a inserida.";
+                        result = itemOriginal;
+                        result.eReasonCode = 5;
+                        result.eMessage = "A numeração configurada não é compativel com a inserida.";
                     }
                 }
                 else
                 {
-                    item = new RequisitionTemplateViewModel();
-                    item.eReasonCode = 2;
-                    item.eMessage = "Ocorreu um erro: o modelo de requisição não pode ser nulo.";
+                    result = itemOriginal;
+                    result.eReasonCode = 2;
+                    result.eMessage = "Ocorreu um erro: o modelo de requisição não pode ser nulo.";
                 }
             }
             catch (Exception ex)
             {
-                item.eReasonCode = 2;
-                item.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
+                result = itemOriginal;
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
             }
 
-            return Json(item);
+            return Json(result);
         }
 
         [HttpPost]
