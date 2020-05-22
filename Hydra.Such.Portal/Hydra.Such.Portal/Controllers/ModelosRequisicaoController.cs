@@ -194,7 +194,6 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CopyRequisition([FromBody] RequisitionTemplateViewModel itemOriginal)
         {
-            RequisitionTemplateViewModel result = new RequisitionTemplateViewModel();
             try
             {
                 if (itemOriginal != null && !string.IsNullOrEmpty(itemOriginal.RequisitionNo))
@@ -203,69 +202,74 @@ namespace Hydra.Such.Portal.Controllers
                     bool autoGenId = true;
                     Configuração conf = DBConfigurations.GetById(1);
                     int entityNumerationConfId = conf.NumeracaoModelosRequisicao.Value;
+                    string RequisitionNoOriginal = itemOriginal.RequisitionNo;
 
-                    RequisitionTemplateViewModel copyItem = itemOriginal;
-                    copyItem.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
+                    RequisitionTemplateViewModel copyItem = new RequisitionTemplateViewModel();
+                    copyItem = itemOriginal;
+                    copyItem.RequisitionNo = string.Empty;
 
-                    if (!string.IsNullOrEmpty(copyItem.RequisitionNo))
+                    if (autoGenId)
+                    {
+                        copyItem.RequisitionNo = DBNumerationConfigurations.GetNextNumeration(entityNumerationConfId, autoGenId, false);
+
+                        if (copyItem != null && !string.IsNullOrEmpty(copyItem.RequisitionNo))
+                        {
+                            ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
+                            configNum.ÚltimoNºUsado = copyItem.RequisitionNo;
+                            configNum.UtilizadorModificação = User.Identity.Name;
+                            DBNumerationConfigurations.Update(configNum);
+                        }
+                    }
+
+                    if (copyItem != null && !string.IsNullOrEmpty(copyItem.RequisitionNo))
                     {
                         copyItem.CreateUser = User.Identity.Name;
-                        copyItem.CreateDate = DateTime.Now.ToString();
+                        copyItem.CreateDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                         copyItem.UpdateUser = string.Empty;
-                        copyItem.UpdateDate = DateTime.MinValue;
+                        copyItem.UpdateDate = (DateTime?)null;
                         copyItem.Lines.ForEach(line =>
                         {
                             line.LineNo = 0;
                             line.CreateUser = User.Identity.Name;
                             line.CreateDateTime = DateTime.Now;
                             line.UpdateUser = string.Empty;
-                            line.UpdateDateTime = DateTime.MinValue;
+                            line.UpdateDateTime = (DateTime?)null;
                         });
 
-                        result = DBRequestTemplates.Create(copyItem.ParseToDB()).ParseToTemplateViewModel();
-                        if (result != null)
+                        copyItem = DBRequestTemplates.Create(copyItem.ParseToDB()).ParseToTemplateViewModel();
+                        if (copyItem != null && !string.IsNullOrEmpty(copyItem.RequisitionNo))
                         {
-                            if (autoGenId)
-                            {
-                                ConfiguraçãoNumerações configNum = DBNumerationConfigurations.GetById(entityNumerationConfId);
-                                configNum.ÚltimoNºUsado = result.RequisitionNo;
-                                configNum.UtilizadorModificação = User.Identity.Name;
-                                DBNumerationConfigurations.Update(configNum);
-                            }
-
-                            result = itemOriginal;
-                            result.eReasonCode = 1;
-                            result.eMessage = "Novo Modelo de Requisição criado com sucesso com o Nº " + copyItem.RequisitionNo;
+                            itemOriginal.RequisitionNo = RequisitionNoOriginal;
+                            itemOriginal.eReasonCode = 1;
+                            itemOriginal.eMessage = "Novo Modelo de Requisição criado com sucesso com o Nº " + copyItem.RequisitionNo;
                         }
                         else
                         {
-                            result = itemOriginal;
-                            result.eReasonCode = 2;
-                            result.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
+                            itemOriginal.RequisitionNo = RequisitionNoOriginal;
+                            itemOriginal.eReasonCode = 2;
+                            itemOriginal.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
                         }
                     }
                     else
                     {
-                        result = itemOriginal;
-                        result.eReasonCode = 5;
-                        result.eMessage = "A numeração configurada não é compativel com a inserida.";
+                        itemOriginal.RequisitionNo = RequisitionNoOriginal;
+                        itemOriginal.eReasonCode = 3;
+                        itemOriginal.eMessage = "A numeração configurada não é compativel com a inserida.";
                     }
                 }
                 else
                 {
-                    result = itemOriginal;
-                    result.eReasonCode = 2;
-                    result.eMessage = "Ocorreu um erro: o modelo de requisição não pode ser nulo.";
+                    itemOriginal.eReasonCode = 4;
+                    itemOriginal.eMessage = "Ocorreu um erro: o modelo de requisição não pode ser nulo.";
                 }
             }
             catch (Exception ex)
             {
-                result = itemOriginal;
-                result.eReasonCode = 2;
-                result.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
+                itemOriginal.eReasonCode = 99;
+                itemOriginal.eMessage = "Ocorreu um erro ao copiar o Modelo de Requisição.";
             }
 
-            return Json(result);
+            return Json(itemOriginal);
         }
 
         [HttpPost]
