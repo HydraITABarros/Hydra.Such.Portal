@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
@@ -11,12 +12,15 @@ using Hydra.Such.Data.Logic.Request;
 using Hydra.Such.Data.NAV;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Compras;
+using Hydra.Such.Data.ViewModel.ProjectView;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Portal.Controllers;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using static Hydra.Such.Data.Enumerations;
@@ -603,6 +607,7 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
+                row.CreateCell(Col).SetCellValue("Cód. Requisição"); Col = Col + 1;
                 if (dp["localCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Localização"); Col = Col + 1; }
                 if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1; }
                 if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
@@ -614,6 +619,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Região"); Col = Col + 1; }
                 if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Área Funcional"); Col = Col + 1; }
                 if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["supplierNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Fornecedor"); Col = Col + 1; }
 
                 if (Lista != null)
                 {
@@ -623,6 +629,7 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
+                        row.CreateCell(Col).SetCellValue(item.RequestNo); Col = Col + 1;
                         if (dp["localCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalCode); Col = Col + 1; }
                         if (dp["code"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1; }
                         if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1; }
@@ -634,6 +641,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
                         if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
+                        if (dp["supplierNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SupplierNo); Col = Col + 1; }
 
                         count++;
                     }
@@ -649,5 +657,129 @@ namespace Hydra.Such.Portal.Controllers
             //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Modelo de Requisição Linhas.xlsx");
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
+
+        #region Upload Excel
+        [HttpPost]
+        public JsonResult OnPostImport()
+        {
+            var files = Request.Form.Files;
+            RequisitionTemplateViewModel Requisition = new RequisitionTemplateViewModel();
+
+            try
+            {
+                if (files != null && files.Count > 0)
+                {
+                    List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProductsCompras(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                    List<NAVUnitOfMeasureViewModel> AllUnitMeasures = DBNAV2017UnitOfMeasure.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName);
+                    List<NAVLocationsViewModel> AllLocations = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName);
+                    List<NAVProjectsViewModel> AllProjects = DBNAV2017Projects.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+                    List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
+                    List<NAVDimValueViewModel> AllAreas = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 2, User.Identity.Name);
+                    List<NAVDimValueViewModel> AllCresps = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 3, User.Identity.Name);
+                    List<NAVVendorViewModel> AllVendors = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
+
+                    RequisitionTemplateLineViewModel nrow = new RequisitionTemplateLineViewModel();
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        IFormFile file = files[i];
+                        string folderName = "Upload";
+                        string webRootPath = _generalConfig.FileUploadFolder + "ModelosRequisicao\\" + "tmp\\";
+                        string newPath = Path.Combine(webRootPath, folderName);
+                        StringBuilder sb = new StringBuilder();
+                        if (!Directory.Exists(newPath))
+                        {
+                            Directory.CreateDirectory(newPath);
+                        }
+                        if (file.Length > 0)
+                        {
+                            string sFileExtension = Path.GetExtension(file.FileName).ToLower();
+                            ISheet sheet;
+                            string fullPath = Path.Combine(newPath, file.FileName);
+                            using (var stream = new FileStream(fullPath, FileMode.Create))
+                            {
+                                file.CopyTo(stream);
+                                stream.Position = 0;
+                                if (sFileExtension == ".xls")
+                                {
+                                    HSSFWorkbook hssfwb = new HSSFWorkbook(stream); //This will read the Excel 97-2000 formats  
+                                    sheet = hssfwb.GetSheetAt(0); //get first sheet from workbook  
+                                }
+                                else
+                                {
+                                    XSSFWorkbook hssfwb = new XSSFWorkbook(stream); //This will read 2007 Excel format  
+                                    sheet = hssfwb.GetSheetAt(0); //get first sheet from workbook   
+                                }
+
+                                IRow linha1 = sheet.GetRow(sheet.FirstRowNum + 1);
+                                string RequisitionNo = linha1.GetCell(0).ToString();
+                                Requisition = DBRequestTemplates.GetById(RequisitionNo).ParseToTemplateViewModel();
+
+                                if (Requisition != null)
+                                {
+                                    decimal value;
+                                    for (int j = (sheet.FirstRowNum + 1); j <= sheet.LastRowNum; j++)
+                                    {
+                                        IRow row = sheet.GetRow(j);
+                                        if (row != null && !string.IsNullOrEmpty(row.GetCell(0).ToString()))
+                                        {
+                                            nrow = new RequisitionTemplateLineViewModel();
+
+                                            NAVProductsViewModel Product = AllProducts.Where(x => x.Code == row.GetCell(2).ToString()).FirstOrDefault();
+                                            NAVUnitOfMeasureViewModel UnitMeasure = AllUnitMeasures.Where(x => x.code == row.GetCell(5).ToString()).FirstOrDefault();
+                                            NAVLocationsViewModel Location = AllLocations.Where(x => x.Code == row.GetCell(1).ToString()).FirstOrDefault();
+                                            NAVProjectsViewModel Project = AllProjects.Where(x => x.No == row.GetCell(8).ToString()).FirstOrDefault();
+                                            NAVDimValueViewModel Region = AllRegions.Where(x => x.Code == row.GetCell(9).ToString()).FirstOrDefault();
+                                            NAVDimValueViewModel Area = AllAreas.Where(x => x.Code == row.GetCell(10).ToString()).FirstOrDefault();
+                                            NAVDimValueViewModel Cresp = AllCresps.Where(x => x.Code == row.GetCell(11).ToString()).FirstOrDefault();
+                                            NAVVendorViewModel Vendor = AllVendors.Where(x => x.No_ == row.GetCell(12).ToString()).FirstOrDefault();
+
+                                            nrow.RequestNo = Requisition.RequisitionNo;
+                                            nrow.LineNo = 0;
+                                            nrow.Code = row.GetCell(2) == null ? "" : Product != null ? Product.Code : "";
+                                            nrow.Description = row.GetCell(2) == null ? "" : Product != null ? Product.Name : "";
+                                            nrow.Description2 = row.GetCell(4) == null ? "" : row.GetCell(4).ToString();
+                                            nrow.UnitMeasureCode = row.GetCell(5) == null ? "" : UnitMeasure != null ? UnitMeasure.code : "";
+                                            nrow.LocalCode = row.GetCell(1) == null ? "" : Location != null ? Location.Code : "";
+                                            if (row.GetCell(6) != null && Decimal.TryParse(row.GetCell(6).ToString(), out value))
+                                                nrow.QuantityToRequire = row.GetCell(6) == null ? (Decimal?)null : Convert.ToDecimal(row.GetCell(6).ToString());
+                                            if (row.GetCell(7) != null && decimal.TryParse(row.GetCell(7).ToString(), out value))
+                                                nrow.UnitCost = row.GetCell(7) == null ? (Decimal?)null : Convert.ToDecimal(row.GetCell(7).ToString());
+                                            nrow.ProjectNo = row.GetCell(8) == null ? "" : Project != null ? Project.No : "";
+                                            nrow.RegionCode = row.GetCell(9) == null ? "" : Region != null ? Region.Code : "";
+                                            nrow.FunctionalAreaCode = row.GetCell(10) == null ? "" : Area != null ? Area.Code : "";
+                                            nrow.CenterResponsibilityCode = row.GetCell(11) == null ? "" : Cresp != null ? Cresp.Code : "";
+                                            nrow.CreateDateTime = DateTime.Now;
+                                            nrow.CreateUser = User.Identity.Name;
+                                            nrow.SupplierNo = row.GetCell(2) == null ? "" : Vendor != null ? Vendor.No_ : "";
+
+                                            Requisition.Lines.Add(nrow);
+                                        }
+                                    }
+                                }
+                                else
+                                    return Json(null);
+                            }
+                        }
+                        else
+                            return Json(null);
+                    }
+                }
+                else
+                    return Json(null);
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+
+            return Json(Requisition);
+        }
+        #endregion
+
+
+
+
+
+
     }
 }

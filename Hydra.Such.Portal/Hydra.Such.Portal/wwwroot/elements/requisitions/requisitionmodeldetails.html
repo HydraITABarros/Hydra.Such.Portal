@@ -22,6 +22,8 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -203,6 +205,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/ModelosRequisicao/OnPostImport"
+                   last-response="{{uploadResponse}}"
+                   id="ajax_Upload"
+                   method="post"
+                   handle-as="json"
+                   on-response="_uploadResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -311,6 +322,8 @@
                                     </vaadin-combo-box>
                                 </div>
 
+
+
                                 <!--<div class="col-md-3 ">
                                 <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled="{{ !_permissions.update }}">
                                     <template>
@@ -341,6 +354,7 @@
                                 <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                             </div>-->
                             </div>
+
                             <!--<div class="row break_clear">
                             <div class="col-lg-3">
                                 <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled="{{ !_permissions.update }}"></vaadin-text-field>
@@ -396,6 +410,8 @@
                             </div>
                         </div>-->
                         </div>
+
+
 
                         <!--Reparação-->
                         <!--<div>
@@ -543,7 +559,7 @@
                                     </div>
                                 </div>
                                 <div class="row break_clear" hidden="{{_isArchived}}">
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-1">
                                         <vaadin-text-field id="txtUnitCost" name="txtUnitCost" label="Custo Unitário" disabled="{{ !_permissions.update }}" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"></vaadin-text-field>
                                     </div>
 
@@ -606,13 +622,33 @@
                                         </such-selectbox>
                                     </div>
 
-                                    <div class="row break_clear" hidden="{{_isArchived}}">
-                                        <div class="marginSpace">
-                                            <template is="dom-if" if="{{ !isReadOnly() }}">
-                                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                            </template>
+                                    <div class="col-lg-1">
+                                        <template is="dom-if" if="{{ !isReadOnly() }}">
+                                            <paper-button raised id="btnCreate" class="btnSave" on-tap="_createRequisitionLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                        </template>
+                                    </div>
+
+                                    <div class="row break_clear">
+                                    </div>
+
+                                    <div class="row break_clear" hidden="{{ !_permissions.create }}">
+                                        <div class="col-lg-11">
+                                            <vaadin-upload id="UploadRequest"
+                                                           method="POST"
+                                                           headers="{'Accept': 'application/json'}"
+                                                           accept=".xlsx"
+                                                           timeout=3000000
+                                                           max-files="1">
+                                                <span slot="drop-label">Coloque aqui o seu ficheiro Excel...</span>
+                                            </vaadin-upload>
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <center>
+                                                <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_addExcel">Adicionar</paper-button>
+                                            </center>
                                         </div>
                                     </div>
+
                                 </div>
                             </paper-collapse-item>
                         </paper-collapse-group>
@@ -846,7 +882,7 @@
                                     </template>
                                 </vaadin-grid-column>
 
-                                <vaadin-grid-column width="200px" resizable>
+                                <vaadin-grid-column width="200px" resizable hidden$="{{ _columns.supplierNo.hidden }}">
                                     <template class="header">
                                         <vaadin-grid-sorter path="supplierNo">Fornecedor</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="supplierNo" />
@@ -911,6 +947,22 @@
         </paper-toast>
     </template>
     <script>
+        window.addEventListener('WebComponentsReady', function () {
+            var upload = document.querySelector('vaadin-upload#UploadRequest');
+
+            if (upload != null) {
+                upload.addEventListener('upload-response', function (event) {
+                    console.log('upload xhr after server response: ', event.detail.xhr);
+                    event.detail.file.error = 'Custom server error message.';
+                    this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+                });
+
+                upload.addEventListener('file-reject', function (event) {
+                    this.openToastError(event.detail.file.name + ' erro: ' + event.detail.error);
+                });
+            }
+        });
+
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-requisitionmodeldetails',
@@ -1499,7 +1551,8 @@
                         "projectNo": { hidden: false, label: "Nº Ordem/Projeto" },
                         "regionCode": { hidden: false, label: "Cód. Região" },
                         "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
-                        "centerResponsibilityCode": { hidden: false, label: "Cód. Centro Responsabilidade" }
+                        "centerResponsibilityCode": { hidden: false, label: "Cód. Centro Responsabilidade" },
+                        "supplierNo": { hidden: false, label: "Fornecedor" },
                     };
 
                     if (localStorage["requisitionmodeldetails.ToggleColumn"]) {
@@ -1546,6 +1599,45 @@
                 _goBack: function (e) {
                     window.history.back();
                 },
+
+                _addExcel: function () {
+                    var urlFile = "/ModelosRequisicao/OnPostImport";
+                    var toastError = this.$.ToastMessageError;
+                    var data = new FormData();
+                    var uploadFile = this.$.UploadRequest.files;
+                    var self = this;
+
+                    for (var i = 0; i < uploadFile.length; i++) {
+                        data.append(uploadFile[i].name, uploadFile[i]);
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: urlFile,
+                        contentType: false,
+                        processData: false,
+                        data: data,
+
+                        success: function (requisitionReturn) {
+                            self._sendReqRequest("/ModelosRequisicao/UpdateRequisitionLines", requisitionReturn);
+                            location.reload();
+                        },
+                        error: function () {
+                            toastError.text = "Ocorreu um problema ao fazer o upload do Ficheiro.";
+                            toastError.open();
+                        }
+                    });
+
+                },
+
+
+
+
+
+
+
+
+
             });
         });
     </script>

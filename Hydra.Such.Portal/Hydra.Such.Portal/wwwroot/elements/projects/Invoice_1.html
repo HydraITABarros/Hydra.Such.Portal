@@ -479,7 +479,7 @@
                     <vaadin-grid-filter path="pedidoCliente" value="[[filter.pedidoCliente]]" />
                 </template>
                 <template>
-                    {{item.pedidoCliente}}
+                    <vaadin-text-field rows="5" value="{{item.pedidoCliente}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
