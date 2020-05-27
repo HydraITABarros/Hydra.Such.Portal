@@ -1620,7 +1620,8 @@
 
                         success: function (requisitionReturn) {
                             self._sendReqRequest("/ModelosRequisicao/UpdateRequisitionLines", requisitionReturn);
-                            location.reload();
+                            //location.reload();
+                            self.$.grdRequisitionLines.clearCache();
                         },
                         error: function () {
                             toastError.text = "Ocorreu um problema ao fazer o upload do Ficheiro.";

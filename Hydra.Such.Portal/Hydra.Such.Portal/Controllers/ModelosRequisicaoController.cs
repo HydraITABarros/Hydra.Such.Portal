@@ -740,10 +740,10 @@ namespace Hydra.Such.Portal.Controllers
                                             nrow.Description2 = row.GetCell(4) == null ? "" : row.GetCell(4).ToString();
                                             nrow.UnitMeasureCode = row.GetCell(5) == null ? "" : UnitMeasure != null ? UnitMeasure.code : "";
                                             nrow.LocalCode = row.GetCell(1) == null ? "" : Location != null ? Location.Code : "";
-                                            if (row.GetCell(6) != null && Decimal.TryParse(row.GetCell(6).ToString(), out value))
-                                                nrow.QuantityToRequire = row.GetCell(6) == null ? (Decimal?)null : Convert.ToDecimal(row.GetCell(6).ToString());
-                                            if (row.GetCell(7) != null && decimal.TryParse(row.GetCell(7).ToString(), out value))
-                                                nrow.UnitCost = row.GetCell(7) == null ? (Decimal?)null : Convert.ToDecimal(row.GetCell(7).ToString());
+                                            if (row.GetCell(6) != null && Decimal.TryParse(row.GetCell(6).ToString().Replace(".", ","), out value))
+                                                nrow.QuantityToRequire = row.GetCell(6) == null ? (Decimal?)null : Convert.ToDecimal(row.GetCell(6).ToString().Replace(".", ","));
+                                            if (row.GetCell(7) != null && decimal.TryParse(row.GetCell(7).ToString().Replace(".", ","), out value))
+                                                nrow.UnitCost = row.GetCell(7) == null ? (Decimal?)null : Convert.ToDecimal(row.GetCell(7).ToString().Replace(".", ","));
                                             nrow.ProjectNo = row.GetCell(8) == null ? "" : Project != null ? Project.No : "";
                                             nrow.RegionCode = row.GetCell(9) == null ? "" : Region != null ? Region.Code : "";
                                             nrow.FunctionalAreaCode = row.GetCell(10) == null ? "" : Area != null ? Area.Code : "";
