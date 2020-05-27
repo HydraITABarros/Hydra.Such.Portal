@@ -822,7 +822,7 @@
                 </div>
             </div>
             <div class="buttons">
-                <paper-button raised class="btnEdit" on-tap="_confirm" id="btnConfirmAuthorization" hidden>Autorizar</paper-button>
+                <paper-button raised class="btnEdit" on-tap="_confirm" id="btnDlgConfirmAuthorization" hidden>Autorizar</paper-button>
                 <paper-button raised class="btnRemove" on-tap="_closedlgValidationDlg">Cancelar</paper-button>
             </div>
         </paper-dialog>
@@ -1368,7 +1368,7 @@
                 },
                 _resetDialogContent: function () {
                     this._validationMessages = [];
-                    this.$.btnConfirmAuthorization.hidden = true;
+                    this.$.btnDlgConfirmAuthorization.hidden = true;
                     this.$.txtDescGrupoFatura.value = "";
                     this._resizeDialogToContent();
                 },
@@ -1377,7 +1377,7 @@
                     if (e.detail.status === 200) {
                         this._validationMessages = [];
                         if (this.projMovValResponse.eReasonCode == 1) {
-                            this.$.btnConfirmAuthorization.hidden = false;
+                            this.$.btnDlgConfirmAuthorization.hidden = false;
 
                             var warnings = this.projMovValResponse.eMessages.filter(x => x.type == 2 || x.type == 3);
                             if (warnings != undefined)
@@ -1390,7 +1390,7 @@
                             if (errors != undefined) {
                                 this._validationMessages = errors;
                                 //Se tem erros impede autorização dos movimentos
-                                this.$.btnConfirmAuthorization.hidden = true;
+                                this.$.btnDlgConfirmAuthorization.hidden = true;
                             }
                             if (warnings != undefined) {
                                 this._validationMessages.push.apply(this._validationMessages, warnings);
