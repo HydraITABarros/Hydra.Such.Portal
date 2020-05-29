@@ -227,7 +227,8 @@
                                         items="[[CBResourceNo]]"
                                         text-path="id"
                                         value-path="id"
-                                        fields='[{"field":"id", "name":"Nº Recurso"}, {"field":"value", "name":"Descrição"}]'>
+                                        fields='[{"field":"id", "name":"Nº Recurso"}, {"field":"value", "name":"Descrição"}]'
+                                        on-value-changed="_GetresourceDescription">
                         </such-selectbox>
                     </div>
 
@@ -585,7 +586,24 @@
                 },
                 _goBack: function (e) {
                     window.history.back();
-                }
+                },
+
+                _GetresourceDescription: function (e) {
+                    debugger;
+                    var idResource = this.$._resourceNo.value;
+                    if (idResource != null && idResource != "") {
+                        var item = this.CBResourceNo.find(x => x.id == idResource);
+
+                        if (item != null && item != undefined) {
+                            this.$.description.value = item.value;
+                        }
+                    }
+                    else
+                        this.$.description.value = "";
+                },
+
+
+
             });
         });
     </script>
