@@ -180,6 +180,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     x.StatusDescription = x.Status.HasValue ? x.Status.Value.GetDescription() : "";
                     x.ClientName = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().Name : "" : "";
+                    x.ClientRegionCode = !string.IsNullOrEmpty(x.ClientNo) ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientNo).FirstOrDefault().RegionCode : "" : "";
                     //x.ClientName = DBNAV2017Clients.GetClientNameByNo(x.ClientNo, _config.NAVDatabaseName, _config.NAVCompanyName);
                 });
 
@@ -263,12 +264,18 @@ namespace Hydra.Such.Portal.Controllers
 
                     DateTime servDate = DateTime.Now;
                     string monthName = servDate.ToString("MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("pt-PT"));
+
+                    NAVClientsViewModel cli = new NAVClientsViewModel();
+                    if (!string.IsNullOrEmpty(cProject.NºCliente))
+                        cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, cProject.NºCliente);
+
                     ProjectDetailsViewModel result = new ProjectDetailsViewModel()
                     {
                         ProjectNo = cProject.NºProjeto,
                         Area = cProject.Área,
                         Description = cProject.Descrição,
                         ClientNo = cProject.NºCliente,
+                        ClientRegionCode = !string.IsNullOrEmpty(cli.RegionCode) ? cli.RegionCode : "",
                         Date = cProject.Data.HasValue ? cProject.Data.Value.ToString("yyyy-MM-dd") : "",
                         Status = cProject.Estado,
                         RegionCode = cProject.CódigoRegião,
@@ -333,8 +340,6 @@ namespace Hydra.Such.Portal.Controllers
                         }
                     }
 
-                    NAVClientsViewModel cli = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, result.ClientNo);
-
                     if (result != null && !string.IsNullOrEmpty(result.ClientNo) && !string.IsNullOrEmpty(result.ShippingAddressCode))
                     {
                         NAVAddressesViewModel SHIP = DBNAV2017ShippingAddresses.GetByClientAndCode(result.ClientNo, result.ShippingAddressCode, _config.NAVDatabaseName, _config.NAVCompanyName);
@@ -351,11 +356,11 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (cli != null)
                         {
-                            result.ShippingName = cli.Name;
-                            result.ShippingAddress = cli.Address;
-                            result.ShippingPostalCode = cli.PostCode;
-                            result.ShippingLocality = cli.City;
-                            result.ShippingContact = cli.PhoneNo;
+                            result.ShippingName = !string.IsNullOrEmpty(cli.Name) ? cli.Name : "";
+                            result.ShippingAddress = !string.IsNullOrEmpty(cli.Address) ? cli.Address : "";
+                            result.ShippingPostalCode = !string.IsNullOrEmpty(cli.PostCode) ? cli.PostCode : "";
+                            result.ShippingLocality = !string.IsNullOrEmpty(cli.City) ? cli.City : "";
+                            result.ShippingContact = !string.IsNullOrEmpty(cli.PhoneNo) ? cli.PhoneNo : "";
                         }
                     }
 
@@ -6856,6 +6861,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Nome Cliente");
                     Col = Col + 1;
                 }
+                if (dp["clientRegionCode"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cliente Código Região");
+                    Col = Col + 1;
+                }
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Código Região");
@@ -6933,6 +6943,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["clientName"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ClientName);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientRegionCode"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientRegionCode);
                             Col = Col + 1;
                         }
                         if (dp["regionCode"]["hidden"].ToString() == "False")

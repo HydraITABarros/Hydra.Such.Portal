@@ -109,7 +109,7 @@
                     {{item.projectNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dateText.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="date">Data</vaadin-grid-sorter>
@@ -119,7 +119,7 @@
                     {{item.dateText}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.statusDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
@@ -129,7 +129,7 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
@@ -139,7 +139,7 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
@@ -149,7 +149,7 @@
                     {{item.clientNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.clientName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
@@ -157,6 +157,16 @@
                 </template>
                 <template>
                     {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.clientRegionCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientRegionCode">Cliente Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientRegionCode" value="[[filter.clientRegionCode]]" />
+                </template>
+                <template>
+                    {{item.clientRegionCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -169,7 +179,7 @@
                     {{item.regionCode}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
@@ -179,7 +189,7 @@
                     {{item.functionalAreaCode}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
@@ -189,7 +199,7 @@
                     {{item.responsabilityCenterCode}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.contractoNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="contractoNo">Nº Contrato</vaadin-grid-sorter>
@@ -199,7 +209,7 @@
                     {{item.contractoNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.projectTypeCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectTypeCode">Cód. Tipo Projeto</vaadin-grid-sorter>
@@ -209,7 +219,7 @@
                     {{item.projectTypeCode}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.projectTypeDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="projectTypeDescription">Tipo Projeto</vaadin-grid-sorter>
@@ -385,6 +395,7 @@
                         "description": { hidden: false, label: "Descrição" },
                         "clientNo": { hidden: false, label: "Nº Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },
+                        "clientRegionCode": { hidden: false, label: "Cliente Código Região" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },

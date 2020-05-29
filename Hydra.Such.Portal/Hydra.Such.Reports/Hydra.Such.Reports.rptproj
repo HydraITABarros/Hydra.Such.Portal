@@ -80,6 +80,7 @@
     <Report Include="Procedimento.rdl" />
     <Report Include="ProjetoMovimentos.rdl" />
     <Report Include="ProjetoPreMovimentos.rdl" />
+    <Report Include="RefeicoesRegisto.rdl" />
     <Report Include="RequisitionReport.rdl" />
     <Report Include="RequisitionReportA5.rdl" />
     <Report Include="RequisitionStockReport.rdl" />

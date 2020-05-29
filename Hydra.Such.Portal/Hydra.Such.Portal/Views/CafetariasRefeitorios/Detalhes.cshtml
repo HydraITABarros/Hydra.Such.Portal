@@ -109,7 +109,7 @@
                 <template is="dom-if" if="{{ _permissions.read }}">
                     <paper-button class="tablinks" on-tap="_openCashFlowReport"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; imprimir folha de caixa</paper-button>
                     <paper-button class="tablinks" on-tap="_notImplemented"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; imprimir consumos</paper-button>
-                    <paper-button class="tablinks" on-tap="_notImplemented"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; imprimir registo de refeições</paper-button>
+                    <paper-button class="tablinks" on-tap="_openRefeicoesRegistoReport"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; imprimir registo de refeições</paper-button>
                 </template>
             </template>
         </div>
@@ -514,6 +514,12 @@
                     this.$.rptContainer.src = "about:blank";
                     this.$.rptDialog.close();
                 },
+
+                _openRefeicoesRegistoReport: function (e) {
+                    this.$.rptContainer.src = "@ViewBag.ReportServerURL" + "RefeicoesRegisto&CodCafetaria=" + this.data.code + "&CodUnidProd=" + this.data.productivityUnitNo; //this._getPDFContent();
+                    this.$.rptDialog.open();
+                },
+
                 _goBack: function (e) {
                     window.history.back();
                 }

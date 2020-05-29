@@ -356,6 +356,14 @@
                         </such-selectbox>
                     </div>
 
+                    <div class="col-lg-3">
+                        <such-selectbox id="ClientRegionCode" value="{{data.clientRegionCode}}" label="Cliente Cód. Região" disabled
+                                        items="[[LProjectRegionCodes]]"
+                                        text-path="value"
+                                        value-path="id"
+                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'>
+                        </such-selectbox>
+                    </div>
                 </div>
 
                 <div class="row">

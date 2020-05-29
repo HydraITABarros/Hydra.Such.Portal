@@ -11,6 +11,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public int? Area { get; set; }
         public string Description { get; set; }
         public string ClientNo { get; set; }
+        public string ClientRegionCode { get; set; }
         public string Date { get; set; }
         public EstadoProjecto? Status { get; set; }
         public string RegionCode { get; set; }
