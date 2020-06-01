@@ -3643,12 +3643,14 @@ namespace Hydra.Such.Portal.Controllers
                     if (contract != null)
                     {
                         //Validar se o contrato indicado no projeto está vigente
-                        if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue &&
+                        if (contract.DataInicial.HasValue && contract.DataFimContrato.HasValue && 
                             (DateTime.Now < contract.DataInicial.Value || DateTime.Now > contract.DataFimContrato.Value))
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Contrato não está vigente."));
                         }
                         //Validar se o compromisso é o que está no contrato                
+                        commitmentNumber = !string.IsNullOrEmpty(commitmentNumber) ? commitmentNumber : "";
+                        contract.NºCompromisso = !string.IsNullOrEmpty(contract.NºCompromisso) ? contract.NºCompromisso : "";
                         if (commitmentNumber != contract.NºCompromisso)
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Warning, "O Nº do Compromisso é diferente do que está no Contrato."));
@@ -3791,11 +3793,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (string.IsNullOrEmpty(commitmentNo) || string.IsNullOrEmpty(customerRequestNo))
                         {
                             if (string.IsNullOrEmpty(commitmentNo))
-                                commitmentNo = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºCompromisso))?.NºCompromisso;
+                                commitmentNo = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && string.IsNullOrEmpty(x.NºProjeto) && !string.IsNullOrEmpty(x.NºCompromisso))?.NºCompromisso;
 
                             if (string.IsNullOrEmpty(customerRequestNo))
                             {
-                                var item = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && !string.IsNullOrEmpty(x.NºRequisiçãoCliente));
+                                var item = billingGroupReq.FirstOrDefault(x => x.DataFimCompromisso >= serviceDeliveryDate && string.IsNullOrEmpty(x.NºProjeto) && !string.IsNullOrEmpty(x.NºRequisiçãoCliente));
                                 customerRequestNo = item?.NºRequisiçãoCliente;
                                 customerRequestDate = item?.DataRequisição?.ToString("yyyy-MM-dd");
                             }

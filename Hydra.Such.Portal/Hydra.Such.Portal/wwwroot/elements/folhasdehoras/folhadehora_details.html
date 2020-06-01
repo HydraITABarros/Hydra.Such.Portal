@@ -1600,6 +1600,19 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-sm-3">
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalHoras}}" id="custoTotalHoras" name="custoTotalHoras" type="number" disabled="true" class="alignRight" label="Custo Total Horas">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
+                        </div>
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-3">
@@ -1648,6 +1661,19 @@
                                 </table>
                             </template>
                         </vaadin-combo-box>-->
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.numTotalKM}}" id="numTotalKM" name="numTotalKM" type="number" disabled="true" class="alignRight" label="Nº Total km">
+                                    <div slot="suffix">km</div>
+                                </vaadin-text-field>
+                            </div>
+                            <div class="col-sm-6">
+                                <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Custo Total km">
+                                    <div slot="suffix">€</div>
+                                </vaadin-text-field>
+                            </div>
                         </div>
                     </div>
 
@@ -1717,18 +1743,6 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-2">
-                            <div class="col-sm-6">
-                                <vaadin-text-field value="{{data.custoTotalHoras}}" id="custoTotalHoras" name="custoTotalHoras" type="number" disabled="true" class="alignRight" label="Custo Total Horas">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
-                            </div>
-                            <div class="col-sm-6">
-                                <vaadin-text-field value="{{data.custoTotalAjudaCusto}}" id="custoTotalAjudaCusto" name="custoTotalAjudaCusto" type="number" disabled="true" class="alignRight" label="Custo Total Ajuda Custo">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
-                            </div>
-                        </div>
                     </div>
                     <div class="row break_clear">
                         <div class="col-sm-5">
@@ -1749,19 +1763,6 @@
                                     <!--<vaadin-text-field id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" value="{{data.horaIntegracaoEmRHKMTexto}}" type="time" disabled="true"></vaadin-text-field>-->
                                     <vaadin-time-picker step="1800" id="horaIntegracaoEmRHKMTexto" name="horaIntegracaoEmRHKMTexto" value="{{data.horaIntegracaoEmRHKMTexto}}" disabled="true"></vaadin-time-picker>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-2">
-                            <div class="col-sm-6">
-                                <vaadin-text-field value="{{data.numTotalKM}}" id="numTotalKM" name="numTotalKM" type="number" disabled="true" class="alignRight" label="Nº Total km">
-                                    <div slot="suffix">km</div>
-                                </vaadin-text-field>
-                            </div>
-                            <div class="col-sm-6">
-                                <vaadin-text-field value="{{data.custoTotalKM}}" id="custoTotalKM" name="custoTotalKM" type="number" disabled="true" class="alignRight" label="Custo Total km">
-                                    <div slot="suffix">€</div>
-                                </vaadin-text-field>
                             </div>
                         </div>
                     </div>

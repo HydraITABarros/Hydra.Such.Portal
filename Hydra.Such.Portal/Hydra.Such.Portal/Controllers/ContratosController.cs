@@ -4403,6 +4403,9 @@ namespace Hydra.Such.Portal.Controllers
                                     //CREATE SALES LINES
                                     if (line.Billable == true && Codgroup == line.InvoiceGroup)
                                     {
+                                        if (line.Quantity == null || line.Quantity == 0)
+                                            line.Quantity = 1;
+
                                         LinhasFaturaçãoContrato PreInvoiceLinesToCreate = new LinhasFaturaçãoContrato();
                                         PreInvoiceLinesToCreate.Tipo = line.Type.Value.ToString();
                                         PreInvoiceLinesToCreate.Código = line.Code;
