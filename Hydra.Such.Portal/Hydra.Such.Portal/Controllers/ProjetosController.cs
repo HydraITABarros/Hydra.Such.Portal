@@ -2502,6 +2502,13 @@ namespace Hydra.Such.Portal.Controllers
                                     //newdp.DataHoraModificação = DateTime.Now;
                                     DBProjectDiary.Delete(newdp);
 
+                                    if (!string.IsNullOrEmpty(newdp.NºProjeto) && string.IsNullOrEmpty(newdp.FaturaANºCliente))
+                                    {
+                                        Projetos PROJ = DBProjects.GetById(newdp.NºProjeto);
+                                        if (PROJ != null && !string.IsNullOrEmpty(PROJ.NºCliente))
+                                            newdp.FaturaANºCliente = PROJ.NºCliente;
+                                    };
+
                                     MovimentosDeProjeto ProjectMovement = new MovimentosDeProjeto()
                                     {
                                         //NºLinha = newdp.NºLinha,
@@ -6763,7 +6770,7 @@ namespace Hydra.Such.Portal.Controllers
                     AllMovFilter.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CódigoCentroResponsabilidade));
 
                 if (!string.IsNullOrEmpty(filtroCliente))
-                    AllMovFilter.RemoveAll(x => x.CodCliente != filtroCliente);
+                    AllMovFilter.RemoveAll(x => x.FaturaANºCliente != filtroCliente);
 
                 if (filtroTipoMovimento > 0)
                     AllMovFilter.RemoveAll(x => x.TipoMovimento != filtroTipoMovimento);
@@ -6792,7 +6799,7 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    return Json(result);
+                    return Json(null);
                 }
             }
             catch (Exception ex)

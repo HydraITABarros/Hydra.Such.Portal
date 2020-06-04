@@ -773,8 +773,12 @@
                 },
                 _GetListMovimentosResponse: function () {
                     this.loaded = true;
-                    if (this.result != null && this.result.length == 0) {
+                    if (this.result == null) {
                         this._openToastError('Excedeu o nº máximo de linhas. Reveja os filtros aplicados.');
+                    }
+
+                    if (this.result.length == 0) {
+                        this._openToast('Não foram encontrados Movimentos para o(s) filtro(s) aplicado(s).');
                     }
                 },
             });

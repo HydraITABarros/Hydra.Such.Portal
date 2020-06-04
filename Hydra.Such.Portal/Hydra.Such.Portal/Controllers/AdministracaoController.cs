@@ -1860,13 +1860,15 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetClientServices()
         {
+            List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+            List<Serviços> AllServices = DBServices.GetAll();
+
             List<ClientServicesViewModel> result = DBClientServices.GetAll().Select(x => new ClientServicesViewModel()
             {
                 ClientNumber = x.NºCliente,
-                ClientName = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, x.NºCliente).Count() > 0 ? DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, x.NºCliente).FirstOrDefault().Name : "",
+                ClientName = !string.IsNullOrEmpty(x.NºCliente) ? AllClients.Where(y => y.No_ == x.NºCliente).Count() > 0 ? AllClients.Where(y => y.No_ == x.NºCliente).FirstOrDefault().Name : "" : "",
                 ServiceCode = x.CódServiço,
-                ServiceDescription = DBServices.GetById(x.CódServiço) != null ? DBServices.GetById(x.CódServiço).Descrição : "",
-                //ServiceDescription = x.CódServiçoNavigation != null ? x.CódServiçoNavigation.Descrição : "",
+                ServiceDescription = !string.IsNullOrEmpty(x.CódServiço) ? AllServices.Where(y => y.Código == x.CódServiço).Count() > 0 ? AllServices.Where(y => y.Código == x.CódServiço).FirstOrDefault().Descrição : "" : "",
                 ServiceGroup = x.GrupoServiços,
                 ServiceGroup_Show = x.GrupoServiços.HasValue ? x.GrupoServiços == true ? "Sim" : "Não" : "Não",
                 CodGrupoServico = x.CodGrupoServico
