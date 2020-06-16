@@ -32,6 +32,9 @@
           <QueryParameter Name="@EndOnMovNo">
             <Value>=Parameters!EndOnMovNo.Value</Value>
           </QueryParameter>
+          <QueryParameter Name="@NoRecurso">
+            <Value>=Parameters!NoRecurso.Value</Value>
+          </QueryParameter>
         </QueryParameters>
         <CommandType>StoredProcedure</CommandType>
         <CommandText>rpt_RefeicoesRegisto</CommandText>
@@ -45,13 +48,13 @@
           <DataField>NoUnidadeProdutiva</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="NoCafetaria">
-          <DataField>NoCafetaria</DataField>
-          <rd:TypeName>System.Int32</rd:TypeName>
-        </Field>
         <Field Name="NomeUnidadeProdutiva">
           <DataField>NomeUnidadeProdutiva</DataField>
           <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="NoCafetaria">
+          <DataField>NoCafetaria</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="NomeCafetaria">
           <DataField>NomeCafetaria</DataField>
@@ -69,16 +72,33 @@
           <DataField>DescricaoRecurso</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Valor">
-          <DataField>Valor</DataField>
-          <rd:TypeName>System.Decimal</rd:TypeName>
-        </Field>
         <Field Name="Quantidade">
           <DataField>Quantidade</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
+        <Field Name="Valor">
+          <DataField>Valor</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="DescricaoRefeicao">
           <DataField>DescricaoRefeicao</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="ListRecurso">
+      <Query>
+        <DataSourceName>eSuchDS</DataSourceName>
+        <CommandType>StoredProcedure</CommandType>
+        <CommandText>rpt_RefeicoesRegisto_ListRecurso</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="NoRecurso">
+          <DataField>NoRecurso</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="DescricaoRecurso">
+          <DataField>DescricaoRecurso</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
@@ -451,7 +471,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIF(Fields!Valor.Value = 0, "", Fields!Valor.Value)</Value>
+                                  <Value>=IIF(Fields!Quantidade.Value = 0, "", Fields!Quantidade.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -482,7 +502,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIF(Fields!Quantidade.Value = 0, "", Fields!Quantidade.Value)</Value>
+                                  <Value>=IIF(Fields!Valor.Value = 0, "", Fields!Valor.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -644,7 +664,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!Valor.Value)</Value>
+                                  <Value>=Sum(Fields!Quantidade.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -677,7 +697,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!Quantidade.Value)</Value>
+                                  <Value>=Sum(Fields!Valor.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -1051,10 +1071,23 @@
       </DefaultValue>
       <Prompt>Data Fim</Prompt>
     </ReportParameter>
-    <ReportParameter Name="CodCafetaria">
-      <DataType>Integer</DataType>
-      <Prompt>Cod Cafetaria</Prompt>
-      <Hidden>true</Hidden>
+    <ReportParameter Name="NoRecurso">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>=""</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Nº Recurso</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>ListRecurso</DataSetName>
+          <ValueField>NoRecurso</ValueField>
+          <LabelField>DescricaoRecurso</LabelField>
+        </DataSetReference>
+      </ValidValues>
     </ReportParameter>
     <ReportParameter Name="CodUnidProd">
       <DataType>Integer</DataType>
@@ -1069,6 +1102,11 @@
     <ReportParameter Name="EndOnMovNo">
       <DataType>Integer</DataType>
       <Nullable>true</Nullable>
+      <Hidden>true</Hidden>
+    </ReportParameter>
+    <ReportParameter Name="CodCafetaria">
+      <DataType>Integer</DataType>
+      <Prompt>Cod Cafetaria</Prompt>
       <Hidden>true</Hidden>
     </ReportParameter>
   </ReportParameters>
@@ -1089,7 +1127,7 @@
         </CellDefinition>
         <CellDefinition>
           <ColumnIndex>2</ColumnIndex>
-          <RowIndex>0</RowIndex>
+          <RowIndex>1</RowIndex>
           <ParameterName>CodCafetaria</ParameterName>
         </CellDefinition>
         <CellDefinition>
@@ -1106,6 +1144,11 @@
           <ColumnIndex>1</ColumnIndex>
           <RowIndex>1</RowIndex>
           <ParameterName>EndOnMovNo</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>NoRecurso</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
