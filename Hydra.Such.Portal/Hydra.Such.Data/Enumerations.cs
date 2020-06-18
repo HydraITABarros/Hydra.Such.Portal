@@ -195,6 +195,8 @@ namespace Hydra.Such.Data
             ProjetosListaMovimentos = 73,
             [Description("Clientes - Lista de Movimentos")]
             ClientesListaMovimentos = 74,
+            [Description("Contabilidade Mapas de Clientes")]
+            ContabilidadeMapasClientes = 75,
 
 
 

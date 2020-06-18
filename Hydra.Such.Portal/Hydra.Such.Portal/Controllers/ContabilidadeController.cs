@@ -46,7 +46,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult AntiguidadeSaldos()
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContabilidadeMapas);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ContabilidadeMapasClientes);
 
             if (UPerm != null && UPerm.Read.Value)
             {

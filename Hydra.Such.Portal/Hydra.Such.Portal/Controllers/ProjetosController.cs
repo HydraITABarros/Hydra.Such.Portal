@@ -2874,8 +2874,8 @@ namespace Hydra.Such.Portal.Controllers
                         Description = x.Descrição,
                         CodigoTipoTrabalho = x.CodigoTipoTrabalho,
                         Quantity = x.Quantidade,
-                        MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
-                        LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "",
+                        MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "": "Informação indisponível" : "",
+                        LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "Informação indisponível" : "",
                         ProjectContabGroup = x.GrupoContabProjeto,
                         RegionCode = x.CódigoRegião,
                         FunctionalAreaCode = x.CódigoÁreaFuncional,
@@ -2906,7 +2906,7 @@ namespace Hydra.Such.Portal.Controllers
                         AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
                         AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
                         ServiceGroupCode = x.CódGrupoServiço,
-                        ServiceGroupCodeDescription = AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "",
+                        ServiceGroupCodeDescription = AllServiceGroup != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "Informação indisponível" : "",
                         ResourceType = x.TipoRecurso,
                         FolhaHoras = x.NºFolhaHoras,
                         InternalRequest = x.RequisiçãoInterna,
@@ -2934,13 +2934,13 @@ namespace Hydra.Such.Portal.Controllers
                         InvoiceGroup = x.GrupoFatura,
                         InvoiceGroupDescription = x.GrupoFaturaDescricao,
                         AuthorizedBy = x.AutorizadoPor,
-                        ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "",
-                        MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "",
+                        ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList  != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "Informação indisponível" : "",
+                        MealTypeDescription = x.TipoRefeição != null ? MealList != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "Informação indisponível" : "",
                         Utilizador = User.Identity.Name,
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
                         Fatura = x.Fatura,
-                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : ""
+                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : "Informação indisponível" : ""
                     }).OrderByDescending(x => x.Date).ToList();
                 }
                 else
@@ -2961,8 +2961,8 @@ namespace Hydra.Such.Portal.Controllers
                         Description = x.Descrição,
                         CodigoTipoTrabalho = x.CodigoTipoTrabalho,
                         Quantity = x.Quantidade,
-                        MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "",
-                        LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "",
+                        MeasurementUnitCode = !string.IsNullOrEmpty(x.CódUnidadeMedida) ? MeasurementUnitList != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault() != null ? MeasurementUnitList.Where(y => y.Code == x.CódUnidadeMedida).FirstOrDefault().Description : "" : "Informação indisponível" : "",
+                        LocationCode = !string.IsNullOrEmpty(x.CódLocalização) ? LocationList  != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault() != null ? LocationList.Where(y => y.Code == x.CódLocalização).FirstOrDefault().Name : "" : "Informação indisponível" : "",
                         ProjectContabGroup = x.GrupoContabProjeto,
                         RegionCode = x.CódigoRegião,
                         FunctionalAreaCode = x.CódigoÁreaFuncional,
@@ -2993,7 +2993,7 @@ namespace Hydra.Such.Portal.Controllers
                         AutorizatedInvoice2Text = x.FaturaçãoAutorizada2.HasValue ? x.FaturaçãoAutorizada2 == true ? "Sim" : "Não" : "Não",
                         AutorizatedInvoiceData = x.DataAutorizaçãoFaturação?.ToString("yyyy-MM-dd"),
                         ServiceGroupCode = x.CódGrupoServiço,
-                        ServiceGroupCodeDescription = AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "",
+                        ServiceGroupCodeDescription = AllServiceGroup != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault() != null ? AllServiceGroup.Where(y => y.ClientNumber == x.FaturaANºCliente && y.ServiceCode == x.CódGrupoServiço).FirstOrDefault().ServiceDescription : "Informação indisponível" : "",
                         ResourceType = x.TipoRecurso,
                         FolhaHoras = x.NºFolhaHoras,
                         InternalRequest = x.RequisiçãoInterna,
@@ -3021,13 +3021,13 @@ namespace Hydra.Such.Portal.Controllers
                         InvoiceGroup = x.GrupoFatura,
                         InvoiceGroupDescription = x.GrupoFaturaDescricao,
                         AuthorizedBy = x.AutorizadoPor,
-                        ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "",
-                        MealTypeDescription = x.TipoRefeição != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "",
+                        ClientName = !string.IsNullOrEmpty(x.FaturaANºCliente) ? ClientsList != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault() != null ? ClientsList.Where(y => y.No_ == x.FaturaANºCliente).FirstOrDefault().Name : "" : "Informação indisponível" : "",
+                        MealTypeDescription = x.TipoRefeição != null ? MealList != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault() != null ? MealList.Where(y => y.Código == x.TipoRefeição).FirstOrDefault().Descrição : "" : "Informação indisponível" : "",
                         Utilizador = User.Identity.Name,
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
                         Fatura = x.Fatura,
-                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : ""
+                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : "Informação indisponível" : ""
                     }).OrderByDescending(x => x.Date).ToList();
                 }
 
