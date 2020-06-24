@@ -1393,19 +1393,43 @@ namespace Hydra.Such.Portal.Controllers
                                 else
                                 {
                                     NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
-                                    newline.CustoUnitário = localizacao.UnitCost;
-                                    newline.CódigoLocalização = localizacao.LocationCode;
-                                    newline.LocalCompraDireta = "0";
+                                    if (localizacao != null)
+                                    {
+                                        newline.CustoUnitário = localizacao.UnitCost;
+                                        newline.CódigoLocalização = localizacao.LocationCode;
+                                        newline.LocalCompraDireta = "0";
+                                    }
+                                    else
+                                    {
+                                        if (result.eReasonCode == 3)
+                                            result.eMessage = result.eMessage + " , Nº " + x.Code;
+                                        else
+                                        {
+                                            result.eReasonCode = 3;
+                                            result.eMessage = "Não foi possivel obter o Código de Localização para o(s) Produto(s) Nº " + x.Code;
+                                        }
+                                    }
                                 }
 
-                                newline.Descrição = product.Name;
-                                newline.Descrição2 = product.Name2;
-                                newline.CódigoUnidadeMedida = product.MeasureUnit;
+                                if (result.eReasonCode != 3)
+                                {
+                                    newline.Descrição = product.Name;
+                                    newline.Descrição2 = product.Name2;
+                                    newline.CódigoUnidadeMedida = product.MeasureUnit;
+                                }
                             }
                         }
 
-                        preReqLines.Add(newline);
+                        if (result.eReasonCode != 3)
+                        {
+                            preReqLines.Add(newline);
+                        }
                     });
+
+                    if (result.eReasonCode == 3)
+                    {
+                        return Json(result);
+                    }
 
                     if (DBPreRequesitionLines.CreateMultiple(preReqLines))
                     {
