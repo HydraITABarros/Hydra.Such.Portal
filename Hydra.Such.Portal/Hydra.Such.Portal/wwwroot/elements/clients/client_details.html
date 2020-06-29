@@ -874,7 +874,7 @@
                                                             </div>
 
                                                             <div class="col-lg-3">
-                                                                <vaadin-combo-box items='[[ LCountry ]]' id="shippingData.country_Region_Code" name="shippingData.country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{shippingData.country_Region_Code}}">
+                                                                <vaadin-combo-box items='[[ LCountry ]]' id="shippingData.country_Region_Code" name="shippingData.country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{shippingData.country_Region_Code}}">
                                                                     <template>
                                                                         &nbsp;[[item.id]] - [[item.value]]&nbsp;
                                                                     </template>
