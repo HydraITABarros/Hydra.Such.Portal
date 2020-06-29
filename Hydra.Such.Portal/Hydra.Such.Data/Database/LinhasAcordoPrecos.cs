@@ -7,6 +7,9 @@ namespace Hydra.Such.Data.Database
     {
         public string NoProcedimento { get; set; }
         public string NoFornecedor { get; set; }
+        public string NomeFornecedor { get; set; }
+        public string NoSubFornecedor { get; set; }
+        public string NomeSubFornecedor { get; set; }
         public string CodProduto { get; set; }
         public DateTime DtValidadeInicio { get; set; }
         public DateTime? DtValidadeFim { get; set; }
@@ -15,7 +18,6 @@ namespace Hydra.Such.Data.Database
         public string Regiao { get; set; }
         public string Localizacao { get; set; }
         public decimal? CustoUnitario { get; set; }
-        public string NomeFornecedor { get; set; }
         public string DescricaoProduto { get; set; }
         public string Um { get; set; }
         public decimal? QtdPorUm { get; set; }

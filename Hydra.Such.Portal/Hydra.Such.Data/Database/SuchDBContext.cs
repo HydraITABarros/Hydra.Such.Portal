@@ -3977,6 +3977,12 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NoFornecedor).HasMaxLength(20);
 
+                entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
+
+                entity.Property(e => e.NoSubFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.NomeSubFornecedor).HasMaxLength(50);
+
                 entity.Property(e => e.CodProduto).HasMaxLength(20);
 
                 entity.Property(e => e.DtValidadeInicio).HasColumnType("datetime");
@@ -4000,8 +4006,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DescricaoProduto).HasMaxLength(80);
 
                 entity.Property(e => e.DtValidadeFim).HasColumnType("datetime");
-
-                entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
 
                 entity.Property(e => e.QtdPorUm).HasColumnName("QtdPorUM");
 

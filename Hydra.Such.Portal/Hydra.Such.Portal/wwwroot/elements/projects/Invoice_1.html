@@ -1073,7 +1073,7 @@
                                 this.$._CLOptionInvoice.disabled = true;
                             }
 
-                            if (saldo > 0) {
+                            if (saldo >= 0) {
                                 this.$._CLData.value = moment().format("YYYY-MM-DD");
                                 this.$.dlgInvoice.open();
                             }
@@ -1143,10 +1143,14 @@
 
                 },
                 _validateData: function (Item) {
+                    debugger;
                     if (this.$._CLOptionInvoice.validate()) {
                         for (var line = 0; line < Item.length; line++) {
-                            if (Item[line].valorAutorizado == "" || Item[line].valorAutorizado == null || Item[line].valorAutorizado == 0) {
-                                return "Selecionou Linhas com Valor Autorizado a ZERO!";
+
+                            if (Item[0].codAreaFuncional != "23") { //A pedido do Marco Marcelo para os Residuos ignora-se a validação 29-06-2020
+                                if (Item[line].valorAutorizado == "" || Item[line].valorAutorizado == null || Item[line].valorAutorizado == 0) {
+                                    return "Selecionou Linhas com Valor Autorizado a ZERO!";
+                                }
                             }
                             //falta verificações
                             if (Item[line].codCentroResponsabilidade == "") {

@@ -321,6 +321,17 @@
                                     </div>
 
                                     <div class="col-sm-2">
+                                        <such-selectbox id="linhasNoSubFornecedor"
+                                                        label="Nº SubFornecedor"
+                                                        items="[[CBVendor]]"
+                                                        text-path="name"
+                                                        value-path="no_"
+                                                        fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                                                        disabled="{{ _permissionsCreate }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-sm-2">
                                         <such-selectbox id="linhasCodProduto" value="{{_CBItems}}" label="Cód. Produto"
                                                         items="[[CBItems]]"
                                                         text-path="name"
@@ -337,18 +348,10 @@
                                     <div class="col-sm-2">
                                         <vaadin-date-picker id="linhasdtValidadeFim" label="Data Validade Fim" disabled="{{ _permissionsCreate }}"></vaadin-date-picker>
                                     </div>
+                                </div>
 
+                                <div class="row break_clear">
                                     <div class="col-sm-2">
-                                        @*<vaadin-combo-box items="[[LLinhasRegiao]]" id="linhasRegiao" item-value-path="id" item-label-path="value" disabled="{{ _permissionsCreate }}" label="Região">
-                                            <template>
-                                                <table>
-                                                    <tr>
-                                                        <td width="10%">[[item.id]]</td>
-                                                        <td width="90%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>*@
                                         <such-selectbox id="linhasRegiao" label="Região"
                                                         items="[[LLinhasRegiao]]"
                                                         text-path="value"
@@ -357,20 +360,8 @@
                                                         disabled="{{ _permissionsCreate }}">
                                         </such-selectbox>
                                     </div>
-                                </div>
 
-                                <div class="row break_clear">
                                     <div class="col-sm-2">
-                                        @*<vaadin-combo-box items="[[LLinhasArea]]" id="linhasArea" item-value-path="id" item-label-path="value" label="Área" disabled="{{ _permissionsCreate }}">
-                                            <template>
-                                                <table>
-                                                    <tr>
-                                                        <td width="10%">[[item.id]]</td>
-                                                        <td width="90%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>*@
                                         <such-selectbox id="linhasArea" label="Área"
                                                         items="[[LLinhasArea]]"
                                                         text-path="value"
@@ -381,16 +372,6 @@
                                     </div>
 
                                     <div class="col-sm-2">
-                                        @*<vaadin-combo-box items="[[LLinhasCresp]]" id="linhasCresp" item-value-path="id" item-label-path="value" label="Cresp" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <table>
-                                                    <tr>
-                                                        <td width="10%">[[item.id]]</td>
-                                                        <td width="90%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>*@
                                         <such-selectbox id="linhasCresp" label="Cresp"
                                                         items="[[LLinhasCresp]]"
                                                         text-path="value"
@@ -401,16 +382,6 @@
                                     </div>
 
                                     <div class="col-sm-2">
-                                        @*<vaadin-combo-box items="[[CBLocations]]" id="linhasLocalizacao" item-value-path="id" item-label-path="value" label="Cód. Localização" disabled="{{ _permissionsCreate }}" required error-message="Este campo é obrigatório">
-                                            <template>
-                                                <table>
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>*@
                                         <such-selectbox id="linhasLocalizacao" label="Cód. Localização"
                                                         items="[[CBLocations]]"
                                                         text-path="value"
@@ -431,13 +402,13 @@
 
                                         <vaadin-text-field id="linhasCodCategoriaProduto" label="CodCategoriaProduto" hidden></vaadin-text-field>
                                     </div>
-
-                                    <div class="col-sm-2">
-                                        <vaadin-text-field id="linhasQuantidadeUM" label="Quantidade por UM" type="number" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
-                                    </div>
                                 </div>
 
                                 <div class="row break_clear">
+                                    <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasQuantidadeUM" label="Quantidade por UM" type="number" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
+                                    </div>
+
                                     <div class="col-sm-2">
                                         <vaadin-text-field id="linhasPesoUnitario" label="Peso Unitário" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
                                     </div>
@@ -475,14 +446,14 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
-                                    <div class="col-sm-2">
-                                        <vaadin-text-field id="linhasGrupoRegistoIvaProduto" label="Grupo Registo IVA Produto" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>
-                                    </div>
                                 </div>
                             </div>
 
                             <div class="row break_clear">
+                                <div class="col-sm-2">
+                                    <vaadin-text-field id="linhasGrupoRegistoIvaProduto" label="Grupo Registo IVA Produto" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>
+                                </div>
+
                                 <div class="col-sm-2">
                                     <paper-button id="btnAddNew" class="btnSave" on-tap="_createLinhaAcordoPrecos" disabled="{{ _permissionsCreate }}">Criar</paper-button>
                                 </div>
@@ -501,8 +472,6 @@
                                     </vaadin-upload>
                                 </div>
                                 <div class="col-sm-2 alignPoga">
-                                    @*<a href="/Administracao/DownloadAcordoPrecosTemplate/AcordoPrecos_Template.xlsx" target="_blank">Descarregar Modelo</a>*@
-                                    @*<paper-button id="btnAddNew" class="btnSave" on-tap="_refreshAnexosErros" disabled="{{ _permissionsCreate }}">Atualizar</paper-button>*@
                                     <paper-button class="btnSave" disabled="{{ _permissions.create }}" raised on-tap="_addExcel">Guardar</paper-button>
                                 </div>
                             </div>
@@ -540,6 +509,26 @@
                                 </template>
                                 <template>
                                     {{item.nomeFornecedor}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="noSubFornecedor" style="text-align:center;">Nº SubFornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="noSubFornecedor" />
+                                </template>
+                                <template>
+                                    {{item.noSubFornecedor}}
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="nomeSubFornecedor" style="text-align:center;">Nome SubFornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="nomeSubFornecedor" />
+                                </template>
+                                <template>
+                                    {{item.nomeSubFornecedor}}
                                 </template>
                             </vaadin-grid-column>
 
@@ -1015,6 +1004,7 @@
                             this.$.ajax_linhaAcordoPrecos_create.body = JSON.stringify({
                                 noProcedimento: this.$.linhasNoProcedimento.value,
                                 noFornecedor: this.$.linhasNoFornecedor.value,
+                                noSubFornecedor: this.$.linhasNoSubFornecedor.value,
                                 codProduto: this.$.linhasCodProduto.value,
                                 dtValidadeInicio: this.$.linhasDtValidadeInicio.value,
                                 dtValidadeFim: this.$.linhasdtValidadeFim.value,
@@ -1039,14 +1029,15 @@
 
                     _createLinhaAcordoPrecos_Response: function (e) {
                         if (this._createResult == 0) {
-                            this.$.linhasNoFornecedor.value = "";
-                            this.$.linhasCodProduto.value = "";
+                            this.$.linhasNoFornecedor._clearSelection();
+                            this.$.linhasNoSubFornecedor._clearSelection();
+                            this.$.linhasCodProduto._clearSelection();
                             this.$.linhasDtValidadeInicio.value = "";
                             this.$.linhasdtValidadeFim.value = "";
-                            this.$.linhasCresp.value = "";
-                            this.$.linhasArea.value = "";
-                            this.$.linhasRegiao.value = "";
-                            this.$.linhasLocalizacao.value = "";
+                            this.$.linhasCresp._clearSelection();
+                            this.$.linhasArea._clearSelection();
+                            this.$.linhasRegiao._clearSelection();
+                            this.$.linhasLocalizacao._clearSelection();
                             this.$.linhasCustoUnitario.value = "";
                             this.$.linhasUM.value = "";
                             this.$.linhasQuantidadeUM.value = "";
