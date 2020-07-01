@@ -111,6 +111,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string RejectionLocalMarketDate { get; set; }
         public int? PurchaseId { get; set; }
         public string SupplierNo { get; set; }
+        public string SubSupplierNo { get; set; }
         public string OpenOrderNo { get; set; }
         public int? OpenOrderLineNo { get; set; }
         public string QueryCreatedMarketNo { get; set; }

@@ -16,6 +16,7 @@ namespace Hydra.Such.Data.Database
         public decimal? Valor { get; set; }
         public string NºProjeto { get; set; }
         public string NºFornecedor { get; set; }
+        public string NoSubFornecedor { get; set; }
         public int? TipoRefeição { get; set; }
         public bool? TabelaPreçosFornecedor { get; set; }
         public DateTime? DataHoraCriação { get; set; }
@@ -29,6 +30,7 @@ namespace Hydra.Such.Data.Database
         public string CodigoProdutoFornecedor { get; set; }
         public string DescriçãoProdutoFornecedor { get; set; }
         public string NomeFornecedor { get; set; }
+        public string NomeSubFornecedor { get; set; }
         public string NºEncomendaAberto { get; set; }
         public string NºLinhaEncomendaAberto { get; set; }
         public string DescriçãoUnidadeProduto { get; set; }

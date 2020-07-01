@@ -742,6 +742,11 @@ namespace Hydra.Such.Data.Logic.Request
                     InAdvance = item.Adiantamento.HasValue ? item.Adiantamento.Value : false,
                     PedirOrcamento = item.PedirOrcamento,
                     ValorTotalDocComIVA = item.ValorTotalDocComIVA,
+                    TipoAlteracaoSISLOG = item.TipoAlteracaoSISLOG,
+                    DataAlteracaoSISLOG = item.DataAlteracaoSISLOG,
+                    EnviarSISLOG = item.EnviarSISLOG,
+                    SISLOG = item.SISLOG,
+                    DataEnvioSISLOG = item.DataEnvioSISLOG,
 
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
                     //AROMAO 01/10/2018
@@ -843,6 +848,11 @@ namespace Hydra.Such.Data.Logic.Request
                         Adiantamento = item.InAdvance,
                         PedirOrcamento = item.PedirOrcamento,
                         ValorTotalDocComIVA = item.ValorTotalDocComIVA,
+                        TipoAlteracaoSISLOG = item.TipoAlteracaoSISLOG,
+                        DataAlteracaoSISLOG = item.DataAlteracaoSISLOG,
+                        EnviarSISLOG = item.EnviarSISLOG,
+                        SISLOG = item.SISLOG,
+                        DataEnvioSISLOG = item.DataEnvioSISLOG,
 
                         LinhasRequisição = item.Lines.ParseToDB(),
                         RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()

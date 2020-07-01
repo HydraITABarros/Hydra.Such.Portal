@@ -87,6 +87,21 @@ namespace Hydra.Such.Portal.Services
                                     requisition.ValidationDate = DateTime.Now;
                                     requisition.UpdateUser = this.changedByUserName;
 
+                                    //SISLOG
+                                    if (requisition.TipoReq != null && requisition.TipoReq == 0)
+                                    {
+                                        if (!string.IsNullOrEmpty(requisition.LocalCode) && requisition.LocalCode == "4300")
+                                        {
+                                            if (requisition.StockReplacement == null || requisition.StockReplacement == false)
+                                            {
+                                                requisition.TipoAlteracaoSISLOG = 1;
+                                                requisition.DataAlteracaoSISLOG = DateTime.Now;
+                                                requisition.EnviarSISLOG = true;
+                                                requisition.SISLOG = false;
+                                            }
+                                        }
+                                    }
+
                                     var updatedReq = DBRequest.UpdateHeaderAndLines(requisition.ParseToDB(), true);
                                     if (updatedReq != null)
                                     {

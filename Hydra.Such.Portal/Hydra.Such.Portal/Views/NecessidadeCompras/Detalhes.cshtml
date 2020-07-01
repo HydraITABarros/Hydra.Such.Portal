@@ -221,12 +221,13 @@
             </div>
 
             <div class="col-md-3">
-
                 <vaadin-text-field id="supplierNoId" name="supplierNoName" label="Nº Forncedor" value="{{supplierNo}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="subsupplierNoId" name="subsupplierNoName" label="Nº SubForncedor" value="{{subsupplierNo}}" disabled></vaadin-text-field>
             </div>
 
             <div class="col-md-3">
                 <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="subSupplierNameId" name="subSupplierName" label="Nome SubFornecedor" value="{{subSupplierName}}" disabled></vaadin-text-field>
             </div>
 
             <div class="col-md-3">
@@ -417,6 +418,26 @@
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.supplierName}}
                     </template>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="subSupplierNo">Nº SubForncedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="subSupplierNo" />
+                </template>
+                <template>
+                    {{item.subSupplierNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="subSupplierName">Nome SubFornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="subSupplierName" />
+                </template>
+                <template>
+                    {{item.subSupplierName}}
                 </template>
             </vaadin-grid-column>
 
@@ -891,7 +912,7 @@
                     catch (err) { }
                 },
                 _productChanged: function (e) {
-                      //debugger
+                      debugger
                     if (e.detail.value != null && e.detail.value != "") {
 
                         var linhaAcordo = this.$.cmbProducts.activeItem;
@@ -899,7 +920,9 @@
                         if (linhaAcordo != null) {
                             this.$.qtyID.value = "0";
                             this.$.supplierNoId.value = linhaAcordo.noFornecedor;
+                            this.$.subsupplierNoId.value = linhaAcordo.noSubFornecedor;
                             this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
+                            this.$.subSupplierNameId.value = linhaAcordo.nomeSubFornecedor;
                             this.$.unitofMeasureCodeId.value = linhaAcordo.um;
                             this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
                             this.$.supplierProdCodeId.value = linhaAcordo.codProdutoFornecedor.toString();
@@ -912,6 +935,24 @@
                             //this.$.txtProdDescription.value = linhaAcordo.descricaoProduto;
                         }
                     }
+                    else {
+                        this.$.supplierProdDescription2Id.value = "";
+                        this.$.qtyID.value = "";
+                        this.$.supplierNoId.value = "";
+                        this.$.subsupplierNoId.value = "";
+                        this.$.SupplierNameId.value = "";
+                        this.$.subSupplierNameId.value = "";
+                        this.$.unitofMeasureCodeId._clearSelection();;
+                        this.$.unitCostId.value = "";
+                        this.$.supplierProdCodeId.value = "";
+                        this.$.supplierProdDescriptionId.value = "";
+                        this.$.QtyforMeasId.value = "";
+                        this.$.amountId.value = "";
+                        this.$.grupoRegistoIvaProduto.value = "";
+
+                        this.$.mOpenOrderLinesId.value = "";
+                    }
+
                 },
                 _DatePriceGridChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "" &&
@@ -958,6 +999,23 @@
                             this.$.ajax_nOrderLines.generateRequest();
                         }
                     }
+
+                    this.$.cmbProducts._clearSelection();
+                    this.$.supplierProdDescription2Id.value = "";
+                    this.$.qtyID.value = "";
+                    this.$.supplierNoId.value = "";
+                    this.$.subsupplierNoId.value = "";
+                    this.$.SupplierNameId.value = "";
+                    this.$.subSupplierNameId.value = "";
+                    this.$.unitofMeasureCodeId._clearSelection();
+                    this.$.unitCostId.value = "";
+                    this.$.supplierProdCodeId.value = "";
+                    this.$.supplierProdDescriptionId.value = "";
+                    this.$.QtyforMeasId.value = "";
+                    this.$.amountId.value = "";
+                    this.$.grupoRegistoIvaProduto.value = "";
+
+                    this.$.mOpenOrderLinesId.value = "";
                 },
                 _getgridResponse: function (data) {
                     if (data != null) {
@@ -1120,7 +1178,9 @@
                                     description2: this.$.supplierProdDescription2Id.value,
                                     quantity: this.$.qtyID.value,
                                     supplierNo: this.$.supplierNoId.value,
+                                    subSupplierNo: this.$.subsupplierNoId.value,
                                     supplierName: this.$.SupplierNameId.value,
+                                    subSupplierName: this.$.subSupplierNameId.value,
                                     unitMeasureCode: this.$.unitofMeasureCodeId.value,
                                     directUnitCost: this.$.unitCostId.value,
                                     supplierProductCode: this.$.supplierProdCodeId.value,
@@ -1174,6 +1234,7 @@
                                     localCode: this.$.codStockUnitId.value,
                                     productNo: this.$.cmbProducts.activeItem.codProduto,
                                     supplierNo: this.$.supplierNoId.value,
+                                    subsupplierNo: this.$.subsupplierNoId.value,
                                     description: this.$.cmbProducts.valueText,
                                     description2: this.$.supplierProdDescription2Id.value,
                                     unitMeasureCode: this.$.unitofMeasureCodeId.value,
@@ -1185,6 +1246,7 @@
                                     supplierProductCode: this.$.supplierProdCodeId.value,
                                     supplierProductDescription: this.$.cmbProducts.valueText,
                                     supplierName: this.$.SupplierNameId.value,
+                                    subsupplierName: this.$.subSupplierNameId.value,
                                     tipo: this.type
                                 };
 
@@ -1272,12 +1334,14 @@
                             //this.$.dpExpectedReceiptId.value = "";
                             //this.$.dpVendedorPriceId.value = "";
                             this.$.supplierNoId.value = "";
+                            this.$.subsupplierNoId.value = "";
                             this.$.qtyID.value = "";
                             this.$.QtyforMeasId.value = "";
                             this.$.unitCostId.value = "";
                             this.$.amountId.value = "";
                             this.$.supplierProdCodeId.value = "";
                             this.$.SupplierNameId.value = "";
+                            this.$.subSupplierNameId.value = "";
                             this.$.codStockUnitId._clearSelection();
                             this.$.cmbProducts._clearSelection();
                             this.$.unitofMeasureCodeId._clearSelection();

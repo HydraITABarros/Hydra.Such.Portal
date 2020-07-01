@@ -18,6 +18,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public decimal? TotalValue { get; set; }
         public string ProjectNo { get; set; }
         public string SupplierNo { get; set; }
+        public string SubSupplierNo { get; set; }
         public int? MealType { get; set; }
         public bool? TableSupplierPrice { get; set; }
         public DateTime? CreateDateTime { get; set; }
@@ -31,6 +32,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string SupplierProductCode { get; set; }
         public string SupplierProductDescription { get; set; }
         public string SupplierName { get; set; }
+        public string SubSupplierName { get; set; }
         public string OpenOrderNo { get; set; }
         public string OrderLineOpenNo { get; set; }
         public string ProductUnitDescription { get; set; }

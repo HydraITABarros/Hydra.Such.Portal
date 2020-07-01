@@ -93,6 +93,12 @@ namespace Hydra.Such.Data.Database
         public bool? PedirOrcamento { get; set; }
         public decimal? ValorTotalDocComIVA { get; set; }
 
+        public int? TipoAlteracaoSISLOG { get; set; }
+        public DateTime? DataAlteracaoSISLOG { get; set; }
+        public bool? EnviarSISLOG { get; set; }
+        public bool? SISLOG { get; set; }
+        public DateTime? DataEnvioSISLOG { get; set; }
+
         public Projetos NºProjetoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }

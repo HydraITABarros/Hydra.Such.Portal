@@ -189,6 +189,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Valor = x.TotalValue;
                             newdp.NºProjeto = x.ProjectNo;
                             newdp.NºFornecedor = x.SupplierNo;
+                            newdp.NoSubFornecedor = x.SubSupplierNo;
                             newdp.TipoRefeição = x.MealType;
                             newdp.TabelaPreçosFornecedor = x.TableSupplierPrice;
                             newdp.DataHoraCriação = x.CreateDateTime;
@@ -206,6 +207,7 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.CodigoProdutoFornecedor = x.SupplierProductCode;
                             newdp.DescriçãoProdutoFornecedor = x.SupplierProductDescription;
                             newdp.NomeFornecedor = x.SupplierName;
+                            newdp.NomeSubFornecedor = x.SubSupplierName;
                             newdp.NºEncomendaAberto = x.OpenOrderNo;
                             newdp.NºLinhaEncomendaAberto = x.OrderLineOpenNo;
                             newdp.DescriçãoUnidadeProduto = x.ProductUnitDescription;
@@ -240,6 +242,7 @@ namespace Hydra.Such.Portal.Controllers
                                 Valor = x.TotalValue,
                                 NºProjeto = x.ProjectNo,
                                 NºFornecedor = x.SupplierNo,
+                                NoSubFornecedor = x.SubSupplierNo,
                                 TipoRefeição = x.MealType,
                                 TabelaPreçosFornecedor = x.TableSupplierPrice,
                                 DataHoraModificação = x.UpdateDateTime,
@@ -255,6 +258,7 @@ namespace Hydra.Such.Portal.Controllers
                                 CodigoProdutoFornecedor = x.SupplierProductCode,
                                 DescriçãoProdutoFornecedor = x.SupplierProductDescription,
                                 NomeFornecedor = x.SupplierName,
+                                NomeSubFornecedor = x.SubSupplierName,
                                 NºEncomendaAberto = x.OpenOrderNo,
                                 NºLinhaEncomendaAberto = x.OrderLineOpenNo,
                                 DescriçãoUnidadeProduto = x.ProductUnitDescription,
@@ -673,6 +677,7 @@ namespace Hydra.Such.Portal.Controllers
                                     QuantityToRequire = item.Quantity,
                                     UnitCost = item.DirectUnitCost,
                                     SupplierNo = item.SupplierNo,
+                                    SubSupplierNo = item.SubSupplierNo,
                                     ExpectedReceivingDate = item.ExpectedReceptionDate,
                                     SupplierProductCode = item.SupplierProductCode,
                                     FunctionalAreaCode = req.FunctionalAreaCode,
@@ -897,10 +902,12 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.CustoUnitárioDireto = x.DirectUnitCost;
                             newdp.Valor = x.TotalValue;
                             newdp.NºFornecedor = x.SupplierNo;
+                            newdp.NoSubFornecedor = x.SubSupplierNo;
                             newdp.DataHoraModificação = DateTime.Now;
                             newdp.UtilizadorModificação = User.Identity.Name;
                             newdp.CodigoLocalização = x.LocalCode;
                             newdp.NomeFornecedor = x.SupplierName;
+                            newdp.NomeSubFornecedor = x.SubSupplierName;
                             newdp.NºEncomendaAberto = x.OpenOrderNo;
                             newdp.NºLinhaEncomendaAberto = x.OrderLineOpenNo;
                             newdp.DescriçãoUnidadeProduto = x.ProductUnitDescription;
@@ -935,8 +942,10 @@ namespace Hydra.Such.Portal.Controllers
                                 Quantidade = x.Quantity,
                                 Valor = x.TotalValue,
                                 NºFornecedor = x.SupplierNo,
+                                NoSubFornecedor = x.SubSupplierNo,
                                 CodigoLocalização = x.LocalCode,
                                 NomeFornecedor = x.SupplierName,
+                                NomeSubFornecedor = x.SubSupplierName,
                                 NºEncomendaAberto = x.OpenOrderNo,
                                 NºLinhaEncomendaAberto = x.OrderLineOpenNo,
                                 DescriçãoUnidadeProduto = x.ProductUnitDescription,
@@ -1062,6 +1071,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 resultRqLines.QuantidadeARequerer = NecShopDirect.Quantity;
                                                 resultRqLines.CustoUnitário = NecShopDirect.DirectUnitCost;
                                                 resultRqLines.NºFornecedor = NecShopDirect.SupplierNo;
+                                                resultRqLines.NoSubFornecedor = NecShopDirect.SubSupplierNo;
                                                 resultRqLines.DataReceçãoEsperada =
                                                 string.IsNullOrEmpty(NecShopDirect.ExpectedReceptionDate)
                                                     ? (DateTime?)null
