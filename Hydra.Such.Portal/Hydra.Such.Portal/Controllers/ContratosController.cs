@@ -861,6 +861,90 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult CodeRegiaoChanged([FromBody] ContractViewModel data)
+        {
+            bool result = true;
+            if (data != null && !string.IsNullOrEmpty(data.ContractNo) && data.VersionNo > 0)
+            {
+                List<LinhasContratos> AllLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                AllLines.ForEach(line =>
+                {
+                    line.CódigoRegião = !string.IsNullOrEmpty(data.CodeRegion) ? data.CodeRegion : "";
+                    line.UtilizadorModificação = User.Identity.Name;
+                    if (DBContractLines.Update(line) == null)
+                    {
+                        result = false;
+                    }
+                });
+
+                if (result == true)
+                {
+                    if (DBContracts.Update(DBContracts.ParseToDB(data)) == null)
+                    {
+                        result = false;
+                    }
+                }
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CodeAreaChanged([FromBody] ContractViewModel data)
+        {
+            bool result = true;
+            if (data != null && !string.IsNullOrEmpty(data.ContractNo) && data.VersionNo > 0)
+            {
+                List<LinhasContratos> AllLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                AllLines.ForEach(line =>
+                {
+                    line.CódigoÁreaFuncional = !string.IsNullOrEmpty(data.CodeFunctionalArea) ? data.CodeFunctionalArea : "";
+                    line.UtilizadorModificação = User.Identity.Name;
+                    if (DBContractLines.Update(line) == null)
+                    {
+                        result = false;
+                    }
+                });
+
+                if (result == true)
+                {
+                    if (DBContracts.Update(DBContracts.ParseToDB(data)) == null)
+                    {
+                        result = false;
+                    }
+                }
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult CodeCrespChanged([FromBody] ContractViewModel data)
+        {
+            bool result = true;
+            if (data != null && !string.IsNullOrEmpty(data.ContractNo) && data.VersionNo > 0)
+            {
+                List<LinhasContratos> AllLines = DBContractLines.GetAllByActiveContract(data.ContractNo, data.VersionNo);
+                AllLines.ForEach(line =>
+                {
+                    line.CódigoCentroResponsabilidade = !string.IsNullOrEmpty(data.CodeResponsabilityCenter) ? data.CodeResponsabilityCenter : "";
+                    line.UtilizadorModificação = User.Identity.Name;
+                    if (DBContractLines.Update(line) == null)
+                    {
+                        result = false;
+                    }
+                });
+
+                if (result == true)
+                {
+                    if (DBContracts.Update(DBContracts.ParseToDB(data)) == null)
+                    {
+                        result = false;
+                    }
+                }
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult ValidateNumeration([FromBody] ContractViewModel data)
         {
             //Get Project Numeration

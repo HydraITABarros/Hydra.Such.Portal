@@ -67,12 +67,14 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult DetalhesCliente(string id)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Clientes); //4, 47);
+            UserAccessesViewModel UPermCCS = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ClientesCCS); //4, 47);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.No = id ?? "";
                 ViewBag.reportServerURL = _config.ReportServerURL;
                 ViewBag.userLogin = User.Identity.Name.ToString();
                 ViewBag.UPermissions = UPerm;
+                ViewBag.UPermissionsCCS = UPermCCS;
                 return View();
             }
             else
@@ -691,7 +693,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     listData.ForEach(line =>
                     {
-                        var updated = DBNAV2017Clients.UpdateBalance(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo, line.EntryNo.ToString(), line.SinalizacaoRec.ToString(), line.Obs);
+                        var updated = DBNAV2017Clients.UpdateBalance(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo, line.EntryNo.ToString(), line.SinalizacaoRec, line.Obs);
                         if (updated != null)
                         {
                             updateResult += (int)updated;
@@ -704,7 +706,6 @@ namespace Hydra.Such.Portal.Controllers
             }
             return Json(false);
         }
-
 
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
@@ -1070,7 +1071,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         if (dp["sinalizacaoRec"]["hidden"].ToString() == "False")
                         {
-                            row.CreateCell(Col).SetCellValue(item["sinalizacaoRec"].ToString());
+                            row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item["sinalizacaoRec"].ToString()) ? item["sinalizacaoRec"].ToString() == "True" ? "Sim" : "Não" : "Não");
                             Col = Col + 1;
                         }
                         if (dp["dataConcil"]["hidden"].ToString() == "False")
