@@ -542,6 +542,8 @@ namespace Hydra.Such.Portal.Controllers
                                 newdp.Descrição = linhaAcordo.DescricaoProduto;
                                 newdp.NºFornecedor = linhaAcordo.NoFornecedor;
                                 newdp.NomeFornecedor = linhaAcordo.NomeFornecedor;
+                                newdp.NoSubFornecedor = !string.IsNullOrEmpty(linhaAcordo.NoSubFornecedor) ? linhaAcordo.NoSubFornecedor : "";
+                                newdp.NomeSubFornecedor = !string.IsNullOrEmpty(linhaAcordo.NomeSubFornecedor) ? linhaAcordo.NomeSubFornecedor : "";
                                 newdp.CódUnidadeMedida = linhaAcordo.Um;
                                 newdp.CustoUnitárioDireto = linhaAcordo.CustoUnitario;
                                 newdp.CodigoProdutoFornecedor = linhaAcordo.CodProdutoFornecedor;

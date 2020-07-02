@@ -3517,6 +3517,77 @@ namespace Hydra.Such.Portal.Controllers
         //1
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_LinhasNutricao([FromBody] List<RequisitionLineViewModel> Lista)
+        {
+            string sWebRootFolder = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+
+            List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, "");
+            NAVSupplierViewModels Supplier = new NAVSupplierViewModels();
+            NAVSupplierViewModels SubSupplier = new NAVSupplierViewModels();
+
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisição Nutrição");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Qt. Requerida"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1;
+
+                int count = 1;
+                foreach (RequisitionLineViewModel item in Lista)
+                {
+                    Col = 0;
+                    Supplier = AllSuppliers.Where(y => y.No_ == item.SupplierNo).FirstOrDefault();
+                    SubSupplier = AllSuppliers.Where(y => y.No_ == item.SubSupplierNo).FirstOrDefault();
+                    row = excelSheet.CreateRow(count);
+
+                    row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.QuantityRequired.ToString()); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(Supplier != null && !string.IsNullOrEmpty(Supplier.Name) ? Supplier.Name : ""); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(SubSupplier != null && !string.IsNullOrEmpty(SubSupplier.Name) ? SubSupplier.Name : ""); Col = Col + 1;
+
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_LinhasNutricao(string sFileName)
+        {
+            sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Gestão Requisições.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_GestaoRequisicoes_CD([FromBody] List<RequisitionViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;

@@ -153,7 +153,7 @@ namespace Hydra.Such.Portal.Services
         }
 
         public RequisitionViewModel ValidateLocalMarketFor(RequisitionViewModel requisition)
-        {            
+        {
             if (requisition != null && requisition.Lines != null && requisition.Lines.Count > 0 && requisition.State == RequisitionStates.Approved)
             {
                 //use for database update later
@@ -313,47 +313,46 @@ namespace Hydra.Such.Portal.Services
 
                 try
                 {
-                    purchOrders = requisitionLines.GroupBy(x =>
-                                x.SupplierNo,
-                                x => x,
-                                (key, items) => new PurchOrderDTO
-                                {
-                                    SupplierId = key,
-                                    RequisitionId = requisition.RequisitionNo,
-                                    CenterResponsibilityCode = requisition.CenterResponsibilityCode,
-                                    FunctionalAreaCode = requisition.FunctionalAreaCode,
-                                    RegionCode = requisition.RegionCode,
-                                    LocalMarketRegion = requisition.LocalMarketRegion,
-                                    InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
-                                    PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
-                                    LocationCode = requisition.LocalCode,
-                                    Purchaser_Code = requisition.NumeroMecanografico,
-                                    
-                                    
-                                    Lines = items.Select(line => new PurchOrderLineDTO()
-                                    {
-                                        LineId = line.LineNo,
-                                        Type = line.Type,
-                                        Code = line.Code,
-                                        Description = line.Description,
-                                        Description2 = line.Description2,
-                                        ProjectNo = line.ProjectNo,
-                                        QuantityRequired = line.QuantityRequired,
-                                        UnitCost = line.UnitCost,
-                                        LocationCode = line.LocalCode,
-                                        OpenOrderNo = line.OpenOrderNo,
-                                        OpenOrderLineNo = line.OpenOrderLineNo,
-                                        CenterResponsibilityCode = line.CenterResponsibilityCode,
-                                        FunctionalAreaCode = line.FunctionalAreaCode,
-                                        RegionCode = line.RegionCode,
-                                        UnitMeasureCode = line.UnitMeasureCode,
-                                        VATBusinessPostingGroup = line.VATBusinessPostingGroup,
-                                        VATProductPostingGroup = line.VATProductPostingGroup,
-                                        DiscountPercentage = line.DiscountPercentage.HasValue ? line.DiscountPercentage.Value : 0,
-                                    })
-                                    .ToList()
-                                })
-                        .ToList();
+                    purchOrders = requisitionLines.GroupBy(x => new
+                    { x.SupplierNo, x.SubSupplierNo },
+                        x => x,
+                        (key, items) => new PurchOrderDTO
+                        {
+                            SupplierId = key.SupplierNo,
+                            RequisitionId = requisition.RequisitionNo,
+                            CenterResponsibilityCode = requisition.CenterResponsibilityCode,
+                            FunctionalAreaCode = requisition.FunctionalAreaCode,
+                            RegionCode = requisition.RegionCode,
+                            LocalMarketRegion = requisition.LocalMarketRegion,
+                            InAdvance = requisition.InAdvance.HasValue ? requisition.InAdvance.Value : false,
+                            PricesIncludingVAT = requisition.PricesIncludingVAT.HasValue ? requisition.PricesIncludingVAT.Value : false,
+                            LocationCode = requisition.LocalCode,
+                            Purchaser_Code = requisition.NumeroMecanografico,
+
+                            Lines = items.Select(line => new PurchOrderLineDTO()
+                            {
+                                LineId = line.LineNo,
+                                Type = line.Type,
+                                Code = line.Code,
+                                Description = line.Description,
+                                Description2 = line.Description2,
+                                ProjectNo = line.ProjectNo,
+                                QuantityRequired = line.QuantityRequired,
+                                UnitCost = line.UnitCost,
+                                LocationCode = line.LocalCode,
+                                OpenOrderNo = line.OpenOrderNo,
+                                OpenOrderLineNo = line.OpenOrderLineNo,
+                                CenterResponsibilityCode = line.CenterResponsibilityCode,
+                                FunctionalAreaCode = line.FunctionalAreaCode,
+                                RegionCode = line.RegionCode,
+                                UnitMeasureCode = line.UnitMeasureCode,
+                                VATBusinessPostingGroup = line.VATBusinessPostingGroup,
+                                VATProductPostingGroup = line.VATProductPostingGroup,
+                                DiscountPercentage = line.DiscountPercentage.HasValue ? line.DiscountPercentage.Value : 0,
+                            })
+                            .ToList()
+                        })
+                    .ToList();
 
                     supplierProductRef = DBNAV2017SupplierProductRef.GetSuplierProductRefsForRequisition(_config.NAVDatabaseName, _config.NAVCompanyName, requisition.RequisitionNo);
                 }
@@ -437,7 +436,7 @@ namespace Hydra.Such.Portal.Services
                                     }
                                 }
                             }
-                            
+
                             //var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate), requisition.Comments);
                             var result = CreateNAVPurchaseOrderFor(purchOrder, Convert.ToDateTime(requisition.ReceivedDate));
                             if (result.CompletedSuccessfully)
@@ -448,7 +447,7 @@ namespace Hydra.Such.Portal.Services
                                 //Update Requisition Lines
                                 requisition.Lines.ForEach(line =>
                                 {
-                                    if (line.SupplierNo ==purchOrder.SupplierId)
+                                    if (line.SupplierNo == purchOrder.SupplierId)
                                     {
                                         line.CreatedOrderNo = result.ResultValue;
                                         line.UpdateUser = this.changedByUserName;
@@ -464,7 +463,7 @@ namespace Hydra.Such.Portal.Services
                                 }
                             }
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             requisition.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao criar encomenda para o fornecedor núm. " + purchOrder.SupplierId + ": " + ex.Message));
                             //requisition.eMessages.Add(new TraceInformation(TraceType.Exception, purchOrder.SupplierId + " " + ex.Message));
@@ -672,7 +671,8 @@ namespace Hydra.Such.Portal.Services
 
                         if (seleccaoEntidades == null)
                         {
-                            seleccaoEntidades = new SeleccaoEntidades() {
+                            seleccaoEntidades = new SeleccaoEntidades()
+                            {
                                 NumConsultaMercado = consultaMercado.NumConsultaMercado,
                                 CodFornecedor = requisitionLine.SupplierNo,
                                 NomeFornecedor = !string.IsNullOrEmpty(requisitionLine.SupplierNo) ? DBNAV2017Supplier.GetAll(_config.NAVDatabaseName, _config.NAVCompanyName, requisitionLine.SupplierNo).FirstOrDefault().Name : "",
@@ -767,7 +767,7 @@ namespace Hydra.Such.Portal.Services
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     response.ErrorMessage = ex.Message;
                 }

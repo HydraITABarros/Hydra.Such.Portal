@@ -372,6 +372,16 @@
                    on-response="_getProjectDimsResponse"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/ExportToExcel_LinhasNutricao"
+                   last-response="{{export_LinhasNutricao}}"
+                   id="ajax_Export_LinhasNutricao"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCEL_LinhasNutricaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -397,6 +407,7 @@
             <paper-button class="tablinks" id="btnShowChangeLog" on-tap="_showChangeLog"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Workflow</paper-button>
             <paper-button class="tablinks" id="btnShowEncomendas" on-tap="_showEncomendas"><i class="fa fa-first-order" aria-hidden="true"></i>&nbsp; Encomendas</paper-button>
 
+            <paper-button id="btnExport_LinhasNutricao" class="tablinks" on-tap="_exportEXCEL_LinhasNutricao" title="Exportar Linhas para Excel" hidden><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -1030,6 +1041,7 @@
                                 </div>
                             </paper-collapse-item>
                         </paper-collapse-group>
+
                         <div class="row break_clear">
                             <vaadin-grid id="grdRequisitionLines" aria-label="ProfileModelsTabel" items="[[Requisition.lines]]" class="grid" active-item="{{_SelectedLine}}">
                                 <vaadin-grid-column width="160px" resizable>
@@ -2819,6 +2831,11 @@
                     else {
                         this.$.menuImprimirGestao.hidden = false;
                     }
+
+                    //Nutrição Amaro
+                    if (this.$.txtRequisiçãoNutrição.value == true) {
+                        this.$.btnExport_LinhasNutricao.hidden = false;
+                    }
                 },
                 _deleteReqLineResponse: function (e) {
                     if (this.DelReqLineResponse.eReasonCode == "1") {
@@ -3389,6 +3406,19 @@
                             this.$.ResponsabilityCenterCode._clearSelection();
                         }
                     }
+                },
+
+                _exportEXCEL_LinhasNutricao: function () {
+                    var result = this.Requisition.lines;
+                    if (result != null && result.length > 0) {
+                        this.$.ajax_Export_LinhasNutricao.body = JSON.stringify(result);
+                        this.$.ajax_Export_LinhasNutricao.generateRequest();
+                    }
+                },
+
+                _exportEXCEL_LinhasNutricaoResponse: function (e) {
+                    var FileName = this.export_LinhasNutricao;
+                    location.href = '/GestaoRequisicoes/ExportToExcelDownload_LinhasNutricao?sFileName=' + FileName;
                 },
 
             });

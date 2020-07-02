@@ -2576,6 +2576,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nome Fornecedor")
                     .HasMaxLength(100);
 
+                entity.Property(e => e.NomeSubFornecedor)
+                    .HasColumnName("NomeSubFornecedor")
+                    .HasMaxLength(100);
+
                 entity.Property(e => e.NºDocumento)
                     .HasColumnName("Nº Documento")
                     .HasMaxLength(20);
@@ -2586,6 +2590,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºFornecedor)
                     .HasColumnName("Nº Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoSubFornecedor)
+                    .HasColumnName("NoSubFornecedor")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NºLinhaEncomendaAberto)
