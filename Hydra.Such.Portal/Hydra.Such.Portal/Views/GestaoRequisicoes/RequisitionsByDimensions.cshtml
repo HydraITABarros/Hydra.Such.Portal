@@ -8,6 +8,9 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
@@ -21,7 +24,7 @@
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
 <link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
-<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
@@ -58,6 +61,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/CloseRequisition"
+                   last-response="{{closeRequisitionResult}}"
+                   id="ajax_closeRequisition"
+                   method="post"
+                   handle-as="json"
+                   on-response="_closeRequisitionResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
@@ -76,9 +88,25 @@
                 </div>
             </paper-menu-button>
             <!--end ColumnToggle-->
+
+            <paper-button id="btnFechar" class="tablinks" on-tap="_closeRequisition" title="Fechar" hidden="{{ !_permissions.update }}"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar Requisições</paper-button>
         </div>
 
-        <vaadin-grid column-reordering-allowed id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
+        @*<vaadin-grid column-reordering-allowed id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">*@
+        <vaadin-grid column-reordering-allowed id="gridrequest" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid">
+            <vaadin-grid-selection-column id="selectColumn" width="3%" resizable hidden="{{ !_permissions.update }}">
+            </vaadin-grid-selection-column>
+
+            <vaadin-grid-column width="3%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_showRequisition" title="Ver Requisição"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
@@ -292,16 +320,20 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-request',
                 properties: {
-                    _SelectedLine: {
-                        observer: '_rowSelected'
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
+                    },
+                    selectedItems: {
+                        type: Array,
                     },
                     _columns: {
                         type: Object,
@@ -442,8 +474,17 @@
                     }
                 },
 
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
                 _exportEXCEL: function () {
-                    var result = this.$.gridrequest._filter(this.result); 
+                    var result = this.$.gridrequest._filter(this.result);
                     result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(result);
@@ -544,6 +585,57 @@
                     window.history.back();
                 },
 
+                _closeRequisition: function (e) {
+                    debugger;
+                    if (this.selectedItems != null && this.selectedItems != "" && this.selectedItems.length > 0) {
+                        var ok = true;
+
+                        for (var i = 0; i < this.selectedItems.length; i++) {
+                            if (this.selectedItems[i].state != 0) { //RequisitionStates.Pending,
+                                ok = false;
+                            }
+                        }
+
+                        if (ok == true) {
+                            this.$.ajax_closeRequisition.body = JSON.stringify(this.selectedItems);
+                            this.$.ajax_closeRequisition.generateRequest();
+                        }
+                        else {
+                            this.openToastError("Só pode fechar Requisições que estejam no Estado de Pendente.");
+                        }
+                    }
+                    else {
+                        this.openToastError("Não selecionou Requisições para fechar.");
+                    }
+
+                    this.selectedItems = [];
+                },
+                _closeRequisitionResponse: function () {
+                    if (this.closeRequisitionResult == null || this.closeRequisitionResult == undefined || this.closeRequisitionResult.eReasonCode != 1) {
+                        this.openToastError(this.closeRequisitionResult.eMessage);
+                    }
+                    else {
+                        this.openToastSuccess(this.closeRequisitionResult.eMessage);
+                        this.$.ajax_getgrid.generateRequest();
+                    }
+                },
+
+                _showRequisition: function (e) {
+                    if (e != null) {
+                        var requisition = e.model.item.requisitionNo;
+
+                        if (requisition != null) {
+                            /*FILTROS*/
+                            var filters = {};
+                            this.$.gridrequest._filters.map(function (value, index) {
+                                filters[value.path] = value.value;
+                            });
+                            window.setGridFilter('gestaorequisicoes-requisitionsbydimensions', filters || {});
+
+                            window.location.href = "/GestaoRequisicoes/LinhasRequisicaoReadOnly/" + requisition;
+                        }
+                    }
+                },
 
 
 

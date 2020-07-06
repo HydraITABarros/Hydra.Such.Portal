@@ -341,6 +341,14 @@
                    on-response="_TodasLinhasConsultaMercadoResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/TodasLinhasFornecedor"
+                   last-response="{{resultTodasLinhasFornecedor}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_TodasLinhasFornecedor"
+                   on-response="_TodasLinhasFornecedorResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/TodasEncomendasPorRequisicao"
                    last-response="{{Encomendas}}"
                    method="post"
@@ -814,8 +822,9 @@
                                     <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
                                 </template>
                                 <template is="dom-if" if="{{ !isReadOnly() }}">
-                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
+                                    <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. Encome.</paper-button>
                                     <paper-button raised id="btnCreate" class="btnSave" on-tap="_TodasLinhasConsultaMercado" title="Marcar todas as Linhas para Consulta de Mercado"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. C.Merc.</paper-button>
+                                    <paper-button raised id="btnAllSupplier" class="btnSave" on-tap="_showDlgLinhasFornecedor" title="Marcar todas as Linhas com Fornecedor"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. Fornec.</paper-button>
                                 </template>
                             </div>
                         </div>
@@ -1036,6 +1045,7 @@
                                             </template>
                                             <paper-button raised id="btnCreate" class="btnSave" on-tap="_todasLinhasNotaEncomenda" title="Marcar todas as Linhas para Nota de Encomenda"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Linhas Enc.</paper-button>
                                             <paper-button raised id="btnCreate" class="btnSave" on-tap="_TodasLinhasConsultaMercado" title="Marcar todas as Linhas para Consulta de Mercado"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. C.Merc.</paper-button>
+                                            <paper-button raised id="btnAllSupplier" class="btnSave" on-tap="_showDlgLinhasFornecedor" title="Marcar todas as Linhas com Fornecedor"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Lin. Fornec.</paper-button>
                                         </template>
                                     </div>
                                 </div>
@@ -1805,6 +1815,20 @@
             </div>
         </paper-dialog>
 
+        <paper-dialog id="dlgLinhasFornecedor" style="height:200px; width:400px">
+            <such-selectbox id="dlgCBSuppliers" label="Fornecedor"
+                            items="[[Suppliers]]"
+                            text-path="name"
+                            value-path="no_"
+                            fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'
+                            disabled="{{ !_permissions.update }}">
+            </such-selectbox>
+            <div class="buttons">
+                <paper-button class="btnEdit" id="btnCloseDlgLinhasFornecedor" on-tap="_closeDlgLinhasFornecedor"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar</paper-button>
+                <paper-button class="btnRemove" id="btnChangeDlgLinhasFornecedor" on-tap="_TodasLinhasFornecedor"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Alterar</paper-button>
+            </div>
+        </paper-dialog>
+
         <paper-dialog id="dlgEncomendas" class="dialgoBox" modal>
             <vaadin-grid id="grdChangeLog" aria-label="ChangeLog" items="[[Encomendas]]" class="grid">
                 <vaadin-grid-column width="160px" resizable>
@@ -1851,7 +1875,7 @@
                     },
                     _registerMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Disponibilizar" }, { value: 2, description: "Receber" }, { value: 3, description: "Anular Validação" }, /*{ value: 4, description: "Anular Aprovação" },*/ { value: 5, description: "Fechar Requisição" }],
+                        value: [{ value: 1, description: "Disponibilizar" }, { value: 2, description: "Receber" }, { value: 6, description: "Disponibilizar + Receber" }, { value: 3, description: "Anular Validação" }, /*{ value: 4, description: "Anular Aprovação" },*/ { value: 5, description: "Fechar Requisição" }],
                     },
                     _functionsMenuItems: {
                         type: Array,
@@ -1988,6 +2012,9 @@
                             break;
                         case 5: //"Fechar Requisição"
                             this._RegistCloseRequest();
+                            break;
+                        case 6: //"Disponibilizar + Receber"
+                            this._RegistProvide_Receive();
                             break;
                     }
 
@@ -2680,6 +2707,35 @@
                     }
                 },
 
+                _showDlgLinhasFornecedor: function () {
+                    this.$.dlgLinhasFornecedor.open();
+                },
+                _closeDlgLinhasFornecedor: function () {
+                    this.$.dlgLinhasFornecedor.close();
+                },
+                _TodasLinhasFornecedor: function () {
+                    debugger;
+                    if (this.$.dlgCBSuppliers.value != "") {
+                        this.$.ajax_TodasLinhasFornecedor.body = JSON.stringify({ "requisitionNo": this.$.requisitionNo.value, "supplierCode": this.$.dlgCBSuppliers.value });
+                        this.$.ajax_TodasLinhasFornecedor.generateRequest();
+                    }
+                    else {
+                        this._openToastError("Escolha um fornecedor.");
+                    }
+                },
+                _TodasLinhasFornecedorResponseProcessor: function (e) {
+                    if (this.resultTodasLinhasFornecedor.eReasonCode == "1") {
+                        this._openToast(this.resultTodasLinhasFornecedor.eMessage);
+
+                        this.$.requisition_datasource.body = JSON.stringify({ "requisitionId": this._requisitionid, "status": this._requisitionstatus });
+                        this.$.requisition_datasource.generateRequest();
+                        this.$.grdRequisitionLines.clearCache();
+                    }
+                    else {
+                        this._openDlgMessageError(this.resultTodasLinhasFornecedor.eMessage);
+                    }
+                },
+
                 _deleteRequisitionLine: function (e) {
                     var ajax_request = this.$.deleteReqLine_ajax;
 
@@ -2879,6 +2935,11 @@
                 _RegistCloseRequest: function () {
                     this.$.regist_datasource.body = JSON.stringify(this.Requisition);
                     this.$.regist_datasource.params = { "registType": "Fechar Requisicao" };
+                    this.$.regist_datasource.generateRequest();
+                },
+                _RegistProvide_Receive: function () {
+                    this.$.regist_datasource.body = JSON.stringify(this.Requisition);
+                    this.$.regist_datasource.params = { "registType": "Disponibilizar_Receber" };
                     this.$.regist_datasource.generateRequest();
                 },
 

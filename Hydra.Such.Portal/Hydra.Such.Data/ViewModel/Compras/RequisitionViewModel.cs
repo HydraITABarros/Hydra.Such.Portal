@@ -102,7 +102,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? ShowBtnArquivarReqPendente { get; set; }
         public string ClientCode { get; set; }
         public string ClientName { get; set; }
-    
+        public string SupplierCode { get; set; }
+
         //SISLOG
         public int? TipoAlteracaoSISLOG { get; set; }
         public DateTime? DataAlteracaoSISLOG { get; set; }
