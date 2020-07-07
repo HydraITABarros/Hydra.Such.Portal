@@ -319,6 +319,7 @@ namespace Hydra.Such.Portal.Services
                         (key, items) => new PurchOrderDTO
                         {
                             SupplierId = key.SupplierNo,
+                            SubSupplierId = key.SubSupplierNo,
                             RequisitionId = requisition.RequisitionNo,
                             CenterResponsibilityCode = requisition.CenterResponsibilityCode,
                             FunctionalAreaCode = requisition.FunctionalAreaCode,
@@ -371,6 +372,7 @@ namespace Hydra.Such.Portal.Services
                                 line.SupplierProductCode = supplierProductRef
                                     .Where(x => x.ProductId == line.Code
                                                 && x.SupplierNo == purchOrder.SupplierId
+                                                && x.SubSupplierNo == purchOrder.SubSupplierId
                                                 && x.UnitOfMeasureCode == line.UnitMeasureCode)
                                     .FirstOrDefault()
                                     ?.SupplierProductId
@@ -447,7 +449,7 @@ namespace Hydra.Such.Portal.Services
                                 //Update Requisition Lines
                                 requisition.Lines.ForEach(line =>
                                 {
-                                    if (line.SupplierNo == purchOrder.SupplierId)
+                                    if (line.SupplierNo == purchOrder.SupplierId && line.SubSupplierNo == purchOrder.SubSupplierId)
                                     {
                                         line.CreatedOrderNo = result.ResultValue;
                                         line.UpdateUser = this.changedByUserName;
@@ -459,7 +461,7 @@ namespace Hydra.Such.Portal.Services
                                 //if (linesUpdated)
                                 if (updatedReq != null)
                                 {
-                                    requisition.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + "; "));
+                                    requisition.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + ": " + ex.Message));
                                 }
                             }
                         }

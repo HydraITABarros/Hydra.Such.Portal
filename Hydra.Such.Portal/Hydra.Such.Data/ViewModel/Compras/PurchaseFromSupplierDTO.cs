@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string NAVPurchOrderFittingId { get; set; }
         public string NAVPurchOrderCommitmentId { get; set; }
         public string SupplierId { get; set; }
+                public string SubSupplierId { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
         public string CenterResponsibilityCode { get; set; }

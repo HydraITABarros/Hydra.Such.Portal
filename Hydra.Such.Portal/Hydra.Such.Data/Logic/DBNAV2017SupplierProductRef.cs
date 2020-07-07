@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.Logic
         public class SuppliersProductsRefs
         {
             public string SupplierNo { get; set; }
+                            public string SubSupplierNo { get; set; }
             public string ProductId { get; set; }
             public string UnitOfMeasureCode { get; set; }
             public string SupplierProductId { get; set; }

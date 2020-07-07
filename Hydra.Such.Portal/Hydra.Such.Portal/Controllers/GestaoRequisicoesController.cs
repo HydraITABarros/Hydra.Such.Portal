@@ -27,6 +27,7 @@ using Hydra.Such.Data.ViewModel.Approvals;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Encomendas;
 using Hydra.Such.Data.Logic.Viatura;
+using Hydra.Such.Data.Logic.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3288,6 +3289,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
                             RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
+
                             Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
 
                             result.eReasonCode = Requisicao.eReasonCode;
