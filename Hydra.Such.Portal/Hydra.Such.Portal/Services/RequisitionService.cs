@@ -461,7 +461,7 @@ namespace Hydra.Such.Portal.Services
                                 //if (linesUpdated)
                                 if (updatedReq != null)
                                 {
-                                    requisition.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + ": " + ex.Message));
+                                    requisition.eMessages.Add(new TraceInformation(TraceType.Success, "Criada encomenda para o fornecedor núm. " + purchOrder.SupplierId + " ;"));
                                 }
                             }
                         }
