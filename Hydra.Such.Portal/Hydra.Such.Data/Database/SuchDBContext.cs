@@ -203,7 +203,9 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<LoteProcedimentoCcp> LoteProcedimentoCcp { get; set; }
         #endregion
 
-
+        #region SGPPF
+        public virtual DbSet<AccaoFormacao> AccaoFormacao { get; set; }
+        #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AcessosDimensões>(entity =>
@@ -12822,7 +12824,282 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(50);
             });
 
+            #region SGPPF
+            modelBuilder.Entity<AccaoFormacao>(entity =>
+            {
+                entity.HasKey(e => new { e.IdAccao });
 
+                entity.Property(e => e.IdAccao)
+                    .HasColumnName("IdAccao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DesignacaoAccao)
+                    .HasColumnName("DesignacaoAccao")
+                    .HasMaxLength(2048);
+
+                entity.Property(e => e.IdTema)
+                    .HasColumnName("IdTema")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Activa)
+                    .HasColumnName("Activa")
+                    .HasColumnType("tinyint");
+
+                entity.Property(e => e.DataInicio)
+                    .HasColumnName("DataInicio")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataFim)
+                    .HasColumnName("DataFim")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.IdEntidadeFormadora)
+                    .HasColumnName("IdEntidadeFormadora")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.NumeroTotalHoras)
+                    .HasColumnName("NumeroTotalHoras")
+                    .HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.UrlImagem)
+                    .HasColumnName("UrlImagem")
+                    .HasMaxLength(250);
+
+                entity.HasOne(a => a.TemaNavigation)
+                    .WithMany(t => t.AccoesTema)
+                    .HasForeignKey(a => a.IdTema)
+                    .HasConstraintName("FK_AccaoFormacao_TemaFormacao");
+
+                entity.HasOne(a => a.EntidadeNavigation)
+                        .WithMany(t => t.AccoesEntidade)
+                        .HasForeignKey(a => a.IdEntidadeFormadora)
+                        .HasConstraintName("FK_AccaoFormacao_TemaFormacao");
+
+            });
+
+            modelBuilder.Entity<EntidadeFormadora>( entity => {
+                entity.HasKey(e => new { e.IdEntidade } );
+                entity.Property(e => e.IdEntidade)
+                    .HasColumnName("IdEntidade")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DescricaoEntidade)
+                    .HasColumnName("DescricaoEntidade")
+                    .HasMaxLength(250);
+
+            });
+
+            modelBuilder.Entity<PedidoParticipacaoFormacao>(entity => {
+                entity.HasKey(e => new { e.IdPedido });
+
+                entity.Property(e => e.IdPedido)
+                    .HasColumnName("IdPedido")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Estado)
+                    .HasColumnName("Estado")
+                    .HasColumnType("int");
+
+                entity.Property(e => e.IdEmpregado)
+                    .HasColumnName("IdEmpregado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NomeEmpregado)
+                    .HasColumnName("IdEmpregado")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.FuncaoEmpregado)
+                    .HasColumnName("FuncaoEmpregado")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.ProjectoEmpregado)
+                    .HasColumnName("ProjectoEmpregado")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.IdAreaFuncional)
+                    .HasColumnName("IdAreaFuncional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.AreaFuncionalEmpregado)
+                    .HasColumnName("AreaFuncionalEmpregado")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.IdCentroResponsabilidade)
+                    .HasColumnName("IdCentroResponsabilidade")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CentroResponsabilidadeEmpregado)
+                    .HasColumnName("CentroResponsabilidadeEmpregado")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.IdEstabelecimento)
+                    .HasColumnName("IdEstabelecimento")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DescricaoEstabelecimento)
+                    .HasColumnName("DescricaoEstabelecimento")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.IdAccaoFormacao)
+                    .HasColumnName("IdAccaoFormacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DesignacaoAccao)
+                    .HasColumnName("DesignacaoAccao")
+                    .HasMaxLength(2048);
+
+                entity.Property(e => e.LocalRealizacao)
+                    .HasColumnName("LocalRealizacao")
+                    .HasMaxLength(150);
+
+                entity.Property(e => e.DataInicio)
+                    .HasColumnName("DataInicio")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DataFim)
+                    .HasColumnName("DataFim")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.NumeroTotalHoras)
+                    .HasColumnName("NumeroTotalHoras")
+                    .HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.IdEntidadeFormadora)
+                    .HasColumnName("IdEntidadeFormadora")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DescricaoEntidadeFormadora)
+                    .HasColumnName("DescricaoEntidadeFormadora")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.CustoInscricao)
+                    .HasColumnName("CustoInscricao")
+                    .HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.ValorIva)
+                    .HasColumnName("ValorIva")
+                    .HasColumnType("decimal(18, 2");
+
+                entity.Property(e => e.CustoDeslocacoes)
+                    .HasColumnName("CustoDeslocacoes")
+                    .HasColumnType("decimal(18, 2");
+
+                entity.Property(e => e.CustoEstadia)
+                    .HasColumnName("CustoEstadia")
+                    .HasColumnType("decimal(18, 2");
+
+                entity.Property(e => e.DescricaoConhecimentos)
+                    .HasColumnName("DescricaoConhecimentos")
+                    .HasMaxLength(2048);
+
+                entity.Property(e => e.FundamentacaoChefia)
+                    .HasColumnName("FundamentacaoChefia")
+                    .HasMaxLength(2048);
+
+                entity.Property(e => e.Planeada)
+                    .HasColumnName("Planeada")
+                    .HasColumnType("tinyint");
+
+                entity.Property(e => e.TemDotacaoOrcamental)
+                    .HasColumnName("TemDotacaoOrcamental")
+                    .HasColumnType("tinyint");
+
+                entity.Property(e => e.ParecerAcademia)
+                    .HasColumnName("ParecerAcademia")
+                    .HasMaxLength(2048);
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("DataHoraCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorUltimaModificacao)
+                    .HasColumnName("UtilizadorUltimaModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraUltimaModificacao)
+                    .HasColumnName("DataHoraUltimaModificacao")
+                    .HasColumnType("datetime");
+
+                entity.HasOne(p => p.AccaoNavigation)
+                    .WithMany(a => a.PedidosParticipacao)
+                    .HasForeignKey(p => p.IdAccaoFormacao)
+                    .HasConstraintName("FK_PedidoParticipacaoFormacao_AccaoFormacao");
+
+            });
+
+            modelBuilder.Entity<RegistoAlteracoesPedidoFormacao>(entity =>
+            {
+                entity.HasKey(e => new { e.IdPedidoFormacao, e.IdRegisto });
+
+                entity.Property(e => e.IdPedidoFormacao)
+                    .HasColumnName("IdPedidoFormacao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.IdRegisto)
+                    .HasColumnName("IdRegisto")
+                    .HasColumnType("int");
+
+                entity.Property(e => e.TipoAlteracao)
+                    .HasColumnName("TipoAlteracao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DescricaoAlteracao)
+                    .HasColumnName("DescricaoAlteracao")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.UtilizadorAlteracao)
+                    .HasColumnName("UtilizadorAlteracao")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.DataHoraAlteracao)
+                    .HasColumnName("DataHoraAlteracao")
+                    .HasColumnType("datetime");                    
+
+                entity.HasOne(r => r.PedidoNavigation)
+                    .WithMany(t => t.RegistosAlteracoes)
+                    .HasForeignKey(r => r.IdPedidoFormacao)
+                    .HasConstraintName("FK_RegistoAlteracoesPedido_PedidoParticipacaoFormacao");
+
+            });
+
+            modelBuilder.Entity<SessaoAccaoFormacao>(entity =>
+            {
+                entity.HasKey(e => new { e.IdSessaoFormacao, e.IdAccao });
+
+                entity.Property(e => e.IdSessaoFormacao)
+                    .HasColumnName("IdSessaoFormacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.IdAccao)
+                    .HasColumnName("IdAccao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataSessao)
+                    .HasColumnName("DataSessao")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.HoraInicioSessao)
+                    .HasColumnName("HoraInicioSessao")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.HoraFimSessao)
+                    .HasColumnName("HoraFimSessao")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.DuracaoSessao)
+                    .HasColumnName("DuracaoSessao")
+                    .HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(s => s.AccaoNavigation)
+                    .WithMany(a => a.SessoesFormacao)
+                    .HasForeignKey(s => s.IdAccao)
+                    .HasConstraintName("FK_SessaoAccaoFormacao_AccaoFormacao");
+            });
+            #endregion
 
 
         }

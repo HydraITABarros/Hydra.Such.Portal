@@ -12,5 +12,8 @@ namespace Hydra.Such.Data.Database
         public string DescricaoAlteracao { get; set; }
         public string UtilizadorAlteracao { get; set; }
         public DateTime? DataHoraAlteracao { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public PedidoParticipacaoFormacao PedidoNavigation { get; set; }
     }
 }
