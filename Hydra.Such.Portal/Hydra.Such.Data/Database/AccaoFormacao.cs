@@ -9,6 +9,7 @@ namespace Hydra.Such.Data.Database
         public AccaoFormacao()
         {
             SessoesFormacao = new HashSet<SessaoAccaoFormacao>();
+            PedidosParticipacao = new HashSet<PedidoParticipacaoFormacao>();
         }
 
         public string IdAccao { get; set; }
@@ -21,6 +22,13 @@ namespace Hydra.Such.Data.Database
         public decimal? NumeroTotalHoras { get; set; }
         public string UrlImagem { get; set; }
 
+
+        [Newtonsoft.Json.JsonIgnore]
+        public TemaFormacao TemaNavigation { get; set; }
+        [Newtonsoft.Json.JsonIgnore]
+        public EntidadeFormadora EntidadeNavigation { get; set; }
+
         public ICollection<SessaoAccaoFormacao> SessoesFormacao { get; set; }
+        public ICollection<PedidoParticipacaoFormacao> PedidosParticipacao { get; set; }
     }
 }

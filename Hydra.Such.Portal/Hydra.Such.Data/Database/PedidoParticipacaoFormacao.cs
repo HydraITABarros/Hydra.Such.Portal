@@ -45,6 +45,9 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorUltimaModificacao { get; set; }
         public DateTime? DataHoraUltimaModificacao { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
+        public AccaoFormacao AccaoNavigation { get; set; }
+
         public ICollection<RegistoAlteracoesPedidoFormacao> RegistosAlteracoes { get; set; }
     }
 }
