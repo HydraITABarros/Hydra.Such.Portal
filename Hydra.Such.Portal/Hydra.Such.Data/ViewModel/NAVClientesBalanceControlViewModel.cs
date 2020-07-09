@@ -27,6 +27,7 @@ namespace Hydra.Such.Data.ViewModel
         public bool SinalizacaoRec { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataConcil { get; set; }
+        public string DataConcilText { get; set; }
         public string Obs { get; set; }
         public string RegionId { get; set; }
         public string FunctionalAreaId { get; set; }

@@ -197,6 +197,11 @@ namespace Hydra.Such.Data
             ClientesListaMovimentos = 74,
             [Description("Contabilidade Mapas de Clientes")]
             ContabilidadeMapasClientes = 75,
+            [Description("Clientes - Controlo Conciliação de Saldos")]
+            ClientesCCS = 76,
+
+
+            
 
 
 

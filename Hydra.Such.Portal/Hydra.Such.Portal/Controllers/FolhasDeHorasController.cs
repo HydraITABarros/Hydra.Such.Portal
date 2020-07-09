@@ -4177,7 +4177,7 @@ namespace Hydra.Such.Portal.Controllers
                                     if (result.eReasonCode == 9)
                                     {
                                         result.eReasonCode = 109;
-                                        result.eMessage = "Já existe Ajudas de Custo Integradas para o trabalhador nessa data.";
+                                        result.eMessage = "Já existe uma das Ajudas de Custo Integradas para o trabalhador nessa data.";
                                     }
                                 }
                             }

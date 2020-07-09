@@ -54,6 +54,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataRecusaMercLocal { get; set; }
         public int? IdCompra { get; set; }
         public string NºFornecedor { get; set; }
+        public string NoSubFornecedor { get; set; }
         public string NºEncomendaAberto { get; set; }
         public int? NºLinhaEncomendaAberto { get; set; }
         public string NºDeConsultaMercadoCriada { get; set; }

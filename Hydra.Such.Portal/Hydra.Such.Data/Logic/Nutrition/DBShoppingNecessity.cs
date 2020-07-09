@@ -224,6 +224,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     QuantitybyUnitMeasure = item.QuantidadePorUnidMedida,
                     SupplierName = item.NomeFornecedor,
                     SupplierNo = item.NºFornecedor,
+                    SubSupplierNo = item.NoSubFornecedor,
+                    SubSupplierName = item.NomeSubFornecedor,
                     SupplierProductCode = item.CodigoProdutoFornecedor,
                     SupplierProductDescription = item.DescriçãoProdutoFornecedor,
                     TableSupplierPrice = item.TabelaPreçosFornecedor,
@@ -274,6 +276,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 x.QuantidadePorUnidMedida = item.QuantitybyUnitMeasure;
                 x.NomeFornecedor = item.SupplierName;
                 x.NºFornecedor = item.SupplierNo;
+                x.NoSubFornecedor = item.SubSupplierNo;
+                x.NomeSubFornecedor = item.SubSupplierName;
                 x.CodigoProdutoFornecedor = item.SupplierProductCode;
                 x.DescriçãoProdutoFornecedor = item.SupplierProductDescription;
                 x.TabelaPreçosFornecedor = item.TableSupplierPrice;

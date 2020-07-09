@@ -291,6 +291,7 @@ namespace Hydra.Such.Data.Logic
                             Amount = (decimal?)temp.Amount,
                             CustomerNo = temp.CustomerNo.Equals(DBNull.Value) ? "" : (string)temp.CustomerNo,
                             DataConcil = (DateTime?)temp.DataConcil != null && (DateTime?)temp.DataConcil > minDate ? (DateTime?)temp.DataConcil : null,
+                            DataConcilText = (DateTime?)temp.DataConcil != null && (DateTime?)temp.DataConcil > minDate ? temp.DataConcil.ToString("yyyy-MM-dd") : "",
                             Description = temp.Description.Equals(DBNull.Value) ? "" : (string)temp.Description,
                             DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo,
                             DocumentType = temp.DocumentType.Equals(DBNull.Value) ? "" : (string)temp.DocumentType.ToString(),
@@ -315,7 +316,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static int? UpdateBalance(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo, string EntryNo, string SinalizacaoRec, string Obs)
+        public static int? UpdateBalance(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo, string EntryNo, bool SinalizacaoRec, string Obs)
         {
             try
             {
@@ -327,7 +328,7 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@CompanyName", NAVCompanyName),
                         new SqlParameter("@CustomerNo", NAVClientNo ),
                         new SqlParameter("@Obs", Obs ),
-                        new SqlParameter("@SinalizacaoRec", SinalizacaoRec ),
+                        new SqlParameter("@SinalizacaoRec", SinalizacaoRec == true ? "true" : "false" ),
                         new SqlParameter("@EntryNo", EntryNo )
                     };
 

@@ -102,6 +102,15 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? ShowBtnArquivarReqPendente { get; set; }
         public string ClientCode { get; set; }
         public string ClientName { get; set; }
+        public string SupplierCode { get; set; }
+
+        //SISLOG
+        public int? TipoAlteracaoSISLOG { get; set; }
+        public DateTime? DataAlteracaoSISLOG { get; set; }
+        public bool? EnviarSISLOG { get; set; }
+        public bool? SISLOG { get; set; }
+        public DateTime? DataEnvioSISLOG { get; set; }
+
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

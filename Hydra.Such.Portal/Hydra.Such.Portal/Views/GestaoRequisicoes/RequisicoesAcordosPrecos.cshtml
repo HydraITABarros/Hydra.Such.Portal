@@ -370,14 +370,12 @@
                 },
                 //Mostra Mensagens
                 _showMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageSuccess.text = message;
                     this.$.ToastMessageSuccess.open();
                 },
 
                 //Mostra Mensagens de Erro
                 _showErrorMessage: function (message) {
-                    //debugger;
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
@@ -461,7 +459,6 @@
                 },
 
                 _createPurchaseOrder: function (selectedItem, selectedItems) {
-                    debugger;
                     if (this.selectedItems != null && this.selectedItems != "") {
 
                         $(this.$.btnCreatePurchaseOrder).addClass('disabled');
@@ -499,7 +496,6 @@
                 },
 
                 _exportEXCEL: function () {
-                    //debugger;
                     this.result[0].ColunasEXCEL = this._columns;
 
                     this.$.ajax_Export.body = JSON.stringify(this.result);
@@ -507,7 +503,6 @@
                 },
 
                 _exportEXCELResponse: function (e) {
-                    //debugger
                     var FileName = this.export;
                     location.href = '../GestaoRequisicoes/ExportToExcelDownload_GestaoRequisicoes?sFileName=' + FileName;
                 },

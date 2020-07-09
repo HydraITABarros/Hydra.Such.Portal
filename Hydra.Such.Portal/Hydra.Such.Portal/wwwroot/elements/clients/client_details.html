@@ -242,12 +242,21 @@
             <!--<paper-button id="btn_imprimirCD" class="tablinks" on-tap="_printCD" disabled="{{ !_permissions.create }}"><i class="fa fa-print" aria-hidden="true"></i> Imprimir Cliente</paper-button>-->
 
             <such-dropdown-menu on-value-changed="_viewMenuConsultartemSelected" title="Consultar" items='[[ _viewMenuConsultartemItems ]]'></such-dropdown-menu>
+
+            <template is="dom-if" if="{{ _isCreate }}">
+                <paper-button id="btnCreate" class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+            </template>
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button id="btnUpdate" class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </template>
+                <template is="dom-if" if="{{ !_isCreate && _permissions.delete }}">
+                    <paper-button id="btnCancel" class="tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </template>
         </div>
 
-
-
         <div class="panel panel-default break_clear">
-
             <iron-form>
                 <div id="customer-form">
                     <!--Geral-->
@@ -632,9 +641,9 @@
                                             <div class="panel-body">
                                                 <div class="row break_clear">
                                                     <div class="col-xs-12">
-                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                        <template is="dom-if" if="{{ _permissionsccs.update }}">
                                                             <div class="break_clear">
-                                                                <paper-button raised id="btnUpdateBalances" class="btnSave" on-tap="_updateBalances"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                                                <!--<paper-button raised id="btnUpdateBalances" class="btnSave" on-tap="_updateBalances"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>-->
                                                                 <paper-button raised class="btnSave" on-tap="_exportBalances"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
                                                             </div>
                                                             <div class="clearfix"></div>
@@ -745,7 +754,7 @@
                                                                 <template>
                                                                     <center>
                                                                         <template is="dom-if" if="{{ item.selected }}">
-                                                                            <vaadin-checkbox checked="{{item.sinalizacaoRec}}" id="balances.sinalizacaoRec" name="balances.sinalizacaoRec" disabled="{{ !_permissions.update }}"></vaadin-checkbox>
+                                                                            <vaadin-checkbox checked="{{item.sinalizacaoRec}}" id="balances.sinalizacaoRec" name="balances.sinalizacaoRec" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"></vaadin-checkbox>
                                                                         </template>
                                                                         <template is="dom-if" if="{{ !item.selected }}">
                                                                             [[_formatBoolValue(item.sinalizacaoRec)]]
@@ -770,14 +779,12 @@
                                                                     <vaadin-grid-filter path="obs" />
                                                                 </template>
                                                                 <template>
-
                                                                     <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-text-field value="{{item.obs}}" maxlength="255" id="balances.obs" name="balances.obs" disabled="{{ !item.sinalizacaoRec }}" required> </vaadin-text-field>
+                                                                        <vaadin-text-field value="{{item.obs}}" maxlength="30" id="balances.obs" name="balances.obs" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"> </vaadin-text-field>
                                                                     </template>
                                                                     <template is="dom-if" if="{{ !item.selected }}">
                                                                         {{ item.obs }}
                                                                     </template>
-
                                                                 </template>
                                                             </vaadin-grid-column>
 
@@ -818,20 +825,6 @@
                                         </paper-collapse-item>
                                     </paper-collapse-group>
                                 </div>
-
-                                <div class="marginSpace">
-                                    <template is="dom-if" if="{{ _isCreate }}">
-                                        <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                                    </template>
-                                    <template is="dom-if" if="{{ !_isCreate }}">
-                                        <template is="dom-if" if="{{ _permissions.update }}">
-                                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                                        </template>
-                                        <template is="dom-if" if="{{ !_isCreate && _permissions.delete }}">
-                                            <paper-button raised id="btnCancel" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                                        </template>
-                                    </template>
-                                </div>
                             </div>
                         </div>
 
@@ -840,7 +833,7 @@
                             <div style="display: {{ _listDisplay }};">
                                 <div class="panel panel-default">
                                     <paper-collapse-group>
-                                        <paper-collapse-item header="Controlo Conciliação de Saldos">
+                                        <paper-collapse-item header="Endereço">
                                             <div class="panel-body">
                                                 <div is="dom-if" if="{{ _permissions.update }}">
                                                     <div class="col-xs-12">
@@ -867,14 +860,14 @@
                                                         <div class="row break_clear">
 
                                                             <div class="col-lg-3">
-                                                                <vaadin-text-field value="{{shippingData.post_Code}}" maxlength="20" disabled="{{ !_permissions.update }}" id="shippingData.post_Code" name="shippingData.post_Code" label="Código Postal" required error-message="Este campo é obrigatório" ></vaadin-text-field>
+                                                                <vaadin-text-field value="{{shippingData.post_Code}}" maxlength="20" disabled="{{ !_permissions.update }}" id="shippingData.post_Code" name="shippingData.post_Code" label="Código Postal" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-lg-3">
                                                                 <vaadin-text-field value="{{shippingData.city}}" maxlength="30" id="shippingData.city" name="shippingData.city" label="Cidade" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório"> </vaadin-text-field>
                                                             </div>
 
                                                             <div class="col-lg-3">
-                                                                <vaadin-combo-box items='[[ LCountry ]]' id="shippingData.country_Region_Code" name="shippingData.country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="value" item-label-path="value" value="{{shippingData.country_Region_Code}}">
+                                                                <vaadin-combo-box items='[[ LCountry ]]' id="shippingData.country_Region_Code" name="shippingData.country_Region_Code" label="Código Pais/Região" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{shippingData.country_Region_Code}}">
                                                                     <template>
                                                                         &nbsp;[[item.id]] - [[item.value]]&nbsp;
                                                                     </template>
@@ -896,9 +889,9 @@
                                                             <div class="col-lg-3">
                                                                 <vaadin-text-field value="{{shippingData.e_Mail}}" maxlength="80" id="shippingData.e_Mail" name="shippingData.e_Mail" label="Email" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
                                                             </div>
-                                                            <div class="col-lg-3"  style="padding:20px">
+                                                            <div class="col-lg-3" style="padding:20px">
                                                                 <template is="dom-if" if="{{ _permissions.create }}">
-                                                                        <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createShippingLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                                                    <paper-button raised id="btnCreateLine" class="btnSave" on-tap="_createShippingLine"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
                                                                 </template>
                                                             </div>
                                                         </div>
@@ -1022,7 +1015,7 @@
 
                                         <vaadin-grid-column width="5%" resizable>
                                             <template class="header">
-                                                <vaadin-grid-sorter path="country_Region_Code">Cód. Região</vaadin-grid-sorter>
+                                                <vaadin-grid-sorter path="country_Region_Code">Cód. País/Região</vaadin-grid-sorter>
                                                 <vaadin-grid-filter path="country_Region_Code" />
                                             </template>
                                             <template>
@@ -1107,7 +1100,6 @@
                                             <template>
                                                 <center>
                                                     <template is="dom-if" if="{{ _permissions.delete }}">
-                                                        <!--<paper-button class="btnRemove" raised on-tap="_deleteShippingLine">Eliminar</paper-button>-->
                                                         <center>
                                                             <paper-button class="btnRemove tableBtn" raised on-tap="_deleteShippingLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
                                                         </center>
@@ -1547,8 +1539,6 @@
                         </template>
                     </vaadin-grid-column>
 
-                    -g
-
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="nGuiaResiduosGAR">Nº Guia Resíduos (GAR)</vaadin-grid-sorter>
@@ -1628,6 +1618,9 @@
                 is: 'x-clientdetails',
                 properties: {
                     _permissions: {
+                        type: Array
+                    },
+                    _permissionsccs: {
                         type: Array
                     },
                     _areaid: {
@@ -1881,7 +1874,6 @@
                     this.$.shipping_list.generateRequest();
                 },
                 _updateBalances: function () {
-
                     this.$.balances_data.url = "/Clientes/UpdateBalances?CustomerNo=" + this._no;
                     this.$.balances_data.body = JSON.stringify(this.balances.filter(x => typeof x.changed != 'undefined' && x.changed == true));
                     this.$.balances_data.generateRequest();
@@ -2359,7 +2351,6 @@
                         this._openToastError(this.vatResponse);
                     }
                 },
-
             });
         });
 
@@ -2376,10 +2367,10 @@
             }
         };
 
-
         var trimPhone = function (el, event) {
             el.value = el.value.replace(/  +/g, ' ').trim();
         };
+
 
     </script>
 

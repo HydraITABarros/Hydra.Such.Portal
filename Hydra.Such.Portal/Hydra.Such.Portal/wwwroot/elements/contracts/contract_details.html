@@ -300,6 +300,30 @@
                    on-response="_DataFimChangedResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/CodeRegiaoChanged"
+                   last-response="{{codeRegiaoResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_codeRegiaoChanged_ajax"
+                   on-response="_codeRegiaodResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/CodeAreaChanged"
+                   last-response="{{codeAreaResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_codeAreaChanged_ajax"
+                   on-response="_codeAreaResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contratos/CodeCrespChanged"
+                   last-response="{{codeCrespResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_codeCrespChanged_ajax"
+                   on-response="_codeCrespResponseProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Contratos/DuplicarContractLines"
                    last-response="{{duplicarLinhasResponse}}"
                    method="post"
@@ -412,7 +436,7 @@
                                                             disabled="{{ _lockFields }}">
                                             </such-selectbox>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2 ">
                                             <such-selectbox id="mCodeRegion" name="mCodeRegion" value="{{data.codeRegion}}" label="Cód. Região" disabled="{{ _lockFields }}"
                                                             items="[[CBRegions]]"
                                                             text-path="value"
@@ -421,7 +445,11 @@
                                                             required error-message="Este campo é obrigatório">
                                             </such-selectbox>
                                         </div>
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-1" style="padding:12px; text-align:center">
+                                            <paper-button class="btnSave" raised on-tap="_codeRegiaoChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                        </div>
+
+                                        <div class="col-md-2 ">
                                             <such-selectbox id="mFunctionalArea" name="mFunctionalArea" value="{{data.codeFunctionalArea}}" label="Cód. Área Funcional" disabled="{{ _lockFields }}"
                                                             items="[[CBFunctionalAreas]]"
                                                             text-path="value"
@@ -429,14 +457,20 @@
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
                                         </div>
+                                        <div class="col-md-1" style="padding:12px; text-align:center">
+                                            <paper-button class="btnSave" raised on-tap="_codeAreaChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
+                                        </div>
 
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2 ">
                                             <such-selectbox id="mResponsabilityCenter" name="mResponsabilityCenter" value="{{data.codeResponsabilityCenter}}" label="Cód. Centro Respon." disabled="{{ _lockFields }}"
                                                             items="[[CBResponsabilityCenterCodes]]"
                                                             text-path="value"
                                                             value-path="id"
                                                             fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                                             </such-selectbox>
+                                        </div>
+                                        <div class="col-md-1" style="padding:12px; text-align:center">
+                                            <paper-button class="btnSave" raised on-tap="_codeCrespChanged" disabled="{{ _lockFields }}"><i class="fa fa-long-arrow-down" aria-hidden="true"></i></paper-button>
                                         </div>
 
 
@@ -1077,7 +1111,7 @@
                                                                     </div>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            
+
                                                             <vaadin-grid-column width="10%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -1093,7 +1127,7 @@
                                                                     </such-selectbox>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            
+
                                                             <vaadin-grid-column width="80%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="invoiceText">Texto Fatura</vaadin-grid-sorter>
@@ -1103,7 +1137,7 @@
                                                                     <vaadin-text-field value="{{item.invoiceText}}" id="_IRGridInvoiceText" name="_IRGridInvoiceText" disabled="{{ _lockFields }}"> </vaadin-text-field>
                                                                 </template>
                                                             </vaadin-grid-column>
-                                                            
+
                                                             <vaadin-grid-column width="5%" resizable>
                                                                 <template class="header">
                                                                 </template>
@@ -1148,7 +1182,7 @@
                                                     <a href="/PreRequisicoes/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
                                                 </template>
                                             </vaadin-grid-column>
-                                            
+
                                             <vaadin-grid-column width="10%" resizable hidden="{{ !_permissions.update }}">
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="visivel">Vísivel</vaadin-grid-sorter>
@@ -1159,7 +1193,7 @@
                                                     </center>
                                                 </template>
                                             </vaadin-grid-column>
-                                            
+
                                             <vaadin-grid-column width="10%" resizable>
                                                 <template class="header">
                                                     <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
@@ -1169,7 +1203,7 @@
                                                     {{item.createDateTime}}
                                                 </template>
                                             </vaadin-grid-column>
-                                            
+
                                             <vaadin-grid-column width="5%" resizable>
                                                 <template class="header">
                                                 </template>
@@ -1806,7 +1840,7 @@
                         {{item.no_}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="valorContrato">Valor</vaadin-grid-sorter>
@@ -1818,7 +1852,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
@@ -2479,8 +2513,104 @@
                     }
                 },
 
+                _codeRegiaoChanged: function (e) {
+                    var ajax_request = this.$.page_codeRegiaoChanged_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
 
+                    bootbox.confirm({
+                        message: "Pretende que as linhas sejam automáticamente atualizadas com o código da Região?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _codeRegiaodResponseProcessor: function () {
+                    if (this.codeRegiaoResult == true) {
+                        this.$.contractLines_databound_ajax.url = "/Contratos/GetContractLines";
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Ocorreu um erro ao atualizar o campo código Região nas Linhas.");
+                    }
+                },
 
+                _codeAreaChanged: function (e) {
+                    var ajax_request = this.$.page_codeAreaChanged_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Pretende que as linhas sejam automáticamente atualizadas com o código da Área Funcional?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _codeAreaResponseProcessor: function () {
+                    if (this.codeAreaResult == true) {
+                        this.$.contractLines_databound_ajax.url = "/Contratos/GetContractLines";
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Ocorreu um erro ao atualizar o campo código Área Funcional nas Linhas.");
+                    }
+                },
+
+                _codeCrespChanged: function (e) {
+                    var ajax_request = this.$.page_codeCrespChanged_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+                    bootbox.confirm({
+                        message: "Pretende que as linhas sejam automáticamente atualizadas com o código do Centro de Responsabilidade?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+                _codeCrespResponseProcessor: function () {
+                    if (this.codeCrespResult == true) {
+                        this.$.contractLines_databound_ajax.url = "/Contratos/GetContractLines";
+                        this.$.contractLines_databound_ajax.body = JSON.stringify(this.data);
+                        this.$.contractLines_databound_ajax.generateRequest();
+                    } else {
+                        this._openToastError("Ocorreu um erro ao atualizar o campo código do Centro de Responsabilidade.");
+                    }
+                },
 
                 //CRUDS
                 _create: function () {

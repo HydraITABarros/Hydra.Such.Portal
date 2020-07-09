@@ -27,6 +27,7 @@ using Hydra.Such.Data.ViewModel.Approvals;
 using Hydra.Such.Data.Logic.Approvals;
 using Hydra.Such.Data.ViewModel.Encomendas;
 using Hydra.Such.Data.Logic.Viatura;
+using Hydra.Such.Data.Logic.Nutrition;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -961,6 +962,48 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     item.eReasonCode = 4;
                     item.eMessage = "Falta o número da Requisição.";
+                }
+            }
+            return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult TodasLinhasFornecedor([FromBody] RequisitionViewModel item)
+        {
+            if (item != null)
+            {
+                if (!string.IsNullOrEmpty(item.RequisitionNo) && !string.IsNullOrEmpty(item.SupplierCode))
+                {
+                    List<LinhasRequisição> TodasLinhas = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ToList();
+                    if (TodasLinhas != null && TodasLinhas.Count() > 0)
+                    {
+                        foreach (LinhasRequisição Linha in TodasLinhas)
+                        {
+                            Linha.NºFornecedor = item.SupplierCode;
+                            Linha.UtilizadorModificação = User.Identity.Name;
+                            if (DBRequestLine.Update(Linha) != null)
+                            {
+                                item.eReasonCode = 1;
+                                item.eMessage = "Todas as linhas foram alteradas com sucesso.";
+                            }
+                            else
+                            {
+                                item.eReasonCode = 2;
+                                item.eMessage = "Ocorreu um erro ao alterar as linhas.";
+                                return Json(item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        item.eReasonCode = 3;
+                        item.eMessage = "Não existem linhas para alterar.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 4;
+                    item.eMessage = "Falta o número da Requisição ou código de Fornecedor.";
                 }
             }
             return Json(item);
@@ -2349,6 +2392,386 @@ namespace Hydra.Such.Portal.Controllers
                         //    item.eMessage = "Ocorreu Um erro ao fechar na transferência de dados para Histórico.";
                         //}
                         break;
+
+                    case "Disponibilizar_Receber":
+                        if (item.State == RequisitionStates.Validated || item.State == RequisitionStates.Received || item.State == RequisitionStates.Available)
+                        {
+                            //Garantir que produtos existem e não estão bloqueados
+                            try
+                            {
+                                result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
+                            }
+                            catch
+                            {
+                                result.eReasonCode = 3;
+                                result.eMessage = "Ocorreu um erro ao verificar a disponibilidade dos produtos em armazém.";
+                            }
+
+                            if (result.eReasonCode != 1)
+                            {
+                                //Existe pelo menos um produto que não existe
+                                if (result.eReasonCode == 2)
+                                {
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    //CÓDIGO ORIGINAL COMENTADO
+                                    //return Json(item);
+                                }
+                                //Não existe nenhum produto e sai da função.
+                                else if (result.eReasonCode == 22)
+                                {
+                                    item.eReasonCode = result.eReasonCode;
+                                    item.eMessage = result.eMessage;
+                                    return Json(item);
+                                }
+                            }
+
+                            //Apenas produtos em armazens de stock
+                            List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
+                            var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
+
+                            var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
+                            var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
+
+                            bool UmRegistoOK = false;
+                            foreach (RequisitionLineViewModel line in productsInStock)
+                            {
+                                if (!line.QuantityToProvide.HasValue || line.QuantityToProvide.Value <= 0)
+                                    continue;
+
+                                List<NAVStockKeepingUnitViewModel> stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code);
+                                var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
+
+                                if (stockkeepingUnit == null)
+                                {
+                                    prodNotStockkeepUnit += line.Description + ";";
+                                }
+                                else
+                                {
+                                    decimal quantityInStock = 0;
+                                    Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
+                                    quantityinStockTask.Wait();
+                                    if (quantityinStockTask.IsCompletedSuccessfully)
+                                    {
+                                        quantityInStock = quantityinStockTask.Result.return_value;
+                                    }
+
+                                    if (quantityInStock < line.QuantityToProvide)
+                                    {
+                                        prodQuantityOverStock += line.Description + ";";
+                                    }
+                                    else
+                                    {
+                                        UmRegistoOK = true;
+
+                                        line.QuantityAvailable = (line.QuantityAvailable ?? 0) + (line.QuantityToProvide ?? 0);
+                                        line.QuantityReceivable = (line.QuantityAvailable ?? 0) - (line.QuantityReceived ?? 0);
+                                        line.QuantityToProvide = (line.QuantityRequired ?? 0) - (line.QuantityAvailable ?? 0);
+
+                                        line.UpdateUser = User.Identity.Name;
+                                        line.UpdateDateTime = DateTime.Now;
+                                    }
+                                }
+                            }
+
+                            if (prodNotStockkeepUnit != "" && prodQuantityOverStock != "")
+                            {
+                                item.eReasonCode = 6;
+                                item.eMessage = " Os seguintes produtos não  existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit +
+                                ". Os seguintes têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
+                            }
+                            if (prodNotStockkeepUnit != "" && prodQuantityOverStock == "")
+                            {
+                                item.eReasonCode = 7;
+                                item.eMessage = " Os seguintes produtos não existem nas unidades de armazenamento do NAV: " + prodNotStockkeepUnit + ".";
+                            }
+                            if (prodNotStockkeepUnit == "" && prodQuantityOverStock != "")
+                            {
+                                item.eReasonCode = 8;
+                                item.eMessage = " Os seguintes produtos têm quantidades a disponibilizar superiores ao stock: " + prodQuantityOverStock + ".";
+                            }
+
+                            //Codigo Original comentado
+                            if (UmRegistoOK == true)
+                            {
+                                var reqToUpdate = item;
+                                reqToUpdate.Lines = productsInStock;
+
+                                reqToUpdate.State = RequisitionStates.Available;
+                                reqToUpdate.UpdateUser = User.Identity.Name;
+                                reqToUpdate.UpdateDate = DateTime.Now;
+                                int eReasonCode = item.eReasonCode;
+                                string eMessage = item.eMessage;
+                                RequisitionViewModel updatedRequisition = DBRequest.Update(reqToUpdate.ParseToDB(), false, true).ParseToViewModel();
+                                if (updatedRequisition == null)
+                                {
+                                    item.eReasonCode = 9;
+                                    item.eMessage = "Ocorreu um erro ao alterar a requisição";
+                                }
+                                else
+                                {
+                                    item = updatedRequisition;
+                                    if (string.IsNullOrEmpty(eMessage))
+                                    {
+                                        item.eReasonCode = 1;
+                                        item.eMessage = "A Requisição está disponivel";
+                                    }
+                                    else
+                                    {
+                                        item.eReasonCode = eReasonCode;
+                                        item.eMessage = eMessage;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 3;
+                            item.eMessage = "Esta requisição não está validada, recebida ou disponibilizada.";
+                        }
+
+                        //Se foi Disponibilizada com sucesso realiza o Receber
+                        if (item.eReasonCode == 1)
+                        {
+                            if (item.State == RequisitionStates.Available)
+                            {
+                                //Garantir que produtos existem e não estão bloqueados
+                                try
+                                {
+                                    result = DBNAV2017Products.CheckProductsAvailability(item, config.NAVDatabaseName, config.NAVCompanyName);
+                                }
+                                catch
+                                {
+                                    result.eReasonCode = 3;
+                                    result.eMessage = "Ocorreu um erro ao verificar a disponibilidade dos produtos em armazém.";
+                                }
+
+                                if (result.eReasonCode != 1)
+                                {
+                                    //Existe pelo menos um produto que não existe
+                                    if (result.eReasonCode == 2)
+                                    {
+                                        item.eReasonCode = result.eReasonCode;
+                                        item.eMessage = result.eMessage;
+                                        //CÓDIGO ORIGINAL COMENTADO
+                                        //return Json(item);
+                                    }
+                                    //Não existe nenhum produto e sai da função.
+                                    else if (result.eReasonCode == 22)
+                                    {
+                                        item.eReasonCode = result.eReasonCode;
+                                        item.eMessage = result.eMessage;
+                                        return Json(item);
+                                    }
+                                }
+
+                                //Apenas produtos em armazens de stock
+                                List<NAVLocationsViewModel> allLocations = DBNAV2017Locations.GetAllLocations(config.NAVDatabaseName, config.NAVCompanyName);
+                                var productsLocations = item.Lines.Select(x => x.LocalCode).Distinct();
+
+                                var stockWarehouse = allLocations.Where(x => productsLocations.Contains(x.Code) && x.ArmazemCDireta == 0).Select(x => x.Code).ToList();
+                                var productsInStock = item.Lines.Where(x => stockWarehouse.Contains(x.LocalCode)).ToList();
+
+                                var productsToHandle = productsInStock.Where(x => x.QuantityReceivable.HasValue && x.QuantityReceivable.Value > 0).ToList();
+
+                                foreach (RequisitionLineViewModel line in productsToHandle)//getrlines)
+                                {
+                                    if (!line.QuantityReceivable.HasValue || line.QuantityReceivable.Value <= 0)
+                                        continue;
+
+                                    //if (line.QuantityReceivable > 0)
+                                    //{
+                                    var stockkeepingUnits = DBNAV2017StockKeepingUnit.GetByProductsNo(config.NAVDatabaseName, config.NAVCompanyName, line.Code).ToList();
+                                    var stockkeepingUnit = stockkeepingUnits.Where(x => x.LocationCode == line.LocalCode).FirstOrDefault();
+                                    if (stockkeepingUnits == null)
+                                    {
+                                        prodNotStockkeepUnit += line.Description + ";";
+                                    }
+                                    else
+                                    {
+                                        decimal quantityInStock = 0;
+
+                                        Task<WSGenericCodeUnit.FxGetStock_ItemLocation_Result> quantityinStockTask = WSGeneric.GetNAVProductQuantityInStockFor(stockkeepingUnit.ItemNo_, stockkeepingUnit.LocationCode, configws);
+                                        quantityinStockTask.Wait();
+
+                                        if (quantityinStockTask.IsCompletedSuccessfully)
+                                        {
+                                            quantityInStock = quantityinStockTask.Result.return_value;
+                                        }
+
+                                        if (quantityInStock < line.QuantityReceivable)
+                                        {
+                                            prodQuantityOverStock += line.Description + ";";
+                                            prodQuantityOverStockErro = prodQuantityOverStockErro + "Não é possível disponibilizar " + line.QuantityReceivable.ToString() + " " + line.UnitMeasureCode +
+                                                " do produto " + line.Code + " - " + line.Description + ", porque só existem " + quantityInStock.ToString() + " em stock." + Environment.NewLine;
+
+                                            line.QuantityReceived = (line.QuantityReceived.HasValue ? line.QuantityReceived.Value : 0) + quantityInStock;
+                                            line.QuantityPending = (line.QuantityPending.HasValue ? line.QuantityPending.Value : 0) - quantityInStock;
+                                            line.QuantityReceivable -= quantityInStock;
+                                            line.UpdateUser = User.Identity.Name;
+                                            line.UpdateDateTime = DateTime.Now;
+                                        }
+                                        else
+                                        {
+
+                                            //line.QuantityReceived = line.QuantityReceived + line.QuantityReceivable;
+                                            //line.QuantityPending = line.QuantityReceivable;
+                                            line.QuantityReceived = (line.QuantityReceived.HasValue ? line.QuantityReceived.Value : 0) + line.QuantityReceivable;
+                                            line.QuantityPending = (line.QuantityPending.HasValue ? line.QuantityPending.Value : 0) - line.QuantityReceivable;
+                                            line.QuantityReceivable -= line.QuantityReceivable;
+                                            line.UpdateUser = User.Identity.Name;
+                                            line.UpdateDateTime = DateTime.Now;
+                                        }
+                                    }
+                                    //}
+                                    //else
+                                    //{
+                                    //    quantityInvalid = line.Description + ";";
+                                    //}
+                                }
+                                if (quantityInvalid != "")
+                                {
+                                    item.eReasonCode = 12;
+                                    item.eMessage = item.eMessage = "Introduza a quantidade a receber nos seguintes produtos: " + quantityInvalid;
+                                }
+                                else if (productsToHandle.Count == 0)
+                                {
+                                    item.eReasonCode = 13;
+                                    item.eMessage = item.eMessage = "Não é possivel receber: Os produtos não existem em stock.";
+                                }
+                                else
+                                {
+                                    Guid transactionId = Guid.NewGuid();
+                                    try
+                                    {
+                                        //Create Lines in NAV
+
+                                        //ORIGINAL
+                                        //Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLines(productsToHandle, transactionId, configws);
+
+                                        //TEMPORÁRIO 02/01/2020
+                                        DateTime DataRececao = string.IsNullOrEmpty(item.ReceivedDate) ? DateTime.Now : Convert.ToDateTime(item.ReceivedDate);
+                                        Task<WSCreateProjectDiaryLine.CreateMultiple_Result> createNavDiaryLines = WSProjectDiaryLine.CreateNavDiaryLinesWithDataRececao(productsToHandle, transactionId, configws, DataRececao);
+
+                                        bool ok = false;
+                                        try
+                                        {
+                                            createNavDiaryLines.Wait();
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            if (!ex.Message.ToLower().Contains("maximum message size quota".ToLower()))
+                                            {
+                                                item.eReasonCode = 9;
+                                                item.eMessage = "Ocorreu um erro: " + ex.Message;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                ok = true;
+                                            }
+                                        }
+                                        if (createNavDiaryLines.IsCompletedSuccessfully || ok)
+                                        {
+                                            Task<WSGenericCodeUnit.FxPostJobJrnlLines_Result> registerNavDiaryLines;
+                                            try
+                                            {
+                                                ////Register Lines in NAV
+                                                registerNavDiaryLines = WSProjectDiaryLine.RegsiterNavDiaryLines(transactionId, configws);
+                                                registerNavDiaryLines.Wait();
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                WSProjectDiaryLine.DeleteNavDiaryLines(transactionId, configws);
+                                                throw e;
+                                            }
+
+                                            if (registerNavDiaryLines != null && registerNavDiaryLines.IsCompletedSuccessfully)
+                                            {
+                                                bool keepOpen = true;
+
+                                                keepOpen = item.Lines.Any(x => x.QuantityReceived != x.QuantityRequired);
+
+                                                if (keepOpen == false)
+                                                {
+                                                    using (var ctx = new SuchDBContext())
+                                                    {
+                                                        var logEntry = new RequisicoesRegAlteracoes();
+                                                        logEntry.NºRequisição = item.RequisitionNo;
+                                                        logEntry.Estado = (int)RequisitionStates.Received;
+                                                        logEntry.ModificadoEm = DateTime.Now;
+                                                        logEntry.ModificadoPor = User.Identity.Name;
+                                                        ctx.RequisicoesRegAlteracoes.Add(logEntry);
+                                                        ctx.SaveChanges();
+                                                    }
+                                                }
+
+                                                item.State = keepOpen ? RequisitionStates.Received : RequisitionStates.Archived;
+                                                if (item.State == RequisitionStates.Received)
+                                                {
+                                                    item.ResponsibleReception = User.Identity.Name;
+                                                    item.ReceivedDate = DateTime.Now.ToString();
+                                                    item.UpdateUser = User.Identity.Name;
+                                                    item.UpdateDate = DateTime.Now;
+                                                    RequisitionViewModel updatedReq = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                                    if (updatedReq == null)
+                                                    {
+                                                        item.eReasonCode = 9;
+                                                        item.eMessage = "Ocorreu um erro ao atualizar a requisição";
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    item.State = RequisitionStates.Archived;
+                                                    item.UpdateUser = User.Identity.Name;
+                                                    item.UpdateDate = DateTime.Now;
+                                                    RequisitionViewModel reqRecebidaArquivada = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                                                    if (reqRecebidaArquivada == null)
+                                                    {
+                                                        item.eReasonCode = 14;
+                                                        item.eMessage = "Ocorreu um erro ao fechar no Receber.";
+                                                    }
+                                                }
+
+                                                if (!string.IsNullOrEmpty(prodQuantityOverStockErro))
+                                                {
+                                                    item.eReasonCode = 20;
+                                                    item.eMessage = prodQuantityOverStockErro;
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                throw new Exception("não foi possivel registar em diário.");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            throw new Exception("não foi possivel criar as linhas de diário.");
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        item.eReasonCode = 9;
+                                        item.eMessage = "Ocorreu um erro: " + ex.Message;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                item.eReasonCode = 11;
+                                item.eMessage = "A requisição não está disponível.";
+                            }
+                            if (string.IsNullOrEmpty(item.eMessage))
+                            {
+                                if (item.eReasonCode == 1)
+                                {
+                                    item.eMessage = "A Requisição foi Disponibilizada e Recebida.";
+                                }
+                            }
+                        }
+                        break;
+
                     default:
                         item.eReasonCode = 10;
                         item.eMessage = "Ocorreu um erro: existe algum problema com esta requisição";
@@ -2866,6 +3289,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             Requisicao.NumeroMecanografico = !string.IsNullOrEmpty(DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo) ? DBUserConfigurations.GetById(User.Identity.Name).EmployeeNo : "";
                             RequisitionService serv = new RequisitionService(config, configws, HttpContext.User.Identity.Name);
+
                             Requisicao = serv.CreatePurchaseOrderFor(Requisicao);
 
                             result.eReasonCode = Requisicao.eReasonCode;
@@ -3517,6 +3941,77 @@ namespace Hydra.Such.Portal.Controllers
         //1
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_LinhasNutricao([FromBody] List<RequisitionLineViewModel> Lista)
+        {
+            string sWebRootFolder = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+
+            List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, "");
+            NAVSupplierViewModels Supplier = new NAVSupplierViewModels();
+            NAVSupplierViewModels SubSupplier = new NAVSupplierViewModels();
+
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisição Nutrição");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Qt. Requerida"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1;
+
+                int count = 1;
+                foreach (RequisitionLineViewModel item in Lista)
+                {
+                    Col = 0;
+                    Supplier = AllSuppliers.Where(y => y.No_ == item.SupplierNo).FirstOrDefault();
+                    SubSupplier = AllSuppliers.Where(y => y.No_ == item.SubSupplierNo).FirstOrDefault();
+                    row = excelSheet.CreateRow(count);
+
+                    row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.QuantityRequired.ToString()); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(Supplier != null && !string.IsNullOrEmpty(Supplier.Name) ? Supplier.Name : ""); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(SubSupplier != null && !string.IsNullOrEmpty(SubSupplier.Name) ? SubSupplier.Name : ""); Col = Col + 1;
+
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_LinhasNutricao(string sFileName)
+        {
+            sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Gestão Requisições.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_GestaoRequisicoes_CD([FromBody] List<RequisitionViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -4011,6 +4506,71 @@ namespace Hydra.Such.Portal.Controllers
             List<AttachmentsViewModel> attach = new List<AttachmentsViewModel>();
             list.ForEach(x => attach.Add(DBAttachments.ParseToViewModel(x)));
             return Json(attach);
+        }
+
+        [HttpPost]
+        public JsonResult CloseRequisition([FromBody] List<RequisitionViewModel> Lista)
+        {
+            ErrorHandler result = new ErrorHandler();
+
+            try
+            {
+                if (Lista != null && Lista.Count > 0)
+                {
+                    foreach (RequisitionViewModel item in Lista)
+                    {
+                        item.State = RequisitionStates.Archived;
+                        item.UpdateUser = User.Identity.Name;
+                        item.UpdateDate = DateTime.Now;
+                        RequisitionViewModel reqArchived = DBRequest.Update(item.ParseToDB(), false, true).ParseToViewModel();
+                        if (reqArchived == null)
+                        {
+                            result.eReasonCode = 10;
+                            result.eMessage = "Ocorreu um erro ao atualizar a Requisição Nº " + item.RequisitionNo;
+                            return Json(result);
+                        }
+
+                        List<MovimentosDeAprovação> MovimentosAprovacao = DBApprovalMovements.GetAll().Where(x => x.Número == item.RequisitionNo && x.Estado == 1).ToList();
+                        if (MovimentosAprovacao.Count() > 0)
+                        {
+                            foreach (MovimentosDeAprovação movimento in MovimentosAprovacao)
+                            {
+                                List<UtilizadoresMovimentosDeAprovação> UserMovimentos = DBUserApprovalMovements.GetAll().Where(x => x.NºMovimento == movimento.NºMovimento).ToList();
+                                if (UserMovimentos.Count() > 0)
+                                {
+                                    foreach (UtilizadoresMovimentosDeAprovação usermovimento in UserMovimentos)
+                                    {
+                                        if (DBUserApprovalMovements.Delete(usermovimento) == false)
+                                        {
+                                            result.eReasonCode = 20;
+                                            result.eMessage = "Ocorreu um erro ao apagar o movimento de aprovação do utilizador " + usermovimento.Utilizador;
+                                            return Json(result);
+                                        }
+                                    }
+                                }
+
+                                if (DBApprovalMovements.Delete(movimento) == false)
+                                {
+                                    result.eReasonCode = 30;
+                                    result.eMessage = "Ocorreu um erro ao apagar o movimento de aprovação da requisição Nº " + item.RequisitionNo;
+                                    return Json(result);
+                                }
+                            };
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                result.eReasonCode = 90;
+                result.eMessage = "Ocorreu um erro.";
+                return Json(result);
+            }
+
+            result.eReasonCode = 1;
+            result.eMessage = "Requisições fechadas com sucesso.";
+
+            return Json(result);
         }
     }
 }

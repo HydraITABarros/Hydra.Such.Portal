@@ -2576,6 +2576,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nome Fornecedor")
                     .HasMaxLength(100);
 
+                entity.Property(e => e.NomeSubFornecedor)
+                    .HasColumnName("NomeSubFornecedor")
+                    .HasMaxLength(100);
+
                 entity.Property(e => e.NºDocumento)
                     .HasColumnName("Nº Documento")
                     .HasMaxLength(20);
@@ -2586,6 +2590,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºFornecedor)
                     .HasColumnName("Nº Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoSubFornecedor)
+                    .HasColumnName("NoSubFornecedor")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NºLinhaEncomendaAberto)
@@ -3977,6 +3985,12 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NoFornecedor).HasMaxLength(20);
 
+                entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
+
+                entity.Property(e => e.NoSubFornecedor).HasMaxLength(20);
+
+                entity.Property(e => e.NomeSubFornecedor).HasMaxLength(50);
+
                 entity.Property(e => e.CodProduto).HasMaxLength(20);
 
                 entity.Property(e => e.DtValidadeInicio).HasColumnType("datetime");
@@ -4000,8 +4014,6 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DescricaoProduto).HasMaxLength(80);
 
                 entity.Property(e => e.DtValidadeFim).HasColumnType("datetime");
-
-                entity.Property(e => e.NomeFornecedor).HasMaxLength(50);
 
                 entity.Property(e => e.QtdPorUm).HasColumnName("QtdPorUM");
 
@@ -4997,6 +5009,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.NºFornecedor)
                     .HasColumnName("Nº Fornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoSubFornecedor)
+                    .HasColumnName("NoSubFornecedor")
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NºFuncionário)
@@ -8758,6 +8774,23 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.ValorEstimado)
                     .HasColumnName("Valor Estimado")
                     .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.TipoAlteracaoSISLOG)
+                    .HasColumnName("TipoAlteracaoSISLOG");
+
+                entity.Property(e => e.DataAlteracaoSISLOG)
+                    .HasColumnName("DataAlteracaoSISLOG")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.EnviarSISLOG)
+                    .HasColumnName("EnviarSISLOG");
+
+                entity.Property(e => e.SISLOG)
+                    .HasColumnName("SISLOG");
+
+                entity.Property(e => e.DataEnvioSISLOG)
+                    .HasColumnName("DataEnvioSISLOG")
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Viatura).HasMaxLength(20);
 

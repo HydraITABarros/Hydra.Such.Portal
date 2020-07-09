@@ -7,6 +7,9 @@
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
 <link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
@@ -25,6 +28,7 @@
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
 
+
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
@@ -40,9 +44,15 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-        <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <iron-ajax url="/GestaoRequisicoes/GetValidatedRequisitions" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/GetValidatedRequisitions"
+                   id="ajax_getgrid"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/ExportToExcel_GestaoRequisicoes"
                    last-response="{{export}}"
                    id="ajax_Export"
@@ -51,6 +61,18 @@
                    on-response="_exportEXCELResponse"
                    content-type="application/json">
         </iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/CloseRequisition"
+                   last-response="{{closeRequisitionResult}}"
+                   id="ajax_closeRequisition"
+                   method="post"
+                   handle-as="json"
+                   on-response="_closeRequisitionResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+
 
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -75,9 +97,24 @@
                 </div>
             </paper-menu-button>
             <!--end ColumnToggle-->
+
+            <paper-button id="btnFechar" class="tablinks" on-tap="_closeRequisition" title="Fechar" hidden="{{ !_permissions.update }}"><i class="fa fa-close" aria-hidden="true"></i>&nbsp; Fechar Requisições</paper-button>
         </div>
 
-        <vaadin-grid column-reordering-allowed id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" active-item="{{_SelectedLine}}">
+        <vaadin-grid column-reordering-allowed id="gridrequest" selected-items={{selectedItems}} active-item="{{selectedItem}}" aria-label="ProfileModelsTabel" items="[[result]]" class="editGrid">
+            <vaadin-grid-selection-column id="selectColumn" width="3%" resizable hidden="{{ !_permissions.update }}">
+            </vaadin-grid-selection-column>
+
+            <vaadin-grid-column width="3%" resizable>
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button class="btnSave tableBtn" on-tap="_showRequisition" title="Ver Requisição"><i class="fa fa-info" aria-hidden="true"></i></paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
@@ -109,13 +146,13 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-            <template class="header">
-                Compra a Dinheiro
-            </template>
-            <template>
-                <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-            </template>
-        </vaadin-grid-column>*@
+                <template class="header">
+                    Compra a Dinheiro
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
@@ -285,23 +322,23 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
-            <template class="header">
-                Reclamação
-            </template>
-            <template>
-                <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
-            </template>
-        </vaadin-grid-column>*@
+                <template class="header">
+                    Reclamação
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>*@
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
-            <template class="header">
-                <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                <vaadin-grid-filter path="requestReclaimNo" value="[[filter.requestReclaimNo]]" />
-            </template>
-            <template>
-                {{item.requestReclaimNo}}
-            </template>
-        </vaadin-grid-column>*@
+                <template class="header">
+                    <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requestReclaimNo" value="[[filter.requestReclaimNo]]" />
+                </template>
+                <template>
+                    {{item.requestReclaimNo}}
+                </template>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
@@ -333,18 +370,25 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
                 is: 'x-request',
                 properties: {
+                    _permissions: {
+                        type: Array,
+                        value: @Html.Raw(Json.Serialize(ViewBag.UPermissions)),
+                    },
                     _filterActive: {
                         type: Boolean,
                         value: true
                     },
-                    _SelectedLine: {
-                        observer: '_rowSelected'
+                    selectedItems: {
+                        type: Array,
                     },
                     _columns: {
                         type: Object,
@@ -465,6 +509,15 @@
                     return "";
                 },
 
+                openToastSuccess: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
                 _exportEXCEL: function () {
                     var result = this.$.gridrequest._filter(this.result);
                     if (result != null && result.length > 0) {
@@ -543,6 +596,50 @@
                     window.history.back();
                 },
 
+                _closeRequisition: function (e) {
+                    if (this.selectedItems != null && this.selectedItems != "") {
+                        if (this.result != null || this.result != undefined || this.result.length != 0) {
+                            this.$.ajax_closeRequisition.body = JSON.stringify(this.selectedItems);
+                            this.$.ajax_closeRequisition.generateRequest();
+                        }
+                        else {
+                            this.openToastError("Não existem Requisições para Fechar.");
+                        }
+                    }
+                    else {
+                        this.openToastError("Não selecionou Requisições para fechar.");
+                    }
+
+
+
+                    this.selectedItems = [];
+                },
+                _closeRequisitionResponse: function () {
+                    if (this.closeRequisitionResult == null || this.closeRequisitionResult == undefined || this.closeRequisitionResult.eReasonCode != 1) {
+                        this.openToastError(this.closeRequisitionResult.eMessage);
+                    }
+                    else {
+                        this.openToastSuccess(this.closeRequisitionResult.eMessage);
+                        this.$.ajax_getgrid.generateRequest();
+                    }
+                },
+
+                _showRequisition: function (e) {
+                    if (e != null) {
+                        var requisition = e.model.item.requisitionNo;
+
+                        if (requisition != null) {
+                            /*FILTROS*/
+                            var filters = {};
+                            this.$.gridrequest._filters.map(function (value, index) {
+                                filters[value.path] = value.value;
+                            });
+                            window.setGridFilter('gestaorequisicoes-index', filters || {});
+
+                            window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + requisition;
+                        }
+                    }
+                },
             });
         });
 
