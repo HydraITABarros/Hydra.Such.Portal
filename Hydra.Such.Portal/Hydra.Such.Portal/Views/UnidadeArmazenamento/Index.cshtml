@@ -159,7 +159,7 @@
                     <vaadin-grid-filter path="productNo" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.productNo}}" disabled></vaadin-text-field>
+                    {{item.productNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -169,7 +169,7 @@
                     <vaadin-grid-filter path="description" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
+                    {{item.description}}
                 </template>
             </vaadin-grid-column>
 
@@ -179,7 +179,7 @@
                     <vaadin-grid-filter path="code" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.code}}" disabled></vaadin-text-field>
+                    {{item.code}}
                 </template>
             </vaadin-grid-column>
 
@@ -189,7 +189,27 @@
                     <vaadin-grid-filter path="inventory" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.inventory}}" disabled></vaadin-text-field>
+                    {{item.inventory}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.quantidadeReservada.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidadeReservada">Quantidade Reservada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidadeReservada" />
+                </template>
+                <template>
+                    {{item.quantidadeReservada}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="160px" hidden$="{{ _columns.quantidadeEncomendada.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidadeEncomendada">Quantidade Encomendada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidadeEncomendada" />
+                </template>
+                <template>
+                    {{item.quantidadeEncomendada}}
                 </template>
             </vaadin-grid-column>
 
@@ -199,7 +219,7 @@
                     <vaadin-grid-filter path="shelfNo" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.shelfNo}}" disabled></vaadin-text-field>
+                    {{item.shelfNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -210,7 +230,7 @@
                 </template>
                 <template>
                     <div class="alignCenter">
-                        <vaadin-checkbox id="ddblocked" name="ddblocked" checked="{{item.blocked}}" disabled></vaadin-checkbox>
+                        {{item.blocked}}
                     </div>
                 </template>
             </vaadin-grid-column>
@@ -222,7 +242,7 @@
                 </template>
                 <template>
                     <div class="alignCenter">
-                        <vaadin-checkbox id="ddblocked" name="ddcodeWareHouse" checked="{{item.codeWareHouse}}" disabled></vaadin-checkbox>
+                        {{item.codeWareHouse}}
                     </div>
                 </template>
             </vaadin-grid-column>
@@ -233,7 +253,7 @@
                     <vaadin-grid-filter path="wareHouseValue" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.wareHouseValue}}" disabled></vaadin-text-field>
+                    {{item.wareHouseValue}}
                 </template>
             </vaadin-grid-column>
 
@@ -243,7 +263,7 @@
                     <vaadin-grid-filter path="vendorNo" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.vendorNo}}" disabled></vaadin-text-field>
+                    {{item.vendorNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -253,7 +273,7 @@
                     <vaadin-grid-filter path="vendorItemNo" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.vendorItemNo}}" disabled></vaadin-text-field>
+                    {{item.vendorItemNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -263,7 +283,7 @@
                     <vaadin-grid-filter path="codeUnitMeasure" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.codeUnitMeasure}}" disabled></vaadin-text-field>
+                    {{item.codeUnitMeasure}}
                 </template>
             </vaadin-grid-column>
 
@@ -273,7 +293,7 @@
                     <vaadin-grid-filter path="unitCost" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.unitCost}}" disabled></vaadin-text-field>
+                    {{item.unitCost}}
                 </template>
             </vaadin-grid-column>
 
@@ -283,7 +303,7 @@
                     <vaadin-grid-filter path="lastCostDirect" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.lastCostDirect}}" disabled></vaadin-text-field>
+                    {{item.lastCostDirect}}
                 </template>
             </vaadin-grid-column>
 
@@ -293,7 +313,7 @@
                     <vaadin-grid-filter path="priceSale" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.priceSale}}" disabled></vaadin-text-field>
+                    {{item.priceSale}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -433,6 +453,8 @@
                         "description": { hidden: false, label: "Descrição" },
                         "code": { hidden: false, label: "Cód. Localização" },
                         "inventory": { hidden: false, label: "Inventário" },
+                        "quantidadeReservada": { hidden: false, label: "Quantidade Reservada" },
+                        "quantidadeEncomendada": { hidden: false, label: "Quantidade Encomendada" },
                         "shelfNo": { hidden: false, label: "Nº Prateleiras" },
                         "blocked": { hidden: false, label: "Bloqueado" },
                         "codeWareHouse": { hidden: false, label: "Armazém Principal" },

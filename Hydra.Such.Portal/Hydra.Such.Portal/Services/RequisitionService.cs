@@ -311,6 +311,8 @@ namespace Hydra.Such.Portal.Services
                 List<PurchOrderDTO> purchOrders = new List<PurchOrderDTO>();
                 List<DBNAV2017SupplierProductRef.SuppliersProductsRefs> supplierProductRef = new List<DBNAV2017SupplierProductRef.SuppliersProductsRefs>();
 
+                requisitionLines.Where(x => Convert.IsDBNull(x.SubSupplierNo)).ToList().ForEach(line => line.SubSupplierNo = "");
+
                 try
                 {
                     purchOrders = requisitionLines.GroupBy(x => new

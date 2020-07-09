@@ -104,6 +104,18 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string EdivelText { get; set; }
         public decimal? Alcool { get; set; }
         public string AlcoolText { get; set; }
+
+        public int? TipoAlteracaoSISLOG { get; set; }
+        public string TipoAlteracaoSISLOGText { get; set; }
+        public DateTime? DataAlteracaoSISLOG { get; set; }
+        public string DataAlteracaoSISLOGText { get; set; }
+        public bool? EnviarSISLOG { get; set; }
+        public string EnviarSISLOGText { get; set; }
+        public bool? SISLOG { get; set; }
+        public string SISLOGText { get; set; }
+        public DateTime? DataEnvioSISLOG { get; set; }
+        public string DataEnvioSISLOGText { get; set; }
+        public string NomeCurtoSISLOG { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
         public string UtilizadorCriacao { get; set; }

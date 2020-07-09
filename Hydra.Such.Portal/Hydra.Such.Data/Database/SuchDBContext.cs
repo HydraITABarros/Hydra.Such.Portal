@@ -3185,6 +3185,27 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Ácidos Gordos Saturados")
                     .HasColumnType("decimal(, 2)");
 
+                entity.Property(e => e.TipoAlteracaoSISLOG)
+                    .HasColumnName("TipoAlteracaoSISLOG");
+
+                entity.Property(e => e.DataAlteracaoSISLOG)
+                    .HasColumnName("DataAlteracaoSISLOG")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.EnviarSISLOG)
+                    .HasColumnName("EnviarSISLOG");
+
+                entity.Property(e => e.SISLOG)
+                    .HasColumnName("SISLOG");
+
+                entity.Property(e => e.DataEnvioSISLOG)
+                    .HasColumnName("DataEnvioSISLOG")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.NomeCurtoSISLOG)
+                    .HasColumnName("NomeCurtoSISLOG")
+                    .HasMaxLength(15);
+
                 entity.HasOne(d => d.UnidadeMedidaBaseNavigation)
                     .WithMany(p => p.FichaProduto)
                     .HasForeignKey(d => d.UnidadeMedidaBase)
@@ -10354,6 +10375,10 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.Descrição).HasMaxLength(100);
 
                 entity.Property(e => e.Inventário).HasColumnType("decimal(, 2)");
+
+                entity.Property(e => e.QuantidadeReservada).HasColumnType("decimal(38, 2)");
+
+                entity.Property(e => e.QuantidadeEncomendada).HasColumnType("decimal(38, 2)");
 
                 entity.Property(e => e.ListaMateriais).HasColumnName("Lista Materiais");
 

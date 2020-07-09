@@ -255,6 +255,16 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Inventário");
                     Col = Col + 1;
                 }
+                if (dp["quantidadeReservada"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Quantidade Reservada");
+                    Col = Col + 1;
+                }
+                if (dp["quantidadeEncomendada"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Quantidade Encomendada");
+                    Col = Col + 1;
+                }
                 if (dp["shelfNo"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Nº Prateleiras");
@@ -332,6 +342,16 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["inventory"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Inventory.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["quantidadeReservada"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.QuantidadeReservada.ToString());
+                            Col = Col + 1;
+                        }
+                        if (dp["quantidadeEncomendada"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.QuantidadeEncomendada.ToString());
                             Col = Col + 1;
                         }
                         if (dp["shelfNo"]["hidden"].ToString() == "False")
@@ -644,16 +664,18 @@ namespace Hydra.Such.Portal.Controllers
                                 nrow.Description = row.GetCell(1) != null ? row.GetCell(1).ToString() : "";
                                 nrow.Code = row.GetCell(2) != null ? row.GetCell(2).ToString() : "";
                                 nrow.InventoryText = row.GetCell(3) != null ? row.GetCell(3).ToString() : "";
-                                nrow.ShelfNo = row.GetCell(4) != null ? row.GetCell(4).ToString() : "";
-                                nrow.BlockedText = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
-                                nrow.CodeWareHouseText = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
-                                nrow.WareHouseValueText = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
-                                nrow.VendorNo = row.GetCell(8) != null ? row.GetCell(8).ToString() : "";
-                                nrow.VendorItemNo = row.GetCell(9) != null ? row.GetCell(9).ToString() : "";
-                                nrow.CodeUnitMeasure = row.GetCell(10) != null ? row.GetCell(10).ToString() : "";
-                                nrow.UnitCostText = row.GetCell(11) != null ? row.GetCell(11).ToString() : "";
-                                nrow.LastCostDirectText = row.GetCell(12) != null ? row.GetCell(12).ToString() : "";
-                                nrow.PriceSaleText = row.GetCell(13) != null ? row.GetCell(13).ToString() : "";
+                                nrow.QuantidadeReservadaText = row.GetCell(4) != null ? row.GetCell(4).ToString() : "";
+                                nrow.QuantidadeEncomendadaText = row.GetCell(5) != null ? row.GetCell(5).ToString() : "";
+                                nrow.ShelfNo = row.GetCell(6) != null ? row.GetCell(6).ToString() : "";
+                                nrow.BlockedText = row.GetCell(7) != null ? row.GetCell(7).ToString() : "";
+                                nrow.CodeWareHouseText = row.GetCell(8) != null ? row.GetCell(8).ToString() : "";
+                                nrow.WareHouseValueText = row.GetCell(9) != null ? row.GetCell(9).ToString() : "";
+                                nrow.VendorNo = row.GetCell(10) != null ? row.GetCell(10).ToString() : "";
+                                nrow.VendorItemNo = row.GetCell(11) != null ? row.GetCell(11).ToString() : "";
+                                nrow.CodeUnitMeasure = row.GetCell(12) != null ? row.GetCell(12).ToString() : "";
+                                nrow.UnitCostText = row.GetCell(13) != null ? row.GetCell(13).ToString() : "";
+                                nrow.LastCostDirectText = row.GetCell(14) != null ? row.GetCell(14).ToString() : "";
+                                nrow.PriceSaleText = row.GetCell(15) != null ? row.GetCell(15).ToString() : "";
 
                                 ListToCreate.Add(nrow);
                             }
@@ -668,6 +690,16 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             item.Inventory = Convert.ToDecimal(item.InventoryText);
                             item.InventoryText = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.QuantidadeReservadaText))
+                        {
+                            item.QuantidadeReservada = Convert.ToDecimal(item.QuantidadeReservadaText);
+                            item.QuantidadeReservadaText = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.QuantidadeEncomendadaText))
+                        {
+                            item.QuantidadeEncomendada = Convert.ToDecimal(item.QuantidadeEncomendadaText);
+                            item.QuantidadeEncomendadaText = "";
                         }
                         if (!string.IsNullOrEmpty(item.BlockedText))
                         {
@@ -716,6 +748,8 @@ namespace Hydra.Such.Portal.Controllers
                     u.Description == x.Description &&
                     u.Code == x.Code &&
                     u.Inventory == x.Inventory &&
+                    u.QuantidadeReservada == x.QuantidadeReservada &&
+                    u.QuantidadeEncomendada == x.QuantidadeEncomendada &&
                     u.ShelfNo == x.ShelfNo &&
                     u.Blocked == x.Blocked &&
                     u.CodeWareHouse == x.CodeWareHouse &&
@@ -750,6 +784,8 @@ namespace Hydra.Such.Portal.Controllers
                         else
                             toCreate.CódLocalização = null;
                         toCreate.Inventário = x.Inventory;
+                        toCreate.QuantidadeReservada = x.QuantidadeReservada;
+                        toCreate.QuantidadeEncomendada = x.QuantidadeEncomendada;
                         toCreate.NºPrateleira = x.ShelfNo;
                         toCreate.Bloqueado = x.Blocked.HasValue ? x.Blocked.ToString().ToLower() == "sim" ? true : false : false;
                         toCreate.ArmazémPrincipal = x.CodeWareHouse.HasValue ? x.CodeWareHouse.ToString().ToLower() == "sim" ? true : false : false;
@@ -780,6 +816,8 @@ namespace Hydra.Such.Portal.Controllers
                         else
                             toUpdate.CódLocalização = null;
                         toUpdate.Inventário = x.Inventory;
+                        toUpdate.QuantidadeReservada = x.QuantidadeReservada;
+                        toUpdate.QuantidadeEncomendada = x.QuantidadeEncomendada;
                         toUpdate.NºPrateleira = x.ShelfNo;
                         toUpdate.Bloqueado = x.Blocked.HasValue ? x.Blocked.ToString().ToLower() == "sim" ? true : false : false;
                         toUpdate.ArmazémPrincipal = x.CodeWareHouse.HasValue ? x.CodeWareHouse.ToString().ToLower() == "sim" ? true : false : false;

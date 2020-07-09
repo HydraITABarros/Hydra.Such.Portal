@@ -111,7 +111,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selecionado_Show.hidden }}">
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selecionado_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="selecionado_Show">Selecionado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="selecionado_Show" value="[[filter.selecionado_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
@@ -119,9 +119,9 @@
                 <template>
                     {{item.selecionado_Show}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.preferencial_Show.hidden }}">
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.preferencial_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="preferencial_Show">Preferencial</vaadin-grid-sorter>
                     <vaadin-grid-filter path="preferencial_Show" value="[[filter.preferencial_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
@@ -129,9 +129,9 @@
                 <template>
                     {{item.preferencial_Show}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.emailFornecedor.hidden }}">
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.emailFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="emailFornecedor">Email Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="emailFornecedor" value="[[filter.emailFornecedor]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
@@ -139,7 +139,7 @@
                 <template>
                     {{item.emailFornecedor}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioAoFornecedor_Show.hidden }}">
                 <template class="header">
@@ -175,7 +175,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorRecepcaoProposta.hidden }}">
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorRecepcaoProposta.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="utilizadorRecepcaoProposta">Utilizador Recepção Proposta</vaadin-grid-sorter>
                     <vaadin-grid-filter path="utilizadorRecepcaoProposta" value="[[filter.utilizadorRecepcaoProposta]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
@@ -183,9 +183,9 @@
                 <template>
                     {{item.utilizadorRecepcaoProposta}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.prazoResposta.hidden }}">
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.prazoResposta.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="prazoResposta">Prazo Resposta</vaadin-grid-sorter>
                     <vaadin-grid-filter path="prazoResposta" value="[[filter.prazoResposta]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
@@ -193,9 +193,9 @@
                 <template>
                     {{item.prazoResposta}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsperada_Show.hidden }}">
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsperada_Show.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dataRespostaEsperada_Show">Data Resposta Esperada</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataRespostaEsperada_Show" value="[[filter.dataRespostaEsperada_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
@@ -205,7 +205,7 @@
                         {{item.dataRespostaEsperada_Show}}
                     </div>
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPedidoEsclarecimento_Show.hidden }}">
                 <template class="header">
@@ -265,7 +265,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.custoTotalPrevisto.hidden }}">
+            <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.custoTotalPrevisto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="custoTotalPrevisto">Valor c/ e/ou s/ IVA da Proposta</vaadin-grid-sorter>
                     <vaadin-grid-filter path="custoTotalPrevisto" value="[[filter.custoTotalPrevisto]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
@@ -273,7 +273,7 @@
                 <template>
                     {{item.custoTotalPrevisto}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noRequisicao.hidden }}">
                 <template class="header">
@@ -500,21 +500,21 @@
                         "numConsultaMercado": { hidden: false, label: "Nº Consulta Mercado" },
                         "codFornecedor": { hidden: false, label: "Código Fornecedor" },
                         "nomeFornecedor": { hidden: false, label: "Nome Fornecedor" },
-                        "selecionado_Show": { hidden: false, label: "Selecionado" },
-                        "preferencial_Show": { hidden: false, label: "Preferencial" },
-                        "emailFornecedor": { hidden: false, label: "Email Fornecedor" },
+                        //"selecionado_Show": { hidden: false, label: "Selecionado" },
+                        //"preferencial_Show": { hidden: false, label: "Preferencial" },
+                        //"emailFornecedor": { hidden: false, label: "Email Fornecedor" },
                         "dataEnvioAoFornecedor_Show": { hidden: false, label: "Data Envio ao Fornecedor" },
                         "dataRecepcaoProposta_Show": { hidden: false, label: "Data Recepção Proposta" },
                         "utilizadorEnvio": { hidden: false, label: "Utilizador Envio" },
-                        "utilizadorRecepcaoProposta": { hidden: false, label: "Utilizador Recepção Proposta" },
-                        "prazoResposta": { hidden: false, label: "Prazo Resposta" },
-                        "dataRespostaEsperada_Show": { hidden: false, label: "Data Resposta Esperada" },
+                        //"utilizadorRecepcaoProposta": { hidden: false, label: "Utilizador Recepção Proposta" },
+                        //"prazoResposta": { hidden: false, label: "Prazo Resposta" },
+                        //"dataRespostaEsperada_Show": { hidden: false, label: "Data Resposta Esperada" },
                         "dataPedidoEsclarecimento_Show": { hidden: false, label: "Data Pedido Esclarecimento" },
                         "dataRespostaEsclarecimento_Show": { hidden: false, label: "Data Resposta Esclarecimento" },
                         "dataRespostaDoFornecedor_Show": { hidden: false, label: "Data Resposta do Fornecedor" },
                         "naoRespostaDoFornecedor_Show": { hidden: false, label: "Não Resposta do Fornecedor" },
                         "dataPedidoCotacaoCriadoEm_Show": { hidden: false, label: "Pedido Cotação Criado Em" },
-                        "custoTotalPrevisto": { hidden: false, label: "Valor c / e / ou s/ IVA da Proposta " },
+                        //"custoTotalPrevisto": { hidden: false, label: "Valor c / e / ou s/ IVA da Proposta " },
                         "noRequisicao": { hidden: false, label: "Nº Requisição" },
                         "codRegiao": { hidden: false, label: "Cód. Região" },
                         "codArea": { hidden: false, label: "Cód. Área" },

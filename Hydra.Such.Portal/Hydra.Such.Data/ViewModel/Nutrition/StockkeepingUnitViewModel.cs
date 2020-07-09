@@ -12,6 +12,10 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string Description { get; set; }
         public decimal? Inventory { get; set; }
         public string InventoryText { get; set; }
+        public decimal? QuantidadeReservada { get; set; }
+        public string QuantidadeReservadaText { get; set; }
+        public decimal? QuantidadeEncomendada { get; set; }
+        public string QuantidadeEncomendadaText { get; set; }
         public bool? Blocked { get; set; }
         public string BlockedText { get; set; }
         public string CodeUnitMeasure { get; set; }

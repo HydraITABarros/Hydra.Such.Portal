@@ -889,6 +889,35 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRegionCode_VendasAnuais()
+        {
+            List<DDMessageString> result = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name).Select(x => new DDMessageString()
+            {
+                id = x.Code,
+                value = x.Name
+            }).ToList();
+
+            DDMessageString all = new DDMessageString();
+            all.id = "";
+            all.value = "Todas Regiões";
+            result.Add(all);
+
+            return Json(result.OrderBy(x => x.id));
+        }
+
+        [HttpPost]
+        public JsonResult GetAnos_VendasAnuais()
+        {
+            List<DDMessage> result = DBVendasAnuais.GetAnos().Select(x => new DDMessage()
+            {
+                id = x.id,
+                value = x.value
+            }).ToList();
+
+            return Json(result.OrderByDescending(x => x.id));
+        }
+
+        [HttpPost]
         public JsonResult GetNoSeries()
         {
             List<DDMessageString> result = DBNAV2017NoSeries.GetNoSeries(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()
