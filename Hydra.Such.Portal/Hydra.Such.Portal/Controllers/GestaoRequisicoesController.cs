@@ -975,10 +975,16 @@ namespace Hydra.Such.Portal.Controllers
                 if (!string.IsNullOrEmpty(item.RequisitionNo) && !string.IsNullOrEmpty(item.SupplierCode))
                 {
                     List<LinhasRequisição> TodasLinhas = DBRequestLine.GetByRequisitionId(item.RequisitionNo).ToList();
+
                     if (TodasLinhas != null && TodasLinhas.Count() > 0)
                     {
+                        List<NAVVendorViewModel> vendors = DBNAV2017Vendor.GetVendor(config.NAVDatabaseName, config.NAVCompanyName);
+
                         foreach (LinhasRequisição Linha in TodasLinhas)
                         {
+
+                            //Set VATPostingGroup Info
+                            Linha.GrupoRegistoIvanegocio = vendors.FirstOrDefault(x => x.No_ == Linha.NºFornecedor)?.VATBusinessPostingGroup;
                             Linha.NºFornecedor = item.SupplierCode;
                             Linha.UtilizadorModificação = User.Identity.Name;
                             if (DBRequestLine.Update(Linha) != null)
