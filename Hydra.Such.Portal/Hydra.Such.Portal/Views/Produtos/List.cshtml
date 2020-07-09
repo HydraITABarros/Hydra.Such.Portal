@@ -153,7 +153,7 @@
                     <vaadin-grid-filter path="no" value="[[filter.no]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.no}}" disabled></vaadin-text-field>
+                    {{item.no}}
                 </template>
             </vaadin-grid-column>
 
@@ -163,7 +163,7 @@
                     <vaadin-grid-filter path="descricao" value="[[filter.descricao]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.descricao}}" disabled></vaadin-text-field>
+                    {{item.descricao}}
                 </template>
             </vaadin-grid-column>
 
@@ -173,7 +173,7 @@
                     <vaadin-grid-filter path="descricao2" value="[[filter.descricao2]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.descricao2}}" disabled></vaadin-text-field>
+                    {{item.descricao2}}
                 </template>
             </vaadin-grid-column>
 
@@ -183,7 +183,7 @@
                     <vaadin-grid-filter path="listaDeMateriaisText" value="[[filter.listaDeMateriaisText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.listaDeMateriaisText}}" disabled></vaadin-text-field>
+                    {{item.listaDeMateriaisText}}
                 </template>
             </vaadin-grid-column>
 
@@ -193,7 +193,7 @@
                     <vaadin-grid-filter path="unidadeMedidaBase" value="[[filter.unidadeMedidaBase]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.unidadeMedidaBase}}" disabled></vaadin-text-field>
+                    {{item.unidadeMedidaBase}}
                 </template>
             </vaadin-grid-column>
 
@@ -203,7 +203,17 @@
                     <vaadin-grid-filter path="noPrateleira" value="[[filter.noPrateleira]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.noPrateleira}}" disabled></vaadin-text-field>
+                    {{item.noPrateleira}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeCurtoSISLOG.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeCurtoSISLOG">Nome Curto SISLOG</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeCurtoSISLOG" value="[[filter.nomeCurtoSISLOG]]" />
+                </template>
+                <template>
+                    {{item.nomeCurtoSISLOG}}
                 </template>
             </vaadin-grid-column>
 
@@ -213,7 +223,7 @@
                     <vaadin-grid-filter path="precoUnitario" value="[[filter.precoUnitario]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.precoUnitario}}" disabled></vaadin-text-field>
+                    {{item.precoUnitario}}
                 </template>
             </vaadin-grid-column>
 
@@ -223,7 +233,7 @@
                     <vaadin-grid-filter path="custoUnitario" value="[[filter.custoUnitario]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.custoUnitario}}" disabled></vaadin-text-field>
+                    {{item.custoUnitario}}
                 </template>
             </vaadin-grid-column>
 
@@ -233,7 +243,7 @@
                     <vaadin-grid-filter path="inventario" value="[[filter.inventario]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.inventario}}" disabled></vaadin-text-field>
+                    {{item.inventario}}
                 </template>
             </vaadin-grid-column>
 
@@ -243,7 +253,7 @@
                     <vaadin-grid-filter path="valorEnergetico" value="[[filter.valorEnergetico]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.valorEnergetico}}" disabled></vaadin-text-field>
+                    {{item.valorEnergetico}}
                 </template>
             </vaadin-grid-column>
 
@@ -253,7 +263,7 @@
                     <vaadin-grid-filter path="valorEnergetico100g" value="[[filter.valorEnergetico100g]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.valorEnergetico100g}}" disabled></vaadin-text-field>
+                    {{item.valorEnergetico100g}}
                 </template>
             </vaadin-grid-column>
 
@@ -263,7 +273,7 @@
                     <vaadin-grid-filter path="proteinas" value="[[filter.proteinas]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.proteinas}}" disabled></vaadin-text-field>
+                    {{item.proteinas}}
                 </template>
             </vaadin-grid-column>
 
@@ -273,7 +283,7 @@
                     <vaadin-grid-filter path="proteinas100g" value="[[filter.proteinas100g]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.proteinas100g}}" disabled></vaadin-text-field>
+                    {{item.proteinas100g}}
                 </template>
             </vaadin-grid-column>
 
@@ -283,7 +293,7 @@
                     <vaadin-grid-filter path="glicidos" value="[[filter.glicidos]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.glicidos}}" disabled></vaadin-text-field>
+                    {{item.glicidos}}
                 </template>
             </vaadin-grid-column>
 
@@ -293,7 +303,7 @@
                     <vaadin-grid-filter path="glicidos100g" value="[[filter.glicidos100g]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.glicidos100g}}" disabled></vaadin-text-field>
+                    {{item.glicidos100g}}
                 </template>
             </vaadin-grid-column>
 
@@ -303,7 +313,7 @@
                     <vaadin-grid-filter path="lipidos" value="[[filter.lipidos]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.lipidos}}" disabled></vaadin-text-field>
+                    {{item.lipidos}}
                 </template>
             </vaadin-grid-column>
 
@@ -313,7 +323,7 @@
                     <vaadin-grid-filter path="lipidos100g" value="[[filter.lipidos100g]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.lipidos100g}}" disabled></vaadin-text-field>
+                    {{item.lipidos100g}}
                 </template>
             </vaadin-grid-column>
 
@@ -323,7 +333,7 @@
                     <vaadin-grid-filter path="fibraAlimentar" value="[[filter.fibraAlimentar]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.fibraAlimentar}}" disabled></vaadin-text-field>
+                    {{item.fibraAlimentar}}
                 </template>
             </vaadin-grid-column>
 
@@ -333,7 +343,7 @@
                     <vaadin-grid-filter path="fibraAlimentar100g" value="[[filter.fibraAlimentar100g]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.fibraAlimentar100g}}" disabled></vaadin-text-field>
+                    {{item.fibraAlimentar100g}}
                 </template>
             </vaadin-grid-column>
 
@@ -343,7 +353,7 @@
                     <vaadin-grid-filter path="quantUnidadeMedida" value="[[filter.quantUnidadeMedida]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.quantUnidadeMedida}}" disabled></vaadin-text-field>
+                    {{item.quantUnidadeMedida}}
                 </template>
             </vaadin-grid-column>
 
@@ -353,7 +363,7 @@
                     <vaadin-grid-filter path="gramasPorQuantUnidMedida" value="[[filter.gramasPorQuantUnidMedida]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.gramasPorQuantUnidMedida}}" disabled></vaadin-text-field>
+                    {{item.gramasPorQuantUnidMedida}}
                 </template>
             </vaadin-grid-column>
 
@@ -363,7 +373,7 @@
                     <vaadin-grid-filter path="tipoRefeicao" value="[[filter.tipoRefeicao]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.tipoRefeicao}}" disabled></vaadin-text-field>
+                    {{item.tipoRefeicao}}
                 </template>
             </vaadin-grid-column>
 
@@ -373,7 +383,7 @@
                     <vaadin-grid-filter path="descricaoRefeicao" value="[[filter.descricaoRefeicao]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.descricaoRefeicao}}" disabled></vaadin-text-field>
+                    {{item.descricaoRefeicao}}
                 </template>
             </vaadin-grid-column>
 
@@ -383,7 +393,7 @@
                     <vaadin-grid-filter path="tarasText" value="[[filter.tarasText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.tarasText}}" disabled></vaadin-text-field>
+                    {{item.tarasText}}
                 </template>
             </vaadin-grid-column>
 
@@ -393,7 +403,7 @@
                     <vaadin-grid-filter path="acidosGordosSaturados" value="[[filter.acidosGordosSaturados]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.acidosGordosSaturados}}" disabled></vaadin-text-field>
+                    {{item.acidosGordosSaturados}}
                 </template>
             </vaadin-grid-column>
 
@@ -403,7 +413,7 @@
                     <vaadin-grid-filter path="acucares" value="[[filter.acucares]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.acucares}}" disabled></vaadin-text-field>
+                    {{item.acucares}}
                 </template>
             </vaadin-grid-column>
 
@@ -413,7 +423,7 @@
                     <vaadin-grid-filter path="sal" value="[[filter.sal]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.sal}}" disabled></vaadin-text-field>
+                    {{item.sal}}
                 </template>
             </vaadin-grid-column>
 
@@ -423,7 +433,7 @@
                     <vaadin-grid-filter path="cereaisText" value="[[filter.cereaisText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.cereaisText}}" disabled></vaadin-text-field>
+                    {{item.cereaisText}}
                 </template>
             </vaadin-grid-column>
 
@@ -433,7 +443,7 @@
                     <vaadin-grid-filter path="crustaceosText" value="[[filter.crustaceosText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.crustaceosText}}" disabled></vaadin-text-field>
+                    {{item.crustaceosText}}
                 </template>
             </vaadin-grid-column>
 
@@ -443,7 +453,7 @@
                     <vaadin-grid-filter path="ovosText" value="[[filter.ovosText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.ovosText}}" disabled></vaadin-text-field>
+                    {{item.ovosText}}
                 </template>
             </vaadin-grid-column>
 
@@ -453,7 +463,7 @@
                     <vaadin-grid-filter path="peixesText" value="[[filter.peixesText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.peixesText}}" disabled></vaadin-text-field>
+                    {{item.peixesText}}
                 </template>
             </vaadin-grid-column>
 
@@ -463,7 +473,7 @@
                     <vaadin-grid-filter path="amendoinsText" value="[[filter.amendoinsText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.amendoinsText}}" disabled></vaadin-text-field>
+                    {{item.amendoinsText}}
                 </template>
             </vaadin-grid-column>
 
@@ -473,7 +483,7 @@
                     <vaadin-grid-filter path="sojaText" value="[[filter.sojaText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.sojaText}}" disabled></vaadin-text-field>
+                    {{item.sojaText}}
                 </template>
             </vaadin-grid-column>
 
@@ -483,7 +493,7 @@
                     <vaadin-grid-filter path="leiteText" value="[[filter.leiteText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.leiteText}}" disabled></vaadin-text-field>
+                    {{item.leiteText}}
                 </template>
             </vaadin-grid-column>
 
@@ -493,7 +503,7 @@
                     <vaadin-grid-filter path="frutasDeCascaRijaText" value="[[filter.frutasDeCascaRijaText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.frutasDeCascaRijaText}}" disabled></vaadin-text-field>
+                    {{item.frutasDeCascaRijaText}}
                 </template>
             </vaadin-grid-column>
 
@@ -503,7 +513,7 @@
                     <vaadin-grid-filter path="aipoText" value="[[filter.aipoText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.aipoText}}" disabled></vaadin-text-field>
+                    {{item.aipoText}}
                 </template>
             </vaadin-grid-column>
 
@@ -513,7 +523,7 @@
                     <vaadin-grid-filter path="mostardaText" value="[[filter.mostardaText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.mostardaText}}" disabled></vaadin-text-field>
+                    {{item.mostardaText}}
                 </template>
             </vaadin-grid-column>
 
@@ -523,7 +533,7 @@
                     <vaadin-grid-filter path="sementesDeSesamoText" value="[[filter.sementesDeSesamoText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.sementesDeSesamoText}}" disabled></vaadin-text-field>
+                    {{item.sementesDeSesamoText}}
                 </template>
             </vaadin-grid-column>
 
@@ -533,7 +543,7 @@
                     <vaadin-grid-filter path="dioxidoDeEnxofreESulfitosText" value="[[filter.dioxidoDeEnxofreESulfitosText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.dioxidoDeEnxofreESulfitosText}}" disabled></vaadin-text-field>
+                    {{item.dioxidoDeEnxofreESulfitosText}}
                 </template>
             </vaadin-grid-column>
 
@@ -543,7 +553,7 @@
                     <vaadin-grid-filter path="tremocoText" value="[[filter.tremocoText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.tremocoText}}" disabled></vaadin-text-field>
+                    {{item.tremocoText}}
                 </template>
             </vaadin-grid-column>
 
@@ -553,7 +563,7 @@
                     <vaadin-grid-filter path="moluscosText" value="[[filter.moluscosText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.moluscosText}}" disabled></vaadin-text-field>
+                    {{item.moluscosText}}
                 </template>
             </vaadin-grid-column>
 
@@ -563,7 +573,7 @@
                     <vaadin-grid-filter path="tipoText" value="[[filter.tipoText]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.tipoText}}" disabled></vaadin-text-field>
+                    {{item.tipoText}}
                 </template>
             </vaadin-grid-column>
 
@@ -573,7 +583,7 @@
                     <vaadin-grid-filter path="vitaminaA" value="[[filter.vitaminaA]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.vitaminaA}}" disabled></vaadin-text-field>
+                    {{item.vitaminaA}}
                 </template>
             </vaadin-grid-column>
 
@@ -583,7 +593,7 @@
                     <vaadin-grid-filter path="vitaminaD" value="[[filter.vitaminaD]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.vitaminaD}}" disabled></vaadin-text-field>
+                    {{item.vitaminaD}}
                 </template>
             </vaadin-grid-column>
 
@@ -593,7 +603,7 @@
                     <vaadin-grid-filter path="colesterol" value="[[filter.colesterol]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.colesterol}}" disabled></vaadin-text-field>
+                    {{item.colesterol}}
                 </template>
             </vaadin-grid-column>
 
@@ -603,7 +613,7 @@
                     <vaadin-grid-filter path="sodio" value="[[filter.sodio]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.sodio}}" disabled></vaadin-text-field>
+                    {{item.sodio}}
                 </template>
             </vaadin-grid-column>
 
@@ -613,7 +623,7 @@
                     <vaadin-grid-filter path="potacio" value="[[filter.potacio]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.potacio}}" disabled></vaadin-text-field>
+                    {{item.potacio}}
                 </template>
             </vaadin-grid-column>
 
@@ -623,7 +633,7 @@
                     <vaadin-grid-filter path="calcio" value="[[filter.calcio]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.calcio}}" disabled></vaadin-text-field>
+                    {{item.calcio}}
                 </template>
             </vaadin-grid-column>
 
@@ -633,7 +643,7 @@
                     <vaadin-grid-filter path="ferro" value="[[filter.ferro]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.ferro}}" disabled></vaadin-text-field>
+                    {{item.ferro}}
                 </template>
             </vaadin-grid-column>
 
@@ -643,7 +653,7 @@
                     <vaadin-grid-filter path="edivel" value="[[filter.edivel]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.edivel}}" disabled></vaadin-text-field>
+                    {{item.edivel}}
                 </template>
             </vaadin-grid-column>
 
@@ -653,7 +663,7 @@
                     <vaadin-grid-filter path="alcool" value="[[filter.alcool]]" />
                 </template>
                 <template>
-                    <vaadin-text-field value="{{item.alcool}}" disabled></vaadin-text-field>
+                    {{item.alcool}}
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
@@ -822,6 +832,7 @@
                         "listaDeMateriaisText": { hidden: false, label: "Lista De Materiais" },
                         "unidadeMedidaBase": { hidden: false, label: "Unidade Medida Base" },
                         "noPrateleira": { hidden: false, label: "Nº Prateleira" },
+                        "nomeCurtoSISLOG": { hidden: false, label: "Nome Curto SISLOG" },
                         "precoUnitario": { hidden: false, label: "Preço Unitário" },
                         "custoUnitario": { hidden: false, label: "Custo Unitário" },
                         "inventario": { hidden: false, label: "Inventário" },

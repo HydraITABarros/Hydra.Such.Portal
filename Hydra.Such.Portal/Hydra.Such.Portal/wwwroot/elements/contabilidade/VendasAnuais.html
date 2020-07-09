@@ -1,0 +1,526 @@
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-column-reordering-behavior.html" />
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-vendasanuais">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+
+                .panel-heading {
+                    padding: 0 !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/PopulateDropdowns/GetAnos_VendasAnuais" last-response="{{LAnos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetRegionCode_VendasAnuais" last-response="{{LRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/Contabilidade/GetListVendasAnuais"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Contabilidade/ExportToExcel_VendasAnuais"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <paper-collapse-item class="panel-heading" header="Filtros" opened>
+            <div class="grid-header" id="gridheader">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-2">
+                            <vaadin-combo-box items="[[LAnos]]" id="codigoAno" item-value-path="id" item-label-path="value" label="Ano">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="100%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-combo-box items="[[LRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" label="Região">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="15%">[[item.id]]</td>
+                                            <td width="85%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-2 alignPoga  ">
+                            <paper-button raised id="btnPesquisa" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                        </div>
+                    </div>
+
+                    <template is="dom-if" if="[[!loaded]]">
+                        <div class="clearfix"></div>
+                        <div class="col-xs-12 grey" style="padding: 5px 0 15px 0;">
+                            * <small><i>Defina a sua pesquisa.</i></small>
+                        </div>
+                        <div class="clearfix"></div>
+                    </template>
+                </div>
+
+            </div>
+
+        </paper-collapse-item>
+
+        <div class="subMenu">
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid id="grid" aria-label="grid" items="[[result]]" class="grid" multi-sort="true">
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.ano.hidden }}" hidden>
+                <template class="header">
+                    <vaadin-grid-sorter path="ano">Ano</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ano" value="[[filter.ano]]" />
+                </template>
+                <template>
+                    {{item.ano}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.regiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regiao">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regiao" value="[[filter.regiao]]" />
+                </template>
+                <template>
+                    {{item.regiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noAssociado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noAssociado">Nº do Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noAssociado" value="[[filter.noAssociado]]" />
+                </template>
+                <template>
+                    {{item.noAssociado}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.nomeAssociado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeAssociado">Nome do Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeAssociado" value="[[filter.nomeAssociado]]" />
+                </template>
+                <template>
+                    {{item.nomeAssociado}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.jan.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="jan">Janeiro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="jan" value="[[filter.jan]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.jan)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.fev.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="fev">Fevereiro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="fev" value="[[filter.fev]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.fev)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.mar.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="mar">Março</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="mar" value="[[filter.mar]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.mar)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.abr.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="abr">Abril</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="abr" value="[[filter.abr]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.abr)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.mai.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="mai">Maio</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="mai" value="[[filter.mai]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.mai)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.jun.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="jun">Junho</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="jun" value="[[filter.jun]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.jun)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.jul.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="jul">Julho</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="jul" value="[[filter.jul]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.jul)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.ago.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="ago">Agosto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="ago" value="[[filter.ago]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.ago)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.set.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="set">Setembro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="set" value="[[filter.set]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.set)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.out.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="out">Outubro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="out" value="[[filter.out]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.out)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.nov.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nov">Novembro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nov" value="[[filter.nov]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.nov)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.dez.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dez">Dezembro</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dez" value="[[filter.dez]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.dez)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.total.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="total">Total</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="total" value="[[filter.total]]" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        [[_formatValue(item.total)]]
+                    </div>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-vendasanuais',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+
+                ready: function () {
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'contabilidade-vendasanuais');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                //Mostra Mensagens
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                //Mostra Mensagens de Erro
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                _exportEXCEL: function () {
+                    var result = this.$.grid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../Contabilidade/ExportToExcelDownload_VendasAnuais?sFileName=' + FileName;
+                },
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "ano": { hidden: false, label: "Ano" },
+                        "regiao": { hidden: false, label: "Região" },
+                        "noAssociado": { hidden: false, label: "Nº de Associado" },
+                        "nomeAssociado": { hidden: false, label: "Nome do Associado" },
+                        "jan": { hidden: false, label: "Janeiro" },
+                        "fev": { hidden: false, label: "Fevereiro" },
+                        "mar": { hidden: false, label: "Março" },
+                        "abr": { hidden: false, label: "Abril" },
+                        "mai": { hidden: false, label: "Maio" },
+                        "jun": { hidden: false, label: "Junho" },
+                        "jul": { hidden: false, label: "Julho" },
+                        "ago": { hidden: false, label: "Agosto" },
+                        "set": { hidden: false, label: "Setembro" },
+                        "out": { hidden: false, label: "Outubro" },
+                        "nov": { hidden: false, label: "Novembro" },
+                        "dez": { hidden: false, label: "Dezembro" },
+                        "total": { hidden: false, label: "Total" }
+                    };
+
+                    if (localStorage["vendasanuais.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["vendasanuais.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["vendasanuais.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
+                },
+
+                _search: function () {
+                    if (this.$.codigoAno.value != "") {
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "ano": this.$.codigoAno.value, "regiao": this.$.codigoRegiao.value });
+                        this.$.grid_databound_ajax.generateRequest();
+                    }
+                    else
+                        this._showErrorMessage('É necessário escolher um ano.');
+                },
+            });
+        });
+    </script>
+</dom-module>

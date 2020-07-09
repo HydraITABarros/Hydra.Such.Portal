@@ -88,6 +88,26 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.noSubFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noSubFornecedor">Nº SubFornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noSubFornecedor" />
+                </template>
+                <template>
+                    {{item.noSubFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.nomeSubFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeSubFornecedor">Nome SubFornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeSubFornecedor" />
+                </template>
+                <template>
+                    {{item.nomeSubFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.codProduto.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codProduto">Cód. Produto</vaadin-grid-sorter>

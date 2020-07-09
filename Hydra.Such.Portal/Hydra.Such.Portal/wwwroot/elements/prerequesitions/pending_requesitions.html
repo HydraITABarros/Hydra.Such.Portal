@@ -470,7 +470,14 @@
                 _GoToReq: function (e) {
                     var index = this.result.indexOf(e.model.item);
                     this.result.splice(index, 1);
-                    window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + e.model.item.requisitionNo;
+
+                    if (e.model.item.state == 0) {
+                        window.location.href = "/GestaoRequisicoes/MinhaRequisicao/" + e.model.item.requisitionNo;
+                    }
+                    else {
+                        window.location.href = "/GestaoRequisicoes/LinhasRequisicaoReadOnly/" + e.model.item.requisitionNo;
+                    }
+
                 },
                 _ToApproved: function (e) {
                     if (e != null) {

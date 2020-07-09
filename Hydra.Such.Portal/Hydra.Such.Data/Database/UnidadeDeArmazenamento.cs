@@ -16,6 +16,8 @@ namespace Hydra.Such.Data.Database
         public string NºFornecedor { get; set; }
         public string CódProdForn { get; set; }
         public decimal? Inventário { get; set; }
+        public decimal? QuantidadeReservada { get; set; }
+        public decimal? QuantidadeEncomendada { get; set; }
         public decimal? TamanhoLote { get; set; }
         public decimal? PreçoDeVenda { get; set; }
         public bool? Bloqueado { get; set; }

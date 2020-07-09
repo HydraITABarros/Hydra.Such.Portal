@@ -57,6 +57,12 @@ namespace Hydra.Such.Data.Database
         public decimal? Ferro { get; set; }
         public decimal? Edivel { get; set; }
         public decimal? Alcool { get; set; }
+        public int? TipoAlteracaoSISLOG { get; set; }
+        public DateTime? DataAlteracaoSISLOG { get; set; }
+        public bool? EnviarSISLOG { get; set; }
+        public bool? SISLOG { get; set; }
+        public DateTime? DataEnvioSISLOG { get; set; }
+        public string NomeCurtoSISLOG { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }
