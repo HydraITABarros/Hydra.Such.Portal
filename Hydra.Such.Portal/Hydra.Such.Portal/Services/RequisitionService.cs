@@ -363,7 +363,7 @@ namespace Hydra.Such.Portal.Services
                 {
                     throw new Exception("Ocorreu um erro ao agrupar as linhas.");
                 }
-
+                
                 if (purchOrders.Count() > 0)
                 {
                     purchOrders.ForEach(purchOrder =>
