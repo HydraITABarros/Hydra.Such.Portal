@@ -2085,6 +2085,8 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                             else
                                             {
+                                                item.ResponsibleReception = User.Identity.Name;
+                                                item.ReceivedDate = DateTime.Now.ToString();
                                                 item.State = RequisitionStates.Archived;
                                                 item.UpdateUser = User.Identity.Name;
                                                 item.UpdateDate = DateTime.Now;
@@ -2728,6 +2730,8 @@ namespace Hydra.Such.Portal.Controllers
                                                 }
                                                 else
                                                 {
+                                                    item.ResponsibleReception = User.Identity.Name;
+                                                    item.ReceivedDate = DateTime.Now.ToString();
                                                     item.State = RequisitionStates.Archived;
                                                     item.UpdateUser = User.Identity.Name;
                                                     item.UpdateDate = DateTime.Now;
