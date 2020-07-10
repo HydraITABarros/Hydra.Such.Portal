@@ -363,7 +363,7 @@ namespace Hydra.Such.Portal.Services
                 {
                     throw new Exception("Ocorreu um erro ao agrupar as linhas.");
                 }
-
+                
                 if (purchOrders.Count() > 0)
                 {
                     purchOrders.ForEach(purchOrder =>
@@ -374,7 +374,7 @@ namespace Hydra.Such.Portal.Services
                                 line.SupplierProductCode = supplierProductRef
                                     .Where(x => x.ProductId == line.Code
                                                 && x.SupplierNo == purchOrder.SupplierId
-                                                && x.SubSupplierNo == purchOrder.SubSupplierId
+                                                //&& x.SubSupplierNo == purchOrder.SubSupplierId
                                                 && x.UnitOfMeasureCode == line.UnitMeasureCode)
                                     .FirstOrDefault()
                                     ?.SupplierProductId

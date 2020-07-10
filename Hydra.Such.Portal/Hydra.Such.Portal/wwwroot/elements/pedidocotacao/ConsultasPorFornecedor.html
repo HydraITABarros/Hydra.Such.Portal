@@ -480,14 +480,18 @@
                 },
 
                 _exportEXCEL: function () {
-                    //this.result[0].ColunasEXCEL = this._columns;
-                    //this.$.ajax_Export.body = JSON.stringify(this.result);
+                    var NoLines = this.$.grid._filter(this.result).length
 
-                    var result = this.$.grid._filter(this.result);
-                    result[0].ColunasEXCEL = this._columns;
+                    if (NoLines <= 15000) {
+                        var result = this.$.grid._filter(this.result);
+                        result[0].ColunasEXCEL = this._columns;
 
-                    this.$.ajax_Export.body = JSON.stringify(result);
-                    this.$.ajax_Export.generateRequest();
+                        this.$.ajax_Export.body = JSON.stringify(result);
+                        this.$.ajax_Export.generateRequest();
+                    }
+                    else {
+                        this._showErrorMessage("Não é possivel exportar. Nº máximo de linhas permito é de 15 000. Retifique os filtros aplicados.");
+                    }
                 },
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
