@@ -205,6 +205,11 @@ namespace Hydra.Such.Data.Database
 
         #region SGPPF
         public virtual DbSet<AccaoFormacao> AccaoFormacao { get; set; }
+        public virtual DbSet<EntidadeFormadora> EntidadeFormadora { get; set; }
+        public virtual DbSet<PedidoParticipacaoFormacao> PedidoParticipacaoFormacao { get; set; }
+        public virtual DbSet<RegistoAlteracoesPedidoFormacao> RegistoAlteracoesPedidoFormacao { get; set; }
+        public virtual DbSet<SessaoAccaoFormacao> SessaoAccaoFormacao { get; set; }
+        public virtual DbSet<TemaFormacao> TemaFormacao { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -12898,12 +12903,13 @@ namespace Hydra.Such.Data.Database
                 entity.HasOne(a => a.EntidadeNavigation)
                         .WithMany(t => t.AccoesEntidade)
                         .HasForeignKey(a => a.IdEntidadeFormadora)
-                        .HasConstraintName("FK_AccaoFormacao_TemaFormacao");
+                        .HasConstraintName("FK_AccaoFormacao_EntidadeFormadora");
 
             });
 
-            modelBuilder.Entity<EntidadeFormadora>( entity => {
-                entity.HasKey(e => new { e.IdEntidade } );
+            modelBuilder.Entity<EntidadeFormadora>(entity =>
+            {
+                entity.HasKey(e => new { e.IdEntidade });
                 entity.Property(e => e.IdEntidade)
                     .HasColumnName("IdEntidade")
                     .HasMaxLength(50);
@@ -12914,7 +12920,8 @@ namespace Hydra.Such.Data.Database
 
             });
 
-            modelBuilder.Entity<PedidoParticipacaoFormacao>(entity => {
+            modelBuilder.Entity<PedidoParticipacaoFormacao>(entity =>
+            {
                 entity.HasKey(e => new { e.IdPedido });
 
                 entity.Property(e => e.IdPedido)
@@ -12930,7 +12937,7 @@ namespace Hydra.Such.Data.Database
                     .HasMaxLength(20);
 
                 entity.Property(e => e.NomeEmpregado)
-                    .HasColumnName("IdEmpregado")
+                    .HasColumnName("NomeEmpregado")
                     .HasMaxLength(500);
 
                 entity.Property(e => e.FuncaoEmpregado)
@@ -13082,7 +13089,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataHoraAlteracao)
                     .HasColumnName("DataHoraAlteracao")
-                    .HasColumnType("datetime");                    
+                    .HasColumnType("datetime");
 
                 entity.HasOne(r => r.PedidoNavigation)
                     .WithMany(t => t.RegistosAlteracoes)
@@ -13123,6 +13130,27 @@ namespace Hydra.Such.Data.Database
                     .WithMany(a => a.SessoesFormacao)
                     .HasForeignKey(s => s.IdAccao)
                     .HasConstraintName("FK_SessaoAccaoFormacao_AccaoFormacao");
+            });
+
+            modelBuilder.Entity<TemaFormacao>(entity =>
+            {
+                entity.HasKey(e => new { e.IdTema });
+
+                entity.Property(e => e.IdTema)
+                    .HasColumnName("IdTema")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DescricaoTema)
+                    .HasColumnName("DescricaoTema")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.UrlImagem)
+                    .HasColumnName("UrlImagem")
+                    .HasMaxLength(250);
+
+                entity.Property(e => e.Activo)
+                    .HasColumnType("tinyint");
+
             });
             #endregion
 
