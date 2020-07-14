@@ -475,9 +475,7 @@
                     <vaadin-grid-filter path="quantidadeDisponivel" />
                 </template>
                 <template>
-                    <template>
-                        {{item.quantidadeDisponivel}}
-                    </template>
+                    {{item.quantidadeDisponivel}}
                 </template>
             </vaadin-grid-column>
 
@@ -487,9 +485,7 @@
                     <vaadin-grid-filter path="quantidadeReservada" />
                 </template>
                 <template>
-                    <template>
                         {{item.quantidadeReservada}}
-                    </template>
                 </template>
             </vaadin-grid-column>
 
@@ -1296,6 +1292,8 @@
                                     description: this.$.cmbProducts.valueText,//txtProdDescription.value,
                                     description2: this.$.supplierProdDescription2Id.value,
                                     quantity: this.$.qtyID.value,
+                                    quantidadeDisponivel: this.$.qtyDisponivel.value,
+                                    quantidadeReservada: this.$.qtyReservada.value,
                                     supplierNo: this.$.supplierNoId.value,
                                     subSupplierNo: this.$.subsupplierNoId.value,
                                     supplierName: this.$.SupplierNameId.value,
@@ -1358,6 +1356,8 @@
                                     description2: this.$.supplierProdDescription2Id.value,
                                     unitMeasureCode: this.$.unitofMeasureCodeId.value,
                                     quantity: this.$.qtyID.value,
+                                    quantidadeDisponivel: this.$.qtyDisponivel.value,
+                                    quantidadeReservada: this.$.qtyReservada.value,
                                     quantitybyUnitMeasure: this.$.QtyforMeasId.value,
                                     directUnitCost: this.$.unitCostId.value,
                                     totalValue: this.$.amountId.value,

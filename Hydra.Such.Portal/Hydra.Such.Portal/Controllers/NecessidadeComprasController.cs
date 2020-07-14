@@ -189,6 +189,8 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Descricao2 = x.Description2;
                             newdp.CódUnidadeMedida = x.UnitMeasureCode;
                             newdp.Quantidade = x.Quantity;
+                            newdp.QuantidadeDisponivel = x.QuantidadeDisponivel;
+                            newdp.QuantidadeReservada = x.QuantidadeReservada;
                             newdp.CustoUnitárioDireto = x.DirectUnitCost;
                             newdp.Valor = x.TotalValue;
                             newdp.NºProjeto = x.ProjectNo;
@@ -242,6 +244,8 @@ namespace Hydra.Such.Portal.Controllers
                                 Descricao2 = x.Description2,
                                 CódUnidadeMedida = x.UnitMeasureCode,
                                 Quantidade = x.Quantity,
+                                QuantidadeDisponivel = x.QuantidadeDisponivel,
+                                QuantidadeReservada = x.QuantidadeReservada,
                                 CustoUnitárioDireto = x.DirectUnitCost,
                                 Valor = x.TotalValue,
                                 NºProjeto = x.ProjectNo,
@@ -681,6 +685,8 @@ namespace Hydra.Such.Portal.Controllers
                                     UnitMeasureCode = item.UnitMeasureCode,
                                     QtyByUnitOfMeasure = item.QuantitybyUnitMeasure,
                                     QuantityToRequire = item.Quantity,
+                                    QuantidadeDisponivel = item.QuantidadeDisponivel,
+                                    QuantidadeReservada = item.QuantidadeReservada,
                                     UnitCost = item.DirectUnitCost,
                                     SupplierNo = item.SupplierNo,
                                     SubSupplierNo = item.SubSupplierNo,
@@ -905,6 +911,8 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.Descricao2 = x.Description2;
                             newdp.CódUnidadeMedida = x.UnitMeasureCode;
                             newdp.Quantidade = x.Quantity;
+                            newdp.QuantidadeDisponivel = x.QuantidadeDisponivel;
+                            newdp.QuantidadeReservada = x.QuantidadeReservada;
                             newdp.CustoUnitárioDireto = x.DirectUnitCost;
                             newdp.Valor = x.TotalValue;
                             newdp.NºFornecedor = x.SupplierNo;
@@ -946,6 +954,8 @@ namespace Hydra.Such.Portal.Controllers
                                 Descricao2 = x.Description2,
                                 CódUnidadeMedida = x.UnitMeasureCode,
                                 Quantidade = x.Quantity,
+                                QuantidadeDisponivel = x.QuantidadeDisponivel,
+                                QuantidadeReservada = x.QuantidadeReservada,
                                 Valor = x.TotalValue,
                                 NºFornecedor = x.SupplierNo,
                                 NoSubFornecedor = x.SubSupplierNo,
@@ -1075,6 +1085,8 @@ namespace Hydra.Such.Portal.Controllers
                                                 resultRqLines.CódigoUnidadeMedida = NecShopDirect.UnitMeasureCode;
                                                 resultRqLines.CódigoLocalização = NecShopDirect.LocalCode;
                                                 resultRqLines.QuantidadeARequerer = NecShopDirect.Quantity;
+                                                resultRqLines.QuantidadeDisponivel = NecShopDirect.QuantidadeDisponivel;
+                                                resultRqLines.QuantidadeReservada = NecShopDirect.QuantidadeReservada;
                                                 resultRqLines.CustoUnitário = NecShopDirect.DirectUnitCost;
                                                 resultRqLines.NºFornecedor = NecShopDirect.SupplierNo;
                                                 resultRqLines.NoSubFornecedor = NecShopDirect.SubSupplierNo;
@@ -1148,7 +1160,6 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GetQuantidades(string produto, string armazem)
         {
-
             QuantidadesViewModel Quantidades = DBNAV2017Products.GetQuantidades(_config.NAVDatabaseName, _config.NAVCompanyName, produto, armazem);
             if (Quantidades != null)
                 return Json(Quantidades);

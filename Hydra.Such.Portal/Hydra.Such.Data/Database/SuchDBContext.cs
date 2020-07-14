@@ -5095,6 +5095,14 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Quantidade Requerida")
                     .HasColumnType("decimal(18, 4)");
 
+                entity.Property(e => e.QuantidadeDisponivel)
+                    .HasColumnName("QuantidadeDisponivel")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.QuantidadeReservada)
+                    .HasColumnName("QuantidadeReservada")
+                    .HasColumnType("decimal(18, 4)");
+
                 entity.Property(e => e.RecusadoCompras).HasColumnName("Recusado Compras");
 
                 entity.Property(e => e.RegiãoMercadoLocal)

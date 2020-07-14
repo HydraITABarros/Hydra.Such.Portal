@@ -22,6 +22,8 @@ namespace Hydra.Such.Data.Database
         public decimal? QuantidadeRecebida { get; set; }
         public decimal? QuantidadePendente { get; set; }
         public decimal? QuantidadeInicial { get; set; }
+        public decimal? QuantidadeDisponivel { get; set; }
+        public decimal? QuantidadeReservada { get; set; }
         public decimal? CustoUnitário { get; set; }
         public decimal? CustoUnitarioComIVA { get; set; }
         public DateTime? DataReceçãoEsperada { get; set; }
