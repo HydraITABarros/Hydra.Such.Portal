@@ -128,6 +128,14 @@ namespace Hydra.Such.Portal.Controllers
                     HistoricPT = "Sim";
                 }
 
+                string FiltroFornecedor = "";
+                if (requestParams["FiltroFornecedor"] != null && requestParams["FiltroFornecedor"].ToString() != "")
+                    FiltroFornecedor = requestParams["FiltroFornecedor"].ToString();
+
+                int FiltroAno = 1900;
+                if (requestParams["FiltroAno"] != null && requestParams["FiltroAno"].ToString() != "")
+                    FiltroAno = (int)requestParams["FiltroAno"];
+
                 List<SeleccaoEntidades> List = new List<SeleccaoEntidades>();
                 List<ConsultaMercado> AllConsultaMercado = new List<ConsultaMercado>();
                 //List<LinhasConsultaMercado> AllLinhasConsultaMercado = new List<LinhasConsultaMercado>();
@@ -137,13 +145,19 @@ namespace Hydra.Such.Portal.Controllers
                 using (var ctx = new SuchDBContext())
                 {
                     List = ctx.SeleccaoEntidades.Where(x => ctx.ConsultaMercado.Where(y => y.NumConsultaMercado == x.NumConsultaMercado).FirstOrDefault().Historico == Historic).ToList();
+
                     AllConsultaMercado = ctx.ConsultaMercado.ToList();
                     //AllLinhasConsultaMercado = ctx.LinhasConsultaMercado.ToList();
                     AllRegistoDePropostas = ctx.RegistoDePropostas.ToList();
                 }
 
-                List.ForEach(y => result.Add(CastSeleccaoEntidadesToView(y)));
+                if (!string.IsNullOrEmpty(FiltroFornecedor))
+                    List.RemoveAll(x => x.CodFornecedor != FiltroFornecedor);
 
+                if (FiltroAno != 1900)
+                    List.RemoveAll(x => Convert.ToDateTime(x.DataPedidoEsclarecimento).Year != FiltroAno);
+
+                List.ForEach(y => result.Add(CastSeleccaoEntidadesToView(y)));
 
                 result.ForEach(selecao =>
                 {

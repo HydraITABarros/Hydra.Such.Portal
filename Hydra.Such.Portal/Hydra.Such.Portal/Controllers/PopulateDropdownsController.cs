@@ -918,6 +918,23 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAnos()
+        {
+            int ano = 2018;
+            List<DDMessage> result = new List<DDMessage>();
+            for (ano = 2018; ano <= DateTime.Now.Year; ano++)
+            {
+                DDMessage linhaAno = new DDMessage();
+                linhaAno.id = ano;
+                linhaAno.value = ano.ToString();
+                result.Add(linhaAno);
+            }
+
+            return Json(result.OrderByDescending(x => x.id));
+        }
+
+
+        [HttpPost]
         public JsonResult GetNoSeries()
         {
             List<DDMessageString> result = DBNAV2017NoSeries.GetNoSeries(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageString()

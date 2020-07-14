@@ -519,12 +519,18 @@
                 },
 
                 _exportEXCEL: function () {
+                    debugger;
                     var result = this.$.gridrequest._filter(this.result);
                     if (result != null && result.length > 0) {
-                        result[0].ColunasEXCEL = this._columns;
+                        if (result.length <= 7500) {
+                            result[0].ColunasEXCEL = this._columns;
 
-                        this.$.ajax_Export.body = JSON.stringify(result);
-                        this.$.ajax_Export.generateRequest();
+                            this.$.ajax_Export.body = JSON.stringify(result);
+                            this.$.ajax_Export.generateRequest();
+                        }
+                        else {
+                            this.openToastError("Reduza o Nº de Linhas a Exportar, aplicando novos filtros.");
+                        }
                     }
                 },
 

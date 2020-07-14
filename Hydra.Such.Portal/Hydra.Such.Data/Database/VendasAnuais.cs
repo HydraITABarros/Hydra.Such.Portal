@@ -6,8 +6,9 @@ namespace Hydra.Such.Data.Database
     {
         public int? Ano { get; set; }
         public string Regiao { get; set; }
-        public string NoAssociado { get; set; }
-        public string NomeAssociado { get; set; }
+        public string Associado { get; set; }
+        public string NoCliente { get; set; }
+        public string NomeCliente { get; set; }
         public decimal? Jan { get; set; }
         public decimal? Fev { get; set; }
         public decimal? Mar { get; set; }

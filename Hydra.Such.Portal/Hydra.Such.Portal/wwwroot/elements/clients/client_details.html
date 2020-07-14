@@ -736,6 +736,18 @@
 
                                                             <vaadin-grid-column width="10%" resizable>
                                                                 <template class="header">
+                                                                    <vaadin-grid-sorter path="pendenteType">Pendente</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="pendenteType" value="Sim" />
+                                                                </template>
+                                                                <template>
+                                                                    <div class="text-center">
+                                                                        {{item.pendenteType}}
+                                                                    </div>
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="10%" resizable>
+                                                                <template class="header">
                                                                     <vaadin-grid-sorter path="remainingAmount">Valor Pendente</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="remainingAmount" />
                                                                 </template>
@@ -748,8 +760,8 @@
 
                                                             <vaadin-grid-column width="10%" resizable>
                                                                 <template class="header">
-                                                                    <vaadin-grid-sorter path="sinalizacaoRec">Sinalização Reconciliação</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="sinalizacaoRec" />
+                                                                    <vaadin-grid-sorter path="sinalizacaoRecText">Sinalização Reconciliação</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="sinalizacaoRecText" />
                                                                 </template>
                                                                 <template>
                                                                     <center>
@@ -1728,6 +1740,7 @@
                     }
 
                     this._showAreas = this._areaid == 4 /* vendas */;
+
                 },
                 _getListDisplay: function () {
                     return this._isCreate ? 'none;' : 'block;';

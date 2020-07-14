@@ -1652,6 +1652,72 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult DesArquivarReq([FromBody] RequisitionViewModel item)
+        {
+            item.eReasonCode = 99;
+            item.eMessage = "Ocorreu um erro.";
+
+            if (item != null)
+            {
+                if (item.State == RequisitionStates.Archived)
+                {
+                    UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+                    if (userPermissions != null && userPermissions.Update == true)
+                    {
+                        if (item.ChangeLog != null && item.ChangeLog.Count > 0)
+                        {
+                            RequisitionStates LastState = item.ChangeLog.Where(x => x.State != RequisitionStates.Archived).OrderByDescending(x => x.ModifiedAt).FirstOrDefault().State;
+
+                            if (LastState != null)
+                            {
+                                item.State = LastState;
+                                item.UpdateUser = User.Identity.Name;
+                                item.UpdateDate = DateTime.Now;
+                                if (DBRequest.Update(item.ParseToDB(), false, true) != null)
+                                {
+                                    item.eReasonCode = 1;
+                                    item.eMessage = "A Requisição foi Desarquivada com sucesso";
+                                }
+                                else
+                                {
+                                    item.eReasonCode = 2;
+                                    item.eMessage = "Ocorreu um erro: Não foi possivel Desarquivar a Requisição.";
+                                }
+                            }
+                            else
+                            {
+                                item.eReasonCode = 2;
+                                item.eMessage = "Ocorreu um erro: Não foi possivel obter o último estado da Requisição.";
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 2;
+                            item.eMessage = "Ocorreu um erro: Não foi possivel obter o último estado da Requisição.";
+                        }
+                    }
+                    else
+                    {
+                        item.eReasonCode = 2;
+                        item.eMessage = "Ocorreu um erro: Não tem permissões para Desarquivar a Requisição.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro: A Requisição têm que estar no Estado Arquivado.";
+                }
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: A Requisição não pode ser nula.";
+            }
+
+            return Json(item);
+        }
+
+        [HttpPost]
 
         public JsonResult UpdateRequisitionLinesQtRequerer([FromBody] RequisitionViewModel item)
         {
