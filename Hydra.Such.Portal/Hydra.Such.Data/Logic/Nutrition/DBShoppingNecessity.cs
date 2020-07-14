@@ -221,6 +221,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     ProductionUnitNo = item.NºUnidadeProdutiva,
                     ProjectNo = item.NºProjeto,
                     Quantity = item.Quantidade,
+                    QuantidadeDisponivel = item.QuantidadeDisponivel,
+                    QuantidadeReservada = item.QuantidadeReservada,
                     QuantitybyUnitMeasure = item.QuantidadePorUnidMedida,
                     SupplierName = item.NomeFornecedor,
                     SupplierNo = item.NºFornecedor,
@@ -273,6 +275,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 x.NºUnidadeProdutiva = item.ProductionUnitNo;
                 x.NºProjeto = item.ProjectNo;
                 x.Quantidade = item.Quantity;
+                x.QuantidadeDisponivel = item.QuantidadeDisponivel;
+                x.QuantidadeReservada = item.QuantidadeReservada;
                 x.QuantidadePorUnidMedida = item.QuantitybyUnitMeasure;
                 x.NomeFornecedor = item.SupplierName;
                 x.NºFornecedor = item.SupplierNo;

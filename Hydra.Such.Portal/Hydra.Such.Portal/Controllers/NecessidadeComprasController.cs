@@ -50,6 +50,8 @@ namespace Hydra.Such.Portal.Controllers
                         ViewBag.ProductivityUnitDesc = productivityUnit.Description;//.Descrição;
                         ViewBag.ProductivityArea = "10";// ProductivityUnitDB.CódigoÁreaFuncional;
                         ViewBag.ProductivityUnit = productivityUnit;
+                        ViewBag.ProductivityArmazem = productivityUnit.WarehouseSupplier;
+
                         ViewBag.Type = type; // 1 = Matéria Prima
                     }
                     else
@@ -59,6 +61,8 @@ namespace Hydra.Such.Portal.Controllers
                         ViewBag.ProductivityUnitDesc = productivityUnit.Description;//.Descrição;
                         ViewBag.ProductivityArea = "10";// ProductivityUnitDB.CódigoÁreaFuncional;
                         ViewBag.ProductivityUnit = productivityUnit;
+                        ViewBag.ProductivityArmazem = productivityUnit.WarehouseSupplier;
+
                         ViewBag.Type = type; // 2 = Matéria Subsidiária
                     }
                 }
@@ -1138,5 +1142,19 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
         #endregion
+        
+
+        [HttpPost]
+
+        public JsonResult GetQuantidades(string produto, string armazem)
+        {
+
+            QuantidadesViewModel Quantidades = DBNAV2017Products.GetQuantidades(_config.NAVDatabaseName, _config.NAVCompanyName, produto, armazem);
+            if (Quantidades != null)
+                return Json(Quantidades);
+            else
+                return Json(null);
+        }
+
     }
 }
