@@ -908,9 +908,9 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAnos_VendasAnuais()
         {
-            List<DDMessage> result = DBVendasAnuais.GetAnos().Select(x => new DDMessage()
+            List<DDMessageString> result = DBVendasAnuais.GetAnos().Select(x => new DDMessageString()
             {
-                id = x.id,
+                id = x.id.ToString(),
                 value = x.value
             }).ToList();
 

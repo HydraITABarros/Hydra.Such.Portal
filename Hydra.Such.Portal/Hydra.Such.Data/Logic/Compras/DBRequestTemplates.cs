@@ -211,6 +211,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return new RequisitionTemplateViewModel()
                 {
                     RequisitionNo = item.NºRequisição,
+                    NoDocumento = item.NoDocumento,
                     Area = item.Área,
                     //State = item.Estado,
                     State = item.Estado.HasValue && Enum.IsDefined(typeof(RequisitionStates), item.Estado.Value) ? (RequisitionStates)item.Estado.Value : (RequisitionStates?)null,
@@ -302,6 +303,7 @@ namespace Hydra.Such.Data.Logic.Request
                 return new Requisição()
                 {
                     NºRequisição = item.RequisitionNo,
+                    NoDocumento = item.NoDocumento,
                     Área = item.Area,
                     //Estado = item.State.HasValue ? (int)item.State.Value : (int?)null,
                     Estado = item.State.HasValue ? (int)item.State.Value : (int?)null,

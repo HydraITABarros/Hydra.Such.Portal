@@ -318,7 +318,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static int? UpdateBalance(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo, string EntryNo, bool SinalizacaoRec, string Obs)
+        public static int? UpdateBalance(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo, string EntryNo, bool SinalizacaoRec, string DateRec, string Obs, string UserUpdate)
         {
             try
             {
@@ -331,10 +331,12 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@CustomerNo", NAVClientNo ),
                         new SqlParameter("@Obs", Obs ),
                         new SqlParameter("@SinalizacaoRec", SinalizacaoRec == true ? "true" : "false" ),
-                        new SqlParameter("@EntryNo", EntryNo )
+                        new SqlParameter("@EntryNo", EntryNo ),
+                        new SqlParameter("@DateRec", DateRec ),
+                        new SqlParameter("@UserUpdate", UserUpdate )
                     };
 
-                    var data = ctx.execStoredProcedureNQ("exec NAV2017ClientesBalancesUpdate @DBName, @CompanyName, @CustomerNo, @Obs, @SinalizacaoRec, @EntryNo", _parameters);
+                    var data = ctx.execStoredProcedureNQ("exec NAV2017ClientesBalancesUpdateV2 @DBName, @CompanyName, @CustomerNo, @Obs, @SinalizacaoRec, @EntryNo, @DateRec, @UserUpdate", _parameters);
 
                     return data;
 

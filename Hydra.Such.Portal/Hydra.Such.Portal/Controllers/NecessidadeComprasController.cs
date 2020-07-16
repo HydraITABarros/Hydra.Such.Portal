@@ -514,12 +514,16 @@ namespace Hydra.Such.Portal.Controllers
                             if (tipo == 2)
                                 projeto = prodUnit.ProjectSubsidiaries;
 
+                            QuantidadesViewModel Quantidades = DBNAV2017Products.GetQuantidades(_config.NAVDatabaseName, _config.NAVCompanyName, lr.Código, prodUnit.Warehouse);
+
                             DiárioRequisiçãoUnidProdutiva newdp = new DiárioRequisiçãoUnidProdutiva();
                             newdp.NºUnidadeProdutiva = prodUnit.ProductivityUnitNo;
                             newdp.CodigoLocalização = prodUnit.Warehouse;
                             newdp.NºProjeto = projeto;
                             newdp.DescriçãoUnidadeProduto = prodUnit.Description;
                             newdp.Quantidade = 0;
+                            newdp.QuantidadeDisponivel = Quantidades != null ? Quantidades.QuantDisponivel : 0;
+                            newdp.QuantidadeReservada = Quantidades != null ? Quantidades.QuantReservada : 0;
                             newdp.DataReceçãoEsperada = expectedReceipDate.CompareTo(DateTime.MinValue) > 0 ? expectedReceipDate : (DateTime?)null;
                             newdp.NºProduto = lr.Código;
                             newdp.Descrição = prodVal;

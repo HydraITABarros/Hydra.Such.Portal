@@ -95,7 +95,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/PopulateDropdowns/GetAnos_VendasAnuais" last-response="{{LAnos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAnos_VendasAnuais" last-response="{{LAnos}}" auto on-response="_getAnosResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode_VendasAnuais" last-response="{{LRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Contabilidade/GetListVendasAnuais"
@@ -120,7 +120,7 @@
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-2">
-                            <vaadin-combo-box items="[[LAnos]]" id="codigoAno" item-value-path="id" item-label-path="value" label="Ano">
+                            <vaadin-combo-box items="[[LAnos]]" id="codigoAno" name="codigoAno" item-value-path="id" item-label-path="value" label="Ano">
                                 <template>
                                     <table width="200px">
                                         <tr>
@@ -527,6 +527,12 @@
                     }
                     else
                         this._showErrorMessage('É necessário escolher um ano.');
+                },
+
+                _getAnosResponse: function (e) {
+                    if (this.LAnos != null && this.LAnos.length > 0) {
+                        this.$.codigoAno.value = "2020";
+                    }
                 },
             });
         });

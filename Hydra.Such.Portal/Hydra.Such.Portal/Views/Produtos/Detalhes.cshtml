@@ -245,17 +245,17 @@
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="dddescricao" name="dddescricao" label="Descrição" value="{{result.descricao}}"></vaadin-text-field>
+                                                    <vaadin-text-field id="dddescricao" name="dddescricao" label="Descrição" value="{{result.descricao}}" disabled></vaadin-text-field>
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="dddescricao2" name="dddescricao2" label="Descrição 2" value="{{result.descricao2}}"></vaadin-text-field>
+                                                    <vaadin-text-field id="dddescricao2" name="dddescricao2" label="Descrição 2" value="{{result.descricao2}}" disabled></vaadin-text-field>
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <vaadin-combo-box items="[[ProdutoUnidadesMedidas]]" id="ddunidadeMedidaBase" name="ddunidadeMedidaBase" label="Unidade Medida Base" item-value-path="id" item-label-path="value" value="{{result.unidadeMedidaBase}}">
+                                                    <vaadin-combo-box items="[[ProdutoUnidadesMedidas]]" id="ddunidadeMedidaBase" name="ddunidadeMedidaBase" label="Unidade Medida Base" item-value-path="id" item-label-path="value" value="{{result.unidadeMedidaBase}}" disabled>
                                                         <template>
                                                             <table width="250px">
                                                                 <tr>
@@ -315,7 +315,7 @@
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <vaadin-text-field id="ddnomeCurtoSISLOG" name="ddnomeCurtoSISLOG" label="Nome Curto SISLOG" value="{{result.nomeCurtoSISLOG}}" maxlength="20"></vaadin-text-field>
+                                                    <vaadin-text-field id="ddnomeCurtoSISLOG" name="ddnomeCurtoSISLOG" label="Nome Curto SISLOG" value="{{result.nomeCurtoSISLOG}}" maxlength="15"></vaadin-text-field>
                                                 </div>
                                             </div>
 
@@ -620,7 +620,6 @@
                 },
 
                 ready: function () {
-                    //debugger;
                     var _self = this;
 
                     this.$.page_databound_ajax.body = JSON.stringify('@ViewBag.No');
@@ -688,7 +687,6 @@
                 },
 
                 _getTipoRefeicaoDescricao: function (e) {
-                    //debugger;
                     if (e.target.value != "")
                         this.$.dddescricaoRefeicao.value = e.target.__data.selectedItem.value;
                     else
@@ -696,7 +694,6 @@
                 },
 
                 _createUMP: function() {
-                    //debugger;
                     if (this.$.ddno.value != null) {
                         if (this.$.ddUMPcode.value != "") {
                             if (this.$.ddUMPqtdUnitMeasure.validate()) {
@@ -722,7 +719,6 @@
                 },
 
                 _createUMP_Response: function (e) {
-                    //debugger;
                     if (this.createUMP.eReasonCode == 0) {
                         this.openToast(this.createUMP.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -732,7 +728,6 @@
                 },
 
                 _updateUMP: function (e) {
-                    //debugger;
                     var index = this.result.listUnidadeMedidaProduto.indexOf(e.model.item);
 
                     this.$.page_updateUMP_ajax.body = JSON.stringify({
@@ -745,7 +740,6 @@
                 },
 
                 _updateUMP_Response: function (e) {
-                    //debugger;
                     if (this.updateUMP.eReasonCode == 0) {
                         this.openToast(this.updateUMP.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -755,7 +749,6 @@
                 },
 
                 _deleteUMP: function (e) {
-                    //debugger;
                     var index = this.result.listUnidadeMedidaProduto.indexOf(e.model.item);
                     var productNo = e.model.item.productNo;
                     var code = e.model.item.code;
@@ -788,7 +781,6 @@
                 },
 
                 _deleteUMP_Response: function (e) {
-                    //debugger;
                     if (this.deleteUMP.eReasonCode == 0) {
                         this.openToast(this.deleteUMP.eMessage);
                         this.$.page_databound_ajax.generateRequest();
@@ -798,13 +790,11 @@
                 },
 
                 _createProduto: function (e) {
-                    //debugger;
                     this.$.page_createProduto_ajax.body = JSON.stringify(this.result);
                     this.$.page_createProduto_ajax.generateRequest();
                 },
 
                 _createProduto_Response: function (e) {
-                    debugger;
                     if (this.createProduto.eReasonCode == 0) {
                         this.openToast(this.createProduto.eMessage);
                         window.location.href = "/Produtos/Detalhes/" + this.createProduto.aux;
@@ -814,13 +804,11 @@
                 },
 
                 _updateProduto: function (e) {
-                    //debugger;
                     this.$.page_updateProduto_ajax.body = JSON.stringify(this.result);
                     this.$.page_updateProduto_ajax.generateRequest();
                 },
 
                 _updateProduto_Response: function (e) {
-                    debugger;
                     if (this.updateProduto.eReasonCode == 0) {
                         this.openToast(this.updateProduto.eMessage);
                         //this.$.page_databound_ajax.generateRequest();
@@ -831,7 +819,6 @@
                 },
 
                 _deleteProduto: function (e) {
-                    //debugger;
                     var productNo = this.$.ddno.value;
                     var ajax_request = this.$.page_deleteProduto_ajax;
 
@@ -859,7 +846,6 @@
                 },
 
                 _deleteProduto_Response: function (e) {
-                    //debugger;
                     if (this.deleteProduto.eReasonCode == 0) {
                         this.openToast(this.deleteProduto.eMessage);
                         window.location.href = "/Produtos/List";
@@ -883,7 +869,6 @@
                 },
 
                 _uploadImagem: function () {
-                    debugger;
                     var _self = this;
                     var urlFile = "/Produtos/Upload_Imagem/";
                     var toastSuccess = _self.$.ToastMessage;
@@ -903,7 +888,6 @@
                         processData: false,
                         data: data,
                         success: function (imagem) {
-                            debugger;
                             _self.result.imagem = imagem;
                             ajaxImport.body = JSON.stringify(_self.result);
                             ajaxImport.generateRequest();

@@ -201,6 +201,13 @@ namespace Hydra.Such.Portal.Controllers
                 Produto.DataHoraModificacao = DateTime.Now;
                 Produto.UtilizadorModificacao = User.Identity.Name;
 
+                if (Produto.NomeCurtoSISLOGOriginal != Produto.NomeCurtoSISLOG)
+                {
+                    Produto.TipoAlteracaoSISLOG = 1;
+                    Produto.DataAlteracaoSISLOG = DateTime.Now;
+                    Produto.EnviarSISLOG = true;
+                }
+
                 if (string.IsNullOrEmpty(Produto.UnidadeMedidaBase))
                     Produto.UnidadeMedidaBase = null;
                 if (DBFichaProduto.Update(DBFichaProduto.ParseToDatabase(Produto)) != null)

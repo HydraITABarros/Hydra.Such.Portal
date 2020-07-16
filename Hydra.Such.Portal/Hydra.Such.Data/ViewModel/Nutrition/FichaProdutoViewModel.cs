@@ -116,6 +116,7 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public DateTime? DataEnvioSISLOG { get; set; }
         public string DataEnvioSISLOGText { get; set; }
         public string NomeCurtoSISLOG { get; set; }
+        public string NomeCurtoSISLOGOriginal { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }
         public string UtilizadorCriacao { get; set; }

@@ -678,28 +678,37 @@ namespace Hydra.Such.Portal.Controllers
                 if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                     result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.RespCenterId));
 
+                result.ForEach(balance =>
+                {
+                    balance.DataConcilText = balance.DataConcil.HasValue ? balance.DataConcil.Value.ToString("yyyy-MM-dd") : "";
+                });
+
                 return Json(result);
             }
             return Json(false);
         }
 
         [HttpPost]
-        public JsonResult UpdateBalances([FromBody] List<NAVClientesBalanceControlViewModel> listData, string CustomerNo)
+        public JsonResult UpdateBalances([FromBody] NAVClientesBalanceControlViewModel line, string CustomerNo)
         {
             var updateResult = 0;
+            string DateREC = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
+            string UserUpdate = User.Identity.Name;
             if (CustomerNo != null)
             {
-                if (listData != null && listData.Count() > 0)
-                {
-                    listData.ForEach(line =>
-                    {
-                        var updated = DBNAV2017Clients.UpdateBalance(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo, line.EntryNo.ToString(), line.SinalizacaoRec, line.Obs);
+                //if (listData != null && listData.Count() > 0)
+                //{
+                    //listData.ForEach(line =>
+                    //{
+                        if (!string.IsNullOrEmpty(line.DataConcilText))
+                            DateREC = Convert.ToDateTime(line.DataConcilText).Year + "-" + Convert.ToDateTime(line.DataConcilText).Month + "-" + Convert.ToDateTime(line.DataConcilText).Day;
+
+                        var updated = DBNAV2017Clients.UpdateBalance(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo, line.EntryNo.ToString(), line.SinalizacaoRec, DateREC, line.Obs, UserUpdate);
                         if (updated != null)
                         {
                             updateResult += (int)updated;
-                        };
-
-                    });
+                        //};
+                    //});
                 }
                 var result = DBNAV2017Clients.GetBalances(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo);
                 return Json(result);

@@ -1316,6 +1316,19 @@ namespace Hydra.Such.Portal.Controllers
                 project = DBProjects.GetById(req.ProjectNo);
             }
 
+
+            Requisição Model = DBRequest.GetById(req.RequisitionNo);
+            if (Model != null && !string.IsNullOrEmpty(Model.NoDocumento))
+            {
+                PréRequisição Pre = DBPreRequesition.GetByNo(req.PreRequisitionNo);
+                if (Pre != null)
+                {
+                    Pre.TipoRequisição = Model.NoDocumento;
+                    Pre.UtilizadorModificação = User.Identity.Name;
+                    DBPreRequesition.Update(Pre);
+                }
+            }
+
             List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
 
             if (reqLines != null)
