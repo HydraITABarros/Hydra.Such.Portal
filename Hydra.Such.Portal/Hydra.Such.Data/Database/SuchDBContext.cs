@@ -195,6 +195,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfigLinhasEncFornecedor> ConfigLinhasEncFornecedor { get; set; }
         public virtual DbSet<Orcamentos> Orcamentos { get; set; }
         public virtual DbSet<LinhasOrcamentos> LinhasOrcamentos { get; set; }
+        public virtual DbSet<OrcamentosContatos> OrcamentosContatos { get; set; }
         public virtual DbSet<ConfiguracaoParametros> ConfiguracaoParametros { get; set; }
 
         #region zpgm.ALT_CCP_#001.y2019
@@ -12823,6 +12824,58 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificacao)
                     .HasColumnName("UtilizadorModificacao")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<OrcamentosContatos>(entity =>
+            {
+                entity.HasKey(e => new { e.ID });
+
+                entity.ToTable("OrcamentosContatos");
+
+                entity.Property(e => e.ID)
+                    .HasColumnName("ID")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Organizacao)
+                    .HasColumnName("Organizacao")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Nome)
+                    .HasColumnName("Nome")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Telemovel)
+                    .HasColumnName("Telemovel")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("Email")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.NIF)
+                    .HasColumnName("NIF")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Notas)
+                    .HasColumnName("Notas")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.CriadoPor)
+                    .HasColumnName("CriadoPor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.AlteradoPor)
+                    .HasColumnName("AlteradoPor")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataAlteracao)
+                    .HasColumnName("DataAlteracao")
+                    .HasColumnType("datetime");
+
             });
 
             modelBuilder.Entity<ConfiguracaoParametros>(entity =>

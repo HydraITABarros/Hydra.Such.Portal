@@ -36,6 +36,7 @@ using Hydra.Such.Data.ViewModel.Encomendas;
 using System.Data.SqlClient;
 using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.ViewModel.Viaturas;
+using Hydra.Such.Data.Logic.OrcamentoL;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3460,8 +3461,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllContactsOrcamentos()
         {
-            var result = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            return Json(result);
+            var result = DBOrcamentosContatos.GetAll();
+            return Json(result.OrderBy(x => x.Organizacao));
         }
 
 

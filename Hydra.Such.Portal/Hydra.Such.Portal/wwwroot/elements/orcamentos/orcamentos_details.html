@@ -269,9 +269,9 @@
                                             <div class="col-md-3">
                                                 <such-selectbox id="OrcNoContacto" label="Contacto" value="{{data.noContacto}}"
                                                                 items="[[CBContacts]]"
-                                                                text-path="name"
-                                                                value-path="no_"
-                                                                fields='[{"field":"no_", "name":"Cód. Contato"}, {"field":"name", "name":"Nome"}, {"field":"email", "name":"E-mail"}]'
+                                                                text-path="organizacao"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"organizacao", "name":"Organização"}, {"field":"telemovel", "name":"Telemovel"}, {"field":"email", "name":"Email"}, {"field":"nif", "name":"NIF"}]'
                                                                 on-value-changed="_actualizarEmailContacto"
                                                                 disabled="{{ !_permissions.update }}">
                                                 </such-selectbox>

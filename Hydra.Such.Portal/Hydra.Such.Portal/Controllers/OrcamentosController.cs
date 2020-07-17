@@ -120,7 +120,7 @@ namespace Hydra.Such.Portal.Controllers
             List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
             List<EnumData> AllTipoFaturacao = EnumerablesFixed.ContractBillingTypes;
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<OrcamentosContatos> AllContacts = DBOrcamentosContatos.GetAll();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
             List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
@@ -130,7 +130,7 @@ namespace Hydra.Such.Portal.Controllers
                 x.UnidadePrestacaoText = x.UnidadePrestacao != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault().Descrição : "" : "";
                 x.TipoFaturacaoText = x.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault().Value : "" : "";
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
-                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
+                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.ID == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.ID == x.NoContacto).FirstOrDefault().Organizacao : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
                 x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
@@ -159,7 +159,7 @@ namespace Hydra.Such.Portal.Controllers
             List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
             List<EnumData> AllTipoFaturacao = EnumerablesFixed.ContractBillingTypes;
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<OrcamentosContatos> AllContacts = DBOrcamentosContatos.GetAll();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
             List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
@@ -169,7 +169,7 @@ namespace Hydra.Such.Portal.Controllers
                 x.UnidadePrestacaoText = x.UnidadePrestacao != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault().Descrição : "" : "";
                 x.TipoFaturacaoText = x.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault().Value : "" : "";
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
-                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
+                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.ID == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.ID == x.NoContacto).FirstOrDefault().Organizacao : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
                 x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
@@ -195,7 +195,7 @@ namespace Hydra.Such.Portal.Controllers
             List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
             List<EnumData> AllTipoFaturacao = EnumerablesFixed.ContractBillingTypes;
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            List<NAVContactsViewModel> AllContacts = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<OrcamentosContatos> AllContacts = DBOrcamentosContatos.GetAll();
             List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
             List<Projetos> AllProjetos = DBProjects.GetAll();
             List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
@@ -205,7 +205,7 @@ namespace Hydra.Such.Portal.Controllers
                 x.UnidadePrestacaoText = x.UnidadePrestacao != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == x.UnidadePrestacao).FirstOrDefault().Descrição : "" : "";
                 x.TipoFaturacaoText = x.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == x.TipoFaturacao).FirstOrDefault().Value : "" : "";
                 x.ClienteText = !string.IsNullOrEmpty(x.NoCliente) ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.NoCliente).FirstOrDefault().Name : "" : "";
-                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No_ == x.NoContacto).FirstOrDefault().Name : "" : "";
+                x.ContactoText = !string.IsNullOrEmpty(x.NoContacto) ? AllContacts.Where(y => y.ID == x.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.ID == x.NoContacto).FirstOrDefault().Organizacao : "" : "";
                 x.RegiaoText = !string.IsNullOrEmpty(x.CodRegiao) ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == x.CodRegiao).FirstOrDefault().Name : "" : "";
                 x.ProjetoAssociadoText = !string.IsNullOrEmpty(x.ProjetoAssociado) ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault() != null ? AllProjetos.Where(y => y.NºProjeto == x.ProjetoAssociado).FirstOrDefault().Descrição : "" : "";
 
@@ -354,7 +354,7 @@ namespace Hydra.Such.Portal.Controllers
                     List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
                     List<EnumData> AllTipoFaturacao = EnumerablesFixed.ContractBillingTypes;
                     List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-                    List<Contactos> AllContacts = DBContacts.GetAll();
+                    List<OrcamentosContatos> AllContacts = DBOrcamentosContatos.GetAll();
                     List<NAVDimValueViewModel> AllRegions = DBNAV2017DimensionValues.GetByDimTypeAndUserId(_config.NAVDatabaseName, _config.NAVCompanyName, 1, User.Identity.Name);
                     List<ConfigUtilizadores> AllUsers = DBUserConfigurations.GetAll();
 
@@ -362,7 +362,7 @@ namespace Hydra.Such.Portal.Controllers
                     ORC.UnidadePrestacaoText = ORC.UnidadePrestacao != null ? AllUnidadesPrestacao.Where(y => y.Código == ORC.UnidadePrestacao).FirstOrDefault() != null ? AllUnidadesPrestacao.Where(y => y.Código == ORC.UnidadePrestacao).FirstOrDefault().Descrição : "" : "";
                     ORC.TipoFaturacaoText = ORC.TipoFaturacao != null ? AllTipoFaturacao.Where(y => y.Id == ORC.UnidadePrestacao).FirstOrDefault() != null ? AllTipoFaturacao.Where(y => y.Id == ORC.UnidadePrestacao).FirstOrDefault().Value : "" : "";
                     ORC.ClienteText = !string.IsNullOrEmpty(ORC.NoCliente) ? AllClients.Where(y => y.No_ == ORC.NoCliente).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == ORC.NoCliente).FirstOrDefault().Name : "" : "";
-                    ORC.ContactoText = !string.IsNullOrEmpty(ORC.NoContacto) ? AllContacts.Where(y => y.No == ORC.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.No == ORC.NoContacto).FirstOrDefault().Nome : "" : "";
+                    ORC.ContactoText = !string.IsNullOrEmpty(ORC.NoContacto) ? AllContacts.Where(y => y.ID == ORC.NoContacto).FirstOrDefault() != null ? AllContacts.Where(y => y.ID == ORC.NoContacto).FirstOrDefault().Nome : "" : "";
                     ORC.RegiaoText = !string.IsNullOrEmpty(ORC.CodRegiao) ? AllRegions.Where(y => y.Code == ORC.CodRegiao).FirstOrDefault() != null ? AllRegions.Where(y => y.Code == ORC.CodRegiao).FirstOrDefault().Name : "" : "";
 
                     ORC.EmailUtilizadorEnvioText = !string.IsNullOrEmpty(ORC.EmailUtilizadorEnvio) ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.EmailUtilizadorEnvio.ToLower()).FirstOrDefault() != null ? AllUsers.Where(y => y.IdUtilizador.ToLower() == ORC.EmailUtilizadorEnvio.ToLower()).FirstOrDefault().Nome : "" : "";

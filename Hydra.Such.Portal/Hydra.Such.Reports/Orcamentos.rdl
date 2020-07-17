@@ -4,7 +4,7 @@
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
     <DataSource Name="eSuchDS">
-      <DataSourceReference>eSUCHTestes</DataSourceReference>
+      <DataSourceReference>eSuchDS</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>4b114383-a601-4b38-994a-3e7fc0d65a29</rd:DataSourceID>
     </DataSource>
@@ -100,19 +100,19 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>10cm</Width>
+                  <Width>9.62958cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.44708cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.44708cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.44708cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.44708cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -339,9 +339,11 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIF(Fields!Quantidade.Value = 0, "", Str(Fields!Quantidade.Value))</Value>
+                                  <Value>=IIF(Fields!Quantidade.Value = 987789, "", Fields!Quantidade.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
+                                    <Format>N2</Format>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -373,9 +375,11 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIF(Fields!ValorUnitario.Value = 0, "", Str(Fields!ValorUnitario.Value) + " €")</Value>
+                                  <Value>=IIF(Fields!ValorUnitario.Value = 987789, "", Fields!ValorUnitario.Value)</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
+                                    <Format>C2</Format>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -407,10 +411,12 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIF(Fields!TaxaIVA.Value = 0, "", Str(Fields!TaxaIVA.Value) + " %")</Value>
+                                  <Value>=IIF(Fields!TaxaIVA.Value = 987789, "", Str(Fields!TaxaIVA.Value) + " %")</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <Format>N2</Format>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -442,10 +448,12 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIF(Fields!TotalLinha.Value = 0, "", Str(Fields!TotalLinha.Value) + " €")</Value>
+                                  <Value>=IIF(Fields!TotalLinha.Value = 0, "", Fields!TotalLinha.Value)</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <Format>C2</Format>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -509,14 +517,14 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox4">
+                        <Textbox Name="Textbox23">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Str(SUM(Fields!Quantidade.Value))</Value>
+                                  <Value />
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -528,15 +536,12 @@
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox4</rd:DefaultName>
+                          <rd:DefaultName>Textbox23</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
-                            <TopBorder>
-                              <Color>Black</Color>
-                            </TopBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -623,11 +628,13 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Str(SUM(Fields!TotalLinha.Value)) + " €"</Value>
+                                  <Value>=SUM(Fields!TotalLinha.Value)</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>C2</Format>
+                                    <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -644,6 +651,7 @@
                             </Border>
                             <TopBorder>
                               <Color>Black</Color>
+                              <Width>1.5pt</Width>
                             </TopBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -681,8 +689,9 @@
             </TablixRowHierarchy>
             <DataSetName>LINHAS</DataSetName>
             <Top>0.17639cm</Top>
+            <Left>0.26458cm</Left>
             <Height>1.7cm</Height>
-            <Width>20cm</Width>
+            <Width>19.41792cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -693,10 +702,10 @@
         <Height>1.87639cm</Height>
         <Style />
       </Body>
-      <Width>20cm</Width>
+      <Width>19.6825cm</Width>
       <Page>
         <PageHeader>
-          <Height>6.32354cm</Height>
+          <Height>6.37646cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -704,8 +713,10 @@
               <Source>Embedded</Source>
               <Value>SUCH2</Value>
               <Sizing>FitProportional</Sizing>
-              <Height>2.29375cm</Height>
-              <Width>6.23605cm</Width>
+              <Top>0.3175cm</Top>
+              <Left>0.3175cm</Left>
+              <Height>1.97625cm</Height>
+              <Width>5.91855cm</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -732,8 +743,9 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
+              <Top>0.3175cm</Top>
               <Left>6.23605cm</Left>
-              <Height>2.29375cm</Height>
+              <Height>1.97625cm</Height>
               <Width>10.76395cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
@@ -789,9 +801,10 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox20</rd:DefaultName>
+              <Top>0.3175cm</Top>
               <Left>17cm</Left>
-              <Height>2.29375cm</Height>
-              <Width>3cm</Width>
+              <Height>1.97625cm</Height>
+              <Width>2.6825cm</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
@@ -810,7 +823,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Cliente</Value>
+                      <Value>=IIF(Parameters!ClienteNo.Value = "", "Contato", "Cliente")</Value>
                       <Style>
                         <FontWeight>Bold</FontWeight>
                       </Style>
@@ -821,6 +834,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>2.47014cm</Top>
+              <Left>0.3175cm</Left>
               <Height>0.6cm</Height>
               <Width>2.5cm</Width>
               <ZIndex>3</ZIndex>
@@ -852,6 +866,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>3.24653cm</Top>
+              <Left>0.3175cm</Left>
               <Height>0.6cm</Height>
               <Width>2.5cm</Width>
               <ZIndex>4</ZIndex>
@@ -883,6 +898,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>4.02292cm</Top>
+              <Left>0.3175cm</Left>
               <Height>0.6cm</Height>
               <Width>2.5cm</Width>
               <ZIndex>5</ZIndex>
@@ -914,6 +930,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>4.79931cm</Top>
+              <Left>0.3175cm</Left>
               <Height>0.6cm</Height>
               <Width>2.5cm</Width>
               <ZIndex>6</ZIndex>
@@ -945,6 +962,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>5.57569cm</Top>
+              <Left>0.3175cm</Left>
               <Height>0.6cm</Height>
               <Width>2.5cm</Width>
               <ZIndex>7</ZIndex>
@@ -974,9 +992,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>2.47014cm</Top>
-              <Left>2.67639cm</Left>
+              <Left>2.99389cm</Left>
               <Height>0.6cm</Height>
-              <Width>17.32361cm</Width>
+              <Width>16.68861cm</Width>
               <ZIndex>8</ZIndex>
               <Style>
                 <Border>
@@ -1004,9 +1022,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>3.24653cm</Top>
-              <Left>2.67639cm</Left>
+              <Left>2.99389cm</Left>
               <Height>0.6cm</Height>
-              <Width>17.32361cm</Width>
+              <Width>16.68861cm</Width>
               <ZIndex>9</ZIndex>
               <Style>
                 <Border>
@@ -1034,9 +1052,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>4.02292cm</Top>
-              <Left>2.67639cm</Left>
+              <Left>2.99389cm</Left>
               <Height>0.6cm</Height>
-              <Width>17.32361cm</Width>
+              <Width>6.84611cm</Width>
               <ZIndex>10</ZIndex>
               <Style>
                 <Border>
@@ -1064,9 +1082,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>4.79931cm</Top>
-              <Left>2.67639cm</Left>
+              <Left>2.99389cm</Left>
               <Height>0.6cm</Height>
-              <Width>17.32361cm</Width>
+              <Width>6.84611cm</Width>
               <ZIndex>11</ZIndex>
               <Style>
                 <Border>
@@ -1094,10 +1112,44 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>5.57569cm</Top>
-              <Left>2.67639cm</Left>
+              <Left>2.99389cm</Left>
               <Height>0.6cm</Height>
-              <Width>17.32361cm</Width>
+              <Width>6.84611cm</Width>
               <ZIndex>12</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox24">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Agradecemos a consulta.
+Este documento tem como finalidade apresentar uma cotação de preços.
+Deverá pois, servir como referência à emissão de outros documentos formais que possam ser exigidos por ambas as partes, de modo a formalizar o orçamento agora estimado.</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox24</rd:DefaultName>
+              <Top>4.02292cm</Top>
+              <Left>10.01639cm</Left>
+              <Height>2.15277cm</Height>
+              <Width>9.66611cm</Width>
+              <ZIndex>13</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1118,9 +1170,9 @@
         <PageHeight>29.7cm</PageHeight>
         <PageWidth>21cm</PageWidth>
         <LeftMargin>0.5cm</LeftMargin>
-        <RightMargin>0.5cm</RightMargin>
-        <TopMargin>0.5cm</TopMargin>
-        <BottomMargin>0.5cm</BottomMargin>
+        <RightMargin>0cm</RightMargin>
+        <TopMargin>0cm</TopMargin>
+        <BottomMargin>0cm</BottomMargin>
         <ColumnSpacing>0.13cm</ColumnSpacing>
         <Style />
       </Page>
