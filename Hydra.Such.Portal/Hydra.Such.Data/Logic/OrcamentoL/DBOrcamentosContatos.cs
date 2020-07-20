@@ -39,6 +39,26 @@ namespace Hydra.Such.Data.Logic.OrcamentoL
             }
         }
 
+        public static int GetMaxContato()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    string Max = ctx.OrcamentosContatos.Max(x => x.ID);
+
+                    if (string.IsNullOrEmpty(Max))
+                        return 0;
+                    else
+                        return Convert.ToInt32(Max.Substring(2));
+                }
+            }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+        }
+
         public static OrcamentosContatos Create(OrcamentosContatos item)
         {
             try

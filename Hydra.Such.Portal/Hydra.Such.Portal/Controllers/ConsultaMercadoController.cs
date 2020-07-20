@@ -159,6 +159,25 @@ namespace Hydra.Such.Portal.Controllers
 
                 List.ForEach(y => result.Add(CastSeleccaoEntidadesToView(y)));
 
+
+
+                //using (var ctx = new SuchDBContext())
+                //{
+                //    List = ctx.SeleccaoEntidades.Where(x => ctx.ConsultaMercado.Where(y => y.NumConsultaMercado == x.NumConsultaMercado).FirstOrDefault().Historico == Historic).ToList();
+
+                //    AllConsultaMercado = ctx.ConsultaMercado.ToList();
+                //    //AllLinhasConsultaMercado = ctx.LinhasConsultaMercado.ToList();
+                //    AllRegistoDePropostas = ctx.RegistoDePropostas.ToList();
+                //}
+
+                //if (!string.IsNullOrEmpty(FiltroFornecedor))
+                //    List.RemoveAll(x => x.CodFornecedor != FiltroFornecedor);
+
+                //if (FiltroAno != 1900)
+                //    List.RemoveAll(x => Convert.ToDateTime(x.DataPedidoEsclarecimento).Year != FiltroAno);
+
+                //List.ForEach(y => result.Add(CastSeleccaoEntidadesToView(y)));
+
                 result.ForEach(selecao =>
                 {
                     selecao.NotaEncomenda_Show = "Não";

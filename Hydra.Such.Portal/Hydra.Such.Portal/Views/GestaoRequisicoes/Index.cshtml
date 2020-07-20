@@ -128,11 +128,11 @@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.state.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
-                    @*<vaadin-grid-filter path="state" value="[[filter.state]]" />*@
+                    <vaadin-grid-sorter path="stateText">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="stateText" value="[[filter.state]]" />
                 </template>
                 <template>
-                    [[ _parsestate(item.state)]]
+                    {{item.stateText}}
                 </template>
             </vaadin-grid-column>
 

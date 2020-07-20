@@ -343,7 +343,6 @@ namespace Hydra.Such.Portal.Controllers
                 if (ORC != null && !string.IsNullOrEmpty(ORC.No))
                 {
                     ORC = DBOrcamentos.GetById(ORC.No).ParseToViewModel();
-
                     ORC.LinhasOrcamentos = DBLinhasOrcamentos.GetAllByOrcamento(ORC.No).ParseToViewModel();
                     ORC.AnexosOrcamentos = DBAttachments.ParseToViewModel(DBAttachments.GetById(ORC.No));
 
@@ -1002,6 +1001,68 @@ namespace Hydra.Such.Portal.Controllers
             return Json(ORCAMENTO);
         }
 
+        [HttpPost]
+        public JsonResult AddOrcamentoContato([FromBody] OrcamentosContatosViewModel Contato)
+        {
+            Contato.eReasonCode = 3;
+            Contato.eMessage = "Ocorreu um erro ao Criar o Contato.";
+
+            try
+            {
+                if (Contato != null)
+                {
+                    if (string.IsNullOrEmpty(Contato.Organizacao) && string.IsNullOrEmpty(Contato.Nome))
+                    {
+                        Contato.eReasonCode = 3;
+                        Contato.eMessage = "É Obrigatório preencher um dos campos Organização e/ou Nome.";
+                        return Json(Contato);
+                    }
+
+                    if (string.IsNullOrEmpty(Contato.Telemovel) && string.IsNullOrEmpty(Contato.Email))
+                    {
+                        Contato.eReasonCode = 3;
+                        Contato.eMessage = "É Obrigatório preencher um dos campos Telemóvel e/ou E-mail.";
+                        return Json(Contato);
+                    }
+
+                    int MaxID = DBOrcamentosContatos.GetMaxContato();
+                    if (MaxID == -1)
+                    {
+                        Contato.eReasonCode = 3;
+                        Contato.eMessage = "Ocorreu um erro ao obter o ID do Contato.";
+                        return Json(Contato);
+                    }
+
+                    MaxID = MaxID + 1;
+                    Contato.ID = "CT" + MaxID.ToString("D6");
+                    Contato.CriadoPor = User.Identity.Name;
+                    if (DBOrcamentosContatos.Create(Contato.ParseToDB()) == null)
+                    {
+                        Contato.eReasonCode = 3;
+                        Contato.eMessage = "Ocorreu um erro ao criar o Contato.";
+                        return Json(Contato);
+                    }
+
+                    Contato.eReasonCode = 1;
+                    Contato.eMessage = "Foi adicionado com sucesso o Contato.";
+                    return Json(Contato);
+
+                }
+                else
+                {
+                    Contato.eReasonCode = 3;
+                    Contato.eMessage = "Ocorreu um erro ao obter o Contato.";
+                    return Json(Contato);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Contato.eReasonCode = 3;
+                Contato.eMessage = "Ocorreu um erro.";
+                return Json(Contato);
+            }
+        }
 
 
 

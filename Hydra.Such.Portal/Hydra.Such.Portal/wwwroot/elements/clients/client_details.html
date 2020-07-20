@@ -680,8 +680,8 @@
                                                     </div>
 
                                                     <div class="col-xs-12">
-                                                        <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="editGrid" multi-sort="true"">
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                        <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="editGrid" multi-sort="true" ">
+                                                            <vaadin-grid-column width="9%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="customerNo">Nº Cliente</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="customerNo" />
@@ -701,27 +701,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
-                                                                <template class="header">
-                                                                    <vaadin-grid-sorter path="documentTypeText">Tipo Documento</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="documentTypeText" />
-                                                                </template>
-                                                                <template>
-                                                                    {{item.documentTypeText}}
-                                                                </template>
-                                                            </vaadin-grid-column>
-
-                                                            <vaadin-grid-column width="10%" resizable>
-                                                                <template class="header">
-                                                                    <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="documentNo" />
-                                                                </template>
-                                                                <template>
-                                                                    {{item.documentNo}}
-                                                                </template>
-                                                            </vaadin-grid-column>
-
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="12%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="documentDate">Data Documento</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="documentDate" />
@@ -731,7 +711,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="9%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="dueDate">Data Venc.</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="dueDate" />
@@ -741,7 +721,27 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="15%" resizable>
+                                                            <vaadin-grid-column width="12%" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="documentTypeText">Tipo Documento</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="documentTypeText" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.documentTypeText}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="11%" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="documentNo" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.documentNo}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="15%" resizable hidden>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="description" />
@@ -751,7 +751,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="amount">Valor</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="amount" />
@@ -763,19 +763,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
-                                                                <template class="header">
-                                                                    <vaadin-grid-sorter path="pendenteType">Pendente</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="pendenteType" value="Sim" />
-                                                                </template>
-                                                                <template>
-                                                                    <div class="text-center">
-                                                                        {{item.pendenteType}}
-                                                                    </div>
-                                                                </template>
-                                                            </vaadin-grid-column>
-
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="9%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="remainingAmount">Valor Pendente</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="remainingAmount" />
@@ -787,19 +775,14 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="sinalizacaoRecText">Sinalização Reconciliação</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="sinalizacaoRecText" />
                                                                 </template>
                                                                 <template>
                                                                     <center>
-                                                                        <!--<template is="dom-if" if="{{ item.selected }}">-->
-                                                                            <vaadin-checkbox checked="{{item.sinalizacaoRec}}" id="balances.sinalizacaoRec" name="balances.sinalizacaoRec" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"></vaadin-checkbox>
-                                                                        <!--</template>
-                                                                        <template is="dom-if" if="{{ !item.selected }}">
-                                                                            [[_formatBoolValue(item.sinalizacaoRec)]]
-                                                                        </template>-->
+                                                                        <vaadin-checkbox checked="{{item.sinalizacaoRec}}" id="balances.sinalizacaoRec" name="balances.sinalizacaoRec" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"></vaadin-checkbox>
                                                                     </center>
                                                                 </template>
                                                             </vaadin-grid-column>
@@ -820,16 +803,23 @@
                                                                     <vaadin-grid-filter path="obs" />
                                                                 </template>
                                                                 <template>
-                                                                    <!--<template is="dom-if" if="{{ item.selected }}">-->
-                                                                        <vaadin-text-field value="{{item.obs}}" maxlength="30" id="balances.obs" name="balances.obs" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"> </vaadin-text-field>
-                                                                    <!--</template>
-                                                                    <template is="dom-if" if="{{ !item.selected }}">-->
-                                                                        <!--{{ item.obs }}-->
-                                                                    <!--</template>-->
+                                                                    <vaadin-text-field value="{{item.obs}}" maxlength="30" id="balances.obs" name="balances.obs" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"> </vaadin-text-field>
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="pendenteType">Pendente</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="pendenteType" value="Sim" />
+                                                                </template>
+                                                                <template>
+                                                                    <div class="text-center">
+                                                                        {{item.pendenteType}}
+                                                                    </div>
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="regionId" />
@@ -839,7 +829,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="functionalAreaId">Cód. Área Funcional</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="functionalAreaId" />
@@ -849,7 +839,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="respCenterId">Cód. Centro de Responsabilidade</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="respCenterId" />

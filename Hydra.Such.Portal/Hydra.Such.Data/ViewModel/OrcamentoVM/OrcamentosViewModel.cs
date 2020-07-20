@@ -14,6 +14,10 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
         public string ClienteText { get; set; }
         public string NoContacto { get; set; }
         public string ContactoText { get; set; }
+        public string ContactoNome { get; set; }
+        public string ContactoTelefone { get; set; }
+        public string ContactoEmail { get; set; }
+        public string ContactoNotas { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataValidade { get; set; }
         public string DataValidadeText { get; set; }

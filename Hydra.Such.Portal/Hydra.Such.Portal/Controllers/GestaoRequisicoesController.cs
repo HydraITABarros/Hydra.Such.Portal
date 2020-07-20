@@ -1099,6 +1099,12 @@ namespace Hydra.Such.Portal.Controllers
             };
             List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
+
+            result.ForEach(x => x.StateText = x.State.HasValue ? x.State == RequisitionStates.Validated ? RequisitionStates.Validated.GetDescription() :
+               x.State == RequisitionStates.Available ? RequisitionStates.Available.GetDescription() :
+               x.State == RequisitionStates.Received ? RequisitionStates.Received.GetDescription() :
+               x.State == RequisitionStates.Treated ? RequisitionStates.Treated.GetDescription() : "" : "");
+
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions

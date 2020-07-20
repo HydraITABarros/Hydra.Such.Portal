@@ -12680,6 +12680,22 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("NoContacto")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.ContactoNome)
+                    .HasColumnName("ContactoNome")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.ContactoTelefone)
+                    .HasColumnName("ContactoTelefone")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ContactoEmail)
+                    .HasColumnName("ContactoEmail")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.ContactoNotas)
+                    .HasColumnName("ContactoNotas")
+                    .HasMaxLength(200);
+
                 entity.Property(e => e.DataValidade)
                     .HasColumnName("DataValidade")
                     .HasColumnType("datetime");

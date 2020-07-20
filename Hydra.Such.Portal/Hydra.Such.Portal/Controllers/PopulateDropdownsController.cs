@@ -670,6 +670,12 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult GetOrcamentoPaymentTerms()
+        {
+            List<EnumData> result = EnumerablesFixed.OrcamentoPaymentTerms;
+            return Json(result);
+        }
 
 
         [HttpPost]

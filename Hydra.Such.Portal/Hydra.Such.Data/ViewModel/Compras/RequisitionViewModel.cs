@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? Area { get; set; }
         //public int? State { get; set; }
         public RequisitionStates? State { get; set; }
+        public string StateText { get; set; }
         public string ProjectNo { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
