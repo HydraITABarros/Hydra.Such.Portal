@@ -244,8 +244,11 @@ namespace Hydra.Such.Portal.Controllers
                 int Col = 0;
 
                 if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº do Orçamento"); Col = Col + 1; }
-                if (dp["clienteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente"); Col = Col + 1; }
-                if (dp["contactoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Contacto"); Col = Col + 1; }
+                if (dp["clienteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Clientes"); Col = Col + 1; }
+                if (dp["contactoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Outras Organizações"); Col = Col + 1; }
+                if (dp["contactoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome do Contacto"); Col = Col + 1; }
+                if (dp["contactoTelefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Telefone do Contacto"); Col = Col + 1; }
+                if (dp["contactoEmail"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("E-mail do Contacto"); Col = Col + 1; }
                 if (dp["dataValidadeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Orçamento Válido até"); Col = Col + 1; }
                 if (dp["estadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Estado do Orçamento"); Col = Col + 1; }
                 if (dp["descricao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
@@ -283,6 +286,9 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["no"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.No); Col = Col + 1; }
                         if (dp["clienteText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClienteText); Col = Col + 1; }
                         if (dp["contactoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContactoText); Col = Col + 1; }
+                        if (dp["contactoNome"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContactoNome); Col = Col + 1; }
+                        if (dp["contactoTelefone"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContactoTelefone); Col = Col + 1; }
+                        if (dp["contactoEmail"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ContactoEmail); Col = Col + 1; }
                         if (dp["dataValidadeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataValidadeText); Col = Col + 1; }
                         if (dp["estadoText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstadoText); Col = Col + 1; }
                         if (dp["descricao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Descricao); Col = Col + 1; }
@@ -345,7 +351,6 @@ namespace Hydra.Such.Portal.Controllers
                     ORC = DBOrcamentos.GetById(ORC.No).ParseToViewModel();
                     ORC.LinhasOrcamentos = DBLinhasOrcamentos.GetAllByOrcamento(ORC.No).ParseToViewModel();
                     ORC.AnexosOrcamentos = DBAttachments.ParseToViewModel(DBAttachments.GetById(ORC.No));
-
                     ORC.TotalSemIVA = ORC.LinhasOrcamentos.Sum(item => item.Quantidade * item.ValorUnitario);
                     ORC.TotalComIVA = ORC.LinhasOrcamentos.Sum(item => item.TotalLinha);
 
@@ -514,7 +519,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
-                        List<Anexos> ANEXOS = DBAttachments.GetAll().Where(x => x.TipoOrigem == TipoOrigemAnexos.Orcamentos).ToList();
+                        List<Anexos> ANEXOS = DBAttachments.GetById(ORCAMENTO.No);
                         if (ANEXOS != null && ANEXOS.Count > 0)
                         {
                             if (DBAttachments.Delete(ANEXOS) != true)
@@ -567,6 +572,160 @@ namespace Hydra.Such.Portal.Controllers
                 ORCAMENTO.eMessage = "Ocorreu um erro ao eliminar o Orçamento.";
                 return Json(ORCAMENTO);
             }
+        }
+
+        [HttpPost]
+        public JsonResult DuplicarOrcamento([FromBody] OrcamentosViewModel ORCAMENTO)
+        {
+            string NoOrc_New = string.Empty;
+            ORCAMENTO.eReasonCode = 3;
+            ORCAMENTO.eMessage = "Ocorreu um erro ao eliminar o Orçamento.";
+
+            try
+            {
+                UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Orcamentos);
+
+                if (UPerm != null && UPerm.Create.Value == true)
+                {
+                    if (ORCAMENTO != null && !string.IsNullOrEmpty(ORCAMENTO.No))
+                    {
+                        //Get Orcamentos Numeration
+                        Configuração Configs = DBConfigurations.GetById(1);
+                        int OrcamentosNumerationConfigurationId = Configs.NumeracaoOrcamentos.Value;
+                        NoOrc_New = DBNumerationConfigurations.GetNextNumeration(OrcamentosNumerationConfigurationId, true, false);
+
+                        //Update Last Numeration Used
+                        ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(OrcamentosNumerationConfigurationId);
+                        ConfigNumerations.ÚltimoNºUsado = NoOrc_New;
+                        DBNumerationConfigurations.Update(ConfigNumerations);
+
+                        Orcamentos ORC_Original = ORCAMENTO.ParseToDB();
+
+                        Orcamentos ORC_New = new Orcamentos();
+                        ORC_New = ORC_Original;
+
+                        ORC_New.No = NoOrc_New;
+                        ORC_New.IDEstado = 1; //"Aguarda Resposta"
+                        ORC_New.EmailDataEnvio = (DateTime?)null;
+                        ORC_New.EmailUtilizadorEnvio = string.Empty;
+                        ORC_New.UtilizadorCriacao = User.Identity.Name;
+                        ORC_New.DataCriacao = DateTime.Now;
+                        ORC_New.UtilizadorModificacao = string.Empty;
+                        ORC_New.DataModificacao = (DateTime?)null;
+                        ORC_New.DataAceite = (DateTime?)null;
+                        ORC_New.UtilizadorAceite = string.Empty;
+                        ORC_New.DataNaoAceite = (DateTime?)null;
+                        ORC_New.UtilizadorNaoAceite = string.Empty;
+                        ORC_New.DataConcluido = (DateTime?)null;
+                        ORC_New.UtilizadorConcluido = string.Empty;
+
+                        if (DBOrcamentos.Create(ORC_New) == null)
+                        {
+                            ORCAMENTO.eReasonCode = 3;
+                            ORCAMENTO.eMessage = "Ocorreu um erro ao criar o Orçamento Duplicado.";
+                            return Json(ORCAMENTO);
+                        }
+
+                        bool CreateLinhaOK = true;
+                        List<LinhasOrcamentos> LINHAS_Original = DBLinhasOrcamentos.GetAllByOrcamento(ORCAMENTO.No);
+                        if (LINHAS_Original != null && LINHAS_Original.Count > 0)
+                        {
+                            LINHAS_Original.ForEach(linhaOriginal =>
+                            {
+                                if (CreateLinhaOK == true)
+                                {
+                                    LinhasOrcamentos Linha_New = new LinhasOrcamentos();
+
+                                    Linha_New.OrcamentosNo = NoOrc_New;
+                                    Linha_New.Ordem = linhaOriginal.Ordem;
+                                    Linha_New.Descricao = linhaOriginal.Descricao;
+                                    Linha_New.Quantidade = linhaOriginal.Quantidade;
+                                    Linha_New.ValorUnitario = linhaOriginal.ValorUnitario;
+                                    Linha_New.TaxaIVA = linhaOriginal.TaxaIVA;
+                                    Linha_New.TotalLinha = linhaOriginal.TotalLinha;
+                                    Linha_New.DataCriacao = DateTime.Now;
+                                    Linha_New.UtilizadorCriacao = User.Identity.Name;
+                                    Linha_New.DataModificacao = (DateTime?)null;
+                                    Linha_New.UtilizadorModificacao = string.Empty;
+
+                                    if (DBLinhasOrcamentos.Create(Linha_New) == null)
+                                        CreateLinhaOK = false;
+                                }
+                            });
+
+                            if (CreateLinhaOK == false)
+                            {
+                                ORCAMENTO.eReasonCode = 3;
+                                ORCAMENTO.eMessage = "Ocorreu um erro ao criar uma linha do Orçamento Duplicado.";
+                                return Json(ORCAMENTO);
+                            }
+                        }
+
+                        bool CreateAnexoOK = true;
+                        List<Anexos> ANEXOS_Original = DBAttachments.GetById(ORCAMENTO.No);
+                        if (ANEXOS_Original != null && ANEXOS_Original.Count > 0)
+                        {
+                            ANEXOS_Original.ForEach(orcamentoOriginal =>
+                            {
+                                if (CreateAnexoOK == true)
+                                {
+                                    string full_filename = orcamentoOriginal.UrlAnexo;
+                                    string full_Newfilename = NoOrc_New + orcamentoOriginal.UrlAnexo.Substring(9, (orcamentoOriginal.UrlAnexo.Length - 9));
+                                    var sourceDir = "";
+
+                                    if (_generalConfig.Conn == "eSUCH_Prod" || _generalConfig.Conn == "PlataformaOperacionalSUCH_TST")
+                                        sourceDir = "E:\\Data\\eSUCH\\Orcamentos\\";
+                                    else
+                                        sourceDir = "C:\\Data\\eSUCH\\Orcamentos\\";
+
+                                    System.IO.File.Copy(Path.Combine(sourceDir, full_filename), Path.Combine(sourceDir, full_Newfilename), true);
+
+                                    Anexos Orcamento_New = new Anexos();
+
+                                    Orcamento_New.TipoOrigem = TipoOrigemAnexos.Orcamentos;
+                                    Orcamento_New.NºOrigem = NoOrc_New;
+                                    Orcamento_New.UrlAnexo = full_Newfilename;
+                                    Orcamento_New.DataHoraCriação = DateTime.Now;
+                                    Orcamento_New.UtilizadorCriação = User.Identity.Name;
+
+                                    if (DBAttachments.Create(Orcamento_New) == null)
+                                        CreateAnexoOK = false;
+                                }
+                            });
+
+                            if (CreateAnexoOK == false)
+                            {
+                                ORCAMENTO.eReasonCode = 3;
+                                ORCAMENTO.eMessage = "Ocorreu um erro ao criar um anexo do Orçamento Duplicado.";
+                                return Json(ORCAMENTO);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ORCAMENTO.eReasonCode = 3;
+                        ORCAMENTO.eMessage = "O Orçamento tem que existir.";
+                        return Json(ORCAMENTO);
+                    }
+                }
+                else
+                {
+                    ORCAMENTO.eReasonCode = 3;
+                    ORCAMENTO.eMessage = "Não tem permissões para Duplicar o Orçamento.";
+                    return Json(ORCAMENTO);
+                }
+            }
+            catch (Exception ex)
+            {
+                ORCAMENTO.eReasonCode = 3;
+                ORCAMENTO.eMessage = "Ocorreu um erro ao Duplicar o Orçamento.";
+                return Json(ORCAMENTO);
+            }
+
+            ORCAMENTO.No = NoOrc_New;
+            ORCAMENTO.eReasonCode = 1;
+            ORCAMENTO.eMessage = "Ocorreu foi duplicado com sucesso.";
+            return Json(ORCAMENTO);
         }
 
         [HttpPost]
@@ -680,6 +839,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 var files = Request.Form.Files;
                 string full_filename;
+
                 foreach (var file in files)
                 {
                     try

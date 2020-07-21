@@ -58,6 +58,10 @@
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
+        <Field Name="IsCliente">
+          <DataField>IsCliente</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
         <Field Name="Organizacao">
           <DataField>Organizacao</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -438,7 +442,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -1024,6 +1027,10 @@
                               <Color>Black</Color>
                               <Width>1.5pt</Width>
                             </TopBorder>
+                            <BottomBorder>
+                              <Color>Black</Color>
+                              <Width>2pt</Width>
+                            </BottomBorder>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1200,7 +1207,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value EvaluationMode="Constant">Organização</Value>
+                      <Value>=IIF(First(Fields!IsCliente.Value, "CABECALHO") = 1, "Cliente", "Organização")</Value>
                       <Style>
                         <FontWeight>Bold</FontWeight>
                       </Style>
@@ -1211,7 +1218,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox12</rd:DefaultName>
               <Top>2.47014cm</Top>
-              <Left>0.3175cm</Left>
+              <Left>0.35278cm</Left>
               <Height>0.6cm</Height>
               <Width>2.5cm</Width>
               <ZIndex>3</ZIndex>
@@ -1514,7 +1521,7 @@
 Este documento tem como finalidade apresentar uma cotação de preços.
 Deverá pois, servir como referência à emissão de outros documentos formais que possam ser exigidos por ambas as partes, de modo a formalizar o orçamento agora estimado.</Value>
                       <Style>
-                        <FontSize>8pt</FontSize>
+                        <FontSize>7pt</FontSize>
                       </Style>
                     </TextRun>
                   </TextRuns>
@@ -1522,9 +1529,9 @@ Deverá pois, servir como referência à emissão de outros documentos formais q
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox24</rd:DefaultName>
-              <Top>4.02292cm</Top>
+              <Top>4.65792cm</Top>
               <Left>10.01639cm</Left>
-              <Height>2.15277cm</Height>
+              <Height>1.37639cm</Height>
               <Width>9.66611cm</Width>
               <ZIndex>13</ZIndex>
               <Style>
@@ -1545,9 +1552,7 @@ Deverá pois, servir como referência à emissão de outros documentos formais q
                   <TextRuns>
                     <TextRun>
                       <Value>=First(Fields!Descricao.Value, "CABECALHO")</Value>
-                      <Style>
-                        <FontSize>8pt</FontSize>
-                      </Style>
+                      <Style />
                     </TextRun>
                   </TextRuns>
                   <Style />
@@ -1556,7 +1561,7 @@ Deverá pois, servir como referência à emissão de outros documentos formais q
               <rd:DefaultName>Textbox24</rd:DefaultName>
               <Top>2.47015cm</Top>
               <Left>10.01639cm</Left>
-              <Height>1.37638cm</Height>
+              <Height>2.18777cm</Height>
               <Width>9.66611cm</Width>
               <ZIndex>14</ZIndex>
               <Style>

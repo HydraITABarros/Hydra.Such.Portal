@@ -139,7 +139,7 @@
         </style>
 
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllContactsOrcamentos" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json"  id="contatos_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllContactsOrcamentos" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json" id="contatos_ajax"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -199,6 +199,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Orcamentos/DuplicarOrcamento"
+                   last-response="{{duplicarOrcamento}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DuplicarOrcamento_ajax"
+                   on-response="_responseDuplicarOrcamento"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Orcamentos/DeleteAnexo"
                    last-response="{{deletedAnexo}}"
                    method="post"
@@ -226,7 +235,7 @@
                    content-type="application/json">
         </iron-ajax>
 
-        
+
 
         <iron-ajax url="/Orcamentos/AddOrcamentoContato"
                    last-response="{{addContatoResponse}}"
@@ -243,7 +252,7 @@
             <paper-button id="btn_GuardarOrcamento" class="tablinks" on-tap="_GuardarOrcamento" hidden="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
             <paper-button id="btn_DeleteOrcamento" class="tablinks" on-tap="_DeleteOrcamento" hidden="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
             <paper-button id="btn_RelatorioOrcamento" class="tablinks" on-tap="_RelatorioOrcamento"><i class="fa fa-print" aria-hidden="true"></i>  Imprimir</paper-button>
-            <paper-button id="btn_CriarProposta" class="tablinks" on-tap="_CriarProposta" hidden="{{ !_permissions.update }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Criar Proposta</paper-button>
+            <paper-button id="btn_CriarProposta" class="tablinks" on-tap="_CriarProposta" hidden><i class="fa fa-plus-square" aria-hidden="true"></i>  Criar Proposta</paper-button>
             <paper-button id="btn_DuplicarOrcamento" class="tablinks" on-tap="_DuplicarOrcamento" hidden="{{ !_permissions.create }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Duplicar Orçamento</paper-button>
         </div>
 
@@ -268,7 +277,7 @@
                                             </div>
 
                                             <div class="col-md-3">
-                                                <such-selectbox id="OrcNoCliente" label="Organização" value="{{data.noCliente}}"
+                                                <such-selectbox id="OrcNoCliente" label="Clientes" value="{{data.noCliente}}"
                                                                 items="[[CBClients]]"
                                                                 text-path="name"
                                                                 value-path="no_"
@@ -280,7 +289,7 @@
 
                                             <div class="col-md-4">
                                                 <div class="col-md-10">
-                                                    <such-selectbox id="OrcNoContacto" label="Outra Organização" value="{{data.noContacto}}"
+                                                    <such-selectbox id="OrcNoContacto" label="Outras Organizações" value="{{data.noContacto}}"
                                                                     items="[[CBContacts]]"
                                                                     text-path="organizacao"
                                                                     value-path="id"
@@ -386,7 +395,7 @@
                                                 </vaadin-combo-box>
                                             </div>
 
-                                            <div class="col-md-2">
+                                            <div class="col-md-4">
                                                 <such-selectbox id="OrcProjetoAssociado" value="{{data.projetoAssociado}}" label="Projeto Associado"
                                                                 disabled="{{ !_permissions.update }}"
                                                                 items="[[CBProjects]]"
@@ -397,7 +406,7 @@
                                             </div>
 
                                             <div class="col-md-2">
-                                                <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" hidden disabled></vaadin-text-field>
                                             </div>
                                         </div>
 
@@ -1253,26 +1262,39 @@
                     }
                 },
 
-                _DuplicarOrcamento: function () {
-                    debugger;
-                    if (this.$._addContatoOrganizacao.value == "" && this.$._addContatoNome.value == "") {
-                        this._openToastError("É Obrigatório preencher um dos campos Organização e/ou Nome.");
+                _DuplicarOrcamento: function (e) {
+                    if (e != null) {
+                        var ajax_request = this.$.page_DuplicarOrcamento_ajax;
+                        ajax_request.body = JSON.stringify(this.data);
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Duplicar este Orçamento?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
+                _responseDuplicarOrcamento: function () {
+                    if (this.duplicarOrcamento.eReasonCode != 1) {
+                        this._openToastError(this.duplicarOrcamento.eMessage);
                     }
                     else {
-                        if (this.$._addContatoTelemovel.value == "" && this.$._addContatoEmail.value == "") {
-                            this._openToastError("É Obrigatório preencher um dos campos Telemóvel e/ou E-mail.");
-                        }
-                        else {
-                            this.$.page_addContato_ajax.body = JSON.stringify({
-                                "organizacao": this.$._addContatoOrganizacao.value,
-                                "telemovel": this.$._addContatoTelemovel.value,
-                                "email": this.$._addContatoEmail.value,
-                                "nif": this.$._addContatoNIF.value,
-                                "notas": this.$._addContatoNotas.value
-                            });
-                            this.$.page_addContato_ajax.generateRequest();
+                        this._openToast(this.duplicarOrcamento.eMessage);
 
-                        }
+                        window.location.href = "/Orcamentos/Orcamentos_Details/" + this.duplicarOrcamento.no;
                     }
                 },
 
