@@ -32,6 +32,7 @@
 <link rel="import" href="~/lib/datetime-picker-master/time-element.html" />
 <link rel="import" href="~/lib/datetime-picker-master/time-picker.html" />
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
@@ -1449,7 +1450,11 @@
                                 [[_round2casas(item.quantity)]]
                                 <!--{{item.quantity}}-->
                             </div>
+                            
+
                         </template>
+                        
+
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
@@ -1466,7 +1471,11 @@
                                 [[_formatIntValue(item.unitPrice)]]
                                 <!--{{item.unitPrice}}-->
                             </div>
+                            
+
                         </template>
+                        
+
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
@@ -1481,6 +1490,9 @@
                                 <!--{{item.vat}}-->
                             </div>
                         </template>
+                        /t
+                        
+
                     </vaadin-grid-column>
 
                     <vaadin-grid-column width="100px" resizable>
@@ -1497,7 +1509,11 @@
                                 [[_formatCurrencyValue(item.amount)]]
                                 <!--{{item.amount}}-->
                             </div>
+                            
+
                         </template>
+                        
+
                     </vaadin-grid-column>
 
                     <vaadin-grid-column width="100px" resizable>

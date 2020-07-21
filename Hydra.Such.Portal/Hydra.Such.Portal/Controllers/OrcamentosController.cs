@@ -1171,7 +1171,7 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (Contato != null)
                 {
-                    if (string.IsNullOrEmpty(Contato.Organizacao) && string.IsNullOrEmpty(Contato.Nome))
+                    if (string.IsNullOrEmpty(Contato.Organizacao))
                     {
                         Contato.eReasonCode = 3;
                         Contato.eMessage = "É Obrigatório preencher um dos campos Organização e/ou Nome.";
@@ -1183,6 +1183,18 @@ namespace Hydra.Such.Portal.Controllers
                         Contato.eReasonCode = 3;
                         Contato.eMessage = "É Obrigatório preencher um dos campos Telemóvel e/ou E-mail.";
                         return Json(Contato);
+                    }
+
+                    if (!string.IsNullOrEmpty(Contato.NIF))
+                    {
+                        OrcamentosContatos ContatoNIF = DBOrcamentosContatos.GetAll().Where(x => x.NIF == Contato.NIF).FirstOrDefault();
+
+                        if (ContatoNIF != null)
+                        {
+                            Contato.eReasonCode = 3;
+                            Contato.eMessage = "Já existe uma Outra Organização - " + ContatoNIF.Organizacao + " - com o mesmo NIF";
+                            return Json(Contato);
+                        }
                     }
 
                     int MaxID = DBOrcamentosContatos.GetMaxContato();

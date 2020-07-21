@@ -139,7 +139,7 @@
         </style>
 
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllContactsOrcamentos" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json" id="contatos_ajax"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllContactsOrcamentos" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json" id="contatos_ajax" on-response="_responseAddContatoList"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -804,6 +804,11 @@
                     _SelectedLine: {
                         observer: '_lineSelected'
                     },
+                    addContatoValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
                 },
 
                 _openToast: function (message) {
@@ -1229,8 +1234,7 @@
                 },
 
                 _addNewContato: function () {
-                    debugger;
-                    if (this.$._addContatoOrganizacao.value == "" && this.$._addContatoNome.value == "") {
+                    if (this.$._addContatoOrganizacao.value == "") {
                         this._openToastError("É Obrigatório preencher um dos campos Organização e/ou Nome.");
                     }
                     else {
@@ -1240,7 +1244,6 @@
                         else {
                             this.$.page_addContato_ajax.body = JSON.stringify({
                                 "organizacao": this.$._addContatoOrganizacao.value,
-                                "nome": this.$._addContatoNome.value,
                                 "telemovel": this.$._addContatoTelemovel.value,
                                 "email": this.$._addContatoEmail.value,
                                 "nif": this.$._addContatoNIF.value,
@@ -1256,9 +1259,17 @@
                         this._openToastError(this.addContatoResponse.eMessage);
                     }
                     else {
+                        this.addContatoValue = this.addContatoResponse.id;
                         this.$.dlgAddContato.close();
                         this._openToast(this.addContatoResponse.eMessage);
                         this.$.contatos_ajax.generateRequest();
+                    }
+                },
+                _responseAddContatoList: function () {
+                    if (this.addContatoValue != "") {
+                        this.$.OrcNoContacto.value = this.addContatoValue;
+                        this.$.OrcNoCliente._clearSelection();
+                        this.addContatoValue = "";
                     }
                 },
 
