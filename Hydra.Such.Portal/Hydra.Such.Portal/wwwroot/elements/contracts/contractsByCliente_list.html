@@ -119,7 +119,7 @@
                    on-response="_clResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/Contratos/ExportToExcel_Contratos"
+        <iron-ajax url="/Contratos/ExportToExcel_ContratosCliente"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
@@ -520,7 +520,7 @@
 
                 _exportEXCELResponse: function (e) {
                     var FileName = this.export;
-                    location.href = '../Contratos/ExportToExcelDownload_Contratos?sFileName=' + FileName;
+                    location.href = '/Contratos/ExportToExcelDownload_ContratosCliente?sFileName=' + FileName;
                 },
 
                 /*start - ColumnToggle*/

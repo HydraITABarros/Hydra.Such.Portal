@@ -2328,6 +2328,13 @@ namespace Hydra.Such.Portal.Controllers
                     case "Anular Validacao":
                         if (item.State == RequisitionStates.Validated)
                         {
+                            if (item.SISLOG.HasValue && item.SISLOG == true)
+                            {
+                                item.eReasonCode = 5;
+                                item.eMessage = "Não é possivel Anular a Validação pois a Requisição já foi enviada para o SISLOG.";
+                                break;
+                            }
+
                             item.State = RequisitionStates.Approved;
                             item.ResponsibleValidation = "";
                             item.ValidationDate = null;
@@ -3974,14 +3981,18 @@ namespace Hydra.Such.Portal.Controllers
                         row = excelSheet.CreateRow(count);
 
                         if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
-                        if (dp["state"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.State.ToString()); Col = Col + 1; }
-                        if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Urgent.ToString()); Col = Col + 1; }
-                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.ToString()); Col = Col + 1; }
-                        if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNutrition.ToString()); Col = Col + 1; }
-                        if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarket.ToString()); Col = Col + 1; }
-                        if (dp["pedirOrcamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedirOrcamento.ToString()); Col = Col + 1; }
+                        if (dp["state"]["hidden"].ToString() == "False") {
+                            row.CreateCell(Col).SetCellValue(item.State == RequisitionStates.Pending ? "Pendente" : item.State == RequisitionStates.Received ? "Recebido" :
+                            item.State == RequisitionStates.Treated ? "Tratado" : item.State == RequisitionStates.Validated ? "Validado" : item.State == RequisitionStates.Approved ? "Aprovado" :
+                            item.State == RequisitionStates.Rejected ? "Rejeitado" : item.State == RequisitionStates.Available ? "Disponibilizado" : item.State == RequisitionStates.Archived ? "Arquivado" : "");
+                            Col = Col + 1; }
+                        if (dp["urgent"]["hidden"].ToString() == "False") {row.CreateCell(Col).SetCellValue(item.Urgent.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.HasValue ? item.AlreadyPerformed == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNutrition.HasValue ? item.RequestNutrition == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarket.HasValue ? item.LocalMarket == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["pedirOrcamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedirOrcamento.HasValue ? item.PedirOrcamento == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
                         //if (dp["attachment"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Attachment.ToString()); Col = Col + 1; }
-                        if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Budget.ToString()); Col = Col + 1; }
+                        if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Budget.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
                         if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketRegion); Col = Col + 1; }
                         if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString()); Col = Col + 1; }
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
@@ -3992,7 +4003,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Comments); Col = Col + 1; }
                         if (dp["marketInquiryNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MarketInquiryNo); Col = Col + 1; }
                         if (dp["orderNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderNo); Col = Col + 1; }
-                        if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StockReplacement.ToString()); Col = Col + 1; }
+                        if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StockReplacement.HasValue ? item.StockReplacement == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
                         if (dp["requisitionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionDate); Col = Col + 1; }
                         if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CreateUser); Col = Col + 1; }
                         if (dp["estimatedValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString()); Col = Col + 1; }

@@ -1014,7 +1014,10 @@ namespace Hydra.Such.Portal.Controllers
                                 catch (Exception ex)
                                 {
                                     data.eReasonCode = 3;
-                                    data.eMessage = ex.InnerException.Message;
+                                    if (ex.InnerException.Message == "You cannot change Bill-to Customer No. because one or more entries are associated with this Job.")
+                                        data.eMessage = "Não é possivel alterar o Cliente, pois o Projeto já contêm Movimentos inseridos.";
+                                    else
+                                        data.eMessage = ex.InnerException.Message;
                                     statusL = false;
                                     return Json(data);
                                 }

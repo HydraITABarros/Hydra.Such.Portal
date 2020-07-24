@@ -353,6 +353,7 @@ namespace Hydra.Such.Portal.Controllers
                     ORC.AnexosOrcamentos = DBAttachments.ParseToViewModel(DBAttachments.GetById(ORC.No));
                     ORC.TotalSemIVA = ORC.LinhasOrcamentos.Sum(item => item.Quantidade * item.ValorUnitario);
                     ORC.TotalComIVA = ORC.LinhasOrcamentos.Sum(item => item.TotalLinha);
+                    ORC.ValorIVA = ORC.TotalComIVA - ORC.TotalSemIVA;
 
                     List<EnumData> AllEstados = EnumerablesFixed.OrcamentosEstados;
                     List<UnidadePrestação> AllUnidadesPrestacao = DBFetcUnit.GetAll();
@@ -442,6 +443,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         ORCAMENTO.TotalSemIVA = ORCAMENTO.LinhasOrcamentos.Sum(item => item.Quantidade * item.ValorUnitario);
                         ORCAMENTO.TotalComIVA = ORCAMENTO.LinhasOrcamentos.Sum(item => item.TotalLinha);
+                        ORCAMENTO.ValorIVA = ORCAMENTO.TotalComIVA - ORCAMENTO.TotalSemIVA;
                     }
 
                     Orcamentos OrcOriginal = DBOrcamentos.GetById(ORCAMENTO.No);
@@ -938,7 +940,6 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         Credentials = new NetworkCredential(config.ReportUsername, config.ReportPassword)
                     };
-
 
                     byte[] myDataBuffer = Client.DownloadData(theURL);
 
