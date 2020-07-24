@@ -136,30 +136,30 @@ namespace Hydra.Such.Portal.Controllers
                 if (requestParams["FiltroAno"] != null && requestParams["FiltroAno"].ToString() != "")
                     FiltroAno = (int)requestParams["FiltroAno"];
 
-                List<SeleccaoEntidades> List = new List<SeleccaoEntidades>();
-                List<ConsultaMercado> AllConsultaMercado = new List<ConsultaMercado>();
+                //List<SeleccaoEntidades> List = new List<SeleccaoEntidades>();
+                //List<ConsultaMercado> AllConsultaMercado = new List<ConsultaMercado>();
                 //List<LinhasConsultaMercado> AllLinhasConsultaMercado = new List<LinhasConsultaMercado>();
-                List<RegistoDePropostas> AllRegistoDePropostas = new List<RegistoDePropostas>();
+                //List<RegistoDePropostas> AllRegistoDePropostas = new List<RegistoDePropostas>();
                 List<SeleccaoEntidadesView> result = new List<SeleccaoEntidadesView>();
 
-                using (var ctx = new SuchDBContext())
-                {
-                    List = ctx.SeleccaoEntidades.Where(x => ctx.ConsultaMercado.Where(y => y.NumConsultaMercado == x.NumConsultaMercado).FirstOrDefault().Historico == Historic).ToList();
+                result = DBSeleccaoEntidades.GetConsultasPorFornecedor(FiltroAno, FiltroFornecedor, Historic);
 
-                    AllConsultaMercado = ctx.ConsultaMercado.ToList();
+                //using (var ctx = new SuchDBContext())
+                //{
+                    //List = ctx.SeleccaoEntidades.Where(x => ctx.ConsultaMercado.Where(y => y.NumConsultaMercado == x.NumConsultaMercado).FirstOrDefault().Historico == Historic).ToList();
+
+                    //AllConsultaMercado = ctx.ConsultaMercado.ToList();
                     //AllLinhasConsultaMercado = ctx.LinhasConsultaMercado.ToList();
-                    AllRegistoDePropostas = ctx.RegistoDePropostas.ToList();
-                }
+                    //AllRegistoDePropostas = ctx.RegistoDePropostas.ToList();
+                //}
 
-                if (!string.IsNullOrEmpty(FiltroFornecedor))
-                    List.RemoveAll(x => x.CodFornecedor != FiltroFornecedor);
+                //if (!string.IsNullOrEmpty(FiltroFornecedor))
+                //    result.RemoveAll(x => x.CodFornecedor != FiltroFornecedor);
 
-                if (FiltroAno != 1900)
-                    List.RemoveAll(x => Convert.ToDateTime(x.DataPedidoEsclarecimento).Year != FiltroAno);
+                //if (FiltroAno != 1900)
+                //    result.RemoveAll(x => Convert.ToDateTime(x.DataPedidoEsclarecimento).Year != FiltroAno);
 
-                List.ForEach(y => result.Add(CastSeleccaoEntidadesToView(y)));
-
-
+                //List.ForEach(y => result.Add(CastSeleccaoEntidadesToView(y)));
 
                 //using (var ctx = new SuchDBContext())
                 //{
@@ -180,45 +180,53 @@ namespace Hydra.Such.Portal.Controllers
 
                 result.ForEach(selecao =>
                 {
-                    selecao.NotaEncomenda_Show = "Não";
-                    selecao.Historico_Show = HistoricPT;
+                    selecao.DataEnvioAoFornecedor_Show = selecao.DataEnvioAoFornecedor == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataEnvioAoFornecedor.Value.ToString("yyyy-MM-dd");
+                    selecao.DataRecepcaoProposta_Show = selecao.DataRecepcaoProposta == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataRecepcaoProposta.Value.ToString("yyyy-MM-dd");
+                    selecao.DataRespostaEsperada_Show = selecao.DataRespostaEsperada == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataRespostaEsperada.Value.ToString("yyyy-MM-dd");
+                    selecao.DataPedidoEsclarecimento_Show = selecao.DataPedidoEsclarecimento == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataPedidoEsclarecimento.Value.ToString("yyyy-MM-dd");
+                    selecao.DataRespostaEsclarecimento_Show = selecao.DataRespostaEsclarecimento == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataRespostaEsclarecimento.Value.ToString("yyyy-MM-dd");
+                    selecao.DataRespostaDoFornecedor_Show = selecao.DataRespostaDoFornecedor == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataRespostaDoFornecedor.Value.ToString("yyyy-MM-dd");
+                    selecao.DataEnvioPropostaArea_Show = selecao.DataEnvioPropostaArea == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataEnvioPropostaArea.Value.ToString("yyyy-MM-dd");
+                    selecao.DataRespostaArea_Show = selecao.DataRespostaArea == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataRespostaArea.Value.ToString("yyyy-MM-dd");
+                    selecao.DataPedidoCotacaoCriadoEm_Show = selecao.PedidoCotacaoCriadoEm == Convert.ToDateTime("1900-01-01") ? "" : selecao.PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd");
+                    selecao.Historico_Show = selecao.Historico == false ? "Não" : "Sim";
 
-                    RegistoDePropostas REG = AllRegistoDePropostas.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault();
-                    if (REG != null)
-                    {
-                        if (REG.Fornecedor1Code == selecao.CodFornecedor && REG.Fornecedor1Select == true)
-                            selecao.NotaEncomenda_Show = "Sim";
-                        if (REG.Fornecedor2Code == selecao.CodFornecedor && REG.Fornecedor2Select == true)
-                            selecao.NotaEncomenda_Show = "Sim";
-                        if (REG.Fornecedor3Code == selecao.CodFornecedor && REG.Fornecedor3Select == true)
-                            selecao.NotaEncomenda_Show = "Sim";
-                        if (REG.Fornecedor4Code == selecao.CodFornecedor && REG.Fornecedor4Select == true)
-                            selecao.NotaEncomenda_Show = "Sim";
-                        if (REG.Fornecedor5Code == selecao.CodFornecedor && REG.Fornecedor5Select == true)
-                            selecao.NotaEncomenda_Show = "Sim";
-                        if (REG.Fornecedor6Code == selecao.CodFornecedor && REG.Fornecedor6Select == true)
-                            selecao.NotaEncomenda_Show = "Sim";
-                    }
+                    //RegistoDePropostas REG = AllRegistoDePropostas.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault();
+                    //if (REG != null)
+                    //{
+                    //    if (REG.Fornecedor1Code == selecao.CodFornecedor && REG.Fornecedor1Select == true)
+                    //        selecao.NotaEncomenda_Show = "Sim";
+                    //    if (REG.Fornecedor2Code == selecao.CodFornecedor && REG.Fornecedor2Select == true)
+                    //        selecao.NotaEncomenda_Show = "Sim";
+                    //    if (REG.Fornecedor3Code == selecao.CodFornecedor && REG.Fornecedor3Select == true)
+                    //        selecao.NotaEncomenda_Show = "Sim";
+                    //    if (REG.Fornecedor4Code == selecao.CodFornecedor && REG.Fornecedor4Select == true)
+                    //        selecao.NotaEncomenda_Show = "Sim";
+                    //    if (REG.Fornecedor5Code == selecao.CodFornecedor && REG.Fornecedor5Select == true)
+                    //        selecao.NotaEncomenda_Show = "Sim";
+                    //    if (REG.Fornecedor6Code == selecao.CodFornecedor && REG.Fornecedor6Select == true)
+                    //        selecao.NotaEncomenda_Show = "Sim";
+                    //}
 
                     //selecao.CustoTotalPrevisto = (decimal)AllLinhasConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).Sum(x => x.CustoTotalPrevisto);
 
-                    ConsultaMercado consulta = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault();
-                    if (consulta != null)
-                    {
-                        selecao.NoRequisicao = consulta.NumRequisicao;
-                        selecao.CodRegiao = consulta.CodRegiao;
-                        selecao.CodArea = consulta.CodAreaFuncional;
-                        selecao.CodCresp = consulta.CodCentroResponsabilidade;
-                        selecao.DataPedidoCotacaoCriadoEm_Show = consulta.PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd");
-                    }
-                    else
-                    {
-                        selecao.NoRequisicao = "";
-                        selecao.CodRegiao = "";
-                        selecao.CodArea = "";
-                        selecao.CodCresp = "";
-                        selecao.DataPedidoCotacaoCriadoEm_Show = "";
-                    }
+                    //ConsultaMercado consulta = AllConsultaMercado.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault();
+                    //if (consulta != null)
+                    //{
+                    //    selecao.NoRequisicao = consulta.NumRequisicao;
+                    //    selecao.CodRegiao = consulta.CodRegiao;
+                    //    selecao.CodArea = consulta.CodAreaFuncional;
+                    //    selecao.CodCresp = consulta.CodCentroResponsabilidade;
+                    //    selecao.DataPedidoCotacaoCriadoEm_Show = consulta.PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd");
+                    //}
+                    //else
+                    //{
+                    //    selecao.NoRequisicao = "";
+                    //    selecao.CodRegiao = "";
+                    //    selecao.CodArea = "";
+                    //    selecao.CodCresp = "";
+                    //    selecao.DataPedidoCotacaoCriadoEm_Show = "";
+                    //}
                 });
 
                 return Json(result.OrderByDescending(x => x.NumConsultaMercado));

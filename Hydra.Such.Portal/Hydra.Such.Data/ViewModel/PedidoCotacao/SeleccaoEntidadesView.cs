@@ -31,11 +31,13 @@ namespace Hydra.Such.Data.ViewModel.PedidoCotacao
         public bool? NaoRespostaDoFornecedor { get; set; }
         public DateTime? DataEnvioPropostaArea { get; set; }
         public DateTime? DataRespostaArea { get; set; }
+        public DateTime? PedidoCotacaoCriadoEm { get; set; }
         public string NoRequisicao { get; set; }
         public string CodRegiao { get; set; }
         public string CodArea { get; set; }
         public string CodCresp { get; set; }
         public decimal CustoTotalPrevisto { get; set; }
+        public bool? Historico { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
