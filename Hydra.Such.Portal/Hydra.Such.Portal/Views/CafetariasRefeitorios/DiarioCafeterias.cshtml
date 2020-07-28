@@ -326,22 +326,31 @@
         _responseCreated: function (created) {
             var self = this;
             if (created.detail.status === 200) {
-                if (this.created == true) {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
-                    this.$.grid_databound_ajax.generateRequest();
+                if (this.created == 1) {
                     this._openToast("Diário Cafetaria/Refeitório criado com sucesso.");
-
-                    this.$.description.value = "";
-                    this.$.value.value = "";
-
                 } else {
-                    this._openToastError("Ocorreu um erro desconhecido.");
+                    if (this.created == 2)
+                        this._openToastError("Ocorreu um erro ao criar a linha do diário.");
+                    if (this.created == 3)
+                        this._openToastError("Já existe uma linha igual no diário.");
+                    if (this.created == 4)
+                        this._openToastError("É necessário preencher todos os campos obrigatórios.");
+                    if (this.created == 99)
+                        this._openToastError("Ocorreu um erro desconhecido.");
                 }
             } else {
                 this._openToastError("Ocorreu um erro desconhecido.");
             }
 
+            this.$.registryDate.value = null;
+            this.$.cbmovementType.value = null;
+            this.$.description.value = null;
+            this.$.value.value = null;
+
             $(this.$.btnRegisterLine).removeClass('disabled');
+
+            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+            this.$.grid_databound_ajax.generateRequest();
         },
 
         _deleteDiaryLine: function (e) {

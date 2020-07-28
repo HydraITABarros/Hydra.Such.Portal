@@ -308,26 +308,41 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
         {
             try
             {
-                if (data != null)
+                if (data != null && data.ProdutiveUnityNo != null && data.CoffeShopCode != null)
                 {
-                    DiárioCafetariaRefeitório newline = new DiárioCafetariaRefeitório();
-                    newline = DBCoffeeShopsDiary.ParseToDB(data);
-                    newline.Utilizador = User.Identity.Name;
-                    newline.UtilizadorCriação = User.Identity.Name;
-                    DBCoffeeShopsDiary.Create(newline);
+                    if (data.RegistryDate == "")
+                        data.RegistryDate = null;
+                    if (data.Description == "")
+                        data.Description = null;
 
-                    if (newline.NºLinha > 0)
+                    List<DiárioCafetariaRefeitório> AllDiary = DBCoffeeShopsDiary.GetByIdsList((int)data.ProdutiveUnityNo, (int)data.CoffeShopCode, User.Identity.Name)
+                        .Where(x => Convert.ToDateTime(x.DataRegisto) == Convert.ToDateTime(data.RegistryDate) && x.TipoMovimento == data.MovementType && x.Descrição == data.Description && x.Valor == data.Value).ToList();
+
+                    if (AllDiary == null || AllDiary.Count == 0)
                     {
-                        return Json(true);
+                        data.User = User.Identity.Name;
+                        data.CreateUser = User.Identity.Name;
+                        data.CreateDateTime = DateTime.Now.ToString();
+
+                        DiárioCafetariaRefeitório newline = new DiárioCafetariaRefeitório();
+                        newline = DBCoffeeShopsDiary.ParseToDB(data);
+                        DBCoffeeShopsDiary.Create(newline);
+
+                        if (newline.NºLinha > 0)
+                        {
+                            return Json(1);
+                        }
+                        return Json(2);
                     }
-                    return Json(false);
+                    else
+                        return Json(3);
                 }
 
-                return Json(false);
+                return Json(4);
             }
             catch (Exception ex)
             {
-                return Json(false);
+                return Json(99);
             }
         }
 

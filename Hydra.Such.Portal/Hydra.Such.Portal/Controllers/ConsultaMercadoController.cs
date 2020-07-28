@@ -136,21 +136,22 @@ namespace Hydra.Such.Portal.Controllers
                 if (requestParams["FiltroAno"] != null && requestParams["FiltroAno"].ToString() != "")
                     FiltroAno = (int)requestParams["FiltroAno"];
 
-                //List<SeleccaoEntidades> List = new List<SeleccaoEntidades>();
-                //List<ConsultaMercado> AllConsultaMercado = new List<ConsultaMercado>();
-                //List<LinhasConsultaMercado> AllLinhasConsultaMercado = new List<LinhasConsultaMercado>();
-                //List<RegistoDePropostas> AllRegistoDePropostas = new List<RegistoDePropostas>();
                 List<SeleccaoEntidadesView> result = new List<SeleccaoEntidadesView>();
 
                 result = DBSeleccaoEntidades.GetConsultasPorFornecedor(FiltroAno, FiltroFornecedor, Historic);
 
+                //List<SeleccaoEntidades> List = new List<SeleccaoEntidades>();
+                //List<ConsultaMercado> AllConsultaMercado = new List<ConsultaMercado>();
+                //List<LinhasConsultaMercado> AllLinhasConsultaMercado = new List<LinhasConsultaMercado>();
+                //List<RegistoDePropostas> AllRegistoDePropostas = new List<RegistoDePropostas>();
+
                 //using (var ctx = new SuchDBContext())
                 //{
-                    //List = ctx.SeleccaoEntidades.Where(x => ctx.ConsultaMercado.Where(y => y.NumConsultaMercado == x.NumConsultaMercado).FirstOrDefault().Historico == Historic).ToList();
+                //List = ctx.SeleccaoEntidades.Where(x => ctx.ConsultaMercado.Where(y => y.NumConsultaMercado == x.NumConsultaMercado).FirstOrDefault().Historico == Historic).ToList();
 
-                    //AllConsultaMercado = ctx.ConsultaMercado.ToList();
-                    //AllLinhasConsultaMercado = ctx.LinhasConsultaMercado.ToList();
-                    //AllRegistoDePropostas = ctx.RegistoDePropostas.ToList();
+                //AllConsultaMercado = ctx.ConsultaMercado.ToList();
+                //AllLinhasConsultaMercado = ctx.LinhasConsultaMercado.ToList();
+                //AllRegistoDePropostas = ctx.RegistoDePropostas.ToList();
                 //}
 
                 //if (!string.IsNullOrEmpty(FiltroFornecedor))
