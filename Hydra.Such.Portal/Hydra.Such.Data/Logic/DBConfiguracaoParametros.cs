@@ -38,6 +38,21 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<ConfiguracaoParametros> GetListByParametro(string Parametro)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.ConfiguracaoParametros.Where(x => x.Parametro == Parametro).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<ConfiguracaoParametros> GetAll()
         {
             try

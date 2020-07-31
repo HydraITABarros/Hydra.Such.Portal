@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.Database
         public string Parametro { get; set; }
         public string Descricao { get; set; }
         public string Valor { get; set; }
+        public int? Ordem { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraModificacao { get; set; }

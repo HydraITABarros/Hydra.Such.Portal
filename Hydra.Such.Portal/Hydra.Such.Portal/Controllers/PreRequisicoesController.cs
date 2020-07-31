@@ -2840,9 +2840,34 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     else
                     {
+                        //Código original
                         NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
                         product.UnitCost = localizacao.UnitCost;
                         product.LocationCode = localizacao.LocationCode;
+
+                        //Alteração
+                        //List<NAVStockKeepingUnitViewModel> localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code);
+
+                        //if (product.)
+
+
+                        //DBConfiguracaoParametros.GetListByParametro()
+                        //product.UnitCost = localizacao.UnitCost;
+                        //product.LocationCode = localizacao.LocationCode;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     }
 
                     if (!string.IsNullOrEmpty(area))

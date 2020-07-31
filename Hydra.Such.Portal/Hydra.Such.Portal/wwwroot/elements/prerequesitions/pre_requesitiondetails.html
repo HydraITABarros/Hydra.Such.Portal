@@ -2089,7 +2089,8 @@
                 },
 
                 _createnewreq: function (e) {
-                    $(this.$.btn_CriarRequisicao).addClass('disabled');
+                    var _self = this;
+                    $(_self.$.btn_CriarRequisicao).addClass('disabled');
                     this.$.btn_CriarRequisicao.disabled = true;
 
                     this.data.area = this._areaid;

@@ -12914,6 +12914,9 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Valor")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.Ordem)
+                    .HasColumnName("Ordem");
+
                 entity.Property(e => e.DataHoraCriacao)
                     .HasColumnName("DataHoraCriacao")
                     .HasColumnType("datetime");
