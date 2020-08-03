@@ -2229,7 +2229,7 @@
                     this.$.ajax_InvoiceDetailsExport.generateRequest();
                 },
                 _exportBalances: function () {
-                    var payload = { list: this.balances, columns: this._balancesColumns };
+                    var payload = { list: this.$.grid_balances._filter(this.balances), columns: this._balancesColumns };
 
                     this.$.ajax_BalancesExport.body = JSON.stringify(payload);
                     this.$.ajax_BalancesExport.generateRequest();
