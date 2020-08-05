@@ -879,7 +879,8 @@ namespace Hydra.Such.Portal.Controllers
                     MercadoLocal = false,
                     ReparaçãoComGarantia = false,
                     Emm = false,
-                    PedirOrcamento = false
+                    PedirOrcamento = false,
+                    RoupaManutencao = false
                 };
                 DBPreRequesition.Create(createNew);
 
@@ -1036,6 +1037,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
                         PreRequisicaoDB.NºFatura = data.InvoiceNo;
                         PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
+                        PreRequisicaoDB.RoupaManutencao = data.RoupaManutencao;
                         PreRequisicaoDB.ValorTotalDocComIVA = data.ValorTotalDocComIVA;
 
                         PreRequisicaoDB = DBPreRequesition.Update(PreRequisicaoDB);
@@ -1136,6 +1138,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreRequisicaoDB.ResponsávelReceçãoReceção = data.ReceptionReceptionResponsible;
                             PreRequisicaoDB.NºFatura = data.InvoiceNo;
                             PreRequisicaoDB.PedirOrcamento = data.PedirOrcamento;
+                            PreRequisicaoDB.RoupaManutencao = data.RoupaManutencao;
                             PreRequisicaoDB.ValorTotalDocComIVA = data.ValorTotalDocComIVA;
                             PreRequisicaoDB.NoFornecedor = data.NoFornecedor;
 
@@ -1989,6 +1992,7 @@ namespace Hydra.Such.Portal.Controllers
                                 RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
                                 PedirOrcamento = data.PedirOrcamento,
+                                RoupaManutencao = data.RoupaManutencao,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
                                 {
@@ -2075,6 +2079,7 @@ namespace Hydra.Such.Portal.Controllers
                                 RequisitionDate = DateTime.Now.ToString("dd-MM-yyyy"),
                                 CreateUser = User.Identity.Name,
                                 PedirOrcamento = data.PedirOrcamento,
+                                RoupaManutencao = data.RoupaManutencao,
 
                                 Lines = items.Select(line => new RequisitionLineViewModel()
                                 {
@@ -2373,6 +2378,7 @@ namespace Hydra.Such.Portal.Controllers
                                             CreateUser = User.Identity.Name,
                                             ValorTotalDocComIVA = data.ValorTotalDocComIVA,
                                             PedirOrcamento = data.PedirOrcamento,
+                                            RoupaManutencao = data.RoupaManutencao,
 
                                             Lines = items.Select(line => new RequisitionLineViewModel()
                                             {
@@ -2461,6 +2467,7 @@ namespace Hydra.Such.Portal.Controllers
                                             CreateUser = User.Identity.Name,
                                             ValorTotalDocComIVA = data.ValorTotalDocComIVA,
                                             PedirOrcamento = data.PedirOrcamento,
+                                            RoupaManutencao = data.RoupaManutencao,
 
                                             Lines = items.Select(line => new RequisitionLineViewModel()
                                             {
@@ -2823,7 +2830,7 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetProductInfo([FromBody] PreRequisitionLineViewModel linha, string area)
+        public JsonResult GetProductInfo([FromBody] PreRequisitionLineViewModel linha, string area, string regiao)
         {
             NAVProductsViewModel product = new NAVProductsViewModel();
 
@@ -2841,34 +2848,44 @@ namespace Hydra.Such.Portal.Controllers
                     else
                     {
                         //Código original
-                        NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
-                        product.UnitCost = localizacao.UnitCost;
-                        product.LocationCode = localizacao.LocationCode;
-
-                        //Alteração
-                        //List<NAVStockKeepingUnitViewModel> localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code);
-
-                        //if (product.)
-
-
-                        //DBConfiguracaoParametros.GetListByParametro()
+                        //NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
                         //product.UnitCost = localizacao.UnitCost;
                         //product.LocationCode = localizacao.LocationCode;
 
+                        //Alteração
+                        List<ConfiguracaoParametros> AllArmazens = new List<ConfiguracaoParametros>();
+                        if (!string.IsNullOrEmpty(regiao) && regiao == "12")
+                            AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem12");
+                        if (!string.IsNullOrEmpty(regiao) && regiao == "23")
+                            AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem23");
+                        if (!string.IsNullOrEmpty(regiao) && regiao == "33")
+                            AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem33");
+                        if (!string.IsNullOrEmpty(regiao) && regiao == "43")
+                            AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem43");
 
+                        List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                        NAVStockKeepingUnitViewModel ProductArmazem = new NAVStockKeepingUnitViewModel();
+                        if (!string.IsNullOrEmpty(linha.Code))
+                            AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code);
 
+                        if (AllProductsArmazem != null && AllProductsArmazem.Count > 0)
+                        {
+                            if (AllArmazens != null && AllArmazens.Count > 0)
+                            {
+                                AllArmazens.ForEach(Armazem =>
+                                {
+                                    if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
+                                        ProductArmazem = AllProductsArmazem.Where(x => x.LocationCode == Armazem.Valor).FirstOrDefault();
+                                });
+                            }
+                        }
 
-
-
-
-
-
-
-
-
-
-
-                    }
+                        if (ProductArmazem != null && !string.IsNullOrEmpty(ProductArmazem.ItemNo_))
+                        {
+                            product.UnitCost = ProductArmazem.UnitCost;
+                            product.LocationCode = ProductArmazem.LocationCode;
+                        }
+                   }
 
                     if (!string.IsNullOrEmpty(area))
                     {

@@ -65,58 +65,78 @@ namespace Hydra.Such.Portal.Extensions
                     //{
                     var approvalConfiguration = ApprovalConfigurations[0];
                     string Aprovadores = "";
-                    if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
-                    {
-                        if (approvalConfiguration.UtilizadorAprovação.ToLower() == requestUser.ToLower())
-                            approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
 
-                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
+                    if (type == 1) //Requisição
+                    {
+                        Requisição REQ = DBRequest.GetById(number);
+
+                        if (REQ != null && REQ.RoupaManutencao == true)
                         {
-                            Aprovadores = approvalConfiguration.UtilizadorAprovação;
-                            DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
-                            //ConfigUtilizadores users = DBUserConfigurations.GetById(approvalConfiguration.UtilizadorAprovação);
-                            UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                            ConfiguracaoParametros Parametro = DBConfiguracaoParametros.GetByParametro("RoupaManutencaoAprovador");
+                            if (Parametro != null && !string.IsNullOrEmpty(Parametro.Valor))
+                            {
+                                Aprovadores = Parametro.Valor;
+                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = Parametro.Valor });
+                                UsersToNotify.Add(Parametro.Valor);
+                            }
                         }
                     }
-                    else if (approvalConfiguration.GrupoAprovação.HasValue)
+
+                    if (string.IsNullOrEmpty(Aprovadores))
                     {
-                        List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
-                        if (GUsers.Exists(x => x.ToLower() == requestUser.ToLower()))
+                        if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                         {
-                            GUsers.RemoveAll(x => x.ToLower() == requestUser.ToLower());
+                            if (approvalConfiguration.UtilizadorAprovação.ToLower() == requestUser.ToLower())
+                                approvalConfiguration.UtilizadorAprovação = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
 
-                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
-                            if (!string.IsNullOrEmpty(SH))
-                                GUsers.Add(SH);
-                        }
-                        GUsers = GUsers.Distinct().ToList();
-
-                        GUsers.ForEach(y =>
-                        {
-                            if (y != "" && y != null)
+                            if (approvalConfiguration.UtilizadorAprovação != "" && approvalConfiguration.UtilizadorAprovação != null)
                             {
-                                Aprovadores = Aprovadores + y + " - ";
-                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
+                                Aprovadores = approvalConfiguration.UtilizadorAprovação;
+                                DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = approvalConfiguration.UtilizadorAprovação });
+                                //ConfigUtilizadores users = DBUserConfigurations.GetById(approvalConfiguration.UtilizadorAprovação);
+                                UsersToNotify.Add(approvalConfiguration.UtilizadorAprovação);
+                            }
+                        }
+                        else if (approvalConfiguration.GrupoAprovação.HasValue)
+                        {
+                            List<string> GUsers = DBApprovalUserGroup.GetAllFromGroup(approvalConfiguration.GrupoAprovação.Value);
+                            if (GUsers.Exists(x => x.ToLower() == requestUser.ToLower()))
+                            {
+                                GUsers.RemoveAll(x => x.ToLower() == requestUser.ToLower());
+
+                                string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                                if (!string.IsNullOrEmpty(SH))
+                                    GUsers.Add(SH);
+                            }
+                            GUsers = GUsers.Distinct().ToList();
+
+                            GUsers.ForEach(y =>
+                            {
+                                if (y != "" && y != null)
+                                {
+                                    Aprovadores = Aprovadores + y + " - ";
+                                    DBUserApprovalMovements.Create(new UtilizadoresMovimentosDeAprovação() { NºMovimento = ApprovalMovement.MovementNo, Utilizador = y });
                                 //ConfigUtilizadores users = DBUserConfigurations.GetById(y);
                                 //UsersToNotify.Add(y);
                             }
-                        });
+                            });
 
-                        List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
-                        if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == requestUser.ToLower()))
-                        {
-                            GUsersWithEmailAlerta.RemoveAll(x => x.ToLower() == requestUser.ToLower());
+                            List<string> GUsersWithEmailAlerta = DBApprovalUserGroup.GetAllFromGroupWithEmailAlerta(approvalConfiguration.GrupoAprovação.Value);
+                            if (GUsersWithEmailAlerta.Exists(x => x.ToLower() == requestUser.ToLower()))
+                            {
+                                GUsersWithEmailAlerta.RemoveAll(x => x.ToLower() == requestUser.ToLower());
 
-                            string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
-                            if (!string.IsNullOrEmpty(SH))
-                                GUsersWithEmailAlerta.Add(SH);
+                                string SH = DBUserConfigurations.GetById(requestUser).SuperiorHierarquico;
+                                if (!string.IsNullOrEmpty(SH))
+                                    GUsersWithEmailAlerta.Add(SH);
+                            }
+                            GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
+
+                            GUsersWithEmailAlerta.ForEach(y =>
+                            {
+                                UsersToNotify.Add(y);
+                            });
                         }
-                        GUsersWithEmailAlerta = GUsersWithEmailAlerta.Distinct().ToList();
-
-                        GUsersWithEmailAlerta.ForEach(y =>
-                        {
-                            UsersToNotify.Add(y);
-                        });
                     }
                     //});
 

@@ -97,6 +97,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? InAdvance { get; set; }
         public string ApprovalDateString { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public bool? RoupaManutencao { get; set; }
         public string NumeroMecanografico { get; set; }
         public decimal? ValorTotalDocComIVA { get; set; }
         public bool? ShowPontoSituacao { get; set; }

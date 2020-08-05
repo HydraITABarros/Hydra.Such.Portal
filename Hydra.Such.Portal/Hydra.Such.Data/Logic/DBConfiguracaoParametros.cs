@@ -44,7 +44,7 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.ConfiguracaoParametros.Where(x => x.Parametro == Parametro).ToList();
+                    return ctx.ConfiguracaoParametros.Where(x => x.Parametro == Parametro).OrderBy(x => x.Ordem).ToList();
                 }
             }
             catch (Exception ex)

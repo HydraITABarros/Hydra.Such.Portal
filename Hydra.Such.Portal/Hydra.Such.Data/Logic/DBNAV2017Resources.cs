@@ -77,7 +77,8 @@ namespace Hydra.Such.Data.Logic
                             WasteRate = (int)temp.WasteRate,
                             UnitPrice = (decimal)temp.UnitPrice,
                             UnitCost = (decimal)temp.UnitCost,
-                            VATProductPostingGroup = (string)temp.VATProductPostingGroup
+                            VATProductPostingGroup = (string)temp.VATProductPostingGroup,
+                            GenProdPostingGroup = (string)temp.GenProdPostingGroup
                         });
                     }
                 }

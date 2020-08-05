@@ -246,6 +246,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                  ResponsávelReceçãoReceção = x.ReceptionReceptionResponsible,
                  NºFatura = x.InvoiceNo,
                  PedirOrcamento = x.PedirOrcamento,
+                 RoupaManutencao = x.RoupaManutencao,
                  ValorTotalDocComIVA = x.ValorTotalDocComIVA,
                  NoFornecedor = x.NoFornecedor
             };
@@ -320,6 +321,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 ReceptionReceptionResponsible = x.ResponsávelReceçãoReceção,
                 InvoiceNo = x.NºFatura,
                 PedirOrcamento = x.PedirOrcamento,
+                RoupaManutencao = x.RoupaManutencao,
                 ValorTotalDocComIVA = x.ValorTotalDocComIVA,
                 NoFornecedor = x.NoFornecedor
             };

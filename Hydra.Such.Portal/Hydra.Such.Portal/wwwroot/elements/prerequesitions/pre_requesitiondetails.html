@@ -550,6 +550,9 @@
                                         <div class="col-sm-2">
                                             <vaadin-checkbox id="PedirOrcamento" checked="{{data.pedirOrcamento}}">Pedir Orçamento</vaadin-checkbox>
                                         </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-checkbox id="roupaManutencao" name="roupaManutencao" checked="{{data.roupaManutencao}}" hidden>Manutenção</vaadin-checkbox>
+                                        </div>
                                     </div>
 
                                     <div class="row break_clear">
@@ -2905,22 +2908,28 @@
                     //    this.$._UnitCost.value = "";
                     //}
 
+                    this.$._Description.value = "";
+                    this.$._Description2.value = "";
+                    this.$._UnitMeasureCode._clearSelection();
+                    this.$._UnitCost.value = "";
+                    this.$._CBLocations._clearSelection();
+                    this.$._UnitCost.disabled = false;
+
                     if (this.$._Products.value != "") {
-                        this.$.measuresunit_ajax.params = { "produto": this.$._Products.value };
-                        this.$.measuresunit_ajax.generateRequest();
+                        if (this.$.FunctionalAreaCode.value != "") {
+                            if (this.$.RegionCode.value != "") {
+                                this.$.measuresunit_ajax.params = { "produto": this.$._Products.value };
+                                this.$.measuresunit_ajax.generateRequest();
 
-                        this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
-                        this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
-                        this.$.page_GetProductLocation_ajax.generateRequest();
-                    }
-                    else {
-                        this.$._Description.value = "";
-                        this.$._Description2.value = "";
-                        this.$._UnitMeasureCode.value = "";
-                        this.$._UnitCost.value = "";
-                        this.$._CBLocations.value = "";
-
-                        this.$._UnitCost.disabled = false;
+                                this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                                this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText, "regiao": this.$.RegionCode.value };
+                                this.$.page_GetProductLocation_ajax.generateRequest();
+                            }
+                            else
+                                this._openToastError('É obrigatório ter preenchido o campo Cód. Região no Cabeçalho.');
+                        }
+                        else
+                            this._openToastError('É obrigatório ter preenchido o campo Cód. Área Funcional no Cabeçalho.');
                     }
                 },
                 _onProductClick: function (e) {
@@ -2956,9 +2965,29 @@
                         this.$._UnitCost.value = "";
                     }
 
-                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
-                    this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
-                    this.$.page_GetProductLocation_ajax.generateRequest()
+                    //this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                    //this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText, "regiao": this.$.RegionCode.value };
+                    //this.$.page_GetProductLocation_ajax.generateRequest()
+
+
+                    if (this.$._Products.value != "") {
+                        if (this.$.FunctionalAreaCode.value != "") {
+                            if (this.$.RegionCode.value != "") {
+                                this.$.measuresunit_ajax.params = { "produto": this.$._Products.value };
+                                this.$.measuresunit_ajax.generateRequest();
+
+                                this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                                this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText, "regiao": this.$.RegionCode.value };
+                                this.$.page_GetProductLocation_ajax.generateRequest();
+                            }
+                            else
+                                this._openToastError('É obrigatório ter preenchido o campo Cód. Região no Cabeçalho.');
+                        }
+                        else
+                            this._openToastError('É obrigatório ter preenchido o campo Cód. Área Funcional no Cabeçalho.');
+                    }
+
+
                 },
                 _GetProductLocationResponse: function (e) {
                     if (this.productInfo != null) {
@@ -3115,6 +3144,14 @@
                         this.PurchaseLine = "";
                         this.$.purchaselines_ajax.body = JSON.stringify(codArea);
                         this.$.purchaselines_ajax.generateRequest();
+                    }
+
+                    if (codArea == "22") {
+                        this.$.roupaManutencao.hidden = false;
+                    }
+                    else {
+                        this.$.roupaManutencao.hidden = true;
+                        this.data.roupaManutencao = false;
                     }
                 },
 

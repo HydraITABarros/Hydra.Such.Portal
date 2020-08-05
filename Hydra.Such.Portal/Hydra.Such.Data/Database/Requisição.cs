@@ -91,6 +91,7 @@ namespace Hydra.Such.Data.Database
         public bool? PrecoIvaincluido { get; set; }
         public bool? Adiantamento { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public bool? RoupaManutencao { get; set; }
         public decimal? ValorTotalDocComIVA { get; set; }
 
         public int? TipoAlteracaoSISLOG { get; set; }

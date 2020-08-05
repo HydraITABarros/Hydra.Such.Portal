@@ -1881,7 +1881,6 @@ namespace Hydra.Such.Portal.Controllers
                     previousList = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name);
                 }
 
-
                 //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
                 //previousList.ForEach(x => DBProjectDiary.Delete(x));
                 foreach (DiárioDeProjeto line in previousList)
@@ -1919,6 +1918,17 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             response.eReasonCode = 6;
                             response.eMessage = "Não é possivel Criar, por a Data ser inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
+                        }
+                    }
+
+                    if (x.Type == 2 && !string.IsNullOrEmpty(x.Code)) //Recurso
+                    {
+                        NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 2, "").FirstOrDefault();
+
+                        if (Resource != null && string.IsNullOrEmpty(Resource.GenProdPostingGroup))
+                        {
+                            response.eReasonCode = 6;
+                            response.eMessage = "Não é possivel Criar, por faltar a configuração do Grupo Contabilístico no Recurso " + x.Code;
                         }
                     }
                 });
