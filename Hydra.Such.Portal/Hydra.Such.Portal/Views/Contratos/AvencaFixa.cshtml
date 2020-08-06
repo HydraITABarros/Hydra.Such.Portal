@@ -233,7 +233,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.billedValue.hidden }}">
+            @*<vaadin-grid-column width="10%" resizable hidden$="{{ _columns.billedValue.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="billedValue">Valor Faturado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="billedValue" value="[[filter.billedValue]]"></vaadin-grid-filter>
@@ -243,7 +243,7 @@
                         {{item.billedValue}} €
                     </div>
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
@@ -691,7 +691,7 @@
                         "invoiceTotal": { hidden: false, label: "Total a Faturar" },
                         "contractValue": { hidden: false, label: "Valor do Contrato" },
                         "valueToInvoice": { hidden: false, label: "Valor por Faturar" },
-                        "billedValue": { hidden: false, label: "Valor Faturado" },
+                        //"billedValue": { hidden: false, label: "Valor Faturado" },
                         "regionCode": { hidden: false, label: "Cód. Região" },
                         "functionalAreaCode": { hidden: false, label: "Cód. Área Funcional" },
                         "responsabilityCenterCode": { hidden: false, label: "Cód. Centro Responsabilidade" },

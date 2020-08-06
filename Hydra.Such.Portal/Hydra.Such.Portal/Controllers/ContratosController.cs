@@ -2509,14 +2509,12 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
 
             //AMARO COMENTAR
-            //contractList.RemoveAll(x => x.NºDeContrato != "VC190196");
+            //contractList.RemoveAll(x => x.NºDeContrato != "VC120074");
 
             foreach (var item in contractList)
             {
-                //if (item.NºDeContrato == "VC190196" || item.NºDeContrato == "VC190196")
-                //{
+                //if (item.NºDeContrato == "VC120074")
                 //    string teste = "";
-                //}
 
                 if (!string.IsNullOrEmpty(item.NºCliente))
                 {
@@ -4590,7 +4588,7 @@ namespace Hydra.Such.Portal.Controllers
                             else
                             {
                                 result.eReasonCode = 3;
-                                result.eMessage = "Não foi piossivel obter dados do NAV na criação da fatura.";
+                                result.eMessage = "Não foi possivel obter dados do NAV na criação da fatura.";
                                 return Json(result);
                             }
                         }
@@ -6657,11 +6655,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Valor por Faturar");
                     Col = Col + 1;
                 }
-                if (dp["billedValue"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Valor Faturado");
-                    Col = Col + 1;
-                }
+                //if (dp["billedValue"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Valor Faturado");
+                //    Col = Col + 1;
+                //}
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Região");
@@ -6771,11 +6769,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ValueToInvoice.ToString());
                             Col = Col + 1;
                         }
-                        if (dp["billedValue"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.BilledValue.ToString());
-                            Col = Col + 1;
-                        }
+                        //if (dp["billedValue"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.BilledValue.ToString());
+                        //    Col = Col + 1;
+                        //}
                         if (dp["regionCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegionCode);

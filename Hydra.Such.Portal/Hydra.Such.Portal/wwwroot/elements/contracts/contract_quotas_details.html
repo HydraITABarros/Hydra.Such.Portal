@@ -705,7 +705,7 @@
                                                             </div>
 
                                                             <div class="col-md-2">
-                                                                <vaadin-text-field value="{{dataNav.nCreditNotes}}" id="_NCreditNotes" name="_NCreditNotes" label="N Notas Crédito Registadas" disabled style="text-align:right"> </vaadin-text-field>
+                                                                <vaadin-text-field value="{{dataNav.nCreditNotes}}" id="_NCreditNotes" name="_NCreditNotes" label="Nº Notas Crédito Registadas" disabled style="text-align:right"> </vaadin-text-field>
                                                             </div>
 
                                                             <div class="col-md-2">
@@ -1315,13 +1315,23 @@
 
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="valorContrato">Valor Contrato</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="valorContrato">Valor</vaadin-grid-sorter>
                         <vaadin-grid-filter path="valorContrato" />
                     </template>
                     <template>
                         <div class="alignRight">
                             {{item.valorContrato}} €
                         </div>
+                    </template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="data" />
+                    </template>
+                    <template>
+                        {{item.data}}
                     </template>
                 </vaadin-grid-column>
             </vaadin-grid>

@@ -1923,7 +1923,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (x.Type == 2 && !string.IsNullOrEmpty(x.Code)) //Recurso
                     {
-                        NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 2, "").FirstOrDefault();
+                        NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault();
 
                         if (Resource != null && string.IsNullOrEmpty(Resource.GenProdPostingGroup))
                         {
@@ -3584,6 +3584,10 @@ namespace Hydra.Such.Portal.Controllers
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+
+                List<NAVResourcesViewModel> AllResources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").ToList();
+                NAVResourcesViewModel Resource = new NAVResourcesViewModel();
+
                 projMovements.ForEach(x =>
                 {
                     if (x.FunctionalAreaCode == null)
@@ -3606,6 +3610,16 @@ namespace Hydra.Such.Portal.Controllers
                     if (x.UnitPrice == 0)
                     {
                         result.eMessages.Add(new TraceInformation(TraceType.Exception, "Existem Movimentos com Preço Unitário a 0"));
+                    }
+
+                    if (x.Type == 2 && !string.IsNullOrEmpty(x.Code)) //Recurso
+                    {
+                        Resource = AllResources.Where(y => y.Code == x.Code).FirstOrDefault();
+
+                        if (Resource != null && string.IsNullOrEmpty(Resource.GenProdPostingGroup))
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Falta a configuração do Grupo Contabilístico no Recurso " + x.Code));
+                        }
                     }
                 });
 
