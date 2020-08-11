@@ -507,5 +507,42 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<ListDividaAllClientsViewModel> GetListDividaAllClients(string RegiaoFiltro)
+        {
+            try
+            {
+                List<ListDividaAllClientsViewModel> result = new List<ListDividaAllClientsViewModel>();
+
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]
+                    {
+                    new SqlParameter("@RegiaoFiltro", RegiaoFiltro)
+                };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec DividaClientes @RegiaoFiltro", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new ListDividaAllClientsViewModel()
+                        {
+                            CustomerRegionNo = temp.CustomerRegionNo.Equals(DBNull.Value) ? "" : (string)temp.CustomerRegionNo.ToString(),
+                            CustomerRegionName = temp.CustomerRegionName.Equals(DBNull.Value) ? "" : (string)temp.CustomerRegionName.ToString(),
+                            CustomerNo = temp.CustomerNo.Equals(DBNull.Value) ? "" : (string)temp.CustomerNo.ToString(),
+                            CustomerName = temp.CustomerName.Equals(DBNull.Value) ? "" : (string)temp.CustomerName.ToString(),
+                            Value = Convert.ToDecimal(temp.Value),
+                            DueValue = Convert.ToDecimal(temp.DueValue)
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
     }
 }

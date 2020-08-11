@@ -1799,7 +1799,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _validateData: function () {
-                    debugger;
                     if (this.$.contractNo.validate() &
                         this.$.mDescription.validate() &
                         this.$.mContractTypes.validate() &
@@ -2684,11 +2683,11 @@
                     if (this.$.mPaymentTerms.value == null && this.$.mPaymentTerms.value == "") {
                         messageErro += "Os termos de pagamento de estar preenchido \n";
                     }
-                    if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
-                        messageErro += "Data da expiração não pode ser menor que o inicio da faturação \n";
+                    //if (this.$.dueDate.value < this.$.contractStartDate.value && this.$.dueDate.value != null)
+                    //    messageErro += "Data da expiração não pode ser menor que o inicio da faturação \n";
 
-                    if (this.$.dueDate.value < this.$.contractEndDate.value && this.$.dueDate.value != null)
-                        messageErro += "Data da fim de periodo não pode ser maior que a data de expiração \n";
+                    //if (this.$.dueDate.value < this.$.contractEndDate.value && this.$.dueDate.value != null)
+                    //    messageErro += "Data da fim de periodo não pode ser maior que a data de expiração \n";
 
                     if (this.dataLines != null) {
                         var exist = false;

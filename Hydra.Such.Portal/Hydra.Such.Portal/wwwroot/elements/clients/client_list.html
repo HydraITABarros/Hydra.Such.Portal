@@ -91,7 +91,8 @@
             <!--end ColumnToggle-->
 
             <template is="dom-if" if="{{ _permissionsmovimentos.read }}">
-                <paper-button id="btnListMovimentosAllClients" class="tablinks" on-tap="_GoListMovimentosAllClients" title="Movimentos"><i class="fa fa-list" aria-hidden="true"></i>&nbsp; Movimentos Pendentes</paper-button>
+                <paper-button id="btnListMovimentosAllClients" class="tablinks" on-tap="_GoListMovimentosAllClients" title="Movimentos Pendentes"><i class="fa fa-list" aria-hidden="true"></i>&nbsp; Movimentos Pendentes</paper-button>
+                <paper-button id="btnListDividaAllClients" class="tablinks" on-tap="_GoListDividaAllClients" title="Dívida de Clientes"><i class="fa fa-list" aria-hidden="true"></i>&nbsp; Dívida de Clientes</paper-button>
             </template>
         </div>
         
@@ -521,6 +522,10 @@
 
                 _GoListMovimentosAllClients: function () {
                     window.location.href = "/Clientes/ListMovimentosAllClients/";
+                },
+
+                _GoListDividaAllClients: function () {
+                    window.location.href = "/Clientes/ListDividaAllClients/";
                 },
             });
         });
