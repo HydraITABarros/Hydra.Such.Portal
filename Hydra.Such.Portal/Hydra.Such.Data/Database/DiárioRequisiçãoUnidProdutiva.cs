@@ -40,6 +40,8 @@ namespace Hydra.Such.Data.Database
         public string Observações { get; set; }
         public string GrupoRegistoIvaProduto { get; set; }
         public int? Tipo { get; set; }
+        public int? Interface { get; set; }
+        public decimal? CustoUnitarioSubFornecedor { get; set; }
 
         public UnidadesProdutivas NºUnidadeProdutivaNavigation { get; set; }
         public TiposRefeição TipoRefeiçãoNavigation { get; set; }

@@ -227,7 +227,7 @@
                 </template>
                 <template>
                     <div class="alignRight">
-                        {{item.value}} €
+                        [[_formatValue(item.value)]]
                     </div>
                 </template>
             </vaadin-grid-column>
@@ -458,8 +458,15 @@
                 },
 
                 resultHandler: function () {
-                }
+                },
                 /* end - ColumnToggle */
+
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
+                },
+
             });
         });
     </script>

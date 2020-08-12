@@ -571,8 +571,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["customerRegionName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região"); Col = Col + 1; }
                 if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
                 if (dp["customerName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente"); Col = Col + 1; }
-                if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor"); Col = Col + 1; }
-                if (dp["dueValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor em Dívida"); Col = Col + 1; }
+                if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor em Dívida"); Col = Col + 1; }
+                if (dp["dueValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Vencido"); Col = Col + 1; }
 
                 if (dp != null)
                 {

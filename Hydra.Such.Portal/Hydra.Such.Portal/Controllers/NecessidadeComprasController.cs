@@ -220,6 +220,8 @@ namespace Hydra.Such.Portal.Controllers
                             newdp.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
                             newdp.NºDocumento = x.DocumentNo;
                             newdp.Tipo = x.Tipo;
+                            newdp.Interface = x.Interface;
+                            newdp.CustoUnitarioSubFornecedor = x.DirectUnitCostSubSupplier;
                             newdp = DBShoppingNecessity.Update(newdp);
                             if (newdp == null)
                             {
@@ -273,6 +275,8 @@ namespace Hydra.Such.Portal.Controllers
                                 GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
                                 NºDocumento = x.DocumentNo,
                                 Tipo = x.Tipo,
+                                Interface = x.Interface,
+                                CustoUnitarioSubFornecedor = x.DirectUnitCostSubSupplier,
                         };
                             newdp.UtilizadorCriação = User.Identity.Name;
 

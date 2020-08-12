@@ -196,24 +196,24 @@
 
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.value.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="value">Valor</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="value">Valor em Dívida</vaadin-grid-sorter>
                     <vaadin-grid-filter path="value" value="[[filter.value]]" />
                 </template>
                 <template>
                     <div class="alignRight">
-                        {{item.value}} €
+                        [[_formatValue(item.value)]]
                     </div>
                 </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.dueValue.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dueValue">Valor em Dívida</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dueValue">Valor Vencido</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dueValue" value="[[filter.dueValue]]" />
                 </template>
                 <template>
                     <div class="alignRight">
-                        {{item.dueValue}} €
+                        [[_formatValue(item.dueValue)]]
                     </div>
                 </template>
             </vaadin-grid-column>
@@ -341,8 +341,8 @@
                         "customerRegionName": { hidden: false, label: "Região" },
                         "customerNo": { hidden: false, label: "Nº Cliente" },
                         "customerName": { hidden: false, label: "Cliente" },
-                        "value": { hidden: false, label: "Valor" },
-                        "dueValue": { hidden: false, label: "Valor em Dívida" },
+                        "value": { hidden: false, label: "Valor em Dívida" },
+                        "dueValue": { hidden: false, label: "Valor Vencido" },
                     };
 
                     if (localStorage["listdividaallclients.ToggleColumn"]) {
@@ -378,21 +378,22 @@
                 },
 
                 _search: function () {
-                    if (this.$.filtro_regiao.value != undefined && this.$.filtro_regiao.value != null && this.$.filtro_regiao.value != "") {
-                        this.loaded = true;
-                        this.$.grid_databound_ajax.body = JSON.stringify({ regiao: this.$.filtro_regiao.value });
-                        this.$.grid_databound_ajax.generateRequest();
-                        $(this.$.grid).removeClass('hide');
-                        this.$.grid._loading = true;
-                    }
-                    else {
-                        this._openToastError("O campo Região é de preenchimento obrigatório.");
-                    }
+                    this.loaded = true;
+                    this.$.grid_databound_ajax.body = JSON.stringify({ regiao: this.$.filtro_regiao.value });
+                    this.$.grid_databound_ajax.generateRequest();
+                    $(this.$.grid).removeClass('hide');
+                    this.$.grid._loading = true;
                 },
 
                 resultHandler: function () {
                 },
                 /* end - ColumnToggle */
+
+                _formatValue: function (value) {
+                    if (value != null && value != 0) {
+                        return currency(value, { separator: '.', decimal: ',' }).format() + ' €';
+                    }
+                },
 
             });
         });

@@ -3258,6 +3258,7 @@ namespace Hydra.Such.Portal.Controllers
             List<LinhasAcordoPrecos> AllSearch = DBLinhasAcordoPrecos.GetAll().ToList();
             List<NAVVendorViewModel> AllVendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
             List<NAVProductsViewModel> AllProduct = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+            List<ConfiguracaoParametros> AllInterfaceCompras = DBConfiguracaoParametros.GetListByParametro("InterfaceCompras");
 
             data.ForEach(x =>
             {
@@ -3271,6 +3272,11 @@ namespace Hydra.Such.Portal.Controllers
                     NAVVendorViewModel Vendor = AllVendor.Where(y => y.No_ == x.NoFornecedor).FirstOrDefault();
                     NAVVendorViewModel SubVendor = AllVendor.Where(y => y.No_ == x.NoSubFornecedor).FirstOrDefault();
                     NAVProductsViewModel Product = AllProduct.Where(y => y.Code == x.CodProduto).FirstOrDefault();
+
+                    x.Interface = 0;
+                    ConfiguracaoParametros InterfaceCompras = AllInterfaceCompras.Where(y => y.Valor == x.NoFornecedor).FirstOrDefault();
+                    if (InterfaceCompras != null && InterfaceCompras.Ordem.HasValue)
+                        x.Interface = (int)InterfaceCompras.Ordem;
 
                     if (toSearch == null)
                     {
@@ -3317,6 +3323,7 @@ namespace Hydra.Such.Portal.Controllers
                                 toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
                             else
                                 toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
+                            toCreate.Interface = x.Interface;
 
                             toCreate.UserId = User.Identity.Name;
                             toCreate.DataCriacao = DateTime.Now;
@@ -3369,6 +3376,7 @@ namespace Hydra.Such.Portal.Controllers
                                 toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
                             else
                                 toUpdate.CodCategoriaProduto = null;
+                            toUpdate.Interface = x.Interface;
 
                             toUpdate.UserId = x.UserId;
                             toUpdate.DataCriacao = x.DataCriacao;
@@ -6151,6 +6159,13 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult CreateLinhaAcordoPrecos([FromBody] LinhasAcordoPrecos data)
         {
             List<NAVVendorViewModel> AllVendors = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
+            List<ConfiguracaoParametros> AllInterfaceCompras = DBConfiguracaoParametros.GetListByParametro("InterfaceCompras");
+            data.Interface = 0;
+
+            ConfiguracaoParametros InterfaceCompras = AllInterfaceCompras.Where(x => x.Valor == data.NoFornecedor).FirstOrDefault();
+            if (InterfaceCompras != null && InterfaceCompras.Ordem.HasValue)
+                data.Interface = (int)InterfaceCompras.Ordem;
+
 
             LinhasAcordoPrecos toCreate = DBLinhasAcordoPrecos.Create(new LinhasAcordoPrecos()
             {
@@ -6177,6 +6192,7 @@ namespace Hydra.Such.Portal.Controllers
                 TipoPreco = data.TipoPreco,
                 GrupoRegistoIvaProduto = data.GrupoRegistoIvaProduto,
                 CodCategoriaProduto = data.CodCategoriaProduto,
+                Interface = data.Interface,
 
                 UserId = User.Identity.Name,
                 DataCriacao = DateTime.Now,
