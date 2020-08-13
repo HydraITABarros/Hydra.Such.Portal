@@ -100,6 +100,11 @@ namespace Hydra.Such.Data.Database
         public bool? SISLOG { get; set; }
         public DateTime? DataEnvioSISLOG { get; set; }
 
+        public int? Interface { get; set; }
+        public string NoSubFornecedor { get; set; }
+        public string NoEncomendaFornecedor { get; set; }
+        public DateTime? DataEncomendaSubfornecedor { get; set; }
+
         public Projetos NºProjetoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }
         public ICollection<DiárioDeProjeto> DiárioDeProjeto { get; set; }

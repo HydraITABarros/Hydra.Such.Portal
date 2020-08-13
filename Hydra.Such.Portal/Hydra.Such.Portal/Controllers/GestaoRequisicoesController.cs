@@ -1278,6 +1278,85 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetRequisitionsAcordosPrecosCG([FromBody] JObject requestParams)
+        {
+            int opcao = int.Parse(requestParams["opcao"].ToString());
+
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Validated,
+                RequisitionStates.Available,
+                RequisitionStates.Received,
+                RequisitionStates.Treated,
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByStateByInterface((int)RequisitionTypes.Normal, states, 1).ParseToViewModel();
+
+            //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
+            result.RemoveAll(x => x.RequestNutrition != true);
+            result.RemoveAll(x => !string.IsNullOrEmpty(x.OrderNo));
+
+            if (opcao == 1) //Por Enviar
+                result.RemoveAll(x => !string.IsNullOrEmpty(x.NoEncomendaFornecedor));
+            if (opcao == 2) //Enviadas
+                result.RemoveAll(x => string.IsNullOrEmpty(x.NoEncomendaFornecedor));
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, string.Empty);
+            result.ForEach(req =>
+            {
+                req.NomeSubFornecedor = !string.IsNullOrEmpty(req.NoSubFornecedor) ? AllSuppliers.Where(x => x.No_ == req.NoSubFornecedor).FirstOrDefault().Name : "";
+                req.DataEncomendaSubfornecedorText = req.DataEncomendaSubfornecedor.HasValue ? req.DataEncomendaSubfornecedor.Value.ToString("yyyy-MM-dd") : "";
+            });
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        public JsonResult GetRequisitionsAcordosPrecosHistoricoCG()
+        {
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Archived
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByStateByInterface((int)RequisitionTypes.Normal, states, 1).ParseToViewModel();
+
+            //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
+            result.RemoveAll(x => x.RequestNutrition != true);
+            result.RemoveAll(x => !string.IsNullOrEmpty(x.OrderNo));
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, string.Empty);
+            result.ForEach(req =>
+            {
+                req.NomeSubFornecedor = !string.IsNullOrEmpty(req.NoSubFornecedor) ? AllSuppliers.Where(x => x.No_ == req.NoSubFornecedor).FirstOrDefault().Name : "";
+                req.DataEncomendaSubfornecedorText = req.DataEncomendaSubfornecedor.HasValue ? req.DataEncomendaSubfornecedor.Value.ToString("yyyy-MM-dd") : "";
+            });
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
         public JsonResult GetAllRequisitionshistoric()
         {
             List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, RequisitionStates.Archived).ParseToViewModel();
@@ -4028,6 +4107,108 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
             //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Gestão Requisições.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_GestaoRequisicoesCG([FromBody] List<RequisitionViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Interface CentralGest");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
+                if (dp["noSubFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº SubFornecedor"); Col = Col + 1; }
+                if (dp["nomeSubFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1; }
+                if (dp["noEncomendaFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Encomenda do Fornecedor"); Col = Col + 1; }
+                if (dp["dataEncomendaSubfornecedorText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Encomenda do SubFornecedor"); Col = Col + 1; }
+                if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Urgente"); Col = Col + 1; }
+                if (dp["buyCash"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Compra a Dinheiro"); Col = Col + 1; }
+                if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Trabalho já executado"); Col = Col + 1; }
+                if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Requisição Nutrição"); Col = Col + 1; }
+                if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Orçamento"); Col = Col + 1; }
+                if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Mercado Local"); Col = Col + 1; }
+                if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região Mercado Local"); Col = Col + 1; }
+                if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Mercado Local"); Col = Col + 1; }
+                if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
+                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Observações"); Col = Col + 1; }
+                if (dp["marketInquiryNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Consulta Mercado"); Col = Col + 1; }
+                if (dp["orderNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Encomenda"); Col = Col + 1; }
+                if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Reposição Stock"); Col = Col + 1; }
+                if (dp["reclamation"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Reclamação"); Col = Col + 1; }
+                if (dp["requestReclaimNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição Reclamada"); Col = Col + 1; }
+                if (dp["requisitionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data requisição"); Col = Col + 1; }
+                if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador Criação"); Col = Col + 1; }
+                if (dp["estimatedValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Estimado"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
+                        if (dp["noSubFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoSubFornecedor); Col = Col + 1; }
+                        if (dp["nomeSubFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeSubFornecedor); Col = Col + 1; }
+                        if (dp["noEncomendaFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoEncomendaFornecedor); Col = Col + 1; }
+                        if (dp["dataEncomendaSubfornecedorText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataEncomendaSubfornecedorText); Col = Col + 1; }
+                        if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Urgent.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["buyCash"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Urgent.HasValue ? item.BuyCash == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.HasValue ? item.AlreadyPerformed == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNutrition.HasValue ? item.RequestNutrition == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Budget.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarket.HasValue ? item.LocalMarket == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketRegion); Col = Col + 1; }
+                        if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString()); Col = Col + 1; }
+                        if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
+                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
+                        if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Comments); Col = Col + 1; }
+                        if (dp["marketInquiryNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MarketInquiryNo); Col = Col + 1; }
+                        if (dp["orderNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderNo); Col = Col + 1; }
+                        if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StockReplacement.HasValue ? item.StockReplacement == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["reclamation"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Reclamation.HasValue ? item.StockReplacement == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["requestReclaimNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestReclaimNo); Col = Col + 1; }
+                        if (dp["requisitionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionDate); Col = Col + 1; }
+                        if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CreateUser); Col = Col + 1; }
+                        if (dp["estimatedValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString()); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_GestaoRequisicoesCG(string sFileName)
+        {
+            sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 

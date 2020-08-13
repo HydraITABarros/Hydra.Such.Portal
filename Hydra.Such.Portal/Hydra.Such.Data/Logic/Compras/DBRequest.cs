@@ -99,7 +99,28 @@ namespace Hydra.Such.Data.Logic.Request
                     return ctx.Requisição
                         .Include("LinhasRequisição")
                         .Include(x => x.RequisicoesRegAlteracoes)
-                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
+                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0))
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Requisição> GetByStateByInterface(int TipoReq, List<RequisitionStates> states, int Interface)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição
+                        .Include("LinhasRequisição")
+                        .Include(x => x.RequisicoesRegAlteracoes)
+                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == Interface))
                         .ToList();
                 }
             }
@@ -748,6 +769,10 @@ namespace Hydra.Such.Data.Logic.Request
                     EnviarSISLOG = item.EnviarSISLOG,
                     SISLOG = item.SISLOG,
                     DataEnvioSISLOG = item.DataEnvioSISLOG,
+                    Interface = item.Interface,
+                    NoSubFornecedor = item.NoSubFornecedor,
+                    NoEncomendaFornecedor = item.NoEncomendaFornecedor,
+                    DataEncomendaSubfornecedor = item.DataEncomendaSubfornecedor,
 
                     Lines = item.LinhasRequisição.ToList().ParseToViewModel(),
                     //AROMAO 01/10/2018
@@ -855,6 +880,10 @@ namespace Hydra.Such.Data.Logic.Request
                         EnviarSISLOG = item.EnviarSISLOG,
                         SISLOG = item.SISLOG,
                         DataEnvioSISLOG = item.DataEnvioSISLOG,
+                        Interface = item.Interface,
+                        NoSubFornecedor = item.NoSubFornecedor,
+                        NoEncomendaFornecedor = item.NoEncomendaFornecedor,
+                        DataEncomendaSubfornecedor = item.DataEncomendaSubfornecedor,
 
                         LinhasRequisição = item.Lines.ParseToDB(),
                         RequisicoesRegAlteracoes = item.ChangeLog.ParseToDB()

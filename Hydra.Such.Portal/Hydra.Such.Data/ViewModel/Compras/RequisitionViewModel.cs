@@ -113,6 +113,14 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? SISLOG { get; set; }
         public DateTime? DataEnvioSISLOG { get; set; }
 
+        public int? Interface { get; set; }
+        public string NoSubFornecedor { get; set; }
+        public string NomeSubFornecedor { get; set; }
+        public string NoEncomendaFornecedor { get; set; }
+        public DateTime? DataEncomendaSubfornecedor { get; set; }
+        public string DataEncomendaSubfornecedorText { get; set; }
+
+
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

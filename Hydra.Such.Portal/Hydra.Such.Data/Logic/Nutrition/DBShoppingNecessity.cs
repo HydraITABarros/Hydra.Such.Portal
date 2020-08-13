@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.ViewModel.Nutrition;
 
 namespace Hydra.Such.Data.Logic.Nutrition
@@ -153,6 +154,40 @@ namespace Hydra.Such.Data.Logic.Nutrition
             catch (Exception ex)
             {
 
+                return false;
+            }
+        }
+
+        public static bool Delete(List<RequisitionLineViewModel> itemsToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (itemsToDelete != null && itemsToDelete.Count > 0)
+                    {
+                        itemsToDelete.ForEach(itemToDelete =>
+                        {
+                            if (itemToDelete != null && itemToDelete.NoLinhaDiarioRequisicaoUnidProdutiva > 0)
+                            {
+                                DiárioRequisiçãoUnidProdutiva DiarioToDelete = ctx.DiárioRequisiçãoUnidProdutiva.Where(x => x.NºLinha == itemToDelete.NoLinhaDiarioRequisicaoUnidProdutiva).FirstOrDefault();
+
+                                if (DiarioToDelete != null)
+                                {
+                                    ctx.DiárioRequisiçãoUnidProdutiva.Remove(DiarioToDelete);
+                                    ctx.SaveChanges();
+                                }
+                            }
+                        });
+                    }
+                    else
+                        return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
                 return false;
             }
         }

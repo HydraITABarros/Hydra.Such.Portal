@@ -128,6 +128,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string VATProductPostingGroup { get; set; }
         public decimal? DiscountPercentage { get; set; }
         public bool? SemEfeito { get; set; }
+        public decimal? CustoUnitarioSubFornecedor { get; set; }
+        public int NoLinhaDiarioRequisicaoUnidProdutiva { get; set; }
 
 
         public bool Selected { get; set; }

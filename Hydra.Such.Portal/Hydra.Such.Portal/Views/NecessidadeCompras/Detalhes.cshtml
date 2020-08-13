@@ -832,6 +832,21 @@
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
+        <paper-toast id="ToastMessageMultiple" duration="60000" horizontalAlign="right" class="toastMultiple">
+            <template is="dom-repeat" items="{{ datarequesition.eMessages }}">
+                <template is="dom-if" if="{{ _isError(item.type) }}">
+                    <div class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+                <template is="dom-if" if="{{ !_isError(item.type) }}">
+                    <div class="toastSuccess">&nbsp;<i class="fa fa-check" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+            </template>
+
+            <div style="text-align: right;">
+                <paper-button id="btnCloseMultipleToastMessageDlg" horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
+            </div>
+        </paper-toast>
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -1078,16 +1093,17 @@
                         var linhaAcordo = this.$.cmbProducts.activeItem;
 
                         if (linhaAcordo != null) {
-                            this.$.qtyID.value = "0";
+                            this.$.supplierProdDescription2Id.value = linhaAcordo.descricaoProduto;
                             this.$.supplierNoId.value = linhaAcordo.noFornecedor;
-                            this.$.subsupplierNoId.value = linhaAcordo.noSubFornecedor;
                             this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
+                            this.$.subsupplierNoId.value = linhaAcordo.noSubFornecedor;
                             this.$.subSupplierNameId.value = linhaAcordo.nomeSubFornecedor;
                             this.$.unitofMeasureCodeId.value = linhaAcordo.um;
                             this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
                             this.$.supplierProdCodeId.value = linhaAcordo.codProdutoFornecedor.toString();
                             this.$.supplierProdDescriptionId.value = linhaAcordo.descricaoProdFornecedor.toString();
                             this.$.QtyforMeasId.value = linhaAcordo.qtdPorUm != null ? linhaAcordo.qtdPorUm.toString() : linhaAcordo.qtdPorUm;
+                            this.$.qtyID.value = "0";
                             this.$.amountId.value = "0";
                             this.$.grupoRegistoIvaProduto.value = linhaAcordo.grupoRegistoIvaProduto != null ? linhaAcordo.grupoRegistoIvaProduto.toString() : linhaAcordo.grupoRegistoIvaProduto;
                             this.$.interfaceId.value = linhaAcordo.interface;
@@ -1102,24 +1118,24 @@
                     }
                     else {
                         this.$.supplierProdDescription2Id.value = "";
-                        this.$.qtyID.value = "";
-                        this.$.qtyDisponivel.value = "";
-                        this.$.qtyReservada.value = "";
                         this.$.supplierNoId.value = "";
-                        this.$.subsupplierNoId.value = "";
                         this.$.SupplierNameId.value = "";
+                        this.$.subsupplierNoId.value = "";
                         this.$.subSupplierNameId.value = "";
                         this.$.unitofMeasureCodeId._clearSelection();;
                         this.$.unitCostId.value = "";
                         this.$.supplierProdCodeId.value = "";
                         this.$.supplierProdDescriptionId.value = "";
                         this.$.QtyforMeasId.value = "";
+                        this.$.qtyID.value = "";
                         this.$.amountId.value = "";
                         this.$.grupoRegistoIvaProduto.value = "";
                         this.$.interfaceId.value = "";
                         this.$.unitCostSubSupplierId.value = "";
 
                         this.$.mOpenOrderLinesId.value = "";
+                        this.$.qtyDisponivel.value = "";
+                        this.$.qtyReservada.value = "";
                     }
                 },
                 _DatePriceGridChange: function (e) {
@@ -1718,35 +1734,23 @@
                 _requesitionResponse: function (e) {
                     //debugger;;
                     if (e.detail.status === 200) {
-                        if (this.datarequesition.eReasonCode === 1) {
-                            this._openToast(this.datarequesition.eMessage);
-                        }
-                        else {
-                            this._openToastError(this.datarequesition.eMessage);
-                        }
+                        this.$.ToastMessageMultiple.toggle();
+                        this.datarequesition.eMessages = [];
+
                         this.$.ajax_getgrid.generateRequest();
-
-                        //var priceAgreement = this.$.cmbProducts.activeItem;
-                        //if (priceAgreement != null) {
-                        //    debugger;
-                        //    this._openToast(this.datarequesition.eMessage);
-
-                            //var x = priceAgreement.noProcedimento;
-                            //var selItms = {
-                            //    "noProcedimento": this.$.priceAgreement.valueText,
-                            //    "noFornecedor": this.$.supplierNoId.value,
-                            //    "nomeFornecedor": this.$.SupplierNameId.value,
-                            //    "valorConsumido": this.$.amountId.value
-                            //}
-                            //this.$.grid_updateAgreementByVendor_ajax.body = JSON.stringify(selItms);
-                            //this.$.grid_updateAgreementByVendor_ajax.generateRequest();
-
-
-                        //}
-
-                    } else {
-                        this._openToastError("Occorreu um erro na geração de requisições.");
                     }
+
+                    //    if (this.datarequesition.eReasonCode === 1) {
+                    //        this._openToast(this.datarequesition.eMessage);
+                    //    }
+                    //    else {
+                    //        this._openToastError(this.datarequesition.eMessage);
+                    //    }
+                    //    this.$.ajax_getgrid.generateRequest();
+
+                    //} else {
+                    //    this._openToastError("Occorreu um erro na geração de requisições.");
+                    //}
                 },
 
                 _goBack: function (e) {
@@ -1770,6 +1774,20 @@
                         this.$.qtyDisponivel.value = "";
                         this.$.qtyReservada.value = "";
                     }
+                },
+
+                _isError: function (type) {
+                    debugger;
+                    if (type == 0 || type == 2 || type == 3)
+                        return true;
+                    else
+                        return false;
+                },
+
+                _toggleToastMultiple: function () {
+                    this.$.ToastMessageMultiple.duration = 0;
+                    this.$.ToastMessageMultiple.toggle();
+                    this.datarequesition.eMessages = [];
                 },
             });
         });
