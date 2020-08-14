@@ -59,6 +59,10 @@
           <DataField>CustoUnitario</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
+        <Field Name="CustoUnitarioSubFornecedor">
+          <DataField>CustoUnitarioSubFornecedor</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="UM">
           <DataField>UM</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -194,6 +198,9 @@
                   <Width>1.8cm</Width>
                 </TablixColumn>
                 <TablixColumn>
+                  <Width>2.5cm</Width>
+                </TablixColumn>
+                <TablixColumn>
                   <Width>1.8cm</Width>
                 </TablixColumn>
                 <TablixColumn>
@@ -264,7 +271,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -450,6 +456,39 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox21</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Custo SubFornecedor</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -1096,6 +1135,39 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
+                        <Textbox Name="CustoUnitarioSubFornecedor">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!CustoUnitarioSubFornecedor.Value</Value>
+                                  <Style>
+                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>8pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>CustoUnitarioSubFornecedor</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
                         <Textbox Name="UM">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
@@ -1517,6 +1589,7 @@
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
+                <TablixMember />
               </TablixMembers>
             </TablixColumnHierarchy>
             <TablixRowHierarchy>
@@ -1532,9 +1605,8 @@
             </TablixRowHierarchy>
             <DataSetName>LINHAS</DataSetName>
             <Top>0.17639cm</Top>
-            <Left>0cm</Left>
             <Height>1.1cm</Height>
-            <Width>40cm</Width>
+            <Width>42.5cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1545,7 +1617,7 @@
         <Height>1.27639cm</Height>
         <Style />
       </Body>
-      <Width>40cm</Width>
+      <Width>42.5cm</Width>
       <Page>
         <PageHeader>
           <Height>1.84327cm</Height>
@@ -1557,7 +1629,6 @@
               <Value>SUCH2</Value>
               <Sizing>Fit</Sizing>
               <Top>0.0441cm</Top>
-              <Left>0cm</Left>
               <Height>1.79917cm</Height>
               <Width>6.42938cm</Width>
               <Style>
@@ -1668,7 +1739,6 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox20</rd:DefaultName>
-              <Top>0cm</Top>
               <Left>37.55292cm</Left>
               <Height>1.77271cm</Height>
               <Width>2.44708cm</Width>

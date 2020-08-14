@@ -151,6 +151,19 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.custoUnitarioSubFornecedorTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="custoUnitarioSubFornecedor">Custo Unitário SubFornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="custoUnitarioSubFornecedor" />
+                </template>
+                <template>
+                    <div class="text-right">
+                        @*[[_formatCurrencyValue(item.custoUnitario)]]*@
+                        {{item.custoUnitarioSubFornecedor}} €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.um.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="um">Unid. Medida</vaadin-grid-sorter>
@@ -371,6 +384,7 @@
                         "descricaoProduto": { hidden: false, label: "Descrição Produto" },
                         "codCategoriaProduto": { hidden: false, label: "Cód. Categoria Produto" },
                         "custoUnitarioTexto": { hidden: false, label: "Custo Unitário" },
+                        "custoUnitarioSubFornecedorTexto": { hidden: false, label: "Custo Unitário SubFornecedor" },
                         "um": { hidden: false, label: "Unid. Medida" },
                         "qtdPorUmTexto": { hidden: false, label: "Qtd. Por Unid. Medida" },
                         "pesoUnitarioTexto": { hidden: false, label: "Peso Unitário" },
