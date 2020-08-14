@@ -3029,17 +3029,18 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(11).SetCellValue("Cresp");
                 row.CreateCell(12).SetCellValue("Cód. Localização");
                 row.CreateCell(13).SetCellValue("Custo Unitário");
-                row.CreateCell(14).SetCellValue("UM");
-                row.CreateCell(15).SetCellValue("Quantidade por UM");
-                row.CreateCell(16).SetCellValue("Peso Unitário");
-                row.CreateCell(17).SetCellValue("Cód. Produto Fornecedor");
-                row.CreateCell(18).SetCellValue("Desc. Produto Fornecedor");
-                row.CreateCell(19).SetCellValue("Forma Entrega");
-                row.CreateCell(20).SetCellValue("Tipo Preço");
-                row.CreateCell(21).SetCellValue("Grupo Registo IVA Produto");
-                row.CreateCell(22).SetCellValue("Cód. Categoria Produto");
-                row.CreateCell(23).SetCellValue("Criado Por");
-                row.CreateCell(24).SetCellValue("Data-Hora Criação");
+                row.CreateCell(14).SetCellValue("Custo Unitário SubFornecedor");
+                row.CreateCell(15).SetCellValue("UM");
+                row.CreateCell(16).SetCellValue("Quantidade por UM");
+                row.CreateCell(17).SetCellValue("Peso Unitário");
+                row.CreateCell(18).SetCellValue("Cód. Produto Fornecedor");
+                row.CreateCell(19).SetCellValue("Desc. Produto Fornecedor");
+                row.CreateCell(20).SetCellValue("Forma Entrega");
+                row.CreateCell(21).SetCellValue("Tipo Preço");
+                row.CreateCell(22).SetCellValue("Grupo Registo IVA Produto");
+                row.CreateCell(23).SetCellValue("Cód. Categoria Produto");
+                row.CreateCell(24).SetCellValue("Criado Por");
+                row.CreateCell(25).SetCellValue("Data-Hora Criação");
 
                 if (dp.LinhasAcordoPrecos != null)
                 {
@@ -3062,17 +3063,18 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(11).SetCellValue(item.Cresp.ToString());
                         row.CreateCell(12).SetCellValue(item.Localizacao.ToString());
                         row.CreateCell(13).SetCellValue((double)(item.CustoUnitario.HasValue ? item.CustoUnitario : 0));
-                        row.CreateCell(14).SetCellValue(item.Um.ToString());
-                        row.CreateCell(15).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
-                        row.CreateCell(16).SetCellValue((double)(item.PesoUnitario.HasValue ? item.PesoUnitario : 0));
-                        row.CreateCell(17).SetCellValue(item.CodProdutoFornecedor.ToString());
-                        row.CreateCell(18).SetCellValue(item.DescricaoProdFornecedor.ToString());
-                        row.CreateCell(19).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
-                        row.CreateCell(20).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
-                        row.CreateCell(21).SetCellValue(item.GrupoRegistoIvaProduto?.ToString());
-                        row.CreateCell(22).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString());
-                        row.CreateCell(23).SetCellValue(item.UserId.ToString());
-                        row.CreateCell(24).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
+                        row.CreateCell(14).SetCellValue((double)(item.CustoUnitarioSubFornecedor.HasValue ? item.CustoUnitarioSubFornecedor : 0));
+                        row.CreateCell(15).SetCellValue(item.Um.ToString());
+                        row.CreateCell(16).SetCellValue(item.QtdPorUm.HasValue ? item.QtdPorUm.ToString() : "");
+                        row.CreateCell(17).SetCellValue((double)(item.PesoUnitario.HasValue ? item.PesoUnitario : 0));
+                        row.CreateCell(18).SetCellValue(item.CodProdutoFornecedor.ToString());
+                        row.CreateCell(19).SetCellValue(item.DescricaoProdFornecedor.ToString());
+                        row.CreateCell(20).SetCellValue(item.FormaEntrega.HasValue ? item.FormaEntrega.ToString() : "");
+                        row.CreateCell(21).SetCellValue(item.TipoPreco.HasValue ? item.TipoPreco.ToString() : "");
+                        row.CreateCell(22).SetCellValue(item.GrupoRegistoIvaProduto?.ToString());
+                        row.CreateCell(23).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString());
+                        row.CreateCell(24).SetCellValue(item.UserId.ToString());
+                        row.CreateCell(25).SetCellValue(item.DataCriacao.HasValue ? item.DataCriacao.ToString() : "");
 
                         count++;
                     }
@@ -3154,17 +3156,18 @@ namespace Hydra.Such.Portal.Controllers
                                 nrow.Cresp = row.GetCell(11) != null ? row.GetCell(11).ToString() : "";
                                 nrow.Localizacao = row.GetCell(12) != null ? row.GetCell(12).ToString() : "";
                                 nrow.CustoUnitarioTexto = row.GetCell(13) != null ? row.GetCell(13).ToString() : "";
-                                nrow.Um = row.GetCell(14) != null ? row.GetCell(14).ToString() : "";
-                                nrow.QtdPorUmTexto = row.GetCell(15) != null ? row.GetCell(15).ToString() : "";
-                                nrow.PesoUnitarioTexto = row.GetCell(16) != null ? row.GetCell(16).ToString() : "";
-                                nrow.CodProdutoFornecedor = row.GetCell(17) != null ? row.GetCell(17).ToString() : "";
-                                nrow.DescricaoProdFornecedor = row.GetCell(18) != null ? row.GetCell(18).ToString() : "";
-                                nrow.FormaEntregaTexto = row.GetCell(19) != null ? row.GetCell(19).ToString() : "";
-                                nrow.TipoPrecoTexto = row.GetCell(20) != null ? row.GetCell(20).ToString() : "";
-                                nrow.GrupoRegistoIvaProdutoTexto = row.GetCell(21) != null ? row.GetCell(21).ToString() : "";
-                                nrow.CodCategoriaProduto = row.GetCell(22) != null ? row.GetCell(22).ToString() : "";
-                                nrow.UserId = row.GetCell(23) != null ? row.GetCell(23).ToString() : "";
-                                nrow.DataCriacaoTexto = row.GetCell(24) != null ? row.GetCell(24).ToString() : "";
+                                nrow.CustoUnitarioSubFornecedorTexto = row.GetCell(14) != null ? row.GetCell(14).ToString() : "";
+                                nrow.Um = row.GetCell(15) != null ? row.GetCell(15).ToString() : "";
+                                nrow.QtdPorUmTexto = row.GetCell(16) != null ? row.GetCell(16).ToString() : "";
+                                nrow.PesoUnitarioTexto = row.GetCell(17) != null ? row.GetCell(17).ToString() : "";
+                                nrow.CodProdutoFornecedor = row.GetCell(18) != null ? row.GetCell(18).ToString() : "";
+                                nrow.DescricaoProdFornecedor = row.GetCell(19) != null ? row.GetCell(19).ToString() : "";
+                                nrow.FormaEntregaTexto = row.GetCell(20) != null ? row.GetCell(20).ToString() : "";
+                                nrow.TipoPrecoTexto = row.GetCell(21) != null ? row.GetCell(21).ToString() : "";
+                                nrow.GrupoRegistoIvaProdutoTexto = row.GetCell(22) != null ? row.GetCell(22).ToString() : "";
+                                nrow.CodCategoriaProduto = row.GetCell(23) != null ? row.GetCell(23).ToString() : "";
+                                nrow.UserId = row.GetCell(24) != null ? row.GetCell(24).ToString() : "";
+                                nrow.DataCriacaoTexto = row.GetCell(25) != null ? row.GetCell(25).ToString() : "";
 
                                 ListToCreate.Add(nrow);
                             }
@@ -3189,6 +3192,11 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             item.CustoUnitario = Convert.ToDecimal(item.CustoUnitarioTexto);
                             item.CustoUnitarioTexto = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.CustoUnitarioSubFornecedorTexto))
+                        {
+                            item.CustoUnitarioSubFornecedor = Convert.ToDecimal(item.CustoUnitarioSubFornecedorTexto);
+                            item.CustoUnitarioSubFornecedorTexto = "";
                         }
                         if (!string.IsNullOrEmpty(item.QtdPorUmTexto))
                         {
@@ -3245,6 +3253,7 @@ namespace Hydra.Such.Portal.Controllers
                     u.Cresp == x.Cresp &&
                     u.Localizacao == x.Localizacao &&
                     u.CustoUnitario == x.CustoUnitario &&
+                    u.CustoUnitarioSubFornecedor == x.CustoUnitarioSubFornecedor &&
                     u.Um == x.Um &&
                     u.QtdPorUm == x.QtdPorUm &&
                     u.PesoUnitario == x.PesoUnitario &&
@@ -3308,6 +3317,7 @@ namespace Hydra.Such.Portal.Controllers
                                 toCreate.CustoUnitario = Product.UnitCost;
                             else
                                 toCreate.CustoUnitario = x.CustoUnitario;
+                            toCreate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
                             if (string.IsNullOrEmpty(x.Um))
                                 toCreate.Um = Product.MeasureUnit;
                             else
@@ -3361,6 +3371,7 @@ namespace Hydra.Such.Portal.Controllers
                                 toUpdate.CustoUnitario = Product.UnitCost;
                             else
                                 toUpdate.CustoUnitario = x.CustoUnitario;
+                            toUpdate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
                             if (string.IsNullOrEmpty(x.Um))
                                 toUpdate.Um = Product.MeasureUnit;
                             else
@@ -5894,6 +5905,7 @@ namespace Hydra.Such.Portal.Controllers
                     Cresp = x.Cresp,
                     Localizacao = x.Localizacao,
                     CustoUnitario = x.CustoUnitario,
+                    CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor,
                     Um = x.Um,
                     QtdPorUm = x.QtdPorUm,
                     PesoUnitario = x.PesoUnitario,
@@ -5967,6 +5979,7 @@ namespace Hydra.Such.Portal.Controllers
                 Regiao = x.Regiao,
                 Localizacao = x.Localizacao,
                 CustoUnitario = x.CustoUnitario,
+                CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor,
                 DescricaoProduto = x.DescricaoProduto,
                 Um = x.Um,
                 QtdPorUm = x.QtdPorUm,
@@ -6183,6 +6196,7 @@ namespace Hydra.Such.Portal.Controllers
                 Cresp = data.Cresp,
                 Localizacao = data.Localizacao,
                 CustoUnitario = data.CustoUnitario,
+                CustoUnitarioSubFornecedor = data.CustoUnitarioSubFornecedor,
                 Um = data.Um,
                 QtdPorUm = data.QtdPorUm,
                 PesoUnitario = data.PesoUnitario,
@@ -6779,6 +6793,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["descricaoProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição Produto"); Col = Col + 1; }
                 if (dp["codCategoriaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Categoria Produto"); Col = Col + 1; }
                 if (dp["custoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1; }
+                if (dp["custoUnitarioSubFornecedorTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Custo Unitário SubFornecedor"); Col = Col + 1; }
                 if (dp["um"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unid. Medida"); Col = Col + 1; }
                 if (dp["qtdPorUmTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Qtd. Por Unid. Medida"); Col = Col + 1; }
                 if (dp["pesoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Peso Unitário"); Col = Col + 1; }
@@ -6809,6 +6824,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["descricaoProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DescricaoProduto); Col = Col + 1; }
                         if (dp["codCategoriaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCategoriaProduto == null ? string.Empty : item.CodCategoriaProduto.ToString()); Col = Col + 1; }
                         if (dp["custoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue((double)(item.CustoUnitario != null ? (decimal)item.CustoUnitario : 0)); Col = Col + 1; }
+                        if (dp["custoUnitarioSubFornecedorTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue((double)(item.CustoUnitarioSubFornecedor != null ? (decimal)item.CustoUnitarioSubFornecedor : 0)); Col = Col + 1; }
                         if (dp["um"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Um); Col = Col + 1; }
                         if (dp["qtdPorUmTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.QtdPorUmTexto); Col = Col + 1; }
                         if (dp["pesoUnitarioTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PesoUnitarioTexto); Col = Col + 1; }

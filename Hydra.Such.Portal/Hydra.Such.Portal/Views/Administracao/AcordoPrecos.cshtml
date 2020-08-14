@@ -398,13 +398,19 @@
                                     </div>
 
                                     <div class="col-sm-2">
-                                        <vaadin-text-field id="linhasUM" label="UM" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
-
-                                        <vaadin-text-field id="linhasCodCategoriaProduto" label="CodCategoriaProduto" hidden></vaadin-text-field>
+                                        <vaadin-text-field id="linhasCustoUnitarioSubFornecedor" label="Custo Unitário SubFornecedor" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]+([\.][0-9]+)?" style="text-align:right;">
+                                            <div slot="suffix">€</div>
+                                        </vaadin-text-field>
                                     </div>
                                 </div>
 
                                 <div class="row break_clear">
+                                    <div class="col-sm-2">
+                                        <vaadin-text-field id="linhasUM" label="UM" disabled="{{ _permissionsCreate }}"></vaadin-text-field>
+
+                                        <vaadin-text-field id="linhasCodCategoriaProduto" label="CodCategoriaProduto" hidden></vaadin-text-field>
+                                    </div>
+
                                     <div class="col-sm-2">
                                         <vaadin-text-field id="linhasQuantidadeUM" label="Quantidade por UM" type="number" disabled="{{ _permissionsCreate }}" maxlength="18" pattern="[0-9]*" style="text-align:right;"></vaadin-text-field>
                                     </div>
@@ -433,23 +439,23 @@
                                             </template>
                                         </vaadin-combo-box>
                                     </div>
-
-                                    <div class="col-sm-2">
-                                        <vaadin-combo-box items="[[LLinhasTipoPreco]]" id="linhasTipoPreco" item-value-path="id" item-label-path="value" label="Tipo Preco" disabled="{{ _permissionsCreate }}">
-                                            <template>
-                                                <table>
-                                                    <tr>
-                                                        <td width="10%">[[item.id]]</td>
-                                                        <td width="90%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>
-                                    </div>
                                 </div>
                             </div>
 
                             <div class="row break_clear">
+                                <div class="col-sm-2">
+                                    <vaadin-combo-box items="[[LLinhasTipoPreco]]" id="linhasTipoPreco" item-value-path="id" item-label-path="value" label="Tipo Preco" disabled="{{ _permissionsCreate }}">
+                                        <template>
+                                            <table>
+                                                <tr>
+                                                    <td width="10%">[[item.id]]</td>
+                                                    <td width="90%"> <b>[[item.value]]</b></td>
+                                                </tr>
+                                            </table>
+                                        </template>
+                                    </vaadin-combo-box>
+                                </div>
+
                                 <div class="col-sm-2">
                                     <vaadin-text-field id="linhasGrupoRegistoIvaProduto" label="Grupo Registo IVA Produto" disabled="{{ _permissionsCreate }}" maxlength="10"></vaadin-text-field>
                                 </div>
@@ -622,6 +628,18 @@
                                 <template>
                                     <div style="text-align:right">
                                         {{item.custoUnitario}} €
+                                    </div>
+                                </template>
+                            </vaadin-grid-column>
+
+                            <vaadin-grid-column resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="custoUnitarioSubFornecedor" style="text-align:center;">Custo Unitário SubFornecedor</vaadin-grid-sorter>
+                                    <vaadin-grid-filter path="custoUnitarioSubFornecedor" />
+                                </template>
+                                <template>
+                                    <div style="text-align:right">
+                                        {{item.custoUnitarioSubFornecedor}} €
                                     </div>
                                 </template>
                             </vaadin-grid-column>
@@ -1013,6 +1031,7 @@
                                 regiao: this.$.linhasRegiao.value,
                                 localizacao: this.$.linhasLocalizacao.value,
                                 custoUnitario: this.$.linhasCustoUnitario.value,
+                                custoUnitarioSubFornecedor: this.$.linhasCustoUnitarioSubFornecedor.value,
                                 uM: this.$.linhasUM.value,
                                 qtdPorUM: this.$.linhasQuantidadeUM.value,
                                 pesoUnitario: this.$.linhasPesoUnitario.value,
@@ -1039,6 +1058,7 @@
                             this.$.linhasRegiao._clearSelection();
                             this.$.linhasLocalizacao._clearSelection();
                             this.$.linhasCustoUnitario.value = "";
+                            this.$.linhasCustoUnitarioSubFornecedor.value = "";
                             this.$.linhasUM.value = "";
                             this.$.linhasQuantidadeUM.value = "";
                             this.$.linhasPesoUnitario.value = "";
