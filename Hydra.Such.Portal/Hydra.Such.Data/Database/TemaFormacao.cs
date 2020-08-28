@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.Database
         }
 
         public string IdTema { get; set; }
+        public string CodigoInterno { get; set; }
         public string DescricaoTema { get; set; }
         public string UrlImagem { get; set; }
         public int? Activo { get; set; }

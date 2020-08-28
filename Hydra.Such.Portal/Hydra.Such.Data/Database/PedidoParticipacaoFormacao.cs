@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Hydra.Such.Data.Extensions;
+using Newtonsoft.Json;
 
 namespace Hydra.Such.Data.Database
 {
@@ -26,7 +28,9 @@ namespace Hydra.Such.Data.Database
         public string IdAccaoFormacao { get; set; }
         public string DesignacaoAccao { get; set; }
         public string LocalRealizacao { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataInicio { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataFim { get; set; }
         public decimal? NumeroTotalHoras { get; set; }
         public string IdEntidadeFormadora { get; set; }
@@ -45,7 +49,7 @@ namespace Hydra.Such.Data.Database
         public string UtilizadorUltimaModificacao { get; set; }
         public DateTime? DataHoraUltimaModificacao { get; set; }
 
-        [Newtonsoft.Json.JsonIgnore]
+        //[Newtonsoft.Json.JsonIgnore]
         public AccaoFormacao AccaoNavigation { get; set; }
 
         public ICollection<RegistoAlteracoesPedidoFormacao> RegistosAlteracoes { get; set; }

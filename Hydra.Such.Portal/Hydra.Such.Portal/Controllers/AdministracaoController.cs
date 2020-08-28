@@ -1162,6 +1162,10 @@ namespace Hydra.Such.Portal.Controllers
             configObj.ReportPassword = data.ReportPassword;
             configObj.ArmazemCompraDireta = data.ArmazemCompraDireta;
 
+            #region zpgm.SGPPF
+            configObj.NumeracaoPedidoFormacao = data.NumeracaoPedidoFormacao;
+            #endregion
+
             configObj.UtilizadorModificação = User.Identity.Name;
             //configObj.UtilizadorCriação = User.Identity.Name;
             //configObj.DataHoraCriação = DateTime.Now;

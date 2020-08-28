@@ -32,5 +32,9 @@ namespace Hydra.Such.Data.Database
         public ICollection<Configuração> ConfiguraçãoNumeraçãoProcedimentoAquisiçãoNavigation { get; set; }
         public ICollection<Configuração> ConfiguraçãoNumeraçãoProcedimentoSimplificadoNavigation { get; set; }
         public ICollection<Configuração> ConfiguraçãoNumeraçãoProjetosNavigation { get; set; }
+
+        #region zpgm.SGPPF
+        public ICollection<Configuração> ConfiguracaoNumeracoPedidoFormacao { get; set; }
+        #endregion
     }
 }

@@ -39,6 +39,12 @@ namespace Hydra.Such.Data.Database
         public string ReportPassword { get; set; }
         public string ArmazemCompraDireta { get; set; }
 
+
+        #region zpgm.SGPPF
+        public int? NumeracaoPedidoFormacao { get; set; }
+        public ConfiguraçãoNumerações NumeracaoPedidoFormacaoNavigation { get; set; }
+        #endregion
+
         public ConfiguraçãoNumerações NumeraçãoContratosNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoFolhasDeHorasNavigation { get; set; }
         public ConfiguraçãoNumerações NumeraçãoProcedimentoAquisiçãoNavigation { get; set; }

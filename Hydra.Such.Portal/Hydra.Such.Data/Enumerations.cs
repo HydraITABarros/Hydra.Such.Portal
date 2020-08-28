@@ -239,7 +239,76 @@ namespace Hydra.Such.Data
             AdminConfigLinhasEncFornecedor = 115,
             [Description("Administração Contactos")]
             AdminContactos = 116,
+
+            #region zpgm.SGPPF
+            [Description("Academia - Pedido Formação")]
+            AcademiaPedidoFormacao = 117
+            #endregion            
         }
+
+        #region zpgm.SGPPF
+        public enum TipoUtilizadorFluxoPedidoFormacao
+        {
+            [Description("Gestor Formação")]
+            GestorFormacao = 0,
+            [Description("Criador")]
+            CriadorPedidos = 1,
+            [Description("Chefia")]
+            AprovadorChefia = 2,
+            [Description("Director")]
+            AprovadorDireccao = 3,
+            [Description("Conselho de Administração")]
+            ConselhoAdministracao = 99
+        }
+
+        public enum EstadoPedidoFormacao
+        {
+            [Description("Criado")]
+            PedidoCriado = 0,
+            [Description("Submetido")]
+            PedidoSubmetido = 1,
+            [Description("Aprovado pela Chefia")]
+            PedidoAprovadoChefia = 2,
+            [Description("Aprovado pela Direcção")]
+            PedidoAprovadoDireccao = 3,
+            [Description("Rejeitado pela Academia")]
+            PedidoRejeitadoAcademia = 4,
+            [Description("Analisado pela Academia")]
+            PedidoAnalisadoAcademia = 5,
+            [Description("Autorizado CA")]
+            PedidoAutorizadoConsAdmin = 6,
+            [Description("Finalizado")]
+            PedidoFinalizado = 7,
+            [Description("Cancelado")]
+            PedidoCancelado = 99
+        }
+
+        public enum TipoAlteracaoPedidoFormacao
+        {
+            [Description("Criação")]
+            Criacao = 0,
+            [Description("Submissão Chefia")]
+            SubmissaoChefia = 1,
+            [Description("Rejeição Chefia")]
+            RejeicaoChefia = 2,
+            [Description("Aprovação Chefia e Submissão Direcção")]
+            AprovacaoChefia = 3,
+            [Description("Rejeição Direcção")]
+            RejeicaoDireccao = 4,
+            [Description("Aprovação Direcção e Submissão Academia")]
+            AprovacaoDireccao = 5,
+            [Description("Rejeição Academia e Devolução Direcção")]
+            RejeicaoAcademia = 6,
+            [Description("Reconfirmação Direcção e Re-submissão Academia")]
+            ReconfirmacaoDireccao = 7,
+            [Description("Submissão ao CA")]
+            SubmissaoConsAdmin = 8,
+            [Description("Autorização CA")]
+            AutorizacaoConsAdmin = 9,
+            [Description("Criação de Inscrição e Finalização do Pedido")]
+            CriacaoInscricao = 10
+        }
+        #endregion
 
         public enum Areas
         {

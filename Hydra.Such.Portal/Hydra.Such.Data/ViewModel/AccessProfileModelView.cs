@@ -13,7 +13,8 @@ namespace Hydra.Such.Data.ViewModel
         public bool? Create { get; set; }
         public bool? Update { get; set; }
         public bool? Delete { get; set; }
-        public bool? VerTudo { get; set; }
+        // zpgm. Esta propriedade não existe na BD
+        //public bool? VerTudo { get; set; }
         public string CreateUser { get; set; }
         public DateTime? CreateDate { get; set; }
         public string UpdateUser { get; set; }

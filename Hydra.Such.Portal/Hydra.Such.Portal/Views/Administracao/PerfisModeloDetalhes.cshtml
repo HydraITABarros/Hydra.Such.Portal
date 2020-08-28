@@ -254,6 +254,7 @@
                     },
                 },
                 ready: function () {
+                    debugger;;
                     this.$.page_databound_ajax.body = JSON.stringify({ "id": @ViewBag.ProfileModelId });
                     this.$.page_databound_ajax.generateRequest();
 
@@ -293,6 +294,8 @@
                     this.$.ajax_create.generateRequest();
                 },
                 _ResponseProcessor: function (e) {
+                    debugger;;
+
                     var self = this;
                     if (e.detail.status === 200) {
                         if (e.detail.url.indexOf("Create") !== -1) {

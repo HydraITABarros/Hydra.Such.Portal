@@ -151,7 +151,8 @@ namespace Hydra.Such.Data.Logic
                     Delete = item.Eliminação,
                     Read = item.Leitura,
                     Update = item.Leitura,
-                    VerTudo = item.VerTudo,
+                    // Esta propriedade não existe na BD
+                    //VerTudo = item.VerTudo,
                     CreateDate = item.DataHoraCriação,
                     Area = item.Área,
                     CreateUser = item.UtilizadorCriação,
@@ -183,7 +184,7 @@ namespace Hydra.Such.Data.Logic
                     Inserção = item.Create,
                     Leitura = item.Read,
                     Modificação = item.Update,
-                    VerTudo = item.VerTudo,
+                    //VerTudo = item.VerTudo,
                     DataHoraCriação = item.CreateDate,
                     DataHoraModificação = item.UpdateDate,
                     UtilizadorCriação = item.CreateUser,

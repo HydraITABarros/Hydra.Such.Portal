@@ -1126,6 +1126,15 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Utilizador Modificação")
                     .HasMaxLength(50);
 
+                #region zpgm.SGPPF
+                entity.Property(e => e.NumeracaoPedidoFormacao).HasColumnName("NumeracaoPedidoFormacao");
+
+                entity.HasOne(d => d.NumeracaoPedidoFormacaoNavigation)
+                    .WithMany(p => p.ConfiguracaoNumeracoPedidoFormacao)
+                    .HasForeignKey(d => d.NumeracaoPedidoFormacao)
+                    .HasConstraintName("FK_Configuração_NumeracaoPedidoFormacao");
+                #endregion
+
                 entity.HasOne(d => d.NumeraçãoContratosNavigation)
                     .WithMany(p => p.ConfiguraçãoNumeraçãoContratosNavigation)
                     .HasForeignKey(d => d.NumeraçãoContratos)
@@ -12863,6 +12872,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("IdAccao")
                     .HasMaxLength(50);
 
+                entity.Property(e => e.CodigoInterno)
+                    .HasColumnName("CodigoInterno")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.DesignacaoAccao)
                     .HasColumnName("DesignacaoAccao")
                     .HasMaxLength(2048);
@@ -12912,6 +12925,10 @@ namespace Hydra.Such.Data.Database
                 entity.HasKey(e => new { e.IdEntidade });
                 entity.Property(e => e.IdEntidade)
                     .HasColumnName("IdEntidade")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Referencia)
+                    .HasColumnName("Referencia")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.DescricaoEntidade)
@@ -13077,7 +13094,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.TipoAlteracao)
                     .HasColumnName("TipoAlteracao")
-                    .HasMaxLength(50);
+                    .HasColumnType("int");
 
                 entity.Property(e => e.DescricaoAlteracao)
                     .HasColumnName("DescricaoAlteracao")
@@ -13138,6 +13155,10 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.IdTema)
                     .HasColumnName("IdTema")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CodigoInterno)
+                    .HasColumnName("CodigoInterno")
                     .HasMaxLength(50);
 
                 entity.Property(e => e.DescricaoTema)
