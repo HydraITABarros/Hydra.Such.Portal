@@ -76,6 +76,7 @@ namespace Hydra.Such.Data.Database
         public string ResponsávelReceçãoReceção { get; set; }
         public string NºFatura { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public bool? RoupaManutencao { get; set; }
         public decimal? ValorTotalDocComIVA { get; set; }
         public string NoFornecedor { get; set; }
 

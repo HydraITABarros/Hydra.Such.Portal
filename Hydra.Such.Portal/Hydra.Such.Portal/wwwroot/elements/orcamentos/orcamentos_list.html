@@ -120,7 +120,7 @@
 
             <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.clienteText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="clienteText">Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="clienteText">Clientes</vaadin-grid-sorter>
                     <vaadin-grid-filter path="clienteText" value="[[filter.clienteText]]" />
                 </template>
                 <template>
@@ -130,11 +130,41 @@
 
             <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.contactoText.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="contactoText">Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="contactoText">Outras Organizações</vaadin-grid-sorter>
                     <vaadin-grid-filter path="contactoText" value="[[filter.contactoText]]" />
                 </template>
                 <template>
                     {{item.contactoText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.contactoNome.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactoNome">Nome do Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactoNome" value="[[filter.contactoNome]]" />
+                </template>
+                <template>
+                    {{item.contactoNome}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.contactoTelefone.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactoTelefone">Telefone do Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactoTelefone" value="[[filter.contactoTelefone]]" />
+                </template>
+                <template>
+                    {{item.contactoTelefone}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.contactoEmail.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="contactoEmail">E-mail do Contacto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="contactoEmail" value="[[filter.contactoEmail]]" />
+                </template>
+                <template>
+                    {{item.contactoEmail}}
                 </template>
             </vaadin-grid-column>
 
@@ -500,8 +530,11 @@
 
                     var columns = {
                         "no": { hidden: false, label: "Nº do Orçamento" },
-                        "clienteText": { hidden: false, label: "Cliente" },
-                        "contactoText": { hidden: false, label: "Contacto" },
+                        "clienteText": { hidden: false, label: "Clientes" },
+                        "contactoText": { hidden: false, label: "Outras Organizações" },
+                        "contactoNome": { hidden: false, label: "Nome do Contacto" },
+                        "contactoTelefone": { hidden: false, label: "Telefone do Contacto" },
+                        "contactoEmail": { hidden: false, label: "E-mail do Contacto" },
                         "dataValidadeText": { hidden: false, label: "Orçamento Válido até" },
                         "estadoText": { hidden: false, label: "Estado do Orçamento" },
                         "descricao": { hidden: false, label: "Descrição" },

@@ -2509,14 +2509,12 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
 
             //AMARO COMENTAR
-            //contractList.RemoveAll(x => x.NºDeContrato != "VC190196");
+            //contractList.RemoveAll(x => x.NºDeContrato != "VC120074");
 
             foreach (var item in contractList)
             {
-                //if (item.NºDeContrato == "VC190196" || item.NºDeContrato == "VC190196")
-                //{
+                //if (item.NºDeContrato == "VC120074")
                 //    string teste = "";
-                //}
 
                 if (!string.IsNullOrEmpty(item.NºCliente))
                 {
@@ -3321,9 +3319,8 @@ namespace Hydra.Such.Portal.Controllers
 
                         //Contratos Tipo Quotas
                         string MetdoPagamento = "";
-                        if (cont != null && cont.TipoContrato == 3)
+                        if (cont != null && cont.Tipo == 3)
                         {
-                            //MetdoPagamento = DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                             MetdoPagamento = !string.IsNullOrEmpty(cont.CódFormaPagamento) ? cont.CódFormaPagamento : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                         }
 
@@ -3699,12 +3696,11 @@ namespace Hydra.Such.Portal.Controllers
 
                                 //Contratos Tipo Quotas
                                 string MetdoPagamento = "";
-                                if (cont != null && cont.TipoContrato == 3)
+                                if (cont != null && cont.Tipo == 3)
                                 {
-                                    //MetdoPagamento = DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                                     MetdoPagamento = !string.IsNullOrEmpty(cont.CódFormaPagamento) ? cont.CódFormaPagamento : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                                 }
-                                
+
                                 //1
                                 Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, MetdoPagamento, PricesIncludingVAT, Ship_to_Code);
                                 InvoiceHeader.Wait();
@@ -4442,7 +4438,7 @@ namespace Hydra.Such.Portal.Controllers
                         PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
                         PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
                         PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
-                        PreInvoiceToCreate.PaymentMethodCode = !string.IsNullOrEmpty(Contract.CodePaymentMethod) ? Contract.CodePaymentMethod : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
+                        PreInvoiceToCreate.PaymentMethodCode = !string.IsNullOrEmpty(Contract.CodePaymentMethod) ? Contract.CodePaymentMethod : "";
 
                         Codgroup = Convert.ToInt32(groupInvoice);
                         if (ContractLines.Find(x => x.InvoiceGroup == Codgroup) != null)
@@ -4472,6 +4468,12 @@ namespace Hydra.Such.Portal.Controllers
                                 if (ClientRequisition.DataRequisição != null)
                                     PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
+                            }
+
+                            //Contratos Tipo Quotas
+                            if (Contract != null && Contract.Type == 3)
+                            {
+                                PreInvoiceToCreate.PaymentMethodCode = !string.IsNullOrEmpty(Contract.CodePaymentMethod) ? Contract.CodePaymentMethod : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                             }
 
                             Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws);//, Codgroup);
@@ -4590,7 +4592,7 @@ namespace Hydra.Such.Portal.Controllers
                             else
                             {
                                 result.eReasonCode = 3;
-                                result.eMessage = "Não foi piossivel obter dados do NAV na criação da fatura.";
+                                result.eMessage = "Não foi possivel obter dados do NAV na criação da fatura.";
                                 return Json(result);
                             }
                         }
@@ -4711,7 +4713,7 @@ namespace Hydra.Such.Portal.Controllers
                             PreInvoiceToCreate.RegionCode20 = Contract.CodeRegion;
                             PreInvoiceToCreate.ResponsibilityCenter = userConfig.CentroDeResponsabilidade;
                             PreInvoiceToCreate.PostingNoSeries = userConfig.NumSerieFaturas;
-                            PreInvoiceToCreate.PaymentMethodCode = !string.IsNullOrEmpty(Contract.CodePaymentMethod) ? Contract.CodePaymentMethod : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
+                            PreInvoiceToCreate.PaymentMethodCode = !string.IsNullOrEmpty(Contract.CodePaymentMethod) ? Contract.CodePaymentMethod : "";
 
                             foreach (ContractInvoiceTextViewModel texts in Contract.InvoiceTexts)
                             {
@@ -4744,6 +4746,12 @@ namespace Hydra.Such.Portal.Controllers
                                 if (ClientRequisition.DataRequisição != null)
                                     PreInvoiceToCreate.DataEncomenda = (DateTime)ClientRequisition.DataRequisição;
                                 PreInvoiceToCreate.CodigoPedido = !string.IsNullOrEmpty(ClientRequisition.NºRequisiçãoCliente) ? ClientRequisition.NºRequisiçãoCliente : "";
+                            }
+
+                            //Contratos Tipo Quotas
+                            if (Contract != null && Contract.Type == 3)
+                            {
+                                PreInvoiceToCreate.PaymentMethodCode = !string.IsNullOrEmpty(Contract.CodePaymentMethod) ? Contract.CodePaymentMethod : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                             }
 
                             Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreatePreInvoiceHeader(PreInvoiceToCreate, _configws); //, group);
@@ -5861,6 +5869,178 @@ namespace Hydra.Such.Portal.Controllers
         //1
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_ContratosCliente([FromBody] List<ContractViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Contratos por Cliente");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["contractNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Contrato");
+                    Col = Col + 1;
+                }
+                if (dp["type"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Tipo");
+                    Col = Col + 1;
+                }
+                if (dp["startData"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Início Versão");
+                    Col = Col + 1;
+                }
+                if (dp["dueDate"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Data Fim Versão");
+                    Col = Col + 1;
+                }
+                if (dp["clientNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["clientName"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nome Cliente");
+                    Col = Col + 1;
+                }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Âmbito dos Serviços");
+                    Col = Col + 1;
+                }
+                if (dp["statusDescription"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Estado");
+                    Col = Col + 1;
+                }
+                if (dp["codeRegion"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Região");
+                    Col = Col + 1;
+                }
+                if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Área Funcional");
+                    Col = Col + 1;
+                }
+                if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Cód. Centro Responsabilidade");
+                    Col = Col + 1;
+                }
+                if (dp["versionNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Nº Versão");
+                    Col = Col + 1;
+                }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ContractViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["contractNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ContractNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["type"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Type);
+                            Col = Col + 1;
+                        }
+                        if (dp["startData"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StartData);
+                            Col = Col + 1;
+                        }
+                        if (dp["dueDate"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.DueDate);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["clientName"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.ClientName);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
+                            Col = Col + 1;
+                        }
+                        if (dp["statusDescription"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.StatusDescription);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeRegion"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeRegion);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeFunctionalArea"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeFunctionalArea);
+                            Col = Col + 1;
+                        }
+                        if (dp["codeResponsabilityCenter"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.CodeResponsabilityCenter);
+                            Col = Col + 1;
+                        }
+                        if (dp["versionNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.VersionNo);
+                            Col = Col + 1;
+                        }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_ContratosCliente(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Contratos.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcel_ContratosLinhas([FromBody] List<ContractLineViewModel> Lista)
         {
             JObject dp = (JObject)Lista[0].ColunasEXCEL;
@@ -6485,11 +6665,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Valor por Faturar");
                     Col = Col + 1;
                 }
-                if (dp["billedValue"]["hidden"].ToString() == "False")
-                {
-                    row.CreateCell(Col).SetCellValue("Valor Faturado");
-                    Col = Col + 1;
-                }
+                //if (dp["billedValue"]["hidden"].ToString() == "False")
+                //{
+                //    row.CreateCell(Col).SetCellValue("Valor Faturado");
+                //    Col = Col + 1;
+                //}
                 if (dp["regionCode"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Região");
@@ -6599,11 +6779,11 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.ValueToInvoice.ToString());
                             Col = Col + 1;
                         }
-                        if (dp["billedValue"]["hidden"].ToString() == "False")
-                        {
-                            row.CreateCell(Col).SetCellValue(item.BilledValue.ToString());
-                            Col = Col + 1;
-                        }
+                        //if (dp["billedValue"]["hidden"].ToString() == "False")
+                        //{
+                        //    row.CreateCell(Col).SetCellValue(item.BilledValue.ToString());
+                        //    Col = Col + 1;
+                        //}
                         if (dp["regionCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.RegionCode);

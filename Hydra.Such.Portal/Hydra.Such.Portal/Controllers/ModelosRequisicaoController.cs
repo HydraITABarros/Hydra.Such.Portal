@@ -776,6 +776,66 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        [HttpPost]
+        public JsonResult GetProductsModelRequisition([FromBody] JObject requestParams)
+        {
+            try
+            {
+                string requisitionType = string.Empty;
+                List<NAVProductsViewModel> ListaProdutos = new List<NAVProductsViewModel>();
+                if (requestParams != null)
+                {
+                    requisitionType = requestParams["requisitionType"].ToString();
+                    if (!string.IsNullOrEmpty(requisitionType))
+                    {
+                        ListaProdutos = DBNAV2017Products.GetProductsForPreRequisitions(_config.NAVDatabaseName, _config.NAVCompanyName, "", requisitionType);
+                        ListaProdutos.RemoveAll(x => string.IsNullOrEmpty(x.AreaFiltro));
+                    }
+                    else
+                    {
+                        ListaProdutos = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+                        ListaProdutos.RemoveAll(x => string.IsNullOrEmpty(x.AreaFiltro));
+                    }
+
+                    List<AcessosDimensões> UserAcessos = DBUserDimensions.GetByUserId(User.Identity.Name);
+                    UserAcessos.RemoveAll(x => x.Dimensão != 2);
+
+                    if (UserAcessos.Count() > 0)
+                    {
+                        UserAcessos.ForEach(x =>
+                        {
+                            if (x.ValorDimensão.StartsWith("0"))
+                                x.ValorDimensão = "-0-";
+                            else
+                            if (x.ValorDimensão.StartsWith("3"))
+                                x.ValorDimensão = "-3-";
+                            else
+                            if (x.ValorDimensão.StartsWith("5"))
+                                x.ValorDimensão = "-5-";
+                            else
+                                x.ValorDimensão = "-" + x.ValorDimensão + "-";
+                        });
+                        UserAcessos = UserAcessos.Distinct().ToList();
+
+                        ListaProdutos.ForEach(x =>
+                        {
+                            x.ToRemove = true;
+                            UserAcessos.ForEach(y =>
+                            {
+                                if (x.AreaFiltro.Contains(y.ValorDimensão))
+                                    x.ToRemove = false;
+                            });
+                        });
+                        ListaProdutos.RemoveAll(x => x.ToRemove == true);
+                    }
+                }
+                return Json(ListaProdutos);
+            }
+            catch (Exception ex)
+            {
+                return Json(null);
+            }
+        }
 
 
 

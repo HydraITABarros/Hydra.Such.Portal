@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Detalhes de Configuração de Utilizador";
+    ViewData["Title"] = "Configuração de Utilizador";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -119,7 +119,7 @@
                     <paper-button class="tablinks" on-tap="_redirectToNewUserConfigForm"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
                 </template>
                 <template is="dom-if" if="{{ _permissions.update }}">
-                    <paper-button class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Atualizar</paper-button>
+                    <paper-button class="tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Gravar</paper-button>
                 </template>
             </div>
         }

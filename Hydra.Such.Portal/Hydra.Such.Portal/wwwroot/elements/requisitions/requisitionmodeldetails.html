@@ -141,7 +141,7 @@
         <iron-ajax url="/PopulateDropdowns/GetLocations" id="grid_Locations_ajax" last-response="{{Locations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" id="grid_unitofmeasure_ajax" last-response="{{UnitsOfMmeasure}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetrequestTypes" id="grid_requesttypes_ajax" last-response="{{requesttypesresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <!--<iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" id="ajax_supplier_options" last-response="{{Suppliers}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllClients" id="ajax_clients_options" last-response="{{cboClients}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{CBLocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -156,6 +156,9 @@
         <iron-ajax url="/PopulateDropdowns/GetPurchaseHeader" last-response="{{GridPurchaseHeaders}}" id="gridpurchaseheader_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLines}}" auto id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{PurchaseLinesGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/TipoRequisicoesLista" last-response="{{CBRequesitionType}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/ModelosRequisicao/GetProductsModelRequisition" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/ModelosRequisicao/GetRequisition"
                    id="requisition_datasource"
@@ -255,35 +258,34 @@
             </paper-menu-button>
             <!--end ColumnToggle-->
         </div>
-        <!--<div class="row">
-        <div class="col-lg-12">
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button raised class="" hidden="[[ _isCreate ]]" on-tap="_createNewReq"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
-            </template>
-        </div>
-    </div>-->
 
         <div class="row break_frm">
             <div class="col-md-12 col-md-12 col-lg-12">
                 <iron-form id="frmRequisition">
                     <div class="panel panel-default">
-                        <!--<div class="panel-heading">Cabeçalho</div>-->
                         <div class="panel-body">
-                            <!--<paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                            <paper-tab>Geral</paper-tab>
-                            <paper-tab>Reparação</paper-tab>
-                            <paper-tab>Recolha</paper-tab>
-                            <paper-tab>Entrega (Fornecedor)</paper-tab>
-                        </paper-tabs>-->
-                            <!--<iron-pages selected="{{selected}}">-->
-                            <!--Geral-->
-                            <!--<div>-->
                             <div class="row break_clear">
                                 <div class="col-md-3 ">
                                     <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled></vaadin-text-field>
                                 </div>
 
-                                <div class="col-lg-3">
+                                <div class="col-md-3 ">
+                                    <such-selectbox id="requesitionType" name="requesitionType" label="Tipo Requisição" value="{{Requisition.noDocumento}}"
+                                                    on-value-changed="_getRequesitionType"
+                                                    items="[[CBRequesitionType]]"
+                                                    text-path="value"
+                                                    value-path="id"
+                                                    fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Tipo Requisição"}]'>
+                                    </such-selectbox>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <such-textarea rows="1" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Descrição" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                </div>
+                            </div>
+
+                            <div class="row break_clear">
+                                <div class="col-md-3">
                                     <vaadin-combo-box items="[[LProjectRegionCodes]]" id="RegionCode" item-value-path="id" item-label-path="value" value="{{Requisition.regionCode}}" label="Cód. Região" disabled="{{ !_permissions.update }}" required error-message="Este campo é obrigatório">
                                         <template>
                                             <table width="180px">
@@ -322,194 +324,8 @@
                                     </vaadin-combo-box>
                                 </div>
 
-
-
-                                <!--<div class="col-md-3 ">
-                                <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <table width="180px">
-                                            <tr>
-                                                <td width="40%">[[item.id]]</td>
-                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                            </tr>
-                                        </table>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>-->
-                                <!--<div class="col-md-3 ">
-                                <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>-->
-                                <!--<div class="col-lg-3">
-                                <such-selectbox id="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto"
-                                                items="[[CBJobNo]]"
-                                                text-path="no"
-                                                value-path="no"
-                                                fields='[{"field":"no", "name":"Nº Projeto"}, {"field":"description", "name":"Descrição"}, {"field":"customerNo", "name":"Nº Cliente"}, {"field":"globalDimension1", "name":"Dimensão Global 1"}, {"field":"globalDimension2", "name":"Dimensão Global 2"}]'
-                                                disabled="{{ !_permissions.update }}">
-                                </such-selectbox>
-                            </div>-->
-                            </div>
-                            <div class="row break_clear">
-                                <!--<div class="col-md-3 ">
-                                <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{Requisition.receivedDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                            </div>-->
-                            </div>
-
-                            <!--<div class="row break_clear">
-                            <div class="col-lg-3">
-                                <vaadin-text-field id="txtStatus" name="txtStatus" label="Estado" value="[[stateDescription]]" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                        </div>-->
-                            <!--<div class="row break_clear">
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.urgent}}" disabled="{{ !_permissions.update }}">Urgente</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.relatedSearches}}" disabled="{{ !_permissions.update }}">Orçamento</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.immobilized}}" disabled="{{ !_permissions.update }}">Imobilizado</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.exclusive}}" disabled="{{ !_permissions.update }}">Exclusivo</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.alreadyPerformed}}" disabled="{{ !_permissions.update }}">Já Executado</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.sample}}" disabled="{{ !_permissions.update }}">Amostra</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.equipment}}" disabled="{{ !_permissions.update }}">Equipamento</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.buyCash}}" disabled="{{ !_permissions.update }}">Compras a Dinheiro</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2 ">
-                                <vaadin-checkbox checked="{{Requisition.stockReplacement}}" disabled="{{ !_permissions.update }}">Reposição de Stock</vaadin-checkbox>
-                            </div>
-                            <div class="col-lg-2">
-                                <vaadin-checkbox checked="{{Requisition.reclamation}}" disabled="{{ !_permissions.update }}">Reclamação</vaadin-checkbox>
-                            </div>
-                        </div>-->
-                            <div class="row">
-                                <!--<div class="col-lg-3" id="VehicleDiv" hidden>
-                                <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <b>[[item.id]]</b>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>-->
-                            </div>
-                            <div class="col-md-12">
-                                <such-textarea rows="1" value="{{Requisition.comments}}" id="Notes" name="Notes" label="Descrição" disabled="{{ !_permissions.update }}"> </such-textarea>
-                            </div>
-                            <!--<div class="row break_clear">
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="EmployeeNo" name="EmployeeNo" label="Nº Funcionário" value="{{Requisition.employeeNo}}" hidden disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                        </div>-->
-                        </div>
-
-
-
-                        <!--Reparação-->
-                        <!--<div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{Requisition.repairWithWarranty}}" disabled="{{ !_permissions.update }}">Reparação com Garantia</vaadin-checkbox>
-                        </div>
-                        <div class="col-lg-3 alignPoga">
-                            <vaadin-checkbox checked="{{Requisition.emm}}" disabled="{{ !_permissions.update }}">EMM</vaadin-checkbox>
-                        </div>
-                        <div class="col-md-3 ">
-                            <vaadin-date-picker label="Data Entrega Armazém" id="DeliveryWarehouseDate" name="DeliveryWarehouseDate" value="{{Requisition.warehouseDeliveryDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
-                        </div>
-                    </div>-->
-                        <!--Recolha-->
-                        <!--<div>
-                        <div class="row break_clear">
-                            <div class="col-md-3 ">
-                                <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalCollection" id="CollectionLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localCollection}}" label="Local de Recolha" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <table width="180px">
-                                            <tr>
-                                                <td width="40%">[[item.id]]</td>
-                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                            </tr>
-                                        </table>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="CollectionAddress" name="CollectionAddress" label="Morada" value="{{Requisition.collectionAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="CollectionPostalCode" name="CollectionPostalCode" label="Código-Postal" value="{{Requisition.collectionPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="CollectionLocality" name="CollectionLocality" label="Localidade" value="{{Requisition.collectionLocality}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                             </div>
                         </div>
-                        <div class="row break_clear">
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="CollectionContact" name="CollectionContact" label="Contato" value="{{Requisition.collectionContact}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="CollectionReceptionResponsible" name="CollectionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                        </div>
-                    </div>-->
-                        <!--Entrega (Fornecedor)-->
-                        <!--<div>
-                        <div class="row break_clear">
-                            <div class="col-md-3 ">
-                                <vaadin-combo-box items="[[CBLocal]]" on-change="_onLocalDelivery" id="DeliveryLocal" item-value-path="id" item-label-path="value" value="{{Requisition.localDelivery}}" label="Local de Entrega" disabled="{{ !_permissions.update }}">
-                                    <template>
-                                        <table width="180px">
-                                            <tr>
-                                                <td width="40%">[[item.id]]</td>
-                                                <td width="60%"> <b>[[item.value]]</b></td>
-                                            </tr>
-                                        </table>
-                                    </template>
-                                </vaadin-combo-box>
-                            </div>
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="DeliveryAddress" name="DeliveryAddress" label="Morada" value="{{Requisition.deliveryAddress}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="DeliveryPostalCode" name="DeliveryPostalCode" label="Código-Postal" value="{{Requisition.deliveryPostalCode}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="DeliveryLocality" name="DeliveryLocality" label="Localidade" value="{{Requisition.localityDelivery}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                        </div>
-                        <div class="row break_clear">
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="ReceptionReceptionResponsible" name="ReceptionReceptionResponsible" label="Responsável Receção" value="{{Requisition.responsibleReceptionReception}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                            <div class="col-md-3 ">
-                                <vaadin-text-field id="InvoiceNo" name="InvoiceNo" label="Nº Fatura" value="{{Requisition.invoiceNo}}" disabled="{{ !_permissions.update }}"></vaadin-text-field>
-                            </div>
-                        </div>
-                    </div>-->
-                        <!--</iron-pages>-->
-                        <!--<div class="row break_clear marginSpace">
-                        <template is="dom-if" if="{{ _permissions.create }}">
-                            <template is="dom-if" if="{{ _isCreate }}">
-                                <paper-button raised id="btnCreate" class="btnSave" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
-                            </template>
-                        </template>
-                        <template is="dom-if" if="{{ !_isCreate }}">
-                            <template is="dom-if" if="{{ _permissions.update }}">
-                                <paper-button raised id="btnUpdate" class="btnEdit" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-                            </template>
-                            <template is="dom-if" if="{{ _permissions.delete }}">
-                                <paper-button raised id="btnDelete" class="btnRemove" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
-                            </template>
-                        </template>
-                    </div>-->
-                        <!--</div>-->
 
                         <paper-collapse-group>
                             <paper-collapse-item class="panel-heading" header="Linhas" closed>
@@ -1630,6 +1446,14 @@
 
                 },
 
+                _getRequesitionType: function (e) {
+                    if (e != null) {
+                        var requesitionType = e.detail.value;
+
+                        this.$.filteredProducts_ajax.body = JSON.stringify({ "rootAreaId": this._areaid, "requisitionType": requesitionType });
+                        this.$.filteredProducts_ajax.generateRequest();
+                    }
+                },
 
 
 

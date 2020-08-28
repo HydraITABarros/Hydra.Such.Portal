@@ -14,6 +14,10 @@ namespace Hydra.Such.Data.Database
         public string No { get; set; }
         public string NoCliente { get; set; }
         public string NoContacto { get; set; }
+        public string ContactoNome { get; set; }
+        public string ContactoTelefone { get; set; }
+        public string ContactoEmail { get; set; }
+        public string ContactoNotas { get; set; }
         public DateTime? DataValidade { get; set; }
         public int? IDEstado { get; set; }
         public string Descricao { get; set; }

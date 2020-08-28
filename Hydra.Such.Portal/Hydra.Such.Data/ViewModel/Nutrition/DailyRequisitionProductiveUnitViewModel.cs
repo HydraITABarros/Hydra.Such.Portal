@@ -14,6 +14,8 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string Description2 { get; set; }
         public string UnitMeasureCode { get; set; }
         public decimal? Quantity { get; set; }
+        public decimal? QuantidadeDisponivel { get; set; }
+        public decimal? QuantidadeReservada { get; set; }
         public decimal?DirectUnitCost { get; set; }
         public decimal? TotalValue { get; set; }
         public string ProjectNo { get; set; }
@@ -40,6 +42,8 @@ namespace Hydra.Such.Data.ViewModel.Nutrition
         public string Observation { get; set; }
         public string GrupoRegistoIvaProduto { get; set; }
         public int? Tipo { get; set; }
+        public int? Interface { get; set; }
+        public decimal? DirectUnitCostSubSupplier { get; set; }
 
     }
 }

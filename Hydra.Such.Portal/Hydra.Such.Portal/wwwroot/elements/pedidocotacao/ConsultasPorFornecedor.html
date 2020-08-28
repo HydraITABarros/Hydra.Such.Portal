@@ -15,6 +15,11 @@
 <link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
 <link rel="import" href="/lib/paper-input/paper-textarea.html" />
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -52,11 +57,81 @@
                 paper-input {
                     max-width: 200px !important;
                 }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+
+                .panel-heading {
+                    padding: 0 !important;
+                }
             </style>
         </custom-style>
 
+        <iron-ajax url="/PopulateDropdowns/GetNAVVendorComboGrid" last-response="{{ListaFornecedores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAnos" last-response="{{ListaAnos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{ListaAreas}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/ConsultaMercado/GetAllConsultasPorFornecedor" last-response="{{result}}" method="post" handle-as="json" id="grid_databound_ajax" on-response="_readyResponse" content-type="application/json"></iron-ajax>
         <iron-ajax url="/ConsultaMercado/ExportToExcel_ConsultasPorFornecedor" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
+
+        <paper-collapse-item class="panel-heading" header="Filtros" opened>
+            <div class="grid-header" id="gridheader">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-2">
+                            <vaadin-combo-box items="[[ListaAnos]]" id="filtroAno" name="filtroAno" item-value-path="id" item-label-path="value" value="{{_anoActual}}" label="Ano">
+                                <template>
+                                    <table width="200px">
+                                        <tr>
+                                            <td width="100%"> <b>[[item.value]]</b></td>
+                                        </tr>
+                                    </table>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <such-selectbox id="filtroFornecedor" name="filtroFornecedor" label="Fornecedor"
+                                            items="[[ListaFornecedores]]"
+                                            text-path="name"
+                                            value-path="no_"
+                                            fields='[{"field":"no_", "name":"Nº Fornecedor"}, {"field":"name", "name":"Nome"}, {"field":"vatRegistrationNo", "name":"Nº VAT"}, {"field":"address", "name":"Morada"}, {"field":"postCode", "name":"Código Postal"}]'>
+                            </such-selectbox>
+                        </div>
+
+                        <div class="col-sm-2" style="padding-top:20px">
+                            <paper-button raised id="btnPesquisa" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </paper-collapse-item>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -80,7 +155,7 @@
             <vaadin-text-field type="text" value="" id="noRegistos" disabled> </vaadin-text-field>
         </div>
 
-        <vaadin-grid column-reordering-allowed aria-label="SelecaoEntidadesGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}">
+        <vaadin-grid column-reordering-allowed aria-label="SelecaoEntidadesGrid" id="grid" name="grid" items="[[result]]" class="grid" active-item="{{activeItem}}">
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.numConsultaMercado.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="numConsultaMercado">Nº Consulta Mercado</vaadin-grid-sorter>
@@ -94,7 +169,7 @@
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codFornecedor.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codFornecedor">Código Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codFornecedor" value="[[filter.codFornecedor]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos"/>
+                    <vaadin-grid-filter path="codFornecedor" value="[[filter.codFornecedor]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
                 </template>
                 <template>
                     {{item.codFornecedor}}
@@ -112,34 +187,32 @@
             </vaadin-grid-column>
 
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.selecionado_Show.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="selecionado_Show">Selecionado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="selecionado_Show" value="[[filter.selecionado_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
-                </template>
-                <template>
-                    {{item.selecionado_Show}}
-                </template>
-            </vaadin-grid-column>-->
-
+            <template class="header">
+                <vaadin-grid-sorter path="selecionado_Show">Selecionado</vaadin-grid-sorter>
+                <vaadin-grid-filter path="selecionado_Show" value="[[filter.selecionado_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
+            </template>
+            <template>
+                {{item.selecionado_Show}}
+            </template>
+        </vaadin-grid-column>-->
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.preferencial_Show.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="preferencial_Show">Preferencial</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="preferencial_Show" value="[[filter.preferencial_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
-                </template>
-                <template>
-                    {{item.preferencial_Show}}
-                </template>
-            </vaadin-grid-column>-->
-
+            <template class="header">
+                <vaadin-grid-sorter path="preferencial_Show">Preferencial</vaadin-grid-sorter>
+                <vaadin-grid-filter path="preferencial_Show" value="[[filter.preferencial_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
+            </template>
+            <template>
+                {{item.preferencial_Show}}
+            </template>
+        </vaadin-grid-column>-->
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.emailFornecedor.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="emailFornecedor">Email Fornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="emailFornecedor" value="[[filter.emailFornecedor]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
-                </template>
-                <template>
-                    {{item.emailFornecedor}}
-                </template>
-            </vaadin-grid-column>-->
+            <template class="header">
+                <vaadin-grid-sorter path="emailFornecedor">Email Fornecedor</vaadin-grid-sorter>
+                <vaadin-grid-filter path="emailFornecedor" value="[[filter.emailFornecedor]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
+            </template>
+            <template>
+                {{item.emailFornecedor}}
+            </template>
+        </vaadin-grid-column>-->
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioAoFornecedor_Show.hidden }}">
                 <template class="header">
@@ -176,36 +249,34 @@
             </vaadin-grid-column>
 
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorRecepcaoProposta.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="utilizadorRecepcaoProposta">Utilizador Recepção Proposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorRecepcaoProposta" value="[[filter.utilizadorRecepcaoProposta]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
-                </template>
-                <template>
-                    {{item.utilizadorRecepcaoProposta}}
-                </template>
-            </vaadin-grid-column>-->
-
+            <template class="header">
+                <vaadin-grid-sorter path="utilizadorRecepcaoProposta">Utilizador Recepção Proposta</vaadin-grid-sorter>
+                <vaadin-grid-filter path="utilizadorRecepcaoProposta" value="[[filter.utilizadorRecepcaoProposta]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
+            </template>
+            <template>
+                {{item.utilizadorRecepcaoProposta}}
+            </template>
+        </vaadin-grid-column>-->
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.prazoResposta.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="prazoResposta">Prazo Resposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="prazoResposta" value="[[filter.prazoResposta]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
-                </template>
-                <template>
-                    {{item.prazoResposta}}
-                </template>
-            </vaadin-grid-column>-->
-
+            <template class="header">
+                <vaadin-grid-sorter path="prazoResposta">Prazo Resposta</vaadin-grid-sorter>
+                <vaadin-grid-filter path="prazoResposta" value="[[filter.prazoResposta]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
+            </template>
+            <template>
+                {{item.prazoResposta}}
+            </template>
+        </vaadin-grid-column>-->
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaEsperada_Show.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="dataRespostaEsperada_Show">Data Resposta Esperada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataRespostaEsperada_Show" value="[[filter.dataRespostaEsperada_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
-                </template>
-                <template>
-                    <div style="text-align:right">
-                        {{item.dataRespostaEsperada_Show}}
-                    </div>
-                </template>
-            </vaadin-grid-column>-->
+            <template class="header">
+                <vaadin-grid-sorter path="dataRespostaEsperada_Show">Data Resposta Esperada</vaadin-grid-sorter>
+                <vaadin-grid-filter path="dataRespostaEsperada_Show" value="[[filter.dataRespostaEsperada_Show]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
+            </template>
+            <template>
+                <div style="text-align:right">
+                    {{item.dataRespostaEsperada_Show}}
+                </div>
+            </template>
+        </vaadin-grid-column>-->
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataPedidoEsclarecimento_Show.hidden }}">
                 <template class="header">
@@ -266,14 +337,14 @@
             </vaadin-grid-column>
 
             <!--<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.custoTotalPrevisto.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="custoTotalPrevisto">Valor c/ e/ou s/ IVA da Proposta</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="custoTotalPrevisto" value="[[filter.custoTotalPrevisto]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
-                </template>
-                <template>
-                    {{item.custoTotalPrevisto}}
-                </template>
-            </vaadin-grid-column>-->
+            <template class="header">
+                <vaadin-grid-sorter path="custoTotalPrevisto">Valor c/ e/ou s/ IVA da Proposta</vaadin-grid-sorter>
+                <vaadin-grid-filter path="custoTotalPrevisto" value="[[filter.custoTotalPrevisto]]" on-value-changed="_countNoRegistos" on-blur="_countNoRegistos" />
+            </template>
+            <template>
+                {{item.custoTotalPrevisto}}
+            </template>
+        </vaadin-grid-column>-->
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noRequisicao.hidden }}">
                 <template class="header">
@@ -376,6 +447,11 @@
                         notify: true,
                         value: 0
                     },
+                    _anoActual: {
+                        type: Number,
+                        notify: true,
+                        value: 2020
+                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -391,7 +467,7 @@
 
                 _rowSelected: function (item) {
                     if (item != null) {
-                        window.location.href ="/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado;
+                        window.location.href = "/ConsultaMercado/DetalheConsultaMercado/" + item.numConsultaMercado;
 
                         /*FILTROS*/
                         var filters = {};
@@ -417,14 +493,40 @@
 
                 _showHistory: function (item) {
                     if (item != null) {
-                        if (this._historico == 0) {
-                            this._historico = 1;
-                        } else {
-                            this._historico = 0;
+                        if (this.$.filtroFornecedor.value == "" && this.$.filtroAno.value == "") {
+                            this._showErrorMessage("Tem que escolher pelo menos um dos filtros.");
                         }
-                        this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
-                        this.$.grid_databound_ajax.generateRequest();
-                        this._setButtonTexts();
+                        else {
+                            if (this._historico == 0) {
+                                this._historico = 1;
+                            } else {
+                                this._historico = 0;
+                            }
+
+                            this.result = null;
+                            this._countNoRegistos();
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico, "FiltroFornecedor": this.$.filtroFornecedor.value, "FiltroAno": this.$.filtroAno.value });
+                            this.$.grid_databound_ajax.generateRequest();
+                            this._setButtonTexts();
+                        }
+                        //this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico, "FiltroFornecedor": this.$.filtroFornecedor.value, "FiltroAno": this.$.filtroAno.value });
+                        //this.$.grid_databound_ajax.generateRequest();
+                    }
+                },
+
+                _search: function (item) {
+                    if (item != null) {
+                        if (this.$.filtroFornecedor.value == "" && this.$.filtroAno.value == "") {
+                            this._showErrorMessage("Tem que escolher pelo menos um dos filtros.");
+                        }
+                        else {
+                            this.result = null;
+                            this._countNoRegistos();
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico, "FiltroFornecedor": this.$.filtroFornecedor.value, "FiltroAno": this.$.filtroAno.value });
+                            this.$.grid_databound_ajax.generateRequest();
+                        }
                     }
                 },
 
@@ -439,8 +541,13 @@
 
                 ready: function () {
                     //this.$.grid_databound_ajax.generateRequest();
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico });
-                    this.$.grid_databound_ajax.generateRequest();
+                    //this.$.grid_databound_ajax.body = JSON.stringify({ "Historic": this._historico, "FiltroFornecedor": this.$.filtroFornecedor.value, "FiltroAno": this.$.filtroAno.value, "FiltroArea": this.$.filtroArea.value });
+                    //this.$.grid_databound_ajax.generateRequest();
+
+                    var d = new Date();
+                    this._anoActual = d.getFullYear();
+                    this._countNoRegistos();
+
 
                     /*FILTROS*/
                     window.handleGridListColumnsOrder(this.$.grid, 'consultamercado-consultasporfornecedor');
@@ -563,10 +670,14 @@
                 },
 
                 _countNoRegistos: function () {
-                    var noRegists = this.$.grid._filter(this.result).length;
-                    this.$.noRegistos.value = "Nº de Registos: " + noRegists;
-
-                    //this.$.noRegistos.value = "Nº de Registos: " + this.$.grid._filter(this.result).length;
+                    if (this.result != null) {
+                        var noRegists = this.$.grid._filter(this.result).length;
+                        this.$.noRegistos.value = "Nº de Registos: " + noRegists;
+                    }
+                    else {
+                        var noRegists = 0;
+                        this.$.noRegistos.value = "Nº de Registos: " + noRegists;
+                    }
                 },
 
 

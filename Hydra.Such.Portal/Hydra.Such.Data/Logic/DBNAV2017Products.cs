@@ -273,5 +273,38 @@ namespace Hydra.Such.Data.Logic
             }
             return result;
         }
+
+        public static QuantidadesViewModel GetQuantidades(string NAVDatabaseName, string NAVCompanyName, string Produto, string Armazem)
+        {
+            try
+            {
+                QuantidadesViewModel result = new QuantidadesViewModel();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@Produto", Produto),
+                        new SqlParameter("@Armazem", Armazem)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017GetListQuantidades @DBName, @CompanyName, @Produto, @Armazem", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Codigo = (string)temp.Codigo;
+                        result.CodLocalizacao = (string)temp.CodLocalizacao;
+                        result.QuantDisponivel = (decimal)temp.QuantDisponivel;
+                        result.QuantReservada = (decimal)temp.QuantReservada;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

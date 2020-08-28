@@ -139,13 +139,13 @@
         </style>
 
         <iron-ajax url="/PopulateDropdowns/GetAllClientsComboGrid" last-response="{{CBClients}}" auto method="post" handle-as="json" content-type="application/json" id="clients_ajax"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetAllContactsOrcamentos" last-response="{{CBContacts}}" auto params='{ "type" : 0 }' method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllContactsOrcamentos" last-response="{{CBContacts}}" auto method="post" handle-as="json" content-type="application/json" id="contatos_ajax" on-response="_responseAddContatoList"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{CBRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProposalsFetchUnitDB" last-response="{{LFetchUnits}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetContractBillingTypes" last-response="{{CBBillingTypes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetOrcamentosEstados" last-response="{{CBOrcamentosEstados}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetProjectList" last-response="{{CBProjects}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContractPaymentTerms" last-response="{{CBContractPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetOrcamentoPaymentTerms" last-response="{{CBContractPaymentTerms}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
         <iron-ajax url="/Orcamentos/GetDetails"
@@ -199,6 +199,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Orcamentos/DuplicarOrcamento"
+                   last-response="{{duplicarOrcamento}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_DuplicarOrcamento_ajax"
+                   on-response="_responseDuplicarOrcamento"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/Orcamentos/DeleteAnexo"
                    last-response="{{deletedAnexo}}"
                    method="post"
@@ -226,13 +235,25 @@
                    content-type="application/json">
         </iron-ajax>
 
+
+
+        <iron-ajax url="/Orcamentos/AddOrcamentoContato"
+                   last-response="{{addContatoResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_addContato_ajax"
+                   on-response="_responseAddContato"
+                   content-type="application/json">
+        </iron-ajax>
+
         <!--//-------------------------------------------------------------//-->
         <div class="subMenu">
             <paper-button id="btn_GoBack" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btn_GuardarOrcamento" class="tablinks" on-tap="_GuardarOrcamento" hidden="{{ !_permissions.update }}"><i class="fa fa-save" aria-hidden="true"></i>  Guardar</paper-button>
             <paper-button id="btn_DeleteOrcamento" class="tablinks" on-tap="_DeleteOrcamento" hidden="{{ !_permissions.delete }}"><i class="fa fa-trash" aria-hidden="true"></i>  Eliminar</paper-button>
             <paper-button id="btn_RelatorioOrcamento" class="tablinks" on-tap="_RelatorioOrcamento"><i class="fa fa-print" aria-hidden="true"></i>  Imprimir</paper-button>
-            <paper-button id="btn_CriarProposta" class="tablinks" on-tap="_CriarProposta" hidden="{{ !_permissions.update }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Criar Proposta</paper-button>
+            <paper-button id="btn_CriarProposta" class="tablinks" on-tap="_CriarProposta" hidden><i class="fa fa-plus-square" aria-hidden="true"></i>  Criar Proposta</paper-button>
+            <paper-button id="btn_DuplicarOrcamento" class="tablinks" on-tap="_DuplicarOrcamento" hidden="{{ !_permissions.create }}"><i class="fa fa-plus-square" aria-hidden="true"></i>  Duplicar Orçamento</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -251,12 +272,12 @@
                                 <paper-collapse-group>
                                     <paper-collapse-item class="panel-heading" header="Cabeçalho" opened>
                                         <div class="row">
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="OrcNo" label="Nº do Orçamento" value="{{data.no}}" disabled></vaadin-text-field>
+                                            <div class="col-md-1">
+                                                <vaadin-text-field id="OrcNo" label="Nº Orçamento" value="{{data.no}}" disabled></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-3">
-                                                <such-selectbox id="OrcNoCliente" label="Cliente" value="{{data.noCliente}}"
+                                                <such-selectbox id="OrcNoCliente" label="Clientes" value="{{data.noCliente}}"
                                                                 items="[[CBClients]]"
                                                                 text-path="name"
                                                                 value-path="no_"
@@ -266,15 +287,21 @@
                                                 </such-selectbox>
                                             </div>
 
-                                            <div class="col-md-3">
-                                                <such-selectbox id="OrcNoContacto" label="Contacto" value="{{data.noContacto}}"
-                                                                items="[[CBContacts]]"
-                                                                text-path="name"
-                                                                value-path="no_"
-                                                                fields='[{"field":"no_", "name":"Cód. Contato"}, {"field":"name", "name":"Nome"}, {"field":"email", "name":"E-mail"}]'
-                                                                on-value-changed="_actualizarEmailContacto"
-                                                                disabled="{{ !_permissions.update }}">
-                                                </such-selectbox>
+                                            <div class="col-md-4">
+                                                <div class="col-md-10">
+                                                    <such-selectbox id="OrcNoContacto" label="Outras Organizações" value="{{data.noContacto}}"
+                                                                    items="[[CBContacts]]"
+                                                                    text-path="organizacao"
+                                                                    value-path="id"
+                                                                    fields='[{"field":"id", "name":"Código"}, {"field":"organizacao", "name":"Organização"}, {"field":"telemovel", "name":"Telemovel"}, {"field":"email", "name":"Email"}, {"field":"nif", "name":"NIF"}]'
+                                                                    on-value-changed="_actualizarEmailContacto"
+                                                                    disabled="{{ !_permissions.update }}">
+                                                    </such-selectbox>
+                                                </div>
+
+                                                <div class="col-md-2" style="padding-top:15px">
+                                                    <paper-button raised id="btnAddContato" class="btnSave" on-tap="_addContato" hidden="{{ !_permissions.update }}" title="Adicionar Contato"><i class="fa fa-plus" aria-hidden="true"></i></paper-button>
+                                                </div>
                                             </div>
 
                                             <div class="col-md-2">
@@ -292,87 +319,111 @@
                                                         <b>[[item.value]]</b>
                                                     </template>
                                                 </vaadin-combo-box>
-
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-5">
-                                                <such-textarea id="OrcDescricao" label="Descrição" value="{{data.descricao}}" rows="7" maxlength="200" disabled="{{ !_permissions.update }}"> </such-textarea>
+                                                <such-textarea id="OrcDescricao" label="Descrição" value="{{data.descricao}}" rows="4" maxlength="200" disabled="{{ !_permissions.update }}"> </such-textarea>
                                             </div>
 
                                             <div class="col-md-7">
                                                 <div class="row">
-                                                    <div class="col-md-4">
-                                                        <such-selectbox id="OrcRegiao" label="Região" value="{{data.codRegiao}}"
-                                                                        items="[[CBRegions]]"
-                                                                        text-path="value"
-                                                                        value-path="id"
-                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
-                                                                        disabled="{{ !_permissions.update }}">
-                                                        </such-selectbox>
-                                                    </div>
-
                                                     <div class="col-md-5">
-                                                        <such-selectbox id="OrcUnidadePrestacao" label="Unidade de Prestação" value="{{data.unidadePrestacao}}"
-                                                                        items="[[LFetchUnits]]"
-                                                                        text-path="value"
-                                                                        value-path="id"
-                                                                        fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
-                                                                        disabled="{{ !_permissions.update }}">
-                                                        </such-selectbox>
+                                                        <vaadin-text-field id="OrcContatoNome" label="Nome do Contacto" value="{{data.contactoNome}}" maxlength="100" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                                     </div>
 
                                                     <div class="col-md-3">
-                                                        <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value="{{data.tipoFaturacao}}"
-                                                                          items="[[CBBillingTypes]]"
-                                                                          item-value-path="id"
-                                                                          item-label-path="value"
-                                                                          disabled="{{ !_permissions.update }}">
-                                                            <template>
-                                                                <b>[[item.value]]</b>
-                                                            </template>
-                                                        </vaadin-combo-box>
+                                                        <vaadin-text-field id="OrcCcontatoTelefone" label="Telefone do Contacto" value="{{data.contactoTelefone}}" maxlength="50" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <vaadin-text-field id="OrcContatoEmail" label="E-mail do Contacto" value="{{data.contactoEmail}}" maxlength="100" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                                     </div>
                                                 </div>
 
                                                 <div class="row">
-                                                    <div class="col-md-4">
-                                                        <vaadin-combo-box id="OrcCondicoesPagamento" items="[[CBContractPaymentTerms]]" item-value-path="id" item-label-path="value" value="{{data.condicoesPagamento}}" label="Condições Pagamento" disabled="{{ !_permissions.update }}">
-                                                            <template>
-                                                                <paper-icon-item>
-                                                                    <paper-item-body two-line>
-                                                                        <div>[[item.value]]</div>
-                                                                    </paper-item-body>
-                                                                </paper-icon-item>
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-
-                                                    <div class="col-md-5">
-                                                        <such-selectbox id="OrcProjetoAssociado" value="{{data.projetoAssociado}}" label="Projeto Associado"
-                                                                        disabled="{{ !_permissions.update }}"
-                                                                        items="[[CBProjects]]"
-                                                                        text-path="value"
-                                                                        value-path="id"
-                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
-                                                        </such-selectbox>
-                                                    </div>
-
-                                                    <div class="col-md-3">
-                                                        <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" disabled></vaadin-text-field>
+                                                    <div class="col-md-12">
+                                                        <vaadin-text-field id="OrcContatoNotas" label="Observações / Localizações" value="{{data.contactoNotas}}" maxlength="200" disabled="{{ !_permissions.update }}"></vaadin-text-field>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
 
-                                                <div class="row">
-                                                    <div class="col-md-2">
-                                                        <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="{{data.totalSemIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
-                                                    </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <such-selectbox id="OrcRegiao" label="Região" value="{{data.codRegiao}}"
+                                                                items="[[CBRegions]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </div>
 
-                                                    <div class="col-md-2">
-                                                        <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="{{data.totalComIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
-                                                    </div>
-                                                </div>
+                                            <div class="col-md-2">
+                                                <such-selectbox id="OrcUnidadePrestacao" label="Unidade de Prestação" value="{{data.unidadePrestacao}}"
+                                                                items="[[LFetchUnits]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Unidade"}, {"field":"value", "name":"Descrição"}]'
+                                                                disabled="{{ !_permissions.update }}">
+                                                </such-selectbox>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-combo-box id="OrcTipoFaturacao" label="Tipo Faturação" value="{{data.tipoFaturacao}}"
+                                                                  items="[[CBBillingTypes]]"
+                                                                  item-value-path="id"
+                                                                  item-label-path="value"
+                                                                  disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <b>[[item.value]]</b>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-combo-box id="OrcCondicoesPagamento" items="[[CBContractPaymentTerms]]" item-value-path="id" item-label-path="value" value="{{data.condicoesPagamento}}" label="Condições Pagamento" disabled="{{ !_permissions.update }}">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <such-selectbox id="OrcProjetoAssociado" value="{{data.projetoAssociado}}" label="Projeto Associado"
+                                                                disabled="{{ !_permissions.update }}"
+                                                                items="[[CBProjects]]"
+                                                                text-path="value"
+                                                                value-path="id"
+                                                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
+                                                </such-selectbox>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="OrcNoProposta" label="Nº da Proposta Associada" value="{{data.noProposta}}" hidden disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="OrcTotalSemIVA" label="Total sem IVA" value="{{data.totalSemIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="OrcValorIVA" label="Valor do IVA" value="{{data.valorIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="OrcTotalComIVA" label="Total com IVA" value="{{data.totalComIVA}}" disabled type="number" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
                                             </div>
                                         </div>
                                     </paper-collapse-item>
@@ -700,6 +751,38 @@
             </div>
             <iframe id="rptContainer" src="" frameborder="0" style="width: 100%; height: 92%; margin: 0px; padding: 0px"></iframe>
         </paper-dialog>
+
+        <paper-dialog id="dlgAddContato" modal style="width:900px; height:300px">
+            <div class="row break_clear">
+                <div class="col-md-12">
+                    <vaadin-text-field id="_addContatoOrganizacao" name="_addContatoOrganizacao" label="Organização" value="" maxlength="100" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                </div>
+            </div>
+
+            <div class="row break_clear">
+                <div class="col-md-4">
+                    <vaadin-text-field id="_addContatoTelemovel" name="_addContatoTelemovel" label="Telemóvel" value="" maxlength="50" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-md-4">
+                    <vaadin-text-field id="_addContatoEmail" name="_addContatoEmail" label="E-mail" value="" maxlength="100" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                </div>
+
+                <div class="col-md-4">
+                    <vaadin-text-field id="_addContatoNIF" name="_addContatoNIF" label="NIF" value="" maxlength="20" type="number" class="alignRight" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                </div>
+            </div>
+
+            <div class="row break_clear">
+                <div class="col-md-12">
+                    <vaadin-text-field id="_addContatoNotas" name="_addContatoNotas" label="Notas" value="" maxlength="200" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                </div>
+            </div>
+            <div class="buttons">
+                <paper-button raised class="btnEdit" on-tap="_addNewContato">Adicionar</paper-button>
+                <paper-button raised class="btnRemove" on-tap="_closeDlgAddContato">Fechar</paper-button>
+            </div>
+        </paper-dialog>
     </template>
 
     <script>
@@ -724,6 +807,11 @@
                     },
                     _SelectedLine: {
                         observer: '_lineSelected'
+                    },
+                    addContatoValue: {
+                        type: String,
+                        notify: true,
+                        value: ""
                     },
                 },
 
@@ -1102,11 +1190,11 @@
 
                 _RelatorioOrcamento: function () {
                     if (this._reportserverurl != undefined) {
-                        this.$.rptContainer.src = this._reportserverurl + "Orcamentos&OrcamentosNo=" + this._no + "&ClienteNo=" + this.$.OrcNoCliente.value + "&ContatoNo=" + this.$.OrcNoContacto.value;
+                        this.$.rptContainer.src = this._reportserverurl + "Orcamentos&OrcamentosNo=" + this._no;
                         this.$.rptDialog.open();
                     }
                     else {
-                        this._showErrorMessage("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
+                        this._openToastError("Não é possivel imprimir. Não foi definido o servidor de relatórios.");
                     }
                 },
 
@@ -1139,7 +1227,92 @@
                     this.$.LinhaQuantidade.disabled = true;
                     this.$.LinhaValorUnitario.disabled = true;
                     this.$.LinhaTaxaIVA.disabled = true;
-                }
+                },
+
+                _addContato: function () {
+                    this.$.dlgAddContato.open();
+                },
+
+                _closeDlgAddContato: function () {
+                    this.$.dlgAddContato.close();
+                },
+
+                _addNewContato: function () {
+                    if (this.$._addContatoOrganizacao.value == "") {
+                        this._openToastError("É Obrigatório preencher um dos campos Organização e/ou Nome.");
+                    }
+                    else {
+                        if (this.$._addContatoTelemovel.value == "" && this.$._addContatoEmail.value == "") {
+                            this._openToastError("É Obrigatório preencher um dos campos Telemóvel e/ou E-mail.");
+                        }
+                        else {
+                            this.$.page_addContato_ajax.body = JSON.stringify({
+                                "organizacao": this.$._addContatoOrganizacao.value,
+                                "telemovel": this.$._addContatoTelemovel.value,
+                                "email": this.$._addContatoEmail.value,
+                                "nif": this.$._addContatoNIF.value,
+                                "notas": this.$._addContatoNotas.value
+                            });
+                            this.$.page_addContato_ajax.generateRequest();
+
+                        }
+                    }
+                },
+                _responseAddContato: function () {
+                    if (this.addContatoResponse.eReasonCode != 1) {
+                        this._openToastError(this.addContatoResponse.eMessage);
+                    }
+                    else {
+                        this.addContatoValue = this.addContatoResponse.id;
+                        this.$.dlgAddContato.close();
+                        this._openToast(this.addContatoResponse.eMessage);
+                        this.$.contatos_ajax.generateRequest();
+                    }
+                },
+                _responseAddContatoList: function () {
+                    if (this.addContatoValue != "") {
+                        this.$.OrcNoContacto.value = this.addContatoValue;
+                        this.$.OrcNoCliente._clearSelection();
+                        this.addContatoValue = "";
+                    }
+                },
+
+                _DuplicarOrcamento: function (e) {
+                    if (e != null) {
+                        var ajax_request = this.$.page_DuplicarOrcamento_ajax;
+                        ajax_request.body = JSON.stringify(this.data);
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende Duplicar este Orçamento?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result) {
+                                    ajax_request.generateRequest();
+                                }
+                            }
+                        });
+                    }
+                },
+                _responseDuplicarOrcamento: function () {
+                    if (this.duplicarOrcamento.eReasonCode != 1) {
+                        this._openToastError(this.duplicarOrcamento.eMessage);
+                    }
+                    else {
+                        this._openToast(this.duplicarOrcamento.eMessage);
+
+                        window.location.href = "/Orcamentos/Orcamentos_Details/" + this.duplicarOrcamento.no;
+                    }
+                },
+
 
             });
         });

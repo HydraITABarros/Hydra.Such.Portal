@@ -2,6 +2,12 @@
     ViewData["Title"] = "Requisições Acordos Preços";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -41,15 +47,49 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <paper-toast id="ToastError" style="background-color:red" duration="4000" horizontalAlign="right"></paper-toast>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right"></paper-toast>
-        <iron-ajax url="/GestaoRequisicoes/GetRequisitionsAcordosPrecos" id="ajax_getgrid" last-response="{{result}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/GetRequisitionsAcordosPrecos"
+                   id="ajax_getgrid"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/GetRequisitionsAcordosPrecosCG"
+                   id="ajax_getgridCG"
+                   last-response="{{resultCG}}"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/GetRequisitionsAcordosPrecosHistoricoCG"
+                   id="ajax_getgridHistoricoCG"
+                   last-response="{{resultCG}}"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/ExportToExcel_GestaoRequisicoes"
                    last-response="{{export}}"
                    id="ajax_Export"
                    method="post"
                    handle-as="json"
                    on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/ExportToExcel_GestaoRequisicoesCG"
+                   last-response="{{exportCG}}"
+                   id="ajax_ExportCG"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponseCG"
                    content-type="application/json">
         </iron-ajax>
 
@@ -62,254 +102,576 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/ExportToExcelCG_LinhasNutricao"
+                   last-response="{{exportCG_LinhasNutricao}}"
+                   id="ajax_ExportCG_LinhasNutricao"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELCG_LinhasNutricaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/GestaoRequisicoes/ExportToExcelCG_LinhasNutricaoUpdate"
+                   last-response="{{exportCG_LinhasNutricaoUpdate}}"
+                   id="ajax_ExportCG_LinhasNutricaoUpdate"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELCG_LinhasNutricaoUpdateResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/PopulateDropdowns/GetRequestStatus" id="ajax_getstatus" auto last-response="{{resultstatus}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode" last-response="{{RegionData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{LocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
-            <!--start ColumnToggle-->
-            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
-                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
-                <div class="list-group" slot="dropdown-content">
-                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
-                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
-                            {{ item.value.label }}
-                        </a>
-                        <hr />
-                    </template>
+
+        <div class="row break_frm">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <paper-tabs id="tabAordoPrecos" name="tabAcordoPrecos" fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Interface CentralGest</paper-tab>
+                        </paper-tabs>
+
+                        <iron-pages selected="{{selected}}">
+                            <!--Geral-->
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+                                    <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                                    <!--start ColumnToggle-->
+                                    <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                                        <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                                        <div class="list-group" slot="dropdown-content">
+                                            <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                                                <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                                                    {{ item.value.label }}
+                                                </a>
+                                                <hr />
+                                            </template>
+                                        </div>
+                                    </paper-menu-button>
+                                    <!--end ColumnToggle-->
+
+                                    <paper-button class="tablinks" id="btnCreatePurchaseOrder" on-tap="_createPurchaseOrder" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
+                                </div>
+
+                                <vaadin-grid column-reordering-allowed id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" selected-items={{selectedItems}} active-item="{{_SelectedLine}}">
+                                    <vaadin-grid-selection-column auto-select id="grid_SelectAll">
+                                    </vaadin-grid-selection-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="requisitionNo" />
+                                        </template>
+                                        <template>
+                                            {{item.requisitionNo}}
+                                        </template>
+
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.state.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+                                            @*<vaadin-grid-filter path="state" />*@
+                                        </template>
+                                        <template>
+                                            [[ _parsestate(item.state)]]
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.urgent.hidden }}">
+                                        <template class="header">
+                                            Urgente
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
+                                        <template class="header">
+                                            Compra a Dinheiro
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
+                                        <template class="header">
+                                            Trabalho já executado
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestNutrition.hidden }}">
+                                        <template class="header">
+                                            Requisição Nutrição
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.budget.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="budget" />
+                                        </template>
+                                        <template>
+                                            {{item.budget}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarket.hidden }}">
+                                        <template class="header">
+                                            Mercado Local
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketRegion.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="localMarketRegion" />
+                                        </template>
+                                        <template>
+                                            [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketDate.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="localMarketDate" />
+                                        </template>
+                                        <template>
+                                            [[ _parseDateFormat(item.localMarketDate)]]
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="regionCode" />
+                                        </template>
+                                        <template>
+                                            @*[[ _parseregion(item.regionCode)]]*@
+                                            {{item.regionCode}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="functionalAreaCode" />
+                                        </template>
+                                        <template>
+                                            @*[[ _parseArea(item.functionalAreaCode)]]*@
+                                            {{item.functionalAreaCode}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="centerResponsibilityCode" />
+                                        </template>
+                                        <template>
+                                            @*[[ _parsecenterRespons(item.centerResponsibilityCode)]]*@
+                                            {{item.centerResponsibilityCode}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="comments" />
+                                        </template>
+                                        <template>
+                                            {{item.comments}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marketInquiryNo.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="marketInquiryNo" />
+                                        </template>
+                                        <template>
+                                            {{item.marketInquiryNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.orderNo.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="orderNo" />
+                                        </template>
+                                        <template>
+                                            {{item.orderNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.stockReplacement.hidden }}">
+                                        <template class="header">
+                                            Reposição Stock
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
+                                        <template class="header">
+                                            Reclamação
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="requestReclaimNo" />
+                                        </template>
+                                        <template>
+                                            {{item.requestReclaimNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="requisitionDate" />
+                                        </template>
+                                        <template>
+                                            [[ _parseDateFormat(item.requisitionDate)]]
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.createUser.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="createUser" />
+                                        </template>
+                                        <template>
+                                            {{item.createUser}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.estimatedValue.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="estimatedValue" />
+                                        </template>
+                                        <template>
+                                            {{item.estimatedValue}}
+                                        </template>
+                                    </vaadin-grid-column>
+                                </vaadin-grid>
+                            </div>
+
+                            <!--Interface CentralGest-->
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button id="btnCGGoBack" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+                                    <paper-button id="btnCGVer" class="tablinks" on-tap="_btnVerCG"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{ _showVerMessage }}</paper-button>
+                                    <paper-button id="btnCGEnviar" class="tablinks" on-tap="_EnviarCG" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar Requisições</paper-button>
+                                    <paper-button id="btnCGCreatePurchaseOrder" class="tablinks" on-tap="_createPurchaseOrderCG" disabled="{{ !_permissions.create }}" hidden><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
+                                    <paper-button id="btnCGHistorico" class="tablinks" on-tap="_HistoricoCG" title="Ver Histórico"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Ver Histórico</paper-button>
+                                    <paper-button id="btnCGExport" class="tablinks" on-tap="_exportEXCELCG" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+                                    <paper-button id="btnCGExportLinhasNutricao" class="tablinks" on-tap="_exportEXCELCG_LinhasNutricao" title="Exportar Linhas para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
+
+                                    <!--start ColumnToggle-->
+                                    <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                                        <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                                        <div class="list-group" slot="dropdown-content">
+                                            <template is="dom-repeat" items="[[ _toArrayCG(_columnsCG)]]" id="columnsList">
+                                                <a href="javascript:void(0);" on-tap="_toggleColumnCG" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClassCG( item.key ) ]]">
+                                                    {{ item.value.label }}
+                                                </a>
+                                                <hr />
+                                            </template>
+                                        </div>
+                                    </paper-menu-button>
+                                    <!--end ColumnToggle-->
+                                </div>
+
+                                <vaadin-grid column-reordering-allowed id="gridrequestCG" aria-label="ProfileModelsTabel" items="[[resultCG]]" class="grid" selected-items={{selectedItemsCG}} active-item="{{_SelectedLineCG}}">
+                                    <vaadin-grid-selection-column auto-select id="grid_SelectAll">
+                                    </vaadin-grid-selection-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.requisitionNo.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="requisitionNo" />
+                                        </template>
+                                        <template>
+                                            {{item.requisitionNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden>
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
+                                        </template>
+                                        <template>
+                                            [[ _parsestate(item.state)]]
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.noSubFornecedor.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="noSubFornecedor">Nº SubFornecedor</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="noSubFornecedor" />
+                                        </template>
+                                        <template>
+                                            {{item.noSubFornecedor}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.nomeSubFornecedor.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="nomeSubFornecedor">SubFornecedor</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="nomeSubFornecedor" />
+                                        </template>
+                                        <template>
+                                            {{item.nomeSubFornecedor}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.noEncomendaFornecedor.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="noEncomendaFornecedor">Nº Encomenda do Fornecedor</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="noEncomendaFornecedor" />
+                                        </template>
+                                        <template>
+                                            {{item.noEncomendaFornecedor}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.dataEncomendaSubfornecedorText.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="dataEncomendaSubfornecedorText">Data Encomenda do SubFornecedor</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="dataEncomendaSubfornecedorText" />
+                                        </template>
+                                        <template>
+                                            {{item.dataEncomendaSubfornecedorText}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.urgent.hidden }}">
+                                        <template class="header">
+                                            Urgente
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.buyCash.hidden }}">
+                                        <template class="header">
+                                            Compra a Dinheiro
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.alreadyPerformed.hidden }}">
+                                        <template class="header">
+                                            Trabalho já executado
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.requestNutrition.hidden }}">
+                                        <template class="header">
+                                            Requisição Nutrição
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.budget.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="budget" />
+                                        </template>
+                                        <template>
+                                            {{item.budget}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.localMarket.hidden }}">
+                                        <template class="header">
+                                            Mercado Local
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.localMarketRegion.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="localMarketRegion" />
+                                        </template>
+                                        <template>
+                                            [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.localMarketDate.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="localMarketDate" />
+                                        </template>
+                                        <template>
+                                            [[ _parseDateFormat(item.localMarketDate)]]
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.regionCode.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="regionCode" />
+                                        </template>
+                                        <template>
+                                            {{item.regionCode}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.functionalAreaCode.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="functionalAreaCode" />
+                                        </template>
+                                        <template>
+                                            {{item.functionalAreaCode}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.centerResponsibilityCode.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="centerResponsibilityCode" />
+                                        </template>
+                                        <template>
+                                            {{item.centerResponsibilityCode}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.comments.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="comments" />
+                                        </template>
+                                        <template>
+                                            {{item.comments}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.marketInquiryNo.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="marketInquiryNo" />
+                                        </template>
+                                        <template>
+                                            {{item.marketInquiryNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.orderNo.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="orderNo" />
+                                        </template>
+                                        <template>
+                                            {{item.orderNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.stockReplacement.hidden }}">
+                                        <template class="header">
+                                            Reposição Stock
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.reclamation.hidden }}">
+                                        <template class="header">
+                                            Reclamação
+                                        </template>
+                                        <template>
+                                            <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.requestReclaimNo.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="requestReclaimNo" />
+                                        </template>
+                                        <template>
+                                            {{item.requestReclaimNo}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.requisitionDate.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="requisitionDate" />
+                                        </template>
+                                        <template>
+                                            [[ _parseDateFormat(item.requisitionDate)]]
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.createUser.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="createUser" />
+                                        </template>
+                                        <template>
+                                            {{item.createUser}}
+                                        </template>
+                                    </vaadin-grid-column>
+
+                                    <vaadin-grid-column width="160px" resizable hidden$="{{ _columnsCG.estimatedValue.hidden }}">
+                                        <template class="header">
+                                            <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
+                                            <vaadin-grid-filter path="estimatedValue" />
+                                        </template>
+                                        <template>
+                                            {{item.estimatedValue}}
+                                        </template>
+                                    </vaadin-grid-column>
+                                </vaadin-grid>
+                            </div>
+                        </iron-pages>
+                    </div>
                 </div>
-            </paper-menu-button>
-            <!--end ColumnToggle-->
-
-            <paper-button class="tablinks" id="btnCreatePurchaseOrder" on-tap="_createPurchaseOrder" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
+            </div>
         </div>
-
-        <vaadin-grid column-reordering-allowed id="gridrequest" aria-label="ProfileModelsTabel" items="[[result]]" class="grid" selected-items={{selectedItems}} active-item="{{_SelectedLine}}">
-            <vaadin-grid-selection-column auto-select id="grid_SelectAll">
-            </vaadin-grid-selection-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="requisitionNo">Nº Requisição </vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionNo" />
-                </template>
-                <template>
-                    {{item.requisitionNo}}
-                </template>
-
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.state.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="state">Estado</vaadin-grid-sorter>
-                    @*<vaadin-grid-filter path="state" />*@
-                </template>
-                <template>
-                    [[ _parsestate(item.state)]]
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.urgent.hidden }}">
-                <template class="header">
-                    Urgente
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.urgent}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-                <template class="header">
-                    Compra a Dinheiro
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
-                <template class="header">
-                    Trabalho já executado
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.alreadyPerformed}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestNutrition.hidden }}">
-                <template class="header">
-                    Requisição Nutrição
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.requestNutrition}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.budget.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="budget">Orçamento</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="budget" />
-                </template>
-                <template>
-                    {{item.budget}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarket.hidden }}">
-                <template class="header">
-                    Mercado Local
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.localMarket}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketRegion.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="localMarketRegion">Região Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localMarketRegion" />
-                </template>
-                <template>
-                    [[ _getLocalMarketRegionDescription(item.localMarketRegion) ]]
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.localMarketDate.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="localMarketDate">Data Mercado Local</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localMarketDate" />
-                </template>
-                <template>
-                    [[ _parseDateFormat(item.localMarketDate)]]
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="regionCode" />
-                </template>
-                <template>
-                    @*[[ _parseregion(item.regionCode)]]*@
-                    {{item.regionCode}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="functionalAreaCode" />
-                </template>
-                <template>
-                    @*[[ _parseArea(item.functionalAreaCode)]]*@
-                    {{item.functionalAreaCode}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.centerResponsibilityCode.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="centerResponsibilityCode">Código Centro Responsabilidade</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="centerResponsibilityCode" />
-                </template>
-                <template>
-                    @*[[ _parsecenterRespons(item.centerResponsibilityCode)]]*@
-                    {{item.centerResponsibilityCode}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.comments.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="comments">Observações</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="comments" />
-                </template>
-                <template>
-                    {{item.comments}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.marketInquiryNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="marketInquiryNo">Nº Consulta Mercado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="marketInquiryNo" />
-                </template>
-                <template>
-                    {{item.marketInquiryNo}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.orderNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="orderNo">Nº Encomenda</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="orderNo" />
-                </template>
-                <template>
-                    {{item.orderNo}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.stockReplacement.hidden }}">
-                <template class="header">
-                    Reposição Stock
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.stockReplacement}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
-                <template class="header">
-                    Reclamação
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requestReclaimNo" />
-                </template>
-                <template>
-                    {{item.requestReclaimNo}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="requisitionDate">Data requisição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requisitionDate" />
-                </template>
-                <template>
-                    [[ _parseDateFormat(item.requisitionDate)]]
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.createUser.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="createUser" />
-                </template>
-                <template>
-                    {{item.createUser}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.estimatedValue.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="estimatedValue">Valor Estimado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estimatedValue" />
-                </template>
-                <template>
-                    {{item.estimatedValue}}
-                </template>
-            </vaadin-grid-column>
-        </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -323,16 +685,47 @@
                         type: Boolean,
                         value: true
                     },
+                    _filterActiveCG: {
+                        type: Boolean,
+                        value: true
+                    },
                     selectedItems: {
+                        type: Array
+                    },
+                    selectedItemsCG: {
                         type: Array
                     },
                     selectedItem: {
                         type: Array
                     },
+                    selectedItemCG: {
+                        type: Array
+                    },
                     _SelectedLine: {
                         observer: '_rowSelected'
                     },
+                    _SelectedLineCG: {
+                        observer: '_rowSelectedCG'
+                    },
+                    selected: {
+                        type: Number,
+                        value: 0
+                    },
+                    selectedCG: {
+                        type: Number,
+                        value: 0
+                    },
+                    _showVerMessage: {
+                        type: String,
+                        value: "Ver Enviadas"
+                    },
                     _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    _columnsCG: {
                         type: Object,
                         value: function () {
                             return {};
@@ -342,6 +735,14 @@
                         type: Boolean,
                         value: false
                     },
+                    _hasErrorsCG: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _opcaoCG: {
+                        type: Number,
+                        value: 1
+                    },
                 },
                 observers: [
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
@@ -349,23 +750,35 @@
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
                     if (!this.Flag) {
                         this.$.ajax_getgrid.generateRequest();
+
+                        this.$.ajax_getgridCG.body = JSON.stringify({ "opcao": this._opcaoCG });
+                        this.$.ajax_getgridCG.generateRequest();
                     }
                     this.Flag = true;
 
                     /*ColumnToggle*/
                     this._startColumnToggle();
+                    this._startColumnToggleCG();
 
                     var _this = this;
                     $(window).resize(function () {
                         _this.fixGridToBottom();
+                        _this.fixGridToBottomCG();
                     });
                     $(window).trigger('resize');
                 },
                 fixGridToBottom: function () {
                     var grid_el = $(this.$.gridrequest);
                     var parentHeight = $(this).offsetParent().height();
-                    var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop;
+                    var offsetTop = $(this).offset().top + 120;
+                    var height = (parentHeight - offsetTop);
+                    grid_el.height(height);
+                },
+                fixGridToBottomCG: function () {
+                    var grid_el = $(this.$.gridrequestCG);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top + 120;
+                    var height = (parentHeight - offsetTop);
                     grid_el.height(height);
                 },
                 //Mostra Mensagens
@@ -478,16 +891,12 @@
 
                     if (this.Requisition.eReasonCode == "1") {
                         this._showMessage(this.Requisition.eMessage);
-                        //this.$.gridrequest.clearCache();
-                        //this.$.ajax_getgrid.generateRequest();
                     }
                     else {
                         if (this.Requisition.eMessages.length > 0)
                             this._toggleToastMultiple();
                         else {
                             this._showErrorMessage(this.Requisition.eMessage);
-                            //this.$.gridrequest.clearCache();
-                            //this.$.ajax_getgrid.generateRequest();
                         }
                     }
 
@@ -563,13 +972,153 @@
                         };
                     });
                 },
+
+                _startColumnToggleCG: function () {
+                    var columnsCG = {
+                        "requisitionNo": { hidden: false, label: "Nº Requisição" },
+                        "noSubFornecedor": { hidden: false, label: "Nº SubFornecedor" },
+                        "nomeSubFornecedor": { hidden: false, label: "SubFornecedor" },
+                        "noEncomendaFornecedor": { hidden: false, label: "Nº Encomenda do Fornecedor" },
+                        "dataEncomendaSubfornecedorText": { hidden: false, label: "Data Encomenda do SubFornecedor" },
+                        "urgent": { hidden: false, label: "Urgente" },
+                        "buyCash": { hidden: false, label: "Compra a Dinheiro" },
+                        "alreadyPerformed": { hidden: false, label: "Trabalho já executado" },
+                        "requestNutrition": { hidden: false, label: "Requisição Nutrição" },
+                        "budget": { hidden: false, label: "Orçamento" },
+                        "localMarket": { hidden: false, label: "Mercado Local" },
+                        "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
+                        "localMarketDate": { hidden: false, label: "Data Mercado Local" },
+                        "regionCode": { hidden: false, label: "Código Região" },
+                        "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
+                        "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },
+                        "comments": { hidden: false, label: "Observações" },
+                        "marketInquiryNo": { hidden: false, label: "Nº Consulta Mercado" },
+                        "orderNo": { hidden: false, label: "Nº Encomenda" },
+                        "stockReplacement": { hidden: false, label: "Reposição Stock" },
+                        "reclamation": { hidden: false, label: "Reclamação" },
+                        "requestReclaimNo": { hidden: false, label: "Nº Requisição Reclamada" },
+                        "requisitionDate": { hidden: false, label: "Data requisição" },
+                        "createUser": { hidden: false, label: "Utilizador Criação" },
+                        "estimatedValue": { hidden: false, label: "Valor Estimado" }
+                    };
+
+                    if (localStorage["request.ToggleColumn"]) {
+                        var keys = Object.keys(columnsCG);
+                        var storedcolumnsCG = JSON.parse(localStorage["request.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columnsCG[keys[i]] = storedcolumnsCG[keys[i]];
+                        }
+                    };
+                    this._columnsCG = columnsCG;
+                },
+                _toggleColumnCG: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columnsCG.' + columnIndex + '.hidden', (!this._columnsCG[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["request.ToggleColumn"] = JSON.stringify(this._columnsCG);
+                    }
+                },
+                _getColumnItemClassCG: function (columnIndex) {
+                    return !this._columnsCG[columnIndex].hidden ? "selected" : "";
+                },
+                _toArrayCG: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
                 /* end - ColumnToggle */
 
                 _goBack: function (e) {
                     window.history.back();
                 },
 
+                _HistoricoCG: function () {
+                    this.$.ajax_getgridHistoricoCG.generateRequest();
+                },
 
+                _btnVerCG: function () {
+                    if (this._opcaoCG == 1) {
+                        this._opcaoCG = 2;
+                        this._showVerMessage = "Ver Por Enviar";
+                        this.$.btnCGEnviar.hidden = true;
+                        this.$.btnCGCreatePurchaseOrder.hidden = false;
+                        this.$.btnCGExportLinhasNutricao.hidden = true;
+                    }
+                    else {
+                        this._opcaoCG = 1;
+                        this._showVerMessage = "Ver Enviadas";
+                        this.$.btnCGEnviar.hidden = false;
+                        this.$.btnCGCreatePurchaseOrder.hidden = true;
+                        this.$.btnCGExportLinhasNutricao.hidden = false;
+                    }
+
+
+                    this.$.ajax_getgridCG.body = JSON.stringify({ "opcao": this._opcaoCG });
+                    this.$.ajax_getgridCG.generateRequest();
+                },
+
+                _EnviarCG: function () {
+                    this._showErrorMessage("Botão Desativado.");
+                },
+
+                _createPurchaseOrderCG: function () {
+                    this._showErrorMessage("Botão Desativado.");
+                },
+
+                _exportEXCELCG: function () {
+                    this.resultCG[0].ColunasEXCEL = this._columnsCG;
+
+                    this.$.ajax_ExportCG.body = JSON.stringify(this.resultCG);
+                    this.$.ajax_ExportCG.generateRequest();
+                },
+
+                _exportEXCELResponseCG: function (e) {
+                    var FileName = this.exportCG;
+                    location.href = '../GestaoRequisicoes/ExportToExcelDownload_GestaoRequisicoesCG?sFileName=' + FileName;
+                },
+
+                _exportEXCELCG_LinhasNutricao: function() {
+                    if (this.selectedItemsCG != null && this.selectedItemsCG != "") {
+
+                        $(this.$.btnCGExportLinhasNutricao).addClass('disabled');
+
+                        var selItmsCG = this.selectedItemsCG;
+
+                        this.$.ajax_ExportCG_LinhasNutricao.body = JSON.stringify(selItmsCG);
+                        this.$.ajax_ExportCG_LinhasNutricao.generateRequest();
+                        this.$.gridrequestCG.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma Requisição.");
+                    }
+                },
+
+                _exportEXCELCG_LinhasNutricaoResponse: function (e) {
+                    var FileName = this.exportCG_LinhasNutricao;
+                    location.href = '/GestaoRequisicoes/ExportToExcelDownloadCG_LinhasNutricao?sFileName=' + FileName;
+
+                    this.$.ajax_ExportCG_LinhasNutricaoUpdate.body = JSON.stringify(this.selectedItemsCG);
+                    this.$.ajax_ExportCG_LinhasNutricaoUpdate.generateRequest();
+                    this.$.gridrequestCG.clearCache();
+                },
+
+                _exportEXCELCG_LinhasNutricaoUpdateResponse: function (e) {
+                    if (this.exportCG_LinhasNutricaoUpdate == true) {
+                        this.$.ajax_getgridCG.body = JSON.stringify({ "opcao": this._opcaoCG });
+                        this.$.ajax_getgridCG.generateRequest();
+
+                        this._showMessage("Linhas exportadas e atualizadas com sucesso.");
+                    }
+                    else {
+                        this._showErrorMessage("Ocorreu um erro ao atualizar as linhas.");
+                    }
+
+                    this.selectedItemsCG = null;
+                    $(this.$.btnCGExportLinhasNutricao).removeClass('disabled');
+                },
             });
         });
 

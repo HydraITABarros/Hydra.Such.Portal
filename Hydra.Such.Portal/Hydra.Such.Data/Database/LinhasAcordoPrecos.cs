@@ -18,6 +18,7 @@ namespace Hydra.Such.Data.Database
         public string Regiao { get; set; }
         public string Localizacao { get; set; }
         public decimal? CustoUnitario { get; set; }
+        public decimal? CustoUnitarioSubFornecedor { get; set; }
         public string DescricaoProduto { get; set; }
         public string Um { get; set; }
         public decimal? QtdPorUm { get; set; }
@@ -30,5 +31,6 @@ namespace Hydra.Such.Data.Database
         public int? TipoPreco { get; set; }
         public string GrupoRegistoIvaProduto { get; set; }
         public string CodCategoriaProduto { get; set; }
+        public int? Interface { get; set; }
     }
 }

@@ -36,6 +36,7 @@ using Hydra.Such.Data.ViewModel.Encomendas;
 using System.Data.SqlClient;
 using Hydra.Such.Data.ViewModel.FH;
 using Hydra.Such.Data.ViewModel.Viaturas;
+using Hydra.Such.Data.Logic.OrcamentoL;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -669,6 +670,12 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult GetOrcamentoPaymentTerms()
+        {
+            List<EnumData> result = EnumerablesFixed.OrcamentoPaymentTerms;
+            return Json(result);
+        }
 
 
         [HttpPost]
@@ -908,14 +915,31 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAnos_VendasAnuais()
         {
-            List<DDMessage> result = DBVendasAnuais.GetAnos().Select(x => new DDMessage()
+            List<DDMessageString> result = DBVendasAnuais.GetAnos().Select(x => new DDMessageString()
             {
-                id = x.id,
+                id = x.id.ToString(),
                 value = x.value
             }).ToList();
 
             return Json(result.OrderByDescending(x => x.id));
         }
+
+        [HttpPost]
+        public JsonResult GetAnos()
+        {
+            int ano = 2018;
+            List<DDMessage> result = new List<DDMessage>();
+            for (ano = 2018; ano <= DateTime.Now.Year; ano++)
+            {
+                DDMessage linhaAno = new DDMessage();
+                linhaAno.id = ano;
+                linhaAno.value = ano.ToString();
+                result.Add(linhaAno);
+            }
+
+            return Json(result.OrderByDescending(x => x.id));
+        }
+
 
         [HttpPost]
         public JsonResult GetNoSeries()
@@ -3443,8 +3467,8 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetAllContactsOrcamentos()
         {
-            var result = DBNAV2017Contacts.GetContacts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            return Json(result);
+            var result = DBOrcamentosContatos.GetAll();
+            return Json(result.OrderBy(x => x.Organizacao));
         }
 
 

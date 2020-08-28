@@ -21,7 +21,7 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@Regiao", Regiao)
                     };
 
-                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017MapaVendasAnuais @Ano, @Regiao", parameters);
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017FaturacaoClientes @Ano, @Regiao", parameters);
 
                     foreach (dynamic temp in data)
                     {
@@ -29,8 +29,9 @@ namespace Hydra.Such.Data.Logic
                         {
                             Ano = temp.Ano.Equals(DBNull.Value) ? 0 : (int)temp.Ano,
                             Regiao = temp.Regiao.Equals(DBNull.Value) ? "" : temp.Regiao,
-                            NoAssociado = temp.NoAssociado.Equals(DBNull.Value) ? "" : Convert.ToString(temp.NoAssociado).Equals("x") ? "" : (string)temp.NoAssociado,
-                            NomeAssociado = temp.NomeAssociado.Equals(DBNull.Value) ? "" : (string)temp.NomeAssociado,
+                            Associado = temp.Associado.Equals(DBNull.Value) ? "" : temp.Associado,
+                            NoCliente = temp.NoCliente.Equals(DBNull.Value) ? "" : (string)temp.NoCliente,
+                            NomeCliente = temp.NomeCliente.Equals(DBNull.Value) ? "" : (string)temp.NomeCliente,
                             Jan = temp.Jan.Equals(DBNull.Value) ? 0 : (decimal)temp.Jan,
                             Fev = temp.Fev.Equals(DBNull.Value) ? 0 : (decimal)temp.Fev,
                             Mar = temp.Mar.Equals(DBNull.Value) ? 0 : (decimal)temp.Mar,

@@ -296,10 +296,12 @@ namespace Hydra.Such.Data.Logic
                             DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo,
                             DocumentType = temp.DocumentType.Equals(DBNull.Value) ? "" : (string)temp.DocumentType.ToString(),
                             DocumentTypeText = temp.DocumentTypeText.Equals(DBNull.Value) ? "" : (string)temp.DocumentTypeText.ToString(),
+                            PendenteType = (int?)temp.PendenteType == 0 || (int?)temp.PendenteType == null ? "Não" : "Sim",
                             Obs = temp.Obs.Equals(DBNull.Value) ? "" : (string)temp.Obs,
                             PostingDate = (DateTime?)temp.PostingDate,
                             RemainingAmount = (decimal?)temp.RemainingAmount,
                             SinalizacaoRec = (int?)temp.SinalizacaoRec == 0 || (int?)temp.SinalizacaoRec == null ? false : true,
+                            SinalizacaoRecText = (int?)temp.SinalizacaoRec == 0 || (int?)temp.SinalizacaoRec == null ? "Não" : "Sim",
                             DocumentDate = (DateTime?)temp.DocumentDate,
                             DueDate = (DateTime?)temp.DueDate,
                             FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
@@ -316,7 +318,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static int? UpdateBalance(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo, string EntryNo, bool SinalizacaoRec, string Obs)
+        public static int? UpdateBalance(string NAVDatabaseName, string NAVCompanyName, string NAVClientNo, string EntryNo, bool SinalizacaoRec, string DateRec, string Obs, string UserUpdate)
         {
             try
             {
@@ -329,10 +331,12 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@CustomerNo", NAVClientNo ),
                         new SqlParameter("@Obs", Obs ),
                         new SqlParameter("@SinalizacaoRec", SinalizacaoRec == true ? "true" : "false" ),
-                        new SqlParameter("@EntryNo", EntryNo )
+                        new SqlParameter("@EntryNo", EntryNo ),
+                        new SqlParameter("@DateRec", DateRec ),
+                        new SqlParameter("@UserUpdate", UserUpdate )
                     };
 
-                    var data = ctx.execStoredProcedureNQ("exec NAV2017ClientesBalancesUpdate @DBName, @CompanyName, @CustomerNo, @Obs, @SinalizacaoRec, @EntryNo", _parameters);
+                    var data = ctx.execStoredProcedureNQ("exec NAV2017ClientesBalancesUpdateV2 @DBName, @CompanyName, @CustomerNo, @Obs, @SinalizacaoRec, @EntryNo, @DateRec, @UserUpdate", _parameters);
 
                     return data;
 
@@ -491,6 +495,43 @@ namespace Hydra.Such.Data.Logic
                             DimensionValue = temp.DimensionValue.Equals(DBNull.Value) ? "" : (string)temp.DimensionValue.ToString(),
                             Value = Convert.ToDecimal(temp.Value),
                             FactoringSemRecurso = temp.FactoringSemRecurso.Equals(DBNull.Value) ? "" : (string)temp.FactoringSemRecurso.ToString()
+                        });
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<ListDividaAllClientsViewModel> GetListDividaAllClients(string RegiaoFiltro)
+        {
+            try
+            {
+                List<ListDividaAllClientsViewModel> result = new List<ListDividaAllClientsViewModel>();
+
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]
+                    {
+                    new SqlParameter("@RegiaoFiltro", RegiaoFiltro)
+                };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec DividaClientes @RegiaoFiltro", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new ListDividaAllClientsViewModel()
+                        {
+                            CustomerRegionNo = temp.CustomerRegionNo.Equals(DBNull.Value) ? "" : (string)temp.CustomerRegionNo.ToString(),
+                            CustomerRegionName = temp.CustomerRegionName.Equals(DBNull.Value) ? "" : (string)temp.CustomerRegionName.ToString(),
+                            CustomerNo = temp.CustomerNo.Equals(DBNull.Value) ? "" : (string)temp.CustomerNo.ToString(),
+                            CustomerName = temp.CustomerName.Equals(DBNull.Value) ? "" : (string)temp.CustomerName.ToString(),
+                            Value = Convert.ToDecimal(temp.Value),
+                            DueValue = Convert.ToDecimal(temp.DueValue)
                         });
                     }
                 }

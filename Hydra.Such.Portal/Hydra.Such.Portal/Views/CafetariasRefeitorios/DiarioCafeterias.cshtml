@@ -126,7 +126,7 @@
 
             @*A pedido do Carlos Rodrigues 24/01/2019*@
             @*<template is="dom-if" if="{{ _permissions.create }}">*@
-            <paper-button id="btnRegisterLine" class="tablinks" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+            <paper-button id="btnRegisterLine" name="btnRegisterLine" class="tablinks" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
             @*</template>*@
         </div>
 
@@ -163,9 +163,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-1">
-                        <template is="dom-if" if="{{ _permissions.create }}">
-                            <paper-button class="btnSave" raised on-tap="_createCoffeeShopDiary"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
-                        </template>
+                        <paper-button id="btnCreateCoffeeShopDiary" name="btnCreateCoffeeShopDiary" class="btnSave" raised on-tap="_createCoffeeShopDiary" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
                     </div>
                 </div>
             </paper-collapse-item>
@@ -311,11 +309,12 @@
         },
 
         _createCoffeeShopDiary: function () {
-            $(this.$.btnRegisterLine).addClass('disabled');
+            this.$.btnCreateCoffeeShopDiary.disabled = true;
 
             this.$.value.validate();
             if (this.$.value.value == "" || this.$.value.value == undefined) {
                 this._openToastError("O campo Valor é de preenchimento obrigatório.");
+                this.$.btnCreateCoffeeShopDiary.disabled = false;
             }
             else {
                 this.$.create_databound_ajax.body = JSON.stringify(this.diary);
@@ -324,24 +323,32 @@
         },
 
         _responseCreated: function (created) {
-            var self = this;
             if (created.detail.status === 200) {
-                if (this.created == true) {
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
-                    this.$.grid_databound_ajax.generateRequest();
+                if (this.created == 1) {
                     this._openToast("Diário Cafetaria/Refeitório criado com sucesso.");
-
-                    this.$.description.value = "";
-                    this.$.value.value = "";
-
                 } else {
-                    this._openToastError("Ocorreu um erro desconhecido.");
+                    if (this.created == 2)
+                        this._openToastError("Ocorreu um erro ao criar a linha do diário.");
+                    if (this.created == 3)
+                        this._openToastError("Já existe uma linha igual no diário.");
+                    if (this.created == 4)
+                        this._openToastError("É necessário preencher todos os campos obrigatórios.");
+                    if (this.created == 99)
+                        this._openToastError("Ocorreu um erro desconhecido.");
                 }
             } else {
                 this._openToastError("Ocorreu um erro desconhecido.");
             }
 
-            $(this.$.btnRegisterLine).removeClass('disabled');
+            this.$.registryDate.value = null;
+            this.$.cbmovementType.value = null;
+            this.$.description.value = null;
+            this.$.value.value = null;
+
+            this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+            this.$.grid_databound_ajax.generateRequest();
+
+            this.$.btnCreateCoffeeShopDiary.disabled = false;
         },
 
         _deleteDiaryLine: function (e) {
@@ -371,7 +378,6 @@
         },
 
         _responseUpdate: function (updated) {
-            var self = this;
             if (updated.detail.status === 200) {
                 if (this.updated == true) {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
@@ -390,11 +396,12 @@
 
 
         _registerDiaryLines: function () {
+            this.$.btnRegisterLine.disabled = true;
+
             this.$.register_databound_ajax.body = JSON.stringify(this.result);
             this.$.register_databound_ajax.generateRequest();
         },
         _responseRegister: function (registed) {
-            var self = this;
             if (registed.detail.status === 200) {
                 if (this.registed == true) {
                     this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
@@ -407,6 +414,7 @@
                 this._openToastError("Ocorreu um erro desconhecido.");
             }
 
+            this.$.btnRegisterLine.disabled = false;
         },
 
         _openToast: function (message) {

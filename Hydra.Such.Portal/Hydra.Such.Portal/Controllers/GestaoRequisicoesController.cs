@@ -1099,6 +1099,12 @@ namespace Hydra.Such.Portal.Controllers
             };
             List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
+
+            result.ForEach(x => x.StateText = x.State.HasValue ? x.State == RequisitionStates.Validated ? RequisitionStates.Validated.GetDescription() :
+               x.State == RequisitionStates.Available ? RequisitionStates.Available.GetDescription() :
+               x.State == RequisitionStates.Received ? RequisitionStates.Received.GetDescription() :
+               x.State == RequisitionStates.Treated ? RequisitionStates.Treated.GetDescription() : "" : "");
+
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
@@ -1267,6 +1273,85 @@ namespace Hydra.Such.Portal.Controllers
             //ResponsabilityCenter
             if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                 result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        [HttpPost]
+        public JsonResult GetRequisitionsAcordosPrecosCG([FromBody] JObject requestParams)
+        {
+            int opcao = int.Parse(requestParams["opcao"].ToString());
+
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Validated,
+                RequisitionStates.Available,
+                RequisitionStates.Received,
+                RequisitionStates.Treated,
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByStateByInterface((int)RequisitionTypes.Normal, states, 1).ParseToViewModel();
+
+            //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
+            result.RemoveAll(x => x.RequestNutrition != true);
+            result.RemoveAll(x => !string.IsNullOrEmpty(x.OrderNo));
+
+            if (opcao == 1) //Por Enviar
+                result.RemoveAll(x => !string.IsNullOrEmpty(x.NoEncomendaFornecedor));
+            if (opcao == 2) //Enviadas
+                result.RemoveAll(x => string.IsNullOrEmpty(x.NoEncomendaFornecedor));
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, string.Empty);
+            result.ForEach(req =>
+            {
+                req.NomeSubFornecedor = !string.IsNullOrEmpty(req.NoSubFornecedor) ? AllSuppliers.Where(x => x.No_ == req.NoSubFornecedor).FirstOrDefault().Name : "";
+                req.DataEncomendaSubfornecedorText = req.DataEncomendaSubfornecedor.HasValue ? req.DataEncomendaSubfornecedor.Value.ToString("yyyy-MM-dd") : "";
+            });
+
+            return Json(result.OrderByDescending(x => x.RequisitionNo));
+        }
+
+        public JsonResult GetRequisitionsAcordosPrecosHistoricoCG()
+        {
+            List<RequisitionStates> states = new List<RequisitionStates>()
+            {
+                RequisitionStates.Archived
+            };
+            List<RequisitionViewModel> result = DBRequest.GetByStateByInterface((int)RequisitionTypes.Normal, states, 1).ParseToViewModel();
+
+            //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
+            result.RemoveAll(x => x.RequestNutrition != true);
+            result.RemoveAll(x => !string.IsNullOrEmpty(x.OrderNo));
+
+            //Apply User Dimensions Validations
+            List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
+            //Regions
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+            //FunctionalAreas
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+            //ResponsabilityCenter
+            if (userDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
+                result.RemoveAll(x => !userDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+
+            List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, string.Empty);
+            result.ForEach(req =>
+            {
+                req.NomeSubFornecedor = !string.IsNullOrEmpty(req.NoSubFornecedor) ? AllSuppliers.Where(x => x.No_ == req.NoSubFornecedor).FirstOrDefault().Name : "";
+                req.DataEncomendaSubfornecedorText = req.DataEncomendaSubfornecedor.HasValue ? req.DataEncomendaSubfornecedor.Value.ToString("yyyy-MM-dd") : "";
+            });
 
             return Json(result.OrderByDescending(x => x.RequisitionNo));
         }
@@ -1640,6 +1725,72 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     item.eReasonCode = 2;
                     item.eMessage = "Ocorreu um erro: A Requisição têm que estar no Estado Pendente.";
+                }
+            }
+            else
+            {
+                item.eReasonCode = 2;
+                item.eMessage = "Ocorreu um erro: A Requisição não pode ser nula.";
+            }
+
+            return Json(item);
+        }
+
+        [HttpPost]
+        public JsonResult DesArquivarReq([FromBody] RequisitionViewModel item)
+        {
+            item.eReasonCode = 99;
+            item.eMessage = "Ocorreu um erro.";
+
+            if (item != null)
+            {
+                if (item.State == RequisitionStates.Archived)
+                {
+                    UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.HistóricoRequisições);
+                    if (userPermissions != null && userPermissions.Update == true)
+                    {
+                        if (item.ChangeLog != null && item.ChangeLog.Count > 0)
+                        {
+                            RequisitionStates LastState = item.ChangeLog.Where(x => x.State != RequisitionStates.Archived).OrderByDescending(x => x.ModifiedAt).FirstOrDefault().State;
+
+                            if (LastState != null)
+                            {
+                                item.State = LastState;
+                                item.UpdateUser = User.Identity.Name;
+                                item.UpdateDate = DateTime.Now;
+                                if (DBRequest.Update(item.ParseToDB(), false, true) != null)
+                                {
+                                    item.eReasonCode = 1;
+                                    item.eMessage = "A Requisição foi Desarquivada com sucesso";
+                                }
+                                else
+                                {
+                                    item.eReasonCode = 2;
+                                    item.eMessage = "Ocorreu um erro: Não foi possivel Desarquivar a Requisição.";
+                                }
+                            }
+                            else
+                            {
+                                item.eReasonCode = 2;
+                                item.eMessage = "Ocorreu um erro: Não foi possivel obter o último estado da Requisição.";
+                            }
+                        }
+                        else
+                        {
+                            item.eReasonCode = 2;
+                            item.eMessage = "Ocorreu um erro: Não foi possivel obter o último estado da Requisição.";
+                        }
+                    }
+                    else
+                    {
+                        item.eReasonCode = 2;
+                        item.eMessage = "Ocorreu um erro: Não tem permissões para Desarquivar a Requisição.";
+                    }
+                }
+                else
+                {
+                    item.eReasonCode = 2;
+                    item.eMessage = "Ocorreu um erro: A Requisição têm que estar no Estado Arquivado.";
                 }
             }
             else
@@ -2085,6 +2236,8 @@ namespace Hydra.Such.Portal.Controllers
                                             }
                                             else
                                             {
+                                                item.ResponsibleReception = User.Identity.Name;
+                                                item.ReceivedDate = DateTime.Now.ToString();
                                                 item.State = RequisitionStates.Archived;
                                                 item.UpdateUser = User.Identity.Name;
                                                 item.UpdateDate = DateTime.Now;
@@ -2254,6 +2407,13 @@ namespace Hydra.Such.Portal.Controllers
                     case "Anular Validacao":
                         if (item.State == RequisitionStates.Validated)
                         {
+                            if (item.SISLOG.HasValue && item.SISLOG == true)
+                            {
+                                item.eReasonCode = 5;
+                                item.eMessage = "Não é possivel Anular a Validação pois a Requisição já foi enviada para o SISLOG.";
+                                break;
+                            }
+
                             item.State = RequisitionStates.Approved;
                             item.ResponsibleValidation = "";
                             item.ValidationDate = null;
@@ -2728,6 +2888,8 @@ namespace Hydra.Such.Portal.Controllers
                                                 }
                                                 else
                                                 {
+                                                    item.ResponsibleReception = User.Identity.Name;
+                                                    item.ReceivedDate = DateTime.Now.ToString();
                                                     item.State = RequisitionStates.Archived;
                                                     item.UpdateUser = User.Identity.Name;
                                                     item.UpdateDate = DateTime.Now;
@@ -3898,14 +4060,18 @@ namespace Hydra.Such.Portal.Controllers
                         row = excelSheet.CreateRow(count);
 
                         if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
-                        if (dp["state"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.State.ToString()); Col = Col + 1; }
-                        if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Urgent.ToString()); Col = Col + 1; }
-                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.ToString()); Col = Col + 1; }
-                        if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNutrition.ToString()); Col = Col + 1; }
-                        if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarket.ToString()); Col = Col + 1; }
-                        if (dp["pedirOrcamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedirOrcamento.ToString()); Col = Col + 1; }
+                        if (dp["state"]["hidden"].ToString() == "False") {
+                            row.CreateCell(Col).SetCellValue(item.State == RequisitionStates.Pending ? "Pendente" : item.State == RequisitionStates.Received ? "Recebido" :
+                            item.State == RequisitionStates.Treated ? "Tratado" : item.State == RequisitionStates.Validated ? "Validado" : item.State == RequisitionStates.Approved ? "Aprovado" :
+                            item.State == RequisitionStates.Rejected ? "Rejeitado" : item.State == RequisitionStates.Available ? "Disponibilizado" : item.State == RequisitionStates.Archived ? "Arquivado" : "");
+                            Col = Col + 1; }
+                        if (dp["urgent"]["hidden"].ToString() == "False") {row.CreateCell(Col).SetCellValue(item.Urgent.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.HasValue ? item.AlreadyPerformed == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNutrition.HasValue ? item.RequestNutrition == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarket.HasValue ? item.LocalMarket == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["pedirOrcamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedirOrcamento.HasValue ? item.PedirOrcamento == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
                         //if (dp["attachment"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Attachment.ToString()); Col = Col + 1; }
-                        if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Budget.ToString()); Col = Col + 1; }
+                        if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Budget.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
                         if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketRegion); Col = Col + 1; }
                         if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString()); Col = Col + 1; }
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
@@ -3916,7 +4082,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Comments); Col = Col + 1; }
                         if (dp["marketInquiryNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MarketInquiryNo); Col = Col + 1; }
                         if (dp["orderNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderNo); Col = Col + 1; }
-                        if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StockReplacement.ToString()); Col = Col + 1; }
+                        if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StockReplacement.HasValue ? item.StockReplacement == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
                         if (dp["requisitionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionDate); Col = Col + 1; }
                         if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CreateUser); Col = Col + 1; }
                         if (dp["estimatedValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString()); Col = Col + 1; }
@@ -3941,6 +4107,108 @@ namespace Hydra.Such.Portal.Controllers
         {
             sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
             //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Gestão Requisições.xlsx");
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_GestaoRequisicoesCG([FromBody] List<RequisitionViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Interface CentralGest");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1; }
+                if (dp["noSubFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº SubFornecedor"); Col = Col + 1; }
+                if (dp["nomeSubFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1; }
+                if (dp["noEncomendaFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Encomenda do Fornecedor"); Col = Col + 1; }
+                if (dp["dataEncomendaSubfornecedorText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Encomenda do SubFornecedor"); Col = Col + 1; }
+                if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Urgente"); Col = Col + 1; }
+                if (dp["buyCash"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Compra a Dinheiro"); Col = Col + 1; }
+                if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Trabalho já executado"); Col = Col + 1; }
+                if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Requisição Nutrição"); Col = Col + 1; }
+                if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Orçamento"); Col = Col + 1; }
+                if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Mercado Local"); Col = Col + 1; }
+                if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região Mercado Local"); Col = Col + 1; }
+                if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Mercado Local"); Col = Col + 1; }
+                if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
+                if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Observações"); Col = Col + 1; }
+                if (dp["marketInquiryNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Consulta Mercado"); Col = Col + 1; }
+                if (dp["orderNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Encomenda"); Col = Col + 1; }
+                if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Reposição Stock"); Col = Col + 1; }
+                if (dp["reclamation"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Reclamação"); Col = Col + 1; }
+                if (dp["requestReclaimNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Requisição Reclamada"); Col = Col + 1; }
+                if (dp["requisitionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data requisição"); Col = Col + 1; }
+                if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador Criação"); Col = Col + 1; }
+                if (dp["estimatedValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Estimado"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (RequisitionViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["requisitionNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionNo); Col = Col + 1; }
+                        if (dp["noSubFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoSubFornecedor); Col = Col + 1; }
+                        if (dp["nomeSubFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NomeSubFornecedor); Col = Col + 1; }
+                        if (dp["noEncomendaFornecedor"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NoEncomendaFornecedor); Col = Col + 1; }
+                        if (dp["dataEncomendaSubfornecedorText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataEncomendaSubfornecedorText); Col = Col + 1; }
+                        if (dp["urgent"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Urgent.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["buyCash"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Urgent.HasValue ? item.BuyCash == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["alreadyPerformed"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AlreadyPerformed.HasValue ? item.AlreadyPerformed == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["requestNutrition"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestNutrition.HasValue ? item.RequestNutrition == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["budget"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Budget.HasValue ? item.Urgent == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["localMarket"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarket.HasValue ? item.LocalMarket == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketRegion); Col = Col + 1; }
+                        if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString()); Col = Col + 1; }
+                        if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
+                        if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
+                        if (dp["comments"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Comments); Col = Col + 1; }
+                        if (dp["marketInquiryNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MarketInquiryNo); Col = Col + 1; }
+                        if (dp["orderNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.OrderNo); Col = Col + 1; }
+                        if (dp["stockReplacement"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.StockReplacement.HasValue ? item.StockReplacement == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["reclamation"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Reclamation.HasValue ? item.StockReplacement == true ? "Sim" : "Não" : "Não"); Col = Col + 1; }
+                        if (dp["requestReclaimNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequestReclaimNo); Col = Col + 1; }
+                        if (dp["requisitionDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RequisitionDate); Col = Col + 1; }
+                        if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CreateUser); Col = Col + 1; }
+                        if (dp["estimatedValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EstimatedValue.ToString()); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_GestaoRequisicoesCG(string sFileName)
+        {
+            sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
@@ -4013,6 +4281,98 @@ namespace Hydra.Such.Portal.Controllers
             sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
             //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Gestão Requisições.xlsx");
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcelCG_LinhasNutricao([FromBody] List<RequisitionViewModel> Lista)
+        {
+            string sWebRootFolder = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+
+            List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, "");
+            NAVSupplierViewModels Supplier = new NAVSupplierViewModels();
+            NAVSupplierViewModels SubSupplier = new NAVSupplierViewModels();
+
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisição Nutrição");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Custo Unitário SubFornecedor"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Qt. Requerida"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1;
+
+                int count = 1;
+                foreach (RequisitionViewModel REQ in Lista)
+                {
+                    foreach (RequisitionLineViewModel item in REQ.Lines)
+                    {
+                        Col = 0;
+                        Supplier = AllSuppliers.Where(y => y.No_ == item.SupplierNo).FirstOrDefault();
+                        SubSupplier = AllSuppliers.Where(y => y.No_ == item.SubSupplierNo).FirstOrDefault();
+                        row = excelSheet.CreateRow(count);
+
+                        row.CreateCell(Col).SetCellValue(item.RequestNo); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(item.CustoUnitarioSubFornecedor.ToString()); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(item.QuantityRequired.ToString()); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(Supplier != null && !string.IsNullOrEmpty(Supplier.Name) ? Supplier.Name : ""); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue(SubSupplier != null && !string.IsNullOrEmpty(SubSupplier.Name) ? SubSupplier.Name : ""); Col = Col + 1;
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownloadCG_LinhasNutricao(string sFileName)
+        {
+            sFileName = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public bool ExportToExcelCG_LinhasNutricaoUpdate([FromBody] List<RequisitionViewModel> Lista)
+        {
+            bool OK = true;
+            foreach (RequisitionViewModel REQ in Lista)
+            {
+                REQ.NoEncomendaFornecedor = "Enviado";
+                REQ.UpdateUser = User.Identity.Name;
+                if (DBRequest.Update(REQ.ParseToDB()) == null)
+                    OK = false;
+            }
+            return OK;
         }
 
         //1

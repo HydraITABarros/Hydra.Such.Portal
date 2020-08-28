@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.ViewModel
         public DateTime? PostingDate { get; set; }
         public string DocumentType { get; set; }
         public string DocumentTypeText { get; set; }
+        public string PendenteType { get; set; }
         public string DocumentNo { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DocumentDate { get; set; }
@@ -25,6 +26,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? RemainingAmount { get; set; }
 
         public bool SinalizacaoRec { get; set; }
+        public string SinalizacaoRecText { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataConcil { get; set; }
         public string DataConcilText { get; set; }

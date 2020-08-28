@@ -1014,7 +1014,10 @@ namespace Hydra.Such.Portal.Controllers
                                 catch (Exception ex)
                                 {
                                     data.eReasonCode = 3;
-                                    data.eMessage = ex.InnerException.Message;
+                                    if (ex.InnerException.Message == "You cannot change Bill-to Customer No. because one or more entries are associated with this Job.")
+                                        data.eMessage = "Não é possivel alterar o Cliente, pois o Projeto já contêm Movimentos inseridos.";
+                                    else
+                                        data.eMessage = ex.InnerException.Message;
                                     statusL = false;
                                     return Json(data);
                                 }
@@ -1878,7 +1881,6 @@ namespace Hydra.Such.Portal.Controllers
                     previousList = DBProjectDiary.GetByProjectNo(projectNo, User.Identity.Name);
                 }
 
-
                 //previousList.RemoveAll(x => !dp.Any(u => u.LineNo == x.NºLinha));
                 //previousList.ForEach(x => DBProjectDiary.Delete(x));
                 foreach (DiárioDeProjeto line in previousList)
@@ -1916,6 +1918,17 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             response.eReasonCode = 6;
                             response.eMessage = "Não é possivel Criar, por a Data ser inferior á data " + Convert.ToDateTime(Parametro.Valor).ToShortDateString();
+                        }
+                    }
+
+                    if (x.Type == 2 && !string.IsNullOrEmpty(x.Code)) //Recurso
+                    {
+                        NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code, "", 0, "").FirstOrDefault();
+
+                        if (Resource != null && string.IsNullOrEmpty(Resource.GenProdPostingGroup))
+                        {
+                            response.eReasonCode = 6;
+                            response.eMessage = "Não é possivel Criar, por faltar a configuração do Grupo Contabilístico no Recurso " + x.Code;
                         }
                     }
                 });
@@ -3571,6 +3584,10 @@ namespace Hydra.Such.Portal.Controllers
                 JArray projMovementsValue = requestParams["projMovements"] as JArray;
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
+
+                List<NAVResourcesViewModel> AllResources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").ToList();
+                NAVResourcesViewModel Resource = new NAVResourcesViewModel();
+
                 projMovements.ForEach(x =>
                 {
                     if (x.FunctionalAreaCode == null)
@@ -3593,6 +3610,16 @@ namespace Hydra.Such.Portal.Controllers
                     if (x.UnitPrice == 0)
                     {
                         result.eMessages.Add(new TraceInformation(TraceType.Exception, "Existem Movimentos com Preço Unitário a 0"));
+                    }
+
+                    if (x.Type == 2 && !string.IsNullOrEmpty(x.Code)) //Recurso
+                    {
+                        Resource = AllResources.Where(y => y.Code == x.Code).FirstOrDefault();
+
+                        if (Resource != null && string.IsNullOrEmpty(Resource.GenProdPostingGroup))
+                        {
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Falta a configuração do Grupo Contabilístico no Recurso " + x.Code));
+                        }
                     }
                 });
 
@@ -6788,6 +6815,7 @@ namespace Hydra.Such.Portal.Controllers
                     List<EnumData> AllMovementType = EnumerablesFixed.ProjectDiaryMovements;
                     List<EnumData> AllType = EnumerablesFixed.ProjectDiaryTypes;
                     List<Projetos> AllProjects = DBProjects.GetAll();
+                    List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
 
                     result.ForEach(x =>
                     {
@@ -6795,6 +6823,7 @@ namespace Hydra.Such.Portal.Controllers
                         x.MovementTypeText = x.MovementType != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault() != null ? AllMovementType.Where(y => y.Id == x.MovementType).FirstOrDefault().Value : "" : "";
                         x.TypeText = x.Type != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault() != null ? AllType.Where(y => y.Id == x.Type).FirstOrDefault().Value : "" : "";
                         x.BillableText = x.Billable.HasValue ? x.Billable == true ? "Sim" : "Não" : "";
+                        x.ClientName = AllClients.Where(y => y.No_ == x.ClientRequest).FirstOrDefault() != null ? AllClients.Where(y => y.No_ == x.ClientRequest).FirstOrDefault().Name : "";
                     });
                 }
                 else
@@ -8592,6 +8621,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codigoTipoTrabalho"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Tipo Trabalho"); Col = Col + 1; }
                 if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Funcionário"); Col = Col + 1; }
                 if (dp["clientRequest"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Cliente"); Col = Col + 1; }
+                if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nome Cliente"); Col = Col + 1; }
                 if (dp["serviceClientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Serviço Cliente"); Col = Col + 1; }
                 if (dp["residueGuideNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Guia Resíduos"); Col = Col + 1; }
                 if (dp["readingCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cód. Ler"); Col = Col + 1; }
@@ -8636,6 +8666,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codigoTipoTrabalho"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodigoTipoTrabalho); Col = Col + 1; }
                         if (dp["employeeNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.EmployeeNo); Col = Col + 1; }
                         if (dp["clientRequest"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientRequest); Col = Col + 1; }
+                        if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientName); Col = Col + 1; }
                         if (dp["serviceClientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ServiceClientCode); Col = Col + 1; }
                         if (dp["residueGuideNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResidueGuideNo); Col = Col + 1; }
                         if (dp["readingCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ReadingCode); Col = Col + 1; }

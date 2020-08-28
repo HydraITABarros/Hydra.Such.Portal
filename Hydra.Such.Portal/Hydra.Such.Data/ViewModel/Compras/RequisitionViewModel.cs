@@ -14,6 +14,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public int? Area { get; set; }
         //public int? State { get; set; }
         public RequisitionStates? State { get; set; }
+        public string StateText { get; set; }
         public string ProjectNo { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
@@ -96,6 +97,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? InAdvance { get; set; }
         public string ApprovalDateString { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public bool? RoupaManutencao { get; set; }
         public string NumeroMecanografico { get; set; }
         public decimal? ValorTotalDocComIVA { get; set; }
         public bool? ShowPontoSituacao { get; set; }
@@ -110,6 +112,14 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? EnviarSISLOG { get; set; }
         public bool? SISLOG { get; set; }
         public DateTime? DataEnvioSISLOG { get; set; }
+
+        public int? Interface { get; set; }
+        public string NoSubFornecedor { get; set; }
+        public string NomeSubFornecedor { get; set; }
+        public string NoEncomendaFornecedor { get; set; }
+        public DateTime? DataEncomendaSubfornecedor { get; set; }
+        public string DataEncomendaSubfornecedorText { get; set; }
+
 
 
         //EXPORTAR PARA EXCEL

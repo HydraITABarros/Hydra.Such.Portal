@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
     public class RequisitionTemplateViewModel : ErrorHandler
     {
         public string RequisitionNo { get; set; }
+        public string NoDocumento { get; set; }
         public int? Area { get; set; }
         public RequisitionStates? State { get; set; }
         public string ProjectNo { get; set; }

@@ -91,6 +91,7 @@ namespace Hydra.Such.Data.Database
         public bool? PrecoIvaincluido { get; set; }
         public bool? Adiantamento { get; set; }
         public bool? PedirOrcamento { get; set; }
+        public bool? RoupaManutencao { get; set; }
         public decimal? ValorTotalDocComIVA { get; set; }
 
         public int? TipoAlteracaoSISLOG { get; set; }
@@ -98,6 +99,11 @@ namespace Hydra.Such.Data.Database
         public bool? EnviarSISLOG { get; set; }
         public bool? SISLOG { get; set; }
         public DateTime? DataEnvioSISLOG { get; set; }
+
+        public int? Interface { get; set; }
+        public string NoSubFornecedor { get; set; }
+        public string NoEncomendaFornecedor { get; set; }
+        public DateTime? DataEncomendaSubfornecedor { get; set; }
 
         public Projetos NºProjetoNavigation { get; set; }
         public Viaturas ViaturaNavigation { get; set; }

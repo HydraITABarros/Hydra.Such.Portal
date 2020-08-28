@@ -455,6 +455,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.clientName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.serviceClientCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="serviceClientCode">Cód. Serviço Cliente</vaadin-grid-sorter>
@@ -710,6 +720,7 @@
                         "codigoTipoTrabalho": { hidden: false, label: "Cód. Tipo Trabalho" },
                         "employeeNo": { hidden: false, label: "Nº Funcionário" },
                         "clientRequest": { hidden: false, label: "Cód. Cliente" },
+                        "clientName": { hidden: false, label: "Nome Cliente" },
                         "serviceClientCode": { hidden: false, label: "Cód. Serviço Cliente" },
                         "residueGuideNo": { hidden: false, label: "Nº Guia Resíduos" },
                         "readingCode": { hidden: false, label: "Cód. Ler" },

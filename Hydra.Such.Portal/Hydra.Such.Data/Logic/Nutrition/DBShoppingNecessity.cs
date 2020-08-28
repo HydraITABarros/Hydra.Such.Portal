@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel.Compras;
 using Hydra.Such.Data.ViewModel.Nutrition;
 
 namespace Hydra.Such.Data.Logic.Nutrition
@@ -157,6 +158,40 @@ namespace Hydra.Such.Data.Logic.Nutrition
             }
         }
 
+        public static bool Delete(List<RequisitionLineViewModel> itemsToDelete)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (itemsToDelete != null && itemsToDelete.Count > 0)
+                    {
+                        itemsToDelete.ForEach(itemToDelete =>
+                        {
+                            if (itemToDelete != null && itemToDelete.NoLinhaDiarioRequisicaoUnidProdutiva > 0)
+                            {
+                                DiárioRequisiçãoUnidProdutiva DiarioToDelete = ctx.DiárioRequisiçãoUnidProdutiva.Where(x => x.NºLinha == itemToDelete.NoLinhaDiarioRequisicaoUnidProdutiva).FirstOrDefault();
+
+                                if (DiarioToDelete != null)
+                                {
+                                    ctx.DiárioRequisiçãoUnidProdutiva.Remove(DiarioToDelete);
+                                    ctx.SaveChanges();
+                                }
+                            }
+                        });
+                    }
+                    else
+                        return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static bool Delete(DiárioRequisiçãoUnidProdutiva ObjectToDelete)
         {
             List<DiárioRequisiçãoUnidProdutiva> itemsToDelete = new List<DiárioRequisiçãoUnidProdutiva>();
@@ -221,6 +256,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     ProductionUnitNo = item.NºUnidadeProdutiva,
                     ProjectNo = item.NºProjeto,
                     Quantity = item.Quantidade,
+                    QuantidadeDisponivel = item.QuantidadeDisponivel,
+                    QuantidadeReservada = item.QuantidadeReservada,
                     QuantitybyUnitMeasure = item.QuantidadePorUnidMedida,
                     SupplierName = item.NomeFornecedor,
                     SupplierNo = item.NºFornecedor,
@@ -236,7 +273,9 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     DocumentNo = item.NºDocumento,
                     Observation = item.Observações,
                     GrupoRegistoIvaProduto = item.GrupoRegistoIvaProduto,
-                    Tipo = item.Tipo
+                    Tipo = item.Tipo,
+                    Interface = item.Interface,
+                    DirectUnitCostSubSupplier = item.CustoUnitarioSubFornecedor
                 };
             }
             return null;
@@ -273,6 +312,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 x.NºUnidadeProdutiva = item.ProductionUnitNo;
                 x.NºProjeto = item.ProjectNo;
                 x.Quantidade = item.Quantity;
+                x.QuantidadeDisponivel = item.QuantidadeDisponivel;
+                x.QuantidadeReservada = item.QuantidadeReservada;
                 x.QuantidadePorUnidMedida = item.QuantitybyUnitMeasure;
                 x.NomeFornecedor = item.SupplierName;
                 x.NºFornecedor = item.SupplierNo;
@@ -289,6 +330,8 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 x.Observações = item.Observation;
                 x.GrupoRegistoIvaProduto = item.GrupoRegistoIvaProduto;
                 x.Tipo = item.Tipo;
+                x.Interface = item.Interface;
+                x.CustoUnitarioSubFornecedor = item.DirectUnitCostSubSupplier;
             return x;
                 //return new DiárioRequisiçãoUnidProdutiva()
                 //{

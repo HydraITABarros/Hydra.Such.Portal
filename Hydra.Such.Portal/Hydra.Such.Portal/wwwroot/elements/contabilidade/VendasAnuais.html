@@ -37,9 +37,6 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
                 input[readonly] {
@@ -98,7 +95,7 @@
             </style>
         </custom-style>
 
-        <iron-ajax url="/PopulateDropdowns/GetAnos_VendasAnuais" last-response="{{LAnos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAnos_VendasAnuais" last-response="{{LAnos}}" auto on-response="_getAnosResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetRegionCode_VendasAnuais" last-response="{{LRegionCodes}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <iron-ajax url="/Contabilidade/GetListVendasAnuais"
@@ -123,7 +120,7 @@
                 <div class="panel-body">
                     <div class="row break_clear">
                         <div class="col-sm-2">
-                            <vaadin-combo-box items="[[LAnos]]" id="codigoAno" item-value-path="id" item-label-path="value" label="Ano">
+                            <vaadin-combo-box items="[[LAnos]]" id="codigoAno" name="codigoAno" item-value-path="id" item-label-path="value" label="Ano">
                                 <template>
                                     <table width="200px">
                                         <tr>
@@ -183,7 +180,7 @@
             <!--end ColumnToggle-->
         </div>
 
-        <vaadin-grid id="grid" aria-label="grid" items="[[result]]" class="grid" multi-sort="true">
+        <vaadin-grid id="grid" name="grid" aria-label="grid" items="[[result]]" class="grid" multi-sort="true">
             <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.ano.hidden }}" hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="ano">Ano</vaadin-grid-sorter>
@@ -204,23 +201,33 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noAssociado.hidden }}">
+            <vaadin-grid-column width="100px" resizable hidden$="{{ _columns.associado.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="noAssociado">Nº do Associado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="noAssociado" value="[[filter.noAssociado]]" />
+                    <vaadin-grid-sorter path="associado">Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="associado" value="[[filter.associado]]" />
                 </template>
                 <template>
-                    {{item.noAssociado}}
+                    {{item.associado}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.nomeAssociado.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noCliente.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="nomeAssociado">Nome do Associado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="nomeAssociado" value="[[filter.nomeAssociado]]" />
+                    <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noCliente" value="[[filter.noCliente]]" />
                 </template>
                 <template>
-                    {{item.nomeAssociado}}
+                    {{item.noCliente}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="250px" resizable hidden$="{{ _columns.nomeCliente.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeCliente">Nome Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeCliente" value="[[filter.nomeCliente]]" />
+                </template>
+                <template>
+                    {{item.nomeCliente}}
                 </template>
             </vaadin-grid-column>
 
@@ -459,8 +466,9 @@
                     var columns = {
                         "ano": { hidden: false, label: "Ano" },
                         "regiao": { hidden: false, label: "Região" },
-                        "noAssociado": { hidden: false, label: "Nº de Associado" },
-                        "nomeAssociado": { hidden: false, label: "Nome do Associado" },
+                        "associado": { hidden: false, label: "Associado" },
+                        "noCliente": { hidden: false, label: "Nº Cliente" },
+                        "nomeCliente": { hidden: false, label: "Nome Cliente" },
                         "jan": { hidden: false, label: "Janeiro" },
                         "fev": { hidden: false, label: "Fevereiro" },
                         "mar": { hidden: false, label: "Março" },
@@ -519,6 +527,12 @@
                     }
                     else
                         this._showErrorMessage('É necessário escolher um ano.');
+                },
+
+                _getAnosResponse: function (e) {
+                    if (this.LAnos != null && this.LAnos.length > 0) {
+                        this.$.codigoAno.value = "2020";
+                    }
                 },
             });
         });

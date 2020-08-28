@@ -1910,6 +1910,40 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> OrcamentoPaymentTerms = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Desc. 5% 30 dias"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Desc. 3% 60 dias"
+            },
+             new EnumData
+            {
+                Id = 3,
+                Value = "Sem Desc."
+            },
+             new EnumData
+            {
+                Id = 4,
+                Value = "Desc. P/Pag 5%"
+            },
+             new EnumData
+            {
+                Id = 5,
+                Value = "Desc. P/Pag 3%"
+            },
+             new EnumData
+            {
+                Id = 6,
+                Value = "A Negociar"
+            }
+        };
+
         public static readonly List<EnumDataString> LocalMarketRegions = new List<EnumDataString>()
         {
             new EnumDataString

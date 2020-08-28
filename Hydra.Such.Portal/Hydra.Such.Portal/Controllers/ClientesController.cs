@@ -96,6 +96,20 @@ namespace Hydra.Such.Portal.Controllers
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
+
+        public IActionResult ListDividaAllClients()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ClientesListaMovimentos); //4, 47);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
         #endregion
 
         #region List
@@ -509,6 +523,92 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        #region ListDividaAllClients
+        [HttpPost]
+        public JsonResult GetListDividaAllClients([FromBody] JObject requestParams)
+        {
+            //int AreaId = int.Parse(requestParams["areaid"].ToString());
+            JToken data;
+            string RegiaoFiltro = string.Empty;
+            if (requestParams != null)
+            {
+                if (requestParams.TryGetValue("regiao", out data))
+                    RegiaoFiltro = Convert.ToString(data);
+            }
+
+            List<ListDividaAllClientsViewModel> result = new List<ListDividaAllClientsViewModel>();
+
+            result = DBNAV2017Clients.GetListDividaAllClients(RegiaoFiltro);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_ListDividaAllClients([FromBody] List<ListDividaAllClientsViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Dívida de Clientes");
+                IRow row = excelSheet.CreateRow(0);
+                ICellStyle dataCustomStyle = workbook.CreateCellStyle();
+                IDataFormat dataFormatCustom = workbook.CreateDataFormat();
+
+                dataCustomStyle.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
+                int Col = 0;
+
+                if (dp["customerRegionName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região"); Col = Col + 1; }
+                if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
+                if (dp["customerName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente"); Col = Col + 1; }
+                if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor em Dívida"); Col = Col + 1; }
+                if (dp["dueValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Vencido"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (ListDividaAllClientsViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["customerRegionName"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerRegionName); Col = Col + 1; }
+                        if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerNo); Col = Col + 1; }
+                        if (dp["customerName"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerName); Col = Col + 1; }
+                        if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.Numeric).SetCellValue(Convert.ToDouble(item.Value.ToString())); Col = Col + 1; }
+                        if (dp["dueValue"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.Numeric).SetCellValue(Convert.ToDouble(item.DueValue.ToString())); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_ListDividaAllClients(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Clientes\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+        #endregion
+
         //1
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
@@ -678,28 +778,37 @@ namespace Hydra.Such.Portal.Controllers
                 if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
                     result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.RespCenterId));
 
+                result.ForEach(balance =>
+                {
+                    balance.DataConcilText = balance.DataConcil.HasValue ? balance.DataConcil.Value.ToString("yyyy-MM-dd") : "";
+                });
+
                 return Json(result);
             }
             return Json(false);
         }
 
         [HttpPost]
-        public JsonResult UpdateBalances([FromBody] List<NAVClientesBalanceControlViewModel> listData, string CustomerNo)
+        public JsonResult UpdateBalances([FromBody] NAVClientesBalanceControlViewModel line, string CustomerNo)
         {
             var updateResult = 0;
+            string DateREC = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
+            string UserUpdate = User.Identity.Name;
             if (CustomerNo != null)
             {
-                if (listData != null && listData.Count() > 0)
-                {
-                    listData.ForEach(line =>
-                    {
-                        var updated = DBNAV2017Clients.UpdateBalance(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo, line.EntryNo.ToString(), line.SinalizacaoRec, line.Obs);
+                //if (listData != null && listData.Count() > 0)
+                //{
+                    //listData.ForEach(line =>
+                    //{
+                        if (!string.IsNullOrEmpty(line.DataConcilText))
+                            DateREC = Convert.ToDateTime(line.DataConcilText).Year + "-" + Convert.ToDateTime(line.DataConcilText).Month + "-" + Convert.ToDateTime(line.DataConcilText).Day;
+
+                        var updated = DBNAV2017Clients.UpdateBalance(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo, line.EntryNo.ToString(), line.SinalizacaoRec, DateREC, line.Obs, UserUpdate);
                         if (updated != null)
                         {
                             updateResult += (int)updated;
-                        };
-
-                    });
+                        //};
+                    //});
                 }
                 var result = DBNAV2017Clients.GetBalances(_config.NAVDatabaseName, _config.NAVCompanyName, CustomerNo);
                 return Json(result);

@@ -245,6 +245,8 @@ namespace Hydra.Such.Data.Logic.Request
                     QuantityReceivable = item.QuantidadeAReceber,
                     QuantityReceived = item.QuantidadeRecebida,
                     QuantityPending = item.QuantidadePendente,
+                    QuantidadeDisponivel = item.QuantidadeDisponivel,
+                    QuantidadeReservada = item.QuantidadeReservada,
                     UnitCost = item.CustoUnitário,
                     UnitCostWithIVA = item.CustoUnitarioComIVA,
                     ExpectedReceivingDate = !item.DataReceçãoEsperada.HasValue ? "" : item.DataReceçãoEsperada.Value.ToString("yyyy-MM-dd"),
@@ -292,7 +294,8 @@ namespace Hydra.Such.Data.Logic.Request
                     VATProductPostingGroup = item.GrupoRegistoIvaproduto,
                     DiscountPercentage = item.PercentagemDesconto.HasValue ? item.PercentagemDesconto.Value : 0,
                     QuantidadeInicial = item.QuantidadeInicial.HasValue ? item.QuantidadeInicial.Value : 0,
-                    SemEfeito = item.SemEfeito == null ? false : item.SemEfeito
+                    SemEfeito = item.SemEfeito == null ? false : item.SemEfeito,
+                    CustoUnitarioSubFornecedor = item.CustoUnitarioSubFornecedor
                 };
             }
             return null;
@@ -329,6 +332,8 @@ namespace Hydra.Such.Data.Logic.Request
                     QuantidadeAReceber = item.QuantityReceivable,
                     QuantidadeRecebida = item.QuantityReceived,
                     QuantidadePendente = item.QuantityPending,
+                    QuantidadeDisponivel = item.QuantidadeDisponivel,
+                    QuantidadeReservada = item.QuantidadeReservada,
                     CustoUnitário = item.UnitCost,
                     CustoUnitarioComIVA = item.UnitCostWithIVA,
                     DataReceçãoEsperada = string.IsNullOrEmpty(item.ExpectedReceivingDate) ? (DateTime?)null : DateTime.Parse(item.ExpectedReceivingDate),
@@ -376,7 +381,8 @@ namespace Hydra.Such.Data.Logic.Request
                     GrupoRegistoIvaproduto = item.VATProductPostingGroup,
                     PercentagemDesconto = item.DiscountPercentage.HasValue ? item.DiscountPercentage.Value : (decimal?)null,
                     QuantidadeInicial = item.QuantidadeInicial.HasValue ? item.QuantidadeInicial.Value : (decimal?)null,
-                    SemEfeito = item.SemEfeito == null ? false : item.SemEfeito
+                    SemEfeito = item.SemEfeito == null ? false : item.SemEfeito,
+                    CustoUnitarioSubFornecedor = item.CustoUnitarioSubFornecedor
                 };
             }
             return null;

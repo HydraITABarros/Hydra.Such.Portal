@@ -26,6 +26,8 @@ namespace Hydra.Such.Data.ViewModel
         public string LocalizacaoNome { get; set; }
         public decimal? CustoUnitario { get; set; }
         public string CustoUnitarioTexto { get; set; }
+        public decimal? CustoUnitarioSubFornecedor { get; set; }
+        public string CustoUnitarioSubFornecedorTexto { get; set; }
         public string DescricaoProduto { get; set; }
         public string Um { get; set; }
         public decimal? QtdPorUm { get; set; }

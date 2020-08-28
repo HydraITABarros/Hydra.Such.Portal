@@ -1,30 +1,46 @@
-﻿
-<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
-<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
-<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
-<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
-<link rel="import" href="/lib/iron-form/iron-form.html" />
-<link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/paper-button/paper-button.html" />
-<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
-<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
-<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-<link rel="import" href="/lib/such-textarea/such-textarea.html">
-<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
-<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
-<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+﻿<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
-<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
-<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-time-picker-master/vaadin-time-picker.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/neon-animation/web-animations.html">
+<link rel="import" href="~/lib/datetime-picker-master/time-element.html" />
+<link rel="import" href="~/lib/datetime-picker-master/time-picker.html" />
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
-<!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--SUCH-->
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
 
 <dom-module id="x-clientdetails">
     <template>
@@ -32,6 +48,7 @@
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <style>
             vaadin-combo-box {
                 margin-top: 0px !important;
@@ -48,59 +65,69 @@
                 width: 100%;
             }
 
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
             .break_clear {
                 margin-top: 15px;
             }
 
-            .panel-heading {
-                font-size: 16px;
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
             }
+
+            vaadin-grid.disabled:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                cursor: not-allowed;
+            }
+
+            paper-button.disabled {
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
             /*ACORDEÃO*/
             paper-collapse-item {
                 --paper-item: {
                     padding: 0 0;
                 };
                 --paper-collapse-item-header: {
-                    margin-top: -1px;
                     padding: 0 15px;
                     color: #333;
                     background-color: #f5f5f5;
                     border-bottom: solid #ddd 1px;
                     border-top-left-radius: 3px;
                     border-top-right-radius: 3px;
-                    border-top:  solid #ddd 1px;
+
                 };
             }
-            /*
+
             .panel-body {
                 padding-top: 0px !important;
-            }*/
-            .header {
-                margin-top: -1px;
             }
 
-            .spacer10 {
-                height: 10px;
-            }
-
-            .spacer20 {
-                height: 20px;
-            }
-
-            .spacer40 {
-                height: 40px;
-            }
-
-            .spacer60 {
-                height: 60px;
-            }
-
-            .grid--modal__wrapper {
-                height: 86% !important;
-            }
-
-            .grid--modal {
-                height: 100% !important;
+            vaadin-time-picker {
+                --vaadin-combo-box-overlay-max-height: 250px;
             }
         </style>
 
@@ -122,6 +149,8 @@
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
                    content-type="application/json"></iron-ajax>
+
+
 
         <!-- CUSTOMER CRUDS -->
         <!--{{balances}}-->
@@ -634,7 +663,6 @@
                                 </div>
 
                                 <!------------ Controlo Conciliação de Saldos ------------>
-
                                 <div class="panel panel-default">
                                     <paper-collapse-group>
                                         <paper-collapse-item header="Controlo Conciliação de Saldos">
@@ -651,8 +679,8 @@
                                                     </div>
 
                                                     <div class="col-xs-12">
-                                                        <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="grid break_clear" multi-sort="true" active-item="{{_SelectedBalance}}">
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                        <vaadin-grid aria-label="Balances" id="grid_balances" name="grid_balances" items="[[balances]]" class="editGrid" multi-sort="true" ">
+                                                            <vaadin-grid-column width="9%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="customerNo">Nº Cliente</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="customerNo" />
@@ -672,27 +700,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
-                                                                <template class="header">
-                                                                    <vaadin-grid-sorter path="documentTypeText">Tipo Documento</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="documentTypeText" />
-                                                                </template>
-                                                                <template>
-                                                                    {{item.documentTypeText}}
-                                                                </template>
-                                                            </vaadin-grid-column>
-
-                                                            <vaadin-grid-column width="10%" resizable>
-                                                                <template class="header">
-                                                                    <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="documentNo" />
-                                                                </template>
-                                                                <template>
-                                                                    {{item.documentNo}}
-                                                                </template>
-                                                            </vaadin-grid-column>
-
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="12%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="documentDate">Data Documento</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="documentDate" />
@@ -702,7 +710,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="9%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="dueDate">Data Venc.</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="dueDate" />
@@ -712,7 +720,27 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="15%" resizable>
+                                                            <vaadin-grid-column width="12%" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="documentTypeText">Tipo Documento</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="documentTypeText" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.documentTypeText}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="11%" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="documentNo" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.documentNo}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="15%" resizable hidden>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="description" />
@@ -722,7 +750,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="amount">Valor</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="amount" />
@@ -734,7 +762,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="9%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="remainingAmount">Valor Pendente</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="remainingAmount" />
@@ -746,30 +774,25 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
-                                                                    <vaadin-grid-sorter path="sinalizacaoRec">Sinalização Reconciliação</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="sinalizacaoRec" />
+                                                                    <vaadin-grid-sorter path="sinalizacaoRecText">Sinalização Reconciliação</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="sinalizacaoRecText" />
                                                                 </template>
                                                                 <template>
                                                                     <center>
-                                                                        <template is="dom-if" if="{{ item.selected }}">
-                                                                            <vaadin-checkbox checked="{{item.sinalizacaoRec}}" id="balances.sinalizacaoRec" name="balances.sinalizacaoRec" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"></vaadin-checkbox>
-                                                                        </template>
-                                                                        <template is="dom-if" if="{{ !item.selected }}">
-                                                                            [[_formatBoolValue(item.sinalizacaoRec)]]
-                                                                        </template>
+                                                                        <vaadin-checkbox checked="{{item.sinalizacaoRec}}" id="balances.sinalizacaoRec" name="balances.sinalizacaoRec" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"></vaadin-checkbox>
                                                                     </center>
                                                                 </template>
                                                             </vaadin-grid-column>
 
                                                             <vaadin-grid-column width="10%" resizable>
                                                                 <template class="header">
-                                                                    <vaadin-grid-sorter path="dataConcil">Data Conciliação</vaadin-grid-sorter>
-                                                                    <vaadin-grid-filter path="dataConcil" />
+                                                                    <vaadin-grid-sorter path="dataConcilText">Data Conciliação</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="dataConcilText" />
                                                                 </template>
                                                                 <template>
-                                                                    {{ item.dataConcil }}
+                                                                    <vaadin-date-picker id="balDataConcil" name="balDataConcil" value="{{item.dataConcilText}}" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"></vaadin-date-picker>
                                                                 </template>
                                                             </vaadin-grid-column>
 
@@ -779,16 +802,23 @@
                                                                     <vaadin-grid-filter path="obs" />
                                                                 </template>
                                                                 <template>
-                                                                    <template is="dom-if" if="{{ item.selected }}">
-                                                                        <vaadin-text-field value="{{item.obs}}" maxlength="30" id="balances.obs" name="balances.obs" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"> </vaadin-text-field>
-                                                                    </template>
-                                                                    <template is="dom-if" if="{{ !item.selected }}">
-                                                                        {{ item.obs }}
-                                                                    </template>
+                                                                    <vaadin-text-field value="{{item.obs}}" maxlength="30" id="balances.obs" name="balances.obs" disabled="{{ !_permissionsccs.update }}" on-blur="_updateBalances"> </vaadin-text-field>
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="pendenteType">Pendente</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="pendenteType" value="Sim" />
+                                                                </template>
+                                                                <template>
+                                                                    <div class="text-center">
+                                                                        {{item.pendenteType}}
+                                                                    </div>
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="regionId" />
@@ -798,7 +828,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="functionalAreaId">Cód. Área Funcional</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="functionalAreaId" />
@@ -808,7 +838,7 @@
                                                                 </template>
                                                             </vaadin-grid-column>
 
-                                                            <vaadin-grid-column width="10%" resizable>
+                                                            <vaadin-grid-column width="7%" resizable>
                                                                 <template class="header">
                                                                     <vaadin-grid-sorter path="respCenterId">Cód. Centro de Responsabilidade</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="respCenterId" />
@@ -1411,12 +1441,18 @@
                         <template>
                             <div class="text-right">
 
+
+
                                 <!--[[_roundValue(item.quantity, 2)]]-->
                                 <!--[[ item.quantity ]]-->
                                 [[_round2casas(item.quantity)]]
                                 <!--{{item.quantity}}-->
                             </div>
+                            
+
                         </template>
+                        
+
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
@@ -1427,11 +1463,17 @@
                         <template>
                             <div class="text-right">
 
+
+
                                 <!--[[_formatCurrencyValue(item.unitPrice)]]-->
                                 [[_formatIntValue(item.unitPrice)]]
                                 <!--{{item.unitPrice}}-->
                             </div>
+                            
+
                         </template>
+                        
+
                     </vaadin-grid-column>
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
@@ -1441,10 +1483,14 @@
                         </template>
                         <template>
                             <div class="text-right">
+
                                 [[_formatPercentValue(item.vat)]]
                                 <!--{{item.vat}}-->
                             </div>
                         </template>
+                        /t
+                        
+
                     </vaadin-grid-column>
 
                     <vaadin-grid-column width="100px" resizable>
@@ -1457,10 +1503,15 @@
                         </template>
                         <template>
                             <div class="text-right">
+
                                 [[_formatCurrencyValue(item.amount)]]
                                 <!--{{item.amount}}-->
                             </div>
+                            
+
                         </template>
+                        
+
                     </vaadin-grid-column>
 
                     <vaadin-grid-column width="100px" resizable>
@@ -1728,6 +1779,7 @@
                     }
 
                     this._showAreas = this._areaid == 4 /* vendas */;
+
                 },
                 _getListDisplay: function () {
                     return this._isCreate ? 'none;' : 'block;';
@@ -1873,9 +1925,11 @@
                     this.$.shipping_list.body = JSON.stringify(this.shippingList);
                     this.$.shipping_list.generateRequest();
                 },
-                _updateBalances: function () {
+                _updateBalances: function (e) {
+                    debugger;
                     this.$.balances_data.url = "/Clientes/UpdateBalances?CustomerNo=" + this._no;
-                    this.$.balances_data.body = JSON.stringify(this.balances.filter(x => typeof x.changed != 'undefined' && x.changed == true));
+                    //this.$.balances_data.body = JSON.stringify(this.balances.filter(x => typeof x.changed != 'undefined' && x.changed == true));
+                    this.$.balances_data.body = JSON.stringify(e.model.item);
                     this.$.balances_data.generateRequest();
                 },
                 _deleteShippingLine: function (e) {
@@ -2175,7 +2229,7 @@
                     this.$.ajax_InvoiceDetailsExport.generateRequest();
                 },
                 _exportBalances: function () {
-                    var payload = { list: this.balances, columns: this._balancesColumns };
+                    var payload = { list: this.$.grid_balances._filter(this.balances), columns: this._balancesColumns };
 
                     this.$.ajax_BalancesExport.body = JSON.stringify(payload);
                     this.$.ajax_BalancesExport.generateRequest();

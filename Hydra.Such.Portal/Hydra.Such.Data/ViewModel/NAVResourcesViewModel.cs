@@ -14,5 +14,6 @@ namespace Hydra.Such.Data.ViewModel
         public decimal UnitPrice { get; set; }
         public decimal UnitCost { get; set; }
         public string VATProductPostingGroup { get; set; }
+        public string GenProdPostingGroup { get; set; }
     }
 }

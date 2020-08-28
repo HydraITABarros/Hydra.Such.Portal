@@ -1,6 +1,6 @@
 ﻿@model Hydra.Such.Data.ViewModel.Nutrition.ProductivityUnitViewModel
 @{
-    ViewData["Title"] = "Detalhes " + ViewBag.ProductivityUnitDesc;
+    ViewData["Title"] = "Necessidade Compra " + ViewBag.ProductivityUnitDesc;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -17,6 +17,7 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-selection-column.html" />
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 <link rel="import" href="/lib/such-textarea/such-textarea.html">
@@ -119,29 +120,26 @@
         <iron-ajax url="/PopulateDropdowns/GetProdUnits" id="ajax_prodUnit" last-response="{{prodUnitValresult}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderLines" last-response="{{cbopenorderlines}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/OpenOrderLines" id="ajax_nOrderGridLines" last-response="{{cbopenorderlinesGrid}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result" last-response="{{result}}" on-response="_resultResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLine" id="ajax_result2" last-response="{{result2}}" on-response="_GridprodChangeResult" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierresult" last-response="{{supplierresult}}" on-response="_supplierResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getSupplier" id="ajax_supplierGridresult" last-response="{{supplierGridresult}}" on-response="_supplierGridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByCode" last-response="{{unitmeasureresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetpriceAgreementByDate" id="grid_priceAgreement_ajax" last-response="{{priceAgreement}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetpriceAgreementByDate" id="products_ajax" last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/NecessidadeCompras/GetGridValues" id="ajax_getgrid" last-response="{{data}}" on-response="_getgridResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/UpdateShoppingNecessity" id="ajax_update" last-response="{{updatedata}}" method="post" on-response="_updateResponse" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/NecessidadeCompras/DeleteShoppingNecessity" id="ajax_delete" last-response="{{deletedata}}" method="post" on-response="_deleteResponse" handle-as="json" content-type="application/json"></iron-ajax>
-
-
         <iron-ajax url="/NecessidadeCompras/CreateShoppingNecessity" id="ajax_Create" last-response="{{updatedata}}" method="post" on-response="_createResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GenerateRequesition" id="ajax_requesitionupdate" last-response="{{datarequesition}}" method="post" on-response="_requesitionResponse" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GetModelRequisition" last-response="{{resultModelRequisition}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{locationsresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GetProductivityUnits" last-response="{{produnitresult}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/NecessidadeCompras/GenerateByRequesition" id="grid_generatebyreq_ajax" last-response="{{genbyreqresult}}" on-response="_benbyreqResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetpriceAgreementByDate" id="grid_priceAgreement_ajax" last-response="{{priceAgreement}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
-
         <iron-ajax url="/NecessidadeCompras/UpdateAgreementVendor" id="grid_updateAgreementByVendor_ajax" last-response="{{priceAgreementByVendor}}" on-response="_agreementByVendorResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/NecessidadeCompras/GetQuantidades" id="ajax_GetQuantidades" last-response="{{quantidadesResult}}" on-response="_getQuantidadesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/PopulateDropdowns/GetpriceAgreementByDate" id="products_ajax" last-response="{{Products}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <style>
             vaadin-combo-box {
@@ -269,7 +267,7 @@
             </div>
 
             <div class="col-md-3">
-                <such-selectbox id="cmbProducts" label="Produto" on-value-changed="_productChanged"
+                <such-selectbox id="cmbProducts" name="cmbProducts" label="Produto" on-value-changed="_productChanged"
                                 items="[[Products]]"
                                 text-path="descricaoProduto"
                                 value-path="produtoFornecedor"
@@ -287,21 +285,30 @@
             </div>
         </div>
         <div class="row" hidden="{{ !_permissionsVal.create }}">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <vaadin-text-field id="qtyID" name="qtyName" placeholder="0.0000" pattern="^[0-9]\d*(\.[0-9]{1,4})?$" label="Quantidade" class="alignRight" value="{{qty}}" on-value-changed="_calcTotals" on-blur="_verificaMultiplo" required error-message="Este campo é obrigatório"></vaadin-text-field>
             </div>
 
-            <div class="col-md-3">
-                <vaadin-text-field id="supplierNoId" name="supplierNoName" label="Nº Forncedor" value="{{supplierNo}}" disabled></vaadin-text-field>
-                <vaadin-text-field id="subsupplierNoId" name="subsupplierNoName" label="Nº SubForncedor" value="{{subsupplierNo}}" disabled hidden></vaadin-text-field>
+            <div class="col-md-2">
+                <vaadin-text-field id="qtyDisponivel" name="qtyDisponivel" label="Quantidade Disponível" class="alignRight" disabled></vaadin-text-field>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <vaadin-text-field id="qtyReservada" name="qtyReservada" label="Quantidade Reservada" class="alignRight" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="supplierNoId" name="supplierNoName" label="Nº Fornecedor" value="{{supplierNo}}" disabled></vaadin-text-field>
+                <vaadin-text-field id="subsupplierNoId" name="subsupplierNoId" label="Nº SubForncedor" value="{{subsupplierNo}}" disabled hidden></vaadin-text-field>
+            </div>
+
+            <div class="col-md-4">
                 <vaadin-text-field id="SupplierNameId" name="SupplierName" label="Nome Fornecedor" value="{{SupplierName}}" disabled></vaadin-text-field>
                 <vaadin-text-field id="subSupplierNameId" name="subSupplierName" label="Nome SubFornecedor" value="{{subSupplierName}}" disabled hidden></vaadin-text-field>
             </div>
-
-            <div class="col-md-3">
+        </div>
+        <div class="row" hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-2">
                 <such-selectbox id="unitofMeasureCodeId" value="" label="Unidade Medida" disabled
                                 items="[[unitmeasureresult]]"
                                 text-path="value"
@@ -309,10 +316,10 @@
                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                 </such-selectbox>
             </div>
-        </div>
-        <div class="row" hidden="{{ !_permissionsVal.create }}">
-            <div class="col-md-3 ">
+
+            <div class="col-md-2 ">
                 <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled><div slot="suffix">€</div></vaadin-text-field>
+                <vaadin-text-field id="unitCostSubSupplierId" name="unitCostSubSupplierId" label="Custo Unitário SubFornecedor" class="alignRight" value="{{directUnitCostSubSupplier}}" disabled hidden><div slot="suffix">€</div></vaadin-text-field>
             </div>
 
             <div class="col-md-3 ">
@@ -324,7 +331,7 @@
             <div class="col-md-3">
                 <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value="" maxlength="100"></vaadin-text-field>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
             </div>
         </div>
@@ -357,10 +364,57 @@
                                 fields='[{"field":"documentNO", "name":"Nº Documento"},{"field":"line_No", "name":"Nº Linha"},{"field":"numb", "name":"Nº Produto"}, {"field":"description", "name":"Descrição"}]'>
                 </such-selectbox>
             </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="interfaceId" name="interfaceId" label="Interface" value="{{interface}}" disabled hidden></vaadin-text-field>
+            </div>
+
         </div>
         @* Grid *@
 
         <vaadin-grid id="gridneedshopping" aria-label="ProfileModelsTabel" items="[[data]]" class="grid" active-item="{{_SelectedLine}}" hidden="{{ _NotSelectedprodUnit }}">
+            <vaadin-grid-column width="160px" resizable hidden>
+                <template class="header">
+                    <vaadin-grid-sorter path="interface">Interface</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="interface" />
+                </template>
+                <template>
+                    {{item.interface}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden>
+                <template class="header">
+                    <vaadin-grid-sorter path="directUnitCostSubSupplier">custoUnitarioSubFornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="directUnitCostSubSupplier" />
+                </template>
+                <template>
+                    {{item.directUnitCostSubSupplier}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden>
+                <template class="header">
+                    <vaadin-grid-sorter path="subSupplierNo">Nº SubFornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="subSupplierNo" />
+                </template>
+                <template>
+                    {{item.subSupplierNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden>
+                <template class="header">
+                    <vaadin-grid-sorter path="subSupplierName">SubFornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="subSupplierName" />
+                </template>
+                <template>
+                    {{item.subSupplierName}}
+                </template>
+            </vaadin-grid-column>
+
+
+
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="expectedReceptionDate">Data Receção Esperada</vaadin-grid-sorter>
@@ -368,11 +422,11 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-date-picker value="{{item.expectedReceptionDate}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        [[ _parseExpectedReception(item.expectedReceptionDate) ]]
-                    </template>*@
+                    <vaadin-date-picker value="{{item.expectedReceptionDate}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    [[ _parseExpectedReception(item.expectedReceptionDate) ]]
+                </template>*@
                     [[ _parseExpectedReception(item.expectedReceptionDate) ]]
                 </template>
             </vaadin-grid-column>
@@ -384,12 +438,12 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-date-picker on-value-changed="_DatePriceGridChange" value="{{item.dateByPriceSupplier}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
-                    </template>*@
-                        [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
+                    <vaadin-date-picker on-value-changed="_DatePriceGridChange" value="{{item.dateByPriceSupplier}}" disabled="{{ !_permissionsVal.update }}"></vaadin-date-picker>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
+                </template>*@
+                    [[ _parseSupplierDateReception(item.dateByPriceSupplier) ]]
                 </template>
             </vaadin-grid-column>
 
@@ -400,21 +454,21 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-combo-box items="[[cbopenorderlinesGrid]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesIdGrid" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.productNo}}">
-                            <template>
-                                <table width="300px">
-                                    <tr>
-                                        <td width="20%"><b>[[item.numb]]</b></td>
-                                        <td width="80%">[[item.documentNO]]</td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.productNo}}
-                    </template>*@
-                        {{item.productNo}}
+                    <vaadin-combo-box items="[[cbopenorderlinesGrid]]" disabled="{{ !_permissionsVal.update }}" id="mOpenOrderLinesIdGrid" on-value-changed="_openOrderGridLinesOnChange" item-value-path="id" item-label-path="numb" value="{{item.productNo}}">
+                        <template>
+                            <table width="300px">
+                                <tr>
+                                    <td width="20%"><b>[[item.numb]]</b></td>
+                                    <td width="80%">[[item.documentNO]]</td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.productNo}}
+                </template>*@
+                    {{item.productNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -425,12 +479,12 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.description}}
-                    </template>*@
-                        {{item.description}}
+                    <vaadin-text-field value="{{item.description}}" disabled></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.description}}
+                </template>*@
+                    {{item.description}}
                 </template>
             </vaadin-grid-column>
 
@@ -466,17 +520,37 @@
 
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
-                    <vaadin-grid-sorter path="supplierNo">Nº Forncedor</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="quantidadeDisponivel">Quantidade Disponível</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidadeDisponivel" />
+                </template>
+                <template>
+                    {{item.quantidadeDisponivel}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidadeReservada">Quantidade Reservada</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidadeReservada" />
+                </template>
+                <template>
+                    {{item.quantidadeReservada}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="supplierNo">Nº Fornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="supplierNo" />
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.supplierNo}}" disabled></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.supplierNo}}
-                    </template>*@
-                        {{item.supplierNo}}
+                    <vaadin-text-field value="{{item.supplierNo}}" disabled></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.supplierNo}}
+                </template>*@
+                    {{item.supplierNo}}
                 </template>
             </vaadin-grid-column>
 
@@ -487,12 +561,12 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.supplierName}}" disabled></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.supplierName}}
-                    </template>*@
-                        {{item.supplierName}}
+                    <vaadin-text-field value="{{item.supplierName}}" disabled></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.supplierName}}
+                </template>*@
+                    {{item.supplierName}}
                 </template>
             </vaadin-grid-column>
 
@@ -523,21 +597,21 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-combo-box items="[[unitmeasureresult]]" id="unitofMeasureCodeId" item-value-path="id" item-label-path="value" value="{{item.unitMeasureCode}}" disabled>
-                            <template>
-                                <table width="200px">
-                                    <tr>
-                                        <td width="20%">[[item.id]]</td>
-                                        <td width="80%"><b>[[item.value]]</b></td>
-                                    </tr>
-                                </table>
-                            </template>
-                        </vaadin-combo-box>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.unitMeasureCode}}
-                    </template>*@
-                        {{item.unitMeasureCode}}
+                    <vaadin-combo-box items="[[unitmeasureresult]]" id="unitofMeasureCodeId" item-value-path="id" item-label-path="value" value="{{item.unitMeasureCode}}" disabled>
+                        <template>
+                            <table width="200px">
+                                <tr>
+                                    <td width="20%">[[item.id]]</td>
+                                    <td width="80%"><b>[[item.value]]</b></td>
+                                </tr>
+                            </table>
+                        </template>
+                    </vaadin-combo-box>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.unitMeasureCode}}
+                </template>*@
+                    {{item.unitMeasureCode}}
                 </template>
             </vaadin-grid-column>
 
@@ -548,12 +622,12 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.directUnitCost}}" id="lineUnitCost" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.directUnitCost}}€
-                    </template>*@
-                        {{item.directUnitCost}}€
+                    <vaadin-text-field value="{{item.directUnitCost}}" id="lineUnitCost" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.directUnitCost}}€
+                </template>*@
+                    {{item.directUnitCost}}€
                 </template>
             </vaadin-grid-column>
 
@@ -594,12 +668,12 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" class="alignRight" disabled></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.quantitybyUnitMeasure}}
-                    </template>*@
-                        {{item.quantitybyUnitMeasure}}
+                    <vaadin-text-field value="{{item.quantitybyUnitMeasure}}" class="alignRight" disabled></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.quantitybyUnitMeasure}}
+                </template>*@
+                    {{item.quantitybyUnitMeasure}}
                 </template>
             </vaadin-grid-column>
 
@@ -610,12 +684,12 @@
                 </template>
                 <template>
                     @*<template is="dom-if" if="{{ item.selected }}">
-                        <vaadin-text-field value="{{item.totalValue}}" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
-                    </template>
-                    <template is="dom-if" if="{{ !item.selected }}">
-                        {{item.totalValue}}€
-                    </template>*@
-                        {{item.totalValue}}€
+                    <vaadin-text-field value="{{item.totalValue}}" class="alignRight" disabled><div slot="suffix" on-value-changed="_lineCalcTotals">€</div></vaadin-text-field>
+                </template>
+                <template is="dom-if" if="{{ !item.selected }}">
+                    {{item.totalValue}}€
+                </template>*@
+                    {{item.totalValue}}€
                 </template>
             </vaadin-grid-column>
 
@@ -758,6 +832,21 @@
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
 
+        <paper-toast id="ToastMessageMultiple" duration="60000" horizontalAlign="right" class="toastMultiple">
+            <template is="dom-repeat" items="{{ datarequesition.eMessages }}">
+                <template is="dom-if" if="{{ _isError(item.type) }}">
+                    <div class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+                <template is="dom-if" if="{{ !_isError(item.type) }}">
+                    <div class="toastSuccess">&nbsp;<i class="fa fa-check" aria-hidden="true">{{ item.message }}</i></div>
+                </template>
+            </template>
+
+            <div style="text-align: right;">
+                <paper-button id="btnCloseMultipleToastMessageDlg" horizontalAlign="right" on-tap="_toggleToastMultiple">Fechar</paper-button>
+            </div>
+        </paper-toast>
+
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -780,6 +869,11 @@
                     },
                     type: {
                         type: Number,
+                        notify: true,
+                        value: ""
+                    },
+                    armazem: {
+                        type: String,
                         notify: true,
                         value: ""
                     },
@@ -948,6 +1042,7 @@
                     var prodUnitId = @ViewBag.ProductivityUnitId;
                     var prodUnitDesc = @Html.Raw(Json.Serialize(ViewBag.ProductivityUnitDesc));
                     var typeId = @Html.Raw(Json.Serialize(ViewBag.Type));
+                    var armazem = @Html.Raw(Json.Serialize(ViewBag.ProductivityArmazem));
                     //get premissions to CRUD
                     this._permissionsVal = @Html.Raw(Json.Serialize(@ViewBag.UPermissions));
                     if (this._permissionsVal.create == false && this._permissionsVal.update == false) {
@@ -957,10 +1052,12 @@
                         this.prodUnitNo = prodUnitId;
                         this.descriptionUnit = prodUnitDesc;
                         this.type = typeId;
+                        this.armazem = armazem;
                     } else {
                         this.prodUnitNo = "";
                         this.descriptionUnit = "";
                         this.type = "";
+                        this.armazem = "";
                         this._NotSelectedprodUnit = true;
                         this.$.ajax_prodUnit.generateRequest();
                     }
@@ -996,41 +1093,50 @@
                         var linhaAcordo = this.$.cmbProducts.activeItem;
 
                         if (linhaAcordo != null) {
-                            this.$.qtyID.value = "0";
+                            this.$.supplierProdDescription2Id.value = linhaAcordo.descricaoProduto;
                             this.$.supplierNoId.value = linhaAcordo.noFornecedor;
-                            this.$.subsupplierNoId.value = linhaAcordo.noSubFornecedor;
                             this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
+                            this.$.subsupplierNoId.value = linhaAcordo.noSubFornecedor;
                             this.$.subSupplierNameId.value = linhaAcordo.nomeSubFornecedor;
                             this.$.unitofMeasureCodeId.value = linhaAcordo.um;
                             this.$.unitCostId.value = linhaAcordo.custoUnitario.toString();
                             this.$.supplierProdCodeId.value = linhaAcordo.codProdutoFornecedor.toString();
                             this.$.supplierProdDescriptionId.value = linhaAcordo.descricaoProdFornecedor.toString();
                             this.$.QtyforMeasId.value = linhaAcordo.qtdPorUm != null ? linhaAcordo.qtdPorUm.toString() : linhaAcordo.qtdPorUm;
+                            this.$.qtyID.value = "0";
                             this.$.amountId.value = "0";
                             this.$.grupoRegistoIvaProduto.value = linhaAcordo.grupoRegistoIvaProduto != null ? linhaAcordo.grupoRegistoIvaProduto.toString() : linhaAcordo.grupoRegistoIvaProduto;
+                            this.$.interfaceId.value = linhaAcordo.interface;
+                            this.$.unitCostSubSupplierId.value = linhaAcordo.custoUnitarioSubFornecedor;
 
                             this.$.mOpenOrderLinesId.value = linhaAcordo.codProduto;
                             //this.$.txtProdDescription.value = linhaAcordo.descricaoProduto;
+
+                            this.$.ajax_GetQuantidades.params = { "produto": linhaAcordo.codProduto, "armazem": this.armazem };
+                            this.$.ajax_GetQuantidades.generateRequest();
                         }
                     }
                     else {
                         this.$.supplierProdDescription2Id.value = "";
-                        this.$.qtyID.value = "";
                         this.$.supplierNoId.value = "";
-                        this.$.subsupplierNoId.value = "";
                         this.$.SupplierNameId.value = "";
+                        this.$.subsupplierNoId.value = "";
                         this.$.subSupplierNameId.value = "";
                         this.$.unitofMeasureCodeId._clearSelection();;
                         this.$.unitCostId.value = "";
                         this.$.supplierProdCodeId.value = "";
                         this.$.supplierProdDescriptionId.value = "";
                         this.$.QtyforMeasId.value = "";
+                        this.$.qtyID.value = "";
                         this.$.amountId.value = "";
                         this.$.grupoRegistoIvaProduto.value = "";
+                        this.$.interfaceId.value = "";
+                        this.$.unitCostSubSupplierId.value = "";
 
                         this.$.mOpenOrderLinesId.value = "";
+                        this.$.qtyDisponivel.value = "";
+                        this.$.qtyReservada.value = "";
                     }
-
                 },
                 _DatePriceGridChange: function (e) {
                     if (e.detail.value != null && e.detail.value != "" &&
@@ -1092,6 +1198,8 @@
                     this.$.QtyforMeasId.value = "";
                     this.$.amountId.value = "";
                     this.$.grupoRegistoIvaProduto.value = "";
+                    this.$.interfaceId.value = "";
+                    this.$.unitCostSubSupplierId.value = "";
 
                     this.$.mOpenOrderLinesId.value = "";
                 },
@@ -1231,7 +1339,7 @@
                 },
 
                 _add() {
-                    //debugger;
+                    debugger;
 
                     if (this._NotSelectedprodUnit == true) {
                         if (this.$.dpExpectedReceiptId.value != null &&
@@ -1255,6 +1363,8 @@
                                     description: this.$.cmbProducts.valueText,//txtProdDescription.value,
                                     description2: this.$.supplierProdDescription2Id.value,
                                     quantity: this.$.qtyID.value,
+                                    quantidadeDisponivel: this.$.qtyDisponivel.value,
+                                    quantidadeReservada: this.$.qtyReservada.value,
                                     supplierNo: this.$.supplierNoId.value,
                                     subSupplierNo: this.$.subsupplierNoId.value,
                                     supplierName: this.$.SupplierNameId.value,
@@ -1266,6 +1376,9 @@
                                     quantitybyUnitMeasure: this.$.QtyforMeasId.value,
                                     totalValue: this.$.amountId.value,
                                     grupoRegistoIvaProduto: this.$.grupoRegistoIvaProduto.value,
+                                    interface: this.$.interfaceId.value,
+                                    directUnitCostSubSupplier: this.$.unitCostSubSupplierId.value,
+
 
                                     localCode: this.$.codStockUnitId.value,
                                     documentNo: this.$._documentNo,
@@ -1317,6 +1430,8 @@
                                     description2: this.$.supplierProdDescription2Id.value,
                                     unitMeasureCode: this.$.unitofMeasureCodeId.value,
                                     quantity: this.$.qtyID.value,
+                                    quantidadeDisponivel: this.$.qtyDisponivel.value,
+                                    quantidadeReservada: this.$.qtyReservada.value,
                                     quantitybyUnitMeasure: this.$.QtyforMeasId.value,
                                     directUnitCost: this.$.unitCostId.value,
                                     totalValue: this.$.amountId.value,
@@ -1325,6 +1440,9 @@
                                     supplierProductDescription: this.$.cmbProducts.valueText,
                                     supplierName: this.$.SupplierNameId.value,
                                     subsupplierName: this.$.subSupplierNameId.value,
+                                    interface: this.$.interfaceId.value,
+                                    directUnitCostSubSupplier: this.$.unitCostSubSupplierId.value,
+
                                     tipo: this.type
                                 };
 
@@ -1423,6 +1541,8 @@
                             this.$.codStockUnitId._clearSelection();
                             this.$.cmbProducts._clearSelection();
                             this.$.unitofMeasureCodeId._clearSelection();
+                            this.$.interfaceId.value = "";
+                            this.$.unitCostSubSupplierId.value = "";
 
                         } else {
                             this._openToastError(this.updatedata.eMessage);
@@ -1614,35 +1734,23 @@
                 _requesitionResponse: function (e) {
                     //debugger;;
                     if (e.detail.status === 200) {
-                        if (this.datarequesition.eReasonCode === 1) {
-                            this._openToast(this.datarequesition.eMessage);
-                        }
-                        else {
-                            this._openToastError(this.datarequesition.eMessage);
-                        }
+                        this.$.ToastMessageMultiple.toggle();
+                        this.datarequesition.eMessages = [];
+
                         this.$.ajax_getgrid.generateRequest();
-
-                        //var priceAgreement = this.$.cmbProducts.activeItem;
-                        //if (priceAgreement != null) {
-                        //    debugger;
-                        //    this._openToast(this.datarequesition.eMessage);
-
-                            //var x = priceAgreement.noProcedimento;
-                            //var selItms = {
-                            //    "noProcedimento": this.$.priceAgreement.valueText,
-                            //    "noFornecedor": this.$.supplierNoId.value,
-                            //    "nomeFornecedor": this.$.SupplierNameId.value,
-                            //    "valorConsumido": this.$.amountId.value
-                            //}
-                            //this.$.grid_updateAgreementByVendor_ajax.body = JSON.stringify(selItms);
-                            //this.$.grid_updateAgreementByVendor_ajax.generateRequest();
-
-
-                        //}
-
-                    } else {
-                        this._openToastError("Occorreu um erro na geração de requisições.");
                     }
+
+                    //    if (this.datarequesition.eReasonCode === 1) {
+                    //        this._openToast(this.datarequesition.eMessage);
+                    //    }
+                    //    else {
+                    //        this._openToastError(this.datarequesition.eMessage);
+                    //    }
+                    //    this.$.ajax_getgrid.generateRequest();
+
+                    //} else {
+                    //    this._openToastError("Occorreu um erro na geração de requisições.");
+                    //}
                 },
 
                 _goBack: function (e) {
@@ -1655,6 +1763,31 @@
                         this.$.dlgDate.close();
                         this.$.dialog.open();
                     }
+                },
+
+                _getQuantidadesResponse: function (e) {
+                    if (this.quantidadesResult != null) {
+                        this.$.qtyDisponivel.value = this.quantidadesResult.quantDisponivel;
+                        this.$.qtyReservada.value = this.quantidadesResult.quantReservada;
+                    }
+                    else {
+                        this.$.qtyDisponivel.value = "";
+                        this.$.qtyReservada.value = "";
+                    }
+                },
+
+                _isError: function (type) {
+                    debugger;
+                    if (type == 0 || type == 2 || type == 3)
+                        return true;
+                    else
+                        return false;
+                },
+
+                _toggleToastMultiple: function () {
+                    this.$.ToastMessageMultiple.duration = 0;
+                    this.$.ToastMessageMultiple.toggle();
+                    this.datarequesition.eMessages = [];
                 },
             });
         });

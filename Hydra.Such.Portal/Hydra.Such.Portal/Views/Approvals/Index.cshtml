@@ -89,13 +89,23 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="60px" resizable hidden$="{{ _columns.movementNo.hidden }}">
+            <vaadin-grid-column width="60px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="movementNo">Nº</vaadin-grid-sorter>
                     <vaadin-grid-filter path="movementNo" value="[[filter.movementNo]]" />
                 </template>
                 <template>
                     {{item.movementNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.number.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="number">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="number" value="[[filter.number]]" />
+                </template>
+                <template>
+                    {{item.number}}
                 </template>
             </vaadin-grid-column>
 
@@ -106,16 +116,6 @@
                 </template>
                 <template>
                     {{item.typeText}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.number.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="number">Associado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="number" value="[[filter.number]]" />
-                </template>
-                <template>
-                    {{item.number}}
                 </template>
             </vaadin-grid-column>
 

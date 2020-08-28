@@ -550,6 +550,9 @@
                                         <div class="col-sm-2">
                                             <vaadin-checkbox id="PedirOrcamento" checked="{{data.pedirOrcamento}}">Pedir Orçamento</vaadin-checkbox>
                                         </div>
+                                        <div class="col-sm-2">
+                                            <vaadin-checkbox id="roupaManutencao" name="roupaManutencao" checked="{{data.roupaManutencao}}" hidden>Manutenção</vaadin-checkbox>
+                                        </div>
                                     </div>
 
                                     <div class="row break_clear">
@@ -1441,9 +1444,9 @@
         <paper-dialog id="dialog" class="dialgoBox">
             <h2>Modelos Requisição</h2>
             <vaadin-grid aria-label="ReqModelGrid" items="[[result]]" class="grid" multi-sort="true">
-                <vaadin-grid-column width="120px" resizable>
+                <vaadin-grid-column width="75px" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="requisitionNo">Nº Requisição Modelo</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="requisitionNo">Nº</vaadin-grid-sorter>
                         <vaadin-grid-filter path="requisitionNo" />
                     </template>
                     <template>
@@ -1451,7 +1454,7 @@
                     </template>
                 </vaadin-grid-column>
 
-                <vaadin-grid-column width="110px" resizable>
+                <vaadin-grid-column width="100px" resizable hidden>
                     <template class="header">
                         <vaadin-grid-sorter path="requisitionDate">Data Requisição</vaadin-grid-sorter>
                         <vaadin-grid-filter path="requisitionDate" />
@@ -1461,9 +1464,9 @@
                     </template>
                 </vaadin-grid-column>
 
-                <vaadin-grid-column width="110px" resizable>
+                <vaadin-grid-column width="300px" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="comments">Comentários</vaadin-grid-sorter>
+                        <vaadin-grid-sorter path="comments">Descrição</vaadin-grid-sorter>
                         <vaadin-grid-filter path="comments" />
                     </template>
                     <template>
@@ -1471,7 +1474,7 @@
                     </template>
                 </vaadin-grid-column>
 
-                <vaadin-grid-column width="110px" resizable>
+                <vaadin-grid-column width="100px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
                         <vaadin-grid-filter path="regionCode" />
@@ -1481,7 +1484,7 @@
                     </template>
                 </vaadin-grid-column>
 
-                <vaadin-grid-column width="160px" resizable>
+                <vaadin-grid-column width="300px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="functionalAreaCode">Cód. Área Funcional</vaadin-grid-sorter>
                         <vaadin-grid-filter path="functionalAreaCode" />
@@ -1501,7 +1504,7 @@
                     </template>
                 </vaadin-grid-column>
 
-                <vaadin-grid-column width="110px" resizable>
+                <vaadin-grid-column width="110px" resizable hidden>
                     <template class="header">
                         <vaadin-grid-sorter path="createDate">Criado em</vaadin-grid-sorter>
                         <vaadin-grid-filter path="createDate" />
@@ -1511,12 +1514,12 @@
                     </template>
                 </vaadin-grid-column>
 
-                <vaadin-grid-column width="10%" resizable>
+                <vaadin-grid-column width="5%" resizable>
                     <template class="header">
                     </template>
                     <template>
                         <center>
-                            <paper-button class="btnSave" raised on-tap="_SaveLines" disabled="{{_permissionsCreate}}">Copiar Linhas</paper-button>
+                            <paper-button class="btnSave" raised on-tap="_SaveLines" disabled="{{_permissionsCreate}}">Copiar</paper-button>
                         </center>
                     </template>
                 </vaadin-grid-column>
@@ -2069,6 +2072,7 @@
                     if (chkRS == false) {
                         if (this.$.projectNo.value != "" & this.$.projectNo.value != null) {
                             if (e != null) {
+                                this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                                 this.$.dialog.open();
                                 this.$.grid_datareqmodel_ajax.generateRequest();
                             }
@@ -2079,6 +2083,7 @@
                     }
                     else {
                         if (e != null) {
+                            this._executeRequest("/PreRequisicoes/UpdatePreRequesition", this.data)
                             this.$.dialog.open();
                             this.$.grid_datareqmodel_ajax.generateRequest();
                         }
@@ -2087,7 +2092,8 @@
                 },
 
                 _createnewreq: function (e) {
-                    $(this.$.btn_CriarRequisicao).addClass('disabled');
+                    var _self = this;
+                    $(_self.$.btn_CriarRequisicao).addClass('disabled');
                     this.$.btn_CriarRequisicao.disabled = true;
 
                     this.data.area = this._areaid;
@@ -2301,10 +2307,13 @@
                                 this.$.grid_prereqlines.clearCache();
                                 this.data.eMessage = "";
 
-                                this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
-                                this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno, });
-                                this.$.prereqLines_databound_ajax.generateRequest();
-                            }
+                                //this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/GetPreReqLines";
+                                //this.$.prereqLines_databound_ajax.body = JSON.stringify({ "PreRequesitionsNo": this._prerequesitionno, });
+                                //this.$.prereqLines_databound_ajax.generateRequest();
+                                setTimeout(
+                                    function () {
+                                        window.location.reload();
+                                    }, 2500);                            }
                             else {
                                 this._openToastError(this.CopyFromModelResult.eMessage);
                             }
@@ -2584,8 +2593,8 @@
 
                     if (chkRS == false) {
                         if (this.$._ProjectNo.value != "" & this.$._ProjectNo.value != null) {
-                            if (validLocalCode) {
-                                if (this._Products != undefined & this._Products != "") {
+                            if (this._Products != undefined & this._Products != "") {
+                                if (validLocalCode) {
                                     if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
                                         var totalCost = this._QuantityToRequire * this._UnitCost;
                                         if (isNaN(totalCost)) {
@@ -2645,11 +2654,11 @@
                                     }
                                 }
                                 else {
-                                    this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
+                                    this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
                                 }
                             }
                             else {
-                                this._openToastError('O valor do campo Cód. Localização tem que estar preenchido.');
+                                this._openToastError('O valor do campo Cód. Produto tem que estar preenchido.');
                             }
                         }
                         else {
@@ -2899,22 +2908,28 @@
                     //    this.$._UnitCost.value = "";
                     //}
 
+                    this.$._Description.value = "";
+                    this.$._Description2.value = "";
+                    this.$._UnitMeasureCode._clearSelection();
+                    this.$._UnitCost.value = "";
+                    this.$._CBLocations._clearSelection();
+                    this.$._UnitCost.disabled = false;
+
                     if (this.$._Products.value != "") {
-                        this.$.measuresunit_ajax.params = { "produto": this.$._Products.value };
-                        this.$.measuresunit_ajax.generateRequest();
+                        if (this.$.FunctionalAreaCode.value != "") {
+                            if (this.$.RegionCode.value != "") {
+                                this.$.measuresunit_ajax.params = { "produto": this.$._Products.value };
+                                this.$.measuresunit_ajax.generateRequest();
 
-                        this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
-                        this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
-                        this.$.page_GetProductLocation_ajax.generateRequest();
-                    }
-                    else {
-                        this.$._Description.value = "";
-                        this.$._Description2.value = "";
-                        this.$._UnitMeasureCode.value = "";
-                        this.$._UnitCost.value = "";
-                        this.$._CBLocations.value = "";
-
-                        this.$._UnitCost.disabled = false;
+                                this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                                this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText, "regiao": this.$.RegionCode.value };
+                                this.$.page_GetProductLocation_ajax.generateRequest();
+                            }
+                            else
+                                this._openToastError('É obrigatório ter preenchido o campo Cód. Região no Cabeçalho.');
+                        }
+                        else
+                            this._openToastError('É obrigatório ter preenchido o campo Cód. Área Funcional no Cabeçalho.');
                     }
                 },
                 _onProductClick: function (e) {
@@ -2950,9 +2965,29 @@
                         this.$._UnitCost.value = "";
                     }
 
-                    this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
-                    this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText };
-                    this.$.page_GetProductLocation_ajax.generateRequest()
+                    //this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                    //this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText, "regiao": this.$.RegionCode.value };
+                    //this.$.page_GetProductLocation_ajax.generateRequest()
+
+
+                    if (this.$._Products.value != "") {
+                        if (this.$.FunctionalAreaCode.value != "") {
+                            if (this.$.RegionCode.value != "") {
+                                this.$.measuresunit_ajax.params = { "produto": this.$._Products.value };
+                                this.$.measuresunit_ajax.generateRequest();
+
+                                this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
+                                this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText, "regiao": this.$.RegionCode.value };
+                                this.$.page_GetProductLocation_ajax.generateRequest();
+                            }
+                            else
+                                this._openToastError('É obrigatório ter preenchido o campo Cód. Região no Cabeçalho.');
+                        }
+                        else
+                            this._openToastError('É obrigatório ter preenchido o campo Cód. Área Funcional no Cabeçalho.');
+                    }
+
+
                 },
                 _GetProductLocationResponse: function (e) {
                     if (this.productInfo != null) {
@@ -3109,6 +3144,14 @@
                         this.PurchaseLine = "";
                         this.$.purchaselines_ajax.body = JSON.stringify(codArea);
                         this.$.purchaselines_ajax.generateRequest();
+                    }
+
+                    if (codArea == "22") {
+                        this.$.roupaManutencao.hidden = false;
+                    }
+                    else {
+                        this.$.roupaManutencao.hidden = true;
+                        this.data.roupaManutencao = false;
                     }
                 },
 

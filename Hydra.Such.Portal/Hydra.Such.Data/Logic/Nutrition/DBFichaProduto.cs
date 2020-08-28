@@ -168,6 +168,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                     SISLOG = x.SISLOG,
                     DataEnvioSISLOG = x.DataEnvioSISLOG,
                     NomeCurtoSISLOG = x.NomeCurtoSISLOG,
+                    NomeCurtoSISLOGOriginal = x.NomeCurtoSISLOG,
                     DataHoraCriacao = x.DataHoraCriação,
                     DataHoraModificacao = x.DataHoraModificação,
                     UtilizadorCriacao = x.UtilizadorCriação,

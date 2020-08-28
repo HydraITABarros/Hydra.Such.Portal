@@ -14,6 +14,10 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
         public string ClienteText { get; set; }
         public string NoContacto { get; set; }
         public string ContactoText { get; set; }
+        public string ContactoNome { get; set; }
+        public string ContactoTelefone { get; set; }
+        public string ContactoEmail { get; set; }
+        public string ContactoNotas { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataValidade { get; set; }
         public string DataValidadeText { get; set; }
@@ -29,6 +33,7 @@ namespace Hydra.Such.Data.ViewModel.OrcamentoVM
         public int? CondicoesPagamento { get; set; }
         public string CondicoesPagamentoText { get; set; }
         public decimal? TotalSemIVA { get; set; }
+        public decimal? ValorIVA { get; set; }
         public decimal? TotalComIVA { get; set; }
         public string NoProposta { get; set; }
         public string ProjetoAssociado { get; set; }
