@@ -7822,6 +7822,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Cód. Serviço Cliente");
                     Col = Col + 1;
                 }
+                if (dp["description"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Descrição");
+                    Col = Col + 1;
+                }
                 if (dp["clientRequest"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Cód. Cliente");
@@ -8154,6 +8159,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["serviceClientCode"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.ServiceClientCode);
+                            Col = Col + 1;
+                        }
+                        if (dp["description"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.Description);
                             Col = Col + 1;
                         }
                         if (dp["clientRequest"]["hidden"].ToString() == "False")

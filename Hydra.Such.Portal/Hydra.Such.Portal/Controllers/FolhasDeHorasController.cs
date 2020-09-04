@@ -3047,15 +3047,30 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 if (x.CodigoRefCusto == 1) //ALMOCO
                                 {
-                                    if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida)
+                                    if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida && TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraPartida)
                                         NoDias = NoDias;
                                     else
-                                        NoDias = NoDias - 1;
+                                    {
+                                        if (TimeSpan.Parse(data.HoraPartidaTexto) <= x.LimiteHoraPartida && TimeSpan.Parse(data.HoraChegadaTexto) < x.LimiteHoraPartida)
+                                            NoDias = NoDias - 1;
+                                        else
+                                        {
+                                            if (TimeSpan.Parse(data.HoraPartidaTexto) > x.LimiteHoraPartida && TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraPartida)
+                                                NoDias = NoDias - 1;
+                                            else
+                                                NoDias = NoDias - 2;
+                                        }
+                                    }
 
-                                    if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada) || data.DataPartidaTexto != data.DataChegadaTexto)
-                                        NoDias = NoDias;
-                                    else
-                                        NoDias = NoDias - 1;
+                                    //Codigo Original
+                                    //if (TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraPartida)
+                                    //    NoDias = NoDias;
+                                    //else
+                                    //    //NoDias = NoDias - 1;
+                                    //    if ((TimeSpan.Parse(data.HoraChegadaTexto) >= x.LimiteHoraChegada))// || data.DataPartidaTexto != data.DataChegadaTexto)
+                                    //        NoDias = NoDias;
+                                    //    else
+                                    //        NoDias = NoDias - 1;
                                 }
 
                                 if (x.CodigoRefCusto == 2) //JANTAR
