@@ -455,6 +455,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 List<LinhasAcordoPrecos> result = new List<LinhasAcordoPrecos>();
                 List<dynamic> retval = new List<dynamic>();
+                List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "");
+
                 if (type == 1) //Matéria Prima
                 {
                     var prodUnit = DBProductivityUnits.GetById(produtivityUnitId);
@@ -472,6 +474,7 @@ namespace Hydra.Such.Portal.Controllers
                     var serializerSettings = new JsonSerializerSettings();
                     serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     dynamic _item = JsonConvert.DeserializeObject<dynamic>(JsonConvert.SerializeObject(r, serializerSettings));
+                    _item.descricao2Produto = AllProducts.Where(x => x.Code == r.CodProduto).FirstOrDefault() != null ? AllProducts.Where(x => x.Code == r.CodProduto).FirstOrDefault().Name2 : "";
                     _item.produtoFornecedor = r.CodProduto.ToString() + r.NoFornecedor.ToString();
                     retval.Add(_item);
                 });
