@@ -759,7 +759,7 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         catch (Exception ex)
                         {
-                            result.eReasonCode = 2;
+                            result.eReasonCode = 55;
                             result.eMessage = "Ocorreu um erro ao criar a requisição";
                             result.eMessages.Add(new TraceInformation(TraceType.Exception, ex.Message));
                         }

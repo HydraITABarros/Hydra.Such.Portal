@@ -162,7 +162,7 @@
         <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid hide" active-item="{{activeItem}}">
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.customerNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="customerNo">Cliente Nº</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="customerNo">Nº Cliente</vaadin-grid-sorter>
                     <vaadin-grid-filter path="customerNo" value="[[filter.customerNo]]" />
                 </template>
                 <template>
@@ -202,11 +202,21 @@
 
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.documentNo.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="documentNo">Documento Nº</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="documentNo">Nº Documento</vaadin-grid-sorter>
                     <vaadin-grid-filter path="documentNo" value="[[filter.documentNo]]" />
                 </template>
                 <template>
                     {{item.documentNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.documentNoExterno.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="documentNoExterno">Nº Documento Externo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="documentNoExterno" value="[[filter.documentNoExterno]]" />
+                </template>
+                <template>
+                    {{item.documentNoExterno}}
                 </template>
             </vaadin-grid-column>
 
@@ -400,11 +410,12 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "customerNo": { hidden: false, label: "Cliente Nº" },
+                        "customerNo": { hidden: false, label: "Nº Cliente" },
                         "dateTexto": { hidden: false, label: "Data" },
                         "dueDateTexto": { hidden: false, label: "Data Vencimento" },
                         "documentType": { hidden: false, label: "Tipo Documento" },
-                        "documentNo": { hidden: false, label: "Documento Nº" },
+                        "documentNo": { hidden: false, label: "Nº Documento" },
+                        "documentNoExterno": { hidden: false, label: "Nº Documento Externo" },
                         "dimensionValue": { hidden: false, label: "Unidade Prestação" },
                         "value": { hidden: false, label: "Valor" },
                         "customerRegion": { hidden: false, label: "Região (do Cliente)" },

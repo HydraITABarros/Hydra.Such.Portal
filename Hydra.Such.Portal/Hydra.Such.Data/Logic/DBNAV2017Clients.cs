@@ -492,6 +492,7 @@ namespace Hydra.Such.Data.Logic
                             DueDateTexto = Convert.ToDateTime(temp.DueDate).ToShortDateString(),
                             DocumentType = temp.DocumentType.Equals(DBNull.Value) ? "" : (string)temp.DocumentType.ToString(),
                             DocumentNo = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.DocumentNo.ToString(),
+                            DocumentNoExterno = temp.DocumentNoExterno.Equals(DBNull.Value) ? "" : (string)temp.DocumentNoExterno.ToString(),
                             DimensionValue = temp.DimensionValue.Equals(DBNull.Value) ? "" : (string)temp.DimensionValue.ToString(),
                             Value = Convert.ToDecimal(temp.Value),
                             FactoringSemRecurso = temp.FactoringSemRecurso.Equals(DBNull.Value) ? "" : (string)temp.FactoringSemRecurso.ToString()

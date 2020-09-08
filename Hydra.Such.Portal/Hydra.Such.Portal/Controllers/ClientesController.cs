@@ -472,11 +472,12 @@ namespace Hydra.Such.Portal.Controllers
                 dataCustomStyle.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
                 int Col = 0;
 
-                if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nº"); Col = Col + 1; }
+                if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
                 if (dp["dateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
                 if (dp["dueDateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Vencimento"); Col = Col + 1; }
                 if (dp["documentType"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Documento"); Col = Col + 1; }
-                if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Documento Nº"); Col = Col + 1; }
+                if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento"); Col = Col + 1; }
+                if (dp["documentNoExterno"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Documento Externo"); Col = Col + 1; }
                 if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Unidade Prestação"); Col = Col + 1; }
                 if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor"); Col = Col + 1; }
                 if (dp["customerRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região (do Cliente)"); Col = Col + 1; }
@@ -496,6 +497,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["dueDateTexto"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(Convert.ToDateTime(item.DueDateTexto)); row.Cells[Col].CellStyle = dataCustomStyle; Col = Col + 1; }
                         if (dp["documentType"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DocumentType); Col = Col + 1; }
                         if (dp["documentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DocumentNo); Col = Col + 1; }
+                        if (dp["documentNoExterno"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DocumentNoExterno); Col = Col + 1; }
                         if (dp["dimensionValue"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.DimensionValue); Col = Col + 1; }
                         if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.Numeric).SetCellValue(Convert.ToDouble(item.Value.ToString())); Col = Col + 1; }
                         if (dp["customerRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerRegion); Col = Col + 1; }
