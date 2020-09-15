@@ -102,6 +102,15 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/CreatePurchaseOrderList"
+                   last-response="{{RequisitionCG}}"
+                   id="createPurchOrderCG_ajax"
+                   on-response="_createPurchaseOrderCGResponse"
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
         <iron-ajax url="/GestaoRequisicoes/ExportToExcelCG_LinhasNutricao"
                    last-response="{{exportCG_LinhasNutricao}}"
                    id="ajax_ExportCG_LinhasNutricao"
@@ -389,11 +398,11 @@
                                 <div class="subMenu">
                                     <paper-button id="btnCGGoBack" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
                                     <paper-button id="btnCGVer" class="tablinks" on-tap="_btnVerCG"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{ _showVerMessage }}</paper-button>
-                                    <paper-button id="btnCGEnviar" class="tablinks" on-tap="_EnviarCG" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar Requisições</paper-button>
-                                    <paper-button id="btnCGCreatePurchaseOrder" class="tablinks" on-tap="_createPurchaseOrderCG" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
+                                    <paper-button id="btnCGEnviar" class="tablinks" on-tap="_EnviarCG" disabled="{{ !_permissions.create }}"><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Enviar Ordem de Compra</paper-button>
+                                    <paper-button id="btnCGCreatePurchaseOrder" class="tablinks" on-tap="_createPurchaseOrderCG" disabled="{{ !_permissions.create }}" hidden><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
                                     <paper-button id="btnCGHistorico" class="tablinks" on-tap="_HistoricoCG" title="Ver Histórico"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Ver Histórico</paper-button>
                                     <paper-button id="btnCGExport" class="tablinks" on-tap="_exportEXCELCG" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
-                                    <paper-button id="btnCGExportLinhasNutricao" class="tablinks" on-tap="_exportEXCELCG_LinhasNutricao" title="Exportar Linhas para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
+                                    <paper-button id="btnCGExportLinhasNutricao" class="tablinks" on-tap="_exportEXCELCG_LinhasNutricao" title="Exportar Linhas para Excel" hidden><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
 
                                     <!--start ColumnToggle-->
                                     <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
@@ -1046,14 +1055,14 @@
                         this._showVerMessage = "Ver Por Enviar";
                         this.$.btnCGEnviar.hidden = true;
                         this.$.btnCGCreatePurchaseOrder.hidden = false;
-                        this.$.btnCGExportLinhasNutricao.hidden = true;
+                        //this.$.btnCGExportLinhasNutricao.hidden = true;
                     }
                     else {
                         this._opcaoCG = 1;
                         this._showVerMessage = "Ver Enviadas";
                         this.$.btnCGEnviar.hidden = false;
                         this.$.btnCGCreatePurchaseOrder.hidden = true;
-                        this.$.btnCGExportLinhasNutricao.hidden = false;
+                        //this.$.btnCGExportLinhasNutricao.hidden = false;
                     }
 
 
@@ -1062,12 +1071,52 @@
                 },
 
                 _EnviarCG: function () {
-                    this._showErrorMessage("Botão Desativado.");
+                    if (this.selectedItemsCG != null && this.selectedItemsCG != "") {
+
+                        $(this.$.btnCGExportLinhasNutricao).addClass('disabled');
+
+                        var selItmsCG = this.selectedItemsCG;
+
+                        this.$.ajax_ExportCG_LinhasNutricao.body = JSON.stringify(selItmsCG);
+                        this.$.ajax_ExportCG_LinhasNutricao.generateRequest();
+                        this.$.gridrequestCG.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma Requisição.");
+                    }
                 },
 
                 _createPurchaseOrderCG: function () {
-                    this._showErrorMessage("Botão Desativado.");
+                    if (this.selectedItemsCG != null && this.selectedItemsCG != "") {
+
+                        $(this.$.btnCGCreatePurchaseOrder).addClass('disabled');
+
+                        var selItms = this.selectedItemsCG;
+
+                        this.$.createPurchOrderCG_ajax.body = JSON.stringify(selItms);
+                        this.$.createPurchOrderCG_ajax.generateRequest();
+                        this.$.gridrequestCG.clearCache();
+                    } else {
+                        this._showErrorMessage("Não foi selecionada nenhuma linha.");
+                    }
                 },
+                _createPurchaseOrderCGResponse: function (e) {
+                    this.selectedItemsCG = null;
+
+                    if (this.RequisitionCG.eReasonCode == "1") {
+                        this._showMessage(this.RequisitionCG.eMessage);
+                    }
+                    else {
+                        if (this.RequisitionCG.eMessages.length > 0)
+                            this._toggleToastMultiple();
+                        else {
+                            this._showErrorMessage(this.RequisitionCG.eMessage);
+                        }
+                    }
+
+                    $(this.$.btnCGCreatePurchaseOrder).removeClass('disabled');
+                    location.reload(true);
+                },
+
 
                 _exportEXCELCG: function () {
                     this.resultCG[0].ColunasEXCEL = this._columnsCG;
@@ -1097,12 +1146,19 @@
                 },
 
                 _exportEXCELCG_LinhasNutricaoResponse: function (e) {
-                    var FileName = this.exportCG_LinhasNutricao;
-                    location.href = '/GestaoRequisicoes/ExportToExcelDownloadCG_LinhasNutricao?sFileName=' + FileName;
 
-                    this.$.ajax_ExportCG_LinhasNutricaoUpdate.body = JSON.stringify(this.selectedItemsCG);
-                    this.$.ajax_ExportCG_LinhasNutricaoUpdate.generateRequest();
-                    this.$.gridrequestCG.clearCache();
+                    if (this.exportCG_LinhasNutricao.eReasonCode == 1) {
+                        this.$.ajax_getgridCG.body = JSON.stringify({ "opcao": this._opcaoCG });
+                        this.$.ajax_getgridCG.generateRequest();
+
+                        this._showMessage("A(s) Ordem(s) de Compra foram Enviadas com sucesso.");
+                    }
+                    else {
+                        this._showErrorMessage("Ocorreu um erro ao Enviar a(s) Ordem(s) de Compra.");
+                    }
+
+                    this.selectedItemsCG = null;
+                    $(this.$.btnCGExportLinhasNutricao).removeClass('disabled');
                 },
 
                 _exportEXCELCG_LinhasNutricaoUpdateResponse: function (e) {
