@@ -624,208 +624,35 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult GenerateRequesition([FromBody] List<DailyRequisitionProductiveUnitViewModel> data)
         {
-            ErrorHandler result = new ErrorHandler();
-
-            if (data != null && data.Count > 0)
-            {
-                if (data.Where(x => x.DirectUnitCost == null || x.SupplierNo == null || x.SupplierNo == "").Count() > 0)
-                {
-                    result.eReasonCode = 2;
-                    result.eMessage = "Existe linhas sem custo unitário ou Cód Fornecedor preenchidos.";
-
-                    return Json(result);
-                }
-
-                List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
-                data.ForEach(item =>
-                {
-                    NAVProductsViewModel Product = AllProducts.Where(x => x.Code == item.ProductNo).FirstOrDefault();
-
-                    if (Product == null)
-                    {
-                        result.eReasonCode = 22;
-                        result.eMessage = "Não é possivel criar a Requisição, por o produto Nº " + item.ProductNo + " - " + item.Description + " " + item.Description2 + " estar bloqueado no NAV2017.";
-                    }
-                });
-                if (result.eReasonCode == 22)
-                    return Json(result);
-
-                int? productivityUnitId = data.Where(x => x.ProductionUnitNo.HasValue).Select(x => x.ProductionUnitNo).FirstOrDefault();
-                DateTime expextedDate = data.Where(x => !string.IsNullOrEmpty(x.ExpectedReceptionDate)).Select(x => DateTime.Parse(x.ExpectedReceptionDate)).OrderBy(x => x).FirstOrDefault();
-                if (productivityUnitId.HasValue)
-                {
-                    UnidadesProdutivas productivityUnit = DBProductivityUnits.GetById(productivityUnitId.Value);
-
-                    int Tipo = (int)data.FirstOrDefault().Tipo;
-                    string Projeto = "";
-                    if (Tipo == 1)
-                        Projeto = productivityUnit.ProjetoCozinha;
-                    if (Tipo == 2)
-                        Projeto = productivityUnit.ProjetoMatSubsidiárias;
-
-                    if (productivityUnit != null)
-                    {
-                        RequisitionViewModel req = new RequisitionViewModel();
-                        req.TipoReq = (int)RequisitionTypes.Normal;
-                        req.FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional;
-                        req.CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade;
-                        req.RegionCode = productivityUnit.CódigoRegião;
-                        req.LocalCode = productivityUnit.Armazém;
-                        req.UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva);
-                        req.RequestNutrition = true;
-                        req.RequisitionDate = DateTime.Now.ToString();
-                        req.ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty;
-                        req.ProjectNo = Projeto;
-                        req.CreateUser = User.Identity.Name;
-                        req.CreateDate = DateTime.Now.ToString();
-                        req.State = RequisitionStates.Pending;
-
-                        data.ForEach(item =>
-                        {
-                            if (item.Quantity.HasValue && item.Quantity > 0)
-                            {
-                                var productsInReq = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, item.ProductNo);
-
-                                RequisitionLineViewModel line = new RequisitionLineViewModel
-                                {
-                                    Type = 2,
-                                    Code = item.ProductNo,
-                                    Description = !string.IsNullOrEmpty(item.Description) ? item.Description.Length >= 100 ? item.Description.Substring(0, 100) : item.Description : "",
-                                    Description2 = !string.IsNullOrEmpty(item.Description2) ? item.Description2.Length >= 50 ? item.Description2.Substring(0, 50) : item.Description2 : "",
-                                    UnitMeasureCode = item.UnitMeasureCode,
-                                    QtyByUnitOfMeasure = item.QuantitybyUnitMeasure,
-                                    QuantityToRequire = item.Quantity,
-                                    QuantidadeDisponivel = item.QuantidadeDisponivel,
-                                    QuantidadeReservada = item.QuantidadeReservada,
-                                    UnitCost = item.DirectUnitCost,
-                                    SupplierNo = item.SupplierNo,
-                                    SubSupplierNo = item.SubSupplierNo,
-                                    ExpectedReceivingDate = item.ExpectedReceptionDate,
-                                    SupplierProductCode = item.SupplierProductCode,
-                                    FunctionalAreaCode = req.FunctionalAreaCode,
-                                    CenterResponsibilityCode = req.CenterResponsibilityCode,
-                                    RegionCode = req.RegionCode,
-                                    CreateUser = User.Identity.Name,
-                                    ProjectNo = Projeto,
-                                    LocalCode = productivityUnit.Armazém,
-                                    VATProductPostingGroup = string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? productsInReq.Where(x => x.Code == item.ProductNo).FirstOrDefault().VATProductPostingGroup : item.GrupoRegistoIvaProduto,
-                                    CriarNotaEncomenda = true
-                                };
-
-                                req.Lines.Add(line);
-                            }
-                        });
-
-                        try
-                        {
-                            //Get VATPostingGroup Info
-                            List<string> productsInRequisitionIds = req.Lines.Select(y => y.Code).Distinct().ToList();
-                            var productsInRequisition = DBNAV2017Products.GetProductsById(_config.NAVDatabaseName, _config.NAVCompanyName, productsInRequisitionIds);
-                            var vendors = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
-
-                            //Set VATPostingGroup Info
-                            req.Lines.ForEach(line =>
-                            {
-                                line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
-
-                                if (string.IsNullOrEmpty(line.VATProductPostingGroup))
-                                    line.VATProductPostingGroup = productsInRequisition.Where(x => x.Code == line.Code).FirstOrDefault().VATProductPostingGroup;
-
-                                if (string.IsNullOrEmpty(line.Description2))
-                                    line.Description2 = productsInRequisition.Where(x => x.Code == line.Code).FirstOrDefault().Name2;
-
-                            });
-                        }
-                        catch { }
-
-
-                        try
-                        {
-                            RequisitionViewModel createdRequisition = CreateRequesition(req);
-                            if (createdRequisition.eReasonCode == 1)
-                            {
-                                bool deletedSuccessfully = DBShoppingNecessity.Delete(data.ParseToDB());
-                                if (deletedSuccessfully)
-                                {
-                                    result.eReasonCode = 1;
-                                    result.eMessage = createdRequisition.eMessage;
-                                }
-                                else
-                                {
-                                    result.eReasonCode = 2;
-                                    result.eMessage = "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente.";
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            result.eReasonCode = 55;
-                            result.eMessage = "Ocorreu um erro ao criar a requisição";
-                            result.eMessages.Add(new TraceInformation(TraceType.Exception, ex.Message));
-                        }
-                    }
-                }
-                else
-                {
-                    result.eReasonCode = 2;
-                    result.eMessage = "Não foi possivel identificar a unidade produtiva.";
-                }
-            }
-            else
-            {
-                result.eReasonCode = 2;
-                result.eMessage = "Ocorreu um erro: A lista esta vazia";
-            }
-            return Json(result);
-
-
-
-
-
-
-
-
-
-
-
-
-
             //ErrorHandler result = new ErrorHandler();
 
             //if (data != null && data.Count > 0)
             //{
-            //    List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
-            //    List<NAVVendorViewModel> AllVendors = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
-
             //    if (data.Where(x => x.DirectUnitCost == null || x.SupplierNo == null || x.SupplierNo == "").Count() > 0)
             //    {
             //        result.eReasonCode = 2;
             //        result.eMessage = "Existe linhas sem custo unitário ou Cód Fornecedor preenchidos.";
-            //        result.eMessages.Add(new TraceInformation(TraceType.Error, "Existe linhas sem custo unitário ou Cód Fornecedor preenchidos."));
+
             //        return Json(result);
             //    }
 
+            //    List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
             //    data.ForEach(item =>
             //    {
             //        NAVProductsViewModel Product = AllProducts.Where(x => x.Code == item.ProductNo).FirstOrDefault();
 
             //        if (Product == null)
             //        {
-            //            result.eReasonCode = 2;
+            //            result.eReasonCode = 22;
             //            result.eMessage = "Não é possivel criar a Requisição, por o produto Nº " + item.ProductNo + " - " + item.Description + " " + item.Description2 + " estar bloqueado no NAV2017.";
-            //            result.eMessages.Add(new TraceInformation(TraceType.Error, "Não é possivel criar a Requisição, por o produto Nº " + item.ProductNo + " - " + item.Description + " " + item.Description2 + " estar bloqueado no NAV2017."));
             //        }
             //    });
-
-            //    if (result.eReasonCode == 2)
-            //    {
+            //    if (result.eReasonCode == 22)
             //        return Json(result);
-            //    }
 
             //    int? productivityUnitId = data.Where(x => x.ProductionUnitNo.HasValue).Select(x => x.ProductionUnitNo).FirstOrDefault();
             //    DateTime expextedDate = data.Where(x => !string.IsNullOrEmpty(x.ExpectedReceptionDate)).Select(x => DateTime.Parse(x.ExpectedReceptionDate)).OrderBy(x => x).FirstOrDefault();
-
-            //    if (productivityUnitId != null && productivityUnitId.HasValue)
+            //    if (productivityUnitId.HasValue)
             //    {
             //        UnidadesProdutivas productivityUnit = DBProductivityUnits.GetById(productivityUnitId.Value);
 
@@ -838,240 +665,413 @@ namespace Hydra.Such.Portal.Controllers
 
             //        if (productivityUnit != null)
             //        {
-            //            List<RequisitionViewModel> RequisicoesGroupInterface = new List<RequisitionViewModel>();
+            //            RequisitionViewModel req = new RequisitionViewModel();
+            //            req.TipoReq = (int)RequisitionTypes.Normal;
+            //            req.FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional;
+            //            req.CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade;
+            //            req.RegionCode = productivityUnit.CódigoRegião;
+            //            req.LocalCode = productivityUnit.Armazém;
+            //            req.UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva);
+            //            req.RequestNutrition = true;
+            //            req.RequisitionDate = DateTime.Now.ToString();
+            //            req.ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty;
+            //            req.ProjectNo = Projeto;
+            //            req.CreateUser = User.Identity.Name;
+            //            req.CreateDate = DateTime.Now.ToString();
+            //            req.State = RequisitionStates.Pending;
 
-            //            try
+            //            data.ForEach(item =>
             //            {
-            //                RequisicoesGroupInterface = data.GroupBy(x =>
-            //                x.Interface,
-            //                x => x,
-            //                (key, items) => new RequisitionViewModel
+            //                if (item.Quantity.HasValue && item.Quantity > 0)
             //                {
-            //                    Interface = key,
-            //                    TipoReq = (int)RequisitionTypes.Normal,
-            //                    FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
-            //                    CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
-            //                    RegionCode = productivityUnit.CódigoRegião,
-            //                    LocalCode = productivityUnit.Armazém,
-            //                    UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva),
-            //                    RequestNutrition = true,
-            //                    RequisitionDate = DateTime.Now.ToString(),
-            //                    ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty,
-            //                    ProjectNo = Projeto,
-            //                    CreateUser = User.Identity.Name,
-            //                    CreateDate = DateTime.Now.ToString(),
-            //                    State = RequisitionStates.Pending,
+            //                    var productsInReq = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, item.ProductNo);
 
-            //                    Lines = items.Select(line => new RequisitionLineViewModel()
+            //                    RequisitionLineViewModel line = new RequisitionLineViewModel
             //                    {
             //                        Type = 2,
-            //                        Code = line.ProductNo,
-            //                        Description = !string.IsNullOrEmpty(line.Description) ? line.Description.Length >= 100 ? line.Description.Substring(0, 100) : line.Description : "",
+            //                        Code = item.ProductNo,
+            //                        Description = !string.IsNullOrEmpty(item.Description) ? item.Description.Length >= 100 ? item.Description.Substring(0, 100) : item.Description : "",
             //                        Description2 = !string.IsNullOrEmpty(item.Description2) ? item.Description2.Length >= 50 ? item.Description2.Substring(0, 50) : item.Description2 : "",
-            //                        UnitMeasureCode = line.UnitMeasureCode,
-            //                        QtyByUnitOfMeasure = line.QuantitybyUnitMeasure,
-            //                        QuantityToRequire = line.Quantity,
-            //                        QuantidadeDisponivel = line.QuantidadeDisponivel,
-            //                        QuantidadeReservada = line.QuantidadeReservada,
-            //                        UnitCost = line.DirectUnitCost,
-            //                        SupplierNo = line.SupplierNo,
-            //                        SubSupplierNo = line.SubSupplierNo,
-            //                        ExpectedReceivingDate = line.ExpectedReceptionDate,
-            //                        SupplierProductCode = line.SupplierProductCode,
-            //                        FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
-            //                        CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
-            //                        RegionCode = productivityUnit.CódigoRegião,
+            //                        UnitMeasureCode = item.UnitMeasureCode,
+            //                        QtyByUnitOfMeasure = item.QuantitybyUnitMeasure,
+            //                        QuantityToRequire = item.Quantity,
+            //                        QuantidadeDisponivel = item.QuantidadeDisponivel,
+            //                        QuantidadeReservada = item.QuantidadeReservada,
+            //                        UnitCost = item.DirectUnitCost,
+            //                        SupplierNo = item.SupplierNo,
+            //                        SubSupplierNo = item.SubSupplierNo,
+            //                        ExpectedReceivingDate = item.ExpectedReceptionDate,
+            //                        SupplierProductCode = item.SupplierProductCode,
+            //                        FunctionalAreaCode = req.FunctionalAreaCode,
+            //                        CenterResponsibilityCode = req.CenterResponsibilityCode,
+            //                        RegionCode = req.RegionCode,
             //                        CreateUser = User.Identity.Name,
             //                        ProjectNo = Projeto,
             //                        LocalCode = productivityUnit.Armazém,
-            //                        VATProductPostingGroup = !string.IsNullOrEmpty(line.GrupoRegistoIvaProduto) ? line.GrupoRegistoIvaProduto : AllProducts.FirstOrDefault(x => x.Code == line.ProductNo)?.VATProductPostingGroup,
-            //                        VATBusinessPostingGroup = AllVendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup,
-            //                        CriarNotaEncomenda = true,
-            //                        CustoUnitarioSubFornecedor = line.DirectUnitCostSubSupplier,
-            //                        NoLinhaDiarioRequisicaoUnidProdutiva = line.LineNo
-            //                    }).ToList()
-            //                }).ToList();
-            //            }
-            //            catch
-            //            {
-            //                throw new Exception("Ocorreu um erro ao agrupar as linhas.");
-            //            }
-
-            //            if (RequisicoesGroupInterface.Count() > 0)
-            //            {
-            //                RequisicoesGroupInterface.ForEach(RequisicaoGroupInterface =>
-            //                {
-            //                    try
-            //                    {
-            //                        if (RequisicaoGroupInterface.Interface == 0) //0 = Normal
-            //                        {
-            //                            RequisicaoGroupInterface.NoSubFornecedor = null;
-            //                            RequisicaoGroupInterface.NoEncomendaFornecedor = null;
-            //                            RequisicaoGroupInterface.DataEncomendaSubfornecedor = null;
-
-            //                            try
-            //                            {
-            //                                RequisitionViewModel createdRequisition = CreateRequesition(RequisicaoGroupInterface);
-            //                                if (createdRequisition.eReasonCode == 1)
-            //                                {
-            //                                    bool deletedSuccessfully = DBShoppingNecessity.Delete(RequisicaoGroupInterface.Lines);
-            //                                    if (deletedSuccessfully)
-            //                                    {
-            //                                        result.eReasonCode = 1;
-            //                                        result.eMessage = result.eMessage + Environment.NewLine + createdRequisition.eMessage;
-            //                                        result.eMessages.Add(new TraceInformation(TraceType.Success, createdRequisition.eMessage));
-            //                                    }
-            //                                    else
-            //                                    {
-            //                                        result.eReasonCode = 2;
-            //                                        result.eMessage = result.eMessage + Environment.NewLine + "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente.";
-            //                                        result.eMessages.Add(new TraceInformation(TraceType.Error, "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente."));
-            //                                    }
-            //                                }
-            //                            }
-            //                            catch (Exception ex)
-            //                            {
-            //                                result.eReasonCode = 2;
-            //                                result.eMessage = result.eMessage + Environment.NewLine + "Ocorreu um erro ao criar a requisição";
-            //                                result.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
-            //                            }
-            //                        }
-
-            //                        if (RequisicaoGroupInterface.Interface == 1) //1 = NeoValor
-            //                        {
-            //                            List<RequisitionViewModel> RequisicoesGroupSupplier = new List<RequisitionViewModel>();
-
-            //                            try
-            //                            {
-            //                                RequisicoesGroupSupplier = RequisicaoGroupInterface.Lines.GroupBy(x => new
-            //                                { x.SupplierNo, x.SubSupplierNo },
-            //                                x => x,
-            //                                (key, items) => new RequisitionViewModel
-            //                                {
-            //                                    Interface = RequisicaoGroupInterface.Interface,
-            //                                    SupplierCode = key.SupplierNo,
-            //                                    NoSubFornecedor = key.SubSupplierNo,
-            //                                    TipoReq = (int)RequisitionTypes.Normal,
-            //                                    FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
-            //                                    CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
-            //                                    RegionCode = productivityUnit.CódigoRegião,
-            //                                    LocalCode = productivityUnit.Armazém,
-            //                                    UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva),
-            //                                    RequestNutrition = true,
-            //                                    RequisitionDate = DateTime.Now.ToString(),
-            //                                    ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty,
-            //                                    ProjectNo = Projeto,
-            //                                    CreateUser = User.Identity.Name,
-            //                                    CreateDate = DateTime.Now.ToString(),
-            //                                    State = RequisitionStates.Pending,
-
-            //                                    Lines = items.Select(line => new RequisitionLineViewModel()
-            //                                    {
-            //                                        Type = 2,
-            //                                        Code = line.Code,
-            //                                        Description = !string.IsNullOrEmpty(line.Description) ? line.Description.Length >= 100 ? line.Description.Substring(0, 100) : line.Description : "",
-            //                                        Description2 = !string.IsNullOrEmpty(line.Description2) ? line.Description2 : AllProducts.FirstOrDefault(x => x.Code == line.Code)?.Name2,
-            //                                        UnitMeasureCode = line.UnitMeasureCode,
-            //                                        QtyByUnitOfMeasure = line.QtyByUnitOfMeasure,
-            //                                        QuantityToRequire = line.QuantityToRequire,
-            //                                        QuantidadeDisponivel = line.QuantidadeDisponivel,
-            //                                        QuantidadeReservada = line.QuantidadeReservada,
-            //                                        UnitCost = line.UnitCost,
-            //                                        SupplierNo = line.SupplierNo,
-            //                                        SubSupplierNo = line.SubSupplierNo,
-            //                                        ExpectedReceivingDate = line.ExpectedReceivingDate,
-            //                                        SupplierProductCode = line.SupplierProductCode,
-            //                                        FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
-            //                                        CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
-            //                                        RegionCode = productivityUnit.CódigoRegião,
-            //                                        CreateUser = User.Identity.Name,
-            //                                        ProjectNo = Projeto,
-            //                                        LocalCode = productivityUnit.Armazém,
-            //                                        VATProductPostingGroup = !string.IsNullOrEmpty(line.VATProductPostingGroup) ? line.VATProductPostingGroup : AllProducts.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup,
-            //                                        VATBusinessPostingGroup = AllVendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup,
-            //                                        CriarNotaEncomenda = true,
-            //                                        CustoUnitarioSubFornecedor = line.CustoUnitarioSubFornecedor,
-            //                                        NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva
-            //                                    }).ToList()
-            //                                }).ToList();
-            //                            }
-            //                            catch
-            //                            {
-            //                                throw new Exception("Ocorreu um erro ao agrupar as linhas.");
-            //                            }
-
-            //                            if (RequisicoesGroupSupplier.Count() > 0)
-            //                            {
-            //                                RequisicoesGroupSupplier.ForEach(RequisicaoGroupSupplier =>
-            //                                {
-            //                                    try
-            //                                    {
-            //                                        RequisitionViewModel createdRequisition = CreateRequesition(RequisicaoGroupSupplier);
-            //                                        if (createdRequisition.eReasonCode == 1)
-            //                                        {
-            //                                            //bool deletedSuccessfully = true;
-            //                                            bool deletedSuccessfully = DBShoppingNecessity.Delete(RequisicaoGroupSupplier.Lines);
-            //                                            if (deletedSuccessfully)
-            //                                            {
-            //                                                result.eReasonCode = 1;
-            //                                                result.eMessage = result.eMessage + Environment.NewLine + createdRequisition.eMessage;
-            //                                                result.eMessages.Add(new TraceInformation(TraceType.Success, createdRequisition.eMessage));
-            //                                            }
-            //                                            else
-            //                                            {
-            //                                                result.eReasonCode = 2;
-            //                                                result.eMessage = result.eMessage + Environment.NewLine + "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente.";
-            //                                                result.eMessages.Add(new TraceInformation(TraceType.Error, "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente."));
-            //                                            }
-            //                                        }
-            //                                    }
-            //                                    catch (Exception ex)
-            //                                    {
-            //                                        result.eReasonCode = 2;
-            //                                        result.eMessage = result.eMessage + Environment.NewLine + "Ocorreu um erro ao criar a requisição";
-            //                                        result.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
-            //                                    }
-            //                                });
-            //                            };
-            //                        };
-            //                    }
-            //                    catch (Exception ex)
-            //                    {
-            //                        result.eReasonCode = 2;
-            //                        result.eMessage = result.eMessage + Environment.NewLine + "Ocorreu um erro ao criar a requisição";
-            //                        result.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+            //                        VATProductPostingGroup = string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? productsInReq.Where(x => x.Code == item.ProductNo).FirstOrDefault().VATProductPostingGroup : item.GrupoRegistoIvaProduto,
+            //                        CriarNotaEncomenda = true
             //                    };
+
+            //                    req.Lines.Add(line);
+            //                }
+            //            });
+
+            //            try
+            //            {
+            //                //Get VATPostingGroup Info
+            //                List<string> productsInRequisitionIds = req.Lines.Select(y => y.Code).Distinct().ToList();
+            //                var productsInRequisition = DBNAV2017Products.GetProductsById(_config.NAVDatabaseName, _config.NAVCompanyName, productsInRequisitionIds);
+            //                var vendors = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
+
+            //                //Set VATPostingGroup Info
+            //                req.Lines.ForEach(line =>
+            //                {
+            //                    line.VATBusinessPostingGroup = vendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup;
+
+            //                    if (string.IsNullOrEmpty(line.VATProductPostingGroup))
+            //                        line.VATProductPostingGroup = productsInRequisition.Where(x => x.Code == line.Code).FirstOrDefault().VATProductPostingGroup;
+
+            //                    if (string.IsNullOrEmpty(line.Description2))
+            //                        line.Description2 = productsInRequisition.Where(x => x.Code == line.Code).FirstOrDefault().Name2;
+
             //                });
             //            }
-            //            else
+            //            catch { }
+
+
+            //            try
             //            {
-            //                result.eReasonCode = 2;
-            //                result.eMessage = "Ocorreu um erro ao agrupar as linhas.";
-            //                result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao agrupar as linhas."));
+            //                RequisitionViewModel createdRequisition = CreateRequesition(req);
+            //                if (createdRequisition.eReasonCode == 1)
+            //                {
+            //                    bool deletedSuccessfully = DBShoppingNecessity.Delete(data.ParseToDB());
+            //                    if (deletedSuccessfully)
+            //                    {
+            //                        result.eReasonCode = 1;
+            //                        result.eMessage = createdRequisition.eMessage;
+            //                    }
+            //                    else
+            //                    {
+            //                        result.eReasonCode = 2;
+            //                        result.eMessage = "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente.";
+            //                    }
+            //                }
             //            }
-            //        }
-            //        else
-            //        {
-            //            result.eReasonCode = 2;
-            //            result.eMessage = "Não foi possivel obter a Unidade Produtiva.";
-            //            result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi possivel obter a Unidade Produtiva."));
+            //            catch (Exception ex)
+            //            {
+            //                result.eReasonCode = 55;
+            //                result.eMessage = "Ocorreu um erro ao criar a requisição";
+            //                result.eMessages.Add(new TraceInformation(TraceType.Exception, ex.Message));
+            //            }
             //        }
             //    }
             //    else
             //    {
             //        result.eReasonCode = 2;
-            //        result.eMessage = "Não foi possivel identificar a Unidade Produtiva.";
-            //        result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi possivel identificar a Unidade Produtiva."));
+            //        result.eMessage = "Não foi possivel identificar a unidade produtiva.";
             //    }
             //}
             //else
             //{
             //    result.eReasonCode = 2;
             //    result.eMessage = "Ocorreu um erro: A lista esta vazia";
-            //    result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro: A lista esta vazia"));
             //}
-
             //return Json(result);
+
+
+
+
+
+
+
+
+
+
+
+
+
+            ErrorHandler result = new ErrorHandler();
+
+            if (data != null && data.Count > 0)
+            {
+                List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, string.Empty);
+                List<NAVVendorViewModel> AllVendors = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName);
+
+                if (data.Where(x => x.DirectUnitCost == null || x.SupplierNo == null || x.SupplierNo == "").Count() > 0)
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Existe linhas sem custo unitário ou Cód Fornecedor preenchidos.";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Existe linhas sem custo unitário ou Cód Fornecedor preenchidos."));
+                    return Json(result);
+                }
+
+                data.ForEach(item =>
+                {
+                    NAVProductsViewModel Product = AllProducts.Where(x => x.Code == item.ProductNo).FirstOrDefault();
+
+                    if (Product == null)
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não é possivel criar a Requisição, por o produto Nº " + item.ProductNo + " - " + item.Description + " " + item.Description2 + " estar bloqueado no NAV2017.";
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "Não é possivel criar a Requisição, por o produto Nº " + item.ProductNo + " - " + item.Description + " " + item.Description2 + " estar bloqueado no NAV2017."));
+                    }
+                });
+
+                if (result.eReasonCode == 2)
+                {
+                    return Json(result);
+                }
+
+                int? productivityUnitId = data.Where(x => x.ProductionUnitNo.HasValue).Select(x => x.ProductionUnitNo).FirstOrDefault();
+                DateTime expextedDate = data.Where(x => !string.IsNullOrEmpty(x.ExpectedReceptionDate)).Select(x => DateTime.Parse(x.ExpectedReceptionDate)).OrderBy(x => x).FirstOrDefault();
+
+                if (productivityUnitId != null && productivityUnitId.HasValue)
+                {
+                    UnidadesProdutivas productivityUnit = DBProductivityUnits.GetById(productivityUnitId.Value);
+
+                    int Tipo = (int)data.FirstOrDefault().Tipo;
+                    string Projeto = "";
+                    if (Tipo == 1)
+                        Projeto = productivityUnit.ProjetoCozinha;
+                    if (Tipo == 2)
+                        Projeto = productivityUnit.ProjetoMatSubsidiárias;
+
+                    if (productivityUnit != null)
+                    {
+                        List<RequisitionViewModel> RequisicoesGroupInterface = new List<RequisitionViewModel>();
+
+                        try
+                        {
+                            RequisicoesGroupInterface = data.GroupBy(x =>
+                            x.Interface,
+                            x => x,
+                            (key, items) => new RequisitionViewModel
+                            {
+                                Interface = key,
+                                TipoReq = (int)RequisitionTypes.Normal,
+                                FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
+                                CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
+                                RegionCode = productivityUnit.CódigoRegião,
+                                LocalCode = productivityUnit.Armazém,
+                                UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva),
+                                RequestNutrition = true,
+                                RequisitionDate = DateTime.Now.ToString(),
+                                ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty,
+                                ProjectNo = Projeto,
+                                CreateUser = User.Identity.Name,
+                                CreateDate = DateTime.Now.ToString(),
+                                State = RequisitionStates.Pending,
+
+                                Lines = items.Select(line => new RequisitionLineViewModel()
+                                {
+                                    Type = 2,
+                                    Code = line.ProductNo,
+                                    Description = !string.IsNullOrEmpty(line.Description) ? line.Description.Length >= 100 ? line.Description.Substring(0, 100) : line.Description : "",
+                                    Description2 = !string.IsNullOrEmpty(line.Description2) ? line.Description2.Length >= 50 ? line.Description2.Substring(0, 50) : line.Description2 : "",
+                                    UnitMeasureCode = line.UnitMeasureCode,
+                                    QtyByUnitOfMeasure = line.QuantitybyUnitMeasure,
+                                    QuantityToRequire = line.Quantity,
+                                    QuantidadeDisponivel = line.QuantidadeDisponivel,
+                                    QuantidadeReservada = line.QuantidadeReservada,
+                                    UnitCost = line.DirectUnitCost,
+                                    SupplierNo = line.SupplierNo,
+                                    SubSupplierNo = line.SubSupplierNo,
+                                    ExpectedReceivingDate = line.ExpectedReceptionDate,
+                                    SupplierProductCode = line.SupplierProductCode,
+                                    FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
+                                    CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
+                                    RegionCode = productivityUnit.CódigoRegião,
+                                    CreateUser = User.Identity.Name,
+                                    ProjectNo = Projeto,
+                                    LocalCode = productivityUnit.Armazém,
+                                    VATProductPostingGroup = !string.IsNullOrEmpty(line.GrupoRegistoIvaProduto) ? line.GrupoRegistoIvaProduto : AllProducts.FirstOrDefault(x => x.Code == line.ProductNo)?.VATProductPostingGroup,
+                                    VATBusinessPostingGroup = AllVendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup,
+                                    CriarNotaEncomenda = true,
+                                    CustoUnitarioSubFornecedor = line.DirectUnitCostSubSupplier,
+                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.LineNo
+                                }).ToList()
+                            }).ToList();
+                        }
+                        catch
+                        {
+                            throw new Exception("Ocorreu um erro ao agrupar as linhas.");
+                        }
+
+                        if (RequisicoesGroupInterface.Count() > 0)
+                        {
+                            RequisicoesGroupInterface.ForEach(RequisicaoGroupInterface =>
+                            {
+                                try
+                                {
+                                    if (RequisicaoGroupInterface.Interface == 0) //0 = Normal
+                                    {
+                                        RequisicaoGroupInterface.NoSubFornecedor = null;
+                                        RequisicaoGroupInterface.NoEncomendaFornecedor = null;
+                                        RequisicaoGroupInterface.DataEncomendaSubfornecedor = null;
+
+                                        try
+                                        {
+                                            RequisitionViewModel createdRequisition = CreateRequesition(RequisicaoGroupInterface);
+                                            if (createdRequisition.eReasonCode == 1)
+                                            {
+                                                bool deletedSuccessfully = DBShoppingNecessity.Delete(RequisicaoGroupInterface.Lines);
+                                                if (deletedSuccessfully)
+                                                {
+                                                    result.eReasonCode = 1;
+                                                    result.eMessage = result.eMessage + Environment.NewLine + createdRequisition.eMessage;
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Success, createdRequisition.eMessage));
+                                                }
+                                                else
+                                                {
+                                                    result.eReasonCode = 2;
+                                                    result.eMessage = result.eMessage + Environment.NewLine + "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente.";
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente."));
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            result.eReasonCode = 2;
+                                            result.eMessage = result.eMessage + Environment.NewLine + "Ocorreu um erro ao criar a requisição";
+                                            result.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                                        }
+                                    }
+
+                                    if (RequisicaoGroupInterface.Interface == 1) //1 = NeoValor
+                                    {
+                                        List<RequisitionViewModel> RequisicoesGroupSupplier = new List<RequisitionViewModel>();
+
+                                        try
+                                        {
+                                            RequisicoesGroupSupplier = RequisicaoGroupInterface.Lines.GroupBy(x => new
+                                            { x.SupplierNo, x.SubSupplierNo },
+                                            x => x,
+                                            (key, items) => new RequisitionViewModel
+                                            {
+                                                Interface = RequisicaoGroupInterface.Interface,
+                                                SupplierCode = key.SupplierNo,
+                                                NoSubFornecedor = key.SubSupplierNo,
+                                                TipoReq = (int)RequisitionTypes.Normal,
+                                                FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
+                                                CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
+                                                RegionCode = productivityUnit.CódigoRegião,
+                                                LocalCode = productivityUnit.Armazém,
+                                                UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva),
+                                                RequestNutrition = true,
+                                                RequisitionDate = DateTime.Now.ToString(),
+                                                ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty,
+                                                ProjectNo = Projeto,
+                                                CreateUser = User.Identity.Name,
+                                                CreateDate = DateTime.Now.ToString(),
+                                                State = RequisitionStates.Pending,
+
+                                                Lines = items.Select(line => new RequisitionLineViewModel()
+                                                {
+                                                    Type = 2,
+                                                    Code = line.Code,
+                                                    Description = !string.IsNullOrEmpty(line.Description) ? line.Description.Length >= 100 ? line.Description.Substring(0, 100) : line.Description : "",
+                                                    Description2 = !string.IsNullOrEmpty(line.Description2) ? line.Description2 : AllProducts.FirstOrDefault(x => x.Code == line.Code)?.Name2,
+                                                    UnitMeasureCode = line.UnitMeasureCode,
+                                                    QtyByUnitOfMeasure = line.QtyByUnitOfMeasure,
+                                                    QuantityToRequire = line.QuantityToRequire,
+                                                    QuantidadeDisponivel = line.QuantidadeDisponivel,
+                                                    QuantidadeReservada = line.QuantidadeReservada,
+                                                    UnitCost = line.UnitCost,
+                                                    SupplierNo = line.SupplierNo,
+                                                    SubSupplierNo = line.SubSupplierNo,
+                                                    ExpectedReceivingDate = line.ExpectedReceivingDate,
+                                                    SupplierProductCode = line.SupplierProductCode,
+                                                    FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
+                                                    CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
+                                                    RegionCode = productivityUnit.CódigoRegião,
+                                                    CreateUser = User.Identity.Name,
+                                                    ProjectNo = Projeto,
+                                                    LocalCode = productivityUnit.Armazém,
+                                                    VATProductPostingGroup = !string.IsNullOrEmpty(line.VATProductPostingGroup) ? line.VATProductPostingGroup : AllProducts.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup,
+                                                    VATBusinessPostingGroup = AllVendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup,
+                                                    CriarNotaEncomenda = true,
+                                                    CustoUnitarioSubFornecedor = line.CustoUnitarioSubFornecedor,
+                                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva
+                                                }).ToList()
+                                            }).ToList();
+                                        }
+                                        catch
+                                        {
+                                            throw new Exception("Ocorreu um erro ao agrupar as linhas.");
+                                        }
+
+                                        if (RequisicoesGroupSupplier.Count() > 0)
+                                        {
+                                            RequisicoesGroupSupplier.ForEach(RequisicaoGroupSupplier =>
+                                            {
+                                                try
+                                                {
+                                                    RequisitionViewModel createdRequisition = CreateRequesition(RequisicaoGroupSupplier);
+                                                    if (createdRequisition.eReasonCode == 1)
+                                                    {
+                                                        //bool deletedSuccessfully = true;
+                                                        bool deletedSuccessfully = DBShoppingNecessity.Delete(RequisicaoGroupSupplier.Lines);
+                                                        if (deletedSuccessfully)
+                                                        {
+                                                            result.eReasonCode = 1;
+                                                            result.eMessage = result.eMessage + Environment.NewLine + createdRequisition.eMessage;
+                                                            result.eMessages.Add(new TraceInformation(TraceType.Success, createdRequisition.eMessage));
+                                                        }
+                                                        else
+                                                        {
+                                                            result.eReasonCode = 2;
+                                                            result.eMessage = result.eMessage + Environment.NewLine + "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente.";
+                                                            result.eMessages.Add(new TraceInformation(TraceType.Error, "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente."));
+                                                        }
+                                                    }
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    result.eReasonCode = 2;
+                                                    result.eMessage = result.eMessage + Environment.NewLine + "Ocorreu um erro ao criar a requisição";
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                                                }
+                                            });
+                                        };
+                                    };
+                                }
+                                catch (Exception ex)
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = result.eMessage + Environment.NewLine + "Ocorreu um erro ao criar a requisição";
+                                    result.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                                };
+                            });
+                        }
+                        else
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "Ocorreu um erro ao agrupar as linhas.";
+                            result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro ao agrupar as linhas."));
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Não foi possivel obter a Unidade Produtiva.";
+                        result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi possivel obter a Unidade Produtiva."));
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não foi possivel identificar a Unidade Produtiva.";
+                    result.eMessages.Add(new TraceInformation(TraceType.Error, "Não foi possivel identificar a Unidade Produtiva."));
+                }
+            }
+            else
+            {
+                result.eReasonCode = 2;
+                result.eMessage = "Ocorreu um erro: A lista esta vazia";
+                result.eMessages.Add(new TraceInformation(TraceType.Error, "Ocorreu um erro: A lista esta vazia"));
+            }
+
+            return Json(result);
         }
 
         public RequisitionViewModel CreateRequesition(RequisitionViewModel requisition)

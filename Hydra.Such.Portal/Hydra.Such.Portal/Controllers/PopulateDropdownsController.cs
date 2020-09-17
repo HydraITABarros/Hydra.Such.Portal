@@ -2213,6 +2213,15 @@ namespace Hydra.Such.Portal.Controllers
                     }).Where(y => y.value.ToUpper() != "SUCH".ToUpper()).ToList();
                 }
 
+                if (tipoPropriedade == 3) //"Leasing"
+                {
+                    result = AllResults.Select(x => new DDMessage()
+                    {
+                        id = x.ID,
+                        value = x.Descricao
+                    }).Where(y => y.value.ToUpper() == "SUCH".ToUpper()).ToList();
+                }
+
                 if (tipoPropriedade == 4) //"N/A"
                 {
                     result = AllResults.Select(x => new DDMessage()
