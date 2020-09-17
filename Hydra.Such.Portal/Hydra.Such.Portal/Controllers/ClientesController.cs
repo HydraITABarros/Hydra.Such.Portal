@@ -570,9 +570,10 @@ namespace Hydra.Such.Portal.Controllers
                 dataCustomStyle.DataFormat = dataFormatCustom.GetFormat("dd/MM/yyyy");
                 int Col = 0;
 
-                if (dp["customerRegionName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região"); Col = Col + 1; }
                 if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Cliente"); Col = Col + 1; }
                 if (dp["customerName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente"); Col = Col + 1; }
+                if (dp["customerRegionName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região"); Col = Col + 1; }
+                if (dp["associado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Associado"); Col = Col + 1; }
                 if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor em Dívida"); Col = Col + 1; }
                 if (dp["dueValue"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Vencido"); Col = Col + 1; }
 
@@ -584,9 +585,10 @@ namespace Hydra.Such.Portal.Controllers
                         Col = 0;
                         row = excelSheet.CreateRow(count);
 
-                        if (dp["customerRegionName"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerRegionName); Col = Col + 1; }
                         if (dp["customerNo"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerNo); Col = Col + 1; }
                         if (dp["customerName"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerName); Col = Col + 1; }
+                        if (dp["customerRegionName"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.CustomerRegionName); Col = Col + 1; }
+                        if (dp["associado"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.String).SetCellValue(item.Associado); Col = Col + 1; }
                         if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.Numeric).SetCellValue(Convert.ToDouble(item.Value.ToString())); Col = Col + 1; }
                         if (dp["dueValue"]["hidden"].ToString() == "False") { row.CreateCell(Col, CellType.Numeric).SetCellValue(Convert.ToDouble(item.DueValue.ToString())); Col = Col + 1; }
 

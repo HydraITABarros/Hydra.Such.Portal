@@ -10,6 +10,7 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public string CustomerRegionName { get; set; }
         public string CustomerNo { get; set; }
         public string CustomerName { get; set; }
+        public string Associado { get; set; }
         public decimal? Value { get; set; }
         public decimal? DueValue { get; set; }
 

@@ -199,9 +199,13 @@ namespace Hydra.Such.Data
             ContabilidadeMapasClientes = 75,
             [Description("Clientes - Controlo Conciliação de Saldos")]
             ClientesCCS = 76,
+            #region zpgm.SGPPF
+            [Description("Academia - Pedido Formação")]
+            AcademiaPedidoFormacao = 77,
+            #endregion
 
 
-            
+
 
 
 
@@ -225,8 +229,8 @@ namespace Hydra.Such.Data
             AdminExistencias = 108,
             [Description("Administração Receção Faturação")]
             AdminReceçãoFaturação = 109,
-            [Description("Taxa Resíduos")]
-            AdminTaxaResiduos = 110,
+            [Description("Administração Ambiente")]
+            AdminAmbiente = 110,
             [Description("Administração Acordos de Preços")]
             AdminAcordosPrecos = 111,
             [Description("Encomendas")]
@@ -239,11 +243,11 @@ namespace Hydra.Such.Data
             AdminConfigLinhasEncFornecedor = 115,
             [Description("Administração Contactos")]
             AdminContactos = 116,
+            [Description("Administração Aprovisionamento")]
+            AdminAprovisionamento = 117,
+            [Description("Administração GestControl")]
+            AdminGestControl = 118,
 
-            #region zpgm.SGPPF
-            [Description("Academia - Pedido Formação")]
-            AcademiaPedidoFormacao = 117
-            #endregion            
         }
 
         #region zpgm.SGPPF

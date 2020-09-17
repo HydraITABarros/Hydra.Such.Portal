@@ -156,16 +156,6 @@
         </div>
 
         <vaadin-grid column-reordering-allowed aria-label="CustomersGrid" id="grid" items="[[result]]" class="grid hide" active-item="{{activeItem}}">
-            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.customerRegionName.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="customerRegionName">Região</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="customerRegionName" value="[[filter.customerRegionName]]" />
-                </template>
-                <template>
-                    {{item.customerRegionName}}
-                </template>
-            </vaadin-grid-column>
-
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.customerNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="customerNo">Nº Cliente</vaadin-grid-sorter>
@@ -183,6 +173,26 @@
                 </template>
                 <template>
                     {{item.customerName}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.customerRegionName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="customerRegionName">Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="customerRegionName" value="[[filter.customerRegionName]]" />
+                </template>
+                <template>
+                    {{item.customerRegionName}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.associado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="associado">Associado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="associado" value="[[filter.associado]]" />
+                </template>
+                <template>
+                    {{item.associado}}
                 </template>
             </vaadin-grid-column>
 
@@ -330,9 +340,10 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
-                        "customerRegionName": { hidden: false, label: "Região" },
                         "customerNo": { hidden: false, label: "Nº Cliente" },
                         "customerName": { hidden: false, label: "Cliente" },
+                        "customerRegionName": { hidden: false, label: "Região" },
+                        "associado": { hidden: false, label: "Associado" },
                         "value": { hidden: false, label: "Valor em Dívida" },
                         "dueValue": { hidden: false, label: "Valor Vencido" },
                     };
