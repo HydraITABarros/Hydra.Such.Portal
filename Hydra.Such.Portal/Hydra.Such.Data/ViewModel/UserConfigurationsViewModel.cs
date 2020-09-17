@@ -45,6 +45,10 @@ namespace Hydra.Such.Data.ViewModel
         public bool? CMHistoricoToActivo { get; set; }
         public bool? ArquivarREQPendentes { get; set; }
 
+        #region SGPPF
+        public int? TipoUtilizadorFormacao { get; set; }
+        #endregion
+
         public List<UserAccessesViewModel> UserAccesses { get; set; }
         public List<ProfileModelsViewModel> UserProfiles { get; set; }
         public List<UserDimensionsViewModel> AllowedUserDimensions { get; set; }

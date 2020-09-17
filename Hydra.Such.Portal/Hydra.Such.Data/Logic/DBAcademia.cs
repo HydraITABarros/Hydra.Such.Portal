@@ -180,6 +180,43 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(string userName, bool onlyActives)
+        {
+            if (string.IsNullOrEmpty(userName))
+                return null;
+
+            try
+            {
+                if (onlyActives)
+                {
+                    // são considerados activos todos os pedidos que não estejam finalizados ou cancelados
+                    return __GetAllPedidosFormacao().Where(p => p.UtilizadorCriacao == userName && p.Estado < (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                }
+                else
+                {
+                    // todos os pedidos do utilizador independentemente do estado
+                    return __GetAllPedidosFormacao().Where(p => p.UtilizadorCriacao == userName).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacaoByUserType(string userName, Enumerations.TipoUtilizadorFluxoPedidoFormacao userType)
+        {
+            try
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static PedidoParticipacaoFormacao __GetDetalhesPedidoFormacao(string pedidoId)
         {
             try
