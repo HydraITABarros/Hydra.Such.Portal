@@ -202,11 +202,8 @@ namespace Hydra.Such.Data
             #region zpgm.SGPPF
             [Description("Academia - Pedido Formação")]
             AcademiaPedidoFormacao = 77,
-            #endregion
-
-            #region zpgm.SGPPF
             [Description("Academia - Formação")]
-            AcademiaFormacao = 77,
+            AcademiaFormacao = 78,
             #endregion
 
 
@@ -253,8 +250,8 @@ namespace Hydra.Such.Data
             AdminGestControl = 118,
 
             #region zpgm.SGPPF
-            [Description("Academia - Pedido Formação")]
-            AcademiaPedidoFormacao = 117
+            //[Description("Academia - Pedido Formação")]
+            //AcademiaPedidoFormacao = 117
             #endregion            
         }
 
