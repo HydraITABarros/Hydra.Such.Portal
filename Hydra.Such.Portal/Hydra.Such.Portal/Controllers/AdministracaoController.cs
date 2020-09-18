@@ -3242,165 +3242,172 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public JsonResult UpdateCreate_AcordoPrecos([FromBody] List<LinhasAcordoPrecos> data)
         {
-            List<LinhasAcordoPrecos> results = DBLinhasAcordoPrecos.GetAllByNoProcedimento(data[0].NoProcedimento);
-
-            data.RemoveAll(x => results.Any(
-                u =>
-                    u.NoProcedimento == x.NoProcedimento &&
-                    u.NoFornecedor == x.NoFornecedor &&
-                    u.NoSubFornecedor == x.NoSubFornecedor &&
-                    u.CodProduto == x.CodProduto &&
-                    u.DtValidadeInicio == x.DtValidadeInicio &&
-                    u.DtValidadeFim == x.DtValidadeFim &&
-                    u.Regiao == x.Regiao &&
-                    u.Area == x.Area &&
-                    u.Cresp == x.Cresp &&
-                    u.Localizacao == x.Localizacao &&
-                    u.CustoUnitario == x.CustoUnitario &&
-                    u.CustoUnitarioSubFornecedor == x.CustoUnitarioSubFornecedor &&
-                    u.Um == x.Um &&
-                    u.QtdPorUm == x.QtdPorUm &&
-                    u.PesoUnitario == x.PesoUnitario &&
-                    u.CodProdutoFornecedor == x.CodProdutoFornecedor &&
-                    u.DescricaoProdFornecedor == x.DescricaoProdFornecedor &&
-                    u.FormaEntrega == x.FormaEntrega &&
-                    u.TipoPreco == x.TipoPreco &&
-                    u.GrupoRegistoIvaProduto == x.GrupoRegistoIvaProduto
-            ));
-
-            List<LinhasAcordoPrecos> AllSearch = DBLinhasAcordoPrecos.GetAll().ToList();
-            List<NAVVendorViewModel> AllVendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
-            List<NAVProductsViewModel> AllProduct = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            List<ConfiguracaoParametros> AllInterfaceCompras = DBConfiguracaoParametros.GetListByParametro("InterfaceCompras");
-
-            data.ForEach(x =>
+            try
             {
-                if (!string.IsNullOrEmpty(x.NoProcedimento) && !string.IsNullOrWhiteSpace(x.NoFornecedor) && !string.IsNullOrWhiteSpace(x.CodProduto) && x.DtValidadeInicio != null && !string.IsNullOrWhiteSpace(x.Cresp) && !string.IsNullOrWhiteSpace(x.Localizacao))
+                List<LinhasAcordoPrecos> results = DBLinhasAcordoPrecos.GetAllByNoProcedimento(data[0].NoProcedimento);
+
+                data.RemoveAll(x => results.Any(
+                    u =>
+                        u.NoProcedimento == x.NoProcedimento &&
+                        u.NoFornecedor == x.NoFornecedor &&
+                        u.NoSubFornecedor == x.NoSubFornecedor &&
+                        u.CodProduto == x.CodProduto &&
+                        u.DtValidadeInicio == x.DtValidadeInicio &&
+                        u.DtValidadeFim == x.DtValidadeFim &&
+                        u.Regiao == x.Regiao &&
+                        u.Area == x.Area &&
+                        u.Cresp == x.Cresp &&
+                        u.Localizacao == x.Localizacao &&
+                        u.CustoUnitario == x.CustoUnitario &&
+                        u.CustoUnitarioSubFornecedor == x.CustoUnitarioSubFornecedor &&
+                        u.Um == x.Um &&
+                        u.QtdPorUm == x.QtdPorUm &&
+                        u.PesoUnitario == x.PesoUnitario &&
+                        u.CodProdutoFornecedor == x.CodProdutoFornecedor &&
+                        u.DescricaoProdFornecedor == x.DescricaoProdFornecedor &&
+                        u.FormaEntrega == x.FormaEntrega &&
+                        u.TipoPreco == x.TipoPreco &&
+                        u.GrupoRegistoIvaProduto == x.GrupoRegistoIvaProduto
+                ));
+
+                List<LinhasAcordoPrecos> AllSearch = DBLinhasAcordoPrecos.GetAll().ToList();
+                List<NAVVendorViewModel> AllVendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+                List<NAVProductsViewModel> AllProduct = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+                List<ConfiguracaoParametros> AllInterfaceCompras = DBConfiguracaoParametros.GetListByParametro("InterfaceCompras");
+
+                data.ForEach(x =>
                 {
-                    LinhasAcordoPrecos toCreate = new LinhasAcordoPrecos();
-                    LinhasAcordoPrecos toUpdate = new LinhasAcordoPrecos();
-                    LinhasAcordoPrecos toSearch = new LinhasAcordoPrecos();
-
-                    toSearch = AllSearch.Where(y => y.NoProcedimento == x.NoProcedimento && y.NoFornecedor == x.NoFornecedor && y.CodProduto == x.CodProduto && y.DtValidadeInicio == x.DtValidadeInicio && y.Cresp == x.Cresp && y.Localizacao == x.Localizacao).FirstOrDefault();
-                    NAVVendorViewModel Vendor = AllVendor.Where(y => y.No_ == x.NoFornecedor).FirstOrDefault();
-                    NAVVendorViewModel SubVendor = AllVendor.Where(y => y.No_ == x.NoSubFornecedor).FirstOrDefault();
-                    NAVProductsViewModel Product = AllProduct.Where(y => y.Code == x.CodProduto).FirstOrDefault();
-
-                    x.Interface = 0;
-                    ConfiguracaoParametros InterfaceCompras = AllInterfaceCompras.Where(y => y.Valor == x.NoFornecedor).FirstOrDefault();
-                    if (InterfaceCompras != null && InterfaceCompras.Ordem.HasValue)
-                        x.Interface = (int)InterfaceCompras.Ordem;
-
-                    if (toSearch == null)
+                    if (!string.IsNullOrEmpty(x.NoProcedimento) && !string.IsNullOrWhiteSpace(x.NoFornecedor) && !string.IsNullOrWhiteSpace(x.CodProduto) && x.DtValidadeInicio != null && !string.IsNullOrWhiteSpace(x.Cresp) && !string.IsNullOrWhiteSpace(x.Localizacao))
                     {
-                        if (Vendor != null && Product != null)
+                        LinhasAcordoPrecos toCreate = new LinhasAcordoPrecos();
+                        LinhasAcordoPrecos toUpdate = new LinhasAcordoPrecos();
+                        LinhasAcordoPrecos toSearch = new LinhasAcordoPrecos();
+
+                        toSearch = AllSearch.Where(y => y.NoProcedimento == x.NoProcedimento && y.NoFornecedor == x.NoFornecedor && y.CodProduto == x.CodProduto && y.DtValidadeInicio == x.DtValidadeInicio && y.Cresp == x.Cresp && y.Localizacao == x.Localizacao).FirstOrDefault();
+                        NAVVendorViewModel Vendor = AllVendor.Where(y => y.No_ == x.NoFornecedor).FirstOrDefault();
+                        NAVVendorViewModel SubVendor = AllVendor.Where(y => y.No_ == x.NoSubFornecedor).FirstOrDefault();
+                        NAVProductsViewModel Product = AllProduct.Where(y => y.Code == x.CodProduto).FirstOrDefault();
+
+                        x.Interface = 0;
+                        ConfiguracaoParametros InterfaceCompras = AllInterfaceCompras.Where(y => y.Valor == x.NoFornecedor).FirstOrDefault();
+                        if (InterfaceCompras != null && InterfaceCompras.Ordem.HasValue)
+                            x.Interface = (int)InterfaceCompras.Ordem;
+
+                        if (toSearch == null)
                         {
-                            toCreate.NoProcedimento = x.NoProcedimento;
-                            toCreate.NoFornecedor = x.NoFornecedor;
-                            if (string.IsNullOrEmpty(x.NomeFornecedor))
-                                toCreate.NomeFornecedor = Vendor.Name;
-                            else
-                                toCreate.NomeFornecedor = x.NomeFornecedor;
-                            toCreate.NoSubFornecedor = x.NoSubFornecedor;
-                            if (string.IsNullOrEmpty(x.NomeSubFornecedor))
-                                toCreate.NomeSubFornecedor = SubVendor != null ? SubVendor.Name : "";
-                            else
-                                toCreate.NomeSubFornecedor = x.NomeSubFornecedor;
-                            toCreate.CodProduto = x.CodProduto;
-                            if (string.IsNullOrEmpty(x.DescricaoProduto))
-                                toCreate.DescricaoProduto = Product.Name;
-                            else
-                                toCreate.DescricaoProduto = x.DescricaoProduto;
-                            toCreate.DtValidadeInicio = x.DtValidadeInicio;
-                            toCreate.DtValidadeFim = x.DtValidadeFim;
-                            toCreate.Regiao = x.Regiao;
-                            toCreate.Area = x.Area;
-                            toCreate.Cresp = x.Cresp;
-                            toCreate.Localizacao = x.Localizacao;
-                            if (x.CustoUnitario == null)
-                                toCreate.CustoUnitario = Product.UnitCost;
-                            else
-                                toCreate.CustoUnitario = x.CustoUnitario;
-                            toCreate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
-                            if (string.IsNullOrEmpty(x.Um))
-                                toCreate.Um = Product.MeasureUnit;
-                            else
-                                toCreate.Um = x.Um;
-                            toCreate.QtdPorUm = x.QtdPorUm;
-                            toCreate.PesoUnitario = x.PesoUnitario;
-                            toCreate.CodProdutoFornecedor = x.CodProdutoFornecedor;
-                            toCreate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
-                            toCreate.FormaEntrega = x.FormaEntrega;
-                            toCreate.TipoPreco = x.TipoPreco;
-                            toCreate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
-                            if (string.IsNullOrEmpty(x.CodCategoriaProduto))
-                                toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
-                            else
-                                toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
-                            toCreate.Interface = x.Interface;
+                            if (Vendor != null && Product != null)
+                            {
+                                toCreate.NoProcedimento = x.NoProcedimento;
+                                toCreate.NoFornecedor = x.NoFornecedor;
+                                if (string.IsNullOrEmpty(x.NomeFornecedor))
+                                    toCreate.NomeFornecedor = Vendor.Name;
+                                else
+                                    toCreate.NomeFornecedor = x.NomeFornecedor;
+                                toCreate.NoSubFornecedor = x.NoSubFornecedor;
+                                if (string.IsNullOrEmpty(x.NomeSubFornecedor))
+                                    toCreate.NomeSubFornecedor = SubVendor != null ? SubVendor.Name : "";
+                                else
+                                    toCreate.NomeSubFornecedor = x.NomeSubFornecedor;
+                                toCreate.CodProduto = x.CodProduto;
+                                if (string.IsNullOrEmpty(x.DescricaoProduto))
+                                    toCreate.DescricaoProduto = Product.Name;
+                                else
+                                    toCreate.DescricaoProduto = x.DescricaoProduto;
+                                toCreate.DtValidadeInicio = x.DtValidadeInicio;
+                                toCreate.DtValidadeFim = x.DtValidadeFim;
+                                toCreate.Regiao = x.Regiao;
+                                toCreate.Area = x.Area;
+                                toCreate.Cresp = x.Cresp;
+                                toCreate.Localizacao = x.Localizacao;
+                                if (x.CustoUnitario == null)
+                                    toCreate.CustoUnitario = Product.UnitCost;
+                                else
+                                    toCreate.CustoUnitario = x.CustoUnitario;
+                                toCreate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
+                                if (string.IsNullOrEmpty(x.Um))
+                                    toCreate.Um = Product.MeasureUnit;
+                                else
+                                    toCreate.Um = x.Um;
+                                toCreate.QtdPorUm = x.QtdPorUm;
+                                toCreate.PesoUnitario = x.PesoUnitario;
+                                toCreate.CodProdutoFornecedor = x.CodProdutoFornecedor;
+                                toCreate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
+                                toCreate.FormaEntrega = x.FormaEntrega;
+                                toCreate.TipoPreco = x.TipoPreco;
+                                toCreate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
+                                if (string.IsNullOrEmpty(x.CodCategoriaProduto))
+                                    toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
+                                else
+                                    toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
+                                toCreate.Interface = x.Interface;
 
-                            toCreate.UserId = User.Identity.Name;
-                            toCreate.DataCriacao = DateTime.Now;
+                                toCreate.UserId = User.Identity.Name;
+                                toCreate.DataCriacao = DateTime.Now;
 
-                            DBLinhasAcordoPrecos.Create(toCreate);
+                                DBLinhasAcordoPrecos.Create(toCreate);
+                            }
+                        }
+                        else
+                        {
+                            if (Vendor != null && Product != null)
+                            {
+                                toUpdate.NoProcedimento = x.NoProcedimento;
+                                toUpdate.NoFornecedor = x.NoFornecedor;
+                                if (string.IsNullOrEmpty(x.NomeFornecedor))
+                                    toUpdate.NomeFornecedor = Vendor.Name;
+                                else
+                                    toUpdate.NomeFornecedor = x.NomeFornecedor;
+                                toUpdate.NoSubFornecedor = x.NoSubFornecedor;
+                                if (string.IsNullOrEmpty(x.NomeSubFornecedor))
+                                    toUpdate.NomeSubFornecedor = SubVendor != null ? SubVendor.Name : "";
+                                else
+                                    toUpdate.NomeSubFornecedor = x.NomeSubFornecedor;
+                                toUpdate.CodProduto = x.CodProduto;
+                                if (string.IsNullOrEmpty(x.DescricaoProduto))
+                                    toUpdate.DescricaoProduto = Product.Name;
+                                else
+                                    toUpdate.DescricaoProduto = x.DescricaoProduto;
+                                toUpdate.DtValidadeInicio = x.DtValidadeInicio;
+                                toUpdate.DtValidadeFim = x.DtValidadeFim;
+                                toUpdate.Regiao = x.Regiao;
+                                toUpdate.Area = x.Area;
+                                toUpdate.Cresp = x.Cresp;
+                                toUpdate.Localizacao = x.Localizacao;
+                                if (x.CustoUnitario == null)
+                                    toUpdate.CustoUnitario = Product.UnitCost;
+                                else
+                                    toUpdate.CustoUnitario = x.CustoUnitario;
+                                toUpdate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
+                                if (string.IsNullOrEmpty(x.Um))
+                                    toUpdate.Um = Product.MeasureUnit;
+                                else
+                                    toUpdate.Um = x.Um;
+                                toUpdate.QtdPorUm = x.QtdPorUm;
+                                toUpdate.PesoUnitario = x.PesoUnitario;
+                                toUpdate.CodProdutoFornecedor = x.CodProdutoFornecedor;
+                                toUpdate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
+                                toUpdate.FormaEntrega = x.FormaEntrega;
+                                toUpdate.TipoPreco = x.TipoPreco;
+                                toUpdate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
+                                if (Product != null)
+                                    toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
+                                else
+                                    toUpdate.CodCategoriaProduto = null;
+                                toUpdate.Interface = x.Interface;
+
+                                toUpdate.UserId = x.UserId;
+                                toUpdate.DataCriacao = x.DataCriacao;
+
+                                DBLinhasAcordoPrecos.Update(toUpdate);
+                            }
                         }
                     }
-                    else
-                    {
-                        if (Vendor != null && Product != null)
-                        {
-                            toUpdate.NoProcedimento = x.NoProcedimento;
-                            toUpdate.NoFornecedor = x.NoFornecedor;
-                            if (string.IsNullOrEmpty(x.NomeFornecedor))
-                                toUpdate.NomeFornecedor = Vendor.Name;
-                            else
-                                toUpdate.NomeFornecedor = x.NomeFornecedor;
-                            toUpdate.NoSubFornecedor = x.NoSubFornecedor;
-                            if (string.IsNullOrEmpty(x.NomeSubFornecedor))
-                                toUpdate.NomeSubFornecedor = SubVendor != null ? SubVendor.Name : "";
-                            else
-                                toUpdate.NomeSubFornecedor = x.NomeSubFornecedor;
-                            toUpdate.CodProduto = x.CodProduto;
-                            if (string.IsNullOrEmpty(x.DescricaoProduto))
-                                toUpdate.DescricaoProduto = Product.Name;
-                            else
-                                toUpdate.DescricaoProduto = x.DescricaoProduto;
-                            toUpdate.DtValidadeInicio = x.DtValidadeInicio;
-                            toUpdate.DtValidadeFim = x.DtValidadeFim;
-                            toUpdate.Regiao = x.Regiao;
-                            toUpdate.Area = x.Area;
-                            toUpdate.Cresp = x.Cresp;
-                            toUpdate.Localizacao = x.Localizacao;
-                            if (x.CustoUnitario == null)
-                                toUpdate.CustoUnitario = Product.UnitCost;
-                            else
-                                toUpdate.CustoUnitario = x.CustoUnitario;
-                            toUpdate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
-                            if (string.IsNullOrEmpty(x.Um))
-                                toUpdate.Um = Product.MeasureUnit;
-                            else
-                                toUpdate.Um = x.Um;
-                            toUpdate.QtdPorUm = x.QtdPorUm;
-                            toUpdate.PesoUnitario = x.PesoUnitario;
-                            toUpdate.CodProdutoFornecedor = x.CodProdutoFornecedor;
-                            toUpdate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
-                            toUpdate.FormaEntrega = x.FormaEntrega;
-                            toUpdate.TipoPreco = x.TipoPreco;
-                            toUpdate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
-                            if (Product != null)
-                                toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
-                            else
-                                toUpdate.CodCategoriaProduto = null;
-                            toUpdate.Interface = x.Interface;
-
-                            toUpdate.UserId = x.UserId;
-                            toUpdate.DataCriacao = x.DataCriacao;
-
-                            DBLinhasAcordoPrecos.Update(toUpdate);
-                        }
-                    }
-                }
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
             return Json(data);
         }
 

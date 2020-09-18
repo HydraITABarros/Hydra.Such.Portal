@@ -757,6 +757,9 @@
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
                 ],
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
+                    this.selectedItems = [];
+                    this.selectedItemsCG = [];
+
                     if (!this.Flag) {
                         this.$.ajax_getgrid.generateRequest();
 
@@ -896,7 +899,7 @@
                 },
 
                 _createPurchaseOrderResponse: function (e) {
-                    this.selectedItems = null;
+                    this.selectedItems = [];
 
                     if (this.Requisition.eReasonCode == "1") {
                         this._showMessage(this.Requisition.eMessage);
@@ -1100,7 +1103,7 @@
                     }
                 },
                 _createPurchaseOrderCGResponse: function (e) {
-                    this.selectedItemsCG = null;
+                    this.selectedItemsCG = [];
 
                     if (this.RequisitionCG.eReasonCode == "1") {
                         this._showMessage(this.RequisitionCG.eMessage);
@@ -1157,7 +1160,7 @@
                         this._showErrorMessage("Ocorreu um erro ao Enviar a(s) Ordem(s) de Compra.");
                     }
 
-                    this.selectedItemsCG = null;
+                    this.selectedItemsCG = [];
                     $(this.$.btnCGExportLinhasNutricao).removeClass('disabled');
                 },
 
@@ -1172,7 +1175,7 @@
                         this._showErrorMessage("Ocorreu um erro ao atualizar as linhas.");
                     }
 
-                    this.selectedItemsCG = null;
+                    this.selectedItemsCG = [];
                     $(this.$.btnCGExportLinhasNutricao).removeClass('disabled');
                 },
             });

@@ -1332,7 +1332,7 @@ namespace Hydra.Such.Portal.Controllers
 
             //Remove todas as requisições em que o campo Requisição Nutrição seja != de true
             result.RemoveAll(x => x.RequestNutrition != true);
-            result.RemoveAll(x => !string.IsNullOrEmpty(x.OrderNo));
+            result.RemoveAll(x => string.IsNullOrEmpty(x.OrderNo));
 
             //Apply User Dimensions Validations
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
@@ -4322,7 +4322,7 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1;
                         row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1;
                         row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
+                        //row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
                         row.CreateCell(Col).SetCellValue("Custo Unitário SubFornecedor"); Col = Col + 1;
                         row.CreateCell(Col).SetCellValue("Qt. Requerida"); Col = Col + 1;
                         row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
@@ -4341,7 +4341,7 @@ namespace Hydra.Such.Portal.Controllers
                             row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1;
                             row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1;
                             row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1;
-                            row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
+                            //row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
                             row.CreateCell(Col).SetCellValue(item.CustoUnitarioSubFornecedor.ToString()); Col = Col + 1;
                             row.CreateCell(Col).SetCellValue(item.QuantityRequired.ToString()); Col = Col + 1;
                             row.CreateCell(Col).SetCellValue(Supplier != null && !string.IsNullOrEmpty(Supplier.Name) ? Supplier.Name : ""); Col = Col + 1;
@@ -4366,6 +4366,7 @@ namespace Hydra.Such.Portal.Controllers
                         Email.From = User.Identity.Name;
                         Email.To.Add(EmailTo.Valor);
                         Email.BCC.Add(EmailCC.Valor);
+                        Email.BCC.Add("MMarcelo@such.pt");
                         Email.Subject = "SUCH - Serviço de Utilização Comum dos Hospitais - Ordem de Compra " + REQ.RequisitionNo;
                         Email.Body = MakeEmailBodyContent("Agradecemos o fornecimento da Ordem de Compra que enviamos em anexo.", "");
                         Email.Anexo = FullFileName;
