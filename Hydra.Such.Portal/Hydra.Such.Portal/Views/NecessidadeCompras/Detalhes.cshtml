@@ -1093,7 +1093,7 @@
                         var linhaAcordo = this.$.cmbProducts.activeItem;
 
                         if (linhaAcordo != null) {
-                            this.$.supplierProdDescription2Id.value = linhaAcordo.descricaoProduto;
+                            this.$.supplierProdDescription2Id.value = linhaAcordo.descricao2Produto;// linhaAcordo.descricaoProduto;
                             this.$.supplierNoId.value = linhaAcordo.noFornecedor;
                             this.$.SupplierNameId.value = linhaAcordo.nomeFornecedor;
                             this.$.subsupplierNoId.value = linhaAcordo.noSubFornecedor;
@@ -1734,23 +1734,27 @@
                 _requesitionResponse: function (e) {
                     //debugger;;
                     if (e.detail.status === 200) {
-                        this.$.ToastMessageMultiple.toggle();
-                        this.datarequesition.eMessages = [];
+                    //    this.$.ToastMessageMultiple.toggle();
+                    //    this.datarequesition.eMessages = [];
 
-                        this.$.ajax_getgrid.generateRequest();
-                    }
-
-                    //    if (this.datarequesition.eReasonCode === 1) {
-                    //        this._openToast(this.datarequesition.eMessage);
-                    //    }
-                    //    else {
-                    //        this._openToastError(this.datarequesition.eMessage);
-                    //    }
                     //    this.$.ajax_getgrid.generateRequest();
-
-                    //} else {
-                    //    this._openToastError("Occorreu um erro na geração de requisições.");
                     //}
+
+                        if (this.datarequesition.eReasonCode === 1) {
+                            this._openToast(this.datarequesition.eMessage);
+                        }
+                        else {
+                            if (this.datarequesition.eReasonCode === 55) {
+                                this._toggleToastMultiple();
+                            }
+                            else {
+                                this._openToastError(this.datarequesition.eMessage);
+                            }
+                        }
+                        this.$.ajax_getgrid.generateRequest();
+                    } else {
+                        this._openToastError("Occorreu um erro na geração de requisições.");
+                    }
                 },
 
                 _goBack: function (e) {

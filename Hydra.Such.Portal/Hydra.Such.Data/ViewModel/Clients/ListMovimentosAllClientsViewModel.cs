@@ -18,6 +18,7 @@ namespace Hydra.Such.Data.ViewModel.Clients
         public string DueDateTexto { get; set; }
         public string DocumentType { get; set; }
         public string DocumentNo { get; set; }
+        public string DocumentNoExterno { get; set; }
         public string DimensionValue { get; set; }
         public Decimal? Value { get; set; }
         public string FactoringSemRecurso { get; set; }

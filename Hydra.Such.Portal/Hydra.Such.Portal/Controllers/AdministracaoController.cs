@@ -4797,7 +4797,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Config Comprador
         public IActionResult ConfigComprador(string id)
         {
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminAprovisionamento);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -4958,7 +4958,7 @@ namespace Hydra.Such.Portal.Controllers
         public IActionResult ConfigEmailFornecedores(string id)
         {
             //UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGeral);
-            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.LinhasAcordosPrecos);
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminAprovisionamento);
             if (UPerm != null && UPerm.Read.Value)
             {
                 ViewBag.CreatePermissions = !UPerm.Create.Value;
@@ -7819,7 +7819,7 @@ namespace Hydra.Such.Portal.Controllers
         #region Taxa Residuos
         public IActionResult TaxaResiduos()
         {
-            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminTaxaResiduos);
+            UserAccessesViewModel userAccesses = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminAmbiente);
             if (userAccesses != null && userAccesses.Read.Value)
             {
                 ViewBag.UserPermissions = userAccesses;

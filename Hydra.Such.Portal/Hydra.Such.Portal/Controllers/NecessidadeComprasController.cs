@@ -759,7 +759,7 @@ namespace Hydra.Such.Portal.Controllers
             //            }
             //            catch (Exception ex)
             //            {
-            //                result.eReasonCode = 2;
+            //                result.eReasonCode = 55;
             //                result.eMessage = "Ocorreu um erro ao criar a requisição";
             //                result.eMessages.Add(new TraceInformation(TraceType.Exception, ex.Message));
             //            }
@@ -867,7 +867,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Type = 2,
                                     Code = line.ProductNo,
                                     Description = !string.IsNullOrEmpty(line.Description) ? line.Description.Length >= 100 ? line.Description.Substring(0, 100) : line.Description : "",
-                                    Description2 = !string.IsNullOrEmpty(line.Description2) ? line.Description2 : AllProducts.FirstOrDefault(x => x.Code == line.ProductNo)?.Name2,
+                                    Description2 = !string.IsNullOrEmpty(line.Description2) ? line.Description2.Length >= 50 ? line.Description2.Substring(0, 50) : line.Description2 : "",
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QtyByUnitOfMeasure = line.QuantitybyUnitMeasure,
                                     QuantityToRequire = line.Quantity,

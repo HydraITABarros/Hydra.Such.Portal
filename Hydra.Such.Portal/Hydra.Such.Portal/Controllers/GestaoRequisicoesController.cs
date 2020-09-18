@@ -4288,71 +4288,164 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<JsonResult> ExportToExcelCG_LinhasNutricao([FromBody] List<RequisitionViewModel> Lista)
         {
-            string sWebRootFolder = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\";
-            string user = User.Identity.Name;
-            user = user.Replace("@", "_");
-            user = user.Replace(".", "_");
-            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
-            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
-            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
-            var memory = new MemoryStream();
-
-            List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, "");
-            NAVSupplierViewModels Supplier = new NAVSupplierViewModels();
-            NAVSupplierViewModels SubSupplier = new NAVSupplierViewModels();
-
-            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            ErrorHandler result = new ErrorHandler();
+            try
             {
-                IWorkbook workbook;
-                workbook = new XSSFWorkbook();
-                ISheet excelSheet = workbook.CreateSheet("Requisição Nutrição");
-                IRow row = excelSheet.CreateRow(0);
-                int Col = 0;
+                string sWebRootFolder = _config.FileUploadFolder + "Requisicoes\\" + "tmp\\";
+                List<NAVSupplierViewModels> AllSuppliers = DBNAV2017Supplier.GetAll(config.NAVDatabaseName, config.NAVCompanyName, "");
+                NAVSupplierViewModels Supplier = new NAVSupplierViewModels();
+                NAVSupplierViewModels SubSupplier = new NAVSupplierViewModels();
+                ConfiguracaoParametros EmailTo = DBConfiguracaoParametros.GetByParametro("InterfaceComprasEmailTo");
+                ConfiguracaoParametros EmailCC = DBConfiguracaoParametros.GetByParametro("InterfaceComprasEmailCC");
+                if (string.IsNullOrEmpty(EmailCC.Valor))
+                    EmailCC.Valor = User.Identity.Name;
 
-                row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("Custo Unitário SubFornecedor"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("Qt. Requerida"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
-                row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1;
-
-                int count = 1;
                 foreach (RequisitionViewModel REQ in Lista)
                 {
-                    foreach (RequisitionLineViewModel item in REQ.Lines)
+                    string FullFileName = Path.Combine(sWebRootFolder, REQ.RequisitionNo + ".xlsx");
+                    FileInfo file = new FileInfo(FullFileName);
+                    var memory = new MemoryStream();
+
+                    if (System.IO.File.Exists(FullFileName))
+                        System.IO.File.Delete(FullFileName);
+
+                    using (var fs = new FileStream(FullFileName, FileMode.Create, FileAccess.Write))
                     {
-                        Col = 0;
-                        Supplier = AllSuppliers.Where(y => y.No_ == item.SupplierNo).FirstOrDefault();
-                        SubSupplier = AllSuppliers.Where(y => y.No_ == item.SubSupplierNo).FirstOrDefault();
-                        row = excelSheet.CreateRow(count);
+                        IWorkbook workbook;
+                        workbook = new XSSFWorkbook();
+                        ISheet excelSheet = workbook.CreateSheet(REQ.RequisitionNo);
+                        IRow row = excelSheet.CreateRow(0);
+                        int Col = 0;
 
-                        row.CreateCell(Col).SetCellValue(item.RequestNo); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(item.CustoUnitarioSubFornecedor.ToString()); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(item.QuantityRequired.ToString()); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(Supplier != null && !string.IsNullOrEmpty(Supplier.Name) ? Supplier.Name : ""); Col = Col + 1;
-                        row.CreateCell(Col).SetCellValue(SubSupplier != null && !string.IsNullOrEmpty(SubSupplier.Name) ? SubSupplier.Name : ""); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Custo Unitário SubFornecedor"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Qt. Requerida"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
+                        row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1;
 
-                        count++;
+                        int count = 1;
+                        foreach (RequisitionLineViewModel item in REQ.Lines)
+                        {
+                            Col = 0;
+                            Supplier = AllSuppliers.Where(y => y.No_ == item.SupplierNo).FirstOrDefault();
+                            SubSupplier = AllSuppliers.Where(y => y.No_ == item.SubSupplierNo).FirstOrDefault();
+                            row = excelSheet.CreateRow(count);
+
+                            row.CreateCell(Col).SetCellValue(item.RequestNo); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(item.CustoUnitarioSubFornecedor.ToString()); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(item.QuantityRequired.ToString()); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(Supplier != null && !string.IsNullOrEmpty(Supplier.Name) ? Supplier.Name : ""); Col = Col + 1;
+                            row.CreateCell(Col).SetCellValue(SubSupplier != null && !string.IsNullOrEmpty(SubSupplier.Name) ? SubSupplier.Name : ""); Col = Col + 1;
+
+                            count++;
+                        }
+                        workbook.Write(fs);
                     }
-                }
-                workbook.Write(fs);
+                    using (var stream = new FileStream(FullFileName, FileMode.Open))
+                    {
+                        await stream.CopyToAsync(memory);
+                    }
+                    memory.Position = 0;
+
+                    //Enviar Email
+                    if (!string.IsNullOrEmpty(EmailTo.Valor))
+                    {
+                        SendEmailApprovals Email = new SendEmailApprovals();
+
+                        Email.DisplayName = "SUCH - Serviço de Utilização Comum dos Hospitais - Ordem de Compra " + REQ.RequisitionNo;
+                        Email.From = User.Identity.Name;
+                        Email.To.Add(EmailTo.Valor);
+                        Email.BCC.Add(EmailCC.Valor);
+                        Email.Subject = "SUCH - Serviço de Utilização Comum dos Hospitais - Ordem de Compra " + REQ.RequisitionNo;
+                        Email.Body = MakeEmailBodyContent("Agradecemos o fornecimento da Ordem de Compra que enviamos em anexo.", "");
+                        Email.Anexo = FullFileName;
+                        Email.IsBodyHtml = true;
+
+                        Email.SendEmail_Simple();
+                    }
+
+                    //Atualizar a Requisição como Enviada
+                    REQ.NoEncomendaFornecedor = "Enviado " + DateTime.Now.ToShortDateString();
+                    REQ.UpdateUser = User.Identity.Name;
+                    if (DBRequest.Update(REQ.ParseToDB()) == null)
+                    {
+                        result.eReasonCode = 2;
+                        return Json(result);
+                    }
+
+                    //Apaga o ficheiro criado
+                    //if (System.IO.File.Exists(FullFileName))
+                    //System.IO.File.Delete(FullFileName);
+                };
             }
-            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            catch (Exception ex)
             {
-                await stream.CopyToAsync(memory);
+                result.eReasonCode = 2;
+                return Json(result);
             }
-            memory.Position = 0;
-            return Json(sFileName);
+
+            result.eReasonCode = 1;
+            return Json(result);
         }
+        public static string MakeEmailBodyContent(string BodyText, string BodyAssinatura)
+        {
+            string Body = @"<html>" +
+                                "<head>" +
+                                    "<style>" +
+                                        "table{border:0;} " +
+                                        "td{width:600px; vertical-align: top;}" +
+                                    "</style>" +
+                                "</head>" +
+                                "<body>" +
+                                    "<table>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Exmo(a). Senhor(a)" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr><td>&nbsp;</td></tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyText +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "&nbsp;" +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "Com os nossos melhores cumprimentos," +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                BodyAssinatura +
+                                            "</td>" +
+                                        "</tr>" +
+                                        "<tr>" +
+                                            "<td>" +
+                                                "<i>SUCH - Serviço Utilização Comum dos Hospitais</i>" +
+                                            "</td>" +
+                                        "</tr>" +
+                                    "</table>" +
+                                "</body>" +
+                            "</html>";
+
+            return Body;
+        }
+
         //2
         public IActionResult ExportToExcelDownloadCG_LinhasNutricao(string sFileName)
         {
