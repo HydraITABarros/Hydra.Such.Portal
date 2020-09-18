@@ -72,6 +72,15 @@
         <iron-ajax url="/PopulateDropdowns/GetUtilizadores" last-response="{{LListaUtilizadores}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetNAVResponsabilityCenter" last-response="{{LRespoCenterNav}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
+        <!-- SGPPF.b -->
+        <iron-ajax 
+                   url="/PopulateDropdowns/GetTipoUtilizadorFluxoFormacao" 
+                   last-response="{{ TiposUtilizadorFormacao }}" auto 
+                   method="post" 
+                   handle-as="json" 
+                   content-type="application/json">
+        </iron-ajax>
+        <!-- SGPPF.e -->
 
         <iron-ajax url="/PopulateDropdowns/GetAllResponsabilityCenterCodeFilterByAreaCode"
                    last-response="{{LResponsabilityCenterCodes}}"
@@ -124,20 +133,20 @@
             </div>
         }
 
-        <div class="row">
-            <div class="col-lg-3">
-                <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
+            <div class="row">
+                <div class="col-lg-3">
+                    <vaadin-text-field id="idUser" name="idUser" label="Id Utilizador" value="{{data.idUser}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
+                </div>
+                <div class="col-lg-2 alignPoga">
+                    <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
+                </div>
             </div>
-            <div class="col-lg-3">
-                <vaadin-text-field id="UserName" name="UserName" label="Nome Utilizador" value="{{data.name}}"></vaadin-text-field>
-            </div>
-            <div class="col-lg-2 alignPoga">
-                <vaadin-checkbox checked="{{data.administrator}}"> Administrador</vaadin-checkbox>
-            </div>
-            <div class="col-lg-2 alignPoga">
-                <vaadin-checkbox checked="{{data.active}}"> Ativo</vaadin-checkbox>
-            </div>
-        </div>
         <div class="row break_clear">
             <div class="col-sm-3">
                 <vaadin-combo-box items="[[LRegionCodes]]" id="codigoRegiao" item-value-path="id" item-label-path="value" value="{{data.regiao}}" label="Dim. Região">
@@ -272,10 +281,20 @@
                 </vaadin-combo-box>
             </div>
 
+            <!-- SGPPF.b -->
+            <div class="col-lg-3">
+                <vaadin-combo-box items="[[TiposUtilizadorFormacao]]" id="tipoUtilizadorFormacao" item-value-path="id" item-label-path="value" value="{{data.tipoUtilizadorFormacao}}" label="Tipo Utilizador Fluxo Formação">
+                    <template>
+                        <b>[[item.value]]</b>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+            <!-- SGPPF.e -->
+        </div>
+        <div class="row break_clear">
             <div class="col-lg-2 alignPoga">
                 <vaadin-checkbox checked="{{data.requisicaoStock}}"> Reposição Stock</vaadin-checkbox>
             </div>
-
             <div class="col-lg-2 alignPoga">
                 <vaadin-checkbox checked="{{data.criarProjetoSemAprovacao}}"> Criar Projeto sem Aprovação</vaadin-checkbox>
             </div>
@@ -287,6 +306,7 @@
             <div class="col-lg-2 alignPoga">
                 <vaadin-checkbox checked="{{data.arquivarREQPendentes}}"> Arquivar Requisições Pendentes</vaadin-checkbox>
             </div>
+
         </div>
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Procedimentos" closed>

@@ -53,6 +53,10 @@ namespace Hydra.Such.Data.Database
         public bool? ArquivarREQPendentes { get; set; }
         public bool? RegistoDataDiarioCafetaria { get; set; }
 
+        #region SGPPF
+        public int? TipoUtilizadorFormacao { get; set; }
+        #endregion
+
         public ICollection<AcessosDimensões> AcessosDimensões { get; set; }
         public ICollection<PerfisUtilizador> PerfisUtilizador { get; set; }
     }

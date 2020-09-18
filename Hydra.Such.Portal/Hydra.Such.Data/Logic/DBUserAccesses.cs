@@ -132,7 +132,8 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    return ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).ToList();
+                    List<AcessosUtilizador> acessos = ctx.AcessosUtilizador.Where(x => x.IdUtilizador == UserId).ToList();
+                    return acessos;
                 }
             }
             catch (Exception ex)

@@ -173,6 +173,9 @@ namespace Hydra.Such.Portal.Controllers
                 result.ValidarPedidoPagamento = userConfig.ValidarPedidoPagamento.HasValue ? userConfig.ValidarPedidoPagamento : false;
                 result.ArquivarREQPendentes = userConfig.ArquivarREQPendentes.HasValue ? userConfig.ArquivarREQPendentes : false;
 
+                #region SGPPF
+                result.TipoUtilizadorFormacao = userConfig.TipoUtilizadorFormacao;
+                #endregion
 
                 result.UserAccesses = DBUserAccesses.GetByUserId(data.IdUser).Select(x => new UserAccessesViewModel()
                 {
@@ -250,7 +253,11 @@ namespace Hydra.Such.Portal.Controllers
                 AnulacaoPedidoPagamento = data.AnulacaoPedidoPagamento.HasValue ? data.AnulacaoPedidoPagamento : false,
                 CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false,
                 CMHistoricoToActivo = data.CMHistoricoToActivo.HasValue ? data.CMHistoricoToActivo : false,
-                ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false
+                ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false,
+
+                #region SGPPF
+                TipoUtilizadorFormacao = data.TipoUtilizadorFormacao 
+                #endregion
             });
 
             data.IdUser = ObjectCreated.IdUtilizador;
@@ -335,6 +342,9 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.ValidarPedidoPagamento = data.ValidarPedidoPagamento.HasValue ? data.ValidarPedidoPagamento : false;
                 userConfig.ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false;
 
+                #region SGPPF
+                userConfig.TipoUtilizadorFormacao = data.TipoUtilizadorFormacao;
+                #endregion
                 DBUserConfigurations.Update(userConfig);
 
                 #region Update Accesses

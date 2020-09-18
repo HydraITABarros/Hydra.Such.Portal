@@ -204,6 +204,10 @@ namespace Hydra.Such.Data
             AcademiaPedidoFormacao = 77,
             #endregion
 
+            #region zpgm.SGPPF
+            [Description("Academia - Formação")]
+            AcademiaFormacao = 77,
+            #endregion
 
 
 
@@ -248,6 +252,10 @@ namespace Hydra.Such.Data
             [Description("Administração GestControl")]
             AdminGestControl = 118,
 
+            #region zpgm.SGPPF
+            [Description("Academia - Pedido Formação")]
+            AcademiaPedidoFormacao = 117
+            #endregion            
         }
 
         #region zpgm.SGPPF
@@ -255,8 +263,8 @@ namespace Hydra.Such.Data
         {
             [Description("Gestor Formação")]
             GestorFormacao = 0,
-            [Description("Criador")]
-            CriadorPedidos = 1,
+            [Description("Formando")]
+            Formando = 1,
             [Description("Chefia")]
             AprovadorChefia = 2,
             [Description("Director")]
@@ -275,7 +283,7 @@ namespace Hydra.Such.Data
             PedidoAprovadoChefia = 2,
             [Description("Aprovado pela Direcção")]
             PedidoAprovadoDireccao = 3,
-            [Description("Rejeitado pela Academia")]
+            [Description("Devolvido à Direcção")]   // para todos os efeitos, equivale a Rejeitado
             PedidoRejeitadoAcademia = 4,
             [Description("Analisado pela Academia")]
             PedidoAnalisadoAcademia = 5,
@@ -307,10 +315,21 @@ namespace Hydra.Such.Data
             ReconfirmacaoDireccao = 7,
             [Description("Submissão ao CA")]
             SubmissaoConsAdmin = 8,
+            [Description("Rejeição CA")]
+            RejeicaoConsAdmin = 9,
             [Description("Autorização CA")]
-            AutorizacaoConsAdmin = 9,
+            AutorizacaoConsAdmin = 10,
             [Description("Criação de Inscrição e Finalização do Pedido")]
-            CriacaoInscricao = 10
+            CriacaoInscricao = 11
+        }
+
+        public enum AcademiaOrigemAcessoFuncionalidade
+        {
+            MeusPedidos = 0,
+            MenuGestao = 1,
+            MenuChefia = 2,
+            MenuDirector = 3,
+            MenuCA = 4
         }
         #endregion
 

@@ -759,6 +759,16 @@ namespace Hydra.Such.Portal.Controllers
             return Json(result);
         }
 
+        #region SGPPF
+        [HttpPost]
+        public JsonResult GetTipoUtilizadorFluxoFormacao()
+        {
+            List<EnumData> result = EnumerablesFixed.TipoUtilizadorFluxoFormacao.OrderBy(t => t.Id).ToList();
+
+            return Json(result);
+        }
+        #endregion
+
         [HttpPost]
         public JsonResult GetContractLineCodes([FromBody] int ContractLineType)
         {
@@ -809,6 +819,8 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        
 
 
         //STORE PROCEDURES

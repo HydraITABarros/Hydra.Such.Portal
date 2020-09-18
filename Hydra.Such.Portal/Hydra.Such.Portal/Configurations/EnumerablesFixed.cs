@@ -363,6 +363,51 @@ namespace Hydra.Such.Portal.Configurations
         //     }
         // };
 
+        #region SGPPF
+        private static List<EnumData> TipoUtilizadorForm
+        {
+            get
+            {
+                List<EnumData> tipos = new List<EnumData>();
+                var items = Data.EnumHelper.GetItemsFor(typeof(TipoUtilizadorFluxoPedidoFormacao));
+                items.ForEach(x => tipos.Add(new EnumData(x.Key, x.Value)));
+
+                return tipos;
+            }
+        }
+
+        public static readonly List<EnumData> TipoUtilizadorFluxoFormacao = TipoUtilizadorForm;
+
+        private static List<EnumData> EstadoPedidos
+        {
+            get
+            {
+                List<EnumData> estados = new List<EnumData>();
+                var items = Data.EnumHelper.GetItemsFor(typeof(EstadoPedidoFormacao));
+                items.ForEach(e => estados.Add(new EnumData(e.Key, e.Value)));
+
+                return estados;
+            }
+        }
+
+        public static readonly List<EnumData> EstadoPedidoFormacao = EstadoPedidos;
+
+        private static List<EnumData> TipoAlteracoes
+        {
+            get
+            {
+                List<EnumData> tiposAlteracoes = new List<EnumData>();
+                var items = Data.EnumHelper.GetItemsFor(typeof(TipoAlteracaoPedidoFormacao));
+                items.ForEach(t => tiposAlteracoes.Add(new EnumData(t.Key, t.Value)));
+
+                return tiposAlteracoes;
+            }
+        }
+
+        public static readonly List<EnumData> TipoAlteracaoPedidoFormacao = TipoAlteracoes;
+        #endregion
+
+
         public static readonly List<EnumData> ProposalStatus = new List<EnumData>(){
             new EnumData()
             {
