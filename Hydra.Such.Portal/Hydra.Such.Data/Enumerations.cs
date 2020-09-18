@@ -246,8 +246,8 @@ namespace Hydra.Such.Data
             AdminContactos = 116,
             [Description("Administração Aprovisionamento")]
             AdminAprovisionamento = 117,
-            [Description("Administração GestControl")]
-            AdminGestControl = 118,
+            [Description("Administração GestiControl")]
+            AdminGestiControl = 118,
 
             #region zpgm.SGPPF
             //[Description("Academia - Pedido Formação")]
