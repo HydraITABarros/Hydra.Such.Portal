@@ -44,6 +44,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Hydra.Such.Data.ViewModel.CCP;
+using Hydra.Such.Data.ViewModel.PBIGestiControl;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -8327,7 +8328,32 @@ namespace Hydra.Such.Portal.Controllers
             return Body;
         }
 
+        #region PBI Gesti Control
+        public IActionResult PBIGestiControl()
+        {
 
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGestiControl);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = !UPerm.Create.Value;
+                ViewBag.UpdatePermissions = !UPerm.Update.Value;
+                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Geral()
+        {
+            PBIGestiControl_GeralViewModel result = DBPBIGestiControl.Get_Geral();
+            return Json(result);
+        }
+
+        #endregion
 
     }
 }

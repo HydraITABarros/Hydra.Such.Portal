@@ -4286,7 +4286,7 @@ namespace Hydra.Such.Portal.Controllers
         //1
         [HttpPost]
         [RequestSizeLimit(100_000_000)]
-        public async Task<JsonResult> ExportToExcelCG_LinhasNutricao([FromBody] List<RequisitionViewModel> Lista)
+        public async Task<JsonResult> ExportToExcelCG_LinhasNutricao([FromBody] List<RequisitionViewModel> Lista, bool update = false)
         {
             ErrorHandler result = new ErrorHandler();
             try
@@ -4302,7 +4302,8 @@ namespace Hydra.Such.Portal.Controllers
 
                 foreach (RequisitionViewModel REQ in Lista)
                 {
-                    string FullFileName = Path.Combine(sWebRootFolder, REQ.RequisitionNo + ".xlsx");
+                    string FileName = REQ.RequisitionNo + ".xlsx";
+                    string FullFileName = Path.Combine(sWebRootFolder, FileName);
                     FileInfo file = new FileInfo(FullFileName);
                     var memory = new MemoryStream();
 
@@ -4315,9 +4316,19 @@ namespace Hydra.Such.Portal.Controllers
                         workbook = new XSSFWorkbook();
                         ISheet excelSheet = workbook.CreateSheet(REQ.RequisitionNo);
                         IRow row = excelSheet.CreateRow(0);
-                        int Col = 0;
 
-                        row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1;
+                        row.CreateCell(0).SetCellValue("Nº Requisição:");
+                        row.CreateCell(1).SetCellValue(REQ.RequisitionNo);
+                        row = excelSheet.CreateRow(1);
+                        row.CreateCell(0).SetCellValue("Data Receção:");
+                        row.CreateCell(1).SetCellValue(REQ.ReceivedDate);
+                        row = excelSheet.CreateRow(2);
+                        row.CreateCell(0).SetCellValue("Cresp:");
+                        row.CreateCell(1).SetCellValue(REQ.CenterResponsibilityCode);
+                        row = excelSheet.CreateRow(3);
+                        row = excelSheet.CreateRow(4);
+
+                        int Col = 0;
                         row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1;
                         row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1;
                         row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1;
@@ -4328,7 +4339,7 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
                         row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1;
 
-                        int count = 1;
+                        int count = 5;
                         foreach (RequisitionLineViewModel item in REQ.Lines)
                         {
                             Col = 0;
@@ -4336,7 +4347,6 @@ namespace Hydra.Such.Portal.Controllers
                             SubSupplier = AllSuppliers.Where(y => y.No_ == item.SubSupplierNo).FirstOrDefault();
                             row = excelSheet.CreateRow(count);
 
-                            row.CreateCell(Col).SetCellValue(item.RequestNo); Col = Col + 1;
                             row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1;
                             row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1;
                             row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1;
@@ -4357,36 +4367,41 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     memory.Position = 0;
 
-                    //Enviar Email
-                    if (!string.IsNullOrEmpty(EmailTo.Valor))
+                    if (update == true)
                     {
-                        SendEmailApprovals Email = new SendEmailApprovals();
+                        //Enviar Email
+                        if (!string.IsNullOrEmpty(EmailTo.Valor))
+                        {
+                            SendEmailApprovals Email = new SendEmailApprovals();
 
-                        Email.DisplayName = "SUCH - Serviço de Utilização Comum dos Hospitais - Ordem de Compra " + REQ.RequisitionNo;
-                        Email.From = User.Identity.Name;
-                        Email.To.Add(EmailTo.Valor);
-                        Email.BCC.Add(EmailCC.Valor);
-                        Email.BCC.Add("MMarcelo@such.pt");
-                        Email.Subject = "SUCH - Serviço de Utilização Comum dos Hospitais - Ordem de Compra " + REQ.RequisitionNo;
-                        Email.Body = MakeEmailBodyContent("Agradecemos o fornecimento da Ordem de Compra que enviamos em anexo.", "");
-                        Email.Anexo = FullFileName;
-                        Email.IsBodyHtml = true;
+                            Email.DisplayName = "SUCH - Serviço de Utilização Comum dos Hospitais - Ordem de Compra " + REQ.RequisitionNo;
+                            Email.From = User.Identity.Name;
+                            Email.To.Add(EmailTo.Valor);
+                            Email.BCC.Add(EmailCC.Valor);
+                            Email.BCC.Add("MMarcelo@such.pt");
+                            Email.Subject = "SUCH - Serviço de Utilização Comum dos Hospitais - Ordem de Compra " + REQ.RequisitionNo;
+                            Email.Body = MakeEmailBodyContent("Agradecemos o fornecimento da Ordem de Compra que enviamos em anexo.", "");
+                            Email.Anexo = FullFileName;
+                            Email.IsBodyHtml = true;
 
-                        Email.SendEmail_Simple();
+                            Email.SendEmail_Simple();
+                        }
+
+                        //Atualizar a Requisição como Enviada
+                        REQ.NoEncomendaFornecedor = "Enviado " + DateTime.Now.ToShortDateString();
+                        REQ.UpdateUser = User.Identity.Name;
+                        if (DBRequest.Update(REQ.ParseToDB()) == null)
+                        {
+                            result.eReasonCode = 2;
+                            return Json(result);
+                        }
                     }
-
-                    //Atualizar a Requisição como Enviada
-                    REQ.NoEncomendaFornecedor = "Enviado " + DateTime.Now.ToShortDateString();
-                    REQ.UpdateUser = User.Identity.Name;
-                    if (DBRequest.Update(REQ.ParseToDB()) == null)
+                    else
                     {
-                        result.eReasonCode = 2;
+                        result.eReasonCode = 1;
+                        result.eMessage = FileName;
                         return Json(result);
                     }
-
-                    //Apaga o ficheiro criado
-                    //if (System.IO.File.Exists(FullFileName))
-                    //System.IO.File.Delete(FullFileName);
                 };
             }
             catch (Exception ex)

@@ -1,0 +1,545 @@
+﻿@{
+    ViewData["Title"] = "GestiControl";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<x-pbigesticontrol></x-pbigesticontrol>
+
+<dom-module id="x-pbigesticontrol">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            vaadin-upload {
+                padding: 0px;
+            }
+
+            vaadin-upload {
+                --primary-color: rgba(48, 64, 84, 0.06);
+                --paper-font-button_-_font-size: 13px;
+                --primary-font-color: rgba(48, 64, 84, 0.91);
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+
+        <!--Geral-->
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Geral"
+                   last-response="{{dataGeral}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_Geral_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_MovProducao"
+                   last-response="{{dataMovProducao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_MovProducao_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_MovProducaoCResp"
+                   last-response="{{dataMovProducaoCResp}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_MovProducaoCResp_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Indicadores"
+                   last-response="{{listIndicadores}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_Indicadores_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Areas"
+                   last-response="{{listAreas}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="row break_frm">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <paper-tabs id="tabGestiControl" name="tabGestiControl" fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Movimentos Produção</paper-tab>
+                            <paper-tab>Movimentos Produção Cresp</paper-tab>
+                        </paper-tabs>
+
+                        <iron-pages selected="{{selected}}">
+                            <!--Geral-->
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                                    <paper-button id="btnGeral_Update" class="btnEdit tablinks" on-tap="_geral_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-2">
+                                        <vaadin-date-picker id="geral_DataFecho" name="geral_DataFecho" label="Data de Fecho" value="{{dataGeral.dataFechoText}}" placeholder="dd/MM/aaaa" required error-message="O campo Data de Fecho é de preenchimento obrigatório"></vaadin-date-picker>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!--Movimentos Produção-->
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                                    <paper-button id="btnUpdate" class="btnEdit tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <paper-collapse-item class="panel-heading" header="Inserir">
+                                        <div class="row break_clear">
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="movProducao_Indicador" name="movProducao_Indicador" label="Indicador" value="" required error-message="O campo Indicador é de preenchimento obrigatório"></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-date-picker id="movProducao_DataProducao" name="movProducao_DataProducao" label="Data Produção" value="" placeholder="dd/MM/aaaa" required error-message="O campo Data Produção é de preenchimento obrigatório"></vaadin-date-picker>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="movProducao_ValorProducao" name="movProducao_ValorProducao" label="Valor Produção" value="" required error-message="O campo Valor Produção é de preenchimento obrigatório" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="movProducao_ValorProducaoGrafico" name="movProducao_ValorProducaoGrafico" label="Valor Produção Gráfico" value="" required error-message="O campo Valor Produção Gráfico é de preenchimento obrigatório" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-2" style="padding-top:15px">
+                                                <paper-button id="btnMovProducao_Update" class="btnEdit" on-tap="_movProducao_Update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                            </div>
+                                        </div>
+                                    </paper-collapse-item>
+
+                                    <vaadin-grid id="gridMovProducao" aria-label="gridMovProducao" items="{{ tabMovProducao }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="indicador">Indicador</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="indicador" />
+                                            </template>
+                                            <template>
+                                                {{item.indicador}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataPro">Data Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataPro" />
+                                            </template>
+                                            <template>
+                                                {{item.dataPro}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="vproducao">Valor Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vproducao" />
+                                            </template>
+                                            <template>
+                                                {{item.vproducao}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="vprodGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vprodGrafico" />
+                                            </template>
+                                            <template>
+                                                {{item.vprodGrafico}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="25px">
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btnMovProducao_Delete" class="btnRemove tableBtn" raised on-tap="_movProducao_Delete" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </div>
+
+                            <!--Movimentos Produção Cresp-->
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                                    <paper-button id="btnUpdate" class="btnEdit tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <paper-collapse-item class="panel-heading" header="Inserir">
+                                        <div class="row break_clear">
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="movProducaoCresp_Indicador" name="movProducaoCresp_Indicador" label="Indicador" value="" required error-message="O campo Indicador é de preenchimento obrigatório"></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-date-picker id="movProducaoCresp_DataProducao" name="movProducaoCresp_DataProducao" label="Data Produção" value="" required error-message="O campo Data Produção é de preenchimento obrigatório" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="movProducaoCresp_ValorProducaoGrafico" name="movProducaoCresp_ValorProducaoGrafico" label="Valor Produção Gráfico" value="" required error-message="O campo Valor Produção Gráfico é de preenchimento obrigatório" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                            </div>
+
+                                            <div class="col-md-2" style="padding-top:15px">
+                                                <paper-button id="btnMovProducaoCresp_Update" class="btnEdit" on-tap="_movProducaoCresp_Update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                            </div>
+                                        </div>
+                                    </paper-collapse-item>
+
+                                    <vaadin-grid id="gridMovProducaoCresp" aria-label="gridMovProducaoCresp" items="{{ tabMovProducaoCresp }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="indicador">Indicador</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="indicador" />
+                                            </template>
+                                            <template>
+                                                {{item.indicador}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataPro">Data Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataPro" />
+                                            </template>
+                                            <template>
+                                                {{item.dataPro}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="vprodGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vprodGrafico" />
+                                            </template>
+                                            <template>
+                                                {{item.vprodGrafico}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="25px">
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btnMovProducaoCresp_Delete" class="btnRemove tableBtn" raised on-tap="_movProducaoCresp_Delete" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </div>
+                        </iron-pages>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastMessageError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' =="false") {
+            CreateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' =="false") {
+            UpdateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' =="false") {
+            DeleteValue = false;
+        }
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pbigesticontrol',
+                properties: {
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
+                    },
+                    _permissionsCreate: {
+                        type: Boolean,
+                        value: CreateValue
+                    },
+                    _permissionsDelete: {
+                        type: Boolean,
+                        value: DeleteValue
+                    },
+                },
+                ready: function () {
+                    this.$.page_databound_ajax.generateRequest();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridFetcUnit);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridFetcUnit).height(height);
+                },
+
+                openToast: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+                openToastError: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                _update: function () {
+                    this.$.ajax_update.body = JSON.stringify(this.result);
+                    this.$.ajax_update.generateRequest();
+                    this.$.gridFetcUnit.clearCache();
+                },
+
+                _updateResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+
+                        this.openToast('Atualizado com sucesso!');
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$.gridFetcUnit.clearCache();
+
+                        this.$.ddDescription.value = "";
+
+                    }
+                    else {
+                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
+                    }
+                },
+                _deleteResponse: function (e) {
+                    var self = this;
+                    if (e.detail.status === 200) {
+
+                        this.openToast('Eliminado com sucesso!');
+                        this.$.page_databound_ajax.generateRequest();
+                        this.$.gridFetcUnit.clearCache();
+                    }
+                    else {
+                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
+                    }
+                },
+                _cancel: function () {
+                    this.$.page_databound_ajax.generateRequest();
+                    this.$.gridFetcUnit.clearCache();
+                },
+
+                _createPlaces: function () {
+
+
+                        var Line = {
+                            description: this.$.ddDescription.value,
+                            email1: this.$.ddEmail1.value,
+                            email2: this.$.ddEmail2.value,
+                            email3: this.$.ddEmail3.value,
+                            emailRegiao12: this.$.ddEmailRegiao12.value,
+                            emailRegiao23: this.$.ddEmailRegiao23.value,
+                            emailRegiao33: this.$.ddEmailRegiao33.value,
+                            emailRegiao43: this.$.ddEmailRegiao43.value,
+                        };
+                        if (this.result == null) {
+                            this.result = Line;
+                        }
+                        else {
+                            this.result.push(Line);
+                        }
+                        this.$.ajax_update.body = JSON.stringify(this.result);
+                        this.$.ajax_update.generateRequest();
+                        this.$.gridFetcUnit.clearCache();
+
+                },
+                _deleteAccessProfile: function (data) {
+                    var index = this.result.indexOf(data.model.item);
+                    this.result.splice(index, 1);
+                    this.$.ajax_delete.body = JSON.stringify(data.model.item);
+                    this.$.ajax_delete.generateRequest();
+                    this.$.gridFetcUnit.clearCache();
+                },
+                _goBack: function (e) {
+                    window.history.back();
+                }
+
+            });
+        });
+    </script>
+</dom-module>
