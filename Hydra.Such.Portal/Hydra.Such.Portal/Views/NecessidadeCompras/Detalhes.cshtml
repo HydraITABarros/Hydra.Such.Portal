@@ -114,7 +114,7 @@
         <div class="subMenu" hidden="{{ _permissionssubMenu }}">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button class="tablinks" on-tap="_requestModels" hidden="{{ _NotSelectedprodUnit }}"><i class="fa fa-chevron-circle-down" aria-hidden="true"></i> Copiar Modelos de requisição</paper-button>
-            <paper-button class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Criar Requisições </paper-button>
+            <paper-button id="btn_AddRequesition" name="btn_AddRequesition" class="tablinks" on-tap="_addRequesition"><i class="fa fa-get-pocket" aria-hidden="true"></i> Criar Requisições </paper-button>
         </div><!--on-response="_gridListResponse"-->
 
         <iron-ajax url="/PopulateDropdowns/GetProdUnits" id="ajax_prodUnit" last-response="{{prodUnitValresult}}" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -366,7 +366,7 @@
             </div>
 
             <div class="col-md-2">
-                <vaadin-text-field id="interfaceId" name="interfaceId" label="Interface" value="{{interface}}" disabled hidden></vaadin-text-field>
+                <vaadin-text-field id="interfaceId" name="interfaceId" label="Interface" value="{{interface}}" disabled ></vaadin-text-field>
             </div>
 
         </div>
@@ -1324,6 +1324,7 @@
                     }
                 },
                 _addRequesition() {
+                    $(this.$.btn_AddRequesition).addClass('disabled');
                     if (this._NotSelectedprodUnit == true) {
 
                         // Save to DB
@@ -1755,6 +1756,8 @@
                     } else {
                         this._openToastError("Occorreu um erro na geração de requisições.");
                     }
+
+                    $(this.$.btn_AddRequesition).removeClass('disabled');
                 },
 
                 _goBack: function (e) {

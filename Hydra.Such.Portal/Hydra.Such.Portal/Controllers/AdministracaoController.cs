@@ -8350,9 +8350,70 @@ namespace Hydra.Such.Portal.Controllers
         public ActionResult PBIGestiControl_Get_Geral()
         {
             PBIGestiControl_GeralViewModel result = DBPBIGestiControl.Get_Geral();
+
+            //result.DataFechoText = result.DataFecho.Equals(DBNull.Value) ? "" : Convert.ToDateTime(result.DataFecho).ToString("yyyy-MM-dd");
             return Json(result);
         }
 
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_MovProducao()
+        {
+            List<PBIGestiControl_MovProducaoViewModel> result = DBPBIGestiControl.Get_MovProducao();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_MovProducaoCResp()
+        {
+            List<PBIGestiControl_MovProducaoCRespViewModel> result = DBPBIGestiControl.Get_MovProducaoCResp();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Areas()
+        {
+            List<PBIGestiControl_AreasViewModel> result = DBPBIGestiControl.Get_Areas();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Indicadores(string idArea)
+        {
+            List<PBIGestiControl_IndicadoresViewModel> result = DBPBIGestiControl.Get_Indicadores(idArea);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Anos()
+        {
+            var yearList = Enumerable.Range(2019, (DateTime.Now.Year - 2018)).ToList();
+
+            List<DDMessageString> result = yearList.Select(x => new DDMessageString()
+            {
+                id = x.ToString(),
+                value = x.ToString()
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Meses()
+        {
+            var mesList = Enumerable.Range(1, 12).ToList();
+
+            List<DDMessageString> result = mesList.Select(x => new DDMessageString()
+            {
+                id = x.ToString(),
+                value = x.ToString()
+            }).ToList();
+
+            return Json(result);
+        }
         #endregion
 
     }

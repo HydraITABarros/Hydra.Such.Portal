@@ -98,6 +98,7 @@ namespace Hydra.Such.Data.Logic
                             IdIndicador = temp.IdIndicador.Equals(DBNull.Value) ? "" : (string)temp.IdIndicador,
                             Indicador = temp.Indicador.Equals(DBNull.Value) ? "" : (string)temp.Indicador,
                             DataPro = (DateTime)temp.DataPro,
+                            DataProText = temp.DataPro.Equals(DBNull.Value) ? "" : Convert.ToDateTime(temp.DataPro).ToString("yyyy-MM-dd"),
                             VProdGrafico = (decimal)temp.VProdGrafico,
                         });
                     }
@@ -134,6 +135,7 @@ namespace Hydra.Such.Data.Logic
                             IdIndicador = temp.IdIndicador.Equals(DBNull.Value) ? "" : (string)temp.IdIndicador,
                             Indicador = temp.Indicador.Equals(DBNull.Value) ? "" : (string)temp.Indicador,
                             DataPro = (DateTime)temp.DataPro,
+                            DataProText = temp.DataPro.Equals(DBNull.Value) ? "" : Convert.ToDateTime(temp.DataPro).ToString("yyyy-MM-dd"),
                             VProducao = (decimal)temp.VProducao,
                             VProdGrafico = (decimal)temp.VProdGrafico,
                         });
@@ -165,7 +167,7 @@ namespace Hydra.Such.Data.Logic
                     {
                         result.ID = temp.ID.Equals(DBNull.Value) ? "" : (string)temp.ID;
                         result.DataFecho = (DateTime)temp.DataFecho;
-                        result.DataFechoText = temp.DataFecho.Equals(DBNull.Value) ? "" : (string)temp.DataFecho.Value.ToString("yyyy-MM-dd");
+                        result.DataFechoText = temp.DataFecho.Equals(DBNull.Value) ? "" : Convert.ToDateTime(temp.DataFecho).ToString("yyyy-MM-dd");
                     }
 
                     return result;

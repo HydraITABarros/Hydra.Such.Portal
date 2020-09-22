@@ -164,7 +164,7 @@
         </iron-ajax>
 
         <iron-ajax url="/Administracao/PBIGestiControl_Get_MovProducao"
-                   last-response="{{dataMovProducao}}"
+                   last-response="{{tabMovProducao}}"
                    method="post"
                    handle-as="json"
                    id="page_PBIGestiControl_Get_MovProducao_ajax"
@@ -172,7 +172,7 @@
         </iron-ajax>
 
         <iron-ajax url="/Administracao/PBIGestiControl_Get_MovProducaoCResp"
-                   last-response="{{dataMovProducaoCResp}}"
+                   last-response="{{tabMovProducaoCresp}}"
                    method="post"
                    handle-as="json"
                    id="page_PBIGestiControl_Get_MovProducaoCResp_ajax"
@@ -180,16 +180,41 @@
         </iron-ajax>
 
         <iron-ajax url="/Administracao/PBIGestiControl_Get_Indicadores"
-                   last-response="{{listIndicadores}}"
+                   last-response="{{listIndicadores_MovProducao}}"
                    method="post"
                    handle-as="json"
-                   id="page_PBIGestiControl_Get_Indicadores_ajax"
+                   id="page_PBIGestiControl_Get_Indicadores_MovProducao_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Indicadores"
+                   last-response="{{listIndicadores_MovProducaoCresp}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_Indicadores_MovProducaoCresp_ajax"
                    content-type="application/json">
         </iron-ajax>
 
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/Administracao/PBIGestiControl_Get_Areas"
                    last-response="{{listAreas}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Anos"
+                   last-response="{{listAnos}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_Anos_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Meses"
+                   last-response="{{listMeses}}"
                    auto
                    method="post"
                    handle-as="json"
@@ -223,6 +248,16 @@
 
                             </div>
 
+
+
+
+
+
+
+
+
+
+
                             <!--Movimentos Produção-->
                             <div>
                                 <div class="subMenu">
@@ -235,28 +270,78 @@
                                     <paper-collapse-item class="panel-heading" header="Inserir">
                                         <div class="row break_clear">
                                             <div class="col-md-2">
-                                                <vaadin-text-field id="movProducao_Indicador" name="movProducao_Indicador" label="Indicador" value="" required error-message="O campo Indicador é de preenchimento obrigatório"></vaadin-text-field>
+                                                <vaadin-combo-box id="movProducao_Area" name="movProducao_Area" items="[[listAreas]]" item-value-path="id" item-label-path="area" value="" label="Área" on-value-changed="_Get_List_MovProducao_Indicador" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.area]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-combo-box id="movProducao_Indicador" name="movProducao_Indicador" items="[[listIndicadores_MovProducao]]" item-value-path="id" item-label-path="indicador" value="" label="Indicador" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.indicador]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-1">
+                                                <vaadin-combo-box id="movProducao_DataProducaoAno" name="movProducao_DataProducaoAno" items="[[listAnos]]" item-value-path="id" item-label-path="value" value="" label="Ano" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-1">
+                                                <vaadin-combo-box id="movProducao_DataProducaoMes" name="movProducao_DataProducaoMes" items="[[listMeses]]" item-value-path="id" item-label-path="value" value="" label="Mês" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
 
                                             <div class="col-md-2">
-                                                <vaadin-date-picker id="movProducao_DataProducao" name="movProducao_DataProducao" label="Data Produção" value="" placeholder="dd/MM/aaaa" required error-message="O campo Data Produção é de preenchimento obrigatório"></vaadin-date-picker>
+                                                <vaadin-text-field id="movProducao_ValorProducao" name="movProducao_ValorProducao" label="Valor Produção" value="" required error-message="O campo Valor Produção é de preenchimento obrigatório" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-2">
-                                                <vaadin-text-field id="movProducao_ValorProducao" name="movProducao_ValorProducao" label="Valor Produção" value="" required error-message="O campo Valor Produção é de preenchimento obrigatório" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                <vaadin-text-field id="movProducao_ValorProducaoGrafico" name="movProducao_ValorProducaoGrafico" label="Valor Produção Gráfico" value="" required error-message="O campo Valor Produção Gráfico é de preenchimento obrigatório" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
                                             </div>
 
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="movProducao_ValorProducaoGrafico" name="movProducao_ValorProducaoGrafico" label="Valor Produção Gráfico" value="" required error-message="O campo Valor Produção Gráfico é de preenchimento obrigatório" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
-                                            </div>
-
-                                            <div class="col-md-2" style="padding-top:15px">
+                                            <div class="col-md-1" style="padding-top:15px">
                                                 <paper-button id="btnMovProducao_Update" class="btnEdit" on-tap="_movProducao_Update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
                                             </div>
                                         </div>
                                     </paper-collapse-item>
 
                                     <vaadin-grid id="gridMovProducao" aria-label="gridMovProducao" items="{{ tabMovProducao }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="area" />
+                                            </template>
+                                            <template>
+                                                {{item.area}}
+                                            </template>
+                                        </vaadin-grid-column>
+
                                         <vaadin-grid-column resizable width="150px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="indicador">Indicador</vaadin-grid-sorter>
@@ -269,31 +354,31 @@
 
                                         <vaadin-grid-column resizable width="150px">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataPro">Data Produção</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataPro" />
+                                                <vaadin-grid-sorter path="dataProText">Data Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataProText" />
                                             </template>
                                             <template>
-                                                {{item.dataPro}}
+                                                {{item.dataProText}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable width="150px">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="vproducao">Valor Produção</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="vproducao" />
+                                                <vaadin-grid-sorter path="vProducao">Valor Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vProducao" />
                                             </template>
                                             <template>
-                                                {{item.vproducao}}
+                                                <div class="alignRight">{{item.vProducao}} €</div>
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable width="150px">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="vprodGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="vprodGrafico" />
+                                                <vaadin-grid-sorter path="vProdGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vProdGrafico" />
                                             </template>
                                             <template>
-                                                {{item.vprodGrafico}}
+                                                <div class="alignRight">{{item.vProdGrafico}} €</div>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -310,6 +395,19 @@
                                 </div>
                             </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
                             <!--Movimentos Produção Cresp-->
                             <div>
                                 <div class="subMenu">
@@ -322,15 +420,55 @@
                                     <paper-collapse-item class="panel-heading" header="Inserir">
                                         <div class="row break_clear">
                                             <div class="col-md-2">
-                                                <vaadin-text-field id="movProducaoCresp_Indicador" name="movProducaoCresp_Indicador" label="Indicador" value="" required error-message="O campo Indicador é de preenchimento obrigatório"></vaadin-text-field>
+                                                <vaadin-combo-box id="movProducaoCresp_Area" name="movProducaoCresp_Area" items="[[listAreas]]" item-value-path="id" item-label-path="area" value="" label="Área" on-value-changed="_Get_List_MovProducaoCresp_Indicador" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.area]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-combo-box id="movProducaoCresp_Indicador" name="movProducaoCresp_Indicador" items="[[listIndicadores_MovProducaoCresp]]" item-value-path="id" item-label-path="indicador" value="" label="Indicador" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.indicador]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-1">
+                                                <vaadin-combo-box id="movProducaoCresp_DataProducaoAno" name="movProducaoCresp_DataProducaoAno" items="[[listAnos]]" item-value-path="id" item-label-path="value" value="" label="Ano" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-1">
+                                                <vaadin-combo-box id="movProducaoCresp_DataProducaoMes" name="movProducaoCresp_DataProducaoMes" items="[[listMeses]]" item-value-path="id" item-label-path="value" value="" label="Mês" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
                                             </div>
 
                                             <div class="col-md-2">
-                                                <vaadin-date-picker id="movProducaoCresp_DataProducao" name="movProducaoCresp_DataProducao" label="Data Produção" value="" required error-message="O campo Data Produção é de preenchimento obrigatório" placeholder="dd/MM/aaaa"></vaadin-date-picker>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <vaadin-text-field id="movProducaoCresp_ValorProducaoGrafico" name="movProducaoCresp_ValorProducaoGrafico" label="Valor Produção Gráfico" value="" required error-message="O campo Valor Produção Gráfico é de preenchimento obrigatório" class="alignRight"><div slot="suffix">€</div></vaadin-text-field>
+                                                <vaadin-text-field id="movProducaoCresp_ValorProducaoGrafico" name="movProducaoCresp_ValorProducaoGrafico" label="Valor Produção Gráfico" value="" required error-message="O campo Valor Produção Gráfico é de preenchimento obrigatório" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
                                             </div>
 
                                             <div class="col-md-2" style="padding-top:15px">
@@ -340,6 +478,16 @@
                                     </paper-collapse-item>
 
                                     <vaadin-grid id="gridMovProducaoCresp" aria-label="gridMovProducaoCresp" items="{{ tabMovProducaoCresp }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable width="150px">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="area" />
+                                            </template>
+                                            <template>
+                                                {{item.area}}
+                                            </template>
+                                        </vaadin-grid-column>
+
                                         <vaadin-grid-column resizable width="150px">
                                             <template class="header">
                                                 <vaadin-grid-sorter path="indicador">Indicador</vaadin-grid-sorter>
@@ -352,21 +500,21 @@
 
                                         <vaadin-grid-column resizable width="150px">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="dataPro">Data Produção</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="dataPro" />
+                                                <vaadin-grid-sorter path="dataProText">Data Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataProText" />
                                             </template>
                                             <template>
-                                                {{item.dataPro}}
+                                                {{item.dataProText}}
                                             </template>
                                         </vaadin-grid-column>
 
                                         <vaadin-grid-column resizable width="150px">
                                             <template class="header">
-                                                <vaadin-grid-sorter path="vprodGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
-                                                <vaadin-grid-filter path="vprodGrafico" />
+                                                <vaadin-grid-sorter path="vProdGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vProdGrafico" />
                                             </template>
                                             <template>
-                                                {{item.vprodGrafico}}
+                                                <div class="alignRight">{{item.vProdGrafico}} €</div>
                                             </template>
                                         </vaadin-grid-column>
 
@@ -441,21 +589,31 @@
                     },
                 },
                 ready: function () {
-                    this.$.page_databound_ajax.generateRequest();
+                    this.$.page_PBIGestiControl_Get_Geral_ajax.generateRequest();
+                    this.$.page_PBIGestiControl_Get_MovProducao_ajax.generateRequest();
+                    this.$.page_PBIGestiControl_Get_MovProducaoCResp_ajax.generateRequest();
 
                     var _this = this;
                     $(window).resize(function () {
-                        _this.fixGridToBottom();
+                        _this.fixgridMovProducaoToBottom();
+                        _this.fixgridMovProducaoCrespToBottom();
                     });
                     $(window).trigger('resize');
                 },
 
-                fixGridToBottom: function () {
-                    var grid_el = $(this.$.gridFetcUnit);
+                fixgridMovProducaoToBottom: function () {
+                    var grid_el = $(this.$.gridMovProducao);
                     var parentHeight = $(this).offsetParent().height();
-                    var offsetTop = $(this).offset().top;
+                    var offsetTop = $(this).offset().top + 220;
                     var height = parentHeight - offsetTop;
-                    $(this.$.gridFetcUnit).height(height);
+                    $(this.$.gridMovProducao).height(height);
+                },
+                fixgridMovProducaoCrespToBottom: function () {
+                    var grid_el = $(this.$.gridMovProducaoCresp);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top + 220;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridMovProducaoCresp).height(height);
                 },
 
                 openToast: function (message) {
@@ -466,78 +624,30 @@
                     this.$.ToastMessageError.text = message;
                     this.$.ToastMessageError.open();
                 },
-                _update: function () {
-                    this.$.ajax_update.body = JSON.stringify(this.result);
-                    this.$.ajax_update.generateRequest();
-                    this.$.gridFetcUnit.clearCache();
-                },
 
-                _updateResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
-
-                        this.openToast('Atualizado com sucesso!');
-                        this.$.page_databound_ajax.generateRequest();
-                        this.$.gridFetcUnit.clearCache();
-
-                        this.$.ddDescription.value = "";
-
-                    }
-                    else {
-                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
-                    }
-                },
-                _deleteResponse: function (e) {
-                    var self = this;
-                    if (e.detail.status === 200) {
-
-                        this.openToast('Eliminado com sucesso!');
-                        this.$.page_databound_ajax.generateRequest();
-                        this.$.gridFetcUnit.clearCache();
-                    }
-                    else {
-                        this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');
-                    }
-                },
-                _cancel: function () {
-                    this.$.page_databound_ajax.generateRequest();
-                    this.$.gridFetcUnit.clearCache();
-                },
-
-                _createPlaces: function () {
-
-
-                        var Line = {
-                            description: this.$.ddDescription.value,
-                            email1: this.$.ddEmail1.value,
-                            email2: this.$.ddEmail2.value,
-                            email3: this.$.ddEmail3.value,
-                            emailRegiao12: this.$.ddEmailRegiao12.value,
-                            emailRegiao23: this.$.ddEmailRegiao23.value,
-                            emailRegiao33: this.$.ddEmailRegiao33.value,
-                            emailRegiao43: this.$.ddEmailRegiao43.value,
-                        };
-                        if (this.result == null) {
-                            this.result = Line;
-                        }
-                        else {
-                            this.result.push(Line);
-                        }
-                        this.$.ajax_update.body = JSON.stringify(this.result);
-                        this.$.ajax_update.generateRequest();
-                        this.$.gridFetcUnit.clearCache();
-
-                },
-                _deleteAccessProfile: function (data) {
-                    var index = this.result.indexOf(data.model.item);
-                    this.result.splice(index, 1);
-                    this.$.ajax_delete.body = JSON.stringify(data.model.item);
-                    this.$.ajax_delete.generateRequest();
-                    this.$.gridFetcUnit.clearCache();
-                },
                 _goBack: function (e) {
                     window.history.back();
-                }
+                },
+
+                _ConvertDecimals: function (e) {
+                    var stringVal = "" + e.target.value;
+                    e.target.value = stringVal.replace(",", ".");
+                },
+
+                _Get_List_MovProducao_Indicador: function (e) {
+                    debugger;
+                    this.$.page_PBIGestiControl_Get_Indicadores_MovProducao_ajax.params = { "idArea": this.$.movProducao_Area.value };
+                    this.$.page_PBIGestiControl_Get_Indicadores_MovProducao_ajax.generateRequest();
+                },
+
+                _Get_List_MovProducaoCresp_Indicador: function (e) {
+                    this.$.page_PBIGestiControl_Get_Indicadores_MovProducaoCresp_ajax.params = { "idArea": this.$.movProducaoCresp_Area.value };
+                    this.$.page_PBIGestiControl_Get_Indicadores_MovProducaoCresp_ajax.generateRequest();
+                },
+
+
+
+
 
             });
         });

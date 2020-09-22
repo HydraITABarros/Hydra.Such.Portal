@@ -1373,6 +1373,7 @@ namespace Hydra.Such.Portal.Extensions
                 };
 
                 Email.To.Add(proj.CreateUser); // ApprovalMovement.RequestUser);
+                Email.BCC.Add("MMarcelo@such.pt");
 
                 Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
 

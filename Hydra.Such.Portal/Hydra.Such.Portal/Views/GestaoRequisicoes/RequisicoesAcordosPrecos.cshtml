@@ -1165,8 +1165,20 @@
                 },
 
                 _exportEXCELCG_LinhasNutricaoResponse: function (e) {
-                    var FileName = this.exportCG;
-                    location.href = '../GestaoRequisicoes/ExportToExcelDownload_GestaoRequisicoesCG?sFileName=' + this.exportCG_LinhasNutricao.eMessage;
+                    if (this.exportCG_LinhasNutricao.eReasonCode == 1) {
+                        if (this.exportCG_LinhasNutricao.eMessage != null && this.exportCG_LinhasNutricao.eMessage != "") {
+                            location.href = '../GestaoRequisicoes/ExportToExcelDownload_GestaoRequisicoesCG?sFileName=' + this.exportCG_LinhasNutricao.eMessage;
+                        }
+                        else {
+                            this.$.ajax_getgridCG.body = JSON.stringify({ "opcao": this._opcaoCG });
+                            this.$.ajax_getgridCG.generateRequest();
+
+                            this._showMessage("As Ordens de Compra foram criadas e enviadas com sucesso.");
+                        }
+                    }
+                    else {
+                        this._showErrorMessage("Ocorreu um erro.");
+                    }
                 },
 
                 _exportEXCELCG_LinhasNutricaoUpdateResponse: function (e) {

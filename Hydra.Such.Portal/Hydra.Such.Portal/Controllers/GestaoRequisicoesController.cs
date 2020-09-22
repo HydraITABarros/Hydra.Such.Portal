@@ -4411,6 +4411,7 @@ namespace Hydra.Such.Portal.Controllers
             }
 
             result.eReasonCode = 1;
+            result.eMessage = "";
             return Json(result);
         }
         public static string MakeEmailBodyContent(string BodyText, string BodyAssinatura)
