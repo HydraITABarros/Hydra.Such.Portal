@@ -11,9 +11,8 @@ namespace Hydra.Such.Data.ViewModel.PBIGestiControl
         public string Area { get; set; }
         public string IdIndicador { get; set; }
         public string Indicador { get; set; }
-        public DateTime DataPro { get; set; }
-        public string DataProText { get; set; }
-        public decimal VProducao { get; set; }
-        public decimal VProdGrafico { get; set; }
+        public string DataPro { get; set; }
+        public string VProducao { get; set; }
+        public string VProdGrafico { get; set; }
     }
 }

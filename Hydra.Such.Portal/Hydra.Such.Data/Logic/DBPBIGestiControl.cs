@@ -134,10 +134,9 @@ namespace Hydra.Such.Data.Logic
                             Area = temp.Area.Equals(DBNull.Value) ? "" : (string)temp.Area,
                             IdIndicador = temp.IdIndicador.Equals(DBNull.Value) ? "" : (string)temp.IdIndicador,
                             Indicador = temp.Indicador.Equals(DBNull.Value) ? "" : (string)temp.Indicador,
-                            DataPro = (DateTime)temp.DataPro,
-                            DataProText = temp.DataPro.Equals(DBNull.Value) ? "" : Convert.ToDateTime(temp.DataPro).ToString("yyyy-MM-dd"),
-                            VProducao = (decimal)temp.VProducao,
-                            VProdGrafico = (decimal)temp.VProdGrafico,
+                            DataPro = temp.DataPro.Equals(DBNull.Value) ? "" : (string)temp.DataPro,
+                            VProducao = temp.VProducao.Equals(DBNull.Value) ? "" : (string)temp.VProducao,
+                            VProdGrafico = temp.VProdGrafico.Equals(DBNull.Value) ? "" : (string)temp.VProdGrafico
                         });
                     }
 
@@ -178,5 +177,129 @@ namespace Hydra.Such.Data.Logic
                 return null;
             }
         }
+
+        public static bool Update_Geral(string DataFecho)
+        {
+            try
+            {
+                bool result = false;
+
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@Id", "1"),
+                        new SqlParameter("@DataFecho", DataFecho)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec PBIGestiControl_Update_Geral @Id, @DataFecho", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result = temp.OK.Equals(DBNull.Value) ? false : Convert.ToInt32(temp.OK) > 0 ? true : false;
+                    }
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public static int Insert_MovProducao(string Area, string Indicador, string DataProducaoAno, string DataProducaoMes, string ValorProducao, string ValorProducaoGrafico)
+        {
+            try
+            {
+                int result = 99;
+
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@Area", Area),
+                        new SqlParameter("@Indicador", Indicador),
+                        new SqlParameter("@DataProducaoAno", DataProducaoAno),
+                        new SqlParameter("@DataProducaoMes", DataProducaoMes),
+                        new SqlParameter("@ValorProducao", ValorProducao),
+                        new SqlParameter("@ValorProducaoGrafico", ValorProducaoGrafico)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec PBIGestiControl_Insert_MovProducao @Area, @Indicador, @DataProducaoAno, @DataProducaoMes, @ValorProducao, @ValorProducaoGrafico", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result = temp.OK.Equals(DBNull.Value) ? 0 : Convert.ToInt32(temp.OK);
+                    }
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 99;
+            }
+        }
+
+        public static int Delete_MovProducao(string Id)
+        {
+            try
+            {
+                int result = 99;
+
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@Id", Id)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec PBIGestiControl_Delete_MovProducao @Id", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result = temp.OK.Equals(DBNull.Value) ? 0 : Convert.ToInt32(temp.OK);
+                    }
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 99;
+            }
+        }
+
+        public static int Update_MovProducao(string Id, string ValorProducao, string ValorProducaoGrafico)
+        {
+            try
+            {
+                int result = 99;
+
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@Id", Id),
+                        new SqlParameter("@ValorProducao", ValorProducao),
+                        new SqlParameter("@ValorProducaoGrafico", ValorProducaoGrafico)
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec PBIGestiControl_Update_MovProducao @Id, @ValorProducao, @ValorProducaoGrafico", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result = temp.OK.Equals(DBNull.Value) ? 0 : Convert.ToInt32(temp.OK);
+                    }
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 99;
+            }
+        }
+
+
+
+
     }
 }

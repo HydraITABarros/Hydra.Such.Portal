@@ -8335,9 +8335,9 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGestiControl);
             if (UPerm != null && UPerm.Read.Value)
             {
-                ViewBag.CreatePermissions = !UPerm.Create.Value;
-                ViewBag.UpdatePermissions = !UPerm.Update.Value;
-                ViewBag.DeletePermissions = !UPerm.Delete.Value;
+                ViewBag.CreatePermissions = UPerm.Create.Value;
+                ViewBag.UpdatePermissions = UPerm.Update.Value;
+                ViewBag.DeletePermissions = UPerm.Delete.Value;
                 return View();
             }
             else
@@ -8351,7 +8351,6 @@ namespace Hydra.Such.Portal.Controllers
         {
             PBIGestiControl_GeralViewModel result = DBPBIGestiControl.Get_Geral();
 
-            //result.DataFechoText = result.DataFecho.Equals(DBNull.Value) ? "" : Convert.ToDateTime(result.DataFecho).ToString("yyyy-MM-dd");
             return Json(result);
         }
 
@@ -8408,10 +8407,243 @@ namespace Hydra.Such.Portal.Controllers
 
             List<DDMessageString> result = mesList.Select(x => new DDMessageString()
             {
-                id = x.ToString(),
-                value = x.ToString()
+                id = x < 10 ? "0" + x.ToString() : x.ToString(),
+                value = x < 10 ? "0" + x.ToString() : x.ToString(),
             }).ToList();
 
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Update_Geral(string DataFecho)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (!string.IsNullOrEmpty(DataFecho) && DateTime.TryParse(DataFecho, out DateTime Temp) == true)
+                {
+                    if (DBPBIGestiControl.Update_Geral(DataFecho) == true)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "O campo Data de Fecho atualizado com sucesso.";
+
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao atualizar o campo Data de Fecho.";
+
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "O campo Data de Fecho é de preenchimento obrigatório.";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Insert_MovProducao(string Area, string Indicador, string DataProducaoAno, string DataProducaoMes, string ValorProducao, string ValorProducaoGrafico)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (!string.IsNullOrEmpty(Area) && int.TryParse(Area, out int TempArea) == true)
+                {
+                    if (!string.IsNullOrEmpty(Indicador) && int.TryParse(Indicador, out int TempIndicador) == true)
+                    {
+                        if (!string.IsNullOrEmpty(DataProducaoAno) && int.TryParse(DataProducaoAno, out int TempDataProducaoAno) == true)
+                        {
+                            if (!string.IsNullOrEmpty(DataProducaoMes) && int.TryParse(DataProducaoMes, out int TempDataProducaoMes) == true)
+                            {
+                                if (!string.IsNullOrEmpty(ValorProducao) && float.TryParse(ValorProducao, out float TempValorProducao) == true)
+                                {
+                                    if (string.IsNullOrEmpty(ValorProducaoGrafico))
+                                    {
+                                        ValorProducaoGrafico = "0";
+                                    }
+                                    if (float.TryParse(ValorProducaoGrafico, out float TempValorProducaoGrafico) == true)
+                                    {
+
+                                        int resultado = DBPBIGestiControl.Insert_MovProducao(Area, Indicador, DataProducaoAno, DataProducaoMes, ValorProducao, ValorProducaoGrafico);
+
+                                        if (resultado == 1)
+                                        {
+                                            result.eReasonCode = 1;
+                                            result.eMessage = "A linha foi inserida com sucesso.";
+
+                                        }
+                                        else
+                                        {
+                                            if (resultado == 2)
+                                            {
+                                                result.eReasonCode = 2;
+                                                result.eMessage = "Já existe uma linha com os mesmos dados que pretende Inserir.";
+                                            }
+                                            if (resultado == 99)
+                                            {
+                                                result.eReasonCode = 2;
+                                                result.eMessage = "Ocorreu um erro no SQL.";
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 2;
+                                        result.eMessage = "O campo Valor Produção Gráfico está com valor incorreto.";
+
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "O campo Valor Produção é de preenchimento obrigatório.";
+
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "O campo Mês é de preenchimento obrigatório.";
+
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "O campo Ano é de preenchimento obrigatório.";
+
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "O campo Indicador é de preenchimento obrigatório.";
+
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "O campo Área é de preenchimento obrigatório.";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Delete_MovProducao(string Id)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (!string.IsNullOrEmpty(Id) && int.TryParse(Id, out int TempId) == true)
+                {
+
+                    if (DBPBIGestiControl.Delete_MovProducao(Id) == 1)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "A linha foi eliminada com sucesso.";
+
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro no SQL.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não foi possível obter o campo Id.";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Update_MovProducao(string Id, string ValorProducao, string ValorProducaoGrafico)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (!string.IsNullOrEmpty(Id) && int.TryParse(Id, out int TempId) == true)
+                {
+                    if (!string.IsNullOrEmpty(ValorProducao))
+                    {
+                        ValorProducao = ValorProducao.Replace(".", ",");
+                        if (float.TryParse(ValorProducao, out float TempValorProducao) == true)
+                        {
+                            if (string.IsNullOrEmpty(ValorProducaoGrafico))
+                            {
+                                ValorProducaoGrafico = "0";
+                            }
+
+                            ValorProducaoGrafico = ValorProducaoGrafico.Replace(".", ",");
+                            if (float.TryParse(ValorProducaoGrafico, out float TempValorProducaoGrafico) == true)
+                            {
+
+                                int resultado = DBPBIGestiControl.Update_MovProducao(Id, ValorProducao.Replace(",", "."), ValorProducaoGrafico.Replace(",", "."));
+
+                                if (resultado == 1)
+                                {
+                                    result.eReasonCode = 1;
+                                    result.eMessage = "A linha foi alterada com sucesso.";
+
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "Ocorreu um erro no SQL.";
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "O campo Valor Produção Gráfico está num formato não numérico.";
+
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "O campo Valor Produção está num formato não numérico.";
+
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "O campo Valor Produção é de preenchimento obrigatório.";
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
             return Json(result);
         }
         #endregion
