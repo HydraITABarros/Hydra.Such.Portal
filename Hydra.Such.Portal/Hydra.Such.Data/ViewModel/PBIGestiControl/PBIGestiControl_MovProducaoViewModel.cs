@@ -14,5 +14,8 @@ namespace Hydra.Such.Data.ViewModel.PBIGestiControl
         public string DataPro { get; set; }
         public string VProducao { get; set; }
         public string VProdGrafico { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }
