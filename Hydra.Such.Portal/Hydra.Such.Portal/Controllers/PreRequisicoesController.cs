@@ -512,6 +512,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.QtdPorUnidadeMedida = x.QtyByUnitOfMeasure;
                             CLine.QuantidadeRequerida = x.QuantityRequired;
                             CLine.QuantidadePendente = x.QuantityPending;
+                            CLine.QuantidadeDisponivel = x.QuantidadeDisponivel;
                             CLine.QuantidadeInicial = x.QuantityToRequire;
                             CLine.CustoUnitário = x.UnitCost;
                             CLine.CustoUnitarioComIVA = x.UnitCostWithIVA;
@@ -581,6 +582,7 @@ namespace Hydra.Such.Portal.Controllers
                         CódigoLocalização = LinhaOriginal.CódigoLocalização,
                         CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida,
                         QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer,
+                        QuantidadeDisponivel = LinhaOriginal.QuantidadeDisponivel,
                         QuantidadeInicial = LinhaOriginal.QuantidadeInicial,
                         CódigoRegião = LinhaOriginal.CódigoRegião,
                         CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional,
@@ -1341,6 +1343,7 @@ namespace Hydra.Such.Portal.Controllers
                     reqLines.UpdateAgreedPrices();
 
                     List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
+
                     reqLines.ForEach(x =>
                     {
                         LinhasPréRequisição newline = new LinhasPréRequisição
@@ -1352,6 +1355,7 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoLocalização = x.LocalCode,
                             CódigoUnidadeMedida = x.UnitMeasureCode,
                             QuantidadeARequerer = x.QuantityToRequire,
+                            QuantidadeDisponivel = x.QuantidadeDisponivel ?? (decimal?)null,
                             QuantidadeInicial = x.QuantidadeInicial ?? (decimal?)null,
                             CódigoRegião = x.RegionCode,
                             CódigoÁreaFuncional = x.FunctionalAreaCode,
@@ -1433,6 +1437,18 @@ namespace Hydra.Such.Portal.Controllers
                                     newline.Descrição2 = product.Name2;
                                     newline.CódigoUnidadeMedida = product.MeasureUnit;
                                 }
+                            }
+                        }
+
+                        QuantidadesViewModel Quantidades = new QuantidadesViewModel();
+
+                        if (!string.IsNullOrEmpty(newline.Código) && !string.IsNullOrEmpty(newline.CódigoLocalização))
+                        {
+                            Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, newline.Código, newline.CódigoLocalização);
+
+                            if (Quantidades != null)
+                            {
+                                newline.QuantidadeDisponivel = Quantidades.QuantDisponivel;
                             }
                         }
 
@@ -2002,6 +2018,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeDisponivel = line.QuantidadeDisponivel,
                                     QuantidadeInicial = line.QuantidadeInicial,
                                     UnitCost = line.UnitCost,
                                     ProjectNo = line.ProjectNo,
@@ -2089,6 +2106,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeDisponivel = line.QuantidadeDisponivel,
                                     QuantidadeInicial = line.QuantidadeInicial,
                                     UnitCost = line.UnitCost,
                                     ProjectNo = line.ProjectNo,
@@ -2388,6 +2406,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 Description2 = line.Description2,
                                                 UnitMeasureCode = line.UnitMeasureCode,
                                                 QuantityToRequire = line.QuantityToRequire,
+                                                QuantidadeDisponivel = line.QuantidadeDisponivel,
                                                 QuantidadeInicial = line.QuantidadeInicial,
                                                 UnitCost = line.UnitCost,
                                                 UnitCostWithIVA = line.UnitCostWithIVA,
@@ -2477,6 +2496,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 Description2 = line.Description2,
                                                 UnitMeasureCode = line.UnitMeasureCode,
                                                 QuantityToRequire = line.QuantityToRequire,
+                                                QuantidadeDisponivel = line.QuantidadeDisponivel,
                                                 QuantidadeInicial = line.QuantidadeInicial,
                                                 UnitCost = line.UnitCost,
                                                 UnitCostWithIVA = line.UnitCostWithIVA,
@@ -2865,6 +2885,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
                         NAVStockKeepingUnitViewModel ProductArmazem = new NAVStockKeepingUnitViewModel();
+
                         if (!string.IsNullOrEmpty(linha.Code))
                             AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code);
 
@@ -2874,7 +2895,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 AllArmazens.ForEach(Armazem =>
                                 {
-                                    if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
+                                    //if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
                                         ProductArmazem = AllProductsArmazem.Where(x => x.LocationCode == Armazem.Valor).FirstOrDefault();
                                 });
                             }

@@ -538,8 +538,6 @@ namespace Hydra.Such.Portal.Controllers
 
         }
 
-
-
         [HttpPost]
         public JsonResult getSupplier([FromBody] string suppliercode)
         {

@@ -15,6 +15,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string LocalCode { get; set; }
         public string UnitMeasureCode { get; set; }
         public decimal? QuantityToRequire { get; set; }
+        public decimal? QuantidadeDisponivel { get; set; }
         public decimal? QuantidadeInicial { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }

@@ -12,6 +12,7 @@ namespace Hydra.Such.Data.ViewModel
         public string id { get; set; }
         public int DocumentType { get; set; }
         public string DocumentNO { get; set; }
+        public string ProductNo { get; set; }
         public int Line_No { get; set; }
         public string BuyFromVendorNo { get; set; }
         public int Type { get; set; }
