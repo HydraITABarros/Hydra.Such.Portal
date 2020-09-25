@@ -2334,13 +2334,13 @@ namespace Hydra.Such.Portal.Controllers
                                 EmailApproval.NºMovimento = NoMovApro;
                                 EmailApproval.EmailDestinatário = item.CreateUser;
                                 EmailApproval.NomeDestinatário = item.CreateUser;
-                                EmailApproval.Assunto = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo;
+                                EmailApproval.Assunto = "eSUCH - Aprovação Rejeitada - Requisição Nº " + item.RequisitionNo;
                                 EmailApproval.DataHoraEmail = DateTime.Now;
-                                EmailApproval.TextoEmail = "A aprovação Nº " + NoMovApro + ", da Requisição Nº " + item.RequisitionNo + ", foi anulada pelo utilizador " + User.Identity.Name + "." + "<br />" + "<b>Motivo:</b> " + reason;
+                                EmailApproval.TextoEmail = "A aprovação Nº " + NoMovApro + ", da Requisição Nº " + item.RequisitionNo + ", foi rejeitada pelo utilizador " + User.Identity.Name + "." + "<br />" + "<b>Motivo:</b> " + reason;
                                 EmailApproval.Enviado = false;
                                 SendEmailApprovals Email = new SendEmailApprovals
                                 {
-                                    Subject = "eSUCH - Anulação da Aprovação - Requisição Nº " + item.RequisitionNo,
+                                    Subject = "eSUCH - Aprovação Rejeitada - Requisição Nº " + item.RequisitionNo,
                                     From = User.Identity.Name
                                 };
                                 Email.To.Add(item.CreateUser);
