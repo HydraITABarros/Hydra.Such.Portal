@@ -1252,7 +1252,7 @@
                 },
 
                 _loadData: function () {
-                    this._totalToAuthorize = 0.0;
+                    this._totalToAuthorize = 0.00;
                     this.$.IdObs.value = "";
                     this.$.grdProjectMovements.selectedItems = [];
                     this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
@@ -1305,7 +1305,6 @@
                     }
                 },
                 _openDlg: function () {
-                    debugger;
                     if (this._commitmentNo == null)
                         this._commitmentNo = "";
                     if (this._commitmentNo.length > 50) {
@@ -1313,22 +1312,34 @@
                     }
                     else {
                         if (this.selectedItems != null && this.selectedItems.length > 0) {
-                            this.$.btnConfirm.disabled = true;
+                            var total = 0.00;
+                            for (var i = 0; i < this.selectedItems.length; i++) {
+                                if (this.selectedItems[i].totalPrice != null && this.selectedItems[i].selecionada == true) {
+                                    total = (parseFloat(total) + parseFloat(this.selectedItems[i].totalPrice)).toFixed(2);
+                                }
+                            }
 
-                            this.validationMessages = [];
-                            var validationRequest = {
-                                "projectNo": this._projectno,
-                                "commitmentNumber": this._commitmentNo,
-                                "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
-                                "customerRequestNo": this._customerRequestNo,
-                                "customerRequestDate": this._customerRequestDate,
-                                "serviceDate": this.$.dpDataPrestacaoServ.value,
-                                "authorizationTotalValue": this.$.txtValorAAutorizar.value,
-                                "projMovements": this.selectedItems,
-                            };
-                            this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
-                            this.$.projMovValidation_ajax.generateRequest();
-                            this.$.dlgValidation.open();
+                            if (total != this._totalToAuthorize) {
+                                this.openToastError("O valor Total a Autorizar é diferente do somatório do Preço Total das Linhas.");
+                            }
+                            else {
+                                this.$.btnConfirm.disabled = true;
+
+                                this.validationMessages = [];
+                                var validationRequest = {
+                                    "projectNo": this._projectno,
+                                    "commitmentNumber": this._commitmentNo,
+                                    "invoiceGroupDescription": this.$.txtDescGrupoFatura.value,
+                                    "customerRequestNo": this._customerRequestNo,
+                                    "customerRequestDate": this._customerRequestDate,
+                                    "serviceDate": this.$.dpDataPrestacaoServ.value,
+                                    "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                                    "projMovements": this.selectedItems,
+                                };
+                                this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
+                                this.$.projMovValidation_ajax.generateRequest();
+                                this.$.dlgValidation.open();
+                            }
                         }
                         else {
                             this.openToastError("Selecione os movimentos a autorizar");
@@ -1384,7 +1395,6 @@
                     this._resizeDialogToContent();
                 },
                 _projMovValidationResponse: function (e) {
-                    debugger;
                     if (e.detail.status === 200) {
                         this._validationMessages = [];
                         if (this.projMovValResponse.eReasonCode == 1) {
@@ -1447,12 +1457,13 @@
                     if (items.length > 0) {
                         for (var i = 0; i < items.length; i++) {
                             if (items[i].totalPrice != null && items[i].selecionada == true) {
-                                total = total + items[i].totalPrice;
+                                //total = total + items[i].totalPrice;
+                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
                                 this.$.grdProjectMovements.selectItem(items[i]);
                             }
                         }
                     }
-                    this._totalToAuthorize = parseFloat(total).toFixed(2);
+                    //this._totalToAuthorize = parseFloat(total);
                 },
                 GetProjectResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -1551,7 +1562,7 @@
                 //### - Grid selection behaviour
                 _resetSelection: function (inverted) {
                     var erro = 0
-                    this._totalToAuthorize = 0.0;
+                    this._totalToAuthorize = 0.00;
                     if (inverted) {
 
                         var gridfilter = this.$.grdProjectMovements._filter(this.result.value);
@@ -1634,12 +1645,12 @@
                                     this.$.updatelinesSelecionada_ajax.body = JSON.stringify(gridfilter[i]);
                                     this.$.updatelinesSelecionada_ajax.generateRequest();
 
-                                    total = total + gridfilter[i].totalPrice;
+                                    //total = total + gridfilter[i].totalPrice;
+                                    //this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(gridfilter[i].totalPrice)).toFixed(2);
                                     this.$.grdProjectMovements.selectItem(gridfilter[i]);
                                 }
                             }
                         }
-
                         //var items = this.$.grdProjectMovements.items;
                         //if (items.length > 0) {
                         //    for (var i = 0; i < items.length; i++) {
@@ -1653,7 +1664,7 @@
                         //        }
                         //    }
                         //}
-                        this._totalToAuthorize = parseFloat(total).toFixed(2);
+                        //this._totalToAuthorize = parseFloat(total).toFixed(2);
                     }
                     else {
                         var total = 0;
@@ -1666,7 +1677,7 @@
                                     this.$.updatelinesSelecionada_ajax.generateRequest();
                             }
                         }
-                        this._totalToAuthorize = 0;
+                        this._totalToAuthorize = 0.00;
                     }
                 },
                 // iOS needs indeterminate + checked at the same time
