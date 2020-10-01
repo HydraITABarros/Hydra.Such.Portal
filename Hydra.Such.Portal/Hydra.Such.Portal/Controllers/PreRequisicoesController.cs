@@ -466,15 +466,21 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null && data.Lines != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequisitionNo);
-                    List<LinhasPréRequisição> CLToDelete = PreRequesitionLines.Where(y => !data.Lines.Any(x => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha)).ToList();
+                    if (PreRequesitionLines != null && PreRequesitionLines.Count > 0)
+                    {
+                        List<LinhasPréRequisição> CLToDelete = PreRequesitionLines.Where(y => !data.Lines.Any(x => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha)).ToList();
 
-                    CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
+                        CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
+                    }
 
                     //data.Lines.ForEach(x =>
                     for (int i = 0; i < data.Lines.Count;i++)
                     {
                         PreRequisitionLineViewModel x = data.Lines[i];
-                        LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
+                        LinhasPréRequisição CLine = new LinhasPréRequisição();
+
+                        if (PreRequesitionLines != null && PreRequesitionLines.Count > 0)
+                            CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
                         NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
                         if (Project != null)
@@ -490,7 +496,7 @@ namespace Hydra.Such.Portal.Controllers
                         else
                             x.ArmazemCDireta = "0";
 
-                        if (CLine != null)
+                        if (CLine != null && x.LineNo != 0)
                         {
                             CLine.NºPréRequisição = x.PreRequisitionLineNo;
                             CLine.NºLinha = x.LineNo;
@@ -541,7 +547,9 @@ namespace Hydra.Such.Portal.Controllers
                         else
                         {
                             x.CreateUser = User.Identity.Name;
-                            data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
+                            LinhasPréRequisição LineToCreate = DBPreRequesitionLines.ParseToDB(x);
+                            if (DBPreRequesitionLines.Create(LineToCreate) != null)
+                                data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(LineToCreate);
                         }
                     }//);
 
@@ -822,16 +830,14 @@ namespace Hydra.Such.Portal.Controllers
                 reqID.FunctionalAreaCode = CU.AreaPorDefeito;
                 reqID.ResponsabilityCenterCode = CU.CentroRespPorDefeito;
 
-
-
                 return Json(reqID);
             }
             else
             {
                 //Apagar as Linhas
-                if (DBPreRequesitionLines.GetAllByNo(User.Identity.Name).Count() > 0)
+                List<LinhasPréRequisição> LinesToDelete = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
+                if (LinesToDelete != null && LinesToDelete.Count > 0)
                 {
-                    List<LinhasPréRequisição> LinesToDelete = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
                     foreach (var LineToDelete in LinesToDelete)
                     {
                         DBPreRequesitionLines.Delete(LineToDelete);

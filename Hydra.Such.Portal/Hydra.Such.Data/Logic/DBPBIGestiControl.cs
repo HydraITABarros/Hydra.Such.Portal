@@ -75,6 +75,41 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<PBIGestiControl_MovPropostasViewModel> Get_MovPropostas()
+        {
+            try
+            {
+                List<PBIGestiControl_MovPropostasViewModel> result = new List<PBIGestiControl_MovPropostasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+                    var parameters = new[]{
+                        new SqlParameter("@ID", "")
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec PBIGestiControl_Get_MovPropostas @ID", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        result.Add(new PBIGestiControl_MovPropostasViewModel()
+                        {
+                            ID = temp.ID.Equals(DBNull.Value) ? "" : (string)temp.ID,
+                            CResp = temp.CResp.Equals(DBNull.Value) ? "" : (string)temp.CResp,
+                            Data = temp.Data.Equals(DBNull.Value) ? "" : (string)temp.Data,
+                            NumPropostas = temp.NumPropostas.Equals(DBNull.Value) ? "" : (string)temp.NumPropostas,
+                            NumRevistas = temp.NumRevistas.Equals(DBNull.Value) ? "" : (string)temp.NumRevistas,
+                            NumGanhas = temp.NumGanhas.Equals(DBNull.Value) ? "" : (string)temp.NumGanhas
+                        });
+                    }
+
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<PBIGestiControl_MovProducaoCRespViewModel> Get_MovProducaoCResp()
         {
             try
@@ -97,9 +132,8 @@ namespace Hydra.Such.Data.Logic
                             Area = temp.Area.Equals(DBNull.Value) ? "" : (string)temp.Area,
                             IdIndicador = temp.IdIndicador.Equals(DBNull.Value) ? "" : (string)temp.IdIndicador,
                             Indicador = temp.Indicador.Equals(DBNull.Value) ? "" : (string)temp.Indicador,
-                            DataPro = (DateTime)temp.DataPro,
-                            DataProText = temp.DataPro.Equals(DBNull.Value) ? "" : Convert.ToDateTime(temp.DataPro).ToString("yyyy-MM-dd"),
-                            VProdGrafico = (decimal)temp.VProdGrafico,
+                            DataPro = temp.DataPro.Equals(DBNull.Value) ? "" : (string)temp.DataPro,
+                            VProdGrafico = temp.VProdGrafico.Equals(DBNull.Value) ? "" : (string)temp.VProdGrafico
                         });
                     }
 

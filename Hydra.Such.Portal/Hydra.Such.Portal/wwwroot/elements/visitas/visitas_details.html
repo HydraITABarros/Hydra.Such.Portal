@@ -1,0 +1,533 @@
+﻿<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/neon-animation/web-animations.html">
+
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-context-menu/vaadin-context-menu.html" />
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-item/vaadin-item.html" />
+<link rel="import" href="/lib/vaadin-list-box/vaadin-list-box.html" />
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button.html">
+<link rel="import" href="/lib/vaadin-radio-button/vaadin-radio-button-group.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/vaadin-time-picker-master/vaadin-time-picker.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+
+<link rel="import" href="/lib/datetime-picker-master/datetime-picker.html">
+<!--<link rel="import" href="/lib/datetime-picker-master/time-element.html" />
+<link rel="import" href="/lib/datetime-picker-master/time-picker.html" />-->
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--SUCH-->
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+
+<dom-module id="x-visitasdetails">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+        </style>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+            <template is="dom-if" if="{{ _isCreate }}">
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button id="btnCreate" class="btnEdit tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Visita</paper-button>
+                </template>
+            </template>
+
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button id="btn_visitaUpdate" class="btnEdit tablinks" on-tap="_update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button id="btn_visitaDuplicar" class="btnEdit tablinks" on-tap="_duplicar"><i class="fa fa-copy" aria-hidden="true"></i>&nbsp; Duplicar</paper-button>
+                    <paper-button id="btn_visitaTornarModelo" class="btnEdit tablinks" on-tap="_tornarModelo"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Tornar Modelo</paper-button>
+                    <paper-button id="btn_visitaCriarFH" class="btnEdit tablinks" on-tap="_tornarModelo"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar F. Horas</paper-button>
+                </template>
+            </template>
+
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <template is="dom-if" if="{{ _permissions.delete }}">
+                    <paper-button id="btnDelete" class="btnRemove tablinks" on-tap="_delete"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>
+                </template>
+            </template>
+        </div>
+
+        <div class="row break_frm">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <paper-tabs id="tabVisita" name="tabVisita" fit-container no-slide autoselect autoselect-delay="0" selected="{{selectedTab}}">
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Formulários</paper-tab>
+                            <paper-tab>Anexos</paper-tab>
+                        </paper-tabs>
+
+                        <iron-pages selected="{{selectedTab}}">
+                            <!--Geral-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_codRegiao" name="geral_codRegiao" value="{{visita.codRegiao}}" label="Região"
+                                                        items="[[ListaRegioes]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Região"}]'
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_codAreaFuncional" name="geral_codAreaFuncional" value="{{visita.codAreaFuncional}}" label="Área Funcional"
+                                                        items="[[ListaAreas]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Área Funcional"}]'
+                                                        on-value-changed="_GetListaCentros"
+                                                        required error-message="O campo Área Funcional é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <such-selectbox id="geral_codCentroResponsabilidade" name="geral_codCentroResponsabilidade" value="{{visita.codCentroResponsabilidade}}" label="Centro de Responsabilidade"
+                                                        items="[[ListaCentros]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro de Responsabilidade"}]'
+                                                        required error-message="O campo Centro de Responsabilidade é de preenchimento obrigatório"
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <vaadin-text-field id="geral_local" name="geral_local" value="{{visita.local}}" label="Local / Compartimento" maxlength="200" disabled="{{ _lockFields }}"></vaadin-text-field>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-9">
+                                        <vaadin-text-field id="geral_objetivo" name="geral_objetivo" value="{{visita.objetivo}}" label="Objetivo" maxlength="200" disabled="{{ _lockFields }}"></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        <vaadin-text-field id="geral_folhaHorasNo" name="geral_folhaHorasNo" value="{{visita.folhaHorasNo}}" label="Folha Horas No" maxlength="50" disabled></vaadin-text-field>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <vaadin-text-field id="geral_estado" name="geral_estado" value="{{visita.estado}}" label="Estado" maxlength="50" disabled></vaadin-text-field>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-6">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" style="font-weight:bold">Iniciativa da Visita</div>
+                                            <div class="panel-body">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-12">
+                                                        <vaadin-text-field id="geral_iniciativaCriador" name="geral_iniciativaCriador" value="{{visita.iniciativaCriador}}" label="Iniciada por:" maxlength="50" disabled></vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <such-selectbox id="geral_iniciativaResponsavel" name="geral_iniciativaResponsavel" value="{{visita.iniciativaResponsavel}}" label="Responsável"
+                                                                        items="[[ListaUtilizadoresESUCH]]"
+                                                                        text-path="value"
+                                                                        value-path="id"
+                                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro de Responsabilidade"}]'
+                                                                        disabled="{{ _lockFields }}">
+                                                        </such-selectbox>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <such-textarea id="geral_iniciativaIntervenientes" name="geral_iniciativaIntervenientes" value="{{data.iniciativaIntervenientes}}" label="Intervenientes" disabled="{{ _lockFields }}" rows="3" maxlength="200"> </such-textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" style="font-weight:bold">Receção da Visita</div>
+                                            <div class="panel-body">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-12">
+                                                        <vaadin-text-field id="geral_rececaoCriador" name="geral_rececaoCriador" value="{{data.rececaoCriador}}" label="Rececionada por:" disabled="{{ _lockFields }}" maxlength="50"> </vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <vaadin-text-field id="geral_rececaoResponsavel" name="geral_rececaoResponsavel" value="{{data.rececaoResponsavel}}" label="Responsável" disabled="{{ _lockFields }}" maxlength="50"> </vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <such-textarea id="geral_rececaoIntervenientes" name="geral_rececaoIntervenientes" value="{{data.rececaoIntervenientes}}" label="Intervenientes" disabled="{{ _lockFields }}" rows="3" maxlength="200"> </such-textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="col-md-8">
+                                            <vaadin-date-picker id="geral_inicioData" name="geral_inicioData" value="{{data.inicioData}}" label="Data/Hora - Início" disabled="{{ _lockFieldse }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-4" style="padding-top: 20px;">
+                                            <vaadin-time-picker id="geral_inicioHora" name="geral_inicioHora" value="{{data.inicioHora}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="col-md-8">
+                                            <vaadin-date-picker id="geral_fimData" name="geral_fimData" value="{{data.fimData}}" label="Data/Hora - Fim" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                        </div>
+
+                                        <div class="col-md-4" style="padding-top: 20px;">
+                                            <vaadin-time-picker id="geral_fimHora" name="geral_fimHora" value="{{data.fimHora}}" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <such-selectbox id="geral_contratoESUCH" name="geral_contratoESUCH" value="{{visita.contratoESUCH}}" label="Contratos eSUCH (Clientes)"
+                                                        items="[[ListaUtilizadoresESUCH]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro de Responsabilidade"}]'
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <such-selectbox id="geral_contratoOutro" name="geral_contratoOutro" value="{{visita.contratoOutro}}" label="Outros Contratos eSUCH (Fornecedores)"
+                                                        items="[[ListaUtilizadoresESUCH]]"
+                                                        text-path="value"
+                                                        value-path="id"
+                                                        fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Centro de Responsabilidade"}]'
+                                                        disabled="{{ _lockFields }}">
+                                        </such-selectbox>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-12">
+                                        <such-textarea id="geral_relatorioSimplificado" name="geral_relatorioSimplificado" value="{{data.relatorioSimplificado}}" label="Relatório Simplificado" disabled="{{ _lockFields }}" rows="7" maxlength="2000"> </such-textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <!--Tarefas Realizadas-->
+                                    <paper-collapse-item class="panel-heading" header="Tarefas Realizadas" opened>
+                                        <vaadin-grid id="grid_tabTarefa" aria-label="grid_tabTarefa" items="{{ tabTarefa }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                            <vaadin-grid-column resizable width="150px">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="ordem">Ordem</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="ordem" />
+                                                </template>
+                                                <template>
+                                                    <div class="alignRight">
+                                                        {{item.ordem}}
+                                                    </div>
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable width="150px">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="tarefa">Tarefa</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="tarefa" />
+                                                </template>
+                                                <template>
+                                                    {{item.tarefa}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable width="150px">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="data" />
+                                                </template>
+                                                <template>
+                                                    {{item.data}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable width="150px">
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="duracao">Duração</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="duracao" />
+                                                </template>
+                                                <template>
+                                                    {{item.duracao}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column resizable width="100px">
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <paper-button id="btn_tarefaDelete" name="btn_tarefaDelete" class="btnRemove tableBtn" raised on-tap="_deleteTarefaLinha" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+
+                                        <div style="padding-left:50px">
+                                            <paper-collapse-item class="panel-heading" header="Nova Tarefa" closed>
+                                                <div>
+                                                    <div class="col-md-1 alignRight">
+                                                        <vaadin-text-field id="tarefa_ordem" name="tarefa_ordem" value="" label="Ordem" disabled="{{ _lockFields }}" type="number" maxlength="5"> </vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-md-7">
+                                                        <vaadin-text-field id="tarefa_tarefa" name="tarefa_tarefa" value="" label="Tarefa" disabled="{{ _lockFields }}" maxlength="200"> </vaadin-text-field>
+                                                    </div>
+
+                                                    <div class="col-md-2">
+                                                        <vaadin-date-picker id="tarefa_data" name="tarefa_data" value="" label="Data" disabled="{{ _lockFields }}" placeholder="dd/MM/aaaa"></vaadin-date-picker>
+                                                    </div>
+
+                                                    <div class="col-md-1">
+                                                        <vaadin-time-picker id="tarefa_duracao" name="tarefa_duracao" label="Duração" value="" disabled="{{ _lockFields }}" placeholder="HH:mm" step="1800"></vaadin-time-picker>
+                                                    </div>
+
+                                                    <div class="col-md-1" style="padding-top:15px">
+                                                        <paper-button id="btn_tarefaInsert" name="btn_tarefaInsert" class="btnSave" raised on-tap="_insertTarefaLinha" disabled="{{ _lockFields }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                                                    </div>
+                                                </div>
+                                            </paper-collapse-item>
+                                        </div>
+                                    </paper-collapse-item>
+                                </div>
+                            </div>
+
+                            <!--Formulários-->
+                            <div>
+                                <div class="row break_clear">
+                                </div>
+                            </div>
+
+                            <!--Anexos-->
+                            <div>
+                                <div class="row break_clear">
+                                    <div class="col-md-12">
+                                        <vaadin-upload id="UploadRequest"
+                                                       target="/Visitas/FileUpload/{{_prerequesitionno}}"
+                                                       method="POST"
+                                                       headers="{'Accept': 'application/json'}"
+                                                       hidden="{{ !_permissions.update }}"
+                                                       timeout=15000>
+                                        </vaadin-upload>
+                                    </div>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-12">
+                                        <vaadin-grid id="grid_Anexos" aria-label="ReqUpdateGrid" items="[[uploads]]" class="grid" multi-sort="true">
+                                            <vaadin-grid-column width="70%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="url">Anexo</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="url" />
+                                                </template>
+                                                <template>
+                                                    <a href="/Visitas/DownloadFile/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column width="20%" resizable>
+                                                <template class="header">
+                                                    <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                                                    <vaadin-grid-filter path="createDateTime" />
+                                                </template>
+                                                <template>
+                                                    {{item.createDateTime}}
+                                                </template>
+                                            </vaadin-grid-column>
+
+                                            <vaadin-grid-column width="10%" resizable>
+                                                <template class="header">
+                                                </template>
+                                                <template>
+                                                    <center>
+                                                        <template is="dom-if" if="{{ _permissions.update }}">
+                                                            <center>
+                                                                <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAnexo" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                            </center>
+                                                        </template>
+                                                    </center>
+                                                </template>
+                                            </vaadin-grid-column>
+                                        </vaadin-grid>
+                                    </div>
+                                </div>
+                            </div>
+                        </iron-pages>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-visitasdetails',
+                properties: {
+                    _visita: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    selectedTab: {
+                        type: Number,
+                        value: 0
+                    },
+                },
+
+                ready: function () {
+                    if (this._visita == "") {
+                        this._isCreate = false;
+                    }
+
+                    this.selectedTab = "0";
+                }
+
+
+
+
+
+            });
+        });
+    </script>
+</dom-module>

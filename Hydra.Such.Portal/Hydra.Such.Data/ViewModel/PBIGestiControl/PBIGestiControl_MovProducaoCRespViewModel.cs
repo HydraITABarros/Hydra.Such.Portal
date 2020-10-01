@@ -11,8 +11,10 @@ namespace Hydra.Such.Data.ViewModel.PBIGestiControl
         public string Area { get; set; }
         public string IdIndicador { get; set; }
         public string Indicador { get; set; }
-        public DateTime DataPro { get; set; }
-        public string DataProText { get; set; }
-        public decimal VProdGrafico { get; set; }
+        public string DataPro { get; set; }
+        public string VProdGrafico { get; set; }
+
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
     }
 }

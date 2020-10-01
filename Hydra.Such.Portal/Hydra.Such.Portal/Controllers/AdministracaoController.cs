@@ -8371,6 +8371,14 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public ActionResult PBIGestiControl_Get_MovPropostas()
+        {
+            List<PBIGestiControl_MovPropostasViewModel> result = DBPBIGestiControl.Get_MovPropostas();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public ActionResult PBIGestiControl_Get_Areas()
         {
             List<PBIGestiControl_AreasViewModel> result = DBPBIGestiControl.Get_Areas();
@@ -8703,6 +8711,126 @@ namespace Hydra.Such.Portal.Controllers
         }
         //2
         public IActionResult ExportToExcelDownload_MovProducao(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_MovProducaoCresp([FromBody] List<PBIGestiControl_MovProducaoCRespViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Contratos");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Indicador"); Col = Col + 1; }
+                if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área"); Col = Col + 1; }
+                if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Produção"); Col = Col + 1; }
+                if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Produção Gráfico"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (PBIGestiControl_MovProducaoCRespViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Indicador); Col = Col + 1; }
+                        if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area); Col = Col + 1; }
+                        if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPro); Col = Col + 1; }
+                        if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VProdGrafico.Replace(".", ",")); Col = Col + 1; }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_MovProducaoCresp(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_MovPropostas([FromBody] List<PBIGestiControl_MovPropostasViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Propostas");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["cResp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["data"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
+                if (dp["numPropostas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Propostas"); Col = Col + 1; }
+                if (dp["numRevistas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Revistas"); Col = Col + 1; }
+                if (dp["numGanhas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Ganhas"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (PBIGestiControl_MovPropostasViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["cResp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CResp); Col = Col + 1; }
+                        if (dp["data"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Data); Col = Col + 1; }
+                        if (dp["numPropostas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumPropostas); Col = Col + 1; }
+                        if (dp["numRevistas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumRevistas.Replace(".", ",")); Col = Col + 1; }
+                        if (dp["numGanhas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumGanhas.Replace(".", ",")); Col = Col + 1; }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_MovPropostas(string sFileName)
         {
             sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

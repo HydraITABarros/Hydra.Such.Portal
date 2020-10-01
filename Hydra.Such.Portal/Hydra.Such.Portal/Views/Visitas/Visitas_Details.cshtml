@@ -1,0 +1,12 @@
+﻿@model Hydra.Such.Data.Database.Visitas
+
+@{
+    ViewData["Title"] = "Visita Nº " + ViewBag.VisitaNo;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/visitas/visitas_details.html">
+
+<x-visitasdetails _visita="@ViewBag.VisitaNo"
+                    _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-visitasdetails>

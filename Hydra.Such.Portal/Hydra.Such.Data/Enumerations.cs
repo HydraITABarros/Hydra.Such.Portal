@@ -205,6 +205,8 @@ namespace Hydra.Such.Data
             [Description("Academia - Formação")]
             AcademiaFormacao = 78,
             #endregion
+            [Description("Visitas")]
+            Visitas = 79,
 
 
 
