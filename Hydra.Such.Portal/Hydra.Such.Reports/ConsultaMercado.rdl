@@ -1765,10 +1765,11 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=IIF(IsNothing(Sum(Fields!PrazoResposta.Value, "Dados_Fornecedores")), "", Sum(Fields!PrazoResposta.Value, "Dados_Fornecedores"))</Value>
+                                  <Value>=FormatDateTime(DateAdd("d", Int(First(Fields!PrazoResposta.Value, "Dados_Fornecedores")), CDate(First(Fields!Data_Pedido_Cotacao.Value, "Dados_ConsultaMercado"))), DateFormat.ShortDate)</Value>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <Format>dd/MM/yyyy</Format>
                                     <Language>pt-PT</Language>
                                   </Style>
                                 </TextRun>
@@ -2265,7 +2266,7 @@
         <Height>6.67396cm</Height>
         <Style />
       </Body>
-      <Width>17.54479cm</Width>
+      <Width>17.44344cm</Width>
       <Page>
         <PageHeader>
           <Height>2.29375cm</Height>
@@ -3457,14 +3458,12 @@
     </ReportParameter>
     <ReportParameter Name="Fornecedor">
       <DataType>String</DataType>
-      <Nullable>true</Nullable>
       <DefaultValue>
         <DataSetReference>
           <DataSetName>Fornecedores</DataSetName>
           <ValueField>Cod_Fornecedor</ValueField>
         </DataSetReference>
       </DefaultValue>
-      <AllowBlank>true</AllowBlank>
       <Prompt>Fornecedor</Prompt>
       <ValidValues>
         <DataSetReference>
@@ -3764,6 +3763,7 @@ WSBTPjU7vES/x2dmQzPjUZsUaRkjZXLmUrnvoEOW7hHqN+klgOa+g80jlzMYqDfSLUcvJG2QaPA4znxm
 btBPz5VRbU0tz8jTk2REUpYi6ztIvL6ujs88Ijcnh0/NgkGxNP4yTofdtYfjhr6Q/6QAy8/vPFnQQyJ+lpq9QDmorwiJTQeDAoHtWJC+g/6hqanp1IkTpGMXKARdd2VFhfTGEIHAnixU30FwPte5JIFZOjs7EU6T8F4gsBsLdZwlEAgWLsJ3BAKBvRG+IxAI7I3wHYFAYG+E7wgEAnsjfEcgENgb4TsCgcDeCN8RCAT2RviOQCCwLw8f/n9MeAKpW7EjbAAAAABJRU5ErkJggg==</ImageData>
     </EmbeddedImage>
   </EmbeddedImages>
+  <Language>pt-PT</Language>
   <rd:ReportUnitType>Cm</rd:ReportUnitType>
   <rd:ReportID>919a3988-6faa-4032-8e6a-afd0aa010eb5</rd:ReportID>
 </Report>
