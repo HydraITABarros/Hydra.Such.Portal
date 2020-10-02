@@ -109,6 +109,27 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
+        public static List<Requisição> GetByStateAndDate(int TipoReq, List<RequisitionStates> states, DateTime date)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Requisição
+                        .Include("LinhasRequisição")
+                        .Include(x => x.RequisicoesRegAlteracoes)
+                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0) && x.DataRequisição > date)
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static List<Requisição> GetByStateByInterface(int TipoReq, List<RequisitionStates> states, int Interface)
         {
             try

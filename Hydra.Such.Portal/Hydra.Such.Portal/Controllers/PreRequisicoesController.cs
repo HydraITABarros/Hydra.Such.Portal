@@ -1340,6 +1340,10 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
+            List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "");
+            List<NAVStockKeepingUnitViewModel> AllLocalizacoes = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "");
+            List<QuantidadesViewModel> AllQuantidades = DBNAV2017Products.GetAllQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "", "");
+
             List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
 
             if (reqLines != null)
@@ -1406,7 +1410,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (!string.IsNullOrEmpty(x.Code))
                         {
                             NAVProductsViewModel product = new NAVProductsViewModel();
-                            product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                            product = AllProducts.Where(y => y.Code == x.Code).FirstOrDefault();
 
                             if (product != null)
                             {
@@ -1418,7 +1422,9 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
-                                    NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                                    NAVStockKeepingUnitViewModel localizacao = new NAVStockKeepingUnitViewModel();
+                                    localizacao = AllLocalizacoes.Where(y => y.ItemNo_ == x.Code).FirstOrDefault();
+
                                     if (localizacao != null)
                                     {
                                         newline.CustoUnitário = localizacao.UnitCost;
@@ -1450,7 +1456,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (!string.IsNullOrEmpty(newline.Código) && !string.IsNullOrEmpty(newline.CódigoLocalização))
                         {
-                            Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, newline.Código, newline.CódigoLocalização);
+                            Quantidades = AllQuantidades.Where(y => y.Codigo == newline.Código && y.CodLocalizacao == newline.CódigoLocalização).FirstOrDefault();
 
                             if (Quantidades != null)
                             {

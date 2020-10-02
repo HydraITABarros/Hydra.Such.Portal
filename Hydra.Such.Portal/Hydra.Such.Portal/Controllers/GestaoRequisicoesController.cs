@@ -49,11 +49,18 @@ namespace Hydra.Such.Portal.Controllers
 
         public IActionResult Index()
         {
-            UserAccessesViewModel userPermissions =
-                DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+            UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Requisições);
+
             if (userPermissions != null && userPermissions.Read.Value)
             {
+                DateTime data = DateTime.Now.AddMonths(-3);
+                string ano = data.Year.ToString();
+                string mes = data.Month < 10 ? "0" + data.Month.ToString() : data.Month.ToString();
+                string dia = data.Day < 10 ? "0" + data.Day.ToString() : data.Day.ToString();
+
                 ViewBag.UPermissions = userPermissions;
+                ViewBag.PesquisaDate = ano + "-" + mes + "-" + dia;
+
                 return View();
             }
             else
@@ -1088,8 +1095,10 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetValidatedRequisitions()
+        public JsonResult GetValidatedRequisitions([FromBody] JObject requestParams)
         {
+            DateTime pesquisaData = Convert.ToDateTime((string)requestParams.GetValue("pesquisadata"));
+
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
                 RequisitionStates.Validated,
@@ -1097,8 +1106,8 @@ namespace Hydra.Such.Portal.Controllers
                 RequisitionStates.Received,
                 RequisitionStates.Treated,
             };
-            List<RequisitionViewModel> result = DBRequest.GetByState((int)RequisitionTypes.Normal, states).ParseToViewModel();
 
+            List<RequisitionViewModel> result = DBRequest.GetByStateAndDate((int)RequisitionTypes.Normal, states, pesquisaData).ParseToViewModel();
 
             result.ForEach(x => x.StateText = x.State.HasValue ? x.State == RequisitionStates.Validated ? RequisitionStates.Validated.GetDescription() :
                x.State == RequisitionStates.Available ? RequisitionStates.Available.GetDescription() :
