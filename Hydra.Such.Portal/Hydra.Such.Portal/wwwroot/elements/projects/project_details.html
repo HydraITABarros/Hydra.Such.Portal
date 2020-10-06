@@ -828,6 +828,7 @@
                     if (this.data.eReasonCode == 1) {
                         this._isCreate = false;
                         this._openToast("Projeto criado com sucesso.");
+                        //window.location.href = "/Projetos/Detalhes/" + this.data.projectNo;
                     } else {
                         this._openToastError(this.data.eMessage);
                     }

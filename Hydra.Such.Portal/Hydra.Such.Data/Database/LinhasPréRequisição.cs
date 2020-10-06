@@ -13,6 +13,7 @@ namespace Hydra.Such.Data.Database
         public string CódigoLocalização { get; set; }
         public string CódigoUnidadeMedida { get; set; }
         public decimal? QuantidadeARequerer { get; set; }
+        public decimal? QuantidadeDisponivel { get; set; }
         public decimal? QuantidadeInicial { get; set; }
         public string CódigoRegião { get; set; }
         public string CódigoÁreaFuncional { get; set; }

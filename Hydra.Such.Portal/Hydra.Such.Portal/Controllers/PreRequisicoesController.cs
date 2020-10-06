@@ -466,15 +466,21 @@ namespace Hydra.Such.Portal.Controllers
                 if (data != null && data.Lines != null)
                 {
                     List<LinhasPréRequisição> PreRequesitionLines = DBPreRequesitionLines.GetAllByNo(data.PreRequisitionNo);
-                    List<LinhasPréRequisição> CLToDelete = PreRequesitionLines.Where(y => !data.Lines.Any(x => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha)).ToList();
+                    if (PreRequesitionLines != null && PreRequesitionLines.Count > 0)
+                    {
+                        List<LinhasPréRequisição> CLToDelete = PreRequesitionLines.Where(y => !data.Lines.Any(x => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha)).ToList();
 
-                    CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
+                        CLToDelete.ForEach(x => DBPreRequesitionLines.Delete(x));
+                    }
 
                     //data.Lines.ForEach(x =>
                     for (int i = 0; i < data.Lines.Count;i++)
                     {
                         PreRequisitionLineViewModel x = data.Lines[i];
-                        LinhasPréRequisição CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
+                        LinhasPréRequisição CLine = new LinhasPréRequisição();
+
+                        if (PreRequesitionLines != null && PreRequesitionLines.Count > 0)
+                            CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
                         NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
                         if (Project != null)
@@ -490,7 +496,7 @@ namespace Hydra.Such.Portal.Controllers
                         else
                             x.ArmazemCDireta = "0";
 
-                        if (CLine != null)
+                        if (CLine != null && x.LineNo != 0)
                         {
                             CLine.NºPréRequisição = x.PreRequisitionLineNo;
                             CLine.NºLinha = x.LineNo;
@@ -512,6 +518,7 @@ namespace Hydra.Such.Portal.Controllers
                             CLine.QtdPorUnidadeMedida = x.QtyByUnitOfMeasure;
                             CLine.QuantidadeRequerida = x.QuantityRequired;
                             CLine.QuantidadePendente = x.QuantityPending;
+                            CLine.QuantidadeDisponivel = x.QuantidadeDisponivel;
                             CLine.QuantidadeInicial = x.QuantityToRequire;
                             CLine.CustoUnitário = x.UnitCost;
                             CLine.CustoUnitarioComIVA = x.UnitCostWithIVA;
@@ -540,7 +547,9 @@ namespace Hydra.Such.Portal.Controllers
                         else
                         {
                             x.CreateUser = User.Identity.Name;
-                            data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(DBPreRequesitionLines.Create(DBPreRequesitionLines.ParseToDB(x)));
+                            LinhasPréRequisição LineToCreate = DBPreRequesitionLines.ParseToDB(x);
+                            if (DBPreRequesitionLines.Create(LineToCreate) != null)
+                                data.Lines[i] = DBPreRequesitionLines.ParseToViewModel(LineToCreate);
                         }
                     }//);
 
@@ -581,6 +590,7 @@ namespace Hydra.Such.Portal.Controllers
                         CódigoLocalização = LinhaOriginal.CódigoLocalização,
                         CódigoUnidadeMedida = LinhaOriginal.CódigoUnidadeMedida,
                         QuantidadeARequerer = LinhaOriginal.QuantidadeARequerer,
+                        QuantidadeDisponivel = LinhaOriginal.QuantidadeDisponivel,
                         QuantidadeInicial = LinhaOriginal.QuantidadeInicial,
                         CódigoRegião = LinhaOriginal.CódigoRegião,
                         CódigoÁreaFuncional = LinhaOriginal.CódigoÁreaFuncional,
@@ -820,16 +830,14 @@ namespace Hydra.Such.Portal.Controllers
                 reqID.FunctionalAreaCode = CU.AreaPorDefeito;
                 reqID.ResponsabilityCenterCode = CU.CentroRespPorDefeito;
 
-
-
                 return Json(reqID);
             }
             else
             {
                 //Apagar as Linhas
-                if (DBPreRequesitionLines.GetAllByNo(User.Identity.Name).Count() > 0)
+                List<LinhasPréRequisição> LinesToDelete = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
+                if (LinesToDelete != null && LinesToDelete.Count > 0)
                 {
-                    List<LinhasPréRequisição> LinesToDelete = DBPreRequesitionLines.GetAllByNo(User.Identity.Name);
                     foreach (var LineToDelete in LinesToDelete)
                     {
                         DBPreRequesitionLines.Delete(LineToDelete);
@@ -1332,6 +1340,10 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
 
+            List<NAVProductsViewModel> AllProducts = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "");
+            List<NAVStockKeepingUnitViewModel> AllLocalizacoes = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "");
+            List<QuantidadesViewModel> AllQuantidades = DBNAV2017Products.GetAllQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, "", "");
+
             List<RequisitionLineViewModel> reqLines = DBRequestLine.GetByRequisitionId(req.RequisitionNo).ParseToViewModel();
 
             if (reqLines != null)
@@ -1341,6 +1353,7 @@ namespace Hydra.Such.Portal.Controllers
                     reqLines.UpdateAgreedPrices();
 
                     List<LinhasPréRequisição> preReqLines = new List<LinhasPréRequisição>();
+
                     reqLines.ForEach(x =>
                     {
                         LinhasPréRequisição newline = new LinhasPréRequisição
@@ -1352,6 +1365,7 @@ namespace Hydra.Such.Portal.Controllers
                             CódigoLocalização = x.LocalCode,
                             CódigoUnidadeMedida = x.UnitMeasureCode,
                             QuantidadeARequerer = x.QuantityToRequire,
+                            QuantidadeDisponivel = x.QuantidadeDisponivel ?? (decimal?)null,
                             QuantidadeInicial = x.QuantidadeInicial ?? (decimal?)null,
                             CódigoRegião = x.RegionCode,
                             CódigoÁreaFuncional = x.FunctionalAreaCode,
@@ -1396,7 +1410,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (!string.IsNullOrEmpty(x.Code))
                         {
                             NAVProductsViewModel product = new NAVProductsViewModel();
-                            product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                            product = AllProducts.Where(y => y.Code == x.Code).FirstOrDefault();
 
                             if (product != null)
                             {
@@ -1408,7 +1422,9 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 else
                                 {
-                                    NAVStockKeepingUnitViewModel localizacao = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                                    NAVStockKeepingUnitViewModel localizacao = new NAVStockKeepingUnitViewModel();
+                                    localizacao = AllLocalizacoes.Where(y => y.ItemNo_ == x.Code).FirstOrDefault();
+
                                     if (localizacao != null)
                                     {
                                         newline.CustoUnitário = localizacao.UnitCost;
@@ -1433,6 +1449,18 @@ namespace Hydra.Such.Portal.Controllers
                                     newline.Descrição2 = product.Name2;
                                     newline.CódigoUnidadeMedida = product.MeasureUnit;
                                 }
+                            }
+                        }
+
+                        QuantidadesViewModel Quantidades = new QuantidadesViewModel();
+
+                        if (!string.IsNullOrEmpty(newline.Código) && !string.IsNullOrEmpty(newline.CódigoLocalização))
+                        {
+                            Quantidades = AllQuantidades.Where(y => y.Codigo == newline.Código && y.CodLocalizacao == newline.CódigoLocalização).FirstOrDefault();
+
+                            if (Quantidades != null)
+                            {
+                                newline.QuantidadeDisponivel = Quantidades.QuantDisponivel;
                             }
                         }
 
@@ -2002,6 +2030,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeDisponivel = line.QuantidadeDisponivel,
                                     QuantidadeInicial = line.QuantidadeInicial,
                                     UnitCost = line.UnitCost,
                                     ProjectNo = line.ProjectNo,
@@ -2089,6 +2118,7 @@ namespace Hydra.Such.Portal.Controllers
                                     Description2 = line.Description2,
                                     UnitMeasureCode = line.UnitMeasureCode,
                                     QuantityToRequire = line.QuantityToRequire,
+                                    QuantidadeDisponivel = line.QuantidadeDisponivel,
                                     QuantidadeInicial = line.QuantidadeInicial,
                                     UnitCost = line.UnitCost,
                                     ProjectNo = line.ProjectNo,
@@ -2388,6 +2418,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 Description2 = line.Description2,
                                                 UnitMeasureCode = line.UnitMeasureCode,
                                                 QuantityToRequire = line.QuantityToRequire,
+                                                QuantidadeDisponivel = line.QuantidadeDisponivel,
                                                 QuantidadeInicial = line.QuantidadeInicial,
                                                 UnitCost = line.UnitCost,
                                                 UnitCostWithIVA = line.UnitCostWithIVA,
@@ -2477,6 +2508,7 @@ namespace Hydra.Such.Portal.Controllers
                                                 Description2 = line.Description2,
                                                 UnitMeasureCode = line.UnitMeasureCode,
                                                 QuantityToRequire = line.QuantityToRequire,
+                                                QuantidadeDisponivel = line.QuantidadeDisponivel,
                                                 QuantidadeInicial = line.QuantidadeInicial,
                                                 UnitCost = line.UnitCost,
                                                 UnitCostWithIVA = line.UnitCostWithIVA,
@@ -2865,6 +2897,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
                         NAVStockKeepingUnitViewModel ProductArmazem = new NAVStockKeepingUnitViewModel();
+
                         if (!string.IsNullOrEmpty(linha.Code))
                             AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code);
 
@@ -2874,7 +2907,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 AllArmazens.ForEach(Armazem =>
                                 {
-                                    if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
+                                    //if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
                                         ProductArmazem = AllProductsArmazem.Where(x => x.LocationCode == Armazem.Valor).FirstOrDefault();
                                 });
                             }

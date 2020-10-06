@@ -905,35 +905,103 @@ namespace Hydra.Such.Portal.Controllers
                                 {
                                     if (RequisicaoGroupInterface.Interface == 0) //0 = Normal
                                     {
-                                        RequisicaoGroupInterface.NoSubFornecedor = null;
-                                        RequisicaoGroupInterface.NoEncomendaFornecedor = null;
-                                        RequisicaoGroupInterface.DataEncomendaSubfornecedor = null;
+                                        List<RequisitionViewModel> RequisicoesGroupLocalCode = new List<RequisitionViewModel>();
 
                                         try
                                         {
-                                            RequisitionViewModel createdRequisition = CreateRequesition(RequisicaoGroupInterface);
-                                            if (createdRequisition.eReasonCode == 1)
+                                            RequisicoesGroupLocalCode = RequisicaoGroupInterface.Lines.GroupBy(x => 
+                                            x.LocalCode,
+                                            x => x,
+                                            (key, items) => new RequisitionViewModel
                                             {
-                                                bool deletedSuccessfully = DBShoppingNecessity.Delete(RequisicaoGroupInterface.Lines);
-                                                if (deletedSuccessfully)
+                                                LocalCode = key,
+                                                Interface = RequisicaoGroupInterface.Interface,
+                                                SupplierCode = RequisicaoGroupInterface.SupplierCode,
+                                                NoSubFornecedor = RequisicaoGroupInterface.NoSubFornecedor,
+                                                TipoReq = (int)RequisitionTypes.Normal,
+                                                FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
+                                                CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
+                                                RegionCode = productivityUnit.CódigoRegião,
+                                                UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva),
+                                                RequestNutrition = true,
+                                                RequisitionDate = DateTime.Now.ToString(),
+                                                ReceivedDate = expextedDate != DateTime.MinValue ? expextedDate.ToString() : string.Empty,
+                                                ProjectNo = Projeto,
+                                                CreateUser = User.Identity.Name,
+                                                CreateDate = DateTime.Now.ToString(),
+                                                State = RequisitionStates.Pending,
+
+                                                Lines = items.Select(line => new RequisitionLineViewModel()
                                                 {
-                                                    result.eReasonCode = 1;
-                                                    result.eMessage = result.eMessage + Environment.NewLine + createdRequisition.eMessage;
-                                                    result.eMessages.Add(new TraceInformation(TraceType.Success, createdRequisition.eMessage));
+                                                    Type = 2,
+                                                    Code = line.Code,
+                                                    Description = !string.IsNullOrEmpty(line.Description) ? line.Description.Length >= 100 ? line.Description.Substring(0, 100) : line.Description : "",
+                                                    Description2 = !string.IsNullOrEmpty(line.Description2) ? line.Description2 : AllProducts.FirstOrDefault(x => x.Code == line.Code)?.Name2,
+                                                    UnitMeasureCode = line.UnitMeasureCode,
+                                                    QtyByUnitOfMeasure = line.QtyByUnitOfMeasure,
+                                                    QuantityToRequire = line.QuantityToRequire,
+                                                    QuantidadeDisponivel = line.QuantidadeDisponivel,
+                                                    QuantidadeReservada = line.QuantidadeReservada,
+                                                    UnitCost = line.UnitCost,
+                                                    SupplierNo = line.SupplierNo,
+                                                    SubSupplierNo = line.SubSupplierNo,
+                                                    ExpectedReceivingDate = line.ExpectedReceivingDate,
+                                                    SupplierProductCode = line.SupplierProductCode,
+                                                    FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
+                                                    CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
+                                                    RegionCode = productivityUnit.CódigoRegião,
+                                                    CreateUser = User.Identity.Name,
+                                                    ProjectNo = Projeto,
+                                                    LocalCode = productivityUnit.Armazém,
+                                                    VATProductPostingGroup = !string.IsNullOrEmpty(line.VATProductPostingGroup) ? line.VATProductPostingGroup : AllProducts.FirstOrDefault(x => x.Code == line.Code)?.VATProductPostingGroup,
+                                                    VATBusinessPostingGroup = AllVendors.FirstOrDefault(x => x.No_ == line.SupplierNo)?.VATBusinessPostingGroup,
+                                                    CriarNotaEncomenda = true,
+                                                    CustoUnitarioSubFornecedor = line.CustoUnitarioSubFornecedor,
+                                                    NoLinhaDiarioRequisicaoUnidProdutiva = line.NoLinhaDiarioRequisicaoUnidProdutiva
+                                                }).ToList()
+                                            }).ToList();
+                                        }
+                                        catch
+                                        {
+                                            throw new Exception("Ocorreu um erro ao agrupar as linhas.");
+                                        }
+
+                                        if (RequisicoesGroupLocalCode.Count() > 0)
+                                        {
+                                            RequisicoesGroupLocalCode.ForEach(RequisicaoGroupLocalCode =>
+                                            {
+                                                try
+                                                {
+                                                    RequisicaoGroupLocalCode.NoSubFornecedor = null;
+                                                    RequisicaoGroupLocalCode.NoEncomendaFornecedor = null;
+                                                    RequisicaoGroupLocalCode.DataEncomendaSubfornecedor = null;
+
+                                                    RequisitionViewModel createdRequisition = CreateRequesition(RequisicaoGroupLocalCode);
+                                                    if (createdRequisition.eReasonCode == 1)
+                                                    {
+                                                        bool deletedSuccessfully = DBShoppingNecessity.Delete(RequisicaoGroupLocalCode.Lines);
+                                                        if (deletedSuccessfully)
+                                                        {
+                                                            result.eReasonCode = 1;
+                                                            result.eMessage = result.eMessage + Environment.NewLine + createdRequisition.eMessage;
+                                                            result.eMessages.Add(new TraceInformation(TraceType.Success, createdRequisition.eMessage));
+
+                                                        }
+                                                        else
+                                                        {
+                                                            result.eReasonCode = 2;
+                                                            result.eMessage = result.eMessage + Environment.NewLine + "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente.";
+                                                            result.eMessages.Add(new TraceInformation(TraceType.Error, "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente."));
+                                                        }
+                                                    }
                                                 }
-                                                else
+                                                catch (Exception ex)
                                                 {
                                                     result.eReasonCode = 2;
-                                                    result.eMessage = result.eMessage + Environment.NewLine + "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente.";
-                                                    result.eMessages.Add(new TraceInformation(TraceType.Error, "A requisição foi criada com sucesso, no entanto ocorreu um erro ao eliminar as linhas do diário. Por favor, elimine as linhas manualmente."));
+                                                    result.eMessage = result.eMessage + Environment.NewLine + "Ocorreu um erro ao criar a requisição";
+                                                    result.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
                                                 }
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            result.eReasonCode = 2;
-                                            result.eMessage = result.eMessage + Environment.NewLine + "Ocorreu um erro ao criar a requisição";
-                                            result.eMessages.Add(new TraceInformation(TraceType.Error, ex.Message));
+                                            });
                                         }
                                     }
 
@@ -944,18 +1012,18 @@ namespace Hydra.Such.Portal.Controllers
                                         try
                                         {
                                             RequisicoesGroupSupplier = RequisicaoGroupInterface.Lines.GroupBy(x => new
-                                            { x.SupplierNo, x.SubSupplierNo },
+                                            { x.SupplierNo, x.SubSupplierNo, x.LocalCode },
                                             x => x,
                                             (key, items) => new RequisitionViewModel
                                             {
                                                 Interface = RequisicaoGroupInterface.Interface,
                                                 SupplierCode = key.SupplierNo,
                                                 NoSubFornecedor = key.SubSupplierNo,
+                                                LocalCode = key.LocalCode,
                                                 TipoReq = (int)RequisitionTypes.Normal,
                                                 FunctionalAreaCode = productivityUnit.CódigoÁreaFuncional,
                                                 CenterResponsibilityCode = productivityUnit.CódigoCentroResponsabilidade,
                                                 RegionCode = productivityUnit.CódigoRegião,
-                                                LocalCode = productivityUnit.Armazém,
                                                 UnitFoodProduction = Convert.ToString(productivityUnit.NºUnidadeProdutiva),
                                                 RequestNutrition = true,
                                                 RequisitionDate = DateTime.Now.ToString(),

@@ -402,7 +402,7 @@
                                     <paper-button id="btnCGCreatePurchaseOrder" class="tablinks" on-tap="_createPurchaseOrderCG" disabled="{{ !_permissions.create }}" hidden><i class="fa fa-check" aria-hidden="true"></i>&nbsp; Criar Encomenda de Compra</paper-button>
                                     <paper-button id="btnCGHistorico" class="tablinks" on-tap="_HistoricoCG" title="Ver Histórico"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Ver Histórico</paper-button>
                                     <paper-button id="btnCGExport" class="tablinks" on-tap="_exportEXCELCG" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
-                                    <paper-button id="btnCGExportLinhasNutricao" class="tablinks" on-tap="_exportEXCELCG_LinhasNutricao" title="Exportar Linhas para Excel" hidden><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
+                                    <paper-button id="btnCGExportLinhasNutricao" class="tablinks" on-tap="_exportEXCELCG_LinhasNutricao" title="Exportar Linhas para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
 
                                     <!--start ColumnToggle-->
                                     <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
@@ -757,6 +757,9 @@
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
                 ],
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
+                    this.selectedItems = [];
+                    this.selectedItemsCG = [];
+
                     if (!this.Flag) {
                         this.$.ajax_getgrid.generateRequest();
 
@@ -832,6 +835,18 @@
                         window.location.href = "/GestaoRequisicoes/LinhasRequisicao/" + item.requisitionNo;
                     }
                 },
+                _rowSelectedCG: function (item) {
+                    if (item != null) {
+                          window.location.href = "/GestaoRequisicoes/LinhasRequisicaoReadOnly/" + item.requisitionNo;
+
+                    //    if (item.state == 7 || item.noEncomendaFornecedor != "") {
+                    //        window.location.href = "/GestaoRequisicoes/LinhasRequisicaoReadOnly/" + item.requisitionNo;
+                    //    }
+                    //    else {
+                    //        window.location.href = "/GestaoRequisicoes/LinhasRequisica/" + item.requisitionNo;
+                    //    }
+                    }
+                },
                 _parseregion: function (param) {
                     if (param != undefined && this.RegionData != undefined) {
                         var sel = this.RegionData.find(x => x.id == param);
@@ -896,7 +911,7 @@
                 },
 
                 _createPurchaseOrderResponse: function (e) {
-                    this.selectedItems = null;
+                    this.selectedItems = [];
 
                     if (this.Requisition.eReasonCode == "1") {
                         this._showMessage(this.Requisition.eMessage);
@@ -1078,6 +1093,7 @@
                         var selItmsCG = this.selectedItemsCG;
 
                         this.$.ajax_ExportCG_LinhasNutricao.body = JSON.stringify(selItmsCG);
+                        this.$.ajax_ExportCG_LinhasNutricao.params = { "update": true };
                         this.$.ajax_ExportCG_LinhasNutricao.generateRequest();
                         this.$.gridrequestCG.clearCache();
                     } else {
@@ -1100,7 +1116,7 @@
                     }
                 },
                 _createPurchaseOrderCGResponse: function (e) {
-                    this.selectedItemsCG = null;
+                    this.selectedItemsCG = [];
 
                     if (this.RequisitionCG.eReasonCode == "1") {
                         this._showMessage(this.RequisitionCG.eMessage);
@@ -1130,35 +1146,39 @@
                     location.href = '../GestaoRequisicoes/ExportToExcelDownload_GestaoRequisicoesCG?sFileName=' + FileName;
                 },
 
-                _exportEXCELCG_LinhasNutricao: function() {
+                _exportEXCELCG_LinhasNutricao: function () {
                     if (this.selectedItemsCG != null && this.selectedItemsCG != "") {
+                        debugger;
+                        if (this.selectedItemsCG.length == 1) {
+                            var selItmsCG = this.selectedItemsCG;
 
-                        $(this.$.btnCGExportLinhasNutricao).addClass('disabled');
-
-                        var selItmsCG = this.selectedItemsCG;
-
-                        this.$.ajax_ExportCG_LinhasNutricao.body = JSON.stringify(selItmsCG);
-                        this.$.ajax_ExportCG_LinhasNutricao.generateRequest();
-                        this.$.gridrequestCG.clearCache();
+                            this.$.ajax_ExportCG_LinhasNutricao.body = JSON.stringify(selItmsCG);
+                            this.$.ajax_ExportCG_LinhasNutricao.params = { "update": false };
+                            this.$.ajax_ExportCG_LinhasNutricao.generateRequest();
+                        }
+                        else {
+                            this._showErrorMessage("Só pode escolher uma Requisição de cada vez para Exportar.");
+                        }
                     } else {
                         this._showErrorMessage("Não foi selecionada nenhuma Requisição.");
                     }
                 },
 
                 _exportEXCELCG_LinhasNutricaoResponse: function (e) {
-
                     if (this.exportCG_LinhasNutricao.eReasonCode == 1) {
-                        this.$.ajax_getgridCG.body = JSON.stringify({ "opcao": this._opcaoCG });
-                        this.$.ajax_getgridCG.generateRequest();
+                        if (this.exportCG_LinhasNutricao.eMessage != null && this.exportCG_LinhasNutricao.eMessage != "") {
+                            location.href = '../GestaoRequisicoes/ExportToExcelDownload_GestaoRequisicoesCG?sFileName=' + this.exportCG_LinhasNutricao.eMessage;
+                        }
+                        else {
+                            this.$.ajax_getgridCG.body = JSON.stringify({ "opcao": this._opcaoCG });
+                            this.$.ajax_getgridCG.generateRequest();
 
-                        this._showMessage("A(s) Ordem(s) de Compra foram Enviadas com sucesso.");
+                            this._showMessage("As Ordens de Compra foram criadas e enviadas com sucesso.");
+                        }
                     }
                     else {
-                        this._showErrorMessage("Ocorreu um erro ao Enviar a(s) Ordem(s) de Compra.");
+                        this._showErrorMessage("Ocorreu um erro.");
                     }
-
-                    this.selectedItemsCG = null;
-                    $(this.$.btnCGExportLinhasNutricao).removeClass('disabled');
                 },
 
                 _exportEXCELCG_LinhasNutricaoUpdateResponse: function (e) {
@@ -1172,7 +1192,7 @@
                         this._showErrorMessage("Ocorreu um erro ao atualizar as linhas.");
                     }
 
-                    this.selectedItemsCG = null;
+                    this.selectedItemsCG = [];
                     $(this.$.btnCGExportLinhasNutricao).removeClass('disabled');
                 },
             });

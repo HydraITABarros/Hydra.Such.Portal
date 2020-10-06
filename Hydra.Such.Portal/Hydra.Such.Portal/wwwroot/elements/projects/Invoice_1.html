@@ -441,7 +441,7 @@
                     <vaadin-grid-filter path="codTermosPagamento" value="[[filter.codTermosPagamento]]" />
                 </template>
                 <template>
-                    <vaadin-combo-box items="[[PaymentTerms]]" id="cmbPaymentTerms" item-value-path="id" item-label-path="value" value="{{item.codTermosPagamento}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}">
+                    <vaadin-combo-box items="[[PaymentTerms]]" id="cmbPaymentTerms" item-value-path="id" item-label-path="value" value="{{item.codTermosPagamento}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}">
                         <template>
                             <paper-icon-item>
                                 <paper-item-body two-line>
@@ -459,7 +459,7 @@
                     <vaadin-grid-filter path="dataPrestacaoServico" value="[[filter.dataPrestacaoServico]]" />
                 </template>
                 <template>
-                    <vaadin-date-picker value="{{item.dataPrestacaoServico}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
+                    <vaadin-date-picker value="{{item.dataPrestacaoServico}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
 
@@ -469,7 +469,7 @@
                     <vaadin-grid-filter path="numCompromisso" value="[[filter.numCompromisso]]" />
                 </template>
                 <template>
-                    <vaadin-text-field rows="5" value="{{item.numCompromisso}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <vaadin-text-field rows="5" value="{{item.numCompromisso}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -479,7 +479,7 @@
                     <vaadin-grid-filter path="pedidoCliente" value="[[filter.pedidoCliente]]" />
                 </template>
                 <template>
-                    <vaadin-text-field rows="5" value="{{item.pedidoCliente}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <vaadin-text-field rows="5" value="{{item.pedidoCliente}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -489,7 +489,7 @@
                     <vaadin-grid-filter path="dataPedido" value="[[filter.dataPedido]]" />
                 </template>
                 <template>
-                    {{item.dataPedido}}
+                    <vaadin-date-picker value="{{item.dataPedido}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
                 </template>
             </vaadin-grid-column>
 
@@ -511,7 +511,7 @@
                     <vaadin-grid-filter path="descricaoGrupo" value="[[filter.descricaoGrupo]]" />
                 </template>
                 <template>
-                    <vaadin-text-field rows="5" maxlength="30" value="{{item.descricaoGrupo}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <vaadin-text-field rows="5" maxlength="30" value="{{item.descricaoGrupo}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -521,7 +521,7 @@
                     <vaadin-grid-filter path="situacoesPendentes" value="[[filter.situacoesPendentes]]" />
                 </template>
                 <template>
-                    <vaadin-text-field rows="5" maxlength="60" value="{{item.situacoesPendentes}}" on-blur="_updateLinhasFaturacao" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
+                    <vaadin-text-field rows="5" maxlength="60" value="{{item.situacoesPendentes}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"> </vaadin-text-field>
                 </template>
             </vaadin-grid-column>
 
@@ -904,6 +904,9 @@
             Polymer({
                 is: 'x-invoice1',
                 properties: {
+                    _permissions: {
+                        type: Array
+                    },
                     _areaid: {
                         type: Number,
                         notify: true,
@@ -957,6 +960,10 @@
                     isBillingList: {
                         type: Boolean,
                         value: true
+                    },
+                    isHistoricUpdate: {
+                        type: Boolean,
+                        value: false
                     }
                 },
 
@@ -975,6 +982,7 @@
                     this.filter = window.getGridFilter('projects-invoice1');
                 },
                 ready: function () {
+                    this.isHistoricUpdate = this._permissions.update;
                     /*FILTROS*/
                     window.handleGridListColumnsOrder(this.$.projectInvoiceAutorization, 'projects-invoice1');
                     window.grid = this.$.projectInvoiceAutorization;
@@ -1606,6 +1614,7 @@
                     this.selectedItems = [];
                     this.$.projectInvoiceAutorization._loading = true;
                     this.isBillingList = false;
+                    this.isHistoricUpdate = false;
                 },
                 _getToBilling: function () {
                     this.$.page_databound_ajax.url = "/Projetos/GetAuthorizedMovements";
@@ -1614,7 +1623,7 @@
                     this.selectedItems = [];
                     this.$.projectInvoiceAutorization._loading = true;
                     this.isBillingList = true;
-
+                    this.isHistoricUpdate = this._permissions.update;
                 },
 
                 _Reset: function (selectedItem, selectedItems) {

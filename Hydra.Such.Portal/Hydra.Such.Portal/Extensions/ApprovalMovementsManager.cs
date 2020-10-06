@@ -1351,30 +1351,31 @@ namespace Hydra.Such.Portal.Extensions
 
                 string itemToApproveInfo = string.Empty;
                 if (ApprovalMovement.Type.Value == 5 && !string.IsNullOrEmpty(ApprovalMovement.Number))
-                    itemToApproveInfo += " - Projeto " + ApprovalMovement.Number;
+                    itemToApproveInfo += " - Projeto Nº " + ApprovalMovement.Number;
 
                 EmailsAprovações EmailApproval = new EmailsAprovações()
                 {
                     NºMovimento = ApprovalMovement.MovementNo,
                     EmailDestinatário = proj.CreateUser, // ApprovalMovement.RequestUser,
                     NomeDestinatário = proj.CreateUser, // ApprovalMovement.RequestUser,
-                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    Assunto = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação rejeitada - Projeto" : "eSUCH - Aprovação rejeitada" + itemToApproveInfo,
                     DataHoraEmail = DateTime.Now,
-                    TextoEmail = "A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!",
+                    TextoEmail = "A aprovação do Projeto Nº " + ApprovalMovement.Number + " foi rejeitada pelo utilizador " + rejectUser + "." + "<br />" + "<b>Motivo:</b> " + ApprovalMovement.ReproveReason,
                     Enviado = false
                 };
 
 
                 SendEmailApprovals Email = new SendEmailApprovals
                 {
-                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Tarefa rejeitada" : "eSUCH - Tarefa rejeitada" + itemToApproveInfo,
+                    Subject = string.IsNullOrEmpty(itemToApproveInfo) ? "eSUCH - Aprovação rejeitada - Projeto" : "eSUCH - Aprovação rejeitada" + itemToApproveInfo,
                     //From = "plataforma@such.pt"
                     From = rejectUser
                 };
 
                 Email.To.Add(proj.CreateUser); // ApprovalMovement.RequestUser);
+                Email.BCC.Add("MMarcelo@such.pt");
 
-                Email.Body = MakeEmailBodyContent("A sua tarefa com o Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
+                Email.Body = MakeEmailBodyContent("A aprovação do Projeto Nº " + ApprovalMovement.Number + " foi rejeitada pelo seguinte motivo \"" + ApprovalMovement.ReproveReason + "\"!");
 
                 Email.IsBodyHtml = true;
                 Email.EmailApproval = EmailApproval;
@@ -1383,7 +1384,7 @@ namespace Hydra.Such.Portal.Extensions
                 return new ErrorHandler()
                 {
                     eReasonCode = 100,
-                    eMessage = "Tarefa rejeitada com sucesso."
+                    eMessage = "Aprovação rejeitada com sucesso."
                 };
             }
             catch (Exception ex)

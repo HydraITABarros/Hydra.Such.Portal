@@ -1,0 +1,1216 @@
+﻿@{
+    ViewData["Title"] = "GestiControl";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<x-pbigesticontrol></x-pbigesticontrol>
+
+<dom-module id="x-pbigesticontrol">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            vaadin-upload {
+                padding: 0px;
+            }
+
+            vaadin-upload {
+                --primary-color: rgba(48, 64, 84, 0.06);
+                --paper-font-button_-_font-size: 13px;
+                --primary-font-color: rgba(48, 64, 84, 0.91);
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+
+        <!--Geral-->
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Geral"
+                   last-response="{{dataGeral}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_Geral_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_MovProducao"
+                   last-response="{{tabMovProducao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_MovProducao_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_MovProducaoCResp"
+                   last-response="{{tabMovProducaoCresp}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_MovProducaoCResp_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_MovPropostas"
+                   last-response="{{tabMovPropostas}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_MovPropostas_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Indicadores"
+                   last-response="{{listIndicadores_MovProducao}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_Indicadores_MovProducao_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Update_Geral"
+                   last-response="{{dataGeralResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Update_Geral_ajax"
+                   on-response="_Update_Geral_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Insert_MovProducao"
+                   last-response="{{dataMovProducaoResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Insert_MovProducao_ajax"
+                   on-response="_Insert_MovProducao_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Delete_MovProducao"
+                   last-response="{{dataMovProducaoResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Delete_MovProducao_ajax"
+                   on-response="_Delete_MovProducao_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Update_MovProducao"
+                   last-response="{{dataMovProducaoResponse}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Update_MovProducao_ajax"
+                   on-response="_Update_MovProducao_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+        <iron-ajax url="/Administracao/ExportToExcel_MovProducao"
+                   last-response="{{export_MovProducao}}"
+                   id="ajax_Export_MovProducao"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCEL_MovProducao_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/ExportToExcel_MovProducaoCresp"
+                   last-response="{{export_MovProducaoCresp}}"
+                   id="ajax_Export_MovProducaoCresp"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCEL_MovProducaoCresp_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/ExportToExcel_MovPropostas"
+                   last-response="{{export_MovPropostas}}"
+                   id="ajax_Export_MovPropostas"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCEL_MovPropostas_Response"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Areas"
+                   last-response="{{listAreas}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Anos"
+                   last-response="{{listAnos}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   id="page_PBIGestiControl_Get_Anos_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Administracao/PBIGestiControl_Get_Meses"
+                   last-response="{{listMeses}}"
+                   auto
+                   method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="row break_frm">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <paper-tabs id="tabGestiControl" name="tabGestiControl" fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
+                            <paper-tab>Geral</paper-tab>
+                            <paper-tab>Movimentos Produção</paper-tab>
+                            <paper-tab>Contratos</paper-tab>
+                            <paper-tab>Propostas</paper-tab>
+                        </paper-tabs>
+
+                        <iron-pages selected="{{selected}}">
+                            <!--Geral-->
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+                                </div>
+
+                                <div class="row break_clear">
+                                    <div class="col-md-2">
+                                        <vaadin-date-picker id="geral_DataFecho" name="geral_DataFecho" label="Data de Fecho" value="{{dataGeral.dataFechoText}}" on-value-changed="_Update_Geral" placeholder="dd/MM/aaaa" disabled="{{ !_permissionsUpdate }}" required error-message="O campo Data de Fecho é de preenchimento obrigatório"></vaadin-date-picker>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+                            <!--Movimentos Produção-->
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                                    <paper-button id="btn_Export_MovProducao" class="tablinks" on-tap="_exportEXCEL_MovProducao" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                                    <!--start ColumnToggle-->
+                                    <paper-menu-button class="column-toggle" no-animations>
+                                        <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                                        <div class="list-group" slot="dropdown-content">
+                                            <template is="dom-repeat" items="[[ _toArrayMovProd(_columnsMovProd)]]" id="columnsMovProdList">
+                                                <a href="javascript:void(0);" on-tap="_toggleColumnMovProd" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClassMovProd( item.key ) ]]">
+                                                    {{ item.value.label }}
+                                                </a>
+                                                <hr />
+                                            </template>
+                                        </div>
+                                    </paper-menu-button>
+                                    <!--end ColumnToggle-->
+                                </div>
+
+                                <div class="row break_clear">
+                                    <paper-collapse-item class="panel-heading" header="Inserir">
+                                        <div class="row break_clear">
+                                            <div class="col-md-3">
+                                                <vaadin-combo-box id="movProducao_Area" name="movProducao_Area" items="[[listAreas]]" item-value-path="id" item-label-path="area" value="" label="Área" on-value-changed="_Get_List_MovProducao_Indicador" disabled="{{ !_permissionsInsert }}" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.area]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <vaadin-combo-box id="movProducao_Indicador" name="movProducao_Indicador" items="[[listIndicadores_MovProducao]]" item-value-path="id" item-label-path="indicador" value="" label="Indicador" disabled="{{ !_permissionsInsert }}" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.indicador]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-1">
+                                                <vaadin-combo-box id="movProducao_DataProducaoAno" name="movProducao_DataProducaoAno" items="[[listAnos]]" item-value-path="id" item-label-path="value" value="" label="Ano" disabled="{{ !_permissionsInsert }}" required error-message="O campo Ano é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-1">
+                                                <vaadin-combo-box id="movProducao_DataProducaoMes" name="movProducao_DataProducaoMes" items="[[listMeses]]" item-value-path="id" item-label-path="value" value="" label="Mês" disabled="{{ !_permissionsInsert }}" required error-message="O campo Mês é de preenchimento obrigatório">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="col-md-6">
+                                                    <vaadin-text-field id="movProducao_ValorProducao" name="movProducao_ValorProducao" label="Valor Produção" value="" disabled="{{ !_permissionsInsert }}" required error-message="O campo Valor Produção é de preenchimento obrigatório" class="alignRight" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <vaadin-text-field id="movProducao_ValorProducaoGrafico" name="movProducao_ValorProducaoGrafico" label="Valor Produção Gráfico" value="" disabled="{{ !_permissionsInsert }}" class="alignRight" on-value-changed="_ConvertDecimals"></vaadin-text-field>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-1" style="padding-top:15px">
+                                                <paper-button id="btnMovProducao_Insert" class="btnEdit" on-tap="_Insert_MovProducao" disabled="{{ !_permissionsInsert }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                                            </div>
+                                        </div>
+                                    </paper-collapse-item>
+
+                                    <vaadin-grid id="gridMovProducao" aria-label="gridMovProducao" items="{{ tabMovProducao }}" class="grid" multi-sort="true" active-item="{{_lineSelectedMovProducao}}" column-reordering-allowed>
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProd.indicador.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="indicador">Indicador</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="indicador" value="[[filter.indicador]]" />
+                                            </template>
+                                            <template>
+                                                {{item.indicador}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProd.area.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="area" value="[[filter.area]]" />
+                                            </template>
+                                            <template>
+                                                {{item.area}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProd.dataPro.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataPro">Data Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataPro" value="[[filter.dataPro]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-center">
+                                                    {{item.dataPro}}
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProd.vProducao.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="vProducao">Valor Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vProducao" value="[[filter.vProducao]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-right">
+                                                    <vaadin-text-field value="{{item.vProducao}}" id="_GridMocProducaovProducao" name="_GridMocProducaovProducao" on-blur="_Update_MovProducao" disabled="{{ !_permissionsUpdate }}"></vaadin-text-field>
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProd.vProdGrafico.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="vProdGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vProdGrafico" value="[[filter.vProdGrafico]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-right">
+                                                    <vaadin-text-field value="{{item.vProdGrafico}}" id="_GridMocProducaovProdGrafico" name="_GridMocProducaovProdGrafico" on-blur="_Update_MovProducao" disabled="{{ !_permissionsUpdate }}"> </vaadin-text-field>
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="25px">
+                                            <template class="header">
+                                            </template>
+                                            <template>
+                                                <center>
+                                                    <paper-button id="btnMovProducao_Delete" class="btnRemove tableBtn" raised on-tap="_Delete_MovProducao" title="Eliminar" hidden="{{ !_permissionsDelete }}"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                </center>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            @*Contratos*@
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                                    <paper-button id="btn_Export_MovProducaoCresp" class="tablinks" on-tap="_exportEXCEL_MovProducaoCresp" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                                    <!--start ColumnToggle-->
+                                    <paper-menu-button class="column-toggle" no-animations>
+                                        <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                                        <div class="list-group" slot="dropdown-content">
+                                            <template is="dom-repeat" items="[[ _toArrayMovProdCresp(_columnsMovProdCresp)]]" id="columnsMovProdCrespList">
+                                                <a href="javascript:void(0);" on-tap="_toggleColumnMovProdCresp" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClassMovProdCresp( item.key ) ]]">
+                                                    {{ item.value.label }}
+                                                </a>
+                                                <hr />
+                                            </template>
+                                        </div>
+                                    </paper-menu-button>
+                                    <!--end ColumnToggle-->
+                                </div>
+
+                                <div class="row break_clear">
+                                    @*<paper-collapse-item class="panel-heading" header="Inserir">
+                    <div class="row break_clear">
+                        <div class="col-md-2">
+                            <vaadin-combo-box id="movProducaoCresp_Area" name="movProducaoCresp_Area" items="[[listAreas]]" item-value-path="id" item-label-path="area" value="" label="Área" on-value-changed="_Get_List_MovProducaoCresp_Indicador" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.area]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-md-3">
+                            <vaadin-combo-box id="movProducaoCresp_Indicador" name="movProducaoCresp_Indicador" items="[[listIndicadores_MovProducaoCresp]]" item-value-path="id" item-label-path="indicador" value="" label="Indicador" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.indicador]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-md-1">
+                            <vaadin-combo-box id="movProducaoCresp_DataProducaoAno" name="movProducaoCresp_DataProducaoAno" items="[[listAnos]]" item-value-path="id" item-label-path="value" value="" label="Ano" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-md-1">
+                            <vaadin-combo-box id="movProducaoCresp_DataProducaoMes" name="movProducaoCresp_DataProducaoMes" items="[[listMeses]]" item-value-path="id" item-label-path="value" value="" label="Mês" required error-message="O campo Indicador é de preenchimento obrigatório">
+                                <template>
+                                    <paper-icon-item>
+                                        <paper-item-body two-line>
+                                            <div>[[item.value]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </vaadin-combo-box>
+                        </div>
+
+                        <div class="col-md-2">
+                            <vaadin-text-field id="movProducaoCresp_ValorProducaoGrafico" name="movProducaoCresp_ValorProducaoGrafico" label="Valor Produção Gráfico" value="" required error-message="O campo Valor Produção Gráfico é de preenchimento obrigatório" class="alignRight" on-value-changed="_ConvertDecimals"><div slot="suffix">€</div></vaadin-text-field>
+                        </div>
+
+                        <div class="col-md-2" style="padding-top:15px">
+                            <paper-button id="btnMovProducaoCresp_Update" class="btnEdit" on-tap="_movProducaoCresp_Update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Inserir</paper-button>
+                        </div>
+                    </div>
+                </paper-collapse-item>*@
+
+                                    <vaadin-grid id="gridMovProducaoCresp" aria-label="gridMovProducaoCresp" items="{{ tabMovProducaoCresp }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.indicador.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="indicador">Indicador</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="indicador" value="[[filter.indicador]]" />
+                                            </template>
+                                            <template>
+                                                {{item.indicador}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.area.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="area">Área</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="area" value="[[filter.area]]" />
+                                            </template>
+                                            <template>
+                                                {{item.area}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.dataPro.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="dataPro">Data Produção</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="dataPro" value="[[filter.dataPro]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-center">
+                                                    {{item.dataPro}}
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovProdCresp.vProdGrafico.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="vProdGrafico">Valor Produção Gráfico</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="vProdGrafico" value="[[filter.vProdGrafico]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-right">
+                                                    {{item.vProdGrafico}}
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        @*<vaadin-grid-column resizable width="25px">
+                        <template class="header">
+                        </template>
+                        <template>
+                            <center>
+                                <paper-button id="btnMovProducaoCresp_Delete" class="btnRemove tableBtn" raised on-tap="_movProducaoCresp_Delete" disabled="{{ _lockFields }}" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>*@
+                                    </vaadin-grid>
+                                </div>
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+                            @*Propostas*@
+                            <div>
+                                <div class="subMenu">
+                                    <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+                                    <paper-button id="btn_Export_MovPropostas" class="tablinks" on-tap="_exportEXCEL_MovPropostas" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+                                    <!--start ColumnToggle-->
+                                    <paper-menu-button class="column-toggle" no-animations>
+                                        <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                                        <div class="list-group" slot="dropdown-content">
+                                            <template is="dom-repeat" items="[[ _toArrayMovPropostas(_columnsMovPropostas)]]" id="columnsMovPropostasList">
+                                                <a href="javascript:void(0);" on-tap="_toggleColumnMovPropostas" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClassMovPropostas( item.key ) ]]">
+                                                    {{ item.value.label }}
+                                                </a>
+                                                <hr />
+                                            </template>
+                                        </div>
+                                    </paper-menu-button>
+                                    <!--end ColumnToggle-->
+                                </div>
+
+                                <div class="row break_clear">
+                                    <vaadin-grid id="gridMovPropostas" aria-label="gridMovPropostas" items="{{ tabMovPropostas }}" class="grid" multi-sort="true" column-reordering-allowed>
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovPropostas.cResp.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="cResp">Centro Responsabilidade</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="cResp" value="[[filter.cResp]]" />
+                                            </template>
+                                            <template>
+                                                {{item.cResp}}
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovPropostas.data.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="data">Data</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="data" value="[[filter.data]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-center">
+                                                    {{item.data}}
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovPropostas.numPropostas.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="numPropostas">Nº Propostas</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="numPropostas" value="[[filter.numPropostas]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-right">
+                                                    {{item.numPropostas}}
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovPropostas.numRevistas.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="numRevistas">Nº Revistas</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="numRevistas" value="[[filter.numRevistas]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-right">
+                                                    {{item.numRevistas}}
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+
+                                        <vaadin-grid-column resizable width="150px" hidden$="{{ _columnsMovPropostas.numGanhas.hidden }}">
+                                            <template class="header">
+                                                <vaadin-grid-sorter path="numGanhas">Nº Ganhas</vaadin-grid-sorter>
+                                                <vaadin-grid-filter path="numGanhas" value="[[filter.numGanhas]]" />
+                                            </template>
+                                            <template>
+                                                <div class="text-right">
+                                                    {{item.numGanhas}}
+                                                </div>
+                                            </template>
+                                        </vaadin-grid-column>
+                                    </vaadin-grid>
+                                </div>
+                            </div>
+                        </iron-pages>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        var CreateValue = true, UpdateValue = true, DeleteValue = true;
+         if ('@Html.Raw(Json.Serialize(ViewBag.CreatePermissions))' == "false") {
+            CreateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.UpdatePermissions))' == "false") {
+            UpdateValue = false;
+        }
+        if ('@Html.Raw(Json.Serialize(ViewBag.DeletePermissions))' == "false") {
+            DeleteValue = false;
+        }
+
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-pbigesticontrol',
+                properties: {
+                    _permissionsInsert: {
+                        type: Boolean,
+                        value: CreateValue
+                    },
+                    _permissionsUpdate: {
+                        type: Boolean,
+                        value: UpdateValue
+                    },
+                    _permissionsDelete: {
+                        type: Boolean,
+                        value: DeleteValue
+                    },
+                    /*ColumnToggle*/
+                    _columnsMovProd: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    _columnsMovProdCresp: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    _columnsMovPropostas: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+                ready: function () {
+                    this.$.page_PBIGestiControl_Get_Geral_ajax.generateRequest();
+                    this.$.page_PBIGestiControl_Get_MovProducao_ajax.generateRequest();
+                    this.$.page_PBIGestiControl_Get_MovProducaoCResp_ajax.generateRequest();
+                    this.$.page_PBIGestiControl_Get_MovPropostas_ajax.generateRequest();
+
+                    this.$.tabGestiControl.selected = "0";
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridMovProducao, 'administracao-pbigesticontrol');
+                    window.grid = this.$.gridMovProducao;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggleMovProd();
+                    this._startColumnToggleMovProdCresp();
+                    this._startColumnToggleMovPropostas();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixgridMovProducaoToBottom();
+                        _this.fixgridMovProducaoCrespToBottom();
+                        _this.fixgridMovPropostasToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixgridMovProducaoToBottom: function () {
+                    var grid_el = $(this.$.gridMovProducao);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top + 220;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridMovProducao).height(height);
+                },
+                fixgridMovProducaoCrespToBottom: function () {
+                    var grid_el = $(this.$.gridMovProducaoCresp);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top + 130;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridMovProducaoCresp).height(height);
+                },
+                fixgridMovPropostasToBottom: function () {
+                    var grid_el = $(this.$.gridMovPropostas);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top + 130;
+                    var height = parentHeight - offsetTop;
+                    $(this.$.gridMovPropostas).height(height);
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+                _ConvertDecimals: function (e) {
+                    var stringVal = "" + e.target.value;
+                    e.target.value = stringVal.replace(",", ".");
+                },
+
+                _formatCurrencyValue: function (value) {
+                    if (value) {
+                        value = value + "";
+                        value = value.replace(",", ".");
+                    }
+                    value = value * 1;
+                    if (value != null && value != 0) {
+                        return currency(Math.round(value * 100) / 100, { separator: '.', decimal: ',' }).format();
+                    }
+                    else {
+                        return "0.00";
+                    }
+                },
+
+                _Get_List_MovProducao_Indicador: function (e) {
+                    this.$.page_PBIGestiControl_Get_Indicadores_MovProducao_ajax.params = { "idArea": this.$.movProducao_Area.value };
+                    this.$.page_PBIGestiControl_Get_Indicadores_MovProducao_ajax.generateRequest();
+                },
+
+                //_Get_List_MovProducaoCresp_Indicador: function (e) {
+                //    this.$.page_PBIGestiControl_Get_Indicadores_MovProducaoCresp_ajax.params = { "idArea": this.$.movProducaoCresp_Area.value };
+                //    this.$.page_PBIGestiControl_Get_Indicadores_MovProducaoCresp_ajax.generateRequest();
+                //},
+
+                _Update_Geral: function () {
+                    if (this._permissionsUpdate == true) {
+                        if (this.$.geral_DataFecho.value != null && this.$.geral_DataFecho.value != "") {
+                            this.$.page_PBIGestiControl_Update_Geral_ajax.params = { "DataFecho": this.$.geral_DataFecho.value };
+                            this.$.page_PBIGestiControl_Update_Geral_ajax.generateRequest();
+                        }
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para atualizar a data de Fecho.');
+                    }
+                },
+                _Update_Geral_Response: function () {
+                    if (this.dataGeralResponse.eReasonCode == 1) {
+                        this._openToast(this.dataGeralResponse.eMessage);
+                    }
+                    else {
+                        this._openToastError(this.dataGeralResponse.eMessage);
+                    }
+                },
+
+                _Insert_MovProducao: function () {
+                    if (this._permissionsInsert == true) {
+                        if (this.$.movProducao_Area.value != null && this.$.movProducao_Area.value != "") {
+                            if (this.$.movProducao_Indicador.value != null && this.$.movProducao_Indicador.value) {
+                                if (this.$.movProducao_DataProducaoAno.value != null && this.$.movProducao_DataProducaoAno.value) {
+                                    if (this.$.movProducao_DataProducaoMes.value != null && this.$.movProducao_DataProducaoMes.value) {
+                                        if (this.$.movProducao_ValorProducao.value != null && this.$.movProducao_ValorProducao.value != "") {
+                                            this.$.page_PBIGestiControl_Insert_MovProducao_ajax.params = {
+                                                "Area": this.$.movProducao_Area.value,
+                                                "Indicador": this.$.movProducao_Indicador.value,
+                                                "DataProducaoAno": this.$.movProducao_DataProducaoAno.value,
+                                                "DataProducaoMes": this.$.movProducao_DataProducaoMes.value,
+                                                "ValorProducao": this.$.movProducao_ValorProducao.value,
+                                                "ValorProducaoGrafico": this.$.movProducao_ValorProducaoGrafico.value
+                                            };
+                                            this.$.page_PBIGestiControl_Insert_MovProducao_ajax.generateRequest();
+                                        }
+                                        else {
+                                            this._openToastError('O campo Valor Produção é de preenchimento obrigatório.');
+                                        }
+                                    }
+                                    else {
+                                        this._openToastError('O campo Mês é de preenchimento obrigatório.');
+                                    }
+                                }
+                                else {
+                                    this._openToastError('O campo Ano é de preenchimento obrigatório.');
+                                }
+                            }
+                            else {
+                                this._openToastError('O campo Indicador é de preenchimento obrigatório.');
+                            }
+                        }
+                        else {
+                            this._openToastError('O campo Área é de preenchimento obrigatório.');
+                        }
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para Inserir a linha nos Movimentos Produção.');
+                    }
+                },
+                _Insert_MovProducao_Response: function () {
+                    if (this.dataMovProducaoResponse.eReasonCode == 1) {
+                        this._openToast(this.dataMovProducaoResponse.eMessage);
+
+                        this.$.page_PBIGestiControl_Get_MovProducao_ajax.generateRequest();
+                    }
+                    else {
+                        this._openToastError(this.dataMovProducaoResponse.eMessage);
+                    }
+                },
+
+                _Delete_MovProducao: function (e) {
+                    if (this._permissionsUpdate == true) {
+                        var id = e.model.item.id;
+                        var area = e.model.item.area;
+                        var indicador = e.model.item.indicador;
+                        var dataPro = e.model.item.dataPro;
+                        var ajax_request = this.$.page_PBIGestiControl_Delete_MovProducao_ajax;
+
+                        bootbox.confirm({
+                            message: "Tem a certeza que pretende remover a linha do Movimento Produção: <br>" + indicador + " - " + area + " - " + dataPro + "?",
+                            buttons: {
+                                confirm: {
+                                    label: 'Sim',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Não',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (deleteMovProducao) {
+                                if (deleteMovProducao) {
+                                    ajax_request.params = JSON.params = { "Id": id };
+                                    ajax_request.generateRequest();
+
+                                    this.$.gridMovProducao.clearCache();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para eliminar a linha dos Movimentos Produção.');
+                    }
+                },
+                _Delete_MovProducao_Response: function (e) {
+                    setTimeout(function () {
+                        bootbox.hideAll();
+                    }, 0);
+
+                    if (this.dataMovProducaoResponse.eReasonCode == 1) {
+                        this._openToast(this.dataMovProducaoResponse.eMessage);
+
+                        this.$.page_PBIGestiControl_Get_MovProducao_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.dataMovProducaoResponse.eMessage);
+                    }
+                },
+
+                _Update_MovProducao: function (e) {
+                    if (this._permissionsUpdate == true) {
+                        var index = this.tabMovProducao.indexOf(e.model.id);
+
+                        if (e.model.item.id != null && e.model.item.id != "" &&
+                            e.model.item.vProducao != null && e.model.item.vProducao != "") {
+                            this.$.page_PBIGestiControl_Update_MovProducao_ajax.params = {
+                                "Id": e.model.item.id,
+                                "ValorProducao": e.model.item.vProducao,
+                                "ValorProducaoGrafico": e.model.item.vProdGrafico
+                            };
+                            this.$.page_PBIGestiControl_Update_MovProducao_ajax.generateRequest();
+                        }
+                    }
+                    else {
+                        this._openToastError('Não têm permissões para atualizar a linha dos Movimentos Produção.');
+                    }
+                },
+                _Update_MovProducao_Response: function (e) {
+                    if (this.dataMovProducaoResponse.eReasonCode == 1) {
+                        this._openToast(this.dataMovProducaoResponse.eMessage);
+
+                        this.$.page_PBIGestiControl_Get_MovProducao_ajax.generateRequest();
+                    } else {
+                        this._openToastError(this.dataMovProducaoResponse.eMessage);
+                    }
+                },
+
+                _exportEXCEL_MovProducao: function () {
+                    var result = this.$.gridMovProducao._filter(this.tabMovProducao);
+                    result[0].ColunasEXCEL = this._columnsMovProd;
+
+                    this.$.ajax_Export_MovProducao.body = JSON.stringify(result);
+                    this.$.ajax_Export_MovProducao.generateRequest();
+                },
+                _exportEXCEL_MovProducao_Response: function (e) {
+                    var FileName = this.export_MovProducao;
+                    location.href = '../Administracao/ExportToExcelDownload_MovProducao?sFileName=' + FileName;
+                },
+
+                _exportEXCEL_MovProducaoCresp: function () {
+                    var result = this.$.gridMovProducaoCresp._filter(this.tabMovProducaoCresp);
+                    result[0].ColunasEXCEL = this._columnsMovProdCresp;
+
+                    this.$.ajax_Export_MovProducaoCresp.body = JSON.stringify(result);
+                    this.$.ajax_Export_MovProducaoCresp.generateRequest();
+                },
+                _exportEXCEL_MovProducaoCresp_Response: function (e) {
+                    var FileName = this.export_MovProducaoCresp;
+                    location.href = '../Administracao/ExportToExcelDownload_MovProducaoCresp?sFileName=' + FileName;
+                },
+
+                _exportEXCEL_MovPropostas: function () {
+                    var result = this.$.gridMovPropostas._filter(this.tabMovPropostas);
+                    result[0].ColunasEXCEL = this._columnsMovPropostas;
+
+                    this.$.ajax_Export_MovPropostas.body = JSON.stringify(result);
+                    this.$.ajax_Export_MovPropostas.generateRequest();
+                },
+                _exportEXCEL_MovPropostas_Response: function (e) {
+                    var FileName = this.export_MovPropostas;
+                    location.href = '../Administracao/ExportToExcelDownload_MovPropostas?sFileName=' + FileName;
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggleMovProd: function () {
+                    var columnsMovProd = {
+                        "indicador": { hidden: false, label: "Indicador" },
+                        "area": { hidden: false, label: "Área" },
+                        "dataPro": { hidden: false, label: "Data Produção" },
+                        "vProducao": { hidden: false, label: "Valor Produção" },
+                        "vProdGrafico": { hidden: false, label: "Valor Produção Gráfico" },
+                    };
+
+                    if (localStorage["pbigesticontrol.ToggleColumn"]) {
+                        var keys = Object.keys(columnsMovProd);
+                        var stored_columnsMovProd = JSON.parse(localStorage["pbigesticontrol.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columnsMovProd[keys[i]] = stored_columnsMovProd[keys[i]];
+                        }
+                    };
+                    this._columnsMovProd = columnsMovProd;
+                },
+                _toggleColumnMovProd: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columnsMovProd.' + columnIndex + '.hidden', (!this._columnsMovProd[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["pbigesticontrol.ToggleColumn"] = JSON.stringify(this._columnsMovProd);
+                    }
+                },
+                _getColumnItemClassMovProd: function (columnIndex) {
+                    return !this._columnsMovProd[columnIndex].hidden ? "selected" : "";
+                },
+                _toArrayMovProd: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+
+                _startColumnToggleMovProdCresp: function () {
+                    var columnsMovProdCresp = {
+                        "indicador": { hidden: false, label: "Indicador" },
+                        "area": { hidden: false, label: "Área" },
+                        "dataPro": { hidden: false, label: "Data Produção" },
+                        "vProdGrafico": { hidden: false, label: "Valor Produção Gráfico" },
+                    };
+
+                    if (localStorage["pbigesticontrol.ToggleColumn"]) {
+                        var keys = Object.keys(columnsMovProdCresp);
+                        var stored_columnsMovProdCresp = JSON.parse(localStorage["pbigesticontrol.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columnsMovProdCresp[keys[i]] = stored_columnsMovProdCresp[keys[i]];
+                        }
+                    };
+                    this._columnsMovProdCresp = columnsMovProdCresp;
+                },
+                _toggleColumnMovProdCresp: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columnsMovProdCresp.' + columnIndex + '.hidden', (!this._columnsMovProdCresp[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["pbigesticontrol.ToggleColumn"] = JSON.stringify(this._columnsMovProdCresp);
+                    }
+                },
+                _getColumnItemClassMovProdCresp: function (columnIndex) {
+                    return !this._columnsMovProdCresp[columnIndex].hidden ? "selected" : "";
+                },
+                _toArrayMovProdCresp: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+
+                _startColumnToggleMovPropostas: function () {
+                    var columnsMovPropostas = {
+                        "cResp": { hidden: false, label: "Centro Responsabilidade" },
+                        "data": { hidden: false, label: "Data" },
+                        "numPropostas": { hidden: false, label: "Nº Propostas" },
+                        "numRevistas": { hidden: false, label: "Nº Revistas" },
+                        "numGanhas": { hidden: false, label: "Nº Ganhas" }
+                    };
+
+                    if (localStorage["pbigesticontrol.ToggleColumn"]) {
+                        var keys = Object.keys(columnsMovPropostas);
+                        var stored_columnsMovPropostas = JSON.parse(localStorage["pbigesticontrol.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columnsMovPropostas[keys[i]] = stored_columnsMovPropostas[keys[i]];
+                        }
+                    };
+                    this._columnsMovPropostas = columnsMovPropostas;
+                },
+                _toggleColumnMovPropostas: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columnsMovPropostas.' + columnIndex + '.hidden', (!this._columnsMovPropostas[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["pbigesticontrol.ToggleColumn"] = JSON.stringify(this._columnsMovPropostas);
+                    }
+                },
+                _getColumnItemClassMovPropostas: function (columnIndex) {
+                    return !this._columnsMovPropostas[columnIndex].hidden ? "selected" : "";
+                },
+                _toArrayMovPropostas: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+
+            });
+        });
+    </script>
+</dom-module>

@@ -44,6 +44,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Hydra.Such.Data.ViewModel.CCP;
+using Hydra.Such.Data.ViewModel.PBIGestiControl;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -3252,165 +3253,172 @@ namespace Hydra.Such.Portal.Controllers
         [RequestSizeLimit(100_000_000)]
         public JsonResult UpdateCreate_AcordoPrecos([FromBody] List<LinhasAcordoPrecos> data)
         {
-            List<LinhasAcordoPrecos> results = DBLinhasAcordoPrecos.GetAllByNoProcedimento(data[0].NoProcedimento);
-
-            data.RemoveAll(x => results.Any(
-                u =>
-                    u.NoProcedimento == x.NoProcedimento &&
-                    u.NoFornecedor == x.NoFornecedor &&
-                    u.NoSubFornecedor == x.NoSubFornecedor &&
-                    u.CodProduto == x.CodProduto &&
-                    u.DtValidadeInicio == x.DtValidadeInicio &&
-                    u.DtValidadeFim == x.DtValidadeFim &&
-                    u.Regiao == x.Regiao &&
-                    u.Area == x.Area &&
-                    u.Cresp == x.Cresp &&
-                    u.Localizacao == x.Localizacao &&
-                    u.CustoUnitario == x.CustoUnitario &&
-                    u.CustoUnitarioSubFornecedor == x.CustoUnitarioSubFornecedor &&
-                    u.Um == x.Um &&
-                    u.QtdPorUm == x.QtdPorUm &&
-                    u.PesoUnitario == x.PesoUnitario &&
-                    u.CodProdutoFornecedor == x.CodProdutoFornecedor &&
-                    u.DescricaoProdFornecedor == x.DescricaoProdFornecedor &&
-                    u.FormaEntrega == x.FormaEntrega &&
-                    u.TipoPreco == x.TipoPreco &&
-                    u.GrupoRegistoIvaProduto == x.GrupoRegistoIvaProduto
-            ));
-
-            List<LinhasAcordoPrecos> AllSearch = DBLinhasAcordoPrecos.GetAll().ToList();
-            List<NAVVendorViewModel> AllVendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
-            List<NAVProductsViewModel> AllProduct = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
-            List<ConfiguracaoParametros> AllInterfaceCompras = DBConfiguracaoParametros.GetListByParametro("InterfaceCompras");
-
-            data.ForEach(x =>
+            try
             {
-                if (!string.IsNullOrEmpty(x.NoProcedimento) && !string.IsNullOrWhiteSpace(x.NoFornecedor) && !string.IsNullOrWhiteSpace(x.CodProduto) && x.DtValidadeInicio != null && !string.IsNullOrWhiteSpace(x.Cresp) && !string.IsNullOrWhiteSpace(x.Localizacao))
+                List<LinhasAcordoPrecos> results = DBLinhasAcordoPrecos.GetAllByNoProcedimento(data[0].NoProcedimento);
+
+                data.RemoveAll(x => results.Any(
+                    u =>
+                        u.NoProcedimento == x.NoProcedimento &&
+                        u.NoFornecedor == x.NoFornecedor &&
+                        u.NoSubFornecedor == x.NoSubFornecedor &&
+                        u.CodProduto == x.CodProduto &&
+                        u.DtValidadeInicio == x.DtValidadeInicio &&
+                        u.DtValidadeFim == x.DtValidadeFim &&
+                        u.Regiao == x.Regiao &&
+                        u.Area == x.Area &&
+                        u.Cresp == x.Cresp &&
+                        u.Localizacao == x.Localizacao &&
+                        u.CustoUnitario == x.CustoUnitario &&
+                        u.CustoUnitarioSubFornecedor == x.CustoUnitarioSubFornecedor &&
+                        u.Um == x.Um &&
+                        u.QtdPorUm == x.QtdPorUm &&
+                        u.PesoUnitario == x.PesoUnitario &&
+                        u.CodProdutoFornecedor == x.CodProdutoFornecedor &&
+                        u.DescricaoProdFornecedor == x.DescricaoProdFornecedor &&
+                        u.FormaEntrega == x.FormaEntrega &&
+                        u.TipoPreco == x.TipoPreco &&
+                        u.GrupoRegistoIvaProduto == x.GrupoRegistoIvaProduto
+                ));
+
+                List<LinhasAcordoPrecos> AllSearch = DBLinhasAcordoPrecos.GetAll().ToList();
+                List<NAVVendorViewModel> AllVendor = DBNAV2017Vendor.GetVendor(_config.NAVDatabaseName, _config.NAVCompanyName).ToList();
+                List<NAVProductsViewModel> AllProduct = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, "").ToList();
+                List<ConfiguracaoParametros> AllInterfaceCompras = DBConfiguracaoParametros.GetListByParametro("InterfaceCompras");
+
+                data.ForEach(x =>
                 {
-                    LinhasAcordoPrecos toCreate = new LinhasAcordoPrecos();
-                    LinhasAcordoPrecos toUpdate = new LinhasAcordoPrecos();
-                    LinhasAcordoPrecos toSearch = new LinhasAcordoPrecos();
-
-                    toSearch = AllSearch.Where(y => y.NoProcedimento == x.NoProcedimento && y.NoFornecedor == x.NoFornecedor && y.CodProduto == x.CodProduto && y.DtValidadeInicio == x.DtValidadeInicio && y.Cresp == x.Cresp && y.Localizacao == x.Localizacao).FirstOrDefault();
-                    NAVVendorViewModel Vendor = AllVendor.Where(y => y.No_ == x.NoFornecedor).FirstOrDefault();
-                    NAVVendorViewModel SubVendor = AllVendor.Where(y => y.No_ == x.NoSubFornecedor).FirstOrDefault();
-                    NAVProductsViewModel Product = AllProduct.Where(y => y.Code == x.CodProduto).FirstOrDefault();
-
-                    x.Interface = 0;
-                    ConfiguracaoParametros InterfaceCompras = AllInterfaceCompras.Where(y => y.Valor == x.NoFornecedor).FirstOrDefault();
-                    if (InterfaceCompras != null && InterfaceCompras.Ordem.HasValue)
-                        x.Interface = (int)InterfaceCompras.Ordem;
-
-                    if (toSearch == null)
+                    if (!string.IsNullOrEmpty(x.NoProcedimento) && !string.IsNullOrWhiteSpace(x.NoFornecedor) && !string.IsNullOrWhiteSpace(x.CodProduto) && x.DtValidadeInicio != null && !string.IsNullOrWhiteSpace(x.Cresp) && !string.IsNullOrWhiteSpace(x.Localizacao))
                     {
-                        if (Vendor != null && Product != null)
+                        LinhasAcordoPrecos toCreate = new LinhasAcordoPrecos();
+                        LinhasAcordoPrecos toUpdate = new LinhasAcordoPrecos();
+                        LinhasAcordoPrecos toSearch = new LinhasAcordoPrecos();
+
+                        toSearch = AllSearch.Where(y => y.NoProcedimento == x.NoProcedimento && y.NoFornecedor == x.NoFornecedor && y.CodProduto == x.CodProduto && y.DtValidadeInicio == x.DtValidadeInicio && y.Cresp == x.Cresp && y.Localizacao == x.Localizacao).FirstOrDefault();
+                        NAVVendorViewModel Vendor = AllVendor.Where(y => y.No_ == x.NoFornecedor).FirstOrDefault();
+                        NAVVendorViewModel SubVendor = AllVendor.Where(y => y.No_ == x.NoSubFornecedor).FirstOrDefault();
+                        NAVProductsViewModel Product = AllProduct.Where(y => y.Code == x.CodProduto).FirstOrDefault();
+
+                        x.Interface = 0;
+                        ConfiguracaoParametros InterfaceCompras = AllInterfaceCompras.Where(y => y.Valor == x.NoFornecedor).FirstOrDefault();
+                        if (InterfaceCompras != null && InterfaceCompras.Ordem.HasValue)
+                            x.Interface = (int)InterfaceCompras.Ordem;
+
+                        if (toSearch == null)
                         {
-                            toCreate.NoProcedimento = x.NoProcedimento;
-                            toCreate.NoFornecedor = x.NoFornecedor;
-                            if (string.IsNullOrEmpty(x.NomeFornecedor))
-                                toCreate.NomeFornecedor = Vendor.Name;
-                            else
-                                toCreate.NomeFornecedor = x.NomeFornecedor;
-                            toCreate.NoSubFornecedor = x.NoSubFornecedor;
-                            if (string.IsNullOrEmpty(x.NomeSubFornecedor))
-                                toCreate.NomeSubFornecedor = SubVendor != null ? SubVendor.Name : "";
-                            else
-                                toCreate.NomeSubFornecedor = x.NomeSubFornecedor;
-                            toCreate.CodProduto = x.CodProduto;
-                            if (string.IsNullOrEmpty(x.DescricaoProduto))
-                                toCreate.DescricaoProduto = Product.Name;
-                            else
-                                toCreate.DescricaoProduto = x.DescricaoProduto;
-                            toCreate.DtValidadeInicio = x.DtValidadeInicio;
-                            toCreate.DtValidadeFim = x.DtValidadeFim;
-                            toCreate.Regiao = x.Regiao;
-                            toCreate.Area = x.Area;
-                            toCreate.Cresp = x.Cresp;
-                            toCreate.Localizacao = x.Localizacao;
-                            if (x.CustoUnitario == null)
-                                toCreate.CustoUnitario = Product.UnitCost;
-                            else
-                                toCreate.CustoUnitario = x.CustoUnitario;
-                            toCreate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
-                            if (string.IsNullOrEmpty(x.Um))
-                                toCreate.Um = Product.MeasureUnit;
-                            else
-                                toCreate.Um = x.Um;
-                            toCreate.QtdPorUm = x.QtdPorUm;
-                            toCreate.PesoUnitario = x.PesoUnitario;
-                            toCreate.CodProdutoFornecedor = x.CodProdutoFornecedor;
-                            toCreate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
-                            toCreate.FormaEntrega = x.FormaEntrega;
-                            toCreate.TipoPreco = x.TipoPreco;
-                            toCreate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
-                            if (string.IsNullOrEmpty(x.CodCategoriaProduto))
-                                toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
-                            else
-                                toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
-                            toCreate.Interface = x.Interface;
+                            if (Vendor != null && Product != null)
+                            {
+                                toCreate.NoProcedimento = x.NoProcedimento;
+                                toCreate.NoFornecedor = x.NoFornecedor;
+                                if (string.IsNullOrEmpty(x.NomeFornecedor))
+                                    toCreate.NomeFornecedor = Vendor.Name;
+                                else
+                                    toCreate.NomeFornecedor = x.NomeFornecedor;
+                                toCreate.NoSubFornecedor = x.NoSubFornecedor;
+                                if (string.IsNullOrEmpty(x.NomeSubFornecedor))
+                                    toCreate.NomeSubFornecedor = SubVendor != null ? SubVendor.Name : "";
+                                else
+                                    toCreate.NomeSubFornecedor = x.NomeSubFornecedor;
+                                toCreate.CodProduto = x.CodProduto;
+                                if (string.IsNullOrEmpty(x.DescricaoProduto))
+                                    toCreate.DescricaoProduto = Product.Name;
+                                else
+                                    toCreate.DescricaoProduto = x.DescricaoProduto;
+                                toCreate.DtValidadeInicio = x.DtValidadeInicio;
+                                toCreate.DtValidadeFim = x.DtValidadeFim;
+                                toCreate.Regiao = x.Regiao;
+                                toCreate.Area = x.Area;
+                                toCreate.Cresp = x.Cresp;
+                                toCreate.Localizacao = x.Localizacao;
+                                if (x.CustoUnitario == null)
+                                    toCreate.CustoUnitario = Product.UnitCost;
+                                else
+                                    toCreate.CustoUnitario = x.CustoUnitario;
+                                toCreate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
+                                if (string.IsNullOrEmpty(x.Um))
+                                    toCreate.Um = Product.MeasureUnit;
+                                else
+                                    toCreate.Um = x.Um;
+                                toCreate.QtdPorUm = x.QtdPorUm;
+                                toCreate.PesoUnitario = x.PesoUnitario;
+                                toCreate.CodProdutoFornecedor = x.CodProdutoFornecedor;
+                                toCreate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
+                                toCreate.FormaEntrega = x.FormaEntrega;
+                                toCreate.TipoPreco = x.TipoPreco;
+                                toCreate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
+                                if (string.IsNullOrEmpty(x.CodCategoriaProduto))
+                                    toCreate.CodCategoriaProduto = Product.ItemCategoryCode;
+                                else
+                                    toCreate.CodCategoriaProduto = x.CodCategoriaProduto;
+                                toCreate.Interface = x.Interface;
 
-                            toCreate.UserId = User.Identity.Name;
-                            toCreate.DataCriacao = DateTime.Now;
+                                toCreate.UserId = User.Identity.Name;
+                                toCreate.DataCriacao = DateTime.Now;
 
-                            DBLinhasAcordoPrecos.Create(toCreate);
+                                DBLinhasAcordoPrecos.Create(toCreate);
+                            }
+                        }
+                        else
+                        {
+                            if (Vendor != null && Product != null)
+                            {
+                                toUpdate.NoProcedimento = x.NoProcedimento;
+                                toUpdate.NoFornecedor = x.NoFornecedor;
+                                if (string.IsNullOrEmpty(x.NomeFornecedor))
+                                    toUpdate.NomeFornecedor = Vendor.Name;
+                                else
+                                    toUpdate.NomeFornecedor = x.NomeFornecedor;
+                                toUpdate.NoSubFornecedor = x.NoSubFornecedor;
+                                if (string.IsNullOrEmpty(x.NomeSubFornecedor))
+                                    toUpdate.NomeSubFornecedor = SubVendor != null ? SubVendor.Name : "";
+                                else
+                                    toUpdate.NomeSubFornecedor = x.NomeSubFornecedor;
+                                toUpdate.CodProduto = x.CodProduto;
+                                if (string.IsNullOrEmpty(x.DescricaoProduto))
+                                    toUpdate.DescricaoProduto = Product.Name;
+                                else
+                                    toUpdate.DescricaoProduto = x.DescricaoProduto;
+                                toUpdate.DtValidadeInicio = x.DtValidadeInicio;
+                                toUpdate.DtValidadeFim = x.DtValidadeFim;
+                                toUpdate.Regiao = x.Regiao;
+                                toUpdate.Area = x.Area;
+                                toUpdate.Cresp = x.Cresp;
+                                toUpdate.Localizacao = x.Localizacao;
+                                if (x.CustoUnitario == null)
+                                    toUpdate.CustoUnitario = Product.UnitCost;
+                                else
+                                    toUpdate.CustoUnitario = x.CustoUnitario;
+                                toUpdate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
+                                if (string.IsNullOrEmpty(x.Um))
+                                    toUpdate.Um = Product.MeasureUnit;
+                                else
+                                    toUpdate.Um = x.Um;
+                                toUpdate.QtdPorUm = x.QtdPorUm;
+                                toUpdate.PesoUnitario = x.PesoUnitario;
+                                toUpdate.CodProdutoFornecedor = x.CodProdutoFornecedor;
+                                toUpdate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
+                                toUpdate.FormaEntrega = x.FormaEntrega;
+                                toUpdate.TipoPreco = x.TipoPreco;
+                                toUpdate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
+                                if (Product != null)
+                                    toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
+                                else
+                                    toUpdate.CodCategoriaProduto = null;
+                                toUpdate.Interface = x.Interface;
+
+                                toUpdate.UserId = x.UserId;
+                                toUpdate.DataCriacao = x.DataCriacao;
+
+                                DBLinhasAcordoPrecos.Update(toUpdate);
+                            }
                         }
                     }
-                    else
-                    {
-                        if (Vendor != null && Product != null)
-                        {
-                            toUpdate.NoProcedimento = x.NoProcedimento;
-                            toUpdate.NoFornecedor = x.NoFornecedor;
-                            if (string.IsNullOrEmpty(x.NomeFornecedor))
-                                toUpdate.NomeFornecedor = Vendor.Name;
-                            else
-                                toUpdate.NomeFornecedor = x.NomeFornecedor;
-                            toUpdate.NoSubFornecedor = x.NoSubFornecedor;
-                            if (string.IsNullOrEmpty(x.NomeSubFornecedor))
-                                toUpdate.NomeSubFornecedor = SubVendor != null ? SubVendor.Name : "";
-                            else
-                                toUpdate.NomeSubFornecedor = x.NomeSubFornecedor;
-                            toUpdate.CodProduto = x.CodProduto;
-                            if (string.IsNullOrEmpty(x.DescricaoProduto))
-                                toUpdate.DescricaoProduto = Product.Name;
-                            else
-                                toUpdate.DescricaoProduto = x.DescricaoProduto;
-                            toUpdate.DtValidadeInicio = x.DtValidadeInicio;
-                            toUpdate.DtValidadeFim = x.DtValidadeFim;
-                            toUpdate.Regiao = x.Regiao;
-                            toUpdate.Area = x.Area;
-                            toUpdate.Cresp = x.Cresp;
-                            toUpdate.Localizacao = x.Localizacao;
-                            if (x.CustoUnitario == null)
-                                toUpdate.CustoUnitario = Product.UnitCost;
-                            else
-                                toUpdate.CustoUnitario = x.CustoUnitario;
-                            toUpdate.CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor;
-                            if (string.IsNullOrEmpty(x.Um))
-                                toUpdate.Um = Product.MeasureUnit;
-                            else
-                                toUpdate.Um = x.Um;
-                            toUpdate.QtdPorUm = x.QtdPorUm;
-                            toUpdate.PesoUnitario = x.PesoUnitario;
-                            toUpdate.CodProdutoFornecedor = x.CodProdutoFornecedor;
-                            toUpdate.DescricaoProdFornecedor = x.DescricaoProdFornecedor;
-                            toUpdate.FormaEntrega = x.FormaEntrega;
-                            toUpdate.TipoPreco = x.TipoPreco;
-                            toUpdate.GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto;
-                            if (Product != null)
-                                toUpdate.CodCategoriaProduto = Product.ItemCategoryCode;
-                            else
-                                toUpdate.CodCategoriaProduto = null;
-                            toUpdate.Interface = x.Interface;
-
-                            toUpdate.UserId = x.UserId;
-                            toUpdate.DataCriacao = x.DataCriacao;
-
-                            DBLinhasAcordoPrecos.Update(toUpdate);
-                        }
-                    }
-                }
-            });
+                });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
             return Json(data);
         }
 
@@ -8320,7 +8328,514 @@ namespace Hydra.Such.Portal.Controllers
             return Body;
         }
 
+        #region PBI Gesti Control
+        public IActionResult PBIGestiControl()
+        {
 
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AdminGestiControl);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.CreatePermissions = UPerm.Create.Value;
+                ViewBag.UpdatePermissions = UPerm.Update.Value;
+                ViewBag.DeletePermissions = UPerm.Delete.Value;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Geral()
+        {
+            PBIGestiControl_GeralViewModel result = DBPBIGestiControl.Get_Geral();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_MovProducao()
+        {
+            List<PBIGestiControl_MovProducaoViewModel> result = DBPBIGestiControl.Get_MovProducao();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_MovProducaoCResp()
+        {
+            List<PBIGestiControl_MovProducaoCRespViewModel> result = DBPBIGestiControl.Get_MovProducaoCResp();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_MovPropostas()
+        {
+            List<PBIGestiControl_MovPropostasViewModel> result = DBPBIGestiControl.Get_MovPropostas();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Areas()
+        {
+            List<PBIGestiControl_AreasViewModel> result = DBPBIGestiControl.Get_Areas();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Indicadores(string idArea)
+        {
+            List<PBIGestiControl_IndicadoresViewModel> result = DBPBIGestiControl.Get_Indicadores(idArea);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Anos()
+        {
+            var yearList = Enumerable.Range(2019, (DateTime.Now.Year - 2018)).ToList();
+
+            List<DDMessageString> result = yearList.Select(x => new DDMessageString()
+            {
+                id = x.ToString(),
+                value = x.ToString()
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Get_Meses()
+        {
+            var mesList = Enumerable.Range(1, 12).ToList();
+
+            List<DDMessageString> result = mesList.Select(x => new DDMessageString()
+            {
+                id = x < 10 ? "0" + x.ToString() : x.ToString(),
+                value = x < 10 ? "0" + x.ToString() : x.ToString(),
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Update_Geral(string DataFecho)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (!string.IsNullOrEmpty(DataFecho) && DateTime.TryParse(DataFecho, out DateTime Temp) == true)
+                {
+                    if (DBPBIGestiControl.Update_Geral(DataFecho) == true)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "O campo Data de Fecho atualizado com sucesso.";
+
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro ao atualizar o campo Data de Fecho.";
+
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 3;
+                    result.eMessage = "O campo Data de Fecho é de preenchimento obrigatório.";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Insert_MovProducao(string Area, string Indicador, string DataProducaoAno, string DataProducaoMes, string ValorProducao, string ValorProducaoGrafico)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (!string.IsNullOrEmpty(Area) && int.TryParse(Area, out int TempArea) == true)
+                {
+                    if (!string.IsNullOrEmpty(Indicador) && int.TryParse(Indicador, out int TempIndicador) == true)
+                    {
+                        if (!string.IsNullOrEmpty(DataProducaoAno) && int.TryParse(DataProducaoAno, out int TempDataProducaoAno) == true)
+                        {
+                            if (!string.IsNullOrEmpty(DataProducaoMes) && int.TryParse(DataProducaoMes, out int TempDataProducaoMes) == true)
+                            {
+                                if (!string.IsNullOrEmpty(ValorProducao) && float.TryParse(ValorProducao, out float TempValorProducao) == true)
+                                {
+                                    if (string.IsNullOrEmpty(ValorProducaoGrafico))
+                                    {
+                                        ValorProducaoGrafico = "0";
+                                    }
+                                    if (float.TryParse(ValorProducaoGrafico, out float TempValorProducaoGrafico) == true)
+                                    {
+
+                                        int resultado = DBPBIGestiControl.Insert_MovProducao(Area, Indicador, DataProducaoAno, DataProducaoMes, ValorProducao, ValorProducaoGrafico);
+
+                                        if (resultado == 1)
+                                        {
+                                            result.eReasonCode = 1;
+                                            result.eMessage = "A linha foi inserida com sucesso.";
+
+                                        }
+                                        else
+                                        {
+                                            if (resultado == 2)
+                                            {
+                                                result.eReasonCode = 2;
+                                                result.eMessage = "Já existe uma linha com os mesmos dados que pretende Inserir.";
+                                            }
+                                            if (resultado == 99)
+                                            {
+                                                result.eReasonCode = 2;
+                                                result.eMessage = "Ocorreu um erro no SQL.";
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 2;
+                                        result.eMessage = "O campo Valor Produção Gráfico está com valor incorreto.";
+
+                                    }
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "O campo Valor Produção é de preenchimento obrigatório.";
+
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "O campo Mês é de preenchimento obrigatório.";
+
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "O campo Ano é de preenchimento obrigatório.";
+
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "O campo Indicador é de preenchimento obrigatório.";
+
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "O campo Área é de preenchimento obrigatório.";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Delete_MovProducao(string Id)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (!string.IsNullOrEmpty(Id) && int.TryParse(Id, out int TempId) == true)
+                {
+
+                    if (DBPBIGestiControl.Delete_MovProducao(Id) == 1)
+                    {
+                        result.eReasonCode = 1;
+                        result.eMessage = "A linha foi eliminada com sucesso.";
+
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "Ocorreu um erro no SQL.";
+                    }
+                }
+                else
+                {
+                    result.eReasonCode = 2;
+                    result.eMessage = "Não foi possível obter o campo Id.";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        [HttpPost]
+        public ActionResult PBIGestiControl_Update_MovProducao(string Id, string ValorProducao, string ValorProducaoGrafico)
+        {
+            ErrorHandler result = new ErrorHandler();
+            try
+            {
+                if (!string.IsNullOrEmpty(Id) && int.TryParse(Id, out int TempId) == true)
+                {
+                    if (!string.IsNullOrEmpty(ValorProducao))
+                    {
+                        ValorProducao = ValorProducao.Replace(".", ",");
+                        if (float.TryParse(ValorProducao, out float TempValorProducao) == true)
+                        {
+                            if (string.IsNullOrEmpty(ValorProducaoGrafico))
+                            {
+                                ValorProducaoGrafico = "0";
+                            }
+
+                            ValorProducaoGrafico = ValorProducaoGrafico.Replace(".", ",");
+                            if (float.TryParse(ValorProducaoGrafico, out float TempValorProducaoGrafico) == true)
+                            {
+
+                                int resultado = DBPBIGestiControl.Update_MovProducao(Id, ValorProducao.Replace(",", "."), ValorProducaoGrafico.Replace(",", "."));
+
+                                if (resultado == 1)
+                                {
+                                    result.eReasonCode = 1;
+                                    result.eMessage = "A linha foi alterada com sucesso.";
+
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "Ocorreu um erro no SQL.";
+                                }
+                            }
+                            else
+                            {
+                                result.eReasonCode = 2;
+                                result.eMessage = "O campo Valor Produção Gráfico está num formato não numérico.";
+
+                            }
+                        }
+                        else
+                        {
+                            result.eReasonCode = 2;
+                            result.eMessage = "O campo Valor Produção está num formato não numérico.";
+
+                        }
+                    }
+                    else
+                    {
+                        result.eReasonCode = 2;
+                        result.eMessage = "O campo Valor Produção é de preenchimento obrigatório.";
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.eReasonCode = 99;
+                result.eMessage = "Ocorreu um erro.";
+            }
+            return Json(result);
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_MovProducao([FromBody] List<PBIGestiControl_MovProducaoViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Movimentos Produção");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Indicador"); Col = Col + 1; }
+                if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área"); Col = Col + 1; }
+                if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Produção"); Col = Col + 1; }
+                if (dp["vProducao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Produção"); Col = Col + 1; }
+                if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Produção Gráfico"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (PBIGestiControl_MovProducaoViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Indicador); Col = Col + 1; }
+                        if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area); Col = Col + 1; }
+                        if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPro); Col = Col + 1; }
+                        if (dp["vProducao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VProducao.Replace(".", ",")); Col = Col + 1; }
+                        if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VProdGrafico.Replace(".", ",")); Col = Col + 1; }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_MovProducao(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_MovProducaoCresp([FromBody] List<PBIGestiControl_MovProducaoCRespViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Contratos");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Indicador"); Col = Col + 1; }
+                if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área"); Col = Col + 1; }
+                if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Produção"); Col = Col + 1; }
+                if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor Produção Gráfico"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (PBIGestiControl_MovProducaoCRespViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["indicador"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Indicador); Col = Col + 1; }
+                        if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area); Col = Col + 1; }
+                        if (dp["dataPro"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPro); Col = Col + 1; }
+                        if (dp["vProdGrafico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.VProdGrafico.Replace(".", ",")); Col = Col + 1; }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_MovProducaoCresp(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_MovPropostas([FromBody] List<PBIGestiControl_MovPropostasViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Propostas");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["cResp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["data"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data"); Col = Col + 1; }
+                if (dp["numPropostas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Propostas"); Col = Col + 1; }
+                if (dp["numRevistas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Revistas"); Col = Col + 1; }
+                if (dp["numGanhas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Ganhas"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (PBIGestiControl_MovPropostasViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["cResp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CResp); Col = Col + 1; }
+                        if (dp["data"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Data); Col = Col + 1; }
+                        if (dp["numPropostas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumPropostas); Col = Col + 1; }
+                        if (dp["numRevistas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumRevistas.Replace(".", ",")); Col = Col + 1; }
+                        if (dp["numGanhas"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumGanhas.Replace(".", ",")); Col = Col + 1; }
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_MovPropostas(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Administracao\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+        #endregion
 
     }
 }

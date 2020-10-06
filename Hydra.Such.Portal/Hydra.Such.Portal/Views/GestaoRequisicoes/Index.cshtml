@@ -28,6 +28,9 @@
 <link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
 <link rel="import" href="~/elements/comboboxs/ProjectList.html" />
 
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -45,11 +48,70 @@
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+
+                .panel-heading {
+                    padding: 0 !important;
+                }
+            </style>
+        </custom-style>
+
         <iron-ajax url="/GestaoRequisicoes/GetValidatedRequisitions"
                    id="ajax_getgrid"
                    last-response="{{result}}"
                    method="post"
                    handle-as="json"
+                    on-response="_getgridResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -79,6 +141,22 @@
         <iron-ajax url="/PopulateDropdowns/GetResponsabilityCenterCode" last-response="{{ResponsabilityCenterData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetFunctionalAreaCode" last-response="{{FunctionalAreaCodeData}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetLocalMarketRegions" last-response="{{LocalMarketRegions}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+        <paper-collapse-item class="panel-heading" header="Filtros" opened>
+            <div class="grid-header" id="gridheader">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-2">
+                            <vaadin-date-picker id="pesquisaData" name="pesquisaData" label="Filtrar a partir de:" value="{{ pesquisadate }}" title="Filtrar a partir de:"></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-2 alignPoga">
+                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </paper-collapse-item>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -390,6 +468,10 @@
                     selectedItems: {
                         type: Array,
                     },
+                    pesquisadate: {
+                        type: String,
+                        value: @Html.Raw(Json.Serialize(ViewBag.PesquisaDate)),
+                    },
                     _columns: {
                         type: Object,
                         value: function () {
@@ -406,7 +488,10 @@
                     '_onCacheLoaded(resultstatus,RegionData,FunctionalAreaCodeData,ResponsabilityCenterData,LocalMarketRegions)'
                 ],
                 _onCacheLoaded: function (resultstatus, RegionData, FunctionalAreaCodeData, ResponsabilityCenterData, LocalMarketRegions) {
+                    this.$.pesquisaData.value = this.pesquisadate;
+
                     if (!this.Flag) {
+                        this.$.ajax_getgrid.body = JSON.stringify({ pesquisadata: this.$.pesquisaData.value });
                         this.$.ajax_getgrid.generateRequest();
                     }
                     this.Flag = true;
@@ -518,7 +603,16 @@
                     this.$.ToastMessageError.open();
                 },
 
-                _exportEXCEL: function () {
+                _search: function () {
+                    this.$.ajax_getgrid.body = JSON.stringify({ pesquisadata: this.$.pesquisaData.value });
+                    this.$.ajax_getgrid.generateRequest();
+                },
+
+                _getgridResponse: function () {
+                    this.openToastSuccess("Dados atualizados.");
+                },
+
+                _exportEXCEL: function() {
                     debugger;
                     var result = this.$.gridrequest._filter(this.result);
                     if (result != null && result.length > 0) {
@@ -626,6 +720,7 @@
                     }
                     else {
                         this.openToastSuccess(this.closeRequisitionResult.eMessage);
+                        this.$.ajax_getgrid.body = JSON.stringify({ pesquisadata: this.$.pesquisaData.value });
                         this.$.ajax_getgrid.generateRequest();
                     }
                 },

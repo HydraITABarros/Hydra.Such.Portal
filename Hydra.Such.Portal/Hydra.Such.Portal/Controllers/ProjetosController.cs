@@ -794,6 +794,7 @@ namespace Hydra.Such.Portal.Controllers
                                 NºCliente = data.ClientNo,
                                 Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
                                 Estado = data.Status,
+                                //MovimentosVenda = data
                                 CódigoRegião = data.RegionCode,
                                 CódigoÁreaFuncional = data.FunctionalAreaCode,
                                 CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
@@ -811,7 +812,7 @@ namespace Hydra.Such.Portal.Controllers
                                 NºCompromisso = data.CommitmentCode,
                                 GrupoContabObra = "PROJETO",
                                 TipoGrupoContabProjeto = data.GroupContabProjectType,
-                                //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                                TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                                 PedidoDoCliente = data.ClientRequest,
                                 DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                                 ValidadeDoPedido = data.RequestValidity,
@@ -821,8 +822,12 @@ namespace Hydra.Such.Portal.Controllers
                                 ProjetoInterno = data.InternalProject,
                                 ChefeProjeto = data.ProjectLeader,
                                 ResponsávelProjeto = data.ProjectResponsible,
+                                DataHoraCriação = DateTime.Now,
                                 UtilizadorCriação = User.Identity.Name,
-                                
+                                DataHoraModificação = DateTime.Now,
+                                UtilizadorModificação = User.Identity.Name,
+                                FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido,
+                                FechoAutomatico = data.FechoAutomatico,
                             };
 
                             //Create Project on NAV
@@ -897,6 +902,7 @@ namespace Hydra.Such.Portal.Controllers
                                     NºCliente = data.ClientNo,
                                     Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
                                     Estado = data.Status,
+                                    //MovimentosVenda = data
                                     CódigoRegião = data.RegionCode,
                                     CódigoÁreaFuncional = data.FunctionalAreaCode,
                                     CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
@@ -914,7 +920,7 @@ namespace Hydra.Such.Portal.Controllers
                                     NºCompromisso = data.CommitmentCode,
                                     GrupoContabObra = "PROJETO",
                                     TipoGrupoContabProjeto = data.GroupContabProjectType,
-                                    //TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                                    TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
                                     PedidoDoCliente = data.ClientRequest,
                                     DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
                                     ValidadeDoPedido = data.RequestValidity,
@@ -924,7 +930,12 @@ namespace Hydra.Such.Portal.Controllers
                                     ProjetoInterno = data.InternalProject,
                                     ChefeProjeto = data.ProjectLeader,
                                     ResponsávelProjeto = data.ProjectResponsible,
-                                    UtilizadorCriação = User.Identity.Name
+                                    DataHoraCriação = DateTime.Now,
+                                    UtilizadorCriação = User.Identity.Name,
+                                    DataHoraModificação = DateTime.Now,
+                                    UtilizadorModificação = User.Identity.Name,
+                                    FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido,
+                                    FechoAutomatico = data.FechoAutomatico,
                                 };
 
                                 //Create Project On Database
@@ -979,6 +990,13 @@ namespace Hydra.Such.Portal.Controllers
             {
                 if (data != null)
                 {
+                    if (string.IsNullOrEmpty(data.CreateUser))
+                    {
+                        data.CreateUser = User.Identity.Name;
+                        data.CreateDate = DateTime.Now;
+                        data.AccountWorkGroup = "PROJETO";
+                    };
+
                     if (data.Status == (EstadoProjecto)1) //ENCOMENDA
                     {
                         //Read NAV Project Key

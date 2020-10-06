@@ -1879,7 +1879,7 @@
                     },
                     _functionsMenuItems: {
                         type: Array,
-                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, { value: 3, description: "Criar Guia Transporte" }, { value: 4, description: "Enviar Pré-Compra" }, { value: 5, description: "Enviar Mercado Local" }],
+                        value: [{ value: 1, description: "Criar Consulta Mercado" }, { value: 2, description: "Criar Encomenda de Compra" }, /*{ value: 3, description: "Criar Guia Transporte" },*/ { value: 4, description: "Enviar Pré-Compra" }, { value: 5, description: "Enviar Mercado Local" }],
                     },
                     _permissions: {
                         type: Array
@@ -2042,9 +2042,9 @@
 
                             this._createPurchaseOrder();
                             break;
-                        case 3://"Criar Guia Transporte"
-                            this._createTransferShipment();
-                            break;
+                        //case 3://"Criar Guia Transporte"
+                        //    this._createTransferShipment();
+                        //    break;
                         case 4://"Enviar Pré-Encomenda"
                             this._sendPrePurchase();
                             break;
