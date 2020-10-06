@@ -2041,6 +2041,13 @@ namespace Hydra.Such.Portal.Configurations
                 Id = 5,
                 Value = "Projetos"
             },
+            #region SGPPF
+		    new EnumData
+            {
+                Id = 6,
+                Value = "Pedido Formação"
+            }, 
+	        #endregion 
         };
 
         public static readonly List<EnumData> CookingTechniqueTypes = new List<EnumData>()

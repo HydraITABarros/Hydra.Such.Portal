@@ -200,11 +200,6 @@ namespace Hydra.Such.Data
             [Description("Clientes - Controlo Conciliação de Saldos")]
             ClientesCCS = 76,
             #region zpgm.SGPPF
-            [Description("Academia - Pedido Formação")]
-            AcademiaPedidoFormacao = 77,
-            #endregion
-
-            #region zpgm.SGPPF
             [Description("Academia - Formação")]
             AcademiaFormacao = 77,
             #endregion
@@ -250,12 +245,7 @@ namespace Hydra.Such.Data
             [Description("Administração Aprovisionamento")]
             AdminAprovisionamento = 117,
             [Description("Administração GestControl")]
-            AdminGestControl = 118,
-
-            #region zpgm.SGPPF
-            [Description("Academia - Pedido Formação")]
-            AcademiaPedidoFormacao = 117
-            #endregion            
+            AdminGestControl = 118,           
         }
 
         #region zpgm.SGPPF
@@ -292,7 +282,7 @@ namespace Hydra.Such.Data
             [Description("Finalizado")]
             PedidoFinalizado = 7,
             [Description("Cancelado")]
-            PedidoCancelado = 99
+            PedidoCancelado = 99,
         }
 
         public enum TipoAlteracaoPedidoFormacao
