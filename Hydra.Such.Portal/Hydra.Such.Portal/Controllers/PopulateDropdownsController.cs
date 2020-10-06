@@ -767,6 +767,17 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(result);
         }
+
+        [HttpPost]
+        public JsonResult GetEstadoPedidoFormacao()
+        {
+
+            List<EnumData> result = EnumerablesFixed.EstadoPedidoFormacao;
+            var listaEstados = result.OrderBy(e => e.Id).ToList();
+            return Json(listaEstados);
+
+
+        }
         #endregion
 
         [HttpPost]
