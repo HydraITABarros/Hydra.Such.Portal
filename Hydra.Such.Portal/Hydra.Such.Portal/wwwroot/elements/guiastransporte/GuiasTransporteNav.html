@@ -1,4 +1,4 @@
-﻿ <link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+﻿<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
@@ -59,6 +59,7 @@
                    method="post"
                    handle-as="json"
                    id="grid_databound_ajax"
+                   on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
 
@@ -279,6 +280,15 @@
                         _this.fixGridToBottom();
                     });
                     $(window).trigger('resize');
+                },
+
+                _responseProcessor: function (data) {
+                    debugger;;
+
+                    var self = this;
+                    if (data.detail.status === 200) {
+
+                    }
                 },
 
                 fixGridToBottom: function () {
