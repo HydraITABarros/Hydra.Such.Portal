@@ -4247,11 +4247,13 @@ namespace Hydra.Such.Portal.Controllers
                 IRow row = excelSheet.CreateRow(0);
                 int Col = 0;
 
+                row.CreateCell(Col).SetCellValue("Nº Requisição"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Cód. Produto"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Descrição 2"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Custo Unitário SubFornecedor"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Qt. Requerida"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1;
@@ -4264,11 +4266,13 @@ namespace Hydra.Such.Portal.Controllers
                     SubSupplier = AllSuppliers.Where(y => y.No_ == item.SubSupplierNo).FirstOrDefault();
                     row = excelSheet.CreateRow(count);
 
+                    row.CreateCell(Col).SetCellValue(item.RequestNo); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.Code); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.Description2); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.CustoUnitarioSubFornecedor.ToString()); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.QuantityRequired.ToString()); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(Supplier != null && !string.IsNullOrEmpty(Supplier.Name) ? Supplier.Name : ""); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(SubSupplier != null && !string.IsNullOrEmpty(SubSupplier.Name) ? SubSupplier.Name : ""); Col = Col + 1;

@@ -323,6 +323,16 @@
                    handle-as="json"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/GestaoRequisicoes/ExportToExcel_LinhasNutricao"
+                   last-response="{{export_LinhasNutricao}}"
+                   id="ajax_Export_LinhasNutricao"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCEL_LinhasNutricaoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" id="btnGoBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
@@ -343,6 +353,8 @@
             <paper-button class="tablinks" id="btnArquivarReq" on-tap="_arquivarReq" hidden><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Arquivar</paper-button>
 
             <paper-button class="tablinks" id="btnDesArquivarReq" on-tap="_desArquivarReq" hidden="{{ _isArchived }}"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Desarquivar</paper-button>
+
+            <paper-button class="tablinks" id="btnExportLines" on-tap="_ExportLines"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -1051,6 +1063,16 @@
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             {{item.unitCost}}
                                         </template>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="160px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="custoUnitarioSubFornecedor">Custo Unitário SubFornecedor</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="custoUnitarioSubFornecedor"></vaadin-grid-filter>
+                                    </template>
+                                    <template>
+                                        {{item.custoUnitarioSubFornecedor}}
                                     </template>
                                 </vaadin-grid-column>
 
@@ -2902,6 +2924,21 @@
                     else {
                         this._openToastError(this.desArquivoResult.eMessage);
                     }
+                },
+
+                _ExportLines: function () {
+                    var result = this.Requisition.lines;
+                    if (result != null && result.length > 0) {
+                        this.$.ajax_Export_LinhasNutricao.body = JSON.stringify(result);
+                        this.$.ajax_Export_LinhasNutricao.generateRequest();
+                        alert("2");
+                    }
+                },
+
+                _exportEXCEL_LinhasNutricaoResponse: function (e) {
+                    var FileName = this.export_LinhasNutricao;
+                    location.href = '/GestaoRequisicoes/ExportToExcelDownload_LinhasNutricao?sFileName=' + FileName;
+                    alert("3");
                 },
 
             });

@@ -17,6 +17,7 @@
 	[Linhas Requisição].Descrição,
 	[Linhas Requisição].[Descrição2],
 	[Linhas Requisição].[Quantidade a Requerer],
+	[Linhas Requisição].[Custo Unitário] AS [CustoUnitario],
 	[Linhas Requisição].[Código Localização] AS LineLocalization,
 	[Linhas Requisição].[Nº Projeto] AS LineProjNo,
     [Linhas Requisição].[Código Unidade Medida],
@@ -119,6 +120,10 @@ WHERE (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       </Field>
       <Field Name="Quantidade_a_Requerer">
         <DataField>Quantidade a Requerer</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="CustoUnitario">
+        <DataField>CustoUnitario</DataField>
         <rd:TypeName>System.Decimal</rd:TypeName>
       </Field>
       <Field Name="LineLocalization">

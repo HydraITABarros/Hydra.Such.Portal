@@ -36,6 +36,10 @@
           <DataField>Quantidade_a_Requerer</DataField>
           <rd:TypeName>System.Decimal</rd:TypeName>
         </Field>
+        <Field Name="CustoUnitario">
+          <DataField>CustoUnitario</DataField>
+          <rd:TypeName>System.Decimal</rd:TypeName>
+        </Field>
         <Field Name="LineLocalization">
           <DataField>LineLocalization</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -366,7 +370,10 @@
                   <Width>2.5cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>7.38059cm</Width>
+                  <Width>5.59652cm</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.69177cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.69177cm</Width>
@@ -477,6 +484,42 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox12</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                              <Width>2pt</Width>
+                            </BottomBorder>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox91">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Custo Unitário</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox91</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -701,6 +744,43 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Quantidade_a_Requerer</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Style>None</Style>
+                            </Border>
+                            <BottomBorder>
+                              <Style>Solid</Style>
+                              <Width>0.5pt</Width>
+                            </BottomBorder>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="CustoUnitario">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!CustoUnitario.Value</Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>CustoUnitario</rd:DefaultName>
                           <Style>
                             <Border>
                               <Style>None</Style>
@@ -971,9 +1051,10 @@
                             </Border>
                           </Style>
                         </Rectangle>
-                        <ColSpan>6</ColSpan>
+                        <ColSpan>7</ColSpan>
                       </CellContents>
                     </TablixCell>
+                    <TablixCell />
                     <TablixCell />
                     <TablixCell />
                     <TablixCell />
@@ -985,6 +1066,7 @@
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
+                <TablixMember />
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -1016,7 +1098,7 @@
             <DataSetName>ReportRequisicao</DataSetName>
             <Left>0.07056cm</Left>
             <Height>4.86917cm</Height>
-            <Width>17.90236cm</Width>
+            <Width>17.81006cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1034,7 +1116,7 @@
           </TopBorder>
         </Style>
       </Body>
-      <Width>17.97292cm</Width>
+      <Width>17.88062cm</Width>
       <Page>
         <PageHeader>
           <Height>6.95325cm</Height>
