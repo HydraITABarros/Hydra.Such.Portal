@@ -475,7 +475,7 @@
                                                     </such-selectbox>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="moradaCliente" name="moradaCliente" label="Morada Clente" value="{{ data.moradaCliente }}" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="moradaCliente2" name="moradaCliente2" label="Morada Clente 2" value="{{ data.moradaCliente2 }}"></vaadin-text-field>
@@ -491,7 +491,7 @@
                                                     <vaadin-text-field id="codPostal" name="codPostal" label="Cód. Postal" value="{{ data.codPostal }}" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}"></vaadin-text-field>
+                                                    <vaadin-text-field id="cidade" name="cidade" label="Cidade" value="{{ data.cidade }}" required error-message="Campo obrigatório"></vaadin-text-field>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <vaadin-text-field id="noRequisicao" name="noRequisicao" label="No. Requisição" value="{{ data.noRequisicao }}"></vaadin-text-field>
@@ -604,16 +604,16 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="name" name="name" label="Nome" value="{{ data.name }}"></vaadin-text-field>
+                                                                <vaadin-text-field id="name" name="name" label="Nome" value="{{ data.name }}" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-text-field id="address" name="address" label="Endereço" value="{{ data.address }}"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="city" name="city" label="Cidade" value="{{ data.city }}"></vaadin-text-field>
+                                                                <vaadin-text-field id="city" name="city" maxlength="30" label="Cidade" value="{{ data.city }}" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" on-click="_selectPostCode"></vaadin-text-field>
+                                                                <vaadin-text-field id="postCode" name="postCode" label="Cód. Postal" value="{{ data.postCode }}" on-click="_selectPostCode" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-time-picker id="horaCarga"
@@ -644,7 +644,7 @@
                                                     <div class="panel-body">
                                                         <div class="row">
                                                             <div class="col-xs-12">
-                                                                <vaadin-text-field id="localDescarga" name="localDescarga" label="Local Descarga" value="{{ data.localDescarga }}"></vaadin-text-field>
+                                                                <vaadin-text-field id="localDescarga" name="localDescarga" label="Local Descarga" value="{{ data.localDescarga }}" required error-message="Campo obrigatório"></vaadin-text-field>
                                                             </div>
                                                             <div class="col-xs-12">
                                                                 <vaadin-text-field id="localDescarga1" name="localDescarga1" label="Local Descarga 1" value="{{ data.localDescarga1 }}"></vaadin-text-field>
@@ -2585,6 +2585,17 @@
                     const _DATE = _TODAY.toLocaleDateString("en-US").replace(new RegExp("/", 'g'), "-");
                     const _TIME = _TODAY.toLocaleTimeString().match(/\d{2}:\d{2}|[AMP]+/g).join('-');                  
 
+                    // zpgm.02102020.b
+                    if (guia.moradaCliente == null || guia.moradaCliente == "") {
+                        this._openToastError("Verifique o preenchimento da Morada do destinatário!")
+                        return false;
+                    }
+                    if (guia.cidade == null || guia.cidade == "") {
+                        this._openToastError("Verifique o preenchimento da Cidade do destinatário!")
+                        return false;
+                    }
+                    // zpgm.02102020.e
+
                     // zpgm.13042020.b
                     if (guia.address == null || guia.address == "") {
                         this._openToastError("Verifique o preenchimento do Endereço de envio!");
@@ -2748,6 +2759,12 @@
                 },
 
                 _registerResponse: function (e) {
+                    // SUCCESS
+                    var gtNumber = this.registerReturnCode;
+                    if (gtNumber.includes("GT")) {
+                        window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.registerReturnCode + "?isHistoric=" + true;
+                        return;
+                    }  
                     var errorMsg = "(" + this.registerReturnCode + ") Não foi possível Registar a guia. Tente novamente!\n";
 
                     if (this.registerReturnCode == null) {
@@ -2767,6 +2784,11 @@
 
                     if (this.registerReturnCode === -20) {
                         this._openToastError(errorMsg + "Local de descarga ou Código Postal Descarga não preenchido!");
+                        return;
+                    }
+
+                    if (this.registerReturnCode === -21) {
+                        this._openToastError(errorMsg + "Morada e/ou Cidade do destinatário não preenchido(s)!");
                         return;
                     }
 
@@ -2835,7 +2857,7 @@
                     //    this._openToast("Foi agendado o registo da Guia de Transporte. Receberá um email com o registo. Poderá consultar a Guia Registada no Histórico");
                     //    window.location.href = "/GuiasTransporteNav";
                     //}
-                    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.registerReturnCode + "?isHistoric=" + true;
+                    //window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.registerReturnCode + "?isHistoric=" + true;
 
                 },
 
