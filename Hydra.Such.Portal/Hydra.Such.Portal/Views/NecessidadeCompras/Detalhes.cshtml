@@ -319,35 +319,43 @@
 
             <div class="col-md-2 ">
                 <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled><div slot="suffix">€</div></vaadin-text-field>
-                <vaadin-text-field id="unitCostSubSupplierId" name="unitCostSubSupplierId" label="Custo Unitário SubFornecedor" class="alignRight" value="{{directUnitCostSubSupplier}}" disabled hidden><div slot="suffix">€</div></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2 ">
+                <vaadin-text-field id="unitCostSubSupplierId" name="unitCostSubSupplierId" label="Custo Unitário SubFornecedor" class="alignRight" value="{{directUnitCostSubSupplier}}" disabled><div slot="suffix">€</div></vaadin-text-field>
             </div>
 
             <div class="col-md-3 ">
                 <vaadin-text-field id="supplierProdCodeId" name="supplierProdCodeName" label="Codigo Produto Fornecedor" value=""></vaadin-text-field>
             </div>
             @*<div class="col-md-3 ">
-                    <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
-                </div>*@
+            <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
+        </div>*@
             <div class="col-md-3">
                 <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value="" maxlength="100"></vaadin-text-field>
             </div>
+        </div>
+        <div class="row" hidden="{{ !_permissionsVal.create }}">
             <div class="col-md-2">
                 <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
             </div>
-        </div>
-        <div class="row" hidden="{{ !_permissionsVal.create }}">
-            <div class="col-md-3">
+
+            <div class="col-md-2">
+                <vaadin-text-field id="QtyforMeasId" name="QtyforMeasName" label="Quantidade por Unid. Medida " class="alignRight" value="{{QtyforMeas}}" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
                 <vaadin-text-field id="amountId" name="amountName" class="alignRight" label="Valor total" value="{{amount}}" on-value-changed="_calcTotals" disabled> <div slot="suffix">€</div></vaadin-text-field>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <vaadin-text-field id="grupoRegistoIvaProduto" name="grupoRegistoIvaProduto" label="Grupo Registo IVA Produto" class="alignRight" value="{{grupoRegistoIvaProduto}}" maxlength="10"></vaadin-text-field>
             </div>
 
-            <div class="col-md-3" hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-2" hidden="{{ !_permissionsVal.create }}">
                 <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <such-selectbox id="codStockUnitId" value="{{codStockUnit}}" label="Código Localização" hidden
                                 items="[[locationsresult]]"
                                 text-path="value"
@@ -356,7 +364,7 @@
                 </such-selectbox>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <such-selectbox id="mOpenOrderLinesId" value="{{_numb}}" label="Nº Produto" on-value-changed="_openOrderLinesOnChange" hidden
                                 items="[[cbopenorderlines]]"
                                 text-path="numb"
@@ -412,8 +420,6 @@
                     {{item.subSupplierName}}
                 </template>
             </vaadin-grid-column>
-
-
 
             <vaadin-grid-column width="160px" resizable>
                 <template class="header">
@@ -628,6 +634,16 @@
                     {{item.directUnitCost}}€
                 </template>*@
                     {{item.directUnitCost}}€
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="directUnitCostSubSupplier">Custo Unitário SubFornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="directUnitCostSubSupplier" />
+                </template>
+                <template>
+                    {{item.directUnitCostSubSupplier}}€
                 </template>
             </vaadin-grid-column>
 
