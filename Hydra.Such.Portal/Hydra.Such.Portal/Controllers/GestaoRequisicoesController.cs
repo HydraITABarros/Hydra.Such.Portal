@@ -4254,6 +4254,7 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(Col).SetCellValue("Cód. Unid. Medida"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Custo Unitário"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Custo Unitário SubFornecedor"); Col = Col + 1;
+                row.CreateCell(Col).SetCellValue("Custo Unitário com IVA"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Qt. Requerida"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("Fornecedor"); Col = Col + 1;
                 row.CreateCell(Col).SetCellValue("SubFornecedor"); Col = Col + 1;
@@ -4273,6 +4274,7 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue(item.UnitMeasureCode); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.UnitCost.ToString()); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.CustoUnitarioSubFornecedor.ToString()); Col = Col + 1;
+                    row.CreateCell(Col).SetCellValue(item.UnitCostWithIVA.ToString()); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(item.QuantityRequired.ToString()); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(Supplier != null && !string.IsNullOrEmpty(Supplier.Name) ? Supplier.Name : ""); Col = Col + 1;
                     row.CreateCell(Col).SetCellValue(SubSupplier != null && !string.IsNullOrEmpty(SubSupplier.Name) ? SubSupplier.Name : ""); Col = Col + 1;

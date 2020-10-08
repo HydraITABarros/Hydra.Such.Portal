@@ -354,7 +354,7 @@
 
             <paper-button class="tablinks" id="btnDesArquivarReq" on-tap="_desArquivarReq" hidden="{{ _isArchived }}"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp; Desarquivar</paper-button>
 
-            <paper-button class="tablinks" id="btnExportLines" on-tap="_ExportLines"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
+            <paper-button class="tablinks" id="btnExportLines" on-tap="_ExportLines" hidden><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar Linhas</paper-button>
         </div>
 
         <div class="row break_frm">
@@ -1577,6 +1577,16 @@
                                     </template>
                                 </vaadin-grid-column>
 
+                                <vaadin-grid-column width="200px" resizable>
+                                    <template class="header">
+                                        <vaadin-grid-sorter path="unitCostWithIVA">Custo Unitário com IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="unitCostWithIVA" />
+                                    </template>
+                                    <template>
+                                        [[ item.unitCostWithIVA ]]
+                                    </template>
+                                </vaadin-grid-column>
+
                                 <vaadin-grid-column width="160px" resizable>
                                     <template class="header">
                                         <p class="alignCenter">Sem Efeito</p>
@@ -1592,16 +1602,16 @@
                                 </vaadin-grid-column>
 
                                 <!--<template is="dom-if" if="{{ !isReadOnly() }}">
-                                <template is="dom-if" if="{{ _permissions.delete }}">
-                                    <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
-                                        <template class="header">
-                                        </template>
-                                        <template>
-                                            <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
-                                        </template>
-                                    </vaadin-grid-column>
-                                </template>
-                            </template>-->
+        <template is="dom-if" if="{{ _permissions.delete }}">
+            <vaadin-grid-column width="100px" resizable hidden="{{_isArchived}}">
+                <template class="header">
+                </template>
+                <template>
+                    <paper-button class="btnRemove tableBtn" on-tap="_deleteRequisitionLine" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                </template>
+            </vaadin-grid-column>
+        </template>
+    </template>-->
                             </vaadin-grid>
                         </div>
 
@@ -2396,11 +2406,17 @@
                     if (data.detail.status === 200) {
                         if (data.detail.url.indexOf("Get") !== -1) {
                             if (this.Requisition != null) {
+                                if (this.Requisition.requisitionNo.match(/OC.*/)) {
+                                    this.$.btnExportLines.hidden = false;
+                                }
+                                else {
+                                    this.$.btnExportLines.hidden = true;
+                                }
+                                
                                 this._setControlsForState(this.Requisition.state);
                                 this._isCreate = this.Requisition.requisitionNo == null;
                                 this.$.stateDescription_ajax.body = JSON.stringify(this.Requisition.state);
                                 this.$.stateDescription_ajax.generateRequest();
-
                             }
                             else
                                 this._isCreate = false;
@@ -2931,14 +2947,12 @@
                     if (result != null && result.length > 0) {
                         this.$.ajax_Export_LinhasNutricao.body = JSON.stringify(result);
                         this.$.ajax_Export_LinhasNutricao.generateRequest();
-                        alert("2");
                     }
                 },
 
                 _exportEXCEL_LinhasNutricaoResponse: function (e) {
                     var FileName = this.export_LinhasNutricao;
                     location.href = '/GestaoRequisicoes/ExportToExcelDownload_LinhasNutricao?sFileName=' + FileName;
-                    alert("3");
                 },
 
             });
