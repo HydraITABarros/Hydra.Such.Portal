@@ -40,7 +40,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.CodCliente = item.CodCliente;
                 proj.NomeCliente = item.NomeCliente;
                 if (item.ValorAutorizado != null)
-                    proj.ValorAutorizado = (decimal)item.ValorAutorizado;
+                    proj.ValorAutorizado = Math.Round((decimal)item.ValorAutorizado, 2);
                 proj.CodRegiao = item.CodRegiao;
                 proj.CodAreaFuncional = item.CodAreaFuncional;
                 proj.CodCentroResponsabilidade = item.CodCentroResponsabilidade;
@@ -93,7 +93,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.CodCliente = item.CodCliente;
                 proj.NomeCliente = item.NomeCliente;
                 if (item.ValorAutorizado != null)
-                    proj.ValorAutorizado = item.ValorAutorizado;
+                    proj.ValorAutorizado = Math.Round((decimal)item.ValorAutorizado, 2);
                 proj.CodRegiao = item.CodRegiao;
                 proj.CodAreaFuncional = item.CodAreaFuncional;
                 proj.CodCentroResponsabilidade = item.CodCentroResponsabilidade;
@@ -159,7 +159,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.DescricaoGrupo = item.GrupoFaturaDescricao;
                 proj.NumCompromisso = projitm.NºCompromisso;
                 proj.Faturado = (bool)item.Faturada;
-                proj.ValorAutorizado = item.PreçoTotal.HasValue ? item.PreçoTotal.Value : 0;//item.ValorAutorizado;
+                proj.ValorAutorizado = item.PreçoTotal.HasValue ? Math.Round((decimal)item.PreçoTotal.Value, 2) : 0;//item.ValorAutorizado;
                 proj.Utilizador = item.AutorizadoPor;
                 proj.PedidoCliente = projitm.PedidoDoCliente;
 
