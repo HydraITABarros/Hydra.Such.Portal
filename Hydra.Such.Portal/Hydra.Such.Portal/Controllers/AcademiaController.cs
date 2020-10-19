@@ -18,25 +18,15 @@ namespace Hydra.Such.Portal.Controllers
 {
     public class AcademiaController : Controller
     {
-        private int ClickSource
-        {
-            get
-            {
-                return ClickSource;
-            }
+        protected int ClickOrigin { get; set; }
+        protected const int TrainingRequestApprovalType = 6;
 
-            set
-            {
-                ClickSource = value;
-            }
-        }
 
-        
 
-        [HttpGet]
+        [HttpPost]
         public JsonResult GetMeusPedidos([FromBody] JObject requestParams)
         {
-            ClickSource = 0;
+            //ClickSource = 0;
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             if(UPerm != null && UPerm.Read.Value)
@@ -56,7 +46,37 @@ namespace Hydra.Such.Portal.Controllers
             return Json(null);
         }
 
-        
+        [HttpPost]
+        public JsonResult GetMeusPedidosAprovacao([FromBody] JObject requestParams)
+        {
+            //ClickSource = 0;
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            if (UPerm != null && UPerm.Read.Value &&
+                userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia)
+            {
+                bool apenasActivos = requestParams["apenasActivos"] == null ? false : (bool)requestParams["apenasActivos"];
+                
+                List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacaoForApproval(User.Identity.Name, TrainingRequestApprovalType, Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia, apenasActivos);
+
+                if(meusPedidos != null && meusPedidos.Count > 0)
+                {
+                    List<PedidoParticipacaoFormacaoView> meusPedidosView = new List<PedidoParticipacaoFormacaoView>();
+
+                    foreach (var p in meusPedidos)
+                    {
+                        meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
+                    }
+
+                    return Json(meusPedidosView);
+                }
+
+                return Json(null);
+            }
+            return Json(null);
+        }
+
         #region SGPPF actions
         public ActionResult MeusPedidos()
         {
@@ -87,6 +107,7 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value &&
                 userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia)
             {
+                ViewBag.OnlyActive = true;
                 return View();
             }
             else
