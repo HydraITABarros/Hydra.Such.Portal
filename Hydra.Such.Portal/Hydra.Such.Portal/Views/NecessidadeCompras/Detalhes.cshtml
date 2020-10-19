@@ -321,17 +321,17 @@
                 <vaadin-text-field id="unitCostId" name="unitCostName" label="Custo Unitário" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled><div slot="suffix">€</div></vaadin-text-field>
             </div>
 
-            <div class="col-md-2 ">
+            <div class="col-md-2 " hidden>
                 <vaadin-text-field id="unitCostSubSupplierId" name="unitCostSubSupplierId" label="Custo Unitário SubFornecedor" class="alignRight" value="{{directUnitCostSubSupplier}}" disabled><div slot="suffix">€</div></vaadin-text-field>
             </div>
 
-            <div class="col-md-3 ">
+            <div class="col-md-2 ">
                 <vaadin-text-field id="supplierProdCodeId" name="supplierProdCodeName" label="Codigo Produto Fornecedor" value=""></vaadin-text-field>
             </div>
             @*<div class="col-md-3 ">
             <vaadin-text-field id="txtProdDescription" name="txtProdDescription" label="Descrição Produto" value="{{prodDescription}}" disabled></vaadin-text-field>
         </div>*@
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <vaadin-text-field id="supplierProdDescriptionId" name="supplierProdDescriptionName" label="Descrição Produto Fornecedor" value="" maxlength="100"></vaadin-text-field>
             </div>
         </div>
@@ -388,36 +388,6 @@
                 </template>
                 <template>
                     {{item.interface}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden>
-                <template class="header">
-                    <vaadin-grid-sorter path="directUnitCostSubSupplier">custoUnitarioSubFornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="directUnitCostSubSupplier" />
-                </template>
-                <template>
-                    {{item.directUnitCostSubSupplier}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden>
-                <template class="header">
-                    <vaadin-grid-sorter path="subSupplierNo">Nº SubFornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="subSupplierNo" />
-                </template>
-                <template>
-                    {{item.subSupplierNo}}
-                </template>
-            </vaadin-grid-column>
-
-            <vaadin-grid-column width="160px" resizable hidden>
-                <template class="header">
-                    <vaadin-grid-sorter path="subSupplierName">SubFornecedor</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="subSupplierName" />
-                </template>
-                <template>
-                    {{item.subSupplierName}}
                 </template>
             </vaadin-grid-column>
 
@@ -637,7 +607,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable>
+            <vaadin-grid-column width="160px" resizable hidden>
                 <template class="header">
                     <vaadin-grid-sorter path="directUnitCostSubSupplier">Custo Unitário SubFornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="directUnitCostSubSupplier" />

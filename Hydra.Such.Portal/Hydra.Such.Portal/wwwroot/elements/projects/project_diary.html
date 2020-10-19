@@ -246,7 +246,7 @@
                     <vaadin-date-picker label="Data Consumo" id="dpcompDate" name="dpcompDate" value="{{consumptionDate}}" disabled="{{ !_permissions.create }}"></vaadin-date-picker>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piQuantity" pattern="^-?[1-9]\d*(\.\d+)?$" label="Quantidades" value="{{quantity}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}" class="alignRight" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                    <vaadin-text-field id="piQuantity" pattern="^-?[1-9]\d*(\.\d+)?$" label="Quantidades" value="{{quantity}}" on-blur="_calcTotals" disabled="{{ !_permissions.create }}" class="alignRight" required error-message="Este campo é obrigatório"></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <such-selectbox id="piCodeMeasurementUnit" name="piCodeMeasurementUnit" value="{{codeMeasurementUnit}}" label="Cód. Unidade Medida" disabled="{{ !_permissions.create }}"
@@ -292,19 +292,19 @@
             <div class="row">
 
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitCost" label="Custo Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitCost}}" on-blur="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{totalCost}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalCost" label="Custo Total" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{totalCost}}" on-blur="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piUnitPrice" label="Preço Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitPrice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitPrice" label="Preço Unitário" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitPrice}}" on-blur="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
-                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{totalPrice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piTotalPrice" label="Preço Total" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{totalPrice}}" on-blur="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2" hidden>
-                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-value-changed="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
+                    <vaadin-text-field id="piUnitValueToInvoice" label="Valor Unitário a Faturar" pattern="^[1-9]\d*(\.\d+)?$" class="alignRight" value="{{unitValueToInvoice}}" on-blur="_calcTotals" disabled="{{ !_permissions.create }}"><div slot="suffix">€</div></vaadin-text-field>
                 </div>
                 <div class="col-lg-2">
                     <vaadin-text-field id="piCoin" label="Moeda" class="alignRight" value="{{coin}}" disabled></vaadin-text-field>
@@ -1770,7 +1770,7 @@
                             type: this.projectTypeNumber,
                             code: this.codeNumber,
                             description: this.description,
-                            quantity: this.quantity,
+                            quantity: parseFloat(this.quantity).toFixed(2),
                             measurementUnitCode: this.codeMeasurementUnit,
                             locationCode: this.codeLocation,
                             projectContabGroup: this.codeProjectContabGroup,
@@ -1778,10 +1778,10 @@
                             functionalAreaCode: this.codeFuncArea,
                             responsabilityCenterCode: this.codeResponsabilityCenter,
                             user: "", //set logged user
-                            unitCost: this.unitCost,
-                            totalCost: this.totalCost,
-                            unitPrice: this.unitPrice,
-                            totalPrice: this.totalPrice,
+                            unitCost: parseFloat(this.unitCost).toFixed(4),
+                            totalCost: (parseFloat(this.quantity).toFixed(2) * parseFloat(this.unitCost).toFixed(4)).toFixed(2),
+                            unitPrice: parseFloat(this.unitPrice).toFixed(4),
+                            totalPrice: (parseFloat(this.quantity).toFixed(2) * parseFloat(this.unitPrice).toFixed(4)).toFixed(2),
                             unitValueToInvoice: this.unitValueToInvoice,
                             billable: this.billable,
                             invoiceToClientNo: this.invoiceClientNo,
@@ -1793,6 +1793,7 @@
                             serviceClientCode: this.ddServiceClientCode
                         });
 
+                        alert('1');
                         // Save to DB
                         this.$.ajax_update.body = JSON.stringify(this.result.items);
                         this.$.ajax_update.generateRequest();
@@ -2125,37 +2126,46 @@
                 },
 
                 _calcTotals: function (e) {
+                    debugger;
                     switch (e.target.id) {
                         case "piQuantity":
-                            this.quantity = e.detail.value.replace(",", ".");
+                            this.quantity = this.quantity.replace(",", ".");
                             break;
                         case "piUnitCost":
-                            this.unitCost = e.detail.value.replace(",", ".");
+                            this.unitCost = this.unitCost.replace(",", ".");
                             break;
                         case "piUnitPrice":
-                            this.unitPrice = e.detail.value.replace(",", ".");
+                            this.unitPrice = this.unitPrice.replace(",", ".");
                             break;
                         case "piTotalCost":
-                            this.totalCost = e.detail.value.replace(",", ".");
+                            this.totalCost = this.totalCost.replace(",", ".");
                             break;
                         case "piTotalPrice":
-                            this.totalPrice = e.detail.value.replace(",", ".");
+                            this.totalPrice = this.totalPrice.replace(",", ".");
                             break;
                         case "piUnitValueToInvoice":
-                            this.unitValueToInvoice = e.detail.value.replace(",", ".");
+                            this.unitValueToInvoice = this.unitValueToInvoice.replace(",", ".");
                             break;
                         default:
                             break;
                     }
+                    if (this.quantity != null && this.quantity != "") {
+                        this.quantity = (parseFloat(this.quantity).toFixed(2)).toString();
+                    }
+                    if (this.unitPrice != null && this.unitPrice != "") {
+                        this.unitPrice = (parseFloat(this.unitPrice).toFixed(4)).toString();
+                    }
                     if (this.quantity != null && this.quantity != "" &&
                         this.unitPrice != null && this.unitPrice != "") {
-                        this.totalPrice = this.unitPrice * this.quantity;
-                        this.totalPrice = this.totalPrice.toFixed(2);
+                        this.totalPrice = (parseFloat((parseFloat(this.unitPrice).toFixed(4) * parseFloat(this.quantity).toFixed(2))).toFixed(2)).toString();
+                    }
+
+                    if (this.unitCost != null && this.unitCost != "") {
+                        this.unitCost = (parseFloat(this.unitCost).toFixed(4)).toString();
                     }
                     if (this.quantity != null && this.quantity != "" &&
                         this.unitCost != null && this.unitCost != "") {
-                        this.totalCost = this.unitCost * this.quantity;
-                        this.totalCost = this.totalCost.toFixed(2);
+                        this.totalCost = (parseFloat((parseFloat(this.unitCost).toFixed(4) * parseFloat(this.quantity).toFixed(2))).toFixed(2)).toString();
                     }
                 },
 
@@ -2359,9 +2369,9 @@
                     if (this.result != null) {
                         var res = this.result.items.find(x => x == this._SelectedLine);
                         if (res != null) {
-                            var qnt = res.quantity;
-                            var unitCost = res.unitCost;
-                            var unitPrice = res.unitPrice;
+                            var qnt = res.quantity.toFixed(2);
+                            var unitCost = res.unitCost.toFixed(4);
+                            var unitPrice = res.unitPrice.toFixed(4);
                             switch (param.target.id) {
                                 case "lineQuantity":
                                     qnt = param.target.value.replace(",", ".");
@@ -2380,10 +2390,10 @@
                             }
 
                             if (qnt != "" && qnt != null && unitCost != "" && unitCost != null) {
-                                res.totalCost = qnt * unitCost;
+                                res.totalCost = (qnt.toFixed(2) * unitCost.toFixed(4)).toFixed(2);
                             }
                             if (qnt != "" && qnt != null && unitPrice != "" && unitPrice != null) {
-                                res.totalPrice = qnt * unitPrice;
+                                res.totalPrice = (qnt.toFixed(2) * unitPrice.toFixed(4)).toFixed(2);
                             }
                             this.$.projectDiaryProject.clearCache();
                         }

@@ -1293,7 +1293,7 @@
                             "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
                             "dataServPrestado": this.$.txtDataPrestacaoServ.value,
-                            "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                            "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                             "projMovements": this.selectedItems,
                             "projObs": this.$.IdObs.value
                         };
@@ -1315,11 +1315,11 @@
                             var total = 0.00;
                             for (var i = 0; i < this.selectedItems.length; i++) {
                                 if (this.selectedItems[i].totalPrice != null && this.selectedItems[i].selecionada == true) {
-                                    total = (parseFloat(total) + parseFloat(this.selectedItems[i].totalPrice)).toFixed(2);
+                                    total = (parseFloat(total).toFixed(2) + parseFloat(this.selectedItems[i].totalPrice).toFixed(2)).toFixed(2);
                                 }
                             }
 
-                            if (total != this._totalToAuthorize) {
+                            if (parseFloat(total).toFixed(2) != parseFloat(this._totalToAuthorize).toFixed(2)) {
                                 this.openToastError("O valor Total a Autorizar é diferente do somatório do Preço Total das Linhas.");
                             }
                             else {
@@ -1333,7 +1333,7 @@
                                     "customerRequestNo": this._customerRequestNo,
                                     "customerRequestDate": this._customerRequestDate,
                                     "serviceDate": this.$.dpDataPrestacaoServ.value,
-                                    "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                                    "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                                     "projMovements": this.selectedItems,
                                 };
                                 this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
@@ -1458,7 +1458,7 @@
                         for (var i = 0; i < items.length; i++) {
                             if (items[i].totalPrice != null && items[i].selecionada == true) {
                                 //total = total + items[i].totalPrice;
-                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(items[i].totalPrice)).toFixed(2);
+                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(items[i].totalPrice).toFixed(2)).toFixed(2);
                                 this.$.grdProjectMovements.selectItem(items[i]);
                             }
                         }
@@ -1569,7 +1569,7 @@
                         for (i = 0; i < gridfilter.length; i++) {
                             if (gridfilter[i].quantity != null && gridfilter[i].quantity != 0) {
                                 if (gridfilter[i].totalPrice != null && this._totalToAuthorize != null)
-                                    this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(gridfilter[i].totalPrice)).toFixed(2);
+                                    this._totalToAuthorize = (parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(gridfilter[i].totalPrice).toFixed(2)).toFixed(2);
                                 gridfilter[i].autorizatedInvoice2 = true;
 
                                 this.$.grdProjectMovements.selectItem(gridfilter[i]);
@@ -1688,8 +1688,8 @@
                     if (e.target.checked /*=== this.inverted*/) {
                         if (e.model.item.quantity != null && e.model.item.quantity != 0) {
                             //if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
-                                if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
-                                    this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(e.model.item.totalPrice)).toFixed(2);
+                            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(e.model.item.totalPrice).toFixed(2)).toFixed(2);
                                 e.model.item.autorizatedInvoice2 = true;
                                 this.$.grdProjectMovements.selectItem(e.model.item);
 
@@ -1709,7 +1709,7 @@
                         }
                     } else {
                         if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
-                            this._totalToAuthorize = (parseFloat(this._totalToAuthorize) - parseFloat(e.model.item.totalPrice)).toFixed(2);
+                            this._totalToAuthorize = (parseFloat(this._totalToAuthorize).toFixed(2) - parseFloat(e.model.item.totalPrice).toFixed(2)).toFixed(2);
                         e.model.item.autorizatedInvoice2 = false;
                         this.$.grdProjectMovements.deselectItem(e.model.item);
 

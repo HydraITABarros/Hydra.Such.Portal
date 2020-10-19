@@ -148,10 +148,10 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.Type = item.Tipo;
                 projMovement.Code = item.Codigo;
                 projMovement.Description = item.Descricao;
-                projMovement.Quantity = item.Quantidade;
+                projMovement.Quantity = Math.Round((decimal)item.Quantidade, 2);
                 projMovement.UnitCode = item.CodUnidadeMedida;
-                projMovement.SalesPrice = item.PrecoVenda;
-                projMovement.TotalPrice = item.PrecoTotal;
+                projMovement.SalesPrice = Math.Round((decimal)item.PrecoVenda, 4);
+                projMovement.TotalPrice = Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.PrecoVenda, 4)), 2);
                 projMovement.CodProject = item.CodProjeto;
                 projMovement.RegionCode = item.CodRegiao;
                 projMovement.FunctionalAreaCode = item.CodAreaFuncional;
@@ -167,8 +167,8 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.TypeMeal = item.TipoRefeicao;
                 projMovement.TypeResourse = item.TipoRecurso;
                 projMovement.NumDocument = item.NumDocumento;
-                projMovement.CostPrice = item.PrecoCusto;
-                projMovement.CostTotal = item.CustoTotal;
+                projMovement.CostPrice = Math.Round((decimal)item.PrecoCusto, 4);
+                projMovement.CostTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.PrecoCusto, 4)), 2);
                 projMovement.CodClient = item.CodCliente;
                 projMovement.InvoiceGroup = item.GrupoFactura ?? 0;
 
@@ -196,10 +196,10 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.Tipo = item.Type;
                 projMovement.Codigo = item.Code;
                 projMovement.Descricao = item.Description;
-                projMovement.Quantidade = item.Quantity;
+                projMovement.Quantidade = Math.Round((decimal)item.Quantity, 2);
                 projMovement.CodUnidadeMedida = item.UnitCode;
-                projMovement.PrecoVenda = item.SalesPrice;
-                projMovement.PrecoTotal = item.TotalPrice;
+                projMovement.PrecoVenda = Math.Round((decimal)item.SalesPrice, 4);
+                projMovement.PrecoTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantity, 2) * Math.Round((decimal)item.SalesPrice, 4)), 2);
                 projMovement.CodProjeto = item.CodProject;
                 projMovement.CodRegiao = item.RegionCode;
                 projMovement.CodAreaFuncional = item.FunctionalAreaCode;
@@ -214,8 +214,8 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.TipoRefeicao = item.TypeMeal;
                 projMovement.TipoRecurso = item.TypeResourse;
                 projMovement.NumDocumento = item.NumDocument;
-                projMovement.PrecoCusto = item.CostPrice;
-                projMovement.CustoTotal = item.CostTotal;
+                projMovement.PrecoCusto = Math.Round((decimal)item.CostPrice, 4);
+                projMovement.CustoTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantity, 2) * Math.Round((decimal)item.CostPrice, 4)), 2);
                 projMovement.CodCliente = item.CodClient;
                 projMovement.GrupoFactura = item.InvoiceGroup;
 
