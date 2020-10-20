@@ -165,7 +165,7 @@ namespace Hydra.Such.Portal.Controllers
                     catch
                     {
                         item.eReasonCode = -1;
-                        item.eMessage = "Ocorreu um erro ao gravar a Actividade por Fornecedor!";
+                        item.eMessage = "Ocorreu um erro ao Guardar a Actividade por Fornecedor!";
                         return Json(item);
                     }
                 }
