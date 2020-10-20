@@ -275,7 +275,7 @@ namespace Hydra.Such.Portal.Controllers
                         Area = cProject.Área,
                         Description = cProject.Descrição,
                         ClientNo = cProject.NºCliente,
-                        ClientRegionCode = !string.IsNullOrEmpty(cli.RegionCode) ? cli.RegionCode : "",
+                        ClientRegionCode = cli != null ? !string.IsNullOrEmpty(cli.RegionCode) ? cli.RegionCode : "" : "",
                         Date = cProject.Data.HasValue ? cProject.Data.Value.ToString("yyyy-MM-dd") : "",
                         Status = cProject.Estado,
                         RegionCode = cProject.CódigoRegião,

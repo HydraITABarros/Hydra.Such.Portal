@@ -805,7 +805,9 @@
                                 this.$.shippinhAddress_ajax.body = JSON.stringify(this.data.clientNo);
                                 this.$.shippinhAddress_ajax.generateRequest();
 
-
+                                if (this.data.clientNo != "" && this.$.ProjectClient.valueText == "") {
+                                    this._openToastError("Cliente não existe..")
+                                }
                                 //JP this._shippingAddressCode = this.data.shippingAddressCode;
                             }
                         } else if (data.detail.url.indexOf("Create") !== -1) {
