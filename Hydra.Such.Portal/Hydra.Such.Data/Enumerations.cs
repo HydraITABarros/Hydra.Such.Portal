@@ -200,10 +200,8 @@ namespace Hydra.Such.Data
             [Description("Clientes - Controlo Conciliação de Saldos")]
             ClientesCCS = 76,
             #region zpgm.SGPPF
-            [Description("Academia - Pedido Formação")]
-            AcademiaPedidoFormacao = 77,
             [Description("Academia - Formação")]
-            AcademiaFormacao = 78,
+            AcademiaFormacao = 77,
             #endregion
             [Description("Visitas")]
             Visitas = 79,
@@ -249,12 +247,7 @@ namespace Hydra.Such.Data
             [Description("Administração Aprovisionamento")]
             AdminAprovisionamento = 117,
             [Description("Administração GestiControl")]
-            AdminGestiControl = 118,
-
-            #region zpgm.SGPPF
-            //[Description("Academia - Pedido Formação")]
-            //AcademiaPedidoFormacao = 117
-            #endregion            
+            AdminGestiControl = 118,          
         }
 
         #region zpgm.SGPPF

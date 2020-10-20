@@ -16,7 +16,6 @@ namespace Hydra.Such.Data.ViewModel.Academia
 {
     public class PedidoParticipacaoFormacaoView : PedidoParticipacaoFormacao
     {
-        
         #region Campos data para texto
         public string DataInicioTxt { get; set; }
         public string DataFimTxt { get; set; }
@@ -43,47 +42,48 @@ namespace Hydra.Such.Data.ViewModel.Academia
 
         public PedidoParticipacaoFormacaoView(PedidoParticipacaoFormacao Pedido)
         {
-            this.IdPedido = Pedido.IdPedido;
-            this.Estado = Pedido.Estado;
-            this.IdEmpregado = Pedido.IdEmpregado;
-            this.NomeEmpregado = Pedido.NomeEmpregado;
-            this.FuncaoEmpregado = Pedido.FuncaoEmpregado;
-            this.ProjectoEmpregado = Pedido.ProjectoEmpregado;
-            this.IdAreaFuncional = Pedido.IdAreaFuncional;
-            this.AreaFuncionalEmpregado = Pedido.AreaFuncionalEmpregado;
-            this.IdCentroResponsabilidade = Pedido.IdCentroResponsabilidade;
-            this.CentroResponsabilidadeEmpregado = Pedido.CentroResponsabilidadeEmpregado;
-            this.IdEstabelecimento = Pedido.IdEstabelecimento;
-            this.DescricaoEstabelecimento = Pedido.DescricaoEstabelecimento;
-            this.IdAccaoFormacao = Pedido.IdAccaoFormacao;
-            this.DesignacaoAccao = Pedido.DesignacaoAccao;
-            this.LocalRealizacao = Pedido.LocalRealizacao;
-            this.DataInicio = Pedido.DataInicio;
-            this.DataFim = Pedido.DataFim;
-            this.NumeroTotalHoras = Pedido.NumeroTotalHoras;
-            this.IdEntidadeFormadora = Pedido.IdEntidadeFormadora;
-            this.DescricaoEntidadeFormadora = Pedido.DescricaoEntidadeFormadora;
-            this.CustoInscricao = Pedido.CustoInscricao;
-            this.ValorIva = Pedido.ValorIva;
-            this.CustoDeslocacoes = Pedido.CustoDeslocacoes;
-            this.CustoEstadia = Pedido.CustoEstadia;
-            this.DescricaoConhecimentos = Pedido.DescricaoConhecimentos;
-            this.FundamentacaoChefia = Pedido.FundamentacaoChefia;
-            this.Planeada = Pedido.Planeada;
-            this.TemDotacaoOrcamental = Pedido.TemDotacaoOrcamental;
-            this.ParecerAcademia = Pedido.ParecerAcademia;
-            this.UtilizadorCriacao = Pedido.UtilizadorCriacao;
-            this.DataHoraCriacao = Pedido.DataHoraCriacao;
-            this.UtilizadorUltimaModificacao = Pedido.UtilizadorUltimaModificacao;
-            this.DataHoraUltimaModificacao = Pedido.DataHoraUltimaModificacao;
+            IdPedido = Pedido.IdPedido;
+            Estado = Pedido.Estado;
+            
+            IdEmpregado = Pedido.IdEmpregado;
+            NomeEmpregado = Pedido.NomeEmpregado;
+            FuncaoEmpregado = Pedido.FuncaoEmpregado;
+            ProjectoEmpregado = Pedido.ProjectoEmpregado;
+            IdAreaFuncional = Pedido.IdAreaFuncional;
+            AreaFuncionalEmpregado = Pedido.AreaFuncionalEmpregado;
+            IdCentroResponsabilidade = Pedido.IdCentroResponsabilidade;
+            CentroResponsabilidadeEmpregado = Pedido.CentroResponsabilidadeEmpregado;
+            IdEstabelecimento = Pedido.IdEstabelecimento;
+            DescricaoEstabelecimento = Pedido.DescricaoEstabelecimento;
+            IdAccaoFormacao = Pedido.IdAccaoFormacao;
+            DesignacaoAccao = Pedido.DesignacaoAccao;
+            LocalRealizacao = Pedido.LocalRealizacao;
+            DataInicio = Pedido.DataInicio;
+            DataFim = Pedido.DataFim;
+            NumeroTotalHoras = Pedido.NumeroTotalHoras;
+            IdEntidadeFormadora = Pedido.IdEntidadeFormadora;
+            DescricaoEntidadeFormadora = Pedido.DescricaoEntidadeFormadora;
+            CustoInscricao = Pedido.CustoInscricao;
+            ValorIva = Pedido.ValorIva;
+            CustoDeslocacoes = Pedido.CustoDeslocacoes;
+            CustoEstadia = Pedido.CustoEstadia;
+            DescricaoConhecimentos = Pedido.DescricaoConhecimentos;
+            FundamentacaoChefia = Pedido.FundamentacaoChefia;
+            Planeada = Pedido.Planeada;
+            TemDotacaoOrcamental = Pedido.TemDotacaoOrcamental;
+            ParecerAcademia = Pedido.ParecerAcademia;
+            UtilizadorCriacao = Pedido.UtilizadorCriacao;
+            DataHoraCriacao = Pedido.DataHoraCriacao;
+            UtilizadorUltimaModificacao = Pedido.UtilizadorUltimaModificacao;
+            DataHoraUltimaModificacao = Pedido.DataHoraUltimaModificacao;
 
-            //this.AccaoNavigation = Pedido.AccaoNavigation;
+            //AccaoNavigation = Pedido.AccaoNavigation;
 
-            this.RegistosAlteracoes = Pedido.RegistosAlteracoes;
+            RegistosAlteracoes = Pedido.RegistosAlteracoes;
 
-            this.DataHoraCriacaoTxt = DateToText(Pedido.DataHoraCriacao);
-            this.DataInicioTxt = DateToText(Pedido.DataInicio);
-            this.DataFimTxt = DateToText(Pedido.DataFim);
+            DataHoraCriacaoTxt = DateToText(Pedido.DataHoraCriacao);
+            DataInicioTxt = DateToText(Pedido.DataInicio);
+            DataFimTxt = DateToText(Pedido.DataFim);
         }
 
         private string DateToText(DateTime? dateToCheck)

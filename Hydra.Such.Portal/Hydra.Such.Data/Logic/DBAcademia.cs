@@ -1,6 +1,7 @@
 ﻿using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.ViewModel.Academia;
+using Hydra.Such.Data.Logic.Approvals;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -9,6 +10,50 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hydra.Such.Data.Logic
 {
+
+    /// <summary>
+    /// 21-09-2020
+    /// 
+    ///</summary>
+    ///
+    public class ConfiguracaoAprovacaoAcademia : ConfiguraçãoAprovações
+    {
+        protected ICollection<UtilizadoresGruposAprovação> UtilizadoresAprovacaoAcademia { get; set; }
+        protected string Aprovadores { get; set; }
+
+        public ConfiguracaoAprovacaoAcademia(ConfiguraçãoAprovações config)
+        {
+            Id = config.Id;
+            Tipo = config.Tipo;
+            Área = config.Área;
+            CódigoÁreaFuncional = config.CódigoÁreaFuncional;
+            CódigoRegião = config.CódigoRegião;
+            CódigoCentroResponsabilidade = config.CódigoCentroResponsabilidade;
+            NívelAprovação = config.NívelAprovação;
+            ValorAprovação = config.ValorAprovação;
+            UtilizadorAprovação = config.UtilizadorAprovação;
+            GrupoAprovação = config.GrupoAprovação;
+
+            if (config.GrupoAprovação.HasValue)
+            {
+                UtilizadoresAprovacaoAcademia = DBApprovalUserGroup.GetByGroup(config.GrupoAprovação.Value);
+                Aprovadores = string.Join(",", UtilizadoresAprovacaoAcademia.Select(u => u.UtilizadorAprovação).ToList());
+                
+            }
+            else
+            {
+                if(!string.IsNullOrWhiteSpace(config.UtilizadorAprovação))
+                    Aprovadores = config.UtilizadorAprovação;
+            }                
+
+        }
+
+        public bool CheckForApproval(string username)
+        {
+            return Aprovadores.Contains(username);
+        }
+    }
+
     /// <summary>
     /// 14-07-2020
     /// Classe responsável pelos CRUD relacionados com Pedidos de Participação Em Formação (PPF)
@@ -195,7 +240,7 @@ namespace Hydra.Such.Data.Logic
                 else
                 {
                     // todos os pedidos do utilizador independentemente do estado
-                    return __GetAllPedidosFormacao().Where(p => p.UtilizadorCriacao == userName).ToList();
+                    return __GetAllPedidosFormacao().Where(p => p.UtilizadorCriacao == userName && p.Estado >= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
                 }
             }
             catch (Exception ex)
@@ -204,17 +249,69 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacaoByUserType(string userName, Enumerations.TipoUtilizadorFluxoPedidoFormacao userType)
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacaoForApproval(string userName, int approvalType, Enumerations.TipoUtilizadorFluxoPedidoFormacao userType, bool onlyActives)
         {
             try
             {
-                return null;
+                string dbgStr;
+                switch (userType)
+                {
+                    case Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao:
+                        {
+                            dbgStr = userType.ToString();
+                        }                        
+                        break;
+                    case Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia:
+                    case Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorDireccao:
+                        {
+                            string areasAprovador;
+                            string crespsAprovador;
+                            string regioesAprovador;
+                            bool eChefia = false;
+                            bool eDirector = false;
+
+                            List<ConfiguraçãoAprovações> configAprovacoes = DBApprovalConfigurations.GetAll().Where(a => a.Tipo == approvalType).ToList();
+                            List<ConfiguracaoAprovacaoAcademia> configAprovadoresAcademia = new List<ConfiguracaoAprovacaoAcademia>();
+                            if (configAprovacoes != null && configAprovacoes.Count > 0)
+                            {
+                                foreach (var c in configAprovacoes)
+                                {
+                                    ConfiguracaoAprovacaoAcademia config = new ConfiguracaoAprovacaoAcademia(c);
+
+                                    configAprovadoresAcademia.Add(config);
+
+                                    eChefia = config.CheckForApproval(userName);
+                                    eDirector = config.CheckForApproval(userName);
+
+                                    if((config.NívelAprovação == 1 && eChefia && eDirector) ||
+                                        (config.NívelAprovação == 2 && eDirector && eChefia))
+                                    {
+                                        return null;
+                                    }
+                                }
+
+
+
+                                dbgStr = userType.ToString();
+                            }
+                        }
+                        break;
+                    case Enumerations.TipoUtilizadorFluxoPedidoFormacao.ConselhoAdministracao:
+                        {
+                            dbgStr = userType.ToString();
+                        }
+                        break;
+                    default: return null;
+                        break;
+                }
+
             }
             catch (Exception ex)
             {
 
                 return null;
             }
+            return null;
         }
 
         public static PedidoParticipacaoFormacao __GetDetalhesPedidoFormacao(string pedidoId)

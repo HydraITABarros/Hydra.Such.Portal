@@ -4,14 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<link rel="import" href="~/elements/academia/MeusPedidos.html" />
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>MeusPedidos</title>
-    <h1>OS MEUS PEDIDOS ESTÃO AQUI</h1>
-</head>
-<body>
-</body>
-</html>
+<x-meuspedidos _onlyActive="@ViewBag.OnlyActive"></x-meuspedidos>
