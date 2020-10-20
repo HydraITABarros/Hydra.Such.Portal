@@ -385,7 +385,7 @@ namespace Hydra.Such.Data.Logic.Request
             }
         }
 
-        public static Requisição Update(Requisição objectToUpdate, bool updateLines = false, bool addLogEntry = false)
+        public static Requisição Update(Requisição objectToUpdate, bool updateLines = false, bool addLogEntry = false, string observacoes = "")
         {
             try
             {
@@ -396,6 +396,7 @@ namespace Hydra.Such.Data.Logic.Request
                     if (addLogEntry)
                     {
                         var logEntry = new RequisicoesRegAlteracoes();
+                        logEntry.Observacoes = observacoes;
                         logEntry.ModificadoEm = DateTime.Now;
                         logEntry.ModificadoPor = objectToUpdate.UtilizadorModificação;
                         logEntry.NºRequisição = objectToUpdate.NºRequisição;
@@ -938,6 +939,7 @@ namespace Hydra.Such.Data.Logic.Request
                     RequisitionNo = item.NºRequisição,
                     State = (RequisitionStates)item.Estado,
                     StateDescription = EnumHelper.GetDescriptionFor(typeof(RequisitionStates), item.Estado),
+                    Observacoes = item.Observacoes,
                     ModifiedAt = item.ModificadoEm,
                     ModifiedAtAsString = item.ModificadoEm.ToString("yyyy-MM-dd HH:mm:ss"),
                     ModifiedBy = item.ModificadoPor
@@ -964,6 +966,7 @@ namespace Hydra.Such.Data.Logic.Request
                     Id = item.Id,
                     NºRequisição = item.RequisitionNo,
                     Estado = (int)item.State,
+                    Observacoes = item.Observacoes,
                     ModificadoEm = item.ModifiedAt,
                     ModificadoPor = item.ModifiedBy
                 };

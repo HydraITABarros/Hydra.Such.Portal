@@ -985,13 +985,13 @@ namespace Hydra.Such.Portal.Controllers
 
                     if (TodasLinhas != null && TodasLinhas.Count() > 0)
                     {
-                        List<NAVVendorViewModel> vendors = DBNAV2017Vendor.GetVendor(config.NAVDatabaseName, config.NAVCompanyName);
+                        NAVVendorViewModel vendor = DBNAV2017Vendor.GetVendor(config.NAVDatabaseName, config.NAVCompanyName).Where(x => x.No_ == item.SupplierCode).FirstOrDefault();
 
                         foreach (LinhasRequisição Linha in TodasLinhas)
                         {
 
                             //Set VATPostingGroup Info
-                            Linha.GrupoRegistoIvanegocio = vendors.FirstOrDefault(x => x.No_ == Linha.NºFornecedor)?.VATBusinessPostingGroup;
+                            Linha.GrupoRegistoIvanegocio = vendor.VATBusinessPostingGroup;
                             Linha.NºFornecedor = item.SupplierCode;
                             Linha.UtilizadorModificação = User.Identity.Name;
                             if (DBRequestLine.Update(Linha) != null)
@@ -1767,7 +1767,23 @@ namespace Hydra.Such.Portal.Controllers
                                 item.State = LastState;
                                 item.UpdateUser = User.Identity.Name;
                                 item.UpdateDate = DateTime.Now;
-                                if (DBRequest.Update(item.ParseToDB(), false, true) != null)
+
+                                string observacoes = "";
+                                if (item.RequisitionNo.StartsWith("OC"))
+                                {
+                                    if (!string.IsNullOrEmpty(item.OrderNo))
+                                    {
+                                        observacoes = "Nº Encomenda: " + item.OrderNo;
+                                        item.OrderNo = "";
+                                    }
+
+                                    foreach (RequisitionLineViewModel line in item.Lines)
+                                    {
+                                        line.CreatedOrderNo = "";
+                                    };
+                                }
+
+                                if (DBRequest.Update(item.ParseToDB(), false, true, observacoes) != null)
                                 {
                                     item.eReasonCode = 1;
                                     item.eMessage = "A Requisição foi Desarquivada com sucesso";

@@ -9139,6 +9139,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Requisição")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.Observacoes)
+                    .HasColumnName("Observacoes")
+                    .HasMaxLength(2000);
+
                 entity.HasOne(d => d.NºRequisiçãoNavigation)
                     .WithMany(p => p.RequisicoesRegAlteracoes)
                     .HasForeignKey(d => d.NºRequisição)

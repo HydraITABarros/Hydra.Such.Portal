@@ -165,6 +165,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string RequisitionNo { get; set; }
         public RequisitionStates State { get; set; }
         public string StateDescription { get; set; }
+        public string Observacoes { get; set; }
         public DateTime ModifiedAt { get; set; }
         public string ModifiedAtAsString { get; set; }
         public string ModifiedBy { get; set; }

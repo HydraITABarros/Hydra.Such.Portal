@@ -1540,6 +1540,16 @@
                         {{item.stateDescription}}
                     </template>
                 </vaadin-grid-column>
+
+                <vaadin-grid-column width="160px" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="observacoes">Observações</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.observacoes}}
+                    </template>
+                </vaadin-grid-column>
+
                 <vaadin-grid-column width="160px" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="modifiedBy">Modificado Por</vaadin-grid-sorter>
