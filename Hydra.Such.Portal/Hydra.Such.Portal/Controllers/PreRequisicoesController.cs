@@ -3170,6 +3170,28 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         return Json("Nas Linhas, não pode utilizar a viatura " + viatura.Matricula + " pois a mesma encontra-se Devolvido, Vendido ou Abatido.");
                     }
+
+                    erro = false;
+                    string codigo = "";
+                    List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                    PreLinhas.ForEach(x =>
+                    {
+                        if (erro == false)
+                        {
+                            AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                            AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Código);
+
+                            if (AllProductsArmazem == null || AllProductsArmazem.Count == 0)
+                            {
+                                erro = true;
+                                codigo = x.Código;
+                            }
+                        }
+                    });
+                    if (erro == true)
+                    {
+                        return Json("Nas Linhas, existe o produto com o código Nº " + codigo + "que não têm stock em armazém.");
+                    }
                 }
             }
 
