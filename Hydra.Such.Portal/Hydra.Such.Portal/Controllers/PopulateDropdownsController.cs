@@ -1124,6 +1124,35 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetLocationsByProduct(string Product = "")
+        {
+            List<AcessosLocalizacoes> userLocations = DBAcessosLocalizacoes.GetByUserId(User.Identity.Name);
+            var allLocations = DBNAV2017Locations.GetAllLocationsByProduct(_config.NAVDatabaseName, _config.NAVCompanyName, Product);
+
+            if (userLocations == null || userLocations.Count == 0)
+            {
+                List<DDMessageRelated> result_all = allLocations.Select(x => new DDMessageRelated()
+                {
+                    id = x.Code,
+                    value = x.Name,
+                    extra = Convert.ToString(x.ArmazemCDireta)
+                }).ToList();
+                return Json(result_all);
+            }
+            else
+            {
+                var userLocationsIds = userLocations.Select(x => x.Localizacao).Distinct().ToList();
+                List<DDMessageRelated> result_all = allLocations.Where(x => userLocationsIds.Contains(x.Code)).Select(x => new DDMessageRelated()
+                {
+                    id = x.Code,
+                    value = x.Name,
+                    extra = Convert.ToString(x.ArmazemCDireta)
+                }).ToList();
+                return Json(result_all);
+            }
+        }
+
+        [HttpPost]
         public JsonResult GetAllLocations()
         {
             List<DDMessageRelated> result_all = DBNAV2017Locations.GetAllLocations(_config.NAVDatabaseName, _config.NAVCompanyName).Select(x => new DDMessageRelated()

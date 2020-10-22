@@ -153,7 +153,7 @@
 
         <!--<iron-ajax url="/PopulateDropdowns/GetAllProductsComprasPortal" last-response="{{Products}}" id="filteredProducts_ajax" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
         <!--<iron-ajax url="/PopulateDropdowns/GetProductsForCurrentUser" last-response="{{CBItems}}" id="filteredProducts_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
-        <iron-ajax url="/PopulateDropdowns/GetLocations" last-response="{{CBLocations}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetLocationsByProduct" last-response="{{CBLocations}}" id="page_GetLoctionsByProduct_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetUnitOfMeasureByProduct" last-response="{{LCBMeasuresUnit}}" auto id="measuresunit_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
@@ -2936,6 +2936,9 @@
                             if (this.$.RegionCode.value != "") {
                                 this.$.measuresunit_ajax.params = { "produto": this.$._Products.value };
                                 this.$.measuresunit_ajax.generateRequest();
+
+                                this.$.page_GetLoctionsByProduct_ajax.params = { "Product": this.$._Products.value };
+                                this.$.page_GetLoctionsByProduct_ajax.generateRequest();
 
                                 this.$.page_GetProductLocation_ajax.body = JSON.stringify({ code: this.$._Products.value });
                                 this.$.page_GetProductLocation_ajax.params = { "area": this.$.FunctionalAreaCode.valueText, "regiao": this.$.RegionCode.value };

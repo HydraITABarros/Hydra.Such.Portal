@@ -298,6 +298,7 @@ namespace Hydra.Such.Portal.Controllers
                                         ctx.RequisicoesRegAlteracoes.Add(logEntry);
                                         ctx.SaveChanges();
 
+
                                         //Se a requesição tiver o campo "Requisição Nutrição" a true faz automaticamente a validação
                                         if (requisition != null && requisition.RequestNutrition.HasValue && requisition.RequestNutrition == true)
                                         {
