@@ -30,6 +30,7 @@ namespace Hydra.Such.Data.ViewModel
         public decimal? TotalCost { get; set; }
         public decimal? UnitPrice { get; set; }
         public decimal? TotalPrice { get; set; }
+        public decimal TotalPriceLinhas { get; set; }
         public bool? Billable { get; set; }
         public string BillableText { get; set; }
         public string ResidueGuideNo { get; set; }

@@ -7041,5 +7041,286 @@ namespace Hydra.Such.Portal.Controllers
             //return Json(null);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ExportRequisicoesCliente([FromBody] ContractViewModel data)
+        {
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            List<Projetos> AllProjects = DBProjects.GetAll();
+
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisições Cliente");
+                IRow row = excelSheet.CreateRow(0);
+
+                row.CreateCell(0).SetCellValue("Nº Contrato");
+                row.CreateCell(1).SetCellValue("Âmbito dos Serviços");
+                row.CreateCell(2).SetCellValue("Nº Cliente");
+                row.CreateCell(3).SetCellValue("Cliente");
+                row.CreateCell(4).SetCellValue("Início Compromisso");
+                row.CreateCell(5).SetCellValue("Fim Compromisso");
+                row.CreateCell(6).SetCellValue("Nº Requisição Cliente");
+                row.CreateCell(7).SetCellValue("Data Requisição");
+                row.CreateCell(8).SetCellValue("Nº Compromisso");
+                row.CreateCell(9).SetCellValue("Grupo Fatura");
+                row.CreateCell(10).SetCellValue("Nº Projeto");
+                row.CreateCell(11).SetCellValue("Descrição");
+                row.CreateCell(12).SetCellValue("Data Última Fatura");
+
+                if (data != null && data.ClientRequisitions != null && data.ClientRequisitions.Count > 0)
+                {
+                    int count = 1;
+                    foreach (ContractClientRequisitionViewModel item in data.ClientRequisitions)
+                    {
+                        row = excelSheet.CreateRow(count);
+
+                        row.CreateCell(0).SetCellValue(data.ContractNo);
+                        row.CreateCell(1).SetCellValue(data.Description);
+                        row.CreateCell(2).SetCellValue(data.ClientNo);
+                        row.CreateCell(3).SetCellValue(data.ClientName);
+                        row.CreateCell(4).SetCellValue(item.StartDate);
+                        row.CreateCell(5).SetCellValue(item.EndDate);
+                        row.CreateCell(6).SetCellValue(item.ClientRequisitionNo);
+                        row.CreateCell(7).SetCellValue(item.RequisitionDate);
+                        row.CreateCell(8).SetCellValue(item.PromiseNo);
+                        row.CreateCell(9).SetCellValue(item.InvoiceGroup);
+                        row.CreateCell(10).SetCellValue(item.ProjectNo);
+                        if (!string.IsNullOrEmpty(item.ProjectNo))
+                        {
+                            Projetos Project = AllProjects.Where(x => x.NºProjeto == item.ProjectNo).FirstOrDefault();
+                            if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
+                                row.CreateCell(11).SetCellValue(Project.Descrição);
+                        }
+                        row.CreateCell(12).SetCellValue(item.LastInvoiceDate);
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToRequisicoesClienteDownload(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+
+
+
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> ExportToLastNotaEncomenda([FromBody] List<ContractViewModel> Lista)
+        {
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            List<Projetos> AllProjects = DBProjects.GetAll();
+
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisições Cliente");
+                IRow row = excelSheet.CreateRow(0);
+
+                row.CreateCell(0).SetCellValue("Nº Contrato");
+                row.CreateCell(1).SetCellValue("Âmbito dos Serviços");
+                row.CreateCell(2).SetCellValue("Nº Cliente");
+                row.CreateCell(3).SetCellValue("Cliente");
+                row.CreateCell(4).SetCellValue("Início Compromisso");
+                row.CreateCell(5).SetCellValue("Fim Compromisso");
+                row.CreateCell(6).SetCellValue("Nº Requisição Cliente");
+                row.CreateCell(7).SetCellValue("Data Requisição");
+                row.CreateCell(8).SetCellValue("Nº Compromisso");
+                row.CreateCell(9).SetCellValue("Grupo Fatura");
+                row.CreateCell(10).SetCellValue("Nº Projeto");
+                row.CreateCell(11).SetCellValue("Descrição");
+                row.CreateCell(12).SetCellValue("Data Última Fatura");
+
+                if (Lista != null && Lista.Count > 0)
+                {
+                    int count = 1;
+                    foreach (ContractViewModel contrato in Lista)
+                    {
+                        List<RequisiçõesClienteContrato> AllClientRequisitions = DBContractClientRequisition.GetByContract(contrato.ContractNo);
+
+                        if (contrato != null && AllClientRequisitions != null && AllClientRequisitions.Count > 0)
+                        {
+                            RequisiçõesClienteContrato ClientRequisition = AllClientRequisitions.OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
+
+                            if (ClientRequisition != null)
+                            {
+                                row = excelSheet.CreateRow(count);
+
+                                ContractClientRequisitionViewModel ClientRequisitionVM = DBContractClientRequisition.ParseToViewModel(ClientRequisition);
+
+                                row.CreateCell(0).SetCellValue(contrato.ContractNo);
+                                row.CreateCell(1).SetCellValue(contrato.Description);
+                                row.CreateCell(2).SetCellValue(contrato.ClientNo);
+                                row.CreateCell(3).SetCellValue(contrato.ClientName);
+                                row.CreateCell(4).SetCellValue(ClientRequisitionVM.StartDate);
+                                row.CreateCell(5).SetCellValue(ClientRequisitionVM.EndDate);
+                                row.CreateCell(6).SetCellValue(ClientRequisitionVM.ClientRequisitionNo);
+                                row.CreateCell(7).SetCellValue(ClientRequisitionVM.RequisitionDate);
+                                row.CreateCell(8).SetCellValue(ClientRequisitionVM.PromiseNo);
+                                row.CreateCell(9).SetCellValue(ClientRequisitionVM.InvoiceGroup);
+                                row.CreateCell(10).SetCellValue(ClientRequisitionVM.ProjectNo);
+                                if (!string.IsNullOrEmpty(ClientRequisitionVM.ProjectNo))
+                                {
+                                    Projetos Project = AllProjects.Where(x => x.NºProjeto == ClientRequisitionVM.ProjectNo).FirstOrDefault();
+                                    if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
+                                        row.CreateCell(11).SetCellValue(Project.Descrição);
+                                }
+                                row.CreateCell(12).SetCellValue(ClientRequisitionVM.LastInvoiceDate);
+
+                                count++;
+                            }
+                        }
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportLastNotaEncomendaDownload(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+
+
+
+
+
+
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> ExportToAllNotaEncomenda([FromBody] List<ContractViewModel> Lista)
+        {
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            List<Projetos> AllProjects = DBProjects.GetAll();
+
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Requisições Cliente");
+                IRow row = excelSheet.CreateRow(0);
+
+                row.CreateCell(0).SetCellValue("Nº Contrato");
+                row.CreateCell(1).SetCellValue("Âmbito dos Serviços");
+                row.CreateCell(2).SetCellValue("Nº Cliente");
+                row.CreateCell(3).SetCellValue("Cliente");
+                row.CreateCell(4).SetCellValue("Início Compromisso");
+                row.CreateCell(5).SetCellValue("Fim Compromisso");
+                row.CreateCell(6).SetCellValue("Nº Requisição Cliente");
+                row.CreateCell(7).SetCellValue("Data Requisição");
+                row.CreateCell(8).SetCellValue("Nº Compromisso");
+                row.CreateCell(9).SetCellValue("Grupo Fatura");
+                row.CreateCell(10).SetCellValue("Nº Projeto");
+                row.CreateCell(11).SetCellValue("Descrição");
+                row.CreateCell(12).SetCellValue("Data Última Fatura");
+
+                if (Lista != null && Lista.Count > 0)
+                {
+                    int count = 1;
+                    foreach (ContractViewModel contrato in Lista)
+                    {
+                        List<RequisiçõesClienteContrato> AllClientRequisitions = DBContractClientRequisition.GetByContract(contrato.ContractNo);
+
+                        if (contrato != null && AllClientRequisitions != null && AllClientRequisitions.Count > 0)
+                        {
+                            foreach (RequisiçõesClienteContrato item in AllClientRequisitions)
+                            {
+                                row = excelSheet.CreateRow(count);
+
+                                ContractClientRequisitionViewModel ClientRequisition = DBContractClientRequisition.ParseToViewModel(item);
+
+                                row.CreateCell(0).SetCellValue(contrato.ContractNo);
+                                row.CreateCell(1).SetCellValue(contrato.Description);
+                                row.CreateCell(2).SetCellValue(contrato.ClientNo);
+                                row.CreateCell(3).SetCellValue(contrato.ClientName);
+                                row.CreateCell(4).SetCellValue(ClientRequisition.StartDate);
+                                row.CreateCell(5).SetCellValue(ClientRequisition.EndDate);
+                                row.CreateCell(6).SetCellValue(ClientRequisition.ClientRequisitionNo);
+                                row.CreateCell(7).SetCellValue(ClientRequisition.RequisitionDate);
+                                row.CreateCell(8).SetCellValue(ClientRequisition.PromiseNo);
+                                row.CreateCell(9).SetCellValue(ClientRequisition.InvoiceGroup);
+                                row.CreateCell(10).SetCellValue(ClientRequisition.ProjectNo);
+                                if (!string.IsNullOrEmpty(ClientRequisition.ProjectNo))
+                                {
+                                    Projetos Project = AllProjects.Where(x => x.NºProjeto == ClientRequisition.ProjectNo).FirstOrDefault();
+                                    if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
+                                        row.CreateCell(11).SetCellValue(Project.Descrição);
+                                }
+                                row.CreateCell(12).SetCellValue(ClientRequisition.LastInvoiceDate);
+
+                                count++;
+                            }
+                        }
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportAllNotaEncomendaDownload(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "Contratos\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+
+
+
+
     }
 }

@@ -117,10 +117,37 @@ namespace Hydra.Such.Data.Logic.Request
 
                 using (var ctx = new SuchDBContext())
                 {
+                    if (date == DateTime.MinValue)
+                        return ctx.Requisição
+                            .Include("LinhasRequisição")
+                            .Include(x => x.RequisicoesRegAlteracoes)
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0))
+                            .ToList();
+                    else
+                        return ctx.Requisição
+                            .Include("LinhasRequisição")
+                            .Include(x => x.RequisicoesRegAlteracoes)
+                            .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0) && x.DataRequisição > date)
+                            .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public static List<Requisição> GetByIdAndState(int TipoReq, List<RequisitionStates> states, string NoRequisicao)
+        {
+            try
+            {
+                List<int> stateValues = states.Cast<int>().ToList();
+
+                using (var ctx = new SuchDBContext())
+                {
                     return ctx.Requisição
                         .Include("LinhasRequisição")
                         .Include(x => x.RequisicoesRegAlteracoes)
-                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0) && x.DataRequisição > date)
+                        .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq && (x.Interface == null || x.Interface == 0) && x.NºRequisição.Contains(NoRequisicao))
                         .ToList();
                 }
             }

@@ -332,6 +332,15 @@
                    on-response="_dlResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/ExportRequisicoesCliente"
+                   last-response="{{exportRequisicoesCliente}}"
+                   id="ajax_ExportRequisicoesCliente"
+                   method="post"
+                   handle-as="json"
+                   on-response="_ExportRequisicoesClienteResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
@@ -649,6 +658,10 @@
                                             <paper-collapse-group>
                                                 <paper-collapse-item header="Requisições Cliente">
                                                     <div class="panel-body">
+                                                        <div class="subMenu">
+                                                            <paper-button class="tablinks" on-tap="_ExportRequisicoesCliente" title="Exportar Requisições Cliente"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar</paper-button>
+                                                        </div>
+
                                                         <template is="dom-if" if="{{ !_lockFields }}">
                                                             <div class="row">
                                                                 <div class="col-lg-2">
@@ -3830,6 +3843,16 @@
 
                     this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
                     this.$.page_update_ajax.generateRequest();
+                },
+
+                _ExportRequisicoesCliente: function () {
+                    this.$.ajax_ExportRequisicoesCliente.body = JSON.stringify(this.data);
+                    this.$.ajax_ExportRequisicoesCliente.generateRequest();
+                },
+
+                _ExportRequisicoesClienteResponse: function (e) {
+                    var FileName = this.exportRequisicoesCliente;
+                    location.href = '/Contratos/ExportToRequisicoesClienteDownload?sFileName=' + FileName;
                 },
 
             });

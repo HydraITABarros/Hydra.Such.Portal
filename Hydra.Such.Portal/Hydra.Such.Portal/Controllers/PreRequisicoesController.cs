@@ -1417,18 +1417,68 @@ namespace Hydra.Such.Portal.Controllers
                                 if (product.InventoryValueZero == 1)
                                 {
                                     newline.CustoUnitário = x.UnitCost;
-                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                     newline.LocalCompraDireta = "1";
+                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                 }
                                 else
                                 {
-                                    NAVStockKeepingUnitViewModel localizacao = new NAVStockKeepingUnitViewModel();
-                                    localizacao = AllLocalizacoes.Where(y => y.ItemNo_ == x.Code).FirstOrDefault();
+                                    //CÓDIGO ORIGINAL
+                                    //NAVStockKeepingUnitViewModel localizacao = new NAVStockKeepingUnitViewModel();
+                                    //localizacao = AllLocalizacoes.Where(y => y.ItemNo_ == x.Code).FirstOrDefault();
 
-                                    if (localizacao != null)
+                                    //if (localizacao != null)
+                                    //{
+                                    //    newline.CustoUnitário = localizacao.UnitCost;
+                                    //    newline.CódigoLocalização = localizacao.LocationCode;
+                                    //    newline.LocalCompraDireta = "0";
+                                    //}
+                                    //else
+                                    //{
+                                    //    if (result.eReasonCode == 3)
+                                    //        result.eMessage = result.eMessage + " , Nº " + x.Code;
+                                    //    else
+                                    //    {
+                                    //        result.eReasonCode = 3;
+                                    //        result.eMessage = "Não foi possivel obter o Código de Localização para o(s) Produto(s) Nº " + x.Code;
+                                    //    }
+                                    //}
+
+                                    //Alteração
+                                    List<ConfiguracaoParametros> AllArmazens = new List<ConfiguracaoParametros>();
+                                    string regiao = newline.CódigoRegião;
+
+                                    if (!string.IsNullOrEmpty(regiao) && regiao == "12")
+                                        AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem12");
+                                    if (!string.IsNullOrEmpty(regiao) && regiao == "23")
+                                        AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem23");
+                                    if (!string.IsNullOrEmpty(regiao) && regiao == "33")
+                                        AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem33");
+                                    if (!string.IsNullOrEmpty(regiao) && regiao == "43")
+                                        AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem43");
+
+                                    List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                                    NAVStockKeepingUnitViewModel ProductArmazem = new NAVStockKeepingUnitViewModel();
+
+                                    if (!string.IsNullOrEmpty(newline.Código))
+                                        AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, newline.Código);
+
+                                    if (AllProductsArmazem != null && AllProductsArmazem.Count > 0)
                                     {
-                                        newline.CustoUnitário = localizacao.UnitCost;
-                                        newline.CódigoLocalização = localizacao.LocationCode;
+                                        if (AllArmazens != null && AllArmazens.Count > 0)
+                                        {
+
+                                            AllArmazens.ForEach(Armazem =>
+                                            {
+                                                if (ProductArmazem == null || string.IsNullOrEmpty(ProductArmazem.ItemNo_))
+                                                    ProductArmazem = AllProductsArmazem.Where(y => y.LocationCode == Armazem.Valor).FirstOrDefault();
+                                            });
+                                        }
+                                    }
+
+                                    if (ProductArmazem != null && !string.IsNullOrEmpty(ProductArmazem.ItemNo_))
+                                    {
+                                        newline.CustoUnitário = ProductArmazem.UnitCost;
+                                        newline.CódigoLocalização = ProductArmazem.LocationCode;
                                         newline.LocalCompraDireta = "0";
                                     }
                                     else

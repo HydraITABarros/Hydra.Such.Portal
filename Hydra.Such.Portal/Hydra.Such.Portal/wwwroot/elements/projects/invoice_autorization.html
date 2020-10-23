@@ -217,6 +217,7 @@
                    method="post"
                    handle-as="json"
                    id="updatelinesSelecionada_ajax"
+                   on-response="_updatelinesSelecionadaResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -804,8 +805,8 @@
         <paper-dialog id="dlgValidation" modal style="height:200px; width:500px">
             <div class="row break_clear">
                 <!--<div class="col-md-2 ">
-                <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
-            </div>-->
+                    <vaadin-text-field id="txtGrupoFatura" name="txtGrupoFatura" label="Grupo Fatura" value="" disabled></vaadin-text-field>
+                </div>-->
                 <div class="col-md-12 ">
                     <vaadin-text-field id="txtDescGrupoFatura" maxlength="30" name="txtDescGrupoFatura" label="Descrição Grupo Fatura"></vaadin-text-field>
                 </div>
@@ -1238,7 +1239,7 @@
                     }
                 },
                 ready: function () {
-                    
+
                     //this._loadData();
                     this._setDefaultDateForDatePickers();
                     /*ColumnToggle*/
@@ -1252,7 +1253,7 @@
                 },
 
                 _loadData: function () {
-                    this._totalToAuthorize = 0.00;
+                    //this._totalToAuthorize = 0.00;
                     this.$.IdObs.value = "";
                     this.$.grdProjectMovements.selectedItems = [];
                     this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
@@ -1315,7 +1316,7 @@
                             var total = 0.00;
                             for (var i = 0; i < this.selectedItems.length; i++) {
                                 if (this.selectedItems[i].totalPrice != null && this.selectedItems[i].selecionada == true) {
-                                    total = (parseFloat(total).toFixed(2) + parseFloat(this.selectedItems[i].totalPrice).toFixed(2)).toFixed(2);
+                                    total = parseFloat((parseFloat(total).toFixed(2) + parseFloat(this.selectedItems[i].totalPrice).toFixed(2))).toFixed(2);
                                 }
                             }
 
@@ -1452,18 +1453,16 @@
                     }
 
                     //AMARO
-                    this._totalToAuthorize = 0.00;
+                    //this._totalToAuthorize = 0.00;
                     var items = this.$.grdProjectMovements.items;
                     if (items.length > 0) {
                         for (var i = 0; i < items.length; i++) {
                             if (items[i].totalPrice != null && items[i].selecionada == true) {
-                                //total = total + items[i].totalPrice;
-                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(items[i].totalPrice).toFixed(2)).toFixed(2);
+                                //this._totalToAuthorize = parseFloat((parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(items[i].totalPrice).toFixed(2))).toFixed(2);
                                 this.$.grdProjectMovements.selectItem(items[i]);
                             }
                         }
                     }
-                    //this._totalToAuthorize = parseFloat(total);
                 },
                 GetProjectResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -1562,14 +1561,14 @@
                 //### - Grid selection behaviour
                 _resetSelection: function (inverted) {
                     var erro = 0
-                    this._totalToAuthorize = 0.00;
+                    //this._totalToAuthorize = 0.00;
                     if (inverted) {
 
                         var gridfilter = this.$.grdProjectMovements._filter(this.result.value);
                         for (i = 0; i < gridfilter.length; i++) {
                             if (gridfilter[i].quantity != null && gridfilter[i].quantity != 0) {
-                                if (gridfilter[i].totalPrice != null && this._totalToAuthorize != null)
-                                    this._totalToAuthorize = (parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(gridfilter[i].totalPrice).toFixed(2)).toFixed(2);
+                                //if (gridfilter[i].totalPrice != null && this._totalToAuthorize != null)
+                                    //this._totalToAuthorize = parseFloat((parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(gridfilter[i].totalPrice).toFixed(2))).toFixed(2);
                                 gridfilter[i].autorizatedInvoice2 = true;
 
                                 this.$.grdProjectMovements.selectItem(gridfilter[i]);
@@ -1672,9 +1671,9 @@
 
                         if (items.length > 0) {
                             for (var i = 0; i < items.length; i++) {
-                                    items[i].selecionada = false;
-                                    this.$.updatelinesSelecionada_ajax.body = JSON.stringify(items[i]);
-                                    this.$.updatelinesSelecionada_ajax.generateRequest();
+                                items[i].selecionada = false;
+                                this.$.updatelinesSelecionada_ajax.body = JSON.stringify(items[i]);
+                                this.$.updatelinesSelecionada_ajax.generateRequest();
                             }
                         }
                         this._totalToAuthorize = 0.00;
@@ -1688,15 +1687,15 @@
                     if (e.target.checked /*=== this.inverted*/) {
                         if (e.model.item.quantity != null && e.model.item.quantity != 0) {
                             //if (e.model.item.unitPrice != null && e.model.item.unitPrice > 0) {
-                            if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
-                                this._totalToAuthorize = (parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(e.model.item.totalPrice).toFixed(2)).toFixed(2);
-                                e.model.item.autorizatedInvoice2 = true;
-                                this.$.grdProjectMovements.selectItem(e.model.item);
+                            //if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                            //    this._totalToAuthorize =  this._totalToAuthorize + e.model.item.totalPrice;
+                            e.model.item.autorizatedInvoice2 = true;
+                            this.$.grdProjectMovements.selectItem(e.model.item);
 
-                                //AMARO
-                                e.model.item.selecionada = true;
-                                this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
-                                this.$.updatelinesSelecionada_ajax.generateRequest();
+                            //AMARO
+                            e.model.item.selecionada = true;
+                            this.$.updatelinesSelecionada_ajax.body = JSON.stringify(e.model.item);
+                            this.$.updatelinesSelecionada_ajax.generateRequest();
                             //}
                             //else {
                             //    this.openToastError("O valor do Preço unitário tem que ser superior a 0.");
@@ -1708,8 +1707,8 @@
                             e.target.checked = false;
                         }
                     } else {
-                        if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
-                            this._totalToAuthorize = (parseFloat(this._totalToAuthorize).toFixed(2) - parseFloat(e.model.item.totalPrice).toFixed(2)).toFixed(2);
+                        //if (e.model.item.totalPrice != null && this._totalToAuthorize != null)
+                        //    this._totalToAuthorize = parseFloat((parseFloat(this._totalToAuthorize).toFixed(2) - parseFloat(e.model.item.totalPrice).toFixed(2))).toFixed(2);
                         e.model.item.autorizatedInvoice2 = false;
                         this.$.grdProjectMovements.deselectItem(e.model.item);
 
@@ -1973,7 +1972,17 @@
                     }
                 },
 
-
+                _updatelinesSelecionadaResponse: function () {
+                    var total = 0.00;
+                    if (this.result.value.length > 0) {
+                        for (i = 0; i < this.result.value.length; i++) {
+                            if (this.result.value[i].selecionada == true) {
+                                total = total + this.result.value[i].totalPrice;
+                            }
+                        }
+                    }
+                    this._totalToAuthorize = parseFloat(total).toFixed(2);
+                },
 
 
 

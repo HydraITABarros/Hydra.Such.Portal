@@ -8867,6 +8867,12 @@ namespace Hydra.Such.Portal.Controllers
                     data.UpdateUser = User.Identity.Name;
                     if (DBProjectMovements.Update(DBProjectMovements.ParseToDB(data)) != null)
                     {
+                        //List<ProjectMovementViewModel> projectMovements = GetProjectMovements(data.ProjectNo, data.InvoiceToClientNo, true).Where(x => x.Selecionada == true).ToList();
+                        //if (projectMovements != null && projectMovements.Count > 0)
+                        //    data.TotalPriceLinhas = Math.Round(projectMovements.Sum(x => (decimal)x.TotalPrice), 2);
+                        //else
+                        //    data.TotalPriceLinhas = 0;
+
                         data.eReasonCode = 1;
                         data.eMessage = "Movimento de projeto atualizado com sucesso.";
                     }
