@@ -2861,6 +2861,21 @@
                             if (this._CRInvoiceGroup != "")
                                 invGroup = this._CRInvoiceGroup;
 
+                            var Erro = false;
+                            if (this.data.clientRequisitions.length > 0) {
+                                for (i = 0; i < this.data.clientRequisitions.length; i++) {
+                                    if (invGroup  == this.data.clientRequisitions[i].invoiceGroup &&
+                                        this._CRProjectNo == this.data.clientRequisitions[i].projectNo &&
+                                        this._CRStartDate == this.data.clientRequisitions[i].startDate) {
+                                        Erro = true;
+                                    }
+                                }
+                            }
+                            if (Erro == true) {
+                                this._openToastError("Já existe uma linha com os dados chave na Requisições Cliente.");
+                                return false;
+                            }
+
                             this.data.clientRequisitions.unshift({
                                 contractNo: this.data.contractNo,
                                 startDate: this._CRStartDate,
@@ -2901,6 +2916,7 @@
 
                         return true;
                     }
+
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },

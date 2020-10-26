@@ -388,7 +388,7 @@
                                             </template>
                                             <template>
                                                 <div class="alignCenter">
-                                                    <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]">
+                                                    <input aria-label="Selecionar" type="checkbox" on-change="_selectItem" checked="{{ item.selecionada }}" /> <!--checked="[[_isSelected(inverted, selected)]]">-->
                                                 </div>
                                             </template>
                                         </vaadin-grid-column>
@@ -1239,7 +1239,6 @@
                     }
                 },
                 ready: function () {
-
                     //this._loadData();
                     this._setDefaultDateForDatePickers();
                     /*ColumnToggle*/
@@ -1314,9 +1313,11 @@
                     else {
                         if (this.selectedItems != null && this.selectedItems.length > 0) {
                             var total = 0.00;
-                            for (var i = 0; i < this.selectedItems.length; i++) {
-                                if (this.selectedItems[i].totalPrice != null && this.selectedItems[i].selecionada == true) {
-                                    total = parseFloat((parseFloat(total).toFixed(2) + parseFloat(this.selectedItems[i].totalPrice).toFixed(2))).toFixed(2);
+                            if (this.result.value.length > 0) {
+                                for (i = 0; i < this.result.value.length; i++) {
+                                    if (this.result.value[i].selecionada == true) {
+                                        total = total + (this.result.value[i].quantity * this.result.value[i].unitPrice);
+                                    }
                                 }
                             }
 
@@ -1356,6 +1357,7 @@
                 _toggleBillable: function (e) {
                     this._billable = !this._billable;
                     this.$.grdProjectMovements.clearCache();
+
                     this.$.grdProjectMovements.selectedItems = [];
                     this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
                     this.$.movements_databound_ajax.generateRequest();
@@ -1454,15 +1456,17 @@
 
                     //AMARO
                     //this._totalToAuthorize = 0.00;
-                    var items = this.$.grdProjectMovements.items;
-                    if (items.length > 0) {
-                        for (var i = 0; i < items.length; i++) {
-                            if (items[i].totalPrice != null && items[i].selecionada == true) {
-                                //this._totalToAuthorize = parseFloat((parseFloat(this._totalToAuthorize).toFixed(2) + parseFloat(items[i].totalPrice).toFixed(2))).toFixed(2);
-                                this.$.grdProjectMovements.selectItem(items[i]);
+                    var total = 0.00;
+                    if (this.result.value.length > 0) {
+                        for (i = 0; i < this.result.value.length; i++) {
+                            if (this.result.value[i].selecionada == true) {
+                                total = total + this.result.value[i].totalPrice;
                             }
                         }
                     }
+                    this._totalToAuthorize = parseFloat(total).toFixed(2);
+
+                    this.openToast("Lista atualizada.");
                 },
                 GetProjectResponse: function (e) {
                     if (e.detail.status === 200) {
@@ -1634,39 +1638,18 @@
                     this.inverted = !this.inverted;
 
                     if (this.inverted == true) { //TODAS AS LINHAS SELECIONADAS
-                        var total = 0;
+                        var items = this.$.grdProjectMovements.items;
 
-                        var gridfilter = this.$.grdProjectMovements._filter(this.result.value);
-                        if (gridfilter.length > 0) {
-                            for (var i = 0; i < gridfilter.length; i++) {
-                                if (gridfilter[i].totalPrice != null) {
-                                    gridfilter[i].selecionada = true;
-                                    this.$.updatelinesSelecionada_ajax.body = JSON.stringify(gridfilter[i]);
-                                    this.$.updatelinesSelecionada_ajax.generateRequest();
-
-                                    //total = total + gridfilter[i].totalPrice;
-                                    //this._totalToAuthorize = (parseFloat(this._totalToAuthorize) + parseFloat(gridfilter[i].totalPrice)).toFixed(2);
-                                    this.$.grdProjectMovements.selectItem(gridfilter[i]);
-                                }
+                        if (items.length > 0) {
+                            for (var i = 0; i < items.length; i++) {
+                                items[i].selecionada = true;
+                                this.$.updatelinesSelecionada_ajax.body = JSON.stringify(items[i]);
+                                this.$.updatelinesSelecionada_ajax.generateRequest();
                             }
                         }
-                        //var items = this.$.grdProjectMovements.items;
-                        //if (items.length > 0) {
-                        //    for (var i = 0; i < items.length; i++) {
-                        //        if (items[i].totalPrice != null) {
-                        //            items[i].selecionada = true;
-                        //            this.$.updatelinesSelecionada_ajax.body = JSON.stringify(items[i]);
-                        //            this.$.updatelinesSelecionada_ajax.generateRequest();
 
-                        //            total = total + items[i].totalPrice;
-                        //            this.$.grdProjectMovements.selectItem(items[i]);
-                        //        }
-                        //    }
-                        //}
-                        //this._totalToAuthorize = parseFloat(total).toFixed(2);
                     }
                     else {
-                        var total = 0;
                         var items = this.$.grdProjectMovements.items;
 
                         if (items.length > 0) {
@@ -1678,6 +1661,9 @@
                         }
                         this._totalToAuthorize = 0.00;
                     }
+
+                    this.$.movements_databound_ajax.body = JSON.stringify({ "projectNo": this._projectno, "billable": this._billable });
+                    this.$.movements_databound_ajax.generateRequest();
                 },
                 // iOS needs indeterminate + checked at the same time
                 _isChecked: function (inverted, indeterminate) {
@@ -1720,7 +1706,10 @@
                     this.indeterminate = this.$.grdProjectMovements.selectedItems.length > 0;
                 },
                 _isSelected: function (inverted, selected) {
-                    return selected;//inverted != selected;
+                    return true; 
+
+
+                    //return //inverted != selected;
                 },
                 //###
 
@@ -1983,9 +1972,6 @@
                     }
                     this._totalToAuthorize = parseFloat(total).toFixed(2);
                 },
-
-
-
 
             });
         });
