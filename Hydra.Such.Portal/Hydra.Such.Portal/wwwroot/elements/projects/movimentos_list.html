@@ -475,6 +475,16 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.serviceClientDescription.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="serviceClientDescription">Serviço Cliente</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="serviceClientDescription" />
+                </template>
+                <template>
+                    {{item.serviceClientDescription}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.residueGuideNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="residueGuideNo">Nº Guia Resíduos</vaadin-grid-sorter>
@@ -722,6 +732,7 @@
                         "clientRequest": { hidden: false, label: "Cód. Cliente" },
                         "clientName": { hidden: false, label: "Nome Cliente" },
                         "serviceClientCode": { hidden: false, label: "Cód. Serviço Cliente" },
+                        "serviceClientDescription": { hidden: false, label: "Serviço Cliente" },
                         "residueGuideNo": { hidden: false, label: "Nº Guia Resíduos" },
                         "readingCode": { hidden: false, label: "Cód. Ler" },
                         "mealTypeDescription": { hidden: false, label: "Tipo Refeição" },

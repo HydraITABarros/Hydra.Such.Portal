@@ -6018,7 +6018,7 @@ namespace Hydra.Such.Portal.Controllers
                 TipoPreco = x.TipoPreco,
                 TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
                 GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
-                CodCategoriaProduto = x.CodCategoriaProduto
+                CodCategoriaProduto = x.CodCategoriaProduto,
             }).ToList();
 
             return Json(result);
@@ -6828,6 +6828,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["regiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região"); Col = Col + 1; }
                 if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Área Funcional"); Col = Col + 1; }
                 if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Resp."); Col = Col + 1; }
+                if (dp["grupoRegistoIvaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Registo IVA Produto"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -6859,7 +6860,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["regiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Regiao); Col = Col + 1; }
                         if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area.ToString()); Col = Col + 1; }
                         if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Cresp.ToString()); Col = Col + 1; }
-                        
+                        if (dp["grupoRegistoIvaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.GrupoRegistoIvaProduto.ToString()); Col = Col + 1; }
+
                         count++;
                     }
                 }
