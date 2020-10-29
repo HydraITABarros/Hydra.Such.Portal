@@ -307,7 +307,7 @@
                         <iron-form>
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <div class="col-md-9">
+                                    <div class="col-md-10">
                                         <div class="row break_clear">
                                             <div class="col-md-2 ">
                                                 <vaadin-text-field id="txtCodProjeto" name="txtCodProjeto" label="Nº Projeto" value="[[Project.projectNo]]" disabled></vaadin-text-field>
@@ -315,19 +315,22 @@
                                             <div class="col-md-4">
                                                 <vaadin-text-field id="txtDescricaoProjeto" name="txtDescricaoProjeto" label="Descrição Projeto" value="[[Project.description]]" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}" maxlength="50"></vaadin-text-field>
-                                            </div>
-                                            <div class="col-md-3 ">
-                                                <vaadin-text-field value="{{_customerRequestNo}}" maxlength="20" id="txtCustomerRequestNo" name="txtCustomerRequestNo" label="Pedido do Cliente"> </vaadin-text-field>
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="txtNomeCliente" name="txtNomeCliente" label="Nome Cliente" value="[[_customerName]]" disabled></vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
+                                            <!--<div class="col-md-2 ">
+                    <vaadin-text-field id="txtCodCliente" name="txtCodCliente" label="Nº Cliente" value="[[Project.clientNo]]" disabled></vaadin-text-field>
+                </div>-->
                                             <div class="col-md-2 ">
-                                                <vaadin-text-field id="txtCodCliente" name="txtCodCliente" label="Nº Cliente" value="[[Project.clientNo]]" disabled></vaadin-text-field>
+                                                <vaadin-text-field id="txtNumCompromisso" label="Nº Compromisso" value="{{_commitmentNo}}" maxlength="50"></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-10">
-                                                <vaadin-text-field id="txtNomeCliente" name="txtNomeCliente" label="Nome Cliente" value="[[_customerName]]" disabled></vaadin-text-field>
+                                            <div class="col-md-8 ">
+                                                <vaadin-text-field value="{{_customerRequestNo}}" maxlength="20" id="txtCustomerRequestNo" name="txtCustomerRequestNo" label="Pedido do Cliente"> </vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-2 ">
+                                                <vaadin-date-picker value="{{_customerRequestDate}}" id="txtcustomerRequestDate" name="txtcustomerRequestDate" label="Data do Pedido"> </vaadin-date-picker>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -337,7 +340,7 @@
                                             <div class="col-md-5 ">
                                                 <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-5 ">
+                                            <div class="col-md-5 alignRight">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
                                             </div>
                                         </div>
@@ -346,8 +349,8 @@
                                         <div class="row break_clear">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <div class="row break_clear">
+                                    <div class="col-md-2">
+                                        <div class="row break_clear alignRight">
                                             <div class="col-md-12 ">
                                                 <vaadin-text-field id="idTotalBillableConsumption" name="nTotalBillableConsumption" label="Total Cons. Faturáveis" value="[[ProjectBillingResume.TotalBillableConsumption]]" disabled></vaadin-text-field>
                                                 <!--Total Const. Faturáveis .. [[ProjectBillingResume.TotalBillableConsumption]]-->

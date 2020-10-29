@@ -4252,7 +4252,7 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             wSJobJournalLine.No = movimento.Código;
                             wSJobJournalLine.Description100 = string.Empty;
-                            wSJobJournalLine.Quantity = movimento.Quantidade.HasValue ? Math.Round((decimal)movimento.Quantidade, 2) : decimal.Zero; //?? 0;
+                            wSJobJournalLine.Quantity = movimento.Quantidade.HasValue ? (decimal)movimento.Quantidade : decimal.Zero; //?? 0;
                             wSJobJournalLine.QuantitySpecified = true;
                             wSJobJournalLine.Unit_of_Measure_Code = movimento.CódUnidadeMedida ?? string.Empty;
                             wSJobJournalLine.Location_Code = movimento.CódLocalização ?? string.Empty;
@@ -4260,10 +4260,10 @@ namespace Hydra.Such.Portal.Controllers
                             wSJobJournalLine.RegionCode20 = string.Empty;
                             wSJobJournalLine.FunctionAreaCode20 = string.Empty;
                             wSJobJournalLine.ResponsabilityCenterCode20 = string.Empty;
-                            wSJobJournalLine.Unit_Cost = movimento.CustoUnitário.HasValue ? Math.Round((decimal)movimento.CustoUnitário, 4) : decimal.Zero;
-                            wSJobJournalLine.Total_Cost = movimento.Quantidade.HasValue && movimento.CustoUnitário.HasValue ? Math.Round((decimal)Math.Round((decimal)movimento.Quantidade, 2) * Math.Round((decimal)movimento.CustoUnitário, 4), 2) : decimal.Zero;
-                            wSJobJournalLine.Unit_Price = movimento.PreçoUnitário.HasValue ? Math.Round((decimal)movimento.PreçoUnitário, 4) : decimal.Zero;
-                            wSJobJournalLine.Total_Price = movimento.Quantidade.HasValue && movimento.PreçoUnitário .HasValue ? Math.Round((decimal)Math.Round((decimal)movimento.Quantidade, 2) * Math.Round((decimal)movimento.PreçoUnitário, 4), 2) : decimal.Zero;
+                            wSJobJournalLine.Unit_Cost = movimento.CustoUnitário.HasValue ? (decimal)movimento.CustoUnitário : decimal.Zero;
+                            wSJobJournalLine.Total_Cost = movimento.Quantidade.HasValue && movimento.CustoUnitário.HasValue ? Math.Round(((decimal)movimento.Quantidade * (decimal)movimento.CustoUnitário), 2) : decimal.Zero;
+                            wSJobJournalLine.Unit_Price = movimento.PreçoUnitário.HasValue ? (decimal)movimento.PreçoUnitário : decimal.Zero;
+                            wSJobJournalLine.Total_Price = movimento.Quantidade.HasValue && movimento.PreçoUnitário .HasValue ? Math.Round(((decimal)movimento.Quantidade * (decimal)movimento.PreçoUnitário), 2) : decimal.Zero;
                             wSJobJournalLine.Unit_CostSpecified = true;
                             wSJobJournalLine.Unit_PriceSpecified = true;
                             switch (movimento.Faturável.ToString())
@@ -4363,7 +4363,7 @@ namespace Hydra.Such.Portal.Controllers
                             ConsumptionDate = mpa.DataConsumo.HasValue ? mpa.DataConsumo.Value.ToString("yyyy-MM-dd") : "",
                             ServiceClientCode = mpa.CodServCliente,
                             MeasurementUnitCode = mpa.CodUnidadeMedida,
-                            Quantity = Math.Round((decimal)mpa.Quantidade, 2),
+                            Quantity = mpa.Quantidade,
                             ServiceGroupCode = mpa.CodGrupoServico,
                             ExternalGuideNo = mpa.NumGuiaExterna,
                             WasteGuideNo_GAR = mpa.NumGuiaResiduosGar,
@@ -4376,8 +4376,10 @@ namespace Hydra.Such.Portal.Controllers
                             //ResourceType = mpa.TipoRecurso,                            
 
                             //##################################    Se necessário, obter de movimentos de projeto
-                            UnitPrice = mp.PreçoUnitário.HasValue ? Math.Round((decimal)mp.PreçoUnitário, 4) : decimal.Zero,
-                            UnitCost = mp.CustoUnitário.HasValue ? Math.Round((decimal)mp.CustoUnitário, 4) :decimal.Zero,
+                            //UnitPrice = mp.PreçoUnitário.HasValue ? Math.Round((decimal)mp.PreçoUnitário, 4) : decimal.Zero,
+                            //UnitCost = mp.CustoUnitário.HasValue ? Math.Round((decimal)mp.CustoUnitário, 4) :decimal.Zero,
+                            UnitPrice = mp.PreçoUnitário.HasValue ? mp.PreçoUnitário : decimal.Zero,
+                            UnitCost = mp.CustoUnitário.HasValue ? mp.CustoUnitário : decimal.Zero,
                             LocationCode = mp.CódLocalização,
                             //CreateUser = mp.UtilizadorCriação,
                             ProjectContabGroup = mp.GrupoContabProjeto,
@@ -4699,9 +4701,9 @@ namespace Hydra.Such.Portal.Controllers
 
                                         //Para Nota de créditos inverter o sinal Marco Marcelo 20/11/2019
                                         if (header.MovementType == 4)
-                                            x.TotalPrice = -1 * (x.TotalPrice.HasValue ? Math.Round((decimal)x.TotalPrice.Value, 2) : decimal.Zero);
+                                            x.TotalPrice = -1 * (x.TotalPrice.HasValue ? (decimal)x.TotalPrice.Value : decimal.Zero);
                                         if (header.MovementType == 4)
-                                            x.Quantity = -1 * (x.Quantity.HasValue ? Math.Round((decimal)x.Quantity.Value, 2) : decimal.Zero);
+                                            x.Quantity = -1 * (x.Quantity.HasValue ? (decimal)x.Quantity.Value : decimal.Zero);
                                     });
 
                                     List<NAVResourcesViewModel> resourceslines = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "");
@@ -4717,7 +4719,7 @@ namespace Hydra.Such.Portal.Controllers
                                         wasteFamilyResources.ForEach(x =>
                                         {
 
-                                            decimal? quantity = header.Items.Where(y => y.Type == 2 && y.Code == item.Code).Sum(y => y.Quantity.HasValue ? Math.Round((decimal)y.Quantity, 2) : decimal.Zero);
+                                            decimal? quantity = header.Items.Where(y => y.Type == 2 && y.Code == item.Code).Sum(y => y.Quantity.HasValue ? (decimal)y.Quantity : decimal.Zero);
                                             var resourceFirstLine = header.Items.Where(y => y.Type == 2 && y.Code == item.Code).OrderByDescending(y => y.ContractNo).FirstOrDefault();
                                             var resource = resourceslines.Where(y => y.Code == x.Recurso && y.WasteRate == 1).FirstOrDefault();
                                             if (resource != null)
@@ -4725,11 +4727,11 @@ namespace Hydra.Such.Portal.Controllers
                                                 if (header.Items.Where(y => y.Code == resource.Code).Count() == 0)
                                                 {
                                                     SPInvoiceListViewModel wasteLineToAdd = new SPInvoiceListViewModel();
-                                                    wasteLineToAdd.Quantity = quantity.HasValue ? Math.Round((decimal)quantity, 2) : decimal.Zero; // ?? 0;
+                                                    wasteLineToAdd.Quantity = quantity.HasValue ? (decimal)quantity : decimal.Zero; // ?? 0;
                                                     wasteLineToAdd.Type = 2;
                                                     wasteLineToAdd.Code = resource.Code;
                                                     wasteLineToAdd.Description = resource.Name;
-                                                    wasteLineToAdd.UnitPrice = Math.Round((decimal)resource.UnitPrice, 4);
+                                                    wasteLineToAdd.UnitPrice = (decimal)resource.UnitPrice;
                                                     wasteLineToAdd.RegionCode = resourceFirstLine.RegionCode;
                                                     wasteLineToAdd.ResponsabilityCenterCode = resourceFirstLine.ResponsabilityCenterCode;
                                                     wasteLineToAdd.FunctionalAreaCode = resourceFirstLine.FunctionalAreaCode;
@@ -4746,7 +4748,7 @@ namespace Hydra.Such.Portal.Controllers
                                                     {
                                                         if (linha.Code == resource.Code)
                                                         {
-                                                            linha.Quantity = (linha.Quantity.HasValue ? Math.Round((decimal)linha.Quantity, 2) : decimal.Zero) + (quantity.HasValue ? Math.Round((decimal)quantity, 2) : decimal.Zero); // ?? 0;
+                                                            linha.Quantity = (linha.Quantity.HasValue ? (decimal)linha.Quantity : decimal.Zero) + (quantity.HasValue ? (decimal)quantity : decimal.Zero); // ?? 0;
                                                         }
                                                     }
                                                 }
@@ -4802,7 +4804,7 @@ namespace Hydra.Such.Portal.Controllers
                                             }
 
                                             if (IVA > 0)
-                                                item.UnitPrice = (item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4) : decimal.Zero) * IVA;
+                                                item.UnitPrice = (item.UnitPrice.HasValue ? (decimal)item.UnitPrice : decimal.Zero) * IVA;
                                         }
                                     }
 

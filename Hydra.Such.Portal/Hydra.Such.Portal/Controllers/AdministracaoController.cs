@@ -6860,7 +6860,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["regiao"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Regiao); Col = Col + 1; }
                         if (dp["area"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Area.ToString()); Col = Col + 1; }
                         if (dp["cresp"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Cresp.ToString()); Col = Col + 1; }
-                        if (dp["grupoRegistoIvaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.GrupoRegistoIvaProduto.ToString()); Col = Col + 1; }
+                        if (dp["grupoRegistoIvaProduto"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(!string.IsNullOrEmpty(item.GrupoRegistoIvaProduto) ? item.GrupoRegistoIvaProduto : ""); Col = Col + 1; }
 
                         count++;
                     }

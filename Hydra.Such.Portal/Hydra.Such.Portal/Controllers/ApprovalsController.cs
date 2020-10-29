@@ -37,13 +37,15 @@ namespace Hydra.Such.Portal.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly NAVWSConfigurations configws;
         private readonly GeneralConfigurations _generalConfig;
+        private readonly NAVConfigurations _config;
 
-        public ApprovalsController(IHttpContextAccessor httpContextAccessor, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment, IOptions<GeneralConfigurations> appSettingsGeneral)
+        public ApprovalsController(IOptions<NAVConfigurations> appSettings, IHttpContextAccessor httpContextAccessor, IOptions<NAVWSConfigurations> NAVWSConfigs, IHostingEnvironment _hostingEnvironment, IOptions<GeneralConfigurations> appSettingsGeneral)
         {
             this.session = httpContextAccessor.HttpContext.Session;
             this._hostingEnvironment = _hostingEnvironment;
             configws = NAVWSConfigs.Value;
             _generalConfig = appSettingsGeneral.Value;
+            _config = appSettings.Value;
         }
 
         public IActionResult Index()
@@ -1443,55 +1445,64 @@ namespace Hydra.Such.Portal.Controllers
                             data.UpdateUser = User.Identity.Name;
                             data.Visivel = true;
 
-                            Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, configws);
-                            try
-                            {
-                                TCreateNavProj.Wait();
-                            }
-                            catch (Exception ex)
+                            NAVClientsViewModel client = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, data.ClientNo);
+                            if (client != null && (client.Blocked == WSCustomerNAV.Blocked.Invoice || client.Blocked == WSCustomerNAV.Blocked.All))
                             {
                                 result.eReasonCode = 503;
-                                result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-                            }
-                            if (!TCreateNavProj.IsCompletedSuccessfully)
-                            {
-                                result.eReasonCode = 503;
-                                result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
-
-                                if (TCreateNavProj.Exception != null)
-                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
-
-                                if (TCreateNavProj.Exception.InnerException != null)
-                                    result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
+                                result.eMessage = "Não é possivel aprovar o Projeto, por o Cliente Nº " + data.ClientNo + "estar bloqueado no NAV2017.";
                             }
                             else
                             {
-                                if (DBProjects.Update(DBProjects.ParseToDB(data)) != null)
+                                Task<WSCreateNAVProject.Create_Result> TCreateNavProj = WSProject.CreateNavProject(data, configws);
+                                try
                                 {
-                                    //Update Old Movement
-                                    ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
-                                    ApprovalMovement.Status = 2;
-                                    ApprovalMovement.DateTimeApprove = DateTime.Now;
-                                    ApprovalMovement.DateTimeUpdate = DateTime.Now;
-                                    ApprovalMovement.UserUpdate = User.Identity.Name;
-                                    ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+                                    TCreateNavProj.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    result.eReasonCode = 503;
+                                    result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
+                                }
+                                if (!TCreateNavProj.IsCompletedSuccessfully)
+                                {
+                                    result.eReasonCode = 503;
+                                    result.eMessage = "Ocorreu um erro ao criar o projeto no NAV.";
 
-                                    //Delete All User Approval Movements
-                                    if (DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name) == true)
-                                    {
-                                        result.eReasonCode = 100;
-                                        result.eMessage = "O Projeto foi aprovado com sucesso.";
-                                    }
-                                    else
-                                    {
-                                        result.eReasonCode = 504;
-                                        result.eMessage = "Ocorreu um erro ao apagar os Movimentos de Aprovação.";
-                                    }
+                                    if (TCreateNavProj.Exception != null)
+                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.Message));
+
+                                    if (TCreateNavProj.Exception.InnerException != null)
+                                        result.eMessages.Add(new TraceInformation(TraceType.Exception, TCreateNavProj.Exception.InnerException.ToString()));
                                 }
                                 else
                                 {
-                                    result.eReasonCode = 505;
-                                    result.eMessage = "Ocorreu um erro ao atualizar o movimento de aprovação.";
+                                    if (DBProjects.Update(DBProjects.ParseToDB(data)) != null)
+                                    {
+                                        //Update Old Movement
+                                        ApprovalMovementsViewModel ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.GetById(movementNo));
+                                        ApprovalMovement.Status = 2;
+                                        ApprovalMovement.DateTimeApprove = DateTime.Now;
+                                        ApprovalMovement.DateTimeUpdate = DateTime.Now;
+                                        ApprovalMovement.UserUpdate = User.Identity.Name;
+                                        ApprovalMovement = DBApprovalMovements.ParseToViewModel(DBApprovalMovements.Update(DBApprovalMovements.ParseToDatabase(ApprovalMovement)));
+
+                                        //Delete All User Approval Movements
+                                        if (DBUserApprovalMovements.DeleteFromMovementExcept(ApprovalMovement.MovementNo, User.Identity.Name) == true)
+                                        {
+                                            result.eReasonCode = 100;
+                                            result.eMessage = "O Projeto foi aprovado com sucesso.";
+                                        }
+                                        else
+                                        {
+                                            result.eReasonCode = 504;
+                                            result.eMessage = "Ocorreu um erro ao apagar os Movimentos de Aprovação.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        result.eReasonCode = 505;
+                                        result.eMessage = "Ocorreu um erro ao atualizar o movimento de aprovação.";
+                                    }
                                 }
                             }
                         }

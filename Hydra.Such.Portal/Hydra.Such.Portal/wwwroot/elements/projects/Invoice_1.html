@@ -627,7 +627,7 @@
                     </template>
                     <template>
                         <div class="text-right">
-                            [[_formatValue(item.salesPrice)]] €
+                            {{item.salesPrice}} €
                         </div>
                     </template>
                 </vaadin-grid-column>
@@ -639,7 +639,7 @@
                     </template>
                     <template>
                         <div class="text-right">
-                            <span slot="suffix">[[_formatValue(item.totalPrice)]] €</span>
+                            <span slot="suffix">{{item.totalPrice}} €</span>
                         </div>
                     </template>
                 </vaadin-grid-column>
@@ -743,7 +743,7 @@
                     </template>
                     <template>
                         <div class="text-right">
-                            <span slot="suffix">[[_formatValue(item.costPrice)]] €</span>
+                            <span slot="suffix">{{item.costPrice}} €</span>
                         </div>
                     </template>
                 </vaadin-grid-column>
@@ -755,7 +755,7 @@
                     </template>
                     <template>
                         <div class="text-right">
-                            <span slot="suffix">[[_formatValue(item.costTotal)]] €</span>
+                            <span slot="suffix">{{item.costTotal}} €</span>
                         </div>
                     </template>
                 </vaadin-grid-column>
@@ -1151,7 +1151,6 @@
 
                 },
                 _validateData: function (Item) {
-                    debugger;
                     if (this.$._CLOptionInvoice.validate()) {
                         for (var line = 0; line < Item.length; line++) {
 
@@ -1179,7 +1178,6 @@
                     return "Verifique os dados inseridos.";
                 },
                 _validateDataNegativo: function (Item) {
-                    debugger;
                     if (this.$._CLOptionInvoiceNegativo.validate()) {
                         for (var line = 0; line < Item.length; line++) {
                             if (Item[line].valorAutorizado == "" || Item[line].valorAutorizado == null || Item[line].valorAutorizado == 0) {
