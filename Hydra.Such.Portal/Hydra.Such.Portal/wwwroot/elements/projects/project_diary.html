@@ -1763,6 +1763,13 @@
                             this.codeLocation = "DIR";
                         };
 
+                        if (this.quantity == "")
+                            this.quantity = 0;
+                        if (this.unitCost == "")
+                            this.unitCost = 0;
+                        if (this.unitPrice == "")
+                            this.unitPrice = 0;
+
                         this.result.items.unshift({
                             projectNo: this.projectNumber,
                             date: this.date,
@@ -1793,7 +1800,6 @@
                             serviceClientCode: this.ddServiceClientCode
                         });
 
-                        alert('1');
                         // Save to DB
                         this.$.ajax_update.body = JSON.stringify(this.result.items);
                         this.$.ajax_update.generateRequest();
@@ -1846,7 +1852,6 @@
                     }
                 },
                 _updateResponse: function (e) {
-                    debugger;
                     var self = this;
                     if (e.detail.status === 200) {
                         this.$.ajax_getall.generateRequest();
@@ -2126,7 +2131,6 @@
                 },
 
                 _calcTotals: function (e) {
-                    debugger;
                     switch (e.target.id) {
                         case "piQuantity":
                             this.quantity = this.quantity.replace(",", ".");

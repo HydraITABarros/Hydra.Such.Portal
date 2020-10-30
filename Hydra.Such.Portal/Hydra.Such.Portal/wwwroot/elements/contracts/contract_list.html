@@ -128,24 +128,46 @@
                    on-response="_exportEXCELResponse"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/PopulateDropdowns/GetContratTypes" 
-                   last-response="{{CBContractType}}" auto 
+
+        <iron-ajax url="/PopulateDropdowns/GetContratTypes"
+                   last-response="{{CBContractType}}" auto
                    method="post"
-                   handle-as="json" 
-                   content-type="application/json"></iron-ajax>
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Contratos/ExportToLastNotaEncomenda"
+                   last-response="{{exportLastNotaEncomenda}}"
+                   id="ajax_ExportLastNotaEncomenda"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportLastNotaEncomendaEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Contratos/ExportToAllNotaEncomenda"
+                   last-response="{{exportAllNotaEncomenda}}"
+                   id="ajax_ExportAllNotaEncomenda"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportAllNotaEncomendaEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_disabledCreate }}">
-                    <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Novo</paper-button>
+                    <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Novo</paper-button>
                 </template>
             </template>
             <template is="dom-if" if="{{ !_contractno }}">
                 <paper-button id="btnContractHistory" class="tablinks" on-tap="_redirectToContractHistory"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; {{_showMessage}}</paper-button>
                 <!--<such-dropdown-menu style="display: {{ _showOptionsForAccounting }};" on-value-changed="_filterOptionSelected" title="Exibir" items='[[ _filterMenuItems ]]'></such-dropdown-menu>-->
-                <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+                <!--<paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel" hidden><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>-->
+                <such-dropdown-menu id="menuExportar" on-value-changed="_menuExportarSelected" title="Exportar" items="[[ _MenuItemsExportar ]]"></such-dropdown-menu>
+
             </template>
 
             <!--start ColumnToggle-->
@@ -173,7 +195,7 @@
                     {{item.contractNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.oportunityNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="oportunityNo">Nº Oportunidade</vaadin-grid-sorter>
@@ -183,7 +205,7 @@
                     {{item.oportunityNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.type.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
@@ -193,7 +215,7 @@
                     [[ _clType(item.type) ]]
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.startData.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="startData">Data Início Versão</vaadin-grid-sorter>
@@ -203,7 +225,7 @@
                     {{item.startData}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dueDate.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="dueDate">Data Fim Versão</vaadin-grid-sorter>
@@ -213,7 +235,7 @@
                     {{item.dueDate}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.clientNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientNo">Nº Cliente</vaadin-grid-sorter>
@@ -223,7 +245,7 @@
                     {{item.clientNo}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.clientName.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="clientName">Nome Cliente</vaadin-grid-sorter>
@@ -233,7 +255,7 @@
                     {{item.clientName}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="20%" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="description">Âmbito dos Serviços</vaadin-grid-sorter>
@@ -243,7 +265,7 @@
                     {{item.description}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.statusDescription.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="statusDescription">Estado</vaadin-grid-sorter>
@@ -253,7 +275,7 @@
                     {{item.statusDescription}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codeRegion.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeRegion">Cód. Região</vaadin-grid-sorter>
@@ -263,7 +285,7 @@
                     {{item.codeRegion}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codeFunctionalArea.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeFunctionalArea">Cód. Área Funcional</vaadin-grid-sorter>
@@ -273,7 +295,7 @@
                     {{item.codeFunctionalArea}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.codeResponsabilityCenter.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="codeResponsabilityCenter">Cód. Centro Responsabilidade</vaadin-grid-sorter>
@@ -283,7 +305,7 @@
                     {{item.codeResponsabilityCenter}}
                 </template>
             </vaadin-grid-column>
-            
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.versionNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="versionNo">Nº Versão</vaadin-grid-sorter>
@@ -364,6 +386,10 @@
                     _filterMenuItems: {
                         type: Array,
                         value: [{ value: 1, description: "Todos" }, { value: 2, description: "Contratos" }, { value: 3, description: "Contratos Internos" }, { value: 4, description: "Quotas" }]
+                    },
+                    _MenuItemsExportar: {
+                        type: Array,
+                        value: [{ value: 1, description: "Listagem" }, { value: 2, description: "Última Nota de Encomenda" }, { value: 3, description: "Todas Notas de Encomendas" }],
                     },
                     _columns: {
                         type: Object,
@@ -598,7 +624,50 @@
                     window.history.back();
                 },
 
+                _menuExportarSelected: function (e) {
+                    var item = e.detail.value;
 
+                    if (item == null)
+                        return;
+
+                    switch (item.value) {
+                        case 1: //Exportar Listagem
+                            this._exportEXCEL();
+                            break;
+                        case 2://Exportar Última Nota de Encomenda
+                            this._exportLastNotaEncomendaEXCEL();
+                            break;
+                        case 3://Exportar Todas Notas de Encomendas
+                            this._exportAllNotaEncomendaEXCEL();
+                            break;
+                    }
+                },
+
+                _exportLastNotaEncomendaEXCEL: function () {
+                    debugger;
+                    var result = this.$.gridContracts._filter(this.result);
+
+                    this.$.ajax_ExportLastNotaEncomenda.body = JSON.stringify(result);
+                    this.$.ajax_ExportLastNotaEncomenda.generateRequest();
+                },
+                _exportLastNotaEncomendaEXCELResponse: function (e) {
+                    debugger;
+                    var FileName = this.exportLastNotaEncomenda;
+                    location.href = '../Contratos/ExportLastNotaEncomendaDownload?sFileName=' + FileName;
+                },
+
+                _exportAllNotaEncomendaEXCEL: function () {
+                    debugger;
+                    var result = this.$.gridContracts._filter(this.result);
+
+                    this.$.ajax_ExportAllNotaEncomenda.body = JSON.stringify(result);
+                    this.$.ajax_ExportAllNotaEncomenda.generateRequest();
+                },
+                _exportAllNotaEncomendaEXCELResponse: function (e) {
+                    debugger;
+                    var FileName = this.exportAllNotaEncomenda;
+                    location.href = '../Contratos/ExportAllNotaEncomendaDownload?sFileName=' + FileName;
+                },
 
 
 

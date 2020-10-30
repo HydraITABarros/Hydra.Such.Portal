@@ -287,6 +287,16 @@
                     {{item.cresp}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column resizable width="150px" hidden$="{{ _columns.grupoRegistoIvaProduto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="grupoRegistoIvaProduto">Grupo Registo IVA Produto</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="grupoRegistoIvaProduto" />
+                </template>
+                <template>
+                    {{item.grupoRegistoIvaProduto}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessageSuccess" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -396,7 +406,8 @@
                         "localizacao": { hidden: false, label: "Localização" },
                         "regiao": { hidden: false, label: "Região" },
                         "area": { hidden: false, label: "Área Funcional" },
-                        "cresp": { hidden: false, label: "Centro Resp." }
+                        "cresp": { hidden: false, label: "Centro Resp." },
+                        "grupoRegistoIvaProduto": { hidden: false, label: "Grupo Registo IVA Produto" },
                     };
 
                     if (localStorage["linhasacordoprecos.ToggleColumn"]) {

@@ -151,7 +151,7 @@
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_isCreate }}">
-                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
                 </template>
             </template>
 
@@ -298,14 +298,6 @@
                                             <div class="panel-body">
                                                 <div class="row break_clear">
                                                     <div class="col-lg-3">
-                                                        <vaadin-combo-box items='[[LClienteAssoc]]' id="no_Cliente_Assoc" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.noClienteAssociado}}" label="Nº Cliente Associado">
-                                                            <template>
-                                                                &nbsp;[[item.value]]&nbsp;
-                                                            </template>
-                                                        </vaadin-combo-box>
-                                                    </div>
-
-                                                    <div class="col-lg-3">
                                                         <vaadin-combo-box items='[{"id": 0, "value": ""},{"id": 1, "value": "ALTA"},{"id": 2, "value": "MÉDIA"},{"id": 3, "value": "BAIXA"},{"id": 4, "value": "ENCONTRO DE COMPRAS"},{"id": 5, "value": "PMO"}]' id="criticidadeText" disabled="{{ !_permissions.update }}" item-value-path="id" item-label-path="value" value="{{data.criticidade}}" label="Criticidade">
                                                             <template>
                                                                 &nbsp;[[item.value]]&nbsp;
@@ -313,7 +305,22 @@
                                                         </vaadin-combo-box>
                                                     </div>
 
+                                                    <div class="col-lg-3">
+                                                        <vaadin-text-field value="{{data.noClienteAssociado}}" maxlength="200" disabled label="Nº Cliente Associado"> </vaadin-text-field>
+                                                    </div>
+
                                                     <div class="col-lg-6">
+                                                        <vaadin-combo-box items='[[LClienteAssoc]]' id="no_Cliente_Assoc" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.noClienteAssociado}}" label="Cliente Associado">
+                                                            <template>
+                                                                &nbsp;[[item.value]]&nbsp;
+                                                            </template>
+                                                        </vaadin-combo-box>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="row break_clear">
+                                                    <div class="col-lg-12">
                                                         <vaadin-text-field value="{{data.observacoes}}" maxlength="20" disabled="{{ !_permissions.update }}" id="observacoes" name="observacoes" label="Observações"> </vaadin-text-field>
                                                     </div>
                                                 </div>

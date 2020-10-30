@@ -380,7 +380,7 @@
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
-                <paper-button id="btnContractAdd" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_createNewContract" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                <paper-button id="btnContractAdd" hidden="{{ _showContractLines }}" class="tablinks" on-tap="_createNewContract" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
                 <paper-button class="tablinks" on-tap="_parseToContract" id="parseContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato</paper-button>
                 <paper-button class="tablinks" on-tap="_parseToContract" id="parseParcialContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Tornar em Contrato Parcial</paper-button>
                 <paper-button class="tablinks" on-tap="_confirmContractUpdate" id="btnUpdateContract" hidden="{{ _readOnly }}"><i class="fa fa-check-square" aria-hidden="true"></i> Atualizar Contrato</paper-button>

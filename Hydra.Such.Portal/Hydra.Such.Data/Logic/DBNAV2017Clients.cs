@@ -75,7 +75,7 @@ namespace Hydra.Such.Data.Logic
                             FaxNo = temp.FaxNo.Equals(DBNull.Value) ? "" : (string)temp.FaxNo,
                             HomePage = temp.HomePage.Equals(DBNull.Value) ? "" : (string)temp.HomePage,
                             NaturezaCliente = (WSCustomerNAV.Natureza_Cliente)temp.NaturezaCliente,
-                            NoFornecedorAssoc = temp.ResponsabilityCenterCode.Equals(DBNull.Value) ? "" : (string)temp.ResponsabilityCenterCode,
+                            NoFornecedorAssoc = temp.NoFornecedorAssoc.Equals(DBNull.Value) ? "" : (string)temp.NoFornecedorAssoc,
                             NoSeries = temp.NoSeries.Equals(DBNull.Value) ? "" : (string)temp.NoSeries,
                             PhoneNo = temp.PhoneNo.Equals(DBNull.Value) ? "" : (string)temp.PhoneNo,
                             TaxaAprovisionamento = (decimal)temp.TaxaAprovisionamento,

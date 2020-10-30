@@ -332,12 +332,21 @@
                    on-response="_dlResponseProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Contratos/ExportRequisicoesCliente"
+                   last-response="{{exportRequisicoesCliente}}"
+                   id="ajax_ExportRequisicoesCliente"
+                   method="post"
+                   handle-as="json"
+                   on-response="_ExportRequisicoesClienteResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <template is="dom-if" if="{{ !_isCreate }}">
             <div class="subMenu">
                 <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
 
                 <template is="dom-if" if="{{ _permissions.update }}">
-                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNewContract"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
                     <paper-button class="tablinks" on-tap="_openNewproposalDialog" id="_btnCreateProposal"><i class="fa fa-archive" aria-hidden="true"></i> Criar Proposta</paper-button>
                     <paper-button class="tablinks" on-tap="_openUpdatePricesDlg" id="_btnUpdatePrices"><i class="fa fa-archive" aria-hidden="true"></i> Atualizar Preços</paper-button>
                     <paper-button class="tablinks" on-tap="_createProject" id="_btnCreateProject"><i class="fa fa-archive" aria-hidden="true"></i> Criar Projeto</paper-button>
@@ -649,6 +658,10 @@
                                             <paper-collapse-group>
                                                 <paper-collapse-item header="Requisições Cliente">
                                                     <div class="panel-body">
+                                                        <div class="subMenu">
+                                                            <paper-button class="tablinks" on-tap="_ExportRequisicoesCliente" title="Exportar Requisições Cliente"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Exportar</paper-button>
+                                                        </div>
+
                                                         <template is="dom-if" if="{{ !_lockFields }}">
                                                             <div class="row">
                                                                 <div class="col-lg-2">
@@ -2848,6 +2861,21 @@
                             if (this._CRInvoiceGroup != "")
                                 invGroup = this._CRInvoiceGroup;
 
+                            var Erro = false;
+                            if (this.data.clientRequisitions.length > 0) {
+                                for (i = 0; i < this.data.clientRequisitions.length; i++) {
+                                    if (invGroup  == this.data.clientRequisitions[i].invoiceGroup &&
+                                        this._CRProjectNo == this.data.clientRequisitions[i].projectNo &&
+                                        this._CRStartDate == this.data.clientRequisitions[i].startDate) {
+                                        Erro = true;
+                                    }
+                                }
+                            }
+                            if (Erro == true) {
+                                this._openToastError("Já existe uma linha com os dados chave na Requisições Cliente.");
+                                return false;
+                            }
+
                             this.data.clientRequisitions.unshift({
                                 contractNo: this.data.contractNo,
                                 startDate: this._CRStartDate,
@@ -2888,6 +2916,7 @@
 
                         return true;
                     }
+
                     this._openToastError("Verifique os dados inseridos.");
                     return false;
                 },
@@ -3830,6 +3859,16 @@
 
                     this.$.page_update_ajax.body = JSON.stringify({ "id": this._contractno });
                     this.$.page_update_ajax.generateRequest();
+                },
+
+                _ExportRequisicoesCliente: function () {
+                    this.$.ajax_ExportRequisicoesCliente.body = JSON.stringify(this.data);
+                    this.$.ajax_ExportRequisicoesCliente.generateRequest();
+                },
+
+                _ExportRequisicoesClienteResponse: function (e) {
+                    var FileName = this.exportRequisicoesCliente;
+                    location.href = '/Contratos/ExportToRequisicoesClienteDownload?sFileName=' + FileName;
                 },
 
             });

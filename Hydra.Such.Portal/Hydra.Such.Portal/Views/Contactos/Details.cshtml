@@ -75,7 +75,7 @@
 
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <paper-button id="btnCreateNew" class="btnEdit tablinks" on-tap="_redirectToNewContactForm" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true" title="Criar Novo"></i>&nbsp; Criar Novo</paper-button>
+            <paper-button id="btnCreateNew" class="btnEdit tablinks" on-tap="_redirectToNewContactForm" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true" title="Novo"></i>&nbsp; Criar Novo</paper-button>
             <paper-button id="btnCreate" class="btnSave tablinks" on-tap="_createContact" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             <paper-button id="btnUpdate" class="btnSave tablinks" on-tap="_updateContact" disabled="{{ !_permissions.update }}"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
             <paper-button id="btnCancel" class="btnRemove tablinks" on-tap="_deleteContact" disabled="{{ !_permissions.delete }}"><i class="fa fa-trash-o" aria-hidden="true"></i>&nbsp; Eliminar</paper-button>

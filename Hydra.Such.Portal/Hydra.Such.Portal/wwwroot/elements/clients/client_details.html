@@ -259,7 +259,7 @@
             <paper-button class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <template is="dom-if" if="{{ _permissions.create }}">
                 <template is="dom-if" if="{{ !_isCreate }}">
-                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar Novo</paper-button>
+                    <paper-button class="tablinks" id="btnContractAdd" on-tap="_createNew"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
                 </template>
             </template>
 
@@ -500,10 +500,12 @@
 
                                                     </div>
 
-                                                    <div class="col-lg-3">
-                                                        <!--<vaadin-text-field value="{{data.no_Fornecedor_Assoc}}" disabled="{{ !_permissions.update }}" id="no_Fornecedor_Assoc" name="no_Fornecedor_Assoc" label="Nº Fornecedor Associado"> </vaadin-text-field>-->
+                                                    <div class="col-lg-2">
+                                                        <vaadin-text-field value="{{data.no_Fornecedor_Assoc}}" disabled label="Nº Fornecedor Associado"> </vaadin-text-field>
+                                                    </div>
 
-                                                        <vaadin-combo-box items='[[LFornecedorAssoc]]' id="no_Fornecedor_Assoc" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.no_Fornecedor_Assoc}}" label="Nº Fornecedor Associado">
+                                                    <div class="col-lg-4">
+                                                        <vaadin-combo-box items='[[LFornecedorAssoc]]' id="no_Fornecedor_Assoc" item-value-path="id" disabled="{{ !_permissions.update }}" item-label-path="value" value="{{data.no_Fornecedor_Assoc}}" label="Fornecedor Associado">
                                                             <template>
                                                                 &nbsp;[[item.value]]&nbsp;
                                                             </template>

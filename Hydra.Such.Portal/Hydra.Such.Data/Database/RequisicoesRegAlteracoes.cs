@@ -8,6 +8,7 @@ namespace Hydra.Such.Data.Database
         public int Id { get; set; }
         public string NºRequisição { get; set; }
         public int Estado { get; set; }
+        public string Observacoes { get; set; }
         public DateTime ModificadoEm { get; set; }
         public string ModificadoPor { get; set; }
 

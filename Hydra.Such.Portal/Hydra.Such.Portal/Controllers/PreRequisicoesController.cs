@@ -482,15 +482,22 @@ namespace Hydra.Such.Portal.Controllers
                         if (PreRequesitionLines != null && PreRequesitionLines.Count > 0)
                             CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
-                        NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
-                        if (Project != null)
+                        x.RegionCode = "";
+                        x.FunctionalAreaCode = "";
+                        x.CenterResponsibilityCode = "";
+                        if (!string.IsNullOrEmpty(x.ProjectNo))
                         {
-                            x.RegionCode = Project.RegionCode ?? "";
-                            x.FunctionalAreaCode = Project.AreaCode ?? "";
-                            x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                            NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
+
+                            if (Project != null)
+                            {
+                                x.RegionCode = Project.RegionCode ?? "";
+                                x.FunctionalAreaCode = Project.AreaCode ?? "";
+                                x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                            }
                         }
 
-                        NAVProductsViewModel  product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                        NAVProductsViewModel product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
                         if (product.InventoryValueZero == 1)
                             x.ArmazemCDireta = "1";
                         else
@@ -1417,18 +1424,68 @@ namespace Hydra.Such.Portal.Controllers
                                 if (product.InventoryValueZero == 1)
                                 {
                                     newline.CustoUnitário = x.UnitCost;
-                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                     newline.LocalCompraDireta = "1";
+                                    newline.CódigoLocalização = DBConfigurations.GetById(1).ArmazemCompraDireta;
                                 }
                                 else
                                 {
-                                    NAVStockKeepingUnitViewModel localizacao = new NAVStockKeepingUnitViewModel();
-                                    localizacao = AllLocalizacoes.Where(y => y.ItemNo_ == x.Code).FirstOrDefault();
+                                    //CÓDIGO ORIGINAL
+                                    //NAVStockKeepingUnitViewModel localizacao = new NAVStockKeepingUnitViewModel();
+                                    //localizacao = AllLocalizacoes.Where(y => y.ItemNo_ == x.Code).FirstOrDefault();
 
-                                    if (localizacao != null)
+                                    //if (localizacao != null)
+                                    //{
+                                    //    newline.CustoUnitário = localizacao.UnitCost;
+                                    //    newline.CódigoLocalização = localizacao.LocationCode;
+                                    //    newline.LocalCompraDireta = "0";
+                                    //}
+                                    //else
+                                    //{
+                                    //    if (result.eReasonCode == 3)
+                                    //        result.eMessage = result.eMessage + " , Nº " + x.Code;
+                                    //    else
+                                    //    {
+                                    //        result.eReasonCode = 3;
+                                    //        result.eMessage = "Não foi possivel obter o Código de Localização para o(s) Produto(s) Nº " + x.Code;
+                                    //    }
+                                    //}
+
+                                    //Alteração
+                                    List<ConfiguracaoParametros> AllArmazens = new List<ConfiguracaoParametros>();
+                                    string regiao = newline.CódigoRegião;
+
+                                    if (!string.IsNullOrEmpty(regiao) && regiao == "12")
+                                        AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem12");
+                                    if (!string.IsNullOrEmpty(regiao) && regiao == "23")
+                                        AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem23");
+                                    if (!string.IsNullOrEmpty(regiao) && regiao == "33")
+                                        AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem33");
+                                    if (!string.IsNullOrEmpty(regiao) && regiao == "43")
+                                        AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem43");
+
+                                    List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                                    NAVStockKeepingUnitViewModel ProductArmazem = new NAVStockKeepingUnitViewModel();
+
+                                    if (!string.IsNullOrEmpty(newline.Código))
+                                        AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, newline.Código);
+
+                                    if (AllProductsArmazem != null && AllProductsArmazem.Count > 0)
                                     {
-                                        newline.CustoUnitário = localizacao.UnitCost;
-                                        newline.CódigoLocalização = localizacao.LocationCode;
+                                        if (AllArmazens != null && AllArmazens.Count > 0)
+                                        {
+
+                                            AllArmazens.ForEach(Armazem =>
+                                            {
+                                                if (ProductArmazem == null || string.IsNullOrEmpty(ProductArmazem.ItemNo_))
+                                                    ProductArmazem = AllProductsArmazem.Where(y => y.LocationCode == Armazem.Valor).FirstOrDefault();
+                                            });
+                                        }
+                                    }
+
+                                    if (ProductArmazem != null && !string.IsNullOrEmpty(ProductArmazem.ItemNo_))
+                                    {
+                                        newline.CustoUnitário = ProductArmazem.UnitCost;
+                                        newline.CódigoLocalização = ProductArmazem.LocationCode;
                                         newline.LocalCompraDireta = "0";
                                     }
                                     else
@@ -2907,7 +2964,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 AllArmazens.ForEach(Armazem =>
                                 {
-                                    //if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
+                                    if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
                                         ProductArmazem = AllProductsArmazem.Where(x => x.LocationCode == Armazem.Valor).FirstOrDefault();
                                 });
                             }
@@ -3169,6 +3226,28 @@ namespace Hydra.Such.Portal.Controllers
                     if (erro == true)
                     {
                         return Json("Nas Linhas, não pode utilizar a viatura " + viatura.Matricula + " pois a mesma encontra-se Devolvido, Vendido ou Abatido.");
+                    }
+
+                    erro = false;
+                    string codigo = "";
+                    List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                    PreLinhas.ForEach(x =>
+                    {
+                        if (erro == false)
+                        {
+                            AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                            AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Código);
+
+                            if (AllProductsArmazem == null || AllProductsArmazem.Count == 0)
+                            {
+                                erro = true;
+                                codigo = x.Código;
+                            }
+                        }
+                    });
+                    if (erro == true)
+                    {
+                        return Json("Nas Linhas, existe o produto com o código Nº " + codigo + "que não têm stock em armazém.");
                     }
                 }
             }
