@@ -42,6 +42,21 @@ namespace Hydra.Such.Data.Logic.Approvals
                 return null;
             }
         }
+        public static List<ConfiguraçãoAprovações> GetAllByType(int type)
+        {
+            try
+            {
+                using(var _ctx = new SuchDBContext())
+                {
+                    return _ctx.ConfiguraçãoAprovações.Where(c => c.Tipo == type).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
 
         public static ConfiguraçãoAprovações Create(ConfiguraçãoAprovações ObjectToCreate)
         {

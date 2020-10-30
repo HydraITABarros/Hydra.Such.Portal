@@ -26,6 +26,27 @@ namespace Hydra.Such.Data.Logic.Approvals
             }
         }
 
+        #region SGPPF
+        public static List<UtilizadoresGruposAprovação> GetByUser(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName))
+                return null;
+
+            try
+            {
+                using(var _ctx = new SuchDBContext())
+                {
+                    return _ctx.UtilizadoresGruposAprovação.Where(u => u.UtilizadorAprovação == userName).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+        #endregion
+
         public static List<UtilizadoresGruposAprovação> GetByGroup(int group)
         {
             try

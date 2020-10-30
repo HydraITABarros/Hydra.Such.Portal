@@ -185,10 +185,15 @@
                         type: Object,
                         value: {},
                     },
-                    _onlyActive: {
+                    _onlyactive: {
                         type: Boolean,
                         notify: true,
-                        value: true
+                        value: false
+                    },
+                    _requestorigin: {
+                        type: Number,
+                        notify: true,
+                        value: 0
                     },
                     _showHistoryMessage: {
                         type: String,
@@ -219,17 +224,18 @@
                     debugger;;
 
                     //this.$.estados_databound_ajax.generateRequest();
+                    var t = this._requestOrigin;
 
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": this._onlyActive });
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": this._onlyactive, "requestOrigin": this._requestorigin });
                     this.$.grid_databound_ajax.generateRequest();
 
-                    if (this._onlyActive) {
+                    if (this._onlyactive) {
                         $(this.$.showActive).removeClass('hidden');
                         $(this.$.showHistory).addClass('hidden');
 
                         this._showHistoryMessage = "Mostrar Histórico";
                     }
-                    if (!this._onlyActive) {
+                    if (!this._onlyactive) {
                         $(this.$.showHistory).removeClass('hidden');
                         $(this.$.showActive).addClass('hidden');
                         this._showHistoryMessage = "Mostrar Ativos";

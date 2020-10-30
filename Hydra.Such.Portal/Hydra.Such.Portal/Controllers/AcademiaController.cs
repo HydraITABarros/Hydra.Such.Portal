@@ -18,15 +18,20 @@ namespace Hydra.Such.Portal.Controllers
 {
     public class AcademiaController : Controller
     {
-        protected int ClickOrigin { get; set; }
-        protected const int TrainingRequestApprovalType = 6;
-
-
+        protected int RequestOrigin { get; set; }
+        protected int TrainingRequestApprovalType = EnumerablesFixed.ApprovalTypes.Where(e => e.Value.Contains("Pedido Formação")).FirstOrDefault().Id;
+        
 
         [HttpPost]
         public JsonResult GetMeusPedidos([FromBody] JObject requestParams)
         {
             //ClickSource = 0;
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(User.Identity.Name, userConfig.TipoUtilizadorFormacao.Value, TrainingRequestApprovalType);
+            List<Formando> formandos = DBAcademia.__GetAllFormandos(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia);
+
+            Formando formando = DBAcademia.__GetDetailsFormando("27960");
+
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             if(UPerm != null && UPerm.Read.Value)
@@ -49,49 +54,89 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetMeusPedidosAprovacao([FromBody] JObject requestParams)
         {
-            //ClickSource = 0;
+            bool apenasCompletos = requestParams["apenasCompletos"] == null ? false : (bool)requestParams["apenasCompletos"];
+            try
+            {
+                RequestOrigin = requestParams["requestOrigin"] == null ? 0 : (int)requestParams["requestOrigin"];
+            }
+            catch (Exception)
+            {
+                return Json(-1);
+            }            
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
-            if (UPerm != null && UPerm.Read.Value &&
-                userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia)
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(User.Identity.Name, userConfig.TipoUtilizadorFormacao.Value, TrainingRequestApprovalType);
+            List<PedidoParticipacaoFormacaoView> meusPedidosView = new List<PedidoParticipacaoFormacaoView>();
+
+            switch (RequestOrigin)
             {
-                bool apenasActivos = requestParams["apenasActivos"] == null ? false : (bool)requestParams["apenasActivos"];
-                
-                List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacaoForApproval(User.Identity.Name, TrainingRequestApprovalType, Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia, apenasActivos);
-
-                if(meusPedidos != null && meusPedidos.Count > 0)
-                {
-                    List<PedidoParticipacaoFormacaoView> meusPedidosView = new List<PedidoParticipacaoFormacaoView>();
-
-                    foreach (var p in meusPedidos)
+                case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia:
+                    if(UPerm != null && UPerm.Read.Value && cfgUser.IsChief())
                     {
-                        meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
+                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia, apenasCompletos);
+                        if (meusPedidos != null && meusPedidos.Count > 0)
+                        {
+                            foreach (var p in meusPedidos)
+                            {
+                                meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
+                            }
+                        }
                     }
+                    break;
+                case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector:
+                    if(UPerm != null && UPerm.Read.Value && cfgUser.IsDirector())
+                    {
+                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector, apenasCompletos);
+                        if (meusPedidos != null && meusPedidos.Count > 0)
+                        {
+                            foreach (var p in meusPedidos)
+                            {
+                                meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
+                            }
 
-                    return Json(meusPedidosView);
-                }
+                            return Json(meusPedidosView);
+                        }
+                    }
+                    break;
+            }
 
-                return Json(null);
+            return Json(meusPedidosView);
+        }
+
+        [HttpPost]
+        public JsonResult GetCatalogo()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+
+            if (UPerm != null && userConfig.TipoUtilizadorFormacao == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
+            {
+                List<TemaFormacao> temas = DBAcademia.__GetCatalogo();
+                return Json(temas);
             }
             return Json(null);
         }
+                
 
         #region SGPPF actions
         public ActionResult MeusPedidos()
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            
+
             if (UPerm != null && UPerm.Read.Value)
             {
-                ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
                 if(userConfig.TipoUtilizadorFormacao == null)
-                {
+                {                    
                     // os utilizadores deverão ter um tipo de utilizador definido. 
                     // O tipo por defeito deverá ser o de Formando (1-Formando)
                     return RedirectToAction("AccessDenied", "Error");
                 }
 
                 ViewBag.OnlyActive = true;
+                ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MeusPedidos;
                 return View();
             }
             else
@@ -104,10 +149,12 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
-            if (UPerm != null && UPerm.Read.Value &&
-                userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorChefia)
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(User.Identity.Name, userConfig.TipoUtilizadorFormacao.Value, TrainingRequestApprovalType);
+
+            if (UPerm != null && UPerm.Read.Value && cfgUser.IsChief())
             {
-                ViewBag.OnlyActive = true;
+                ViewBag.OnlyCompleted = true;
+                ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia;
                 return View();
             }
             else
@@ -120,9 +167,15 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
-            if (UPerm != null && UPerm.Read.Value &&
-                userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorDireccao)
+
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(User.Identity.Name, userConfig.TipoUtilizadorFormacao.Value, TrainingRequestApprovalType);
+
+            bool isDirector = cfgUser.IsDirector();
+
+            if (UPerm != null && UPerm.Read.Value && isDirector)
             {
+                ViewBag.OnlyCompleted = false;
+                ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector;
                 return View();
             }
             else
@@ -139,6 +192,8 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value &&
                 userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.ConselhoAdministracao)
             {
+                ViewBag.OnlyCompleted = false;
+                ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA;
                 return View();
             }
             else
@@ -155,6 +210,42 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value &&
                 userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
             {
+                ViewBag.OnlyCompleted = false;
+                ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public ActionResult GestaoCatalogo()
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+
+            if (UPerm != null && UPerm.Read.Value &&
+                userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public ActionResult DetalhesTema(string id, string codInterno)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+
+            if (UPerm != null && UPerm.Read.Value &&
+                userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
+            {
+                ViewBag.idTema = id;
+                ViewBag.codInterno = codInterno; 
                 return View();
             }
             else
