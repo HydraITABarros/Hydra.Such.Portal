@@ -482,15 +482,22 @@ namespace Hydra.Such.Portal.Controllers
                         if (PreRequesitionLines != null && PreRequesitionLines.Count > 0)
                             CLine = PreRequesitionLines.Where(y => x.PreRequisitionLineNo == y.NºPréRequisição && x.LineNo == y.NºLinha).FirstOrDefault();
 
-                        NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
-                        if (Project != null)
+                        x.RegionCode = "";
+                        x.FunctionalAreaCode = "";
+                        x.CenterResponsibilityCode = "";
+                        if (!string.IsNullOrEmpty(x.ProjectNo))
                         {
-                            x.RegionCode = Project.RegionCode ?? "";
-                            x.FunctionalAreaCode = Project.AreaCode ?? "";
-                            x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                            NAVProjectsViewModel Project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.ProjectNo).FirstOrDefault();
+
+                            if (Project != null)
+                            {
+                                x.RegionCode = Project.RegionCode ?? "";
+                                x.FunctionalAreaCode = Project.AreaCode ?? "";
+                                x.CenterResponsibilityCode = Project.CenterResponsibilityCode ?? "";
+                            }
                         }
 
-                        NAVProductsViewModel  product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
+                        NAVProductsViewModel product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Code).FirstOrDefault();
                         if (product.InventoryValueZero == 1)
                             x.ArmazemCDireta = "1";
                         else
@@ -2957,7 +2964,7 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 AllArmazens.ForEach(Armazem =>
                                 {
-                                    //if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
+                                    if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
                                         ProductArmazem = AllProductsArmazem.Where(x => x.LocationCode == Armazem.Valor).FirstOrDefault();
                                 });
                             }

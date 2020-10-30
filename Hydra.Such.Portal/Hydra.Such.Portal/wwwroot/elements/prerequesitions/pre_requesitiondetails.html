@@ -2265,8 +2265,6 @@
                                     this._showPreReqLinesForm = "none";
                                 }
 
-                                this.chkReposicaoStock = this.data.stockReplacement;
-
                                 this.$.grid_prereqlines.clearCache();
 
                                 this.$.ajax_cbReqType.body = JSON.stringify(id);
@@ -2277,6 +2275,7 @@
 
                                 this._loadProductsByAreaAndType(this.data.requesitionType);
                                 this._PopulatePurchaseLines();
+                                this._validacaoReposicaoStock();
                             }
                         }
                         if (data.detail.url.indexOf("CreatePreRequesition") !== -1) {
@@ -2294,7 +2293,7 @@
                         this._openToastError("Ocorreu um erro desconhecido.")
                     }
 
-                    if (this.$.requesitionType.value == 'FROTA') {
+                    if (this.$.requesitionType.value == 'FROTA' || this.data.stockReplacement == true) {
                         this.$.projectNo.disabled = true;
                         this.$._ProjectNo.disabled = true;
                     }
@@ -2304,6 +2303,8 @@
                     }
 
                     this.data.contractType = 3;
+                    this.chkReposicaoStock.checked = this.data.stockReplacement;
+
                     //this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
                     //this.$.page_databoundNoMessage_ajax.body = JSON.stringify(this.data);
                     //this.$.page_databoundNoMessage_ajax.generateRequest();
