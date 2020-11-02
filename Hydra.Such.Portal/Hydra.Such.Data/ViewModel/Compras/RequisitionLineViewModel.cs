@@ -130,7 +130,7 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public bool? SemEfeito { get; set; }
         public decimal? CustoUnitarioSubFornecedor { get; set; }
         public int NoLinhaDiarioRequisicaoUnidProdutiva { get; set; }
-
+        public decimal? TaxaIVA { get; set; }
 
         public bool Selected { get; set; }
     }
