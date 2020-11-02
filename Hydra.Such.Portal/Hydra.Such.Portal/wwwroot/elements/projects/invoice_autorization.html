@@ -1980,7 +1980,7 @@
                 _CalcularTotalAutorizar: function () {
                     var quantidade = 0.00;
                     var precounitario = 0.0000;
-                    var total = 0.00;
+                    var total = 0.0000;
                     var items = this.$.grdProjectMovements.items;
 
                     if (items.length > 0) {
@@ -1995,7 +1995,7 @@
                                 else
                                     precounitario = items[i].unitPrice;
 
-                                total = total + quantidade * precounitario;
+                                total = total + (quantidade * precounitario);
                             }
                         }
                     }

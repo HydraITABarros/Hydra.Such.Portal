@@ -276,7 +276,8 @@
                                         {"field":"descricaoProduto", "name":"Descrição"},
                                         {"field":"itemCategoryCode", "name":"Cód. Categoria"},
                                         {"field":"custoUnitario", "name":"Custo Unitário"},
-                                        {"field":"noFornecedor", "name":"Nº Fornecedor"}]'>
+                                        {"field":"noFornecedor", "name":"Nº Fornecedor"},
+                                        {"field":"noSubFornecedor", "name":"Nº SubFornecedor"}]'>
                 </such-selectbox>
             </div>
 
@@ -351,7 +352,11 @@
                 <vaadin-text-field id="grupoRegistoIvaProduto" name="grupoRegistoIvaProduto" label="Grupo Registo IVA Produto" class="alignRight" value="{{grupoRegistoIvaProduto}}" maxlength="10"></vaadin-text-field>
             </div>
 
-            <div class="col-md-2" hidden="{{ !_permissionsVal.create }}">
+            <div class="col-md-3">
+                <vaadin-text-field id="subSupplierNameId" name="subSupplierName" label="Nome SubFornecedor" value="{{subSupplierName}}" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-1" hidden="{{ !_permissionsVal.create }}" style="padding-top:15px">
                 <paper-button class="btnSave" on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </div>
 
@@ -546,7 +551,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="subSupplierNo">Nº SubForncedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="subSupplierNo" />
@@ -556,7 +561,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="160px" resizable hidden>
+            <vaadin-grid-column width="160px" resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="subSupplierName">Nome SubFornecedor</vaadin-grid-sorter>
                     <vaadin-grid-filter path="subSupplierName" />
