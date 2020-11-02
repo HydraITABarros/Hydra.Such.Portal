@@ -281,8 +281,10 @@ namespace Hydra.Such.Data
             PedidoAnalisadoAcademia = 5,
             [Description("Autorizado CA")]
             PedidoAutorizadoConsAdmin = 6,
+            [Description("Rejeitado Conselho de Administração")]
+            PedidoRejeitadoCA = 7,
             [Description("Finalizado")]
-            PedidoFinalizado = 7,
+            PedidoFinalizado = 8,
             [Description("Cancelado")]
             PedidoCancelado = 99
         }

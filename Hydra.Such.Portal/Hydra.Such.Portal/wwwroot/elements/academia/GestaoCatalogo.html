@@ -1,0 +1,207 @@
+﻿<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html">
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
+<dom-module id="x-gestaocatalogo">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                vaadin-checkbox {
+                    text-align: center;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Academia/GetCatalogo"
+                   last-response="{{ result }}"
+                   auto method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <vaadin-grid aria-label="temasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codigoInterno" />
+                </template>
+                <template>
+                    {{ item.codigoInterno }}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricaoTema" />
+                </template>
+                <template>
+                    {{ item.descricaoTema }}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+                <template class="header">
+                    <vaadin-grid-sorter path="urlImagem">Url Imagem</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="urlImagem" />
+                </template>
+                <template>
+                    {{ item.urlImagem }}
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="150px">
+                <template class="header">
+                    <vaadin-grid-sorter path="activo">Activo?</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="activo" />
+                </template>
+                <template>
+                    <vaadin-checkbox checked="{{item.activo}}" disabled></vaadin-checkbox>
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-gestaocatalogo',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+                _openToast: function (message) {
+
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+                ready: function () {
+                    debugger;;
+
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'tema-temaformacao');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    //var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop;// - paddingTop;
+                    $(this.$.grid).height(height);
+                },
+                _rowSelected: function (item) {
+                    debugger;;
+                    if (item != null) {
+                        //if (item.historico) {
+                        //    /*FILTROS*/
+                            var filters = {};
+                            this.$.grid._filters.map(function (value, index) {
+                                filters[value.path] = value.value;
+                            });
+                            window.setGridFilter('tema-temaformacao', filters || {});
+
+                        debugger;;
+
+                        window.location.href = "/Academia/DetalhesTema/" + item.idTema + "?codInterno=" + item.codigoInterno;
+                        //} else {
+                        //    /*FILTROS*/
+                        //    var filters = {};
+                        //    this.$.grid._filters.map(function (value, index) {
+                        //        filters[value.path] = value.value;
+                        //    });
+                        //    window.setGridFilter('guiastransporte-guiastransportenav', filters || {});
+
+                        //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + false;
+                        //}
+
+                    }
+                },
+            });
+        });
+    </script>
+</dom-module>

@@ -21,13 +21,21 @@
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
 <link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
 <link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
-
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
 <link rel="import" href="/lib/iron-icons/iron-icons.html" />
 <link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+
 
 
 
@@ -86,7 +94,6 @@
             <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Novo</paper-button>
 
         </div>
-
         <vaadin-grid aria-label="pedidosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column width="7.5%" resizable>
                 <template class="header">
@@ -185,10 +192,15 @@
                         type: Object,
                         value: {},
                     },
-                    _onlyActive: {
+                    _onlycompleted: {
                         type: Boolean,
                         notify: true,
-                        value: true
+                        value: false
+                    },
+                    _requestorigin: {
+                        type: Number,
+                        notify: true,
+                        value: 0
                     },
                     _showHistoryMessage: {
                         type: String,
@@ -220,16 +232,19 @@
 
                     //this.$.estados_databound_ajax.generateRequest();
 
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": this._onlyActive });
+                    this.$.grid_databound_ajax.body = JSON.stringify({
+                        "apenasCompletos": this._onlycompleted,
+                        "requestOrigin": this._requestorigin
+                    });
                     this.$.grid_databound_ajax.generateRequest();
 
-                    if (this._onlyActive) {
+                    if (!this._onlyCompleted) {
                         $(this.$.showActive).removeClass('hidden');
                         $(this.$.showHistory).addClass('hidden');
 
                         this._showHistoryMessage = "Mostrar Histórico";
                     }
-                    if (!this._onlyActive) {
+                    if (this._onlyCompleted) {
                         $(this.$.showHistory).removeClass('hidden');
                         $(this.$.showActive).addClass('hidden');
                         this._showHistoryMessage = "Mostrar Ativos";
@@ -297,31 +312,31 @@
                     var _self = this;
 
                     if (item != null) {
-                        if (!this._onlyActive) {
-                            this._onlyActive = true;
+                        if (!this._onlycompleted) {
+                            this._onlycompleted = true;
                             //this._isHistoricTxt = "true";
 
                         } else {
-                            this._onlyActive = false;
+                            this._onlycompleted = false;
                             //this._isHistoricTxt = "false";
                         }
 
                         debugger;;
 
-                        this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": this._onlyActive });
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "apenasCompletos": this._onlycompleted, "requestOrigin": this._requestorigin });
                         this.$.grid_databound_ajax.generateRequest();
                         this._setButtonTexts();
                     }
                 },
 
                 _setButtonTexts: function () {
-                    if (this._onlyActive) {
+                    if (!this._onlycompleted) {
                         $(this.$.showActive).removeClass('hidden');
                         $(this.$.showHistory).addClass('hidden');
 
                         this._showHistoryMessage = "Mostrar Histórico";
                     }
-                    if (!this._onlyActive) {
+                    if (this._onlycompleted) {
                         $(this.$.showHistory).removeClass('hidden');
                         $(this.$.showActive).addClass('hidden');
 
@@ -345,14 +360,6 @@
                     //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.guiaTransporteId + "?isHistoric=" + false;
                     //}
 
-                },
-                _responseEstados: function () {
-                    debugger;;
-                    if (this.EstadoPedidos == null) {
-                        debugger;;
-                    } else {
-                        debugger;;
-                    }
                 }
             });
         });

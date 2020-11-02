@@ -1,9 +1,9 @@
-﻿
+﻿@model IEnumerable<Hydra.Such.Data.Database.PedidoParticipacaoFormacao>
 @{
     ViewData["Title"] = "Coordenação | Pedidos de Participação em Formação Externa para Aprovar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+ 
 <link rel="import" href="~/elements/academia/AprovacaoChefia.html" />
 
-<x-aprovacaochefia _onlyActive="@ViewBag.OnlyActive"></x-aprovacaochefia>
+<x-aprovacaochefia _onlycompleted="@ViewBag.OnlyCompleted" _requestorigin="@ViewBag.RequestOrigin"></x-aprovacaochefia>
