@@ -7065,43 +7065,49 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(1).SetCellValue("Âmbito dos Serviços");
                 row.CreateCell(2).SetCellValue("Nº Cliente");
                 row.CreateCell(3).SetCellValue("Cliente");
-                row.CreateCell(4).SetCellValue("Início Compromisso");
-                row.CreateCell(5).SetCellValue("Fim Compromisso");
-                row.CreateCell(6).SetCellValue("Nº Requisição Cliente");
-                row.CreateCell(7).SetCellValue("Data Requisição");
-                row.CreateCell(8).SetCellValue("Nº Compromisso");
-                row.CreateCell(9).SetCellValue("Grupo Fatura");
-                row.CreateCell(10).SetCellValue("Nº Projeto");
-                row.CreateCell(11).SetCellValue("Descrição");
-                row.CreateCell(12).SetCellValue("Data Última Fatura");
+                row.CreateCell(4).SetCellValue("Cod. Região");
+                row.CreateCell(5).SetCellValue("Início Compromisso");
+                row.CreateCell(6).SetCellValue("Fim Compromisso");
+                row.CreateCell(7).SetCellValue("Nº Requisição Cliente");
+                row.CreateCell(8).SetCellValue("Data Requisição");
+                row.CreateCell(9).SetCellValue("Nº Compromisso");
+                row.CreateCell(10).SetCellValue("Grupo Fatura");
+                row.CreateCell(11).SetCellValue("Nº Projeto");
+                row.CreateCell(12).SetCellValue("Descrição");
+                row.CreateCell(13).SetCellValue("Data Última Fatura");
 
-                if (data != null && data.ClientRequisitions != null && data.ClientRequisitions.Count > 0)
+                if (data != null)
                 {
                     int count = 1;
-                    foreach (ContractClientRequisitionViewModel item in data.ClientRequisitions)
+
+                    if (data.ClientRequisitions != null && data.ClientRequisitions.Count > 0)
                     {
-                        row = excelSheet.CreateRow(count);
-
-                        row.CreateCell(0).SetCellValue(data.ContractNo);
-                        row.CreateCell(1).SetCellValue(data.Description);
-                        row.CreateCell(2).SetCellValue(data.ClientNo);
-                        row.CreateCell(3).SetCellValue(data.ClientName);
-                        row.CreateCell(4).SetCellValue(item.StartDate);
-                        row.CreateCell(5).SetCellValue(item.EndDate);
-                        row.CreateCell(6).SetCellValue(item.ClientRequisitionNo);
-                        row.CreateCell(7).SetCellValue(item.RequisitionDate);
-                        row.CreateCell(8).SetCellValue(item.PromiseNo);
-                        row.CreateCell(9).SetCellValue(item.InvoiceGroup);
-                        row.CreateCell(10).SetCellValue(item.ProjectNo);
-                        if (!string.IsNullOrEmpty(item.ProjectNo))
+                        foreach (ContractClientRequisitionViewModel item in data.ClientRequisitions)
                         {
-                            Projetos Project = AllProjects.Where(x => x.NºProjeto == item.ProjectNo).FirstOrDefault();
-                            if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
-                                row.CreateCell(11).SetCellValue(Project.Descrição);
-                        }
-                        row.CreateCell(12).SetCellValue(item.LastInvoiceDate);
+                            row = excelSheet.CreateRow(count);
 
-                        count++;
+                            row.CreateCell(0).SetCellValue(data.ContractNo);
+                            row.CreateCell(1).SetCellValue(data.Description);
+                            row.CreateCell(2).SetCellValue(data.ClientNo);
+                            row.CreateCell(3).SetCellValue(data.ClientName);
+                            row.CreateCell(4).SetCellValue(data.CodeRegion);
+                            row.CreateCell(5).SetCellValue(item.StartDate);
+                            row.CreateCell(6).SetCellValue(item.EndDate);
+                            row.CreateCell(7).SetCellValue(item.ClientRequisitionNo);
+                            row.CreateCell(8).SetCellValue(item.RequisitionDate);
+                            row.CreateCell(9).SetCellValue(item.PromiseNo);
+                            row.CreateCell(10).SetCellValue(item.InvoiceGroup);
+                            row.CreateCell(11).SetCellValue(item.ProjectNo);
+                            if (!string.IsNullOrEmpty(item.ProjectNo))
+                            {
+                                Projetos Project = AllProjects.Where(x => x.NºProjeto == item.ProjectNo).FirstOrDefault();
+                                if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
+                                    row.CreateCell(12).SetCellValue(Project.Descrição);
+                            }
+                            row.CreateCell(13).SetCellValue(item.LastInvoiceDate);
+
+                            count++;
+                        }
                     }
                 }
                 workbook.Write(fs);
@@ -7151,15 +7157,16 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(1).SetCellValue("Âmbito dos Serviços");
                 row.CreateCell(2).SetCellValue("Nº Cliente");
                 row.CreateCell(3).SetCellValue("Cliente");
-                row.CreateCell(4).SetCellValue("Início Compromisso");
-                row.CreateCell(5).SetCellValue("Fim Compromisso");
-                row.CreateCell(6).SetCellValue("Nº Requisição Cliente");
-                row.CreateCell(7).SetCellValue("Data Requisição");
-                row.CreateCell(8).SetCellValue("Nº Compromisso");
-                row.CreateCell(9).SetCellValue("Grupo Fatura");
-                row.CreateCell(10).SetCellValue("Nº Projeto");
-                row.CreateCell(11).SetCellValue("Descrição");
-                row.CreateCell(12).SetCellValue("Data Última Fatura");
+                row.CreateCell(4).SetCellValue("Cod. Região");
+                row.CreateCell(5).SetCellValue("Início Compromisso");
+                row.CreateCell(6).SetCellValue("Fim Compromisso");
+                row.CreateCell(7).SetCellValue("Nº Requisição Cliente");
+                row.CreateCell(8).SetCellValue("Data Requisição");
+                row.CreateCell(9).SetCellValue("Nº Compromisso");
+                row.CreateCell(10).SetCellValue("Grupo Fatura");
+                row.CreateCell(11).SetCellValue("Nº Projeto");
+                row.CreateCell(12).SetCellValue("Descrição");
+                row.CreateCell(13).SetCellValue("Data Última Fatura");
 
                 if (Lista != null && Lista.Count > 0)
                 {
@@ -7168,37 +7175,42 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         List<RequisiçõesClienteContrato> AllClientRequisitions = DBContractClientRequisition.GetByContract(contrato.ContractNo);
 
-                        if (contrato != null && AllClientRequisitions != null && AllClientRequisitions.Count > 0)
+                        if (contrato != null)
                         {
-                            RequisiçõesClienteContrato ClientRequisition = AllClientRequisitions.OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
+                            row = excelSheet.CreateRow(count);
 
-                            if (ClientRequisition != null)
+                            row.CreateCell(0).SetCellValue(contrato.ContractNo);
+                            row.CreateCell(1).SetCellValue(contrato.Description);
+                            row.CreateCell(2).SetCellValue(contrato.ClientNo);
+                            row.CreateCell(3).SetCellValue(contrato.ClientName);
+                            row.CreateCell(4).SetCellValue(contrato.CodeRegion);
+
+                            if (AllClientRequisitions != null && AllClientRequisitions.Count > 0)
                             {
-                                row = excelSheet.CreateRow(count);
+                                RequisiçõesClienteContrato ClientRequisition = AllClientRequisitions.OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
 
-                                ContractClientRequisitionViewModel ClientRequisitionVM = DBContractClientRequisition.ParseToViewModel(ClientRequisition);
-
-                                row.CreateCell(0).SetCellValue(contrato.ContractNo);
-                                row.CreateCell(1).SetCellValue(contrato.Description);
-                                row.CreateCell(2).SetCellValue(contrato.ClientNo);
-                                row.CreateCell(3).SetCellValue(contrato.ClientName);
-                                row.CreateCell(4).SetCellValue(ClientRequisitionVM.StartDate);
-                                row.CreateCell(5).SetCellValue(ClientRequisitionVM.EndDate);
-                                row.CreateCell(6).SetCellValue(ClientRequisitionVM.ClientRequisitionNo);
-                                row.CreateCell(7).SetCellValue(ClientRequisitionVM.RequisitionDate);
-                                row.CreateCell(8).SetCellValue(ClientRequisitionVM.PromiseNo);
-                                row.CreateCell(9).SetCellValue(ClientRequisitionVM.InvoiceGroup);
-                                row.CreateCell(10).SetCellValue(ClientRequisitionVM.ProjectNo);
-                                if (!string.IsNullOrEmpty(ClientRequisitionVM.ProjectNo))
+                                if (ClientRequisition != null)
                                 {
-                                    Projetos Project = AllProjects.Where(x => x.NºProjeto == ClientRequisitionVM.ProjectNo).FirstOrDefault();
-                                    if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
-                                        row.CreateCell(11).SetCellValue(Project.Descrição);
-                                }
-                                row.CreateCell(12).SetCellValue(ClientRequisitionVM.LastInvoiceDate);
+                                    ContractClientRequisitionViewModel ClientRequisitionVM = DBContractClientRequisition.ParseToViewModel(ClientRequisition);
 
-                                count++;
+                                    row.CreateCell(5).SetCellValue(ClientRequisitionVM.StartDate);
+                                    row.CreateCell(6).SetCellValue(ClientRequisitionVM.EndDate);
+                                    row.CreateCell(7).SetCellValue(ClientRequisitionVM.ClientRequisitionNo);
+                                    row.CreateCell(8).SetCellValue(ClientRequisitionVM.RequisitionDate);
+                                    row.CreateCell(9).SetCellValue(ClientRequisitionVM.PromiseNo);
+                                    row.CreateCell(10).SetCellValue(ClientRequisitionVM.InvoiceGroup);
+                                    row.CreateCell(11).SetCellValue(ClientRequisitionVM.ProjectNo);
+                                    if (!string.IsNullOrEmpty(ClientRequisitionVM.ProjectNo))
+                                    {
+                                        Projetos Project = AllProjects.Where(x => x.NºProjeto == ClientRequisitionVM.ProjectNo).FirstOrDefault();
+                                        if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
+                                            row.CreateCell(12).SetCellValue(Project.Descrição);
+                                    }
+                                    row.CreateCell(13).SetCellValue(ClientRequisitionVM.LastInvoiceDate);
+                                }
                             }
+
+                            count++;
                         }
                     }
                 }
@@ -7252,15 +7264,16 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(1).SetCellValue("Âmbito dos Serviços");
                 row.CreateCell(2).SetCellValue("Nº Cliente");
                 row.CreateCell(3).SetCellValue("Cliente");
-                row.CreateCell(4).SetCellValue("Início Compromisso");
-                row.CreateCell(5).SetCellValue("Fim Compromisso");
-                row.CreateCell(6).SetCellValue("Nº Requisição Cliente");
-                row.CreateCell(7).SetCellValue("Data Requisição");
-                row.CreateCell(8).SetCellValue("Nº Compromisso");
-                row.CreateCell(9).SetCellValue("Grupo Fatura");
-                row.CreateCell(10).SetCellValue("Nº Projeto");
-                row.CreateCell(11).SetCellValue("Descrição");
-                row.CreateCell(12).SetCellValue("Data Última Fatura");
+                row.CreateCell(4).SetCellValue("Cod. Região");
+                row.CreateCell(5).SetCellValue("Início Compromisso");
+                row.CreateCell(6).SetCellValue("Fim Compromisso");
+                row.CreateCell(7).SetCellValue("Nº Requisição Cliente");
+                row.CreateCell(8).SetCellValue("Data Requisição");
+                row.CreateCell(9).SetCellValue("Nº Compromisso");
+                row.CreateCell(10).SetCellValue("Grupo Fatura");
+                row.CreateCell(11).SetCellValue("Nº Projeto");
+                row.CreateCell(12).SetCellValue("Descrição");
+                row.CreateCell(13).SetCellValue("Data Última Fatura");
 
                 if (Lista != null && Lista.Count > 0)
                 {
@@ -7269,35 +7282,40 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         List<RequisiçõesClienteContrato> AllClientRequisitions = DBContractClientRequisition.GetByContract(contrato.ContractNo);
 
-                        if (contrato != null && AllClientRequisitions != null && AllClientRequisitions.Count > 0)
+                        if (contrato != null)
                         {
-                            foreach (RequisiçõesClienteContrato item in AllClientRequisitions)
+                            row = excelSheet.CreateRow(count);
+
+                            row.CreateCell(0).SetCellValue(contrato.ContractNo);
+                            row.CreateCell(1).SetCellValue(contrato.Description);
+                            row.CreateCell(2).SetCellValue(contrato.ClientNo);
+                            row.CreateCell(3).SetCellValue(contrato.ClientName);
+                            row.CreateCell(4).SetCellValue(contrato.CodeRegion);
+
+                            if (AllClientRequisitions != null && AllClientRequisitions.Count > 0)
                             {
-                                row = excelSheet.CreateRow(count);
-
-                                ContractClientRequisitionViewModel ClientRequisition = DBContractClientRequisition.ParseToViewModel(item);
-
-                                row.CreateCell(0).SetCellValue(contrato.ContractNo);
-                                row.CreateCell(1).SetCellValue(contrato.Description);
-                                row.CreateCell(2).SetCellValue(contrato.ClientNo);
-                                row.CreateCell(3).SetCellValue(contrato.ClientName);
-                                row.CreateCell(4).SetCellValue(ClientRequisition.StartDate);
-                                row.CreateCell(5).SetCellValue(ClientRequisition.EndDate);
-                                row.CreateCell(6).SetCellValue(ClientRequisition.ClientRequisitionNo);
-                                row.CreateCell(7).SetCellValue(ClientRequisition.RequisitionDate);
-                                row.CreateCell(8).SetCellValue(ClientRequisition.PromiseNo);
-                                row.CreateCell(9).SetCellValue(ClientRequisition.InvoiceGroup);
-                                row.CreateCell(10).SetCellValue(ClientRequisition.ProjectNo);
-                                if (!string.IsNullOrEmpty(ClientRequisition.ProjectNo))
+                                foreach (RequisiçõesClienteContrato item in AllClientRequisitions)
                                 {
-                                    Projetos Project = AllProjects.Where(x => x.NºProjeto == ClientRequisition.ProjectNo).FirstOrDefault();
-                                    if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
-                                        row.CreateCell(11).SetCellValue(Project.Descrição);
-                                }
-                                row.CreateCell(12).SetCellValue(ClientRequisition.LastInvoiceDate);
+                                    ContractClientRequisitionViewModel ClientRequisition = DBContractClientRequisition.ParseToViewModel(item);
 
-                                count++;
+                                    row.CreateCell(5).SetCellValue(ClientRequisition.StartDate);
+                                    row.CreateCell(6).SetCellValue(ClientRequisition.EndDate);
+                                    row.CreateCell(7).SetCellValue(ClientRequisition.ClientRequisitionNo);
+                                    row.CreateCell(8).SetCellValue(ClientRequisition.RequisitionDate);
+                                    row.CreateCell(9).SetCellValue(ClientRequisition.PromiseNo);
+                                    row.CreateCell(10).SetCellValue(ClientRequisition.InvoiceGroup);
+                                    row.CreateCell(11).SetCellValue(ClientRequisition.ProjectNo);
+                                    if (!string.IsNullOrEmpty(ClientRequisition.ProjectNo))
+                                    {
+                                        Projetos Project = AllProjects.Where(x => x.NºProjeto == ClientRequisition.ProjectNo).FirstOrDefault();
+                                        if (Project != null && !string.IsNullOrEmpty(Project.Descrição))
+                                            row.CreateCell(12).SetCellValue(Project.Descrição);
+                                    }
+                                    row.CreateCell(13).SetCellValue(ClientRequisition.LastInvoiceDate);
+                                }
                             }
+
+                            count++;
                         }
                     }
                 }

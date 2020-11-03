@@ -167,8 +167,10 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.TypeMeal = item.TipoRefeicao;
                 projMovement.TypeResourse = item.TipoRecurso;
                 projMovement.NumDocument = item.NumDocumento;
-                projMovement.CostPrice = Math.Round((decimal)item.PrecoCusto, 4);
-                projMovement.CostTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.PrecoCusto, 4)), 2);
+                if (item.PrecoCusto.HasValue)
+                    projMovement.CostPrice = Math.Round((decimal)item.PrecoCusto, 4);
+                if (item.PrecoCusto.HasValue)
+                    projMovement.CostTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.PrecoCusto, 4)), 2);
                 projMovement.CodClient = item.CodCliente;
                 projMovement.InvoiceGroup = item.GrupoFactura ?? 0;
 
@@ -214,8 +216,10 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.TipoRefeicao = item.TypeMeal;
                 projMovement.TipoRecurso = item.TypeResourse;
                 projMovement.NumDocumento = item.NumDocument;
-                projMovement.PrecoCusto = Math.Round((decimal)item.CostPrice, 4);
-                projMovement.CustoTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantity, 2) * Math.Round((decimal)item.CostPrice, 4)), 2);
+                if (item.CostPrice.HasValue)
+                    projMovement.PrecoCusto = Math.Round((decimal)item.CostPrice, 4);
+                if (item.CostPrice.HasValue)
+                    projMovement.CustoTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantity, 2) * Math.Round((decimal)item.CostPrice, 4)), 2);
                 projMovement.CodCliente = item.CodClient;
                 projMovement.GrupoFactura = item.InvoiceGroup;
 

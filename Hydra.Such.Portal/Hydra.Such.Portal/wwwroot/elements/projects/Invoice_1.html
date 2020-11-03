@@ -556,7 +556,7 @@
             </vaadin-grid-column>
         </vaadin-grid>
 
-        <paper-dialog id="dialog" class="dialgoBox">
+        <paper-dialog id="dialog" class="dialgoBox" modal style="height:600px">
             <vaadin-grid column-reordering-allowed id="grdProjectLines" aria-label="ProjectLinesGrid" items="[[resultlines]]" class="grid" multi-sort="true">
                 <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dateTexto.hidden }}">
                     <template class="header">
@@ -1449,7 +1449,7 @@
                         this.$.grid_dataprojlines_ajax.generateRequest();
 
                         var grid_el = $(this.$.grdProjectLines);
-                        grid_el.height(600);
+                        grid_el.height(500);
 
                         this.$.dialog.open();
                     }

@@ -3608,28 +3608,36 @@ namespace Hydra.Such.Portal.Controllers
                 List<NAVResourcesViewModel> AllResources = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, "", "", 0, "").ToList();
                 NAVResourcesViewModel Resource = new NAVResourcesViewModel();
 
+                bool bArea = false;
+                bool bRefeicao = true;
+                bool bQuantidade = true;
+                bool bPreco = true;
                 projMovements.ForEach(x =>
                 {
-                    if (x.FunctionalAreaCode == null)
+                    if (x.FunctionalAreaCode == null && bArea == true)
                     {
                         result.eMessages.Add(new TraceInformation(TraceType.Error, "O Campo Área Funcional é de preenchimento obrigatório"));
+                        bArea = false;
                     }
                     else
                     {
-                        if (x.FunctionalAreaCode.StartsWith("5") && !x.MealType.HasValue)
+                        if (x.FunctionalAreaCode.StartsWith("5") && !x.MealType.HasValue && bRefeicao == true)
                         {
                             result.eMessages.Add(new TraceInformation(TraceType.Error, "O tipo de refeição é obrigatório nas linhas com Área Funcional Nutrição"));
+                            bRefeicao = false;
                         }
                     }
 
-                    if (x.Quantity == 0)
+                    if (x.Quantity == 0 && bQuantidade == true)
                     {
                         result.eMessages.Add(new TraceInformation(TraceType.Exception, "Existem Movimentos com Quantidade a 0"));
+                        bQuantidade = false;
                     }
 
-                    if (x.UnitPrice == 0)
+                    if (x.UnitPrice == 0 && bPreco == true)
                     {
                         result.eMessages.Add(new TraceInformation(TraceType.Exception, "Existem Movimentos com Preço Unitário a 0"));
+                        bPreco = false;
                     }
 
                     if (x.Type == 2 && !string.IsNullOrEmpty(x.Code)) //Recurso

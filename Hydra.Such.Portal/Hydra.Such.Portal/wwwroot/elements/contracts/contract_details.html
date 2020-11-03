@@ -3480,6 +3480,10 @@
                     this.$.dlgCreateProposal.open();
                 },
                 _openNewinvoiceDialog: function (param) {
+                    if (this.data.fixedVowsAgreement != true) {
+                        alert("O Contrato não é de Avença Fixa.");
+                    }
+
                     if (this._validateData()) {
                         if (this._ValidateInvoice()) {
                             this.$.dlgCreateInvoice.open();
