@@ -1282,6 +1282,7 @@
                     this.$.ToastMessageError.open();
                 },
                 _confirm: function (selectedItem, selectedItems) {
+                    debugger;
                     if (this._commitmentNo == null)
                         this._commitmentNo = "";
                     if (this.selectedItems != null && this.selectedItems.length > 0) {
@@ -1293,7 +1294,7 @@
                             "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
                             "dataServPrestado": this.$.txtDataPrestacaoServ.value,
-                            "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                            "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                             "projMovements": this.selectedItems,
                             "projObs": this.$.IdObs.value
                         };
@@ -1312,27 +1313,28 @@
                     }
                     else {
                         if (this.selectedItems != null && this.selectedItems.length > 0) {
-                            var quantidade = 0;
-                            var precounitario = 0;
-                            var total = 0;
+                            var quantidade = 0.00;
+                            var precounitario = 0.0000;
+                            var total = 0.00;
                             var items = this.selectedItems;
                             if (items.length > 0) {
                                 for (var i = 0; i < items.length; i++) {
                                     if (items[i].selecionada == true) {
                                         if (items[i].quantity == null)
-                                            quantidade = 0;
+                                            quantidade = 0.00;
                                         else
                                             quantidade = items[i].quantity;
                                         if (items[i].unitPrice == null)
-                                            precounitario = 0;
+                                            precounitario = 0.0000;
                                         else
                                             precounitario = items[i].unitPrice;
-                                        total = total + (quantidade * precounitario);
+
+                                        //total = parseFloat(total) + parseFloat(parseFloat(quantidade * precounitario).toFixed(2));
+                                        total = this.roundToTwo(total) + this.roundToTwo((quantidade * precounitario));
                                     }
                                 }
                             }
-                            debugger;
-                            if (this._totalToAuthorize == parseFloat(total).toFixed(2)) {
+                            if (this._totalToAuthorize == this.roundToTwo(total)) {
                                 this.$.btnConfirm.disabled = true;
                                 this.validationMessages = [];
                                 var validationRequest = {
@@ -1342,7 +1344,7 @@
                                     "customerRequestNo": this._customerRequestNo,
                                     "customerRequestDate": this._customerRequestDate,
                                     "serviceDate": this.$.dpDataPrestacaoServ.value,
-                                    "authorizationTotalValue": this.$.txtValorAAutorizar.value,
+                                    "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                                     "projMovements": this.selectedItems,
                                 };
                                 this.$.projMovValidation_ajax.body = JSON.stringify(validationRequest);
@@ -1407,7 +1409,6 @@
                     this._resizeDialogToContent();
                 },
                 _projMovValidationResponse: function (e) {
-                    debugger;
                     if (e.detail.status === 200) {
                         this._validationMessages = [];
                         if (this.projMovValResponse.eReasonCode == 1) {
@@ -1980,29 +1981,35 @@
                 _CalcularTotalAutorizar: function () {
                     var quantidade = 0.00;
                     var precounitario = 0.0000;
-                    var total = 0.0000;
+                    var total = 0.00;
                     var items = this.$.grdProjectMovements.items;
 
                     if (items.length > 0) {
                         for (var i = 0; i < items.length; i++) {
                             if (items[i].selecionada == true) {
                                 if (items[i].quantity == null)
-                                    quantidade = 0;
+                                    quantidade = 0.00;
                                 else
                                     quantidade = items[i].quantity;
                                 if (items[i].unitPrice == null)
-                                    precounitario = 0;
+                                    precounitario = 0.0000;
                                 else
                                     precounitario = items[i].unitPrice;
 
-                                total = total + (quantidade * precounitario);
+                                //total = parseFloat(total) + parseFloat(parseFloat(quantidade * precounitario).toFixed(2));
+                                total = this.roundToTwo(total) + this.roundToTwo((quantidade * precounitario));
                             }
                         }
                     }
-                    this._totalToAuthorize = parseFloat(total).toFixed(2);
+                    //this._totalToAuthorize = parseFloat(total).toFixed(2);
+                    this._totalToAuthorize = this.roundToTwo(total);
+
+
+                },
+
+                roundToTwo: function (num) {
+                    return +(Math.round(num + "e+2") + "e-2");
                 }
-
-
 
 
             });

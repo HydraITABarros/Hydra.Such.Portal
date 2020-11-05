@@ -246,7 +246,7 @@ namespace Hydra.Such.Portal.Controllers
                 NumSerieNotasCreditoCompra = data.NumSerieNotasCreditoCompra,
                 NumSerieNotasCredito = data.NumSerieNotasCredito,
                 NumSerieNotasDebito = data.NumSerieNotasDebito,
-                CentroDeResponsabilidade=data.Centroresp,
+                CentroDeResponsabilidade = data.Centroresp,
                 SuperiorHierarquico = data.SuperiorHierarquico,
                 RequisicaoStock = data.RequisicaoStock.HasValue ? data.RequisicaoStock.Value : false,
                 AprovadorPedidoPag1 = data.AprovadorPedidoPag1,
@@ -257,7 +257,7 @@ namespace Hydra.Such.Portal.Controllers
                 ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false,
 
                 #region SGPPF
-                TipoUtilizadorFormacao = data.TipoUtilizadorFormacao 
+                TipoUtilizadorFormacao = data.TipoUtilizadorFormacao
                 #endregion
             });
 
@@ -551,7 +551,7 @@ namespace Hydra.Such.Portal.Controllers
 
             //Remover os acessos os acessos
             List<AcessosUtilizador> UserAccessesToDelete = DBUserAccesses.GetByUserId(data.IdUser);
-            foreach(AcessosUtilizador item in UserAccessesToDelete)
+            foreach (AcessosUtilizador item in UserAccessesToDelete)
             {
                 TabelaLog TabLog_AU = new TabelaLog
                 {
@@ -1015,12 +1015,12 @@ namespace Hydra.Such.Portal.Controllers
 
             //Remover os acessos os acessos
             List<AcessosPerfil> AccessProfilesToDelete = DBAccessProfiles.GetByProfileModelId(data.Id);
-            foreach(AcessosPerfil item in AccessProfilesToDelete)
+            foreach (AcessosPerfil item in AccessProfilesToDelete)
             {
                 TabelaLog TabLog = new TabelaLog
                 {
                     Tabela = "[dbo].[Acessos Perfil]",
-                    Descricao = "Delete - [Id Perfil]: " + item.IdPerfil.ToString() + " [Área]: " + item.Área.ToString() + " [Funcionalidade]: " +item.Funcionalidade.ToString(),
+                    Descricao = "Delete - [Id Perfil]: " + item.IdPerfil.ToString() + " [Área]: " + item.Área.ToString() + " [Funcionalidade]: " + item.Funcionalidade.ToString(),
                     Utilizador = User.Identity.Name,
                     DataHora = DateTime.Now
                 };
@@ -5873,7 +5873,14 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel userPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.LinhasAcordosPrecos);
             if (userPerm != null && userPerm.Read.Value)
             {
+                //DateTime data = DateTime.Now.AddMonths(-3);
+                DateTime data = DateTime.Now;
+                string ano = data.Year.ToString();
+                string mes = data.Month < 10 ? "0" + data.Month.ToString() : data.Month.ToString();
+                string dia = data.Day < 10 ? "0" + data.Day.ToString() : data.Day.ToString();
+
                 ViewBag.UPermissions = userPerm;
+                ViewBag.PesquisaDate = ano + "-" + mes + "-" + dia;
                 ViewBag.reportServerURL = _config.ReportServerURL;
 
                 return View();
@@ -5943,7 +5950,7 @@ namespace Hydra.Such.Portal.Controllers
                     UserId = x.UserId,
                     DataCriacao = x.DataCriacao,
                     DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
-                    
+
                 }).ToList();
 
                 //ORIGEM = 1 » Acordo Preços
@@ -5982,44 +5989,100 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetAllLinhasAcordosPrecos()
+        public JsonResult GetAllLinhasAcordosPrecos([FromBody] JObject requestParams)
         {
-            List<LinhasAcordoPrecosViewModel> result = DBLinhasAcordoPrecos.GetAllByDimensionsUser(User.Identity.Name).Select(x => new LinhasAcordoPrecosViewModel()
+            DateTime pesquisaData = DateTime.MinValue;
+
+            string pesquisaDataText = (string)requestParams.GetValue("pesquisadata");
+            string pesquisaNoFornecedor = (string)requestParams.GetValue("pesquisaNoFornecedor");
+
+            if (!string.IsNullOrEmpty(pesquisaDataText))
+                pesquisaData = Convert.ToDateTime(pesquisaDataText);
+
+            List<LinhasAcordoPrecosViewModel> result = new List<LinhasAcordoPrecosViewModel>();
+
+            if (!string.IsNullOrEmpty(pesquisaDataText))
             {
-                NoProcedimento = x.NoProcedimento,
-                NoFornecedor = x.NoFornecedor,
-                NomeFornecedor = x.NomeFornecedor,
-                NoSubFornecedor = x.NoSubFornecedor,
-                NomeSubFornecedor = x.NomeSubFornecedor,
-                CodProduto = x.CodProduto,
-                DtValidadeInicio = x.DtValidadeInicio,
-                DtValidadeInicioTexto = x.DtValidadeInicio == null ? "" : Convert.ToDateTime(x.DtValidadeInicio).ToShortDateString(),
-                DtValidadeFim = x.DtValidadeFim,
-                DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToShortDateString(),
-                Cresp = x.Cresp,
-                Area = x.Area,
-                Regiao = x.Regiao,
-                Localizacao = x.Localizacao,
-                CustoUnitario = x.CustoUnitario,
-                CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor,
-                DescricaoProduto = x.DescricaoProduto,
-                Um = x.Um,
-                QtdPorUm = x.QtdPorUm,
-                QtdPorUmTexto = x.QtdPorUm == null ? "" : x.QtdPorUm.ToString(),
-                PesoUnitario = x.PesoUnitario,
-                PesoUnitarioTexto = x.PesoUnitario == null ? "" : x.PesoUnitario.ToString(),
-                CodProdutoFornecedor = x.CodProdutoFornecedor,
-                DescricaoProdFornecedor = x.DescricaoProdFornecedor,
-                FormaEntrega = x.FormaEntrega,
-                FormaEntregaTexto = x.FormaEntrega == null ? "" : EnumerablesFixed.AP_FormaEntrega.Where(y => y.Id == x.FormaEntrega).SingleOrDefault()?.Value,
-                UserId = x.UserId,
-                DataCriacao = x.DataCriacao,
-                DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
-                TipoPreco = x.TipoPreco,
-                TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
-                GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
-                CodCategoriaProduto = x.CodCategoriaProduto,
-            }).ToList();
+                result = DBLinhasAcordoPrecos.GetAllByDimensionsUser(User.Identity.Name)
+                .Where(x => (x.DtValidadeInicio <= pesquisaData && x.DtValidadeFim >= pesquisaData) && x.NoFornecedor.Contains(pesquisaNoFornecedor))
+                .Select(x => new LinhasAcordoPrecosViewModel()
+                {
+                    NoProcedimento = x.NoProcedimento,
+                    NoFornecedor = x.NoFornecedor,
+                    NomeFornecedor = x.NomeFornecedor,
+                    NoSubFornecedor = x.NoSubFornecedor,
+                    NomeSubFornecedor = x.NomeSubFornecedor,
+                    CodProduto = x.CodProduto,
+                    DtValidadeInicio = x.DtValidadeInicio,
+                    DtValidadeInicioTexto = x.DtValidadeInicio == null ? "" : Convert.ToDateTime(x.DtValidadeInicio).ToShortDateString(),
+                    DtValidadeFim = x.DtValidadeFim,
+                    DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToShortDateString(),
+                    Cresp = x.Cresp,
+                    Area = x.Area,
+                    Regiao = x.Regiao,
+                    Localizacao = x.Localizacao,
+                    CustoUnitario = x.CustoUnitario,
+                    CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor,
+                    DescricaoProduto = x.DescricaoProduto,
+                    Um = x.Um,
+                    QtdPorUm = x.QtdPorUm,
+                    QtdPorUmTexto = x.QtdPorUm == null ? "" : x.QtdPorUm.ToString(),
+                    PesoUnitario = x.PesoUnitario,
+                    PesoUnitarioTexto = x.PesoUnitario == null ? "" : x.PesoUnitario.ToString(),
+                    CodProdutoFornecedor = x.CodProdutoFornecedor,
+                    DescricaoProdFornecedor = x.DescricaoProdFornecedor,
+                    FormaEntrega = x.FormaEntrega,
+                    FormaEntregaTexto = x.FormaEntrega == null ? "" : EnumerablesFixed.AP_FormaEntrega.Where(y => y.Id == x.FormaEntrega).SingleOrDefault()?.Value,
+                    UserId = x.UserId,
+                    DataCriacao = x.DataCriacao,
+                    DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
+                    TipoPreco = x.TipoPreco,
+                    TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
+                    GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
+                    CodCategoriaProduto = x.CodCategoriaProduto,
+                }).ToList();
+            }
+            else
+            {
+                result = DBLinhasAcordoPrecos.GetAllByDimensionsUser(User.Identity.Name)
+                .Where(x => x.NoFornecedor.Contains(pesquisaNoFornecedor))
+                .Select(x => new LinhasAcordoPrecosViewModel()
+                {
+                    NoProcedimento = x.NoProcedimento,
+                    NoFornecedor = x.NoFornecedor,
+                    NomeFornecedor = x.NomeFornecedor,
+                    NoSubFornecedor = x.NoSubFornecedor,
+                    NomeSubFornecedor = x.NomeSubFornecedor,
+                    CodProduto = x.CodProduto,
+                    DtValidadeInicio = x.DtValidadeInicio,
+                    DtValidadeInicioTexto = x.DtValidadeInicio == null ? "" : Convert.ToDateTime(x.DtValidadeInicio).ToShortDateString(),
+                    DtValidadeFim = x.DtValidadeFim,
+                    DtValidadeFimTexto = x.DtValidadeFim == null ? "" : Convert.ToDateTime(x.DtValidadeFim).ToShortDateString(),
+                    Cresp = x.Cresp,
+                    Area = x.Area,
+                    Regiao = x.Regiao,
+                    Localizacao = x.Localizacao,
+                    CustoUnitario = x.CustoUnitario,
+                    CustoUnitarioSubFornecedor = x.CustoUnitarioSubFornecedor,
+                    DescricaoProduto = x.DescricaoProduto,
+                    Um = x.Um,
+                    QtdPorUm = x.QtdPorUm,
+                    QtdPorUmTexto = x.QtdPorUm == null ? "" : x.QtdPorUm.ToString(),
+                    PesoUnitario = x.PesoUnitario,
+                    PesoUnitarioTexto = x.PesoUnitario == null ? "" : x.PesoUnitario.ToString(),
+                    CodProdutoFornecedor = x.CodProdutoFornecedor,
+                    DescricaoProdFornecedor = x.DescricaoProdFornecedor,
+                    FormaEntrega = x.FormaEntrega,
+                    FormaEntregaTexto = x.FormaEntrega == null ? "" : EnumerablesFixed.AP_FormaEntrega.Where(y => y.Id == x.FormaEntrega).SingleOrDefault()?.Value,
+                    UserId = x.UserId,
+                    DataCriacao = x.DataCriacao,
+                    DataCriacaoTexto = x.DataCriacao == null ? "" : Convert.ToDateTime(x.DataCriacao).ToShortDateString(),
+                    TipoPreco = x.TipoPreco,
+                    TipoPrecoTexto = x.TipoPreco == null ? "" : EnumerablesFixed.AP_TipoPreco.Where(y => y.Id == x.TipoPreco).SingleOrDefault()?.Value,
+                    GrupoRegistoIvaProduto = x.GrupoRegistoIvaProduto,
+                    CodCategoriaProduto = x.CodCategoriaProduto,
+                }).ToList();
+            }
 
             return Json(result);
         }
@@ -7369,7 +7432,7 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult DeleteConfigTempos([FromBody] ConfiguracaoTemposCcpView data)
         {
-            if(data == null)
+            if (data == null)
             {
                 return Json(false);
             }
@@ -7901,7 +7964,8 @@ namespace Hydra.Such.Portal.Controllers
                 }
                 else
                 {
-                    dp.ForEach(x => {
+                    dp.ForEach(x =>
+                    {
                         TaxaResiduos newdp = DBWasteRate.ParseToDatabase(x);
                         newdp.DataHoraCriação = DateTime.Now;
                         newdp.UtilizadorCriação = User.Identity.Name;

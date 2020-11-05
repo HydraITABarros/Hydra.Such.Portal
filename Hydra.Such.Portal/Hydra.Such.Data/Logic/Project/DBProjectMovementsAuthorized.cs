@@ -151,7 +151,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.Quantity = Math.Round((decimal)item.Quantidade, 2);
                 projMovement.UnitCode = item.CodUnidadeMedida;
                 projMovement.SalesPrice = Math.Round((decimal)item.PrecoVenda, 4);
-                projMovement.TotalPrice = Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.PrecoVenda, 4)), 2);
+                projMovement.TotalPrice = Math.Round((decimal)(item.Quantidade * item.PrecoVenda), 2);
                 projMovement.CodProject = item.CodProjeto;
                 projMovement.RegionCode = item.CodRegiao;
                 projMovement.FunctionalAreaCode = item.CodAreaFuncional;
@@ -170,7 +170,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 if (item.PrecoCusto.HasValue)
                     projMovement.CostPrice = Math.Round((decimal)item.PrecoCusto, 4);
                 if (item.PrecoCusto.HasValue)
-                    projMovement.CostTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.PrecoCusto, 4)), 2);
+                    projMovement.CostTotal = Math.Round((decimal)(item.Quantidade * item.PrecoCusto), 2);
                 projMovement.CodClient = item.CodCliente;
                 projMovement.InvoiceGroup = item.GrupoFactura ?? 0;
 
@@ -201,7 +201,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.Quantidade = Math.Round((decimal)item.Quantity, 2);
                 projMovement.CodUnidadeMedida = item.UnitCode;
                 projMovement.PrecoVenda = Math.Round((decimal)item.SalesPrice, 4);
-                projMovement.PrecoTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantity, 2) * Math.Round((decimal)item.SalesPrice, 4)), 2);
+                projMovement.PrecoTotal = Math.Round((decimal)(item.Quantity * item.SalesPrice), 2);
                 projMovement.CodProjeto = item.CodProject;
                 projMovement.CodRegiao = item.RegionCode;
                 projMovement.CodAreaFuncional = item.FunctionalAreaCode;
@@ -219,7 +219,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 if (item.CostPrice.HasValue)
                     projMovement.PrecoCusto = Math.Round((decimal)item.CostPrice, 4);
                 if (item.CostPrice.HasValue)
-                    projMovement.CustoTotal = Math.Round((decimal)(Math.Round((decimal)item.Quantity, 2) * Math.Round((decimal)item.CostPrice, 4)), 2);
+                    projMovement.CustoTotal = Math.Round((decimal)(item.Quantity * item.CostPrice), 2);
                 projMovement.CodCliente = item.CodClient;
                 projMovement.GrupoFactura = item.InvoiceGroup;
 
