@@ -409,15 +409,33 @@ Custom property | Description | Default
       i18n: {
         type: Object,
         value: function() {
-          return {
-            dropFiles: {
-              one: 'Drop file here...',
-              many: 'Drop files here...'
-            },
-            addFiles: {
-              one: 'Select File',
-              many: 'Upload Files'
-            },
+            return {
+      /*
+            ************ zpgm. Changed caption to Portuguese.b ***********************
+            * 1. Changed the drop area caption
+            * 2. Changed the button caption
+      */
+            //dropFiles: {
+            //  one: 'Drop file here...',
+            //  many: 'Drop files here...'
+            //  },
+                dropFiles: {
+                    one: 'Coloque o ficheiro aqui...',
+                    many: 'Coloque os ficheiros aqui...'
+                },
+      
+            //addFiles: {
+            //  one: 'Select File',
+            //  many: 'Upload Files'
+            //},
+            
+              addFiles: {
+                  one: 'Carregar Ficheiro',
+                  many: 'Carregar Ficheiros'
+              },
+      /*
+            ************ zpgm. Changed button caption to Portuguese.e ***********************
+      */
             cancel: 'Cancel',
             error: {
               tooManyFiles: 'Too Many Files.',

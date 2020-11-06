@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Hydra.Such.Data.Database;
+using Hydra.Such.Data.ViewModel;
+using Hydra.Such.Data.Logic;
 
 namespace Hydra.Such.Data.ViewModel.Academia
 {
@@ -39,6 +41,8 @@ namespace Hydra.Such.Data.ViewModel.Academia
         public string UtilizadorCriacaoInscricao { get; set; }
         public string DataCriacaoInscricaoTxt { get; set; }
         #endregion
+
+        public ICollection<AttachmentsViewModel> AnexosPedido { get; set; }
 
         public PedidoParticipacaoFormacaoView(PedidoParticipacaoFormacao Pedido)
         {
@@ -84,6 +88,9 @@ namespace Hydra.Such.Data.ViewModel.Academia
             DataHoraCriacaoTxt = DateToText(Pedido.DataHoraCriacao);
             DataInicioTxt = DateToText(Pedido.DataInicio);
             DataFimTxt = DateToText(Pedido.DataFim);
+
+            List<Anexos> anexos = DBAttachments.GetById(TipoOrigemAnexos.PedidoFormacao, Pedido.IdPedido);
+            AnexosPedido = DBAttachments.ParseToViewModel(anexos);
         }
 
         private string DateToText(DateTime? dateToCheck)

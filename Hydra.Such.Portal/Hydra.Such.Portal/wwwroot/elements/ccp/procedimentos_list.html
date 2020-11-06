@@ -196,7 +196,7 @@
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
     </template>
 
     <script>
@@ -264,7 +264,6 @@
                     }
                 },
                 _openToast: function (message) {
-                    ;
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
                 },

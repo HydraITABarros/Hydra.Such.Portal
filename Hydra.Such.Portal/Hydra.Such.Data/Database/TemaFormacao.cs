@@ -17,6 +17,7 @@ namespace Hydra.Such.Data.Database
         public string UrlImagem { get; set; }
         public int? Activo { get; set; }
 
+        [Newtonsoft.Json.JsonIgnore]
         public ICollection<AccaoFormacao> AccoesTema { get; set; }
     }
 }
