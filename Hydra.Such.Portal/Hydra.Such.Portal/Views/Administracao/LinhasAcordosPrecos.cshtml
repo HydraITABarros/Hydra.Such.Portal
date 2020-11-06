@@ -3,19 +3,35 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
-<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
-<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
-<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="~/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="~/elements/comboboxs/MovementTypeList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectList.html" />
+<link rel="import" href="~/elements/comboboxs/ProjectTypeList.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout.html" />
+<link rel="import" href="~/lib/iron-flex-layout/iron-flex-layout-classes.html" />
 <link rel="import" href="~/lib/iron-form/iron-form.html" />
 <link rel="import" href="~/lib/paper-button/paper-button.html" />
 <link rel="import" href="~/lib/paper-toast-master/paper-toast.html" />
-<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
-<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="~/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-active-item-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-selection-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-selection-column.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="~/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="~/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="~/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<link rel="import" href="~/lib/vaadin-valo-theme/vaadin-text-field.html">
 
 <!--start ColumnToggle-->
 <link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
@@ -24,6 +40,9 @@
 <link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
 <link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
 <!--end ColumnToggle-->
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 
 <x-linhasacordosprecos></x-linhasacordosprecos>
 
@@ -34,8 +53,86 @@
         <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
 
-        <iron-ajax url="/Administracao/GetAllLinhasAcordosPrecos" last-response="{{result}}" auto method="post" handle-as="json" id="grid_databound_ajax" content-type="application/json"> </iron-ajax>
+        <custom-style>
+            <style is="custom-style">
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                .grid {
+                    font-size: 13px;
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+
+                .opacity05 {
+                    opacity: 0.5;
+                }
+
+                .grid-header {
+                    background: white;
+                    border: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+                }
+
+                /*ACORDEÃO*/
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+
+                .panel-heading {
+                    padding: 0 !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/Administracao/GetAllLinhasAcordosPrecos" last-response="{{result}}" auto method="post" handle-as="json" id="grid_databound_ajax" on-response="_getgridResponse" content-type="application/json"> </iron-ajax>
         <iron-ajax url="/Administracao/ExportToExcel_LinhasAcordosPrecos" last-response="{{export}}" id="ajax_Export" method="post" handle-as="json" on-response="_exportEXCELResponse" content-type="application/json"></iron-ajax>
+
+        <paper-collapse-item class="panel-heading" header="Filtros" opened>
+            <div class="grid-header" id="gridheader">
+                <div class="panel-body">
+                    <div class="row break_clear">
+                        <div class="col-sm-2">
+                            <vaadin-text-field id="pesquisaNoFornecedor" name="pesquisaNoFornecedor" label="Filtrar por Nº Fornecedor:" value="" title="Filtrar por Nº Fornecedor:"></vaadin-text-field>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <vaadin-date-picker id="pesquisaData" name="pesquisaData" label="Filtrar a Data no intervalo:" value="{{ pesquisadate }}" title="Filtrar a Data no intervalo:"></vaadin-date-picker>
+                        </div>
+
+                        <div class="col-sm-2 alignPoga">
+                            <paper-button raised id="btnUpdate" class="btnSave" on-tap="_search"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Pesquisar</paper-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </paper-collapse-item>
 
         <div class="subMenu">
             <paper-button id="btnGoBack" class="tablinks" on-tap="_goBack"><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Voltar</paper-button>
@@ -332,6 +429,10 @@
                     _reportserverurl: {
                         type: String,
                     },
+                    pesquisadate: {
+                        type: String,
+                        value: @Html.Raw(Json.Serialize(ViewBag.PesquisaDate)),
+                    },
                 },
 
                 //Mostra Mensagens
@@ -347,7 +448,9 @@
                 },
 
                 ready: function () {
-                    this.$.grid_databound_ajax.body = JSON.stringify();
+                    this.$.pesquisaData.value = this.pesquisadate;
+
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoFornecedor": this.$.pesquisaNoFornecedor.value });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*ColumnToggle*/
@@ -364,7 +467,7 @@
                     var grid_el = $(this.$.grid);
                     var parentHeight = $(this).offsetParent().height();
                     var offsetTop = $(this).offset().top;
-                    var height = parentHeight - offsetTop;
+                    var height = parentHeight - offsetTop + 125;
                     $(this.$.grid).height(height);
                 },
 
@@ -470,7 +573,14 @@
                     this.$.rptDialog.close();
                 },
 
+                _search: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "pesquisadata": this.$.pesquisaData.value, "pesquisaNoFornecedor": this.$.pesquisaNoFornecedor.value });
+                    this.$.grid_databound_ajax.generateRequest();
+                },
 
+                _getgridResponse: function () {
+                    this._showMessage("Dados atualizados.");
+                },
 
 
             });

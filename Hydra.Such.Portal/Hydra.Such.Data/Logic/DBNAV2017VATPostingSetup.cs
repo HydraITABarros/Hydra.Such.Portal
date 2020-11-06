@@ -32,5 +32,31 @@ namespace Hydra.Such.Data.Logic
 
             return result;
         }
+
+        public static List<NAVVATPostingSetupViewModelcs> GetAllIVA(string NAVDatabaseName, string NAVCompanyName)
+        {
+            List<NAVVATPostingSetupViewModelcs> result = new List<NAVVATPostingSetupViewModelcs>();
+            using (var ctx = new SuchDBContextExtention())
+            {
+                var parameters = new[]{
+                    new SqlParameter("@DBName", NAVDatabaseName),
+                    new SqlParameter("@CompanyName", NAVCompanyName)
+                };
+
+                IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017VATPostingSetupGetALL @DBName, @CompanyName", parameters);
+
+                foreach (dynamic temp in data)
+                {
+                    result.Add(new NAVVATPostingSetupViewModelcs()
+                    {
+                        VATBusPostingGroup = (string)temp.VATBusPostingGroup,
+                        VATProdPostingGroup = (string)temp.VATProdPostingGroup,
+                        VAT = (decimal)temp.VAT,
+                    });
+                }
+            }
+
+            return result;
+        }
     }
 }

@@ -1564,13 +1564,26 @@
 
                                 <vaadin-grid-column width="200px" resizable>
                                     <template class="header">
+                                        <vaadin-grid-sorter path="taxaIVA">Taxa IVA</vaadin-grid-sorter>
+                                        <vaadin-grid-filter path="taxaIVA" />
+                                    </template>
+                                    <template>
+                                        <div class="alignRight">
+                                            {{item.taxaIVA}} %
+                                        </div>
+                                    </template>
+                                </vaadin-grid-column>
+
+                                <vaadin-grid-column width="200px" resizable>
+                                    <template class="header">
                                         <vaadin-grid-sorter path="discountPercentage">% Desconto</vaadin-grid-sorter>
                                         <vaadin-grid-filter path="discountPercentage" />
                                     </template>
                                     <template>
-                                        <template is="dom-if" if="{{ item.selected }}">
-                                            <vaadin-text-field id="cmbDiscountPercentage" on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" disabled required error-message="Valor inválido" on-blur="_updateRequisitionLines"></vaadin-text-field>
-                                        </template>
+                                        <template is="dom-if" if="{{ item.selected
+                                        }}">
+                                        <vaadin-text-field id="cmbDiscountPercentage" on-value-changed="_ConvertDecimals" value="{{item.discountPercentage}}" pattern="^-?[0-9]+([\.][0-9]+)?" disabled required error-message="Valor inválido" on-blur="_updateRequisitionLines"></vaadin-text-field>
+                                    </template>
                                         <template is="dom-if" if="{{ !item.selected }}">
                                             [[ item.discountPercentage ]]
                                         </template>

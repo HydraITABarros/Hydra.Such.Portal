@@ -494,9 +494,9 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
                 projMovement.User = item.Utilizador;
                 projMovement.UnitCost = item.CustoUnitário.HasValue ? Math.Round((decimal)item.CustoUnitário, 4) : decimal.Zero;
-                projMovement.TotalCost = item.Quantidade.HasValue && item.CustoUnitário.HasValue ? Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.CustoUnitário, 4)), 2) : decimal.Zero;
+                projMovement.TotalCost = item.Quantidade.HasValue && item.CustoUnitário.HasValue ? Math.Round((decimal)(item.Quantidade * item.CustoUnitário), 2) : decimal.Zero;
                 projMovement.UnitPrice = item.PreçoUnitário.HasValue ? Math.Round((decimal)item.PreçoUnitário, 4) : decimal.Zero;
-                projMovement.TotalPrice = item.Quantidade.HasValue && item.PreçoUnitário.HasValue ? Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.PreçoUnitário, 4)), 2) : decimal.Zero;
+                projMovement.TotalPrice = item.Quantidade.HasValue && item.PreçoUnitário.HasValue ? Math.Round((decimal)(item.Quantidade * item.PreçoUnitário), 2) : decimal.Zero;
                 projMovement.UnitValueToInvoice = item.ValorUnitárioAFaturar;
                 projMovement.Currency = item.Moeda;
                 projMovement.Billable = item.Faturável.HasValue ? item.Faturável.Value : false;
@@ -580,9 +580,9 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.ResponsabilityCenterCode = item.CódigoCentroResponsabilidade;
                 projMovement.User = item.Utilizador;
                 projMovement.UnitCost = item.CustoUnitário.HasValue ? Math.Round((decimal)item.CustoUnitário, 4) : decimal.Zero;
-                projMovement.TotalCost = item.Quantidade.HasValue && item.CustoUnitário.HasValue ? Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.CustoUnitário, 4)), 2) : decimal.Zero;
+                projMovement.TotalCost = item.Quantidade.HasValue && item.CustoUnitário.HasValue ? Math.Round((decimal)(item.Quantidade * item.CustoUnitário), 2) : decimal.Zero;
                 projMovement.UnitPrice = item.PreçoUnitário.HasValue ? Math.Round((decimal)item.PreçoUnitário, 4) : decimal.Zero;
-                projMovement.TotalPrice = item.Quantidade.HasValue && item.PreçoUnitário.HasValue ? Math.Round((decimal)(Math.Round((decimal)item.Quantidade, 2) * Math.Round((decimal)item.PreçoUnitário, 4)), 2) : decimal.Zero;
+                projMovement.TotalPrice = item.Quantidade.HasValue && item.PreçoUnitário.HasValue ? Math.Round((decimal)(item.Quantidade * item.PreçoUnitário), 2) : decimal.Zero;
                 projMovement.UnitValueToInvoice = item.ValorUnitárioAFaturar;
                 projMovement.Currency = item.Moeda;
                 projMovement.Billable = item.Faturável.HasValue ? item.Faturável.Value : false;
@@ -690,9 +690,9 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.CódigoCentroResponsabilidade = item.ResponsabilityCenterCode;
                 projMovement.Utilizador = item.User;
                 projMovement.CustoUnitário = item.UnitCost.HasValue ? Math.Round((decimal)item.UnitCost, 4) :decimal.Zero;
-                projMovement.CustoTotal = item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(Math.Round((decimal)item.Quantity, 2) * Math.Round((decimal)item.UnitCost, 4)), 2) : decimal.Zero;
+                projMovement.CustoTotal = item.Quantity.HasValue && item.UnitCost.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitCost), 2) : decimal.Zero;
                 projMovement.PreçoUnitário = item.UnitPrice.HasValue ? Math.Round((decimal)item.UnitPrice, 4) : decimal.Zero;
-                projMovement.PreçoTotal = item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(Math.Round((decimal)item.Quantity, 2) * Math.Round((decimal)item.UnitPrice, 4)), 2) : decimal.Zero;
+                projMovement.PreçoTotal = item.Quantity.HasValue && item.UnitPrice.HasValue ? Math.Round((decimal)(item.Quantity * item.UnitPrice), 2) : decimal.Zero;
                 projMovement.ValorUnitárioAFaturar = item.UnitValueToInvoice;
                 projMovement.Moeda = item.Currency;
                 projMovement.Faturável = item.Billable.HasValue ? item.Billable.Value : false;
