@@ -1,25 +1,73 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-
-using Hydra.Such.Data.Extensions;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.ViewModel;
 using Hydra.Such.Data.Logic;
 using Hydra.Such.Data;
 using Hydra.Such.Portal.Configurations;
 using Hydra.Such.Data.ViewModel.Academia;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Hydra.Such.Portal.Controllers
 {
     public class AcademiaController : Controller
     {
+        private readonly GeneralConfigurations _config;
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        private string UploadPath { get; set; }
+        private const string SubjectImagePath = "\\TemaFormacao\\";
+        private const string TrainingImagePath = "\\AccaoFormacao\\";
+        private const string RequestAttachmentsPath = "\\PedidoFormacao\\";
         protected int RequestOrigin { get; set; }
-        protected int TrainingRequestApprovalType = EnumerablesFixed.ApprovalTypes.Where(e => e.Value.Contains("Pedido Formação")).FirstOrDefault().Id;
+        protected readonly int TrainingRequestApprovalType = EnumerablesFixed.ApprovalTypes.Where(e => e.Value.Contains("Pedido Formação")).FirstOrDefault().Id;
+
+        private string GetMimeType(string fileName)
+        {
+            string mimeType = "application/unknown";
+            string ext = System.IO.Path.GetExtension(fileName).ToLower();
+
+            Microsoft.Win32.RegistryKey regKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
+
+            if (regKey != null && regKey.GetValue("Content Type") != null)
+                mimeType = regKey.GetValue("Content Type").ToString();
+            return mimeType;
+        }
+
+        private bool IsImage(string fileExt)
+        {
+            if (string.IsNullOrWhiteSpace(fileExt))
+                return false;
+
+            if (fileExt.StartsWith("."))
+                fileExt = fileExt.Substring(1).ToLower();
+
+            switch (fileExt)
+            {
+                case "bmp": 
+                case "gif": 
+                case "jpeg":
+                case "jpg": 
+                case "png":
+                    return true;
+                default: return false;
+            }
+        }
+
+        
+         
+        
+        public AcademiaController(IOptions<GeneralConfigurations> appSettings, IHostingEnvironment hostingEnvironment)
+        {
+            _config = appSettings.Value;
+            _hostingEnvironment = hostingEnvironment;
+            UploadPath = _config.FileUploadFolder + "Academia";
+        }
         
 
         [HttpPost]
@@ -105,17 +153,245 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetCatalogo()
+        public JsonResult GetCatalogo([FromBody] JObject requestParams)
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            bool apenasActivos = requestParams["apenasActivos"] == null ? false : (bool)requestParams["apenasActivos"];
 
             if (UPerm != null && userConfig.TipoUtilizadorFormacao == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
             {
-                List<TemaFormacao> temas = DBAcademia.__GetCatalogo();
+                List<TemaFormacao> temas = DBAcademia.__GetCatalogo(apenasActivos);
                 return Json(temas);
             }
             return Json(null);
+        }
+
+        [HttpPost]
+        public JsonResult GetDetalhesTema([FromBody] JObject requestParams)
+        {
+            string idTema = requestParams["idTema"] == null ? null : (string)requestParams["idTema"];
+            if (idTema == null)
+                return Json(null);
+
+            TemaFormacaoView tema = new TemaFormacaoView(DBAcademia.__GetDetailsTema(idTema));
+            return Json(tema);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateTema([FromBody] TemaFormacaoView data)
+        {
+            if(data == null)
+            {
+                return Json(false);
+            }
+
+            AttachmentsViewModel imagemActiva = data.ImagensTema.Where(i => i.Visivel.Value).FirstOrDefault();
+            data.UrlImagem = imagemActiva != null ? imagemActiva.Url : string.Empty;
+            
+
+            bool updated = DBAcademia.__UpdateTemaFormacao(data);
+
+            return Json(updated);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateImageStatus([FromBody] AttachmentsViewModel image)
+        {
+            if(image.DocType == TipoOrigemAnexos.TemaFormacao && !string.IsNullOrEmpty(image.DocNumber))
+            {
+                TemaFormacaoView tema = new TemaFormacaoView(DBAcademia.__GetDetailsTema(image.DocNumber));
+                if(tema != null)
+                {
+                    if(tema.ImagensTema != null && tema.ImagensTema.Count > 0)
+                    {
+                       foreach(var i in tema.ImagensTema)
+                        {
+                            if(i.DocLineNo == image.DocLineNo)
+                            {
+                                i.Visivel = image.Visivel;
+                            }
+                            else
+                            {
+                                if (image.Visivel.Value)
+                                {
+                                    i.Visivel = false;
+                                }
+                            }
+                        }
+
+                        tema.UrlImagem = tema.ImagensTema.Where(i => i.Visivel.Value).FirstOrDefault() != null ?
+                             tema.ImagensTema.Where(i => i.Visivel.Value).FirstOrDefault().Url : string.Empty;
+
+                        return Json(DBAcademia.__UpdateTemaFormacao(tema));
+                    }
+
+                }
+            }
+            return Json(false);
+        }
+
+        [HttpGet]
+        [Route("Academia/DownloadImage/{docId}/{id}")]
+        public FileStreamResult DownloadImage(string docId, string id)
+        {
+            try
+            {
+                string _path = UploadPath + SubjectImagePath + docId + "\\" + id;
+                FileStream file = new FileStream(_path, FileMode.Open);
+
+                if (IsImage(Path.GetExtension(file.Name)))
+                {
+                    string mimeType = GetMimeType(file.Name);
+
+                    if (mimeType != "application/unknown")
+                    {
+                        return new FileStreamResult(file, mimeType);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+            
+            return null;
+        }
+
+        [HttpPost]       
+        [Route("Academia/SubjectImageUpload")]
+        [Route("Academia/SubjectImageUpload/{id}")]
+        public JsonResult SubjectImageUpload(string id)
+        {
+            try
+            {
+                string _uploadPath = UploadPath + SubjectImagePath;
+                var files = Request.Form.Files;
+
+                foreach(var f in files)
+                {
+                    if (IsImage(Path.GetExtension(f.FileName)))
+                    {
+                        string full_filename = Path.GetFileName(f.FileName);
+                        _uploadPath += id;
+
+                        if (!System.IO.Directory.Exists(_uploadPath))
+                        {
+                            System.IO.Directory.CreateDirectory(_uploadPath);
+                        }
+
+                        var path = Path.Combine(_uploadPath, full_filename);
+                        if (!System.IO.File.Exists(path))
+                        {
+                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
+                            {
+                                f.CopyTo(dd);
+                                dd.Dispose();
+
+                                Anexos newFile = new Anexos()
+                                {
+                                    NºOrigem = id,
+                                    UrlAnexo = full_filename,
+                                    TipoOrigem = TipoOrigemAnexos.TemaFormacao,
+                                    DataHoraCriação = DateTime.Now,
+                                    UtilizadorCriação = User.Identity.Name
+                                };
+
+                                DBAttachments.Create(newFile);
+                                if(newFile.NºLinha == 0)
+                                {
+                                    System.IO.File.Delete(path);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return Json("-1");
+                        }                        
+                    }
+                }
+
+                return Json("0");
+
+            }
+            catch (Exception e)
+            {
+                return Json("-10");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult LoadAttachments([FromBody] JObject requestParams)
+        {
+            if(requestParams == null)
+            {
+                return Json("No data!");
+            }
+
+            string id = requestParams["id"] == null ? string.Empty : (string)requestParams["id"];
+            string origem = requestParams["origem"] == null ? string.Empty : (string)requestParams["origem"];
+            origem = origem.ToUpper();
+
+            if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(origem))
+            {
+                List<Anexos> anexos = new List<Anexos>();
+                switch (origem)
+                {
+                    case "TEMA": anexos = DBAttachments.GetById(TipoOrigemAnexos.TemaFormacao, id);
+                        break;
+                    case "PEDIDOS": anexos = DBAttachments.GetById(TipoOrigemAnexos.PedidoFormacao, id);
+                        break;
+                    case "ACCAO": anexos = DBAttachments.GetById(TipoOrigemAnexos.AccaoFormacao, id);
+                        break;
+                }
+
+                List<AttachmentsViewModel> attachments = new List<AttachmentsViewModel>();
+                anexos.ForEach(x => attachments.Add(DBAttachments.ParseToViewModel(x)));
+
+                if(attachments != null && attachments.Count() > 0)
+                {
+                    return Json(attachments);
+                }
+
+                return Json("Sem Anexos");
+
+            }
+            return Json("Erro");
+        }
+
+        [HttpPost]
+        public JsonResult DeleteAttachment([FromBody] AttachmentsViewModel attach)
+        {
+            if (attach == null)
+                return Json(false);
+
+            string _uploadPath = UploadPath;
+
+            switch (attach.DocType)
+            {
+                case TipoOrigemAnexos.PedidoFormacao: _uploadPath += RequestAttachmentsPath;
+                    break;
+                case TipoOrigemAnexos.TemaFormacao: _uploadPath += SubjectImagePath;
+                    break;
+                case TipoOrigemAnexos.AccaoFormacao: _uploadPath += TrainingImagePath;
+                    break;
+                default:
+                    return Json(false);
+            }
+
+            _uploadPath += (attach.DocNumber + '\\' + attach.Url);
+            try
+            {
+                System.IO.File.Delete(_uploadPath);
+                DBAttachments.Delete(DBAttachments.ParseToDB(attach));
+                return Json(true);
+            }
+            catch (Exception ex)
+            {
+
+                return Json(false);
+            }
         }
                 
 
@@ -228,6 +504,7 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value &&
                 userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
             {
+                ViewBag.onlyActives = false;
                 return View();
             }
             else
@@ -244,98 +521,25 @@ namespace Hydra.Such.Portal.Controllers
             if (UPerm != null && UPerm.Read.Value &&
                 userConfig.TipoUtilizadorFormacao.Value == (int)Enumerations.TipoUtilizadorFluxoPedidoFormacao.GestorFormacao)
             {
-                ViewBag.idTema = id;
-                ViewBag.codInterno = codInterno; 
-                return View();
+                TemaFormacao tema = DBAcademia.__GetDetailsTema(id);
+                if(tema != null)
+                {
+                    ViewBag.idTema = id;
+                    ViewBag.descricaoTema = tema.DescricaoTema;
+                    ViewBag.codInterno = codInterno;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("AccessDenied", "Error");
+                }
+                
             }
             else
             {
                 return RedirectToAction("AccessDenied", "Error");
             }
         }
-        #endregion
-
-        #region Default actions
-        //// GET: Academia
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-
-        //// GET: Academia/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
-
-        //// GET: Academia/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: Academia/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add insert logic here
-
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: Academia/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: Academia/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add update logic here
-
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: Academia/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: Academia/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add delete logic here
-
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
         #endregion
 
     }

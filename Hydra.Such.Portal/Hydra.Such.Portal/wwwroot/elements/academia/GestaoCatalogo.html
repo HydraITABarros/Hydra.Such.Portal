@@ -132,6 +132,11 @@
                         type: Object,
                         value: {},
                     },
+                    onlyActives: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                     },
                 },
                 _openToast: function (message) {
 
@@ -151,6 +156,7 @@
                 ready: function () {
                     debugger;;
 
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": this.onlyActives });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*FILTROS*/
@@ -177,28 +183,14 @@
                 _rowSelected: function (item) {
                     debugger;;
                     if (item != null) {
-                        //if (item.historico) {
                         //    /*FILTROS*/
-                            var filters = {};
-                            this.$.grid._filters.map(function (value, index) {
-                                filters[value.path] = value.value;
-                            });
-                            window.setGridFilter('tema-temaformacao', filters || {});
-
-                        debugger;;
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('tema-temaformacao', filters || {});
 
                         window.location.href = "/Academia/DetalhesTema/" + item.idTema + "?codInterno=" + item.codigoInterno;
-                        //} else {
-                        //    /*FILTROS*/
-                        //    var filters = {};
-                        //    this.$.grid._filters.map(function (value, index) {
-                        //        filters[value.path] = value.value;
-                        //    });
-                        //    window.setGridFilter('guiastransporte-guiastransportenav', filters || {});
-
-                        //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + false;
-                        //}
-
                     }
                 },
             });

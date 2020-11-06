@@ -28,6 +28,11 @@ namespace Hydra.Such.Data.Database
         Oportunidades = 6,
         Propostas = 7,
         Orcamentos = 8,
-        Fornecedores = 9
+        Fornecedores = 9,
+        #region SGPPF
+        PedidoFormacao = 10,
+        TemaFormacao = 11,
+        AccaoFormacao = 12
+        #endregion
     }
 }

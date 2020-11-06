@@ -13,28 +13,24 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-<link rel="import" href="/lib/vaadin-time-picker-master/vaadin-time-picker.html">
-<link rel="import" href="/lib/such-textarea/such-textarea.html">
-<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
-<link rel="import" href="/lib/iron-autogrow-textarea/iron-autogrow-textarea.html" />
 <link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
 <link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
-<!--Datepicker com correção de bug que impede visualização nas grids -->
-<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <!--<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">-->
 <!--ACORDEÃO-->
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
-<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
 <dom-module id="x-detalhetema">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
+
         <style>
-           
             paper-button {
                 margin-top: 10px;
             }
@@ -65,13 +61,157 @@
                 font-family: var(--valo-font-family) !important;
             }
 
-           
+            paper-collapse-item {
+                --paper-item: { padding: 0 0;};
+                --paper-collapse-item-header: {
+                        padding: 0 15px;
+                        color: #333;
+                        background-color: #f5f5f5;
+                        border-bottom: solid #ddd 1px;
+                        border-top-left-radius: 3px;
+                        border-top-right-radius: 3px;
+
+                    } --paper-collapse-toogle-icon: {
+                    //display: none;
+                    } --paper-collapse-item-content {
+
+                    }
+            }
 
             .marginSpace {
                 margin: 0px !important;
             }
         </style>
-        <h1> <vaadin-text-field id="test" label="Teste" value="{{_idtema}}"></vaadin-text-field></h1>
+
+        <iron-ajax url="/Academia/GetDetalhesTema"
+                   last-response="{{ data }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Academia/UpdateTema"
+                   last-response="{{ temaUpdated }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   on-response="_updateTemaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/PopulateDropdowns/GetBoolValues"
+                   last-response="{{boolValues}}"
+                   auto method="post" 
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_loadattchments_ajax"
+                   on-response="_loadattchmentsResponse"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Academia/DeleteAttachment"
+                   last-response="{{ attachDeleted }}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_attach_ajax"
+                   on-response="_attachDeletedResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/UpdateImageStatus"
+                   last-response="{{ imageUpdated}}"
+                   method="post"
+                   handle-as="json"
+                   id="update_image_ajax"
+                   on-response="_updateImageStatusResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Guardar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+        </div>
+        <div class="row break_clear">
+            <div class="col-lg-3">
+                <vaadin-text-field id="codigoInterno" name="codigoInterno" label="Código" value="{{ data.codigoInterno }}" disabled="true"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="descricaoTema" name="descricaoTema" label="Descrição Tema" value="{{data.descricaoTema}}" disabled="true"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="noAccoesTema" name="noAccoesTema" label="Nº Acções" value="{{data.noAccoesTema}}" disabled="true"></vaadin-text-field>
+            </div>
+            <div class="col-lg-3">
+                <vaadin-text-field id="urlImagem" name="urlImagem" label="Imagem Activa" value="{{data.urlImagem}}" disabled="true"></vaadin-text-field>
+            </div>
+        </div>
+        <div class="row break_clear">
+            <div class="col-lg-2 alignPoga">
+                <vaadin-checkbox id="activoCheckBox" checked="{{ data.activo }}"> Activo?</vaadin-checkbox>
+            </div>
+        </div>
+        <paper-collapse-item header="Imagens do Tema" opened>
+            <div class="panel-body">
+                <div class="row break_clear">
+                    <vaadin-upload id="uploadImages"
+                                   target="/Academia/SubjectImageUpload/{{_idtema}}"
+                                   method="post"
+                                   headers="{'Accept':'application/json'}"
+                                   timeout="15000"
+                                   max-files="1"
+                                   accept="image/bmp,image/gif,image/jpeg,image/png">
+                        <span slot="drop-label">Coloque a(s) imagem(ns) aqui......</span>
+                    </vaadin-upload>
+                </div>
+                <div class="row break_clear">
+                    <vaadin-grid id="gridImagensTema" aria-label="gridImagensTema" items="[[data.imagensTema]]" class="grid" multi-sort="true">
+                        <vaadin-grid-column resizeable width="60%">
+                            <template class="header">
+                                <vaadin-grid-sorter path="url">Nome Ficheiro</vaadin-grid-sorter>
+                            </template>
+                            <template>
+                                <a href="/Academia/DownloadImage/{{item.docNumber}}/{{item.url}}" target="_blank">{{item.url}}</a>
+                            </template>
+                        </vaadin-grid-column>
+                        <vaadin-grid-column width="20%">
+                            <template class="header">
+                                <vaadin-grid-sorter path="createDateTime">Anexado em</vaadin-grid-sorter>
+                            </template>
+                            <template>
+                                {{item.createDateTime}} 
+                            </template>
+                        </vaadin-grid-column>
+                        <vaadin-grid-column width="10%">
+                            <template class="header">
+                                <vaadin-grid-sorter path="visivel">Visivel?</vaadin-grid-sorter>
+                            </template>
+                            <template>
+                                <vaadin-checkbox id="_isActive" checked="{{item.visivel}}" on-checked-changed="_updateImageStatus" on-indeterminate-changed="_dummyFunction"></vaadin-checkbox>
+                            </template>
+                        </vaadin-grid-column>
+                        <vaadin-grid-column width="10%">
+                            <template class="header">
+                            </template>
+                            <template>
+                                <center>
+                                    <paper-button class="btnRemove tableBtn" raised on-tap="_deleteImage" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                </center>
+                            </template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                </div>
+            </div>
+        </paper-collapse-item>
+
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
@@ -85,12 +225,176 @@
                     id: {
                         type: String,
                         value: ""
+                    },
+                    _lineno: {
+                        type: Number,
+                        value: 0
+                    },
+
+                    _isPageLoad: {
+                        type: Boolean,
+                        value: true
                     }
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _confirmAndExecuteActionToast: function (_message, _ajaxRequest) {
+                    bootbox.confirm({
+                        message: _message,
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                _ajaxRequest.generateRequest();
+                            }
+                        }
+                    });
                 },
 
                 ready: function () {
                     debugger;;
-                    this.id = this._idtema;
+                    this.$.page_databound_ajax.body = JSON.stringify({ "idTema": this._idtema });
+                    this.$.page_databound_ajax.generateRequest();
+
+                    if (this.$.uploadImages != null) {
+                        debugger;;
+
+                        this.$.uploadImages.addEventListener('upload-response', function (e) {
+                            debugger;
+                            var results = JSON.parse(e.detail.xhr.response);
+                            if (e.detail.xhr.status == 200) {
+                                debugger;;
+
+                                e.detail.xhr.requestURL;
+
+                                var dd = document.querySelector("x-detalhetema");
+                                dd.$.page_loadattchments_ajax.body = JSON.stringify({ "id": dd.__data._idtema, "origem": "tema" })
+                                dd.$.page_loadattchments_ajax.generateRequest();
+
+                            }
+                        });
+                    }
+
+                },
+
+                _responseProcessor: function (data) {
+                    var self = this;
+                    if (this.data != null) {
+
+                    }
+                },
+
+                _loadattchmentsResponse: function (e) {
+                    debugger;;
+                    if (this.uploads != null && this.data != null) {
+                        debugger;;
+                        this.data.imagensTema = this.uploads;
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                },
+
+                _update: function () {
+                    debugger;;
+
+                    this.data.activo = this.$.activoCheckBox.ariaChecked == false ? 0 : 1;
+
+                    this.$.page_update_ajax.body = JSON.stringify(this.data);
+                    this.$.page_update_ajax.generateRequest();
+                },
+
+                _deleteImage: function (e) {
+                    var ajax_request = this.$.delete_attach_ajax;
+                    ajax_request.body = JSON.stringify(e.model.item);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a eliminação do Anexo?",
+                        ajax_request
+                    );
+
+                    var index = this.data.imagensTema.indexOf(e.model.item);
+                    this.data.imagensTema.splice(index, 1);
+                    this.$.gridImagensTema.clearCache();
+                },
+
+                _attachDeletedResponse: function (e) {
+                    if (this.attachDeleted) {
+                        this._openToast("Imagem eliminada com sucesso!");
+                    } else {
+                        this._openToast("Não foi possível eliminar a imagem!");
+                    }
+                },
+
+                _updateTemaResponse: function (e) {
+                    debugger;;
+
+                    if (this.temaUpdated) {
+                        this._openToast("Sucesso a actualizar o Tema de Formação!")
+                    } else {
+                        this._openToastError("Erro ao actualizar o Tema de Formação!");
+                    }
+                },
+
+                _updateImageStatus: function (e) {
+                    debugger;
+                    if (this.data != undefined && this.data.imagensTema != undefined && !this._isPageLoad) {
+                        //var isactive = this.$.gridImagensTema._isActive.value;
+
+                        debugger;;
+                        var images = this.data.imagensTema;
+                        var index = images.indexOf(e.model.item);
+
+                        var image = images[index];
+                        image.visivel = e.target.ariaChecked;
+                        if (e.target.ariaChecked) {
+                            this.data.urlImagem = image.url;
+                        }
+
+                        this.$.gridImagensTema.clearCache();
+
+                        if (image != undefined) {
+                            this.$.update_image_ajax.body = JSON.stringify(image);
+                            this.$.update_image_ajax.generateRequest();                                 
+                        }
+                        
+                    }
+                },
+
+                _updateImageStatusResponse: function (e) {
+                    debugger;;
+                    if (this.imageUpdated) {
+                          
+                    
+                        this.$.gridImagensTema.clearCache();
+                    }
+                    this.$.page_databound_ajax.body = JSON.stringify({ "idTema": this._idtema });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _dummyFunction: function (e) {
+                    debugger;
+                    this._isPageLoad = false;
+                    console.log("on-indetermined-changed event of vaadin-checkbox");
+                },
+
+                _goBack: function (e) {
+                    window.location.href = "/Academia/GestaoCatalogo";
                 }
             });
         });

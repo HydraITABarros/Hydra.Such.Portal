@@ -291,13 +291,36 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static List<TemaFormacao> __GetCatalogo()
+        public static List<TemaFormacao> __GetCatalogo(bool onlyActives = false)
         {
             try
             {
                 using(var _ctx = new SuchDBContext())
                 {
-                    return _ctx.TemaFormacao.ToList();
+                    return onlyActives ? 
+                        _ctx.TemaFormacao.Where(t => t.Activo == 1).ToList() :
+                        _ctx.TemaFormacao.ToList();
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static TemaFormacao __GetDetailsTema(string idTema)
+        {
+            try
+            {
+                using(var _ctx = new SuchDBContext())
+                {
+                    TemaFormacao tema = _ctx.TemaFormacao.Where(t => t.IdTema == idTema).FirstOrDefault();
+
+                    tema.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == idTema).ToList();
+
+                    return tema;
                 }
             }
             catch (Exception ex)
@@ -719,6 +742,26 @@ namespace Hydra.Such.Data.Logic
 
                 return false;
             }
+        }
+
+        public static bool __UpdateTemaFormacao(TemaFormacaoView temaV)
+        {
+            try
+            {
+                TemaFormacao tema = temaV.ParseToDb();
+                foreach(var t in temaV.ImagensTema)
+                {
+                    DBAttachments.Update(DBAttachments.ParseToDB(t));
+                }
+
+                return __UpdateTemaFormacao(tema);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            return false;
         }
         #endregion
 
