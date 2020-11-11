@@ -7189,11 +7189,12 @@ namespace Hydra.Such.Portal.Controllers
                             if (AllClientRequisitions != null && AllClientRequisitions.Count > 0)
                             {
                                 //RequisiçõesClienteContrato ClientRequisition = AllClientRequisitions.OrderByDescending(x => x.DataInícioCompromisso).FirstOrDefault();
-                                var ClientRequisitionGroup = AllClientRequisitions.GroupBy(x => new { x.GrupoFatura },
+                                var ClientRequisitionGroup = AllClientRequisitions.GroupBy(x => new { x.GrupoFatura, x.NºProjeto },
                                      x => x,
                                      (Key, items) => new
                                      {
                                          GruoFatura = Key.GrupoFatura,
+                                         Projeto = Key.NºProjeto,
                                          Items = items
                                      }).ToList();
 
