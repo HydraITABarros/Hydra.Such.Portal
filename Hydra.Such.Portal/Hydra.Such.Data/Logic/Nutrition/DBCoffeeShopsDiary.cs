@@ -135,7 +135,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
             {
                 NºLinha = x.LineNo,
                 CódigoCafetariaRefeitório = x.CoffeShopCode,
-                DataRegisto = x.RegistryDate != null ? DateTime.Parse(x.RegistryDate) : (DateTime?)null,
+                DataRegisto = !string.IsNullOrEmpty(x.RegistryDate) ? DateTime.Parse(x.RegistryDate) : (DateTime?)null,
                 NºRecurso = x.ResourceNo,
                 Descrição = x.Description,
                 Valor = x.Value,
@@ -164,7 +164,7 @@ namespace Hydra.Such.Data.Logic.Nutrition
                 DiárioCafetariaRefeitório LineToUpdate = new DiárioCafetariaRefeitório();
                 LineToUpdate.NºLinha = x.LineNo;
                 LineToUpdate.CódigoCafetariaRefeitório = x.CoffeShopCode;
-                LineToUpdate.DataRegisto = x.RegistryDate != null ? DateTime.Parse(x.RegistryDate) : (DateTime?)null;
+                LineToUpdate.DataRegisto = !string.IsNullOrEmpty(x.RegistryDate) ? DateTime.Parse(x.RegistryDate) : (DateTime?)null;
                 LineToUpdate.NºRecurso = x.ResourceNo;
                 LineToUpdate.Descrição = x.Description;
                 LineToUpdate.Valor = x.Value;

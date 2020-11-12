@@ -133,17 +133,17 @@
         <paper-collapse-group>
             <paper-collapse-item class="panel-heading" header="Novo Registo" closed>
                 <div class="row">
-                    <div class="col-lg-2">
+                    <div class="col-lg-1">
                         <vaadin-text-field id="produtiveUnityNo" name="produtiveUnityNo" value="{{diary.produtiveUnityNo}}" label="Unidade Produtiva" disabled></vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
+                        <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Cod. Cafetaria/Ref" disabled></vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate" on-value-changed="_validateDataRegisto"></vaadin-date-picker>
+                        <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate" on-value-changed="_validateDataRegisto" required error-message="O campo Data Registo é de preenchimento obrigatório."></vaadin-date-picker>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento">
+                        <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento" required error-message="O campo Tipo de Movimento é de preenchimento obrigatório.">
                             <template>
                                 <paper-icon-item>
                                     <paper-item-body two-line>
@@ -157,12 +157,10 @@
                         <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*([,.]\d+)?$" on-value-changed="_ConvertDecimals" value="{{diary.value}}" label="Valor" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*([,.]\d+)?$" on-value-changed="_ConvertDecimals" value="{{diary.value}}" label="Valor" required error-message="O campo Valor é de preenchimento obrigatório."></vaadin-text-field>
                     </div>
 
-                </div>
-                <div class="row">
-                    <div class="col-lg-1">
+                    <div class="col-lg-1" style="padding-top:25px">
                         <paper-button id="btnCreateCoffeeShopDiary" name="btnCreateCoffeeShopDiary" class="btnSave" raised on-tap="_createCoffeeShopDiary" disabled="{{ !_permissions.create }}"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar</paper-button>
                     </div>
                 </div>
@@ -252,14 +250,14 @@
 
 
         @*<div class="marginSpace">
-            <template is="dom-if" if="{{ _permissions.update }}">
-                <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
-            </template>
+                <template is="dom-if" if="{{ _permissions.update }}">
+                    <paper-button raised id="btnSaveLine" class="btnSave" on-tap="_updateDiaryLines"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                </template>
 
-            <template is="dom-if" if="{{ _permissions.create }}">
-                <paper-button raised id="btnRegisterLine" class="btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
-            </template>
-        </div>*@
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button raised id="btnRegisterLine" class="btnSave" on-tap="_registerDiaryLines"><i class="fa fa-list-ol" aria-hidden="true"></i>&nbsp; Registar</paper-button>
+                </template>
+            </div>*@
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -309,16 +307,30 @@
         },
 
         _createCoffeeShopDiary: function () {
-            this.$.btnCreateCoffeeShopDiary.disabled = true;
-
-            this.$.value.validate();
-            if (this.$.value.value == "" || this.$.value.value == undefined) {
-                this._openToastError("O campo Valor é de preenchimento obrigatório.");
+            this.$.registryDate.validate();
+            if (this.$.registryDate.value == "" || this.$.registryDate.value == undefined) {
+                this._openToastError("O campo Data Registo é de preenchimento obrigatório.");
                 this.$.btnCreateCoffeeShopDiary.disabled = false;
             }
             else {
-                this.$.create_databound_ajax.body = JSON.stringify(this.diary);
-                this.$.create_databound_ajax.generateRequest();
+                this.$.cbmovementType.validate();
+                if (this.$.cbmovementType.value == "" || this.$.cbmovementType.value == undefined) {
+                    this._openToastError("O campo Tipo de Movimento é de preenchimento obrigatório.");
+                    this.$.btnCreateCoffeeShopDiary.disabled = false;
+                }
+                else {
+                    this.$.value.validate();
+                    if (this.$.value.value == "" || this.$.value.value == undefined) {
+                        this._openToastError("O campo Valor é de preenchimento obrigatório.");
+                        this.$.btnCreateCoffeeShopDiary.disabled = false;
+                    }
+                    else {
+                        this.$.btnCreateCoffeeShopDiary.disabled = true;
+
+                        this.$.create_databound_ajax.body = JSON.stringify(this.diary);
+                        this.$.create_databound_ajax.generateRequest();
+                    }
+                }
             }
         },
 
@@ -396,10 +408,50 @@
 
 
         _registerDiaryLines: function () {
-            this.$.btnRegisterLine.disabled = true;
+            var ok = 0;
 
-            this.$.register_databound_ajax.body = JSON.stringify(this.result);
-            this.$.register_databound_ajax.generateRequest();
+            if (this.result != null && this.result.length > 0) {
+                for (ind = 0; ind < this.result.length; ind++) {
+                    if (this.result[ind].registryDate == null || this.result[ind].registryDate == "") {
+                        ok = 1;
+                    }
+                    else {
+                        if (this.result[ind].movementType == null || this.result[ind].movementType == "") {
+                            ok = 2;
+                        }
+                        else {
+                            if (this.result[ind].value == null || this.result[ind].value == "") {
+                                ok = 3;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (ok == 1) {
+                this._openToastError("Existem movimentos com o campo Data Registo por preencher.");
+            }
+            else {
+                if (ok == 2) {
+                    this._openToastError("Existem movimentos com o campo Tipo Movimento por preencher.");
+                }
+                else {
+                    if (ok == 3) {
+                        this._openToastError("Existem movimentos com o campo Valor por preencher.");
+                    }
+                    else {
+                        if (this.result != null && this.result.length > 0) {
+                            this.$.btnRegisterLine.disabled = true;
+
+                            this.$.register_databound_ajax.body = JSON.stringify(this.result);
+                            this.$.register_databound_ajax.generateRequest();
+                        }
+                        else {
+                            this._openToastError("Não existem movimentos para registar.");
+                        }
+                    }
+                }
+            }
         },
         _responseRegister: function (registed) {
             if (registed.detail.status === 200) {
