@@ -209,7 +209,7 @@
                         <vaadin-text-field id="coffeShopCode" name="coffeShopCode" value="{{diary.coffeShopCode}}" label="Codigo Cafetaria/Ref" disabled></vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate"></vaadin-date-picker>
+                        <vaadin-date-picker label="Data Registo" max="{{diary.dateToday}}" value="{{diary.registryDate}}" id="registryDate" name="registryDate" required error-message="O campo Data Registo é de preenchimento obrigatório."></vaadin-date-picker>
                     </div>
                     <div class="col-lg-2" hidden>
                         <vaadin-combo-box items="[[CBMovementType]]" id="cbmovementType" item-value-path="id" item-label-path="value" value="{{diary.movementType}}" label="Tipo de Movimento">
@@ -228,7 +228,8 @@
                                         text-path="id"
                                         value-path="id"
                                         fields='[{"field":"id", "name":"Nº Recurso"}, {"field":"value", "name":"Descrição"}]'
-                                        on-value-changed="_GetresourceDescription">
+                                        on-value-changed="_GetresourceDescription"
+                                        required error-message="O campo Nº Recurso é de preenchimento obrigatório.">
                         </such-selectbox>
                     </div>
 
@@ -238,7 +239,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-2">
-                        <vaadin-text-field value="{{diary.quantity}}" id="Quantity" name="Quantity" label="Quantidade" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals"> </vaadin-text-field>
+                        <vaadin-text-field value="{{diary.quantity}}" id="Quantity" name="Quantity" label="Quantidade" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" required error-message="O campo Quantidade é de preenchimento obrigatório."> </vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
                         <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*(\.\d+)?$" on-value-changed="_ConvertDecimals" error-message="Valor inválido" value="{{diary.value}}" label="Valor"></vaadin-text-field>
@@ -475,10 +476,31 @@
                 },
 
                 _createMealRegistry: function () {
-                    this.diary.ResourceNo = this._resourceNo;
-                    this.diary.MealType = this._mealType;
-                    this.$.create_databound_ajax.body = JSON.stringify(this.diary);
-                    this.$.create_databound_ajax.generateRequest();
+                    this.$.registryDate.validate();
+                    if (this.$.registryDate.value == "" || this.$.registryDate.value == undefined) {
+                        this._openToastError("O campo Data Registo é de preenchimento obrigatório.");
+                        this.$.btnCreateCoffeeShopDiary.disabled = false;
+                    }
+                    else {
+                        this.$._resourceNo.validate();
+                        if (this.$._resourceNo.value == "" || this.$._resourceNo.value == undefined) {
+                            this._openToastError("O campo Nº Recurso é de preenchimento obrigatório.");
+                            this.$.btnCreateCoffeeShopDiary.disabled = false;
+                        }
+                        else {
+                            this.$.Quantity.validate();
+                            if (this.$.Quantity.value == "" || this.$.Quantity.value == undefined) {
+                                this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                                this.$.btnCreateCoffeeShopDiary.disabled = false;
+                            }
+                            else {
+                                this.diary.ResourceNo = this._resourceNo;
+                                this.diary.MealType = this._mealType;
+                                this.$.create_databound_ajax.body = JSON.stringify(this.diary);
+                                this.$.create_databound_ajax.generateRequest();
+                            }
+                        }
+                    }
                 },
 
                 _responseCreated: function (created) {
@@ -538,8 +560,48 @@
                 },
 
                 _registerDiaryLines: function () {
-                    this.$.register_databound_ajax.body = JSON.stringify(this.result);
-                    this.$.register_databound_ajax.generateRequest();
+                    var ok = 0;
+
+                    if (this.result != null && this.result.length > 0) {
+                        for (ind = 0; ind < this.result.length; ind++) {
+                            if (this.result[ind].registryDate == null || this.result[ind].registryDate == "") {
+                                ok = 1;
+                            }
+                            else {
+                                if (this.result[ind].resourceNo == null || this.result[ind].resourceNo == "") {
+                                    ok = 2;
+                                }
+                                else {
+                                    if (this.result[ind].quantity == null || this.result[ind].quantity == "") {
+                                        ok = 3;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (ok == 1) {
+                        this._openToastError("Existem movimentos com o campo Data Registo por preencher.");
+                    }
+                    else {
+                        if (ok == 2) {
+                            this._openToastError("Existem movimentos com o campo Nº Recurso por preencher.");
+                        }
+                        else {
+                            if (ok == 3) {
+                                this._openToastError("Existem movimentos com o campo Quantidade por preencher.");
+                            }
+                            else {
+                                if (this.result != null && this.result.length > 0) {
+                                    this.$.register_databound_ajax.body = JSON.stringify(this.result);
+                                    this.$.register_databound_ajax.generateRequest();
+                                }
+                                else {
+                                    this._openToastError("Não existem movimentos para registar.");
+                                }
+                            }
+                        }
+                    }
                 },
 
 

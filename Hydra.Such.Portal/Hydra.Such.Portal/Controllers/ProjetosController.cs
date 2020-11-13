@@ -1022,57 +1022,59 @@ namespace Hydra.Such.Portal.Controllers
                             }
                             else
                             {
-                                //Update Project on NAV
-                                Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
-                                bool statusL = true;
-                                try
-                                {
-                                    TUpdateNavProj.Wait();
-                                }
-                                catch (Exception ex)
-                                {
-                                    data.eReasonCode = 3;
-                                    if (ex.InnerException.Message == "You cannot change Bill-to Customer No. because one or more entries are associated with this Job.")
-                                        data.eMessage = "Não é possivel alterar o Cliente, pois o Projeto já contêm Movimentos inseridos.";
-                                    else
-                                        data.eMessage = ex.InnerException.Message;
-                                    statusL = false;
-                                    return Json(data);
-                                }
+                                Projetos OLD_Proj = DBProjects.GetById(data.ProjectNo);
 
-                                if (!TUpdateNavProj.IsCompletedSuccessfully || statusL == false)
+                                if (OLD_Proj.Descrição != data.Description || OLD_Proj.NºCliente != data.ClientNo || OLD_Proj.Estado != data.Status ||
+                                    OLD_Proj.CódigoRegião != data.RegionCode || OLD_Proj.CódigoÁreaFuncional != data.FunctionalAreaCode || OLD_Proj.CódigoCentroResponsabilidade != data.ResponsabilityCenterCode)
                                 {
-                                    Projetos OLD_Proj = DBProjects.GetById(data.ProjectNo);
-
-                                    if (OLD_Proj != null && OLD_Proj.NºCliente != data.ClientNo)
+                                    //Update Project on NAV
+                                    Task<WSCreateNAVProject.Update_Result> TUpdateNavProj = WSProject.UpdateNavProject(TReadNavProj.Result.WSJob.Key, data, _configws);
+                                    bool statusL = true;
+                                    try
+                                    {
+                                        TUpdateNavProj.Wait();
+                                    }
+                                    catch (Exception ex)
                                     {
                                         data.eReasonCode = 3;
-                                        data.eMessage = "Não é possível alterar o cliente deste projeto.";
+                                        if (ex.InnerException.Message == "You cannot change Bill-to Customer No. because one or more entries are associated with this Job.")
+                                            data.eMessage = "Não é possivel alterar o Cliente, pois o Projeto já contêm Movimentos inseridos.";
+                                        else
+                                            data.eMessage = ex.InnerException.Message;
+                                        statusL = false;
                                         return Json(data);
                                     }
-                                    else
+
+                                    if (!TUpdateNavProj.IsCompletedSuccessfully || statusL == false)
                                     {
-                                        data.eReasonCode = 3;
-                                        data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
-                                        return Json(data);
+                                        if (OLD_Proj != null && OLD_Proj.NºCliente != data.ClientNo)
+                                        {
+                                            data.eReasonCode = 3;
+                                            data.eMessage = "Não é possível alterar o cliente deste projeto.";
+                                            return Json(data);
+                                        }
+                                        else
+                                        {
+                                            data.eReasonCode = 3;
+                                            data.eMessage = "Ocorreu um erro ao atualizar o projeto no NAV.";
+                                            return Json(data);
+                                        }
                                     }
+                                }
+
+                                Projetos cProject = DBProjects.ParseToDB(data);
+                                cProject.UtilizadorModificação = User.Identity.Name;
+                                cProject.DataHoraModificação = DateTime.Now;
+
+                                if (DBProjects.Update(cProject) != null)
+                                {
+                                    data.eReasonCode = 1;
                                 }
                                 else
                                 {
-                                    Projetos cProject = DBProjects.ParseToDB(data);
-                                    cProject.UtilizadorModificação = User.Identity.Name;
-                                    cProject.DataHoraModificação = DateTime.Now;
-
-                                    if (DBProjects.Update(cProject) != null)
-                                    {
-                                        data.eReasonCode = 1;
-                                    }
-                                    else
-                                    {
-                                        data.eReasonCode = 3;
-                                        data.eMessage = "Ocorreu um erro ao atualizar o projeto no eSUCH.";
-                                        return Json(data);
-                                    }
+                                    data.eReasonCode = 3;
+                                    data.eMessage = "Ocorreu um erro ao atualizar o projeto no eSUCH.";
+                                    return Json(data);
                                 }
                             }
                         }

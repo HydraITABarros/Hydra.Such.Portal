@@ -168,7 +168,8 @@
                    last-response="{{data}}"
                    method="post"
                    handle-as="json"
-                   content-type="application/json"></iron-ajax>
+                   content-type="application/json">
+        </iron-ajax>
 
         <iron-ajax url="/PreRequisicoes/CreateNewForThisUser"
                    last-response="{{data}}"
@@ -2273,6 +2274,8 @@
                                 this.$.prereqLines_databound_ajax.body = JSON.stringify(this.data);
                                 this.$.prereqLines_databound_ajax.generateRequest();
 
+                                this.chkReposicaoStock = !this.data.stockReplacement;
+
                                 this._loadProductsByAreaAndType(this.data.requesitionType);
                                 this._PopulatePurchaseLines();
                                 this._validacaoReposicaoStock();
@@ -3385,7 +3388,12 @@
                         this.$._CLFunctionalAreaCode.disabled = true;
                         this.$._CLResponsabilityCenterCode.disabled = true;
                     }
-                }
+                },
+
+
+
+
+
             });
         });
     </script>
