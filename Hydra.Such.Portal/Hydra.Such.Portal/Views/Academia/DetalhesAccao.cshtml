@@ -1,0 +1,17 @@
+﻿<link rel="import" href="~/elements/academia/DetalheAccao.html" />
+<link rel="import" href="~/elements/academia/DetalhesAccaoCatalogo.html" />
+@{
+    ViewData["Title"] = "Detalhee Acção: " + ViewBag.codInterno + " - " + ViewBag.designacaoAccao;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    if (@ViewBag.fromTema)
+    {
+        <x-detalheaccao _idaccao="@ViewBag.idAccao" _ismanager="@ViewBag.isAcademiaUser"></x-detalheaccao>
+    }
+    else
+    {
+        <x-detalheaccaocatalogo _idaccao="@ViewBag.idAccao"></x-detalheaccaocatalogo>
+    }
+
+}
+

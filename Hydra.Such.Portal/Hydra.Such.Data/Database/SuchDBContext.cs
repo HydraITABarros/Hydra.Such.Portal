@@ -12992,12 +12992,12 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("UrlImagem")
                     .HasMaxLength(250);
 
-                entity.HasOne(a => a.TemaNavigation)
+                entity.HasOne(a => a.Tema)
                     .WithMany(t => t.AccoesTema)
                     .HasForeignKey(a => a.IdTema)
                     .HasConstraintName("FK_AccaoFormacao_TemaFormacao");
 
-                entity.HasOne(a => a.EntidadeNavigation)
+                entity.HasOne(a => a.Entidade)
                         .WithMany(t => t.AccoesEntidade)
                         .HasForeignKey(a => a.IdEntidadeFormadora)
                         .HasConstraintName("FK_AccaoFormacao_EntidadeFormadora");

@@ -1,11 +1,22 @@
-﻿
+﻿<link rel="import" href="~/elements/academia/DetalheTema.html" />
+<link rel="import" href="~/elements/academia/DetalhesTemaCatalogo.html" />
+
 @{
     ViewData["Title"] = "Detalhe Tema Formação: " + ViewBag.codInterno + " - " + ViewBag.descricaoTema;
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    if (@ViewBag.fromCatalogo)
+    {
+        <x-detalhetemacatalogo _idtema="@ViewBag.idTema"></x-detalhetemacatalogo>
+
+    }
+    else
+    {
+        <x-detalhetema _idtema="@ViewBag.idTema"></x-detalhetema>
+    }
 }
 
 
 
-<link rel="import" href="~/elements/academia/DetalheTema.html"/>
 
-<x-detalhetema _idtema="@ViewBag.idTema"></x-detalhetema>
+

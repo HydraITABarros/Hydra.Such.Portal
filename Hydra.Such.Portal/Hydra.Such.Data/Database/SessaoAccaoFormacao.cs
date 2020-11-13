@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Hydra.Such.Data.Extensions;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,6 +10,7 @@ namespace Hydra.Such.Data.Database
     {
         public string IdSessaoFormacao { get; set; }
         public string IdAccao { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataSessao { get; set; }
         public string HoraInicioSessao { get; set; }
         public string HoraFimSessao { get; set; }

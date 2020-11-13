@@ -137,6 +137,7 @@
   <ItemGroup>
     <None Include="package.json" />
     <None Include="wwwroot\css\site.css" />
+    <None Include="wwwroot\elements\academia\DetalhesAccaoCatalogo.html" />
   </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 

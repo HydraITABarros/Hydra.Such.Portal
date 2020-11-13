@@ -29,9 +29,9 @@ namespace Hydra.Such.Data.Database
 
 
         [Newtonsoft.Json.JsonIgnore]
-        public TemaFormacao TemaNavigation { get; set; }
+        public TemaFormacao Tema { get; set; }
         //[Newtonsoft.Json.JsonIgnore]
-        public EntidadeFormadora EntidadeNavigation { get; set; }
+        public EntidadeFormadora Entidade { get; set; }
 
         public ICollection<SessaoAccaoFormacao> SessoesFormacao { get; set; }
         public ICollection<PedidoParticipacaoFormacao> PedidosParticipacao { get; set; }
