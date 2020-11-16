@@ -103,8 +103,8 @@
                     <paper-button class="tablinks" on-tap="_redirectToCoffeeShopDiary"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; registo receitas</paper-button>
                 </template>
                 <template is="dom-if" if="{{ _permissions.read }}">
-
                     <paper-button class="tablinks" on-tap="_redirectToMealRegistry"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; registo nº refeições</paper-button>
+                    <paper-button class="tablinks" on-tap="_redirectToMovimentsList"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp; Ver Movimentos</paper-button>
                 </template>
                 <template is="dom-if" if="{{ _permissions.read }}">
                     <paper-button class="tablinks" on-tap="_openCashFlowReport"><i class="fa fa-print" aria-hidden="true"></i>&nbsp; imprimir folha de caixa</paper-button>
@@ -522,7 +522,15 @@
 
                 _goBack: function (e) {
                     window.history.back();
-                }
+                },
+
+                _redirectToMovimentsList: function (e) {
+                    window.location.href = "../MovimentsList/?NºUnidadeProdutiva=" + this.data.productivityUnitNo + "&CódigoCafetaria=" + this.data.code;
+                },
+
+
+
+
             });
         });
     </script>
