@@ -24,12 +24,11 @@
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
 <link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
 
-<dom-module id="x-detalhetema">
+<dom-module id="x-detalheaccao">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
-
         <style>
             paper-button {
                 margin-top: 10px;
@@ -82,16 +81,17 @@
                 margin: 0px !important;
             }
 
-            vaadin-checkbox {
+            /*vaadin-checkbox {
                 text-align: center;
-                /*display: flex;
+                display: flex;
                 height: 100%;
                 justify-content: center;
-                align-items: center;*/
+                align-items: center;
             }
+            */
         </style>
 
-        <iron-ajax url="/Academia/GetDetalhesTema"
+        <iron-ajax url="/Academia/GetDetalhesAccao"
                    last-response="{{ data }}"
                    method="post"
                    handle-as="json"
@@ -99,19 +99,13 @@
                    on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
-        <iron-ajax url="/Academia/UpdateTema"
-                   last-response="{{ temaUpdated }}"
+
+        <iron-ajax url="/Academia/UpdateAccao"
+                   last-response="{{ accaoUpdated }}"
                    method="post"
                    handle-as="json"
                    id="page_update_ajax"
-                   on-response="_updateTemaResponse"
-                   content-type="application/json">
-        </iron-ajax>
-
-        <iron-ajax url="/PopulateDropdowns/GetBoolValues"
-                   last-response="{{boolValues}}"
-                   auto method="post"
-                   handle-as="json"
+                   on-response="_updateAccaoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -121,14 +115,6 @@
                    handle-as="json"
                    id="page_loadattchments_ajax"
                    on-response="_loadattchmentsResponse"
-                   content-type="application/json">
-        </iron-ajax>
-        <iron-ajax url="/Academia/DeleteAttachment"
-                   last-response="{{ attachDeleted }}"
-                   method="post"
-                   handle-as="json"
-                   id="delete_attach_ajax"
-                   on-response="_attachDeletedResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -141,12 +127,12 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <iron-ajax url="/Academia/UpdateAccao"
-                   last-response="{{ courseUpdated}}"
+        <iron-ajax url="/Academia/DeleteAttachment"
+                   last-response="{{ attachDeleted }}"
                    method="post"
                    handle-as="json"
-                   id="update_course_ajax"
-                   on-response="_updateCourseStatusResponse"
+                   id="delete_attach_ajax"
+                   on-response="_attachDeletedResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -157,30 +143,43 @@
 
         <div class="row break_frm">
             <div class="row break_clear">
-                <div class="col-lg-3">
+                <div class="col-lg-1">
                     <vaadin-text-field id="codigoInterno" name="codigoInterno" label="Código" value="{{ data.codigoInterno }}" disabled="true"></vaadin-text-field>
                 </div>
-                <div class="col-lg-3">
-                    <vaadin-text-field id="descricaoTema" name="descricaoTema" label="Descrição Tema" value="{{data.descricaoTema}}" disabled="true"></vaadin-text-field>
+                <div class="col-lg-5">
+                    <vaadin-text-field id="designacaoAccao" name="designacaoAccao" label="Designação Acção" value="{{data.designacaoAccao}}" disabled="true"></vaadin-text-field>
                 </div>
-                <div class="col-lg-3">
-                    <vaadin-text-field id="noAccoesTema" name="noAccoesTema" label="Nº Acções" value="{{data.noAccoesTema}}" disabled="true"></vaadin-text-field>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="dataInicio" name="dataInicio" label="Data Inicio" value="{{data.dataInicio}}" disabled="true"></vaadin-text-field>
                 </div>
-                <div class="col-lg-3">
-                    <vaadin-text-field id="urlImagem" name="urlImagem" label="Imagem Activa" value="{{data.urlImagem}}" disabled="true"></vaadin-text-field>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="dataFim" name="dataFim" label="Data Fim" value="{{data.dataFim}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-lg-1">
+                    <vaadin-text-field id="numeroTotalHoras" name="numeroTotalHoras" label="Nº Horas" value="{{data.numeroTotalHoras}}" disabled="true"></vaadin-text-field>
                 </div>
             </div>
             <div class="row break_clear">
+                <div class="col-lg-3">
+                    <vaadin-text-field id="descricaoEntidade" name="descricaoEntidade" label="Entidade" value="{{ data.entidade.descricaoEntidade}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-lg-3">
+                    <vaadin-text-field id="urlImagem" name="urlImagem" label="Imagem Activa" value="{{ data.urlImagem}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="noSessoes" name="noSessoes" label="Nº Sessoes" value="{{ data.noSessoes }}" disabled="true"></vaadin-text-field>
+                </div>
                 <div class="col-lg-2 alignPoga">
-                    <vaadin-checkbox id="activoCheckBox" checked="{{ data.temaActivo }}"> Activo?</vaadin-checkbox>
+                    <vaadin-checkbox id="activaCheckBox" checked="{{ data.accaoActiva }}" disabled="{{!_ismanager}}"> Activa?</vaadin-checkbox>
                 </div>
             </div>
-
+        </div>
+        <div class="row break_clear">
             <iron-form id="formContract">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <paper-tabs fit-container no-slide autoselect autoselect-delay="0" selected="{{selected}}">
-                            <paper-tab>Acções</paper-tab>
+                            <paper-tab>Sessões</paper-tab>
                             <paper-tab>Imagens</paper-tab>
                         </paper-tabs>
 
@@ -189,73 +188,37 @@
                                 <div class="panel panel-default">
                                     <div class="panel-body" style="padding:0">
                                         <div class="row break_clear">
-                                            <vaadin-grid id="gridAccoesTema" aria-label="gridAccoesTema" items="[[data.accoes]]" class="grid" active-item="{{activeCourse}}" multi-sort="true">
-                                                <vaadin-grid-column width="7%" resizable>
+                                            <vaadin-grid id="gridSessoesFormacao" aria-label="gridSessoesFormacao" items="[[data.sessoesFormacao]]" class="grid" multi-sort="true" disabled="true">
+                                                <vaadin-grid-column>
                                                     <template class="header">
-                                                        <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="codigoInterno" />
+                                                        <vaadin-grid-sorter path="dataSessao">Data Sessão</vaadin-grid-sorter>
                                                     </template>
                                                     <template>
-                                                        {{item.codigoInterno}}
+                                                        {{item.dataSessao}}
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="36%" resizable>
+                                                <vaadin-grid-column>
                                                     <template class="header">
-                                                        <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="designacaoAccao" />
+                                                        <vaadin-grid-sorter path="horaInicioSessao">Hora Inicio</vaadin-grid-sorter>
                                                     </template>
                                                     <template>
-                                                        {{item.designacaoAccao}}
+                                                        {{item.horaInicioSessao}}
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="6%" resizable>
+                                                <vaadin-grid-column>
                                                     <template class="header">
-                                                        <vaadin-grid-sorter path="activa">Activa?</vaadin-grid-sorter>
-                                                        <!--<vaadin-grid-filter path="activa" />-->
+                                                        <vaadin-grid-sorter path="horaFimSessao">Hora Fim</vaadin-grid-sorter>
                                                     </template>
                                                     <template>
-                                                        <vaadin-checkbox id="isCourseActive" checked="{{item.accaoActiva}}" on-checked-changed="_updateCourseStatus" on-indeterminate-changed="_dummyFunction"></vaadin-checkbox>
+                                                        {{item.horaFimSessao}}
                                                     </template>
                                                 </vaadin-grid-column>
-                                                <vaadin-grid-column width="7%" resizable>
+                                                <vaadin-grid-column>
                                                     <template class="header">
-                                                        <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
+                                                        <vaadin-grid-sorter path="duracaoSessao">Duração</vaadin-grid-sorter>
                                                     </template>
                                                     <template>
-                                                        {{item.dataInicio}}
-                                                    </template>
-                                                </vaadin-grid-column>
-                                                <vaadin-grid-column width="7%" resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
-                                                    </template>
-                                                    <template>
-                                                        {{item.dataFim}}
-                                                    </template>
-                                                </vaadin-grid-column>
-                                                <vaadin-grid-column width="7%" resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
-                                                    </template>
-                                                    <template>
-                                                        {{ item.numeroTotalHoras}}
-                                                    </template>
-                                                </vaadin-grid-column>
-                                                <vaadin-grid-column width="13%" resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="descricaoEntidade">Entidade Formadora</vaadin-grid-sorter>
-                                                        <vaadin-grid-filter path="descricaoEntidade" />
-                                                    </template>
-                                                    <template>
-                                                        {{item.entidade.descricaoEntidade}}
-                                                    </template>
-                                                </vaadin-grid-column>
-                                                <vaadin-grid-column width="7%" resizable>
-                                                    <template class="header">
-                                                        <vaadin-grid-sorter path="noSessoes">Nº Sessões</vaadin-grid-sorter>
-                                                    </template>
-                                                    <template>
-                                                        {{item.noSessoes}}
+                                                        {{item.duracaoSessao}}
                                                     </template>
                                                 </vaadin-grid-column>
                                             </vaadin-grid>
@@ -269,7 +232,7 @@
                                     <div class="panel-body" style="padding:0">
                                         <div class="row break_clear">
                                             <vaadin-upload id="uploadImages"
-                                                           target="/Academia/SubjectImageUpload/{{_idtema}}"
+                                                           target="/Academia/CourseImageUpload/{{_idaccao}}"
                                                            method="post"
                                                            headers="{'Accept':'application/json'}"
                                                            timeout="15000"
@@ -279,7 +242,7 @@
                                             </vaadin-upload>
                                         </div>
                                         <div class="row break_clear">
-                                            <vaadin-grid id="gridImagensTema" aria-label="gridImagensTema" items="[[data.imagensTema]]" class="grid" multi-sort="true">
+                                            <vaadin-grid id="gridImagensAccao" aria-label="gridImagensAccao" items="[[data.imagensAccao]]" class="grid" multi-sort="true">
                                                 <vaadin-grid-column resizeable width="60%">
                                                     <template class="header">
                                                         <vaadin-grid-sorter path="url">Nome Ficheiro</vaadin-grid-sorter>
@@ -330,38 +293,25 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-detalhetema',
+                is: 'x-detalheaccao',
                 properties: {
-                    _idtema: {
+                    _idaccao: {
                         type: String
 
                     },
-                    id: {
-                        type: String,
-                        value: ""
+                    _ismanager: {
+                        type: Boolean,
+                        value: false
                     },
                     selected: {
                         type: Number,
                         value: 0
                     },
-                    _lineno: {
-                        type: Number,
-                        value: 0
-                    },
-
                     _isPageLoad: {
                         type: Boolean,
                         value: true
                     },
-                    activeCourse: {
-                        observer: '_rowSelected'
-                    },
-                    filter: {
-                        type: Object,
-                        value: {},
-                    },
                 },
-
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
@@ -395,7 +345,7 @@
 
                 ready: function () {
                     debugger;;
-                    this.$.page_databound_ajax.body = JSON.stringify({ "idTema": this._idtema, "fromCatalogo": false });
+                    this.$.page_databound_ajax.body = JSON.stringify({ "idAccao": this._idaccao });
                     this.$.page_databound_ajax.generateRequest();
 
                     if (this.$.uploadImages != null) {
@@ -409,34 +359,39 @@
 
                                 e.detail.xhr.requestURL;
 
-                                var dd = document.querySelector("x-detalhetema");
-                                dd.$.page_loadattchments_ajax.body = JSON.stringify({ "id": dd.__data._idtema, "origem": "tema" })
+                                var dd = document.querySelector("x-detalheaccao");
+                                dd.$.page_loadattchments_ajax.body = JSON.stringify({ "id": dd.__data._idaccao, "origem": "accao" })
                                 dd.$.page_loadattchments_ajax.generateRequest();
 
                             }
                         });
                     }
-
                 },
 
                 _responseProcessor: function (data) {
+                    debugger;;
                     var self = this;
                     if (this.data != null) {
 
                     }
                 },
 
-                _rowSelected: function (item) {
+                _update: function () {
                     debugger;;
-                    if (item != null) {
-                        //    /*FILTROS*/
-                        var filters = {};
-                        this.$.gridAccoesTema._filters.map(function (value, index) {
-                            filters[value.path] = value.value;
-                        });
-                        window.setGridFilter('accao-accaoformacao', filters || {});
 
-                        window.location.href = "/Academia/DetalhesAccao/" + item.idAccao + "?codInterno=" + item.codigoInterno + "&fromTema=" + true;
+                    this.data.accaoActiva = this.$.activaCheckBox.ariaChecked;
+
+                    this.$.page_update_ajax.body = JSON.stringify(this.data);
+                    this.$.page_update_ajax.generateRequest();
+                },
+
+                _updateAccaoResponse: function (e) {
+                    debugger;;
+
+                    if (this.accaoUpdated) {
+                        this._openToast("Sucesso a actualizar o Tema de Formação!")
+                    } else {
+                        this._openToastError("Erro ao actualizar o Tema de Formação!");
                     }
                 },
 
@@ -449,15 +404,6 @@
                     }
                 },
 
-                _update: function () {
-                    debugger;;
-
-                    this.data.activo = this.$.activoCheckBox.ariaChecked ? 1 : 0;
-
-                    this.$.page_update_ajax.body = JSON.stringify(this.data);
-                    this.$.page_update_ajax.generateRequest();
-                },
-
                 _deleteImage: function (e) {
                     var ajax_request = this.$.delete_attach_ajax;
                     ajax_request.body = JSON.stringify(e.model.item);
@@ -467,9 +413,9 @@
                         ajax_request
                     );
 
-                    var index = this.data.imagensTema.indexOf(e.model.item);
-                    this.data.imagensTema.splice(index, 1);
-                    this.$.gridImagensTema.clearCache();
+                    var index = this.data.imagensAccao.indexOf(e.model.item);
+                    this.data.imagensAccao.splice(index, 1);
+                    this.$.gridImagensAccao.clearCache();
                 },
 
                 _attachDeletedResponse: function (e) {
@@ -480,23 +426,13 @@
                     }
                 },
 
-                _updateTemaResponse: function (e) {
-                    debugger;;
-
-                    if (this.temaUpdated) {
-                        this._openToast("Sucesso a actualizar o Tema de Formação!")
-                    } else {
-                        this._openToastError("Erro ao actualizar o Tema de Formação!");
-                    }
-                },
-
                 _updateImageStatus: function (e) {
                     debugger;
-                    if (this.data != undefined && this.data.imagensTema != undefined && !this._isPageLoad) {
+                    if (this.data != undefined && this.data.imagensAccao != undefined && !this._isPageLoad) {
                         //var isactive = this.$.gridImagensTema.isImageActive.value;
 
                         debugger;;
-                        var images = this.data.imagensTema;
+                        var images = this.data.imagensAccao;
                         var index = images.indexOf(e.model.item);
 
                         var image = images[index];
@@ -505,52 +441,23 @@
                             this.data.urlImagem = image.url;
                         }
 
-                        this.$.gridImagensTema.clearCache();
+                        this.$.gridImagensAccao.clearCache();
 
                         if (image != undefined) {
                             this.$.update_image_ajax.body = JSON.stringify(image);
-                            this.$.update_image_ajax.generateRequest();                                 
-                        }                          
+                            this.$.update_image_ajax.generateRequest();
+                        }
                     }
                 },
 
                 _updateImageStatusResponse: function (e) {
                     debugger;;
                     if (this.imageUpdated) {
-                          
-                    
-                        this.$.gridImagensTema.clearCache();
+
+
+                        this.$.gridImagensAccao.clearCache();
                     }
-                    this.$.page_databound_ajax.body = JSON.stringify({ "idTema": this._idtema });
-                    this.$.page_databound_ajax.generateRequest();
-                },
-
-                _updateCourseStatus: function (e) {
-                    
-                    if (this.data != undefined && this.data.accoes != null && !this._isPageLoad) {
-                        var accoes = this.data.accoes;
-                        var index = accoes.indexOf(e.model.item);
-
-                        var accao = accoes[index];
-
-                        accao.accaoActiva = e.target.ariaChecked;
-
-                        this.$.gridAccoesTema.clearCache();
-
-                        if (accao != undefined) {
-                            this.$.update_course_ajax.body = JSON.stringify(accao);
-                            this.$.update_course_ajax.generateRequest();
-                        }
-
-                    }
-                },
-
-                _updateCourseStatusResponse: function (e) {
-                    if (this.courseUpdated) {
-                        this.$.gridAccoesTema.clearCache();
-                    }
-
-                    this.$.page_databound_ajax.body = JSON.stringify({ "idTema": this._idtema });
+                    this.$.page_databound_ajax.body = JSON.stringify({ "idAccao": this._idaccao });
                     this.$.page_databound_ajax.generateRequest();
                 },
 
@@ -561,10 +468,9 @@
                 },
 
                 _goBack: function (e) {
-                    window.location.href = "/Academia/GestaoCatalogo";
+                    window.history.back();
                 }
             });
         });
     </script>
-
 </dom-module>

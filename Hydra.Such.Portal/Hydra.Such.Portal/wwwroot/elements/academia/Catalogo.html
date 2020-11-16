@@ -12,6 +12,9 @@
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html">
+
+<link rel="import" href="/lib/iron-image/iron-image.html" />
+
 <!--Datepicker com correção de bug que impede visualização nas grids -->
 <link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
 <link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
@@ -36,13 +39,40 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
-<dom-module id="x-gestaocatalogo">
+<dom-module id="x-catalogo">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
+                /*.details {
+                    padding: 10px;
+                    margin: 10px;
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
+                    font-size: 20px;
+                }
+
+                img {
+                    width: 80px;
+                    height: 80px;
+                    margin: 20px;
+                }*/
+                #sizing-contain {
+                    width: 100%;
+                    height: 80px;
+                    padding: 10px;
+                    margin: 10px;
+                    display: block;
+                    justify-content: space-around;
+                    align-items: center;
+                    box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.14);
+                    font-size: 20px;
+                }
+
                 input[readonly] {
                     border: 2px solid transparent;
                 }
@@ -52,11 +82,7 @@
                 }
 
                 vaadin-checkbox {
-                    /*text-align: center;*/
-                    display: flex;
-                    height: 100%;
-                    justify-content: center;
-                    align-items: center;
+                    text-align: center;
                 }
 
                 .grid {
@@ -73,7 +99,6 @@
                 }
             </style>
         </custom-style>
-
         <iron-ajax url="/Academia/GetCatalogo"
                    last-response="{{ result }}"
                    auto method="post"
@@ -83,20 +108,11 @@
                    content-type="application/json">
         </iron-ajax>
 
-        <vaadin-grid aria-label="temasGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="codigoInterno" />
-                </template>
-                <template>
-                    {{ item.codigoInterno }}
-                </template>
-            </vaadin-grid-column>
+        <vaadin-grid aria-label="catalogoGrid" id="gridCatalogo" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
             <vaadin-grid-column resizable>
                 <template class="header">
                     <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricaoTema" />
+                    <!--<vaadin-grid-filter path="descricaoTema" />-->
                 </template>
                 <template>
                     {{ item.descricaoTema }}
@@ -104,31 +120,20 @@
             </vaadin-grid-column>
             <vaadin-grid-column>
                 <template class="header">
-                    <vaadin-grid-sorter path="urlImagem">Url Imagem</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="urlImagem" />
                 </template>
                 <template>
-                    {{ item.urlImagem }}
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="activo">Activo?</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="activo" />
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.temaActivo}}" disabled></vaadin-checkbox>
+                    <iron-image src="/Academia/DownloadImage/{{item.idTema}}/{{item.urlImagem}}"
+                                sizing="contain"
+                                id="sizing-contain">
+                    </iron-image>
                 </template>
             </vaadin-grid-column>
         </vaadin-grid>
-
-        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
-        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-gestaocatalogo',
+                is: 'x-catalogo',
                 properties: {
                     activeItem: {
                         observer: '_rowSelected'
@@ -136,12 +141,7 @@
                     filter: {
                         type: Object,
                         value: {},
-                    },
-                    onlyActives: {
-                        type: Boolean,
-                        notify: true,
-                        value: false
-                     },
+                    }
                 },
                 _openToast: function (message) {
 
@@ -149,24 +149,15 @@
                     this.$.ToastMessage.open();
                 },
 
-                _showMessage: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
-                },
-
-                _showErrorMessage: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
-                },
                 ready: function () {
                     debugger;;
 
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": this.onlyActives });
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": true });
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*FILTROS*/
-                    window.handleGridListColumnsOrder(this.$.grid, 'tema-temaformacao');
-                    window.grid = this.$.grid;
+                    window.handleGridListColumnsOrder(this.$.gridCatalogo, 'tema-temaformacao');
+                    window.grid = this.$.gridCatalogo;
                     window._this = this;
 
                     var _this = this;
@@ -177,35 +168,46 @@
                     $(window).trigger('resize');
                 },
 
-                _responseProcessor: function (e) {
+                _responseProcessor: function (data) {
                     debugger;;
-                    if (this.data == null) {
-                        
+                    var self = this;
+
+                    if (data.detail.status === 200) {
+                        if (this.result == null || this.result.length == 0) {
+                            this._openToast("Não há nada para mostrar no catálogo!");
+
+                            setTimeout(
+                                function () {
+                                    window.location.replace("/");
+                                }, 2500);
+                        } 
                     }
                 },
 
                 fixGridToBottom: function () {
-                    var grid_el = $(this.$.grid);
+                    var grid_el = $(this.$.gridCatalogo);
                     var parentHeight = $(this).offsetParent().height();
                     var windowHeight = $(window).height();
                     //var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
                     var offsetTop = $(this).offset().top;
                     var height = windowHeight - offsetTop;// - paddingTop;
-                    $(this.$.grid).height(height);
+                    $(this.$.gridCatalogo).height(height);
                 },
+
                 _rowSelected: function (item) {
                     debugger;;
                     if (item != null) {
                         //    /*FILTROS*/
                         var filters = {};
-                        this.$.grid._filters.map(function (value, index) {
+                        this.$.gridCatalogo._filters.map(function (value, index) {
                             filters[value.path] = value.value;
                         });
                         window.setGridFilter('tema-temaformacao', filters || {});
 
-                        window.location.href = "/Academia/DetalhesTema/" + item.idTema + "?codInterno=" + item.codigoInterno + "&fromCatalogo=" + false;
+                        window.location.href = "/Academia/DetalhesTema/" + item.idTema + "?codInterno=" + item.codigoInterno + "&fromCatalogo=" + true;
                     }
-                },
+                }
+               
             });
         });
     </script>

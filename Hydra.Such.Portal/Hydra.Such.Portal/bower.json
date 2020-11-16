@@ -6,7 +6,8 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "polymer": "v2.1.0"
+    "polymer": "v2.1.0",
+    "iron-image": "v3.0.2"
   },
   "resolutions": {
     "webcomponentsjs": "^v1.0.19",

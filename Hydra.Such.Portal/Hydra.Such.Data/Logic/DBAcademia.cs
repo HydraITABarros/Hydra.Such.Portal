@@ -252,13 +252,31 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<AccaoFormacao> __GetAllAccoesFormacao(string idTema, DateTime aposData)
+        {
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    return _ctx.AccaoFormacao.Where(a => a.IdTema == idTema && a.DataInicio > aposData).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<SessaoAccaoFormacao> __GetSessoesFormacao(string idAccao)
         {
             using(var _ctx = new SuchDBContext())
             {
                 try
                 {
-                    return _ctx.SessaoAccaoFormacao.Where(s => s.IdAccao == idAccao).ToList();
+                    return _ctx.SessaoAccaoFormacao.Where(s => s.IdAccao == idAccao)
+                        .OrderByDescending(a => a.DataSessao)
+                        .ThenByDescending(a => a.HoraInicioSessao).ToList();
                 }
                 catch (Exception ex)
                 {
@@ -267,7 +285,7 @@ namespace Hydra.Such.Data.Logic
                 }
             }
         }
-        public static AccaoFormacao __GetDetalhesAccaoFormacao(string accaoId)
+        public static AccaoFormacao __GetDetailsAccaoFormacao(string accaoId)
         {
             try
             {
@@ -275,11 +293,14 @@ namespace Hydra.Such.Data.Logic
                 {
                     AccaoFormacao accao = _ctx.AccaoFormacao.Where(a => a.IdAccao == accaoId).LastOrDefault();
 
-                    accao.SessoesFormacao = _ctx.SessaoAccaoFormacao.Where(s => s.IdAccao == accaoId).ToList();
+                    accao.SessoesFormacao = _ctx.SessaoAccaoFormacao.Where(s => s.IdAccao == accaoId)
+                        .OrderByDescending(a => a.DataSessao)
+                        .ThenByDescending(a => a.HoraInicioSessao)
+                        .ToList(); ;
 
                     if (!string.IsNullOrEmpty(accao.IdEntidadeFormadora))
                     {
-                        accao.EntidadeNavigation = _ctx.EntidadeFormadora.Where(e => e.IdEntidade == accao.IdEntidadeFormadora).LastOrDefault();
+                        accao.Entidade = _ctx.EntidadeFormadora.Where(e => e.IdEntidade == accao.IdEntidadeFormadora).LastOrDefault();
                     }
 
                     return accao;
@@ -297,9 +318,27 @@ namespace Hydra.Such.Data.Logic
             {
                 using(var _ctx = new SuchDBContext())
                 {
-                    return onlyActives ? 
-                        _ctx.TemaFormacao.Where(t => t.Activo == 1).ToList() :
-                        _ctx.TemaFormacao.ToList();
+                    if (onlyActives)
+                    {
+                        List<TemaFormacao> temas = _ctx.TemaFormacao.Where(t => t.Activo == 1).ToList();
+                        foreach (var item in temas)
+                        {
+                            item.AccoesTema = __GetAllAccoesFormacao(item.IdTema, DateTime.Now)
+                                .Where(a => a.Activa.Value == 1).ToList();
+
+                            if (item.AccoesTema == null || (item.AccoesTema != null && item.AccoesTema.Count == 0))
+                            {
+                                item.Activo = 0;
+                                __UpdateTemaFormacao(item);
+                            }
+                        }
+                        return temas.Where(t => t.Activo.Value == 1).ToList();
+                        
+                    }
+                    else
+                    {
+                        return _ctx.TemaFormacao.ToList();
+                    }
 
                 }
             }
@@ -318,9 +357,32 @@ namespace Hydra.Such.Data.Logic
                 {
                     TemaFormacao tema = _ctx.TemaFormacao.Where(t => t.IdTema == idTema).FirstOrDefault();
 
-                    tema.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == idTema).ToList();
+                    tema.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == idTema)
+                        .OrderByDescending(a => a.DataInicio)
+                        .ThenByDescending(a => a.CodigoInterno)
+                        .ToList();
 
+                    foreach (var item in tema.AccoesTema)
+                    {
+                        item.SessoesFormacao = _ctx.SessaoAccaoFormacao.Where(s => s.IdAccao == item.IdAccao).ToList();
+                    }
                     return tema;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static EntidadeFormadora __GetDetailsEntidade(string idEntidade)
+        {
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    return _ctx.EntidadeFormadora.Where(e => e.IdEntidade == idEntidade).FirstOrDefault();
                 }
             }
             catch (Exception ex)
@@ -500,7 +562,7 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
-        public static PedidoParticipacaoFormacao __GetDetalhesPedidoFormacao(string pedidoId)
+        public static PedidoParticipacaoFormacao __GetDetailsPedidoFormacao(string pedidoId)
         {
             try
             {
@@ -510,7 +572,7 @@ namespace Hydra.Such.Data.Logic
 
                     pedido.RegistosAlteracoes = __GetRegistosAlteracaoPedido(pedidoId);
 
-                    pedido.AccaoNavigation = __GetDetalhesAccaoFormacao(pedido.IdAccaoFormacao);
+                    pedido.AccaoNavigation = __GetDetailsAccaoFormacao(pedido.IdAccaoFormacao);
                     
                     return pedido;
                 }
@@ -722,6 +784,44 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static bool __UpdateAccaoFormacao(AccaoFormacao accao)
+        {
+            if (accao == null)
+                return false;
+
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    _ctx.AccaoFormacao.Update(accao);
+                    _ctx.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
+        public static bool __UpdateAccaoFormacao(AccaoFormacaoView accaoV)
+        {
+            try
+            {
+                foreach (var item in accaoV.ImagensAccao)
+                {
+                    DBAttachments.Update(DBAttachments.ParseToDB(item));
+                }
+                return __UpdateAccaoFormacao(accaoV.ParseToDb());
+            }
+            catch (Exception ex)
+            {
+
+                return false;
+            }
+        }
+
         public static bool __UpdateTemaFormacao(TemaFormacao tema)
         {
             if (tema == null)
@@ -754,6 +854,10 @@ namespace Hydra.Such.Data.Logic
                     DBAttachments.Update(DBAttachments.ParseToDB(t));
                 }
 
+                foreach (var item in temaV.Accoes)
+                {
+                    __UpdateAccaoFormacao(item.ParseToDb());
+                }
                 return __UpdateTemaFormacao(tema);
             }
             catch (Exception ex)
