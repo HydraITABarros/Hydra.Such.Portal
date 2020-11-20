@@ -1309,13 +1309,13 @@ namespace Hydra.Such.Portal.Controllers
             List<AcessosDimensões> CUserDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
             //Regions
             if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.Region).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
+                result.RemoveAll(x => !string.IsNullOrEmpty(x.RegionCode) && !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.Region && y.ValorDimensão == x.RegionCode));
             //FunctionalAreas
             if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.FunctionalArea).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
+                result.RemoveAll(x => !string.IsNullOrEmpty(x.FunctionalAreaCode) && !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.FunctionalArea && y.ValorDimensão == x.FunctionalAreaCode));
             //ResponsabilityCenter
             if (CUserDimensions.Where(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter).Count() > 0)
-                result.RemoveAll(x => !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
+                result.RemoveAll(x => !string.IsNullOrEmpty(x.CenterResponsibilityCode) && !CUserDimensions.Any(y => y.Dimensão == (int)Dimensions.ResponsabilityCenter && y.ValorDimensão == x.CenterResponsibilityCode));
 
             return Json(result);
         }
@@ -1328,10 +1328,11 @@ namespace Hydra.Such.Portal.Controllers
                 eReasonCode = 2,
             };
 
-            Projetos project = null;
+            NAVProjectsViewModel project = null;
             if (!string.IsNullOrEmpty(req.ProjectNo))
             {
-                project = DBProjects.GetById(req.ProjectNo);
+                project = DBNAV2017Projects.GetAll(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, req.ProjectNo).FirstOrDefault();
+                //project = DBProjects.GetById(req.ProjectNo);
             }
 
 
@@ -1407,10 +1408,10 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (project != null)
                             {
-                                newline.NºProjeto = project.NºProjeto;
-                                newline.CódigoRegião = project.CódigoRegião;
-                                newline.CódigoÁreaFuncional = project.CódigoÁreaFuncional;
-                                newline.CódigoCentroResponsabilidade = project.CódigoCentroResponsabilidade;
+                                newline.NºProjeto = project.No;
+                                newline.CódigoRegião = project.RegionCode;
+                                newline.CódigoÁreaFuncional = project.AreaCode;
+                                newline.CódigoCentroResponsabilidade = project.CenterResponsibilityCode;
                             }
                         }
 

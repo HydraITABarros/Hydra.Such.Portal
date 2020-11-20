@@ -1,0 +1,439 @@
+﻿
+@{
+    ViewData["Title"] = "Listagem de Movimentos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box-behavior.html" />
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="~/lib/paper-tabs-master/paper-tabs.html" />
+
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+
+<x-movimentslist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'></x-movimentslist>
+<dom-module id="x-movimentslist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                vaadin-combo-box {
+                    margin-top: 0px !important;
+                    width: 100% !important;
+                }
+
+                vaadin-date-picker {
+                    margin-top: 0px !important;
+                    width: 100% !important;
+                }
+
+                vaadin-text-field {
+                    margin-top: 0px !important;
+                    width: 100%;
+                }
+
+                paper-button {
+                    margin-top: 10px;
+                }
+
+                .break_clear {
+                    margin-top: 15px;
+                    margin-right: 0px !important;
+                    margin-left: 0px !important;
+                }
+
+                .break_frm {
+                    margin-top: 15px;
+                }
+
+                .label_custom {
+                    color: var(--valo-contrast-60pct) !important;
+                    font-weight: 500 !important;
+                    font-size: var(--valo-font-size-s) !important;
+                    margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                    margin-bottom: var(--valo-space-xs) !important;
+                    transition: color 0.4s !important;
+                    line-height: 1 !important;
+                    font-family: var(--valo-font-family) !important;
+                }
+
+                datetime-picker {
+                    border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                    background-color: var(--valo-contrast-5pct);
+                    color: var(--valo-contrast-60pct) !important;
+                    width: 100%;
+                }
+
+                .marginSpace {
+                    margin: 0px !important;
+                }
+
+                textarea {
+                    background-color: #f5f5f5;
+                    border: none;
+                    border-radius: 3px 4px;
+                    align-self: baseline;
+                    font-weight: 500;
+                }
+
+                    textarea:hover {
+                        background-color: #eeeeee;
+                    }
+
+                    textarea:focus {
+                        background-color: white;
+                        border: none;
+                        outline: 1px solid #eeeeee;
+                        border-radius: 3px 4px;
+                    }
+
+                datetime-picker {
+                    --datetime-selected-background: #71BCC1 !important;
+                    --datetime-background: #1f3133;
+                    --datetime-color: #eeeeee;
+                }
+
+                paper-collapse-item {
+                    --paper-item: {
+                    padding: 0 0;
+                };
+                    --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+
+                };
+                }
+
+                .panel-body {
+                    padding-top: 0px !important;
+                }
+            </style>
+        </custom-style>
+
+        <iron-ajax url="/CafetariasRefeitorios/GetMovimentsList"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json"></iron-ajax>
+
+        <iron-ajax url="/CafetariasRefeitorios/ExportToExcel_MovimentsList"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations id="gridOpcaoGeral">
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid column-reordering-allowed id="gridMovimentsList" aria-label="MovimentsListGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.movimentNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="movimentNo">Nº Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movimentNo" value="[[filter.movimentNo]]" />
+                </template>
+                <template>
+                    {{item.movimentNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.registryDate.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="registryDate">Data Registo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="registryDate" value="[[filter.registryDate]]" />
+                </template>
+                <template>
+                    {{item.registryDate}}
+                </template>
+            </vaadin-grid-column>
+
+            @*<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.resourceNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="resourceNo">No. Recurso</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="resourceNo" value="[[filter.resourceNo]]" />
+                </template>
+                <template>
+                    {{item.resourceNo}}
+                </template>
+            </vaadin-grid-column>*@
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.description.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="description" value="[[filter.description]]" />
+                </template>
+                <template>
+                    {{item.description}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.value.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="value">Valor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="value" value="[[filter.value]]" />
+                </template>
+                <template>
+                    <div class="alignRight">
+                        {{item.value}} €
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.movementTypeText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="movementTypeText">Tipo Movimento</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="movementTypeText" value="[[filter.movementTypeText]]" />
+                </template>
+                <template>
+                    {{item.movementTypeText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.typeText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="typeText">Tipo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="typeText" value="[[filter.typeText]]" />
+                </template>
+                <template>
+                    {{item.typeText}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.regionCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="regionCode" value="[[filter.regionCode]]" />
+                </template>
+                <template>
+                    {{item.regionCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.functionalAreaCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="functionalAreaCode">Código Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="functionalAreaCode" value="[[filter.functionalAreaCode]]" />
+                </template>
+                <template>
+                    {{item.functionalAreaCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.responsabilityCenterCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="responsabilityCenterCode">Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="responsabilityCenterCode" value="[[filter.responsabilityCenterCode]]" />
+                </template>
+                <template>
+                    {{item.responsabilityCenterCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.user.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="user" value="[[filter.user]]" />
+                </template>
+                <template>
+                    {{item.user}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.systemCreateDateTime.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="systemCreateDateTime">Data de Sistema</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="systemCreateDateTime" value="[[filter.systemCreateDateTime]]" />
+                </template>
+                <template>
+                    {{item.systemCreateDateTime}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-movimentslist',
+                properties: {
+                    movementType: {
+                        type: Number,
+                        notify: true,
+                        value: ""
+                    },
+
+                    _permissions: {
+                        type: Array
+                    },
+
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "CoffeShopCode": @ViewBag.CoffeeShopNo, "ProdutiveUnityNo": @ViewBag.ProdutiveUnityNo  });
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.gridMovimentsList, 'coffeeshop-movimentslist');
+                    window.grid = this.$.gridMovimentsList;
+                    window._this = this;
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.gridMovimentsList);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _goBack: function (e) {
+                    window.history.back();
+                },
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "movimentNo": { hidden: false, label: "Nº Movimento" },
+                        "registryDate": { hidden: false, label: "Data Registo" },
+                        //"resourceNo": { hidden: false, label: "No. Recurso" },
+                        "description": { hidden: false, label: "Descrição" },
+                        "value": { hidden: false, label: "Valor" },
+                        "movementTypeText": { hidden: false, label: "Tipo Movimento" },
+                        "typeText": { hidden: false, label: "Tipo" },
+                        "regionCode": { hidden: false, label: "Código Região" },
+                        "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
+                        "responsabilityCenterCode": { hidden: false, label: "Centro Responsabilidade" },
+                        "user": { hidden: false, label: "Utilizador" },
+                        "systemCreateDateTime": { hidden: false, label: "Data de Sistema" },
+                    };
+
+                    if (localStorage["coffeeshop.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["coffeeshop.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["movimentslist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+                _exportEXCEL: function () {
+                    var result = this.$.gridMovimentsList._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '/CafetariasRefeitorios/ExportToExcelDownload_MovimentsList?sFileName=' + FileName;
+                },
+
+
+            });
+        });
+    </script>
+</dom-module>

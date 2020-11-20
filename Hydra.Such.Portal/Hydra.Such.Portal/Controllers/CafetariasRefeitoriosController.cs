@@ -12,19 +12,25 @@ using Hydra.Such.Portal.Configurations;
 using Microsoft.Extensions.Options;
 using static Hydra.Such.Data.Enumerations;
 using Hydra.Such.Data;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 {
     public class CafetariasRefeitoriosController : Controller
     {
         private readonly NAVConfigurations config;
+        private readonly GeneralConfigurations _generalConfig;
 
-        public CafetariasRefeitoriosController(IOptions<NAVConfigurations> appSettings)
+        public CafetariasRefeitoriosController(IOptions<NAVConfigurations> appSettings, IOptions<GeneralConfigurations> appSettingsGeneral)
         {
             config = appSettings.Value;
+            _generalConfig = appSettingsGeneral.Value;
         }
 
-      
+
         public IActionResult Index()
         {
             UserAccessesViewModel userPermissions = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Cafetarias_Refeitórios);
@@ -567,6 +573,127 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                 return Json(false);
             }
+        }
+        #endregion
+
+        #region MovimentsList
+        public IActionResult MovimentsList(int NºUnidadeProdutiva, int CódigoCafetaria)
+        {
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.Diário_Cafetarias_Refeitórios);
+            if (UPerm != null && UPerm.Read.Value)
+            {
+                ViewBag.UPermissions = UPerm;
+                ViewBag.CoffeeShopNo = CódigoCafetaria;
+                ViewBag.ProdutiveUnityNo = NºUnidadeProdutiva;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+        }
+
+        public JsonResult GetMovimentsList([FromBody] CoffeeShopDiaryViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    List<MovimentosCafetariaRefeitório> MovimentsList = DBCoffeeShopMovements.GetByUnitAndCoffeeShop((int)data.ProdutiveUnityNo, (int)data.CoffeShopCode);
+
+                    List<CoffeeShopMovimentsViewModel> result = new List<CoffeeShopMovimentsViewModel>();
+                    MovimentsList.ForEach(x => result.Add(DBCoffeeShopMovements.ParseToViewModel(x)));
+                    foreach (var mov in result)
+                    {
+                        mov.MovementTypeText = mov.MovementType.HasValue ? EnumerablesFixed.TipoMovimento.Where(y => y.Id == mov.MovementType).FirstOrDefault() != null ? EnumerablesFixed.TipoMovimento.Where(y => y.Id == mov.MovementType).FirstOrDefault().Value : "" : "";
+                        mov.TypeText = mov.Type.HasValue ? mov.Type == 1 ? "Cafeteiria" : "Refeitório" : "";
+                    }
+
+                    return Json(result);
+                }
+
+                return Json(false);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_MovimentsList([FromBody] List<CoffeeShopMovimentsViewModel> Lista)
+        {
+            JObject dp = (JObject)Lista[0].ColunasEXCEL;
+
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "UnidadesProdutivas\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Cafetaria-Refeitório Movimentos");
+                IRow row = excelSheet.CreateRow(0);
+                int Col = 0;
+
+                if (dp["movimentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Movimento"); Col = Col + 1; }
+                if (dp["registryDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Registo"); Col = Col + 1; }
+                //if (dp["resourceNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("No. Recurso"); Col = Col + 1; }
+                if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
+                if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor"); Col = Col + 1; }
+                if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Movimento"); Col = Col + 1; }
+                if (dp["typeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo"); Col = Col + 1; }
+                if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
+                if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
+                if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Centro Responsabilidade"); Col = Col + 1; }
+                if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador"); Col = Col + 1; }
+                if (dp["systemCreateDateTime"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data de Sistema"); Col = Col + 1; }
+
+                if (dp != null)
+                {
+                    int count = 1;
+                    foreach (CoffeeShopMovimentsViewModel item in Lista)
+                    {
+                        Col = 0;
+                        row = excelSheet.CreateRow(count);
+
+                        if (dp["movimentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovimentNo); Col = Col + 1; }
+                        if (dp["registryDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegistryDate); Col = Col + 1; }
+                        //if (dp["resourceNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResourceNo); Col = Col + 1; }
+                        if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1; }
+                        if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Value.ToString()); Col = Col + 1; }
+                        if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovementTypeText); Col = Col + 1; }
+                        if (dp["typeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TypeText); Col = Col + 1; }
+                        if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
+                        if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
+                        if (dp["responsabilityCenterCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResponsabilityCenterCode); Col = Col + 1; }
+                        if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.User); Col = Col + 1; }
+                        if (dp["systemCreateDateTime"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.SystemCreateDateTime); Col = Col + 1; }
+
+                        count++;
+                    }
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_MovimentsList(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "UnidadesProdutivas\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
         #endregion
     }

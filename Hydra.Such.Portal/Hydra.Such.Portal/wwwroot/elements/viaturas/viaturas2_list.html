@@ -599,13 +599,15 @@
                 _showInativas: function (item) {
                     if (item != null) {
                         if (this._inativas) {
+                            this._showInativasMessage = "Exibir Histórico";
+
                             this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
                             this.$.grid_databound_ajax.generateRequest();
-                            this._showInativasdMessage = "Exibir Histórico";
                         } else {
+                            this._showInativasMessage = "Exibir Gestão";
+
                             this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": false });
                             this.$.grid_databound_ajax.generateRequest();
-                            this._showInativasMessage = "Exibir Gestão";
                         }
 
                         this._inativas = !this._inativas;
