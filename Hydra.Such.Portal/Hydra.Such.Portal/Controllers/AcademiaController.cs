@@ -17,6 +17,9 @@ namespace Hydra.Such.Portal.Controllers
 {
     public class AcademiaController : Controller
     {
+        #region properties and class methods
+
+        
         private readonly GeneralConfigurations _config;
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -66,13 +69,139 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
+        private string TypeOfChangeToText(int type)
+        {
+            var items = EnumerablesFixed.TipoAlteracaoPedidoFormacao;
+            foreach (var i in items)
+            {
+                if (i.Id == type)
+                {
+                    return i.Value;
+                }
+            };
+
+            return string.Empty;
+        }
+        #endregion
+
+        [HttpPost]
+        public JsonResult CriarPedido()
+        {
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            PedidoParticipacaoFormacao pedido = DBAcademia.__CriarPedidoFormacao(userConfig);
+
+            if (pedido != null)
+            {
+                bool registoCriado = DBAcademia.__CriarRegistoAlteracaoPedidoFormacao(
+                    pedido, 
+                    (int)Enumerations.TipoAlteracaoPedidoFormacao.Criacao, 
+                    TypeOfChangeToText((int)Enumerations.TipoAlteracaoPedidoFormacao.Criacao), 
+                    User.Identity.Name);
+
+                
+
+                if (!registoCriado)
+                {
+                    DBAcademia.__CriarRegistoAlteracaoPedidoFormacao(
+                        pedido, 
+                        (int)Enumerations.TipoAlteracaoPedidoFormacao.Criacao,
+                        TypeOfChangeToText((int)Enumerations.TipoAlteracaoPedidoFormacao.Criacao), 
+                        User.Identity.Name);
+                }
+
+                return Json(pedido.IdPedido);
+            }
+            return Json("0");
+        }
+
+        [HttpPost]
+        public JsonResult CriarPedidoApartirDeAccao([FromBody] AccaoFormacaoView accao)
+        {
+            if (accao != null)
+            {
+                ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+                Formando formando = new Formando(userConfig.EmployeeNo);
+                if (formando == null)
+                {
+                    ErrorHandler blankTrainee = new ErrorHandler()
+                    {
+                        eReasonCode = -1,
+                        eMessage = "Formando inexistente"
+                    };
+
+                    return Json(blankTrainee);
+                }
+
+                string idPedido = string.Empty;
+
+                if (formando.AlreadyRegisteredForCourse(accao.IdAccao, ref idPedido))
+                {
+                    ErrorHandler alreadyRegistered = new ErrorHandler()
+                    {
+                        eReasonCode = -2,
+                        eMessage = idPedido
+                    };
+
+                    return Json(alreadyRegistered);
+                }
+
+                PedidoParticipacaoFormacao pedido = DBAcademia.__CriarPedidoFormacao(accao.ParseToDb(), formando, userConfig);
+                if (pedido != null)
+                {
+                    bool registoCriado = DBAcademia.__CriarRegistoAlteracaoPedidoFormacao(
+                        pedido, (int)Enumerations.TipoAlteracaoPedidoFormacao.Criacao, 
+                        Enumerations.TipoAlteracaoPedidoFormacao.Criacao.ToString(), 
+                        User.Identity.Name);
+
+                    if (!registoCriado)
+                    {
+                        DBAcademia.__CriarRegistoAlteracaoPedidoFormacao(
+                            pedido, 
+                            (int)Enumerations.TipoAlteracaoPedidoFormacao.Criacao, 
+                            Enumerations.TipoAlteracaoPedidoFormacao.Criacao.ToString(), 
+                            User.Identity.Name);
+                    }
+
+                    ErrorHandler sucess = new ErrorHandler()
+                    {
+                        eReasonCode = 0,
+                        eMessage = pedido.IdPedido
+                    };
+
+                    return Json(sucess);
+                }
+                
+            }
+
+            ErrorHandler blankCourse = new ErrorHandler()
+            {
+                eReasonCode = -9,
+                eMessage = "Acção inexistente"
+            };
+
+            return Json(blankCourse);
+        }
+
+        [HttpPost]
+        public JsonResult GetDetalhePedido([FromBody] JObject reqParam)
+        {
+            string idPedido = reqParam["idPedido"] == null ? string.Empty : (string)reqParam["idPedido"];
+
+            if (!string.IsNullOrEmpty(idPedido))
+            {
+                PedidoParticipacaoFormacaoView pedido = new PedidoParticipacaoFormacaoView(DBAcademia.__GetDetailsPedidoFormacao(idPedido));
+
+                return Json(pedido);
+            }
+            return Json(null);
+        }
 
         [HttpPost]
         public JsonResult GetMeusPedidos([FromBody] JObject requestParams)
         {
             //ClickSource = 0;
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
-            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(User.Identity.Name, userConfig.TipoUtilizadorFormacao.Value, TrainingRequestApprovalType);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
             List<Formando> formandos = DBAcademia.__GetAllFormandos(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia);
 
             Formando formando = DBAcademia.__GetDetailsFormando("27960");
@@ -111,7 +240,7 @@ namespace Hydra.Such.Portal.Controllers
 
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
-            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(User.Identity.Name, userConfig.TipoUtilizadorFormacao.Value, TrainingRequestApprovalType);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
             List<PedidoParticipacaoFormacaoView> meusPedidosView = new List<PedidoParticipacaoFormacaoView>();
 
             switch (RequestOrigin)
@@ -316,12 +445,13 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpGet]
-        [Route("Academia/DownloadImage/{docId}/{id}")]
-        public FileStreamResult DownloadImage(string docId, string id)
+        [Route("Academia/DownloadImage/{imgPath}/{docId}/{id}")]
+        public FileStreamResult DownloadImage(string imgPath, string docId, string id)
         {
             try
             {
-                string _path = UploadPath + SubjectImagePath + docId + "\\" + id;
+                imgPath = "\\" + imgPath + "\\";
+                string _path = UploadPath + imgPath + docId + "\\" + id;
                 FileStream file = new FileStream(_path, FileMode.Open);
 
                 if (IsImage(Path.GetExtension(file.Name)))
@@ -344,13 +474,29 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]       
-        [Route("Academia/SubjectImageUpload")]
-        [Route("Academia/SubjectImageUpload/{id}")]
-        public JsonResult SubjectImageUpload(string id)
+        [Route("Academia/ImageUpload")]
+        [Route("Academia/ImageUpload/{imgPath}/{id}")]
+        public JsonResult ImageUpload(string imgPath, string id)
         {
             try
             {
-                string _uploadPath = UploadPath + SubjectImagePath;
+                string imgTipo = imgPath.ToUpper();
+                TipoOrigemAnexos tipo;
+                switch (imgTipo)
+                {
+                    case "TEMAFORMACAO": tipo = TipoOrigemAnexos.TemaFormacao;
+                        break;
+                    case "ACCAOFORMACAO": tipo = TipoOrigemAnexos.AccaoFormacao;
+                        break;
+                    case "PEDIDOFORMACAO": tipo = TipoOrigemAnexos.PedidoFormacao;
+                        break;
+                    default: tipo = 0;
+                        break;
+                }
+
+                imgPath = "\\" + imgPath + "\\";
+                //string _uploadPath = UploadPath + SubjectImagePath;
+                string _uploadPath = UploadPath + imgPath;
                 var files = Request.Form.Files;
 
                 foreach(var f in files)
@@ -378,7 +524,7 @@ namespace Hydra.Such.Portal.Controllers
                                     NºOrigem = id,
                                     UrlAnexo = full_filename,
                                     Visivel = false,
-                                    TipoOrigem = TipoOrigemAnexos.TemaFormacao,
+                                    TipoOrigem = tipo,
                                     DataHoraCriação = DateTime.Now,
                                     UtilizadorCriação = User.Identity.Name
                                 };
@@ -406,68 +552,6 @@ namespace Hydra.Such.Portal.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("Academia/CourseImageUpload")]
-        [Route("Academia/CourseImageUpload/{id}")]
-        public JsonResult CourseImageUpload(string id)
-        {
-            try
-            {
-                string _uploadPath = UploadPath + SubjectImagePath;
-                var files = Request.Form.Files;
-
-                foreach (var f in files)
-                {
-                    if (IsImage(Path.GetExtension(f.FileName)))
-                    {
-                        string full_filename = Path.GetFileName(f.FileName);
-                        _uploadPath += id;
-
-                        if (!System.IO.Directory.Exists(_uploadPath))
-                        {
-                            System.IO.Directory.CreateDirectory(_uploadPath);
-                        }
-
-                        var path = Path.Combine(_uploadPath, full_filename);
-                        if (!System.IO.File.Exists(path))
-                        {
-                            using (FileStream dd = new FileStream(path, FileMode.CreateNew))
-                            {
-                                f.CopyTo(dd);
-                                dd.Dispose();
-
-                                Anexos newFile = new Anexos()
-                                {
-                                    NºOrigem = id,
-                                    UrlAnexo = full_filename,
-                                    Visivel = false,
-                                    TipoOrigem = TipoOrigemAnexos.AccaoFormacao,
-                                    DataHoraCriação = DateTime.Now,
-                                    UtilizadorCriação = User.Identity.Name
-                                };
-
-                                DBAttachments.Create(newFile);
-                                if (newFile.NºLinha == 0)
-                                {
-                                    System.IO.File.Delete(path);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            return Json("-1");
-                        }
-                    }
-                }
-
-                return Json("0");
-
-            }
-            catch (Exception e)
-            {
-                return Json("-10");
-            }
-        }
 
         [HttpPost]
         public JsonResult LoadAttachments([FromBody] JObject requestParams)
@@ -587,7 +671,7 @@ namespace Hydra.Such.Portal.Controllers
         {
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
-            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(User.Identity.Name, userConfig.TipoUtilizadorFormacao.Value, TrainingRequestApprovalType);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
 
             if (UPerm != null && UPerm.Read.Value && cfgUser.IsChief())
             {
@@ -606,7 +690,7 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
             ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
 
-            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(User.Identity.Name, userConfig.TipoUtilizadorFormacao.Value, TrainingRequestApprovalType);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
 
             bool isDirector = cfgUser.IsDirector();
 
@@ -734,6 +818,26 @@ namespace Hydra.Such.Portal.Controllers
             {
                 return RedirectToAction("AccessDenied", "Error");
             }
+        }
+
+        public ActionResult DetalhePedido(string id)
+        {
+            ConfigUtilizadores userConfig = DBUserConfigurations.GetById(User.Identity.Name);
+            ConfiguracaoAprovacaoUtilizador cfgUser = new ConfiguracaoAprovacaoUtilizador(userConfig, TrainingRequestApprovalType);
+
+            UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.AcademiaFormacao);
+            if (UPerm != null && UPerm.Read.Value && cfgUser != null)
+            {
+                ViewBag.idPedido = id;
+                ViewBag.isChief = cfgUser.IsChief();
+                ViewBag.isDirector = cfgUser.IsDirector();
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("AccessDenied", "Error");
+            }
+            
         }
         #endregion
 

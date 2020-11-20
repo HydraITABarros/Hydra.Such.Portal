@@ -122,61 +122,61 @@
         <iron-form id="formContract">
             <div class="images">
                 <div class="img-fluid">
-                    <iron-image src="/Academia/DownloadImage/{{data.idTema}}/{{data.urlImagem}}"
+                    <iron-image src="/Academia/DownloadImage/TemaFormacao/{{data.idTema}}/{{data.urlImagem}}"
                                 sizing="contain"
                                 id="sizing-contain">
                     </iron-image>
                 </div>
             </div>
-                
-                <paper-collapse-group>
-                    <paper-collapse-item class="panel-heading" header="Acções de Formação Activas" opened>
-                        <div class="row break_clear">
-                            <vaadin-grid id="gridAccoesTema" aria-label="gridAccoesTema" items="[[data.accoes]]" class="grid" active-item="{{activeCourse}}" multi-sort="true">
-                                <vaadin-grid-column width="10%" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
-                                    </template>
-                                    <template>
-                                        {{item.codigoInterno}}
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="60%" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
-                                    </template>
-                                    <template>
-                                        {{item.designacaoAccao}}
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="10%" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
-                                    </template>
-                                    <template>
-                                        {{item.dataInicio}}
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="10%" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
-                                    </template>
-                                    <template>
-                                        {{item.dataFim}}
-                                    </template>
-                                </vaadin-grid-column>
-                                <vaadin-grid-column width="10%" resizable>
-                                    <template class="header">
-                                        <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
-                                    </template>
-                                    <template>
-                                        {{ item.numeroTotalHoras}}
-                                    </template>
-                                </vaadin-grid-column>
-                            </vaadin-grid>
-                        </div>
-                    </paper-collapse-item>
-                </paper-collapse-group>
+
+            <paper-collapse-group>
+                <paper-collapse-item class="panel-heading" header="Acções de Formação Activas" opened>
+                    <div class="row break_clear">
+                        <vaadin-grid id="gridAccoesTema" aria-label="gridAccoesTema" items="[[data.accoes]]" class="grid" active-item="{{activeCourse}}" multi-sort="true">
+                            <vaadin-grid-column width="10%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{item.codigoInterno}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="60%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{item.designacaoAccao}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="10%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dataInicio">Data Início</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{item.dataInicio}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="10%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{item.dataFim}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="10%" resizable>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{ item.numeroTotalHoras}}
+                                </template>
+                            </vaadin-grid-column>
+                        </vaadin-grid>
+                    </div>
+                </paper-collapse-item>
+            </paper-collapse-group>
 
         </iron-form>
         <!--</div>-->
@@ -192,7 +192,14 @@
                     _idtema: {
                         type: String
 
-                    }, 
+                    },
+                    activeCourse: {
+                        observer: '_rowSelected'
+                    },
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
                 },
 
                 ready: function () {
@@ -208,6 +215,19 @@
                     var self = this;
                     if (this.data != null) {
 
+                    }
+                },
+                _rowSelected: function (item) {
+                    debugger;;
+                    if (item != null) {
+                        //    /*FILTROS*/
+                        var filters = {};
+                        this.$.gridAccoesTema._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('tema-temaformacao', filters || {});
+
+                        window.location.href = "/Academia/DetalhesAccao/" + item.idAccao + "?codInterno=" + item.codigoInterno + "&fromTema=" + false;
                     }
                 },
 

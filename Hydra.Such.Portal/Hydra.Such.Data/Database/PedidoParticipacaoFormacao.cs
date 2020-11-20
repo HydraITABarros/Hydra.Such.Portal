@@ -28,6 +28,7 @@ namespace Hydra.Such.Data.Database
         public string IdAccaoFormacao { get; set; }
         public string DesignacaoAccao { get; set; }
         public string LocalRealizacao { get; set; }
+        public string Horario { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataInicio { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
@@ -42,7 +43,9 @@ namespace Hydra.Such.Data.Database
         public string DescricaoConhecimentos { get; set; }
         public string FundamentacaoChefia { get; set; }
         public int? Planeada { get; set; }
+        public string CursoPlanoFormacao { get; set; }
         public int? TemDotacaoOrcamental { get; set; }
+        public string ParecerDotacaoAcademia { get; set; }
         public string ParecerAcademia { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
@@ -50,7 +53,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraUltimaModificacao { get; set; }
 
         //[Newtonsoft.Json.JsonIgnore]
-        public AccaoFormacao AccaoNavigation { get; set; }
+        public AccaoFormacao Accao { get; set; }
 
         public ICollection<RegistoAlteracoesPedidoFormacao> RegistosAlteracoes { get; set; }
     }

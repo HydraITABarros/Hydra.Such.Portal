@@ -303,18 +303,22 @@ namespace Hydra.Such.Data
             RejeicaoDireccao = 4,
             [Description("Aprovação Direcção e Submissão Academia")]
             AprovacaoDireccao = 5,
+            [Description("Validação dotação orçamental")]
+            ValidacaoDotacao = 6,
+            [Description("Parecer Academia")]
+            ParecerAcademia = 7,
             [Description("Rejeição Academia e Devolução Direcção")]
-            RejeicaoAcademia = 6,
+            RejeicaoAcademia = 8,
             [Description("Reconfirmação Direcção e Re-submissão Academia")]
-            ReconfirmacaoDireccao = 7,
+            ReconfirmacaoDireccao = 9,
             [Description("Submissão ao CA")]
-            SubmissaoConsAdmin = 8,
+            SubmissaoConsAdmin = 10,
             [Description("Rejeição CA")]
-            RejeicaoConsAdmin = 9,
+            RejeicaoConsAdmin = 11,
             [Description("Autorização CA")]
-            AutorizacaoConsAdmin = 10,
+            AutorizacaoConsAdmin = 12,
             [Description("Criação de Inscrição e Finalização do Pedido")]
-            CriacaoInscricao = 11
+            CriacaoInscricao = 13
         }
 
         public enum AcademiaOrigemAcessoFuncionalidade
@@ -324,6 +328,14 @@ namespace Hydra.Such.Data
             MenuChefia = 2,
             MenuDirector = 3,
             MenuCA = 4
+        }
+
+        public enum IntToBoolean
+        {
+            [Description("Não")]
+            Falso = 0,
+            [Description("Sim")]
+            Verdadeiro = 1
         }
         #endregion
 

@@ -80,10 +80,19 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Academia/CriarPedido"
+                   last-response="{{ created }}"
+                   method="post"
+                   handle-as="json"
+                   id="create_trainingrequest_ajax"
+                   on-response="_createResponseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
             <paper-button class="tablinks" id="showActive" on-tap="_showHistory"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
-            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Novo</paper-button>
+            <paper-button class="tablinks" id="btnCreate" on-tap="_createRequest"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Novo</paper-button>
 
         </div>
 
@@ -210,14 +219,9 @@
                     this.$.ToastMessage.open();
                 },
 
-                _showMessage: function (message) {
-                    this.$.ToastMessageSuccess.text = message;
-                    this.$.ToastMessageSuccess.open();
-                },
-
-                _showErrorMessage: function (message) {
-                    this.$.ToastMessageError.text = message;
-                    this.$.ToastMessageError.open();
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
                 },
 
                 ready: function () {
@@ -274,28 +278,33 @@
                     var height = windowHeight - offsetTop;// - paddingTop;
                     $(this.$.grid).height(height);
                 },
+
                 _rowSelected: function (item) {
+                    debugger;;
                     if (item != null) {
-                        //if (item.historico) {
                         //    /*FILTROS*/
-                        //    var filters = {};
-                        //    this.$.grid._filters.map(function (value, index) {
-                        //        filters[value.path] = value.value;
-                        //    });
-                        //    window.setGridFilter('guiastransporte-guiastransportenav', filters || {});
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('pedido-pedidoformacao', filters || {});
 
-                        //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + item.historico;
-                        //} else {
-                        //    /*FILTROS*/
-                        //    var filters = {};
-                        //    this.$.grid._filters.map(function (value, index) {
-                        //        filters[value.path] = value.value;
-                        //    });
-                        //    window.setGridFilter('guiastransporte-guiastransportenav', filters || {});
+                        window.location.href = "/Academia/DetalhePedido/" + item.idPedido;
+                    }
+                },
 
-                        //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + false;
-                        //}
+                _createRequest: function (e) {
+                    debugger;;
+                    //this.$.create_trainingrequest_ajax.body = JSON.stringify();
+                    this.$.create_trainingrequest_ajax.generateRequest();
+                },
 
+                _createResponseProcessor: function () {
+                    debugger;;
+                    if (this.created != null && this.created != "0") {
+                        window.location.href = "/Academia/DetalhePedido/" + this.created;
+                    } else {
+                        this._openToastError("Não foi possível criar o pedido!")
                     }
                 },
 
@@ -335,23 +344,11 @@
                     }
                 },
 
-                created: function () {
-                    this.filter = window.getGridFilter('pedido-meuspedidos');
-                },
+                //created: function () {
+                //    debugger;
+                //    this.filter = window.getGridFilter('pedido-meuspedidos');
+                //},
 
-                _create: function (item) {
-                    //this.$.create_guia_ajax.generateRequest();
-                },
-
-                _createResponse: function (e) {
-                    //if (this.guiaTransporteId == "" || this.guiaTransporteId == null) {
-                    //    this._showErrorMessage("Não foi possível criar uma nova guia de transporte!")
-                    //} else {
-
-                    //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.guiaTransporteId + "?isHistoric=" + false;
-                    //}
-
-                },
                 _responseEstados: function () {
                     debugger;;
                     if (this.EstadoPedidos == null) {

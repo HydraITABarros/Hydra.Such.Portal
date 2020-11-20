@@ -13,12 +13,67 @@ namespace Hydra.Such.Data.Logic
     public class Formando : NAVEmployeeViewModel
     {
         public string RegiaoNav2017 { get; set; }
+        public string DescRegiaoNav2017 { get; set; }
         public string AreaNav2017 { get; set; } 
+        public string DescAreaNav2017 { get; set; }
         public string CrespNav2017 { get; set; }
+        public string DescCrespNav2017 { get; set; }
         public string Projecto { get; set; }
         public string Funcao { get; set; }
         public string CodEstabelecimento { get; set; }
         public string DescricaoEstabelecimento { get; set; }
+        public ICollection<PedidoParticipacaoFormacao> PedidosFormacao { get; set; }
+
+        public Formando()
+        {
+
+        }
+
+        public Formando(string employeeNo)
+        {
+            Formando f = DBAcademia.__GetDetailsFormando(employeeNo);
+            No = f.No;
+            Name = f.Name;
+            Regiao = f.Regiao;
+            Area = f.Area;
+            Cresp = f.Cresp;
+            RegiaoNav2017 = f.RegiaoNav2017;
+            DescRegiaoNav2017 = f.DescRegiaoNav2017;
+            AreaNav2017 = f.AreaNav2017;
+            DescAreaNav2017 = f.DescAreaNav2017;
+            CrespNav2017 = f.CrespNav2017;
+            DescCrespNav2017 = f.DescCrespNav2017;
+            Projecto = f.Projecto;
+            Funcao = f.Funcao;
+            CodEstabelecimento = f.CodEstabelecimento;
+            DescricaoEstabelecimento = f.DescricaoEstabelecimento;
+
+            PedidosFormacao = DBAcademia.__GetAllPedidosFormacao(f.No);
+        }
+
+        public bool AlreadyRegisteredForCourse(string courseId, ref string requestId)
+        {
+            requestId = string.Empty;
+
+            if (!string.IsNullOrEmpty(courseId))
+            {
+                if (PedidosFormacao != null && PedidosFormacao.Count > 0)
+                {
+                    try
+                    {
+                        requestId = PedidosFormacao.Where(p => p.IdAccaoFormacao == courseId && p.Estado <= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).FirstOrDefault().IdPedido;
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+
+                        return false;
+                    }                    
+                }
+            }
+
+            return false;
+        }
     }
 
     public class ConfiguracaoAprovacaoAcademia : ConfiguraçãoAprovações
@@ -53,18 +108,21 @@ namespace Hydra.Such.Data.Logic
     public class ConfiguracaoAprovacaoUtilizador
     {
         public string IdUtilizador { get; set; }
+        public string EmployeeNo { get; set; }
         public Enumerations.TipoUtilizadorFluxoPedidoFormacao TipoUtilizadorGlobal { get; set; }
         public List<string> AreasChefia { get; set; }
         public List<string> CRespChefia { get; set; }
         public List<string> AreasDirige { get; set; }
         public List<ConfiguracaoAprovacaoAcademia> ConfiguracaoAprovAcademia { get; set; }
 
-        public ConfiguracaoAprovacaoUtilizador(string userName, int globalUserType, int type)
+        public ConfiguracaoAprovacaoUtilizador(ConfigUtilizadores userConfig, int type)
         {
-            IdUtilizador = userName;
+            IdUtilizador = userConfig.IdUtilizador;
+            EmployeeNo = userConfig.EmployeeNo;
+
             try
             {
-                TipoUtilizadorGlobal = (Enumerations.TipoUtilizadorFluxoPedidoFormacao)globalUserType;
+                TipoUtilizadorGlobal = (Enumerations.TipoUtilizadorFluxoPedidoFormacao)userConfig.TipoUtilizadorFormacao.Value;
             }
             catch (Exception)
             {
@@ -79,7 +137,7 @@ namespace Hydra.Such.Data.Logic
             CRespChefia = new List<string>();
             AreasDirige = new List<string>();
 
-            List<UtilizadoresGruposAprovação> grupos = DBApprovalUserGroup.GetByUser(userName);
+            List<UtilizadoresGruposAprovação> grupos = DBApprovalUserGroup.GetByUser(userConfig.IdUtilizador);
             List<ConfiguraçãoAprovações> configAprovadores = DBApprovalConfigurations.GetAllByType(type);
 
            if(configAprovadores != null && configAprovadores.Count > 0)
@@ -90,7 +148,7 @@ namespace Hydra.Such.Data.Logic
                     {
                         if(c.NívelAprovação == 1 || c.NívelAprovação == 2)
                         {
-                            ConfiguracaoAprovAcademia.Add(new ConfiguracaoAprovacaoAcademia(userName, c));
+                            ConfiguracaoAprovAcademia.Add(new ConfiguracaoAprovacaoAcademia(userConfig.IdUtilizador, c));
                             if (c.NívelAprovação.Value == 1)
                             {
                                 if (!string.IsNullOrWhiteSpace(c.CódigoÁreaFuncional))
@@ -130,6 +188,7 @@ namespace Hydra.Such.Data.Logic
                     c => c.TipoUtilizadorConfiguracao == Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorDireccao).FirstOrDefault() == null ||
                     AreasDirige == null ? false : true;
         }
+
     }   
     
 
@@ -144,44 +203,128 @@ namespace Hydra.Such.Data.Logic
     public static class DBAcademia
     {
         #region Creates
-        public static bool __CriarPedidoFormacao(PedidoParticipacaoFormacao pedidoFormacao, string userName)
+        public static PedidoParticipacaoFormacao __CriarPedidoFormacao(AccaoFormacao accao, Formando formando, ConfigUtilizadores user)
+        {
+            if (accao == null)
+            {
+                return null;
+            }
+
+            Configuração config = DBConfigurations.GetById(1);
+            int numeracaoPedidos = config.NumeracaoPedidoFormacao == null ? 0 : config.NumeracaoPedidoFormacao.Value;
+
+            if (numeracaoPedidos > 0)
+            {
+                try
+                {
+                    //Formando formando = __GetDetailsFormando(user.EmployeeNo);
+                    //Formando formando = new Formando(user.EmployeeNo);
+
+                    PedidoParticipacaoFormacao pedido = new PedidoParticipacaoFormacao()
+                    {
+                        IdPedido = DBNumerationConfigurations.GetNextNumeration(numeracaoPedidos, true, false),
+                        Estado = (int)Enumerations.EstadoPedidoFormacao.PedidoCriado,
+                        IdEmpregado = formando.No,
+                        NomeEmpregado = formando.Name,
+                        FuncaoEmpregado = formando.Funcao,
+                        ProjectoEmpregado = formando.Projecto,
+                        IdAreaFuncional = formando.AreaNav2017,
+                        AreaFuncionalEmpregado = formando.DescAreaNav2017,
+                        IdCentroResponsabilidade = formando.CrespNav2017,
+                        CentroResponsabilidadeEmpregado = formando.DescCrespNav2017,
+                        IdEstabelecimento = formando.CodEstabelecimento,
+                        DescricaoEstabelecimento = formando.DescricaoEstabelecimento,
+                        IdAccaoFormacao = accao.IdAccao,
+                        DesignacaoAccao = accao.DesignacaoAccao,
+                        DataInicio = accao.DataInicio,
+                        DataFim = accao.DataFim,
+                        NumeroTotalHoras = accao.NumeroTotalHoras,
+                        UtilizadorCriacao = user.IdUtilizador,
+                        DataHoraCriacao = DateTime.Now                        
+                    };
+
+                    if (accao.Entidade != null)
+                    {
+                        pedido.IdEntidadeFormadora = accao.Entidade.IdEntidade;
+                        pedido.DescricaoEntidadeFormadora = accao.Entidade.DescricaoEntidade;
+                    }
+
+                    using (var _ctx = new SuchDBContext())
+                    {
+                        _ctx.PedidoParticipacaoFormacao.Add(pedido);
+                        _ctx.SaveChanges();
+
+                        return pedido;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    return null;
+                }                
+            }
+
+            return null;
+        }
+        public static PedidoParticipacaoFormacao __CriarPedidoFormacao(ConfigUtilizadores user)
         {
             try
             {
-                using(var _ctx = new SuchDBContext())
+                Configuração config = DBConfigurations.GetById(1);
+                int numeracaoPedidos = config.NumeracaoPedidoFormacao == null ? 0 : config.NumeracaoPedidoFormacao.Value;
+
+                if (numeracaoPedidos > 0)
                 {
-                    _ctx.PedidoParticipacaoFormacao.Add(pedidoFormacao);
-                    _ctx.SaveChanges();
+                    Formando formando = __GetDetailsFormando(user.EmployeeNo);
+
+                    PedidoParticipacaoFormacao pedido = new PedidoParticipacaoFormacao()
+                    {
+                        IdPedido = DBNumerationConfigurations.GetNextNumeration(numeracaoPedidos, true, false),
+                        Estado = (int)Enumerations.EstadoPedidoFormacao.PedidoCriado,
+                        IdEmpregado = formando.No,
+                        NomeEmpregado = formando.Name,
+                        FuncaoEmpregado = formando.Funcao,
+                        ProjectoEmpregado = formando.Projecto,
+                        IdAreaFuncional = formando.AreaNav2017,
+                        AreaFuncionalEmpregado = formando.DescAreaNav2017,
+                        IdCentroResponsabilidade = formando.CrespNav2017,
+                        CentroResponsabilidadeEmpregado = formando.DescCrespNav2017,
+                        IdEstabelecimento = formando.CodEstabelecimento,
+                        DescricaoEstabelecimento = formando.DescricaoEstabelecimento,
+                        UtilizadorCriacao = user.IdUtilizador,
+                        DataHoraCriacao = DateTime.Now
+                    };
+
+                    using (var _ctx = new SuchDBContext())
+                    {
+                        _ctx.PedidoParticipacaoFormacao.Add(pedido);
+                        _ctx.SaveChanges();
+
+                        return pedido;
+                    }
                 }
-
-                if(__CriarRegistoAlteracaoPedidoFormacao(pedidoFormacao, 0, "Criação", userName))
-                {
-
-                }
-
-                return true;
             }
             catch (Exception)
             {
 
-                return false;
+                return null;
             }
-            
+            return null;
         }
 
-        public static bool __CriarRegistoAlteracaoPedidoFormacao(PedidoParticipacaoFormacao pedidoFormacao, int tipoAlteracao, string descricao, string usernaName)
+        public static bool __CriarRegistoAlteracaoPedidoFormacao(PedidoParticipacaoFormacao pedidoFormacao, int tipoAlteracao, string descricao, string userName)
         {
             int lineNo = 10;
 
             if (pedidoFormacao == null)
                 return false;
 
-            if (pedidoFormacao.RegistosAlteracoes == null)
+            if (pedidoFormacao.RegistosAlteracoes == null && pedidoFormacao.RegistosAlteracoes.Count() == 0)
             {
                 pedidoFormacao.RegistosAlteracoes = __GetRegistosAlteracaoPedido(pedidoFormacao.IdPedido);
             }
 
-            if (pedidoFormacao.RegistosAlteracoes != null)
+            if (pedidoFormacao.RegistosAlteracoes != null && pedidoFormacao.RegistosAlteracoes.Count() > 0)
             {
                 RegistoAlteracoesPedidoFormacao log = pedidoFormacao.RegistosAlteracoes.OrderBy(r => r.IdPedidoFormacao).ThenBy(r => r.IdRegisto).LastOrDefault();
                 lineNo += log.IdRegisto.Value;
@@ -193,7 +336,7 @@ namespace Hydra.Such.Data.Logic
                 IdRegisto = lineNo,
                 TipoAlteracao = tipoAlteracao,
                 DescricaoAlteracao = descricao,
-                UtilizadorAlteracao = usernaName,
+                UtilizadorAlteracao = userName,
                 DataHoraAlteracao = DateTime.Now
             };
 
@@ -206,6 +349,7 @@ namespace Hydra.Such.Data.Logic
                     _ctx.SaveChanges();
                 }
 
+                
                 pedidoFormacao.RegistosAlteracoes.Add(changeLog);
                
 
@@ -398,34 +542,67 @@ namespace Hydra.Such.Data.Logic
         /// <param name="userName">O nome do utilizdor</param>
         /// <param name="onlyActives">Apenas os pedidos que não estejam no estado Finalizado, ou em Curso</param>
         /// <returns></returns>
-        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(string userName, bool onlyActives)
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(string userName, bool? onlyActives)
         {
             if (string.IsNullOrEmpty(userName))
                 return null;
 
             try
             {
-                if (onlyActives)
+                if (onlyActives.HasValue)
                 {
-                    // são considerados activos todos os pedidos que não estejam finalizados ou cancelados
-                    using(var _ctx = new SuchDBContext())
+                    if (onlyActives.Value)
                     {
-                        return _ctx.PedidoParticipacaoFormacao.Where(p => p.UtilizadorCriacao == userName && p.Estado.Value < (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                        // são considerados activos todos os pedidos que não estejam finalizados ou cancelados
+                        using (var _ctx = new SuchDBContext())
+                        {
+                            return _ctx.PedidoParticipacaoFormacao.Where(p => p.UtilizadorCriacao == userName && p.Estado.Value < (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                        }
+                    }
+                    else
+                    {
+                        // todos os pedidos do utilizador que estejam finalizados ou cancelados
+                        using (var _ctx = new SuchDBContext())
+                        {
+                            return _ctx.PedidoParticipacaoFormacao.Where(p => p.UtilizadorCriacao == userName && p.Estado.Value >= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                        }
                     }
                 }
                 else
                 {
-                    // todos os pedidos do utilizador que estejam finalizados ou cancelados
+                    // todos os pedidos do utilizador, independentemente do estado
                     using (var _ctx = new SuchDBContext())
                     {
-                        return _ctx.PedidoParticipacaoFormacao.Where(p => p.UtilizadorCriacao == userName && p.Estado.Value >= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                        return _ctx.PedidoParticipacaoFormacao.Where(p => p.UtilizadorCriacao == userName).ToList();
                     }
                 }
+                
             }
             catch (Exception ex)
             {
                 return null;
             }
+        }
+
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(string employeeNo)
+        {
+            if (!string.IsNullOrEmpty(employeeNo))
+            {
+                try
+                {
+                    using (var _ctx = new SuchDBContext())
+                    {
+                        return _ctx.PedidoParticipacaoFormacao.Where(p => p.IdEmpregado == employeeNo).ToList();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    return null;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -454,7 +631,8 @@ namespace Hydra.Such.Data.Logic
                         {
                             // pedidos Finalizados
                             return _ctx.PedidoParticipacaoFormacao.Where(
-                                                                p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado &&
+                                                                p => p.IdEmpregado != cfgUser.EmployeeNo &&
+                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado  &&
                                                                 areasChefia.Contains(p.AreaFuncionalEmpregado) &&
                                                                 cresps.Contains(p.CentroResponsabilidadeEmpregado)
                                                             ).ToList();
@@ -463,12 +641,13 @@ namespace Hydra.Such.Data.Logic
                         {
                             // pedidos submetidos
                             return _ctx.PedidoParticipacaoFormacao.Where(
-                                                                p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido &&
+                                                                p => p.IdEmpregado != cfgUser.EmployeeNo &&
+                                                                p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoSubmetido  &&
                                                                 areasChefia.Contains(p.AreaFuncionalEmpregado) &&
                                                                 cresps.Contains(p.CentroResponsabilidadeEmpregado)
                                                             ).ToList();
                         }
-                        
+
                     }
 
                     if (origin == Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector && cfgUser.IsDirector())
@@ -483,9 +662,10 @@ namespace Hydra.Such.Data.Logic
                         }
                         else
                         {
-                            // pedidos submetidos
+                            // pedidos submetidos ou devolvidos pela Academia para completar
                             return _ctx.PedidoParticipacaoFormacao.Where(
-                                                                p => p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia &&
+                                                                p => (p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoAprovadoChefia ||
+                                                                 p.Estado.Value == (int)Enumerations.EstadoPedidoFormacao.PedidoRejeitadoAcademia) &&
                                                                 areasDireccao.Contains(p.AreaFuncionalEmpregado)
                                                             ).ToList();
                         }
@@ -570,9 +750,12 @@ namespace Hydra.Such.Data.Logic
                 {
                     PedidoParticipacaoFormacao pedido = _ctx.PedidoParticipacaoFormacao.Where(p => p.IdPedido == pedidoId).LastOrDefault();
 
-                    pedido.RegistosAlteracoes = __GetRegistosAlteracaoPedido(pedidoId);
+                    pedido.RegistosAlteracoes = _ctx.RegistoAlteracoesPedidoFormacao.Where(r => r.IdPedidoFormacao == pedidoId).ToList();
 
-                    pedido.AccaoNavigation = __GetDetailsAccaoFormacao(pedido.IdAccaoFormacao);
+                    if (!string.IsNullOrEmpty(pedido.IdAccaoFormacao))
+                    {
+                        pedido.Accao = _ctx.AccaoFormacao.Where(a => a.IdAccao == pedido.IdAccaoFormacao).FirstOrDefault();
+                    }
                     
                     return pedido;
                 }
@@ -627,15 +810,10 @@ namespace Hydra.Such.Data.Logic
 
                     var parameters = new[]
                     {
-                            new SqlParameter("@EmployeeNo", null),
-                            new SqlParameter("@Regions", null),
-                            new SqlParameter("@FunctionalAreas",
-                                origin == chief? string.Join(",", cfgUser.AreasChefia) :
-                                (origin == director? string.Join(",", cfgUser.AreasDirige) : null)),
-                            new SqlParameter("@RespCenters", origin == chief? string.Join(",", cfgUser.CRespChefia) : null)
+                            new SqlParameter("@EmployeeNo", null)
                     };
 
-                    IEnumerable<dynamic> data = _ctxExt.execStoredProcedure("exec NAV2009Formandos @EmployeeNo, @Regions, @FunctionalAreas, @RespCenters", parameters);
+                    IEnumerable<dynamic> data = _ctxExt.execStoredProcedure("exec NAV2009Formandos @EmployeeNo", parameters);
 
                     foreach (var tmp in data)
                     {
@@ -644,21 +822,35 @@ namespace Hydra.Such.Data.Logic
                             Formando formando = new Formando()
                             {
                                 No = (string)tmp.NoMecanografico,
-                                Name = tmp.NomeCompleto.Equals(DBNull.Value) ? "" : (string)tmp.NomeCompleto,
-                                Regiao = tmp.Regiao.Equals(DBNull.Value) ? "" : (string)tmp.Regiao,
-                                Area = tmp.Area.Equals(DBNull.Value) ? "" : (string)tmp.Area,
-                                Cresp = tmp.CResp.Equals(DBNull.Value) ? "" : (string)tmp.CResp,
-                                RegiaoNav2017 = tmp.RegiaoNav2017.Equals(DBNull.Value) ? "" : (string)tmp.RegiaoNav2017,
-                                AreaNav2017 = tmp.AreaNav2017.Equals(DBNull.Value) ? "" : (string)tmp.AreaNav2017,
-                                CrespNav2017 = tmp.CRespNav2017.Equals(DBNull.Value) ? "" : (string)tmp.CRespNav2017,
-                                Projecto = tmp.NoProjecto.Equals(DBNull.Value) ? "" : (string)tmp.NoProjecto,
-                                Funcao = tmp.Funcao.Equals(DBNull.Value) ? "" : (string)tmp.Funcao,
-                                CodEstabelecimento = tmp.CodEstabelecimento.Equals(DBNull.Value) ? "" : (string)tmp.CodEstabelecimento,
-                                DescricaoEstabelecimento = tmp.DescEstabelecimento.Equals(DBNull.Value)? "" : (string)tmp.DescEstabelecimento
+                                Name = tmp.NomeCompleto.Equals(DBNull.Value) ? string.Empty : (string)tmp.NomeCompleto,
+                                Regiao = tmp.Regiao.Equals(DBNull.Value) ? string.Empty : (string)tmp.Regiao,
+                                Area = tmp.Area.Equals(DBNull.Value) ? string.Empty : (string)tmp.Area,
+                                Cresp = tmp.CResp.Equals(DBNull.Value) ? string.Empty : (string)tmp.CResp,
+                                RegiaoNav2017 = tmp.RegiaoNav2017.Equals(DBNull.Value) ? string.Empty : (string)tmp.RegiaoNav2017,
+                                DescRegiaoNav2017 = tmp.DescRegiaoNav2017.Equals(DBNull.Value) ? string.Empty : (string)tmp.DescRegiaoNav2017,
+                                AreaNav2017 = tmp.AreaNav2017.Equals(DBNull.Value) ? string.Empty : (string)tmp.AreaNav2017,
+                                DescAreaNav2017 = tmp.DescAreaNav2017.Equals(DBNull.Value) ? string.Empty : (string)tmp.DescAreaNav2017,
+                                CrespNav2017 = tmp.CRespNav2017.Equals(DBNull.Value) ? string.Empty : (string)tmp.CRespNav2017,
+                                DescCrespNav2017 = tmp.DescCRespNav2017.Equals(DBNull.Value) ? string.Empty : (string)tmp.DescCRespNav2017,
+                                Projecto = tmp.NoProjecto.Equals(DBNull.Value) ? string.Empty : (string)tmp.NoProjecto,
+                                Funcao = tmp.Funcao.Equals(DBNull.Value) ? string.Empty : (string)tmp.Funcao,
+                                CodEstabelecimento = tmp.CodEstabelecimento.Equals(DBNull.Value) ? string.Empty : (string)tmp.CodEstabelecimento,
+                                DescricaoEstabelecimento = tmp.DescEstabelecimento.Equals(DBNull.Value)? string.Empty : (string)tmp.DescEstabelecimento
                             };
 
                             result.Add(formando);
                         }
+                    }
+
+                    if (origin == chief)
+                    {
+                        result = result.Where(r => cfgUser.AreasChefia.Contains(r.AreaNav2017)).ToList()
+                            .Where(r => cfgUser.CRespChefia.Contains(r.CrespNav2017)).ToList();
+                    }
+
+                    if (origin == director)
+                    {
+                        result = result.Where(r => cfgUser.AreasDirige.Contains(r.AreaNav2017)).ToList();
                     }
 
                     return result;
@@ -682,13 +874,10 @@ namespace Hydra.Such.Data.Logic
                     
                     var parameters = new[]
                     {
-                            new SqlParameter("@EmployeeNo", employeeNo),
-                            new SqlParameter("@Regions", null),
-                            new SqlParameter("@FunctionalAreas", null),
-                            new SqlParameter("@RespCenters", null)
+                            new SqlParameter("@EmployeeNo", employeeNo)
                     };
 
-                    dynamic data = _ctxExt.execStoredProcedure("exec NAV2009Formandos @EmployeeNo, @Regions, @FunctionalAreas, @RespCenters", parameters).FirstOrDefault();
+                    dynamic data = _ctxExt.execStoredProcedure("exec NAV2009Formandos @EmployeeNo", parameters).FirstOrDefault();
 
                     if (data != null)
                     {
@@ -697,17 +886,20 @@ namespace Hydra.Such.Data.Logic
                             Formando formando = new Formando()
                             {
                                 No = (string)data.NoMecanografico,
-                                Name = data.NomeCompleto.Equals(DBNull.Value) ? "" : (string)data.NomeCompleto,
-                                Regiao = data.Regiao.Equals(DBNull.Value) ? "" : (string)data.Regiao,
-                                Area = data.Area.Equals(DBNull.Value) ? "" : (string)data.Area,
-                                Cresp = data.CResp.Equals(DBNull.Value) ? "" : (string)data.CResp,
-                                RegiaoNav2017 = data.RegiaoNav2017.Equals(DBNull.Value) ? "" : (string)data.RegiaoNav2017,
-                                AreaNav2017 = data.AreaNav2017.Equals(DBNull.Value) ? "" : (string)data.AreaNav2017,
-                                CrespNav2017 = data.CRespNav2017.Equals(DBNull.Value) ? "" : (string)data.CRespNav2017,
-                                Projecto = data.NoProjecto.Equals(DBNull.Value) ? "" : (string)data.NoProjecto,
-                                Funcao = data.Funcao.Equals(DBNull.Value) ? "" : (string)data.Funcao,
-                                CodEstabelecimento = data.CodEstabelecimento.Equals(DBNull.Value) ? "" : (string)data.CodEstabelecimento,
-                                DescricaoEstabelecimento = data.DescEstabelecimento.Equals(DBNull.Value) ? "" : (string)data.DescEstabelecimento
+                                Name = data.NomeCompleto.Equals(DBNull.Value) ? string.Empty : (string)data.NomeCompleto,
+                                Regiao = data.Regiao.Equals(DBNull.Value) ? string.Empty : (string)data.Regiao,
+                                Area = data.Area.Equals(DBNull.Value) ? string.Empty : (string)data.Area,
+                                Cresp = data.CResp.Equals(DBNull.Value) ? string.Empty : (string)data.CResp,
+                                RegiaoNav2017 = data.RegiaoNav2017.Equals(DBNull.Value) ? string.Empty : (string)data.RegiaoNav2017,
+                                DescRegiaoNav2017 = data.DescRegiaoNav2017.Equals(DBNull.Value) ? string.Empty : (string)data.DescRegiaoNav2017,
+                                AreaNav2017 = data.AreaNav2017.Equals(DBNull.Value) ? string.Empty : (string)data.AreaNav2017,
+                                DescAreaNav2017 = data.DescAreaNav2017.Equals(DBNull.Value) ? string.Empty : (string)data.DescAreaNav2017,
+                                CrespNav2017 = data.CRespNav2017.Equals(DBNull.Value) ? string.Empty : (string)data.CRespNav2017,
+                                DescCrespNav2017 = data.DescCRespNav2017.Equals(DBNull.Value) ? string.Empty : (string)data.DescCRespNav2017,
+                                Projecto = data.NoProjecto.Equals(DBNull.Value) ? string.Empty : (string)data.NoProjecto,
+                                Funcao = data.Funcao.Equals(DBNull.Value) ? string.Empty : (string)data.Funcao,
+                                CodEstabelecimento = data.CodEstabelecimento.Equals(DBNull.Value) ? string.Empty : (string)data.CodEstabelecimento,
+                                DescricaoEstabelecimento = data.DescEstabelecimento.Equals(DBNull.Value) ? string.Empty : (string)data.DescEstabelecimento
                             };
 
                             return formando;

@@ -232,7 +232,7 @@
                                     <div class="panel-body" style="padding:0">
                                         <div class="row break_clear">
                                             <vaadin-upload id="uploadImages"
-                                                           target="/Academia/CourseImageUpload/{{_idaccao}}"
+                                                           target="/Academia/ImageUpload/AccaoFormacao/{{_idaccao}}"
                                                            method="post"
                                                            headers="{'Accept':'application/json'}"
                                                            timeout="15000"
@@ -248,7 +248,7 @@
                                                         <vaadin-grid-sorter path="url">Nome Ficheiro</vaadin-grid-sorter>
                                                     </template>
                                                     <template>
-                                                        <a href="/Academia/DownloadImage/{{item.docNumber}}/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                        <a href="/Academia/DownloadImage/AccaoFormacao/{{item.docNumber}}/{{item.url}}" target="_blank">{{item.url}}</a>
                                                     </template>
                                                 </vaadin-grid-column>
                                                 <vaadin-grid-column width="20%">

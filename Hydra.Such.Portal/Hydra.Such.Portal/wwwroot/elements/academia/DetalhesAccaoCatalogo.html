@@ -85,25 +85,104 @@
             }
         </style>
 
+        <iron-ajax url="/Academia/GetDetalhesAccao"
+                   last-response="{{ data }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/CriarPedidoApartirDeAccao"
+                   last-response="{{ result }}"
+                   method="post"
+                   handle-as="json"
+                   id="create_trainingrequest_ajax"
+                   on-response="_createResponseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <!--<paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Guardar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>-->
             <paper-button raised id="btnCreate" class="tablinks" on-tap="_createRequest" title="Criar Pedido" style="background-color:#1DB73C"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Pedido</paper-button>
         </div>
-        <vaadin-text-field id="idAccao" value="{{ data.idAccao }}"></vaadin-text-field>
+
+        <iron-form id="formContract">
+            <div class="row break_clear">
+                <div class="col-lg-1">
+                    <vaadin-text-field id="codigoInterno" name="codigoInterno" label="Código" value="{{ data.codigoInterno }}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-lg-5">
+                    <vaadin-text-field id="designacaoAccao" name="designacaoAccao" label="Designação Acção" value="{{data.designacaoAccao}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="dataInicio" name="dataInicio" label="Data Inicio" value="{{data.dataInicio}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-lg-2">
+                    <vaadin-text-field id="dataFim" name="dataFim" label="Data Fim" value="{{data.dataFim}}" disabled="true"></vaadin-text-field>
+                </div>
+                <div class="col-lg-1">
+                    <vaadin-text-field id="numeroTotalHoras" name="numeroTotalHoras" label="Nº Horas" value="{{data.numeroTotalHoras}}" disabled="true"></vaadin-text-field>
+                </div>
+            </div>
+
+            <paper-collapse-group>
+                <paper-collapse-item class="panel-heading" header="Sessões de Formação" opened>
+                    <div class="row break_clear">
+                        <vaadin-grid id="gridSessoesFormacao" aria-label="gridSessoesFormacao" items="[[data.sessoesFormacao]]" class="grid" multi-sort="true" disabled="true">
+                            <vaadin-grid-column>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dataSessao">Data Sessão</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{item.dataSessao}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="horaInicioSessao">Hora Inicio</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{item.horaInicioSessao}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="horaFimSessao">Hora Fim</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{item.horaFimSessao}}
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column>
+                                <template class="header">
+                                    <vaadin-grid-sorter path="duracaoSessao">Duração</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    {{item.duracaoSessao}}
+                                </template>
+                            </vaadin-grid-column>
+                        </vaadin-grid>
+                    </div>
+                </paper-collapse-item>
+            </paper-collapse-group>
+        </iron-form>
+
+
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-detalheaccao',
+                is: 'x-detalheaccaocatalogo',
                 properties: {
                     _idaccao: {
                         type: String
 
                     },
-                    
+
                 },
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
@@ -148,6 +227,53 @@
                     if (this.data != null) {
 
                     }
+                },
+
+                _createRequest: function (e) {
+                    debugger;;
+                    var ajax_request = this.$.create_trainingrequest_ajax;
+                    ajax_request.body = JSON.stringify(this.data);
+
+
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a criação do Pedido de Participação na formação com o código " + this.data.codigoInterno,
+                        ajax_request
+                    );
+                },
+
+                _createResponseProcessor: function (e) {
+                    debugger;;
+                    if (this.result != null) {
+                        var _result = this.result;
+
+                        if (_result.eReasonCode == 0) {
+                            window.location.href = "/Academia/DetalhePedido/" + _result.eMessage;
+                            return;
+                        }
+
+                        if (_result.eReasonCode == -1) {
+                            this._openToastError(_result.eMessage);
+                            return;
+                        }
+
+                        if (_result.eReasonCode == -2) {
+                            this._openToastError("Já existe, em processamento, um Pedido de Participação em Formação para esta Acção: Pedido nº: " + _result.eMessage);
+                            return;
+                        }
+
+                        if (_result.eReasonCode == -9) {
+                            this._openToastError(_result.eMessage);
+                            return;
+                        }
+                    } else {
+                        this._openToastError("Não foi possível criar o pedido!");
+                    }
+                    //if (this.result != null && this.result != "0") {
+                    //    window.location.href = "/Academia/DetalhePedido/" + this.result;
+                    //} else {
+                    //    this._openToastError("Não foi possível criar o pedido!")
+                    //}
                 },
 
                 _goBack: function (e) {
