@@ -645,7 +645,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                 if (dp["movimentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Movimento"); Col = Col + 1; }
                 if (dp["registryDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Registo"); Col = Col + 1; }
-                if (dp["resourceNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("No. Recurso"); Col = Col + 1; }
+                //if (dp["resourceNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("No. Recurso"); Col = Col + 1; }
                 if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Descrição"); Col = Col + 1; }
                 if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Valor"); Col = Col + 1; }
                 if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Tipo Movimento"); Col = Col + 1; }
@@ -666,7 +666,7 @@ namespace Hydra.Such.Portal.Areas.Nutricao.Controllers
 
                         if (dp["movimentNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovimentNo); Col = Col + 1; }
                         if (dp["registryDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegistryDate); Col = Col + 1; }
-                        if (dp["resourceNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResourceNo); Col = Col + 1; }
+                        //if (dp["resourceNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ResourceNo); Col = Col + 1; }
                         if (dp["description"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Description); Col = Col + 1; }
                         if (dp["value"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Value.ToString()); Col = Col + 1; }
                         if (dp["movementTypeText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.MovementTypeText); Col = Col + 1; }

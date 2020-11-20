@@ -197,7 +197,7 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.resourceNo.hidden }}">
+            @*<vaadin-grid-column width="150px" resizable hidden$="{{ _columns.resourceNo.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="resourceNo">No. Recurso</vaadin-grid-sorter>
                     <vaadin-grid-filter path="resourceNo" value="[[filter.resourceNo]]" />
@@ -205,7 +205,7 @@
                 <template>
                     {{item.resourceNo}}
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>*@
 
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.description.hidden }}">
                 <template class="header">
@@ -377,7 +377,7 @@
                     var columns = {
                         "movimentNo": { hidden: false, label: "Nº Movimento" },
                         "registryDate": { hidden: false, label: "Data Registo" },
-                        "resourceNo": { hidden: false, label: "No. Recurso" },
+                        //"resourceNo": { hidden: false, label: "No. Recurso" },
                         "description": { hidden: false, label: "Descrição" },
                         "value": { hidden: false, label: "Valor" },
                         "movementTypeText": { hidden: false, label: "Tipo Movimento" },
