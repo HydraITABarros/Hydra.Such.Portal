@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewData["Title"] = "Detalhe Pedido Participação em Formação Externa:" + ViewBag.idPedido;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/academia/DetalhePedido.html" />
+
+<x-detalhepedido _idpedido="@ViewBag.idPedido" _ischief="@ViewBag.isChief" _isdirector="@ViewBag.isDirector"></x-detalhepedido>
+

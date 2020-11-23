@@ -44,6 +44,10 @@ namespace Hydra.Such.Data.ViewModel.Academia
 
             List<Anexos> imagens = DBAttachments.GetById(TipoOrigemAnexos.AccaoFormacao, accao.IdAccao);
             ImagensAccao = DBAttachments.ParseToViewModel(imagens);
+            foreach (var item in ImagensAccao)
+            {
+                item.Visivel = item.Visivel == null ? false : item.Visivel.Value;
+            }
         }
 
         public AccaoFormacao ParseToDb()

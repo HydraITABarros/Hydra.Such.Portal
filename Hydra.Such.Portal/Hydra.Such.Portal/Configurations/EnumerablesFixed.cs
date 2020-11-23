@@ -405,6 +405,20 @@ namespace Hydra.Such.Portal.Configurations
         }
 
         public static readonly List<EnumData> TipoAlteracaoPedidoFormacao = TipoAlteracoes;
+
+        private static List<EnumData> IntToBool
+        {
+            get
+            {
+                List<EnumData> intToBool = new List<EnumData>();
+                var items = Data.EnumHelper.GetItemsFor(typeof(IntToBoolean));
+                items.ForEach(i => intToBool.Add(new EnumData(i.Key, i.Value)));
+
+                return intToBool;                
+            }
+        }
+
+        public static readonly List<EnumData> IntToBoolean = IntToBool;
         #endregion
 
 

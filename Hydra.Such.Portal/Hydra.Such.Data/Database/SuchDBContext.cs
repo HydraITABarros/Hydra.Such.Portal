@@ -13084,6 +13084,9 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.LocalRealizacao)
                     .HasColumnName("LocalRealizacao")
                     .HasMaxLength(150);
+                entity.Property(e => e.Horario)
+                    .HasColumnName("Horario")
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.DataInicio)
                     .HasColumnName("DataInicio")
@@ -13133,9 +13136,17 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Planeada")
                     .HasColumnType("tinyint");
 
+                entity.Property(e => e.CursoPlanoFormacao)
+                    .HasColumnName("CursoPlanoFormacao")
+                    .HasMaxLength(512);
+
                 entity.Property(e => e.TemDotacaoOrcamental)
                     .HasColumnName("TemDotacaoOrcamental")
                     .HasColumnType("tinyint");
+
+                entity.Property(e => e.ParecerDotacaoAcademia)
+                    .HasColumnName("ParecerDotacaoAcademia")
+                    .HasMaxLength(2048);
 
                 entity.Property(e => e.ParecerAcademia)
                     .HasColumnName("ParecerAcademia")
@@ -13157,7 +13168,7 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("DataHoraUltimaModificacao")
                     .HasColumnType("datetime");
 
-                entity.HasOne(p => p.AccaoNavigation)
+                entity.HasOne(p => p.Accao)
                     .WithMany(a => a.PedidosParticipacao)
                     .HasForeignKey(p => p.IdAccaoFormacao)
                     .HasConstraintName("FK_PedidoParticipacaoFormacao_AccaoFormacao");

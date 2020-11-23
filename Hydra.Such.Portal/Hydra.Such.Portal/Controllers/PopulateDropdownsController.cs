@@ -776,6 +776,14 @@ namespace Hydra.Such.Portal.Controllers
 
 
         }
+
+        [HttpPost]
+        public JsonResult GetIntToBoolean()
+        {
+            List<EnumData> result = EnumerablesFixed.IntToBoolean;
+
+            return Json(result);
+        }
         #endregion
 
         [HttpPost]
