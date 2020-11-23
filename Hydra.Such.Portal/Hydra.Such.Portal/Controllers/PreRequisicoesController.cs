@@ -1514,11 +1514,14 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (!string.IsNullOrEmpty(newline.Código) && !string.IsNullOrEmpty(newline.CódigoLocalização))
                         {
-                            Quantidades = AllQuantidades.Where(y => y.Codigo == newline.Código && y.CodLocalizacao == newline.CódigoLocalização).FirstOrDefault();
-
-                            if (Quantidades != null)
+                            if (AllQuantidades != null && AllQuantidades.Count > 0)
                             {
-                                newline.QuantidadeDisponivel = Quantidades.QuantDisponivel;
+                                Quantidades = AllQuantidades.Where(y => y.Codigo == newline.Código && y.CodLocalizacao == newline.CódigoLocalização).FirstOrDefault();
+
+                                if (Quantidades != null)
+                                {
+                                    newline.QuantidadeDisponivel = Quantidades.QuantDisponivel;
+                                }
                             }
                         }
 
