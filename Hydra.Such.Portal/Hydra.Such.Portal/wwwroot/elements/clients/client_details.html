@@ -629,6 +629,36 @@
 
                                                             <vaadin-grid-column width="10%" resizable>
                                                                 <template class="header">
+                                                                    <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="noContrato" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.noContrato}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="10%" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="noCompromisso">Nº Compromisso</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="noCompromisso" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.noCompromisso}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="10%" resizable>
+                                                                <template class="header">
+                                                                    <vaadin-grid-sorter path="noPedido">Nº Pedido</vaadin-grid-sorter>
+                                                                    <vaadin-grid-filter path="noPedido" />
+                                                                </template>
+                                                                <template>
+                                                                    {{item.noPedido}}
+                                                                </template>
+                                                            </vaadin-grid-column>
+
+                                                            <vaadin-grid-column width="10%" resizable>
+                                                                <template class="header">
                                                                     <vaadin-grid-sorter path="regionId">Cód. Região</vaadin-grid-sorter>
                                                                     <vaadin-grid-filter path="regionId" />
                                                                 </template>
@@ -2297,6 +2327,9 @@
                         "amountIncludingVAT": { hidden: false, label: "Valor com IVA" },
                         "valorPendente": { hidden: false, label: "Valor Pendente" },
                         "paid": { hidden: false, label: "Pago" },
+                        "noContrato": { hidden: false, label: "Nº Contrato" },
+                        "noCompromisso": { hidden: false, label: "Nº Compromisso" },
+                        "noPedido": { hidden: false, label: "Nº Pedido" },
                         "regionId": { hidden: false, label: "Cód. Região" },
                         "functionalAreaId": { hidden: false, label: "Cód. Área Funcional" },
                         "respCenterId": { hidden: false, label: "Cód. Centro de Responsabilidade" },
