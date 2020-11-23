@@ -858,9 +858,12 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(16).SetCellValue("Nº Guia Resíduos (GAR)");
                 row.CreateCell(17).SetCellValue("Nº Guia Externa");
                 row.CreateCell(18).SetCellValue("Data de Consumo");
-                row.CreateCell(19).SetCellValue("Cód. Região");
-                row.CreateCell(20).SetCellValue("Cód. Área Funcional");
-                row.CreateCell(21).SetCellValue("Cód. Centro de Responsabilidade");
+                row.CreateCell(19).SetCellValue("Nº Contrato");
+                row.CreateCell(20).SetCellValue("Nº Compromisso");
+                row.CreateCell(21).SetCellValue("Nº Pedido");
+                row.CreateCell(22).SetCellValue("Cód. Região");
+                row.CreateCell(23).SetCellValue("Cód. Área Funcional");
+                row.CreateCell(24).SetCellValue("Cód. Centro de Responsabilidade");
 
                 int count = 1;
                 foreach (NAVClientesInvoicesDetailsViewModel item in list)
@@ -886,9 +889,12 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(16).SetCellValue(item.NGuiaResiduosGAR);
                     row.CreateCell(17).SetCellValue(item.NGuiaExterna);
                     row.CreateCell(18).SetCellValue(item.DataConsumo);
-                    row.CreateCell(19).SetCellValue(item.RegionId);
-                    row.CreateCell(20).SetCellValue(item.FunctionalAreaId);
-                    row.CreateCell(21).SetCellValue(item.RespCenterId);
+                    row.CreateCell(19).SetCellValue(item.NoContrato);
+                    row.CreateCell(20).SetCellValue(item.NoCompromisso);
+                    row.CreateCell(21).SetCellValue(item.NoPedido);
+                    row.CreateCell(22).SetCellValue(item.RegionId);
+                    row.CreateCell(23).SetCellValue(item.FunctionalAreaId);
+                    row.CreateCell(24).SetCellValue(item.RespCenterId);
 
                     count++;
                 }

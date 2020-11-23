@@ -23,6 +23,9 @@ namespace Hydra.Such.Data.ViewModel
         public string AmountIncludingVAT { get; set; }
         public string DimensionSetID { get; set; }
         public string ServiceContractNo { get; set; }
+        public string NoContrato { get; set; }
+        public string NoCompromisso { get; set; }
+        public string NoPedido { get; set; }
         public string RegionId { get; set; }
         public string FunctionalAreaId { get; set; }
         public string RespCenterId { get; set; }

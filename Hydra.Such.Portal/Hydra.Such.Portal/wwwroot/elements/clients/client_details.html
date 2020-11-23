@@ -1420,6 +1420,7 @@
                             {{item.documentNo}}
                         </template>
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="tipo">Tipo</vaadin-grid-sorter>
@@ -1429,6 +1430,7 @@
                             {{item.tipo}}
                         </template>
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="no">Nº</vaadin-grid-sorter>
@@ -1438,6 +1440,7 @@
                             {{item.no}}
                         </template>
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
@@ -1447,6 +1450,7 @@
                             {{item.description}}
                         </template>
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="description2">Descrição 2</vaadin-grid-sorter>
@@ -1456,6 +1460,7 @@
                             {{item.description2}}
                         </template>
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="unitOfMeasure">Unidade de Medida</vaadin-grid-sorter>
@@ -1465,6 +1470,7 @@
                             {{item.unitOfMeasure}}
                         </template>
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
                             <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
@@ -1472,85 +1478,49 @@
                         </template>
                         <template>
                             <div class="text-right">
-
-
-
-                                <!--[[_roundValue(item.quantity, 2)]]-->
-                                <!--[[ item.quantity ]]-->
                                 [[_round2casas(item.quantity)]]
-                                <!--{{item.quantity}}-->
                             </div>
-                            
-
                         </template>
-                        
-
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
-                            ss
                             <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
                             <vaadin-grid-filter path="unitPrice" />
                         </template>
                         <template>
                             <div class="text-right">
-
-
-
-                                <!--[[_formatCurrencyValue(item.unitPrice)]]-->
                                 [[_formatIntValue(item.unitPrice)]]
-                                <!--{{item.unitPrice}}-->
                             </div>
-                            
-
                         </template>
-                        
-
                     </vaadin-grid-column>
+
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
-                            as
                             <vaadin-grid-sorter path="vat">Iva</vaadin-grid-sorter>
                             <vaadin-grid-filter path="vat" />
                         </template>
                         <template>
                             <div class="text-right">
-
                                 [[_formatPercentValue(item.vat)]]
-                                <!--{{item.vat}}-->
                             </div>
                         </template>
-                        /t
-                        
-
                     </vaadin-grid-column>
 
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
-                            "h
-
-
                             <vaadin-grid-sorter path="amount">Preço Total</vaadin-grid-sorter>
                             <vaadin-grid-filter path="amount" />
                         </template>
                         <template>
                             <div class="text-right">
-
                                 [[_formatCurrencyValue(item.amount)]]
-                                <!--{{item.amount}}-->
                             </div>
-                            
-
                         </template>
-                        
-
                     </vaadin-grid-column>
 
                     <vaadin-grid-column width="100px" resizable>
                         <template class="header">
-                            ss
-
-
                             <vaadin-grid-sorter path="tipoRefeicao">Tp Refeição</vaadin-grid-sorter>
                             <vaadin-grid-filter path="tipoRefeicao" />
                         </template>
@@ -1606,7 +1576,6 @@
                             <div class="text-right">
                                 [[ item.codServCliente ]]
                             </div>
-                            te
                         </template>
                     </vaadin-grid-column>
 
@@ -1653,6 +1622,36 @@
                         </template>
                         <template>
                             {{item.dataConsumo}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="noContrato">Nº Contrato</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="noContrato" />
+                        </template>
+                        <template>
+                            {{item.noContrato}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="noCompromisso">Nº Compromisso</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="noCompromisso" />
+                        </template>
+                        <template>
+                            {{item.noCompromisso}}
+                        </template>
+                    </vaadin-grid-column>
+
+                    <vaadin-grid-column width="100px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="noPedido">Nº Pedido</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="noPedido" />
+                        </template>
+                        <template>
+                            {{item.noPedido}}
                         </template>
                     </vaadin-grid-column>
 

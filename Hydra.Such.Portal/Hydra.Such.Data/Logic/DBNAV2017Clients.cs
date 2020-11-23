@@ -400,6 +400,9 @@ namespace Hydra.Such.Data.Logic
                             NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
                             NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
                             DataConsumo = temp.DataConsumo.Equals(DBNull.Value) ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString().Contains("01/01/1753") ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString(),
+                            NoContrato = temp.NoContrato.Equals(DBNull.Value) ? "" : (string)temp.NoContrato.ToString(),
+                            NoCompromisso = temp.NoCompromisso.Equals(DBNull.Value) ? "" : (string)temp.NoCompromisso.ToString(),
+                            NoPedido = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.NoPedido.ToString(),
                         });
                     }
                     return result;
@@ -460,6 +463,9 @@ namespace Hydra.Such.Data.Logic
                             NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
                             NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
                             DataConsumo = temp.DataConsumo.Equals(DBNull.Value) ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString().Contains("01/01/1753") ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString(),
+                            NoContrato = temp.NoContrato.Equals(DBNull.Value) ? "" : (string)temp.NoContrato.ToString(),
+                            NoCompromisso = temp.NoCompromisso.Equals(DBNull.Value) ? "" : (string)temp.NoCompromisso.ToString(),
+                            NoPedido = temp.NoPedido.Equals(DBNull.Value) ? "" : (string)temp.NoPedido.ToString(),
                         });
                     }
                     return result;
