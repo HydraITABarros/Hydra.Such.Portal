@@ -1536,6 +1536,9 @@ namespace Hydra.Such.Portal.Controllers
                         return Json(result);
                     }
 
+                    result.eReasonCode = 1;
+                    result.eMessage = "Linhas copiadas com sucesso.";
+
                     if (DBPreRequesitionLines.CreateMultiple(preReqLines))
                     {
                         result.eReasonCode = 1;
