@@ -3369,10 +3369,41 @@ namespace Hydra.Such.Portal.Controllers
                     }
 
                     erro = false;
-                    string msgErro = "Nas Linhas, o(s) produto(s) têm Qt. a Requerer superior a Qt. Disponível: ";
+                    string msgErro = "Nas Linhas, no(s) produto(s) a Qt. Disponível neste momento é inferior a Qt. a Requerer: ";
+                    QuantidadesViewModel Quantidades = new QuantidadesViewModel();
                     PreLinhas.ForEach(x =>
                     {
-                        if (x.QuantidadeARequerer > x.QuantidadeDisponivel)
+                        if (!string.IsNullOrEmpty(x.Código) && !string.IsNullOrEmpty(x.CódigoLocalização))
+                        {
+                            //AMARO QUANTIDADES ORIGINAL
+                            //Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto, armazem);
+
+                            string armazem = x.CódigoLocalização;
+                            string produto = x.Código;
+                            if (armazem == "4300")
+                            {
+                                armazem = "001";
+                                Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                                try
+                                {
+                                    TReadStock.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Quantidades.QuantDisponivel = 0;
+                                }
+                                if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
+                                    Quantidades.QuantDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
+                                else
+                                    Quantidades.QuantDisponivel = 0;
+                            }
+                            else
+                            {
+                                Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto, armazem);
+                            }
+                        }
+
+                        if (x.QuantidadeARequerer > Quantidades.QuantDisponivel)
                         {
                             erro = true;
                             msgErro = msgErro + x.Código + ", ";
