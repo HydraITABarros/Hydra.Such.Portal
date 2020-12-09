@@ -789,6 +789,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (linha.QuantityToRequire > 0)
                         {
+                            //AMARO SISLOG UPDATE LINHA
                             if (linha.LocalCode == "4300")
                             {
                                 string armazem = "001";
@@ -1593,16 +1594,7 @@ namespace Hydra.Such.Portal.Controllers
 
                         if (!string.IsNullOrEmpty(newline.Código) && !string.IsNullOrEmpty(newline.CódigoLocalização))
                         {
-                            //AMARO QUANTIDADES ORIGINAL
-                            //if (AllQuantidades != null && AllQuantidades.Count > 0)
-                            //{
-                            //    Quantidades = AllQuantidades.Where(y => y.Codigo == newline.Código && y.CodLocalizacao == newline.CódigoLocalização).FirstOrDefault();
-                            //    if (Quantidades != null)
-                            //    {
-                            //        newline.QuantidadeDisponivel = Quantidades.QuantDisponivel;
-                            //    }
-                            //}
-
+                            //AMARO SISLOG COPIAR MODELO
                             if (newline.CódigoLocalização == "4300")
                             {
                                 string armazem = "001";
@@ -3375,9 +3367,7 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (!string.IsNullOrEmpty(x.Código) && !string.IsNullOrEmpty(x.CódigoLocalização))
                         {
-                            //AMARO QUANTIDADES ORIGINAL
-                            //Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto, armazem);
-
+                            //AMARO SISLOG CRIAR REQUISIÇÃO
                             string armazem = x.CódigoLocalização;
                             string produto = x.Código;
                             if (armazem == "4300")
@@ -4314,9 +4304,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (!string.IsNullOrEmpty(produto) && !string.IsNullOrEmpty(armazem))
             {
-                //AMARO QUANTIDADES ORIGINAL
-                //Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto, armazem);
-
+                //AMARO SISLOG CRIAR LINHA
                 if (armazem == "4300")
                 {
                     armazem = "001";
@@ -4342,10 +4330,6 @@ namespace Hydra.Such.Portal.Controllers
 
             return Json(Quantidades);
         }
-
-
-
-
     }
 
 }
