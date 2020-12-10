@@ -290,6 +290,27 @@ namespace Hydra.Such.Portal.Controllers
                                             });
                                         }
 
+                                        //SISLOGRESERVAS Update Lines Data
+                                        if (requisition.Lines != null && requisition.Lines.Count > 0)
+                                        {
+                                            requisition.Lines.ForEach(line =>
+                                            {
+                                                if (!string.IsNullOrEmpty(line.LocalCode) && (line.LocalCode == "2300" || line.LocalCode == "3300" || line.LocalCode == "4300"))
+                                                {
+                                                    SISLOGReservas Reserva = DBSISLOGReservas.GetById(line.RequestNo, (int)line.LineNo);
+
+                                                    if (Reserva != null)
+                                                    {
+                                                        Reserva.Reservado = false;
+                                                        Reserva.UtilizadorModificacao = User.Identity.Name;
+                                                        Reserva.DataHoraModificacao = DateTime.Now;
+                                                    }
+
+                                                    DBSISLOGReservas.Update(Reserva);
+                                                }
+                                            });
+                                        }
+
                                         //Create Workflow de Aprovação
                                         var ctx = new SuchDBContext();
                                         var logEntry = new RequisicoesRegAlteracoes();

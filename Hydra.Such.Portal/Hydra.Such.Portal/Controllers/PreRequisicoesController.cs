@@ -801,12 +801,24 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    linha.QuantidadeDisponivel = 0;
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        linha.QuantidadeDisponivel = Produto.QtdDisponivel;
+                                    else
+                                        linha.QuantidadeDisponivel = 0;
                                 }
                                 if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
                                     linha.QuantidadeDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
                                 else
-                                    linha.QuantidadeDisponivel = 0;
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        linha.QuantidadeDisponivel = Produto.QtdDisponivel;
+                                    else
+                                        linha.QuantidadeDisponivel = 0;
+                                }
                             }
                             else
                             {
@@ -1606,12 +1618,24 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    newline.QuantidadeDisponivel = 0;
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        newline.QuantidadeDisponivel = Produto.QtdDisponivel;
+                                    else
+                                        newline.QuantidadeDisponivel = 0;
                                 }
                                 if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
                                     newline.QuantidadeDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
                                 else
-                                    newline.QuantidadeDisponivel = 0;
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        newline.QuantidadeDisponivel = Produto.QtdDisponivel;
+                                    else
+                                        newline.QuantidadeDisponivel = 0;
+                                }
                             }
                             else
                             {
@@ -2387,6 +2411,30 @@ namespace Hydra.Such.Portal.Controllers
                         logEntry.ModificadoPor = User.Identity.Name;
                         ctx.RequisicoesRegAlteracoes.Add(logEntry);
                         ctx.SaveChanges();
+
+                        //SISLOGRESERVAS Create Lines Data
+                        if (createReq.LinhasRequisição != null && createReq.LinhasRequisição.Count > 0)
+                        {
+                            foreach (LinhasRequisição linha in createReq.LinhasRequisição)
+                            {
+                                if (!string.IsNullOrEmpty(linha.CódigoLocalização) && (linha.CódigoLocalização == "2300" || linha.CódigoLocalização == "3300" || linha.CódigoLocalização == "4300"))
+                                {
+                                    SISLOGReservas Reserva = new SISLOGReservas
+                                    {
+                                        NoRequisicao = linha.NºRequisição,
+                                        NoLinha = linha.NºLinha,
+                                        NoProduto = linha.Código,
+                                        QuantidadeReserva = linha.QuantidadeARequerer,
+                                        DataInicioReserva = DateTime.Now,
+                                        Reservado = true,
+                                        UtilizadorCriacao = User.Identity.Name,
+                                        DataHoraCriacao = DateTime.Now
+                                    };
+                                    ctx.SISLOGReservas.Add(Reserva);
+                                    ctx.SaveChanges();
+                                }
+                            }
+                        }
 
                         //copy files
                         var preReq = data.PreRequesitionsNo;
@@ -3380,12 +3428,24 @@ namespace Hydra.Such.Portal.Controllers
                                 }
                                 catch (Exception ex)
                                 {
-                                    Quantidades.QuantDisponivel = 0;
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        Quantidades.QuantDisponivel = (decimal)Produto.QtdDisponivel;
+                                    else
+                                        Quantidades.QuantDisponivel = 0;
                                 }
                                 if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
                                     Quantidades.QuantDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
                                 else
-                                    Quantidades.QuantDisponivel = 0;
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        Quantidades.QuantDisponivel = (decimal)Produto.QtdDisponivel;
+                                    else
+                                        Quantidades.QuantDisponivel = 0;
+                                }
                             }
                             else
                             {
@@ -4315,12 +4375,24 @@ namespace Hydra.Such.Portal.Controllers
                     }
                     catch (Exception ex)
                     {
-                        Quantidades.QuantDisponivel = 0;
+                        SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                        if (Produto != null)
+                            Quantidades.QuantDisponivel = (decimal)Produto.QtdDisponivel;
+                        else
+                            Quantidades.QuantDisponivel = 0;
                     }
                     if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
                         Quantidades.QuantDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
                     else
-                        Quantidades.QuantDisponivel = 0;
+                    {
+                        SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                        if (Produto != null)
+                            Quantidades.QuantDisponivel = (decimal)Produto.QtdDisponivel;
+                        else
+                            Quantidades.QuantDisponivel = 0;
+                    }
                 }
                 else
                 {

@@ -197,6 +197,8 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<LinhasOrcamentos> LinhasOrcamentos { get; set; }
         public virtual DbSet<OrcamentosContatos> OrcamentosContatos { get; set; }
         public virtual DbSet<ConfiguracaoParametros> ConfiguracaoParametros { get; set; }
+        public virtual DbSet<SISLOGReservas> SISLOGReservas { get; set; }
+        public virtual DbSet<SISLOGProdutos> SISLOGProdutos { get; set; }
 
         #region zpgm.ALT_CCP_#001.y2019
         public virtual DbSet<TipoProcedimentoCcp> TipoProcedimentoCcp { get; set; }
@@ -12945,6 +12947,87 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.UtilizadorModificacao)
                     .HasColumnName("UtilizadorModificacao")
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<SISLOGReservas>(entity =>
+            {
+                entity.HasKey(e => new { e.NoRequisicao, e.NoLinha });
+
+                entity.ToTable("SISLOG_Reservas");
+
+                entity.Property(e => e.NoRequisicao)
+                    .HasColumnName("NoRequisicao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NoLinha)
+                    .HasColumnName("NoLinha");
+
+                entity.Property(e => e.NoProduto)
+                    .HasColumnName("NoProduto")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.QuantidadeReserva)
+                    .HasColumnName("QuantidadeReserva")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.DataInicioReserva)
+                    .HasColumnName("DataInicioReserva")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataFimReserva)
+                    .HasColumnName("DataFimReserva")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Reservado)
+                    .HasColumnName("Reservado")
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraCriacao)
+                    .HasColumnName("DataHoraCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataHoraModificacao)
+                    .HasColumnName("DataHoraModificacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<SISLOGProdutos>(entity =>
+            {
+                entity.HasKey(e => new { e.Codigo });
+
+                entity.ToTable("SISLOG_Produtos");
+
+                entity.Property(e => e.Codigo)
+                    .HasColumnName("Codigo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Quantidade)
+                    .HasColumnName("Quantidade")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.QtdDisponivel)
+                    .HasColumnName("QtdDisponivel")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.QtdPendente)
+                    .HasColumnName("QtdPendente")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.QtdPendenteRececao)
+                    .HasColumnName("QtdPendenteRececao")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.DataAtualizacao)
+                    .HasColumnName("DataAtualizacao")
+                    .HasColumnType("datetime");
             });
 
             #region SGPPF
