@@ -268,6 +268,11 @@
                                 fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Descrição"}]'>
                 </such-selectbox>
             </div>
+
+            <div class="col-lg-2">
+                <vaadin-text-field id="piQuantidade" name="piQuantidade" value="{{QuantidadeValue}}" label="Quantidade" disabled="{{ !_permissions.create }}" pattern="\d+(\.\d{1,4})?" on-value-changed="_decimalValue"> </vaadin-text-field>
+            </div>
+
             <div class="col-lg-2" hidden="{{ !_permissions.create }}">
                 <paper-button class="btnSave" disabled="{{ !_permissions.create }}" raised on-tap="_add"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
             </div>
@@ -593,6 +598,23 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="7%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidade"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <template is="dom-if" if="{{ item.selected }}">
+                        <vaadin-text-field id="piQuantidadeGrid" pattern="\d+(\.\d{1,4})?" class="alignRight" value="{{item.quantidade}}" on-value-changed="_decimalValue" disabled="{{ !_permissions.update }}"></vaadin-text-field>
+                    </template>
+                    <template is="dom-if" if="{{ !item.selected }}">
+                        <div class="alignRight">
+                            {{item.quantidade}}
+                        </div>
+                    </template>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="5%" resizable>
                 <template class="header">
                 </template>
@@ -653,6 +675,11 @@
                     },
                     CServClientDescValue: {
                         type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    QuantidadeValue: {
+                        type: Number,
                         notify: true,
                         value: ""
                     },
@@ -828,11 +855,21 @@
                 _decimalValue: function (e) {
                     if (e.target.id != "" && e.target.id != null) {
                         switch (e.target.id) {
+                            case "piQuantidade":
+                                this.$.piQuantidade.value = e.detail.value.replace(",", ".");
+                                break;
                             case "piSalePrice":
                                 this.$.piSalePrice.value = e.detail.value.replace(",", ".");
                                 break;
                             case "piCostPrice":
                                 this.$.piCostPrice.value = e.detail.value.replace(",", ".");
+                                break;
+                            case "piQuantidadeGrid":
+                                var res = this.Griddate.find(x => x.selected == true);
+                                if (res != null) {
+                                    res.quantidade = e.target.value.replace(",", ".");
+                                    this.$.priceServiceClientGrid.clearCache();
+                                }
                                 break;
                             case "piSalePriceGrid":
                                 var res = this.Griddate.find(x => x.selected == true);
@@ -918,7 +955,8 @@
                             typeMealDescription: this.MealdescValue,
                             regionCode: this.codeRegion,
                             functionalAreaCode: this.codeFuncArea,
-                            responsabilityCenterCode: this.codeResponsabilityCenter
+                            responsabilityCenterCode: this.codeResponsabilityCenter,
+                            quantidade: this.QuantidadeValue,
                         });
                         this.$.ajax_update.body = JSON.stringify(this.Griddate);
                         this.$.ajax_update.generateRequest();
@@ -1027,6 +1065,7 @@
                     this.$.piFuncArea.valueText = "";
                     this.$.piCodeResponsabilityCenter.value = "";
                     this.$.piCodeResponsabilityCenter.valueText = "";
+                    this.$.piQuantidade.value = "";
                 },
                 openToastSuccess: function (message) {
                     this.$.ToastMessageSuccess.text = message;

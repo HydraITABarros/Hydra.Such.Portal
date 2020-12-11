@@ -2886,7 +2886,11 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 Problema += " Contrato Não Vigente!";
                             }
-                            if (nextInvoiceDate < item.DataInicial || nextInvoiceDate > item.DataExpiração)
+                            if (nextInvoiceDate < item.DataInicial)
+                            {
+                                Problema += " Data da próxima fatura inferior á data de Início da Versão!";
+                            }
+                            if (nextInvoiceDate > item.DataExpiração)
                             {
                                 Problema += " Data da próxima fatura superior á data de Expiração!";
                             }

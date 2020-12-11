@@ -6885,6 +6885,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Preço Venda")
                     .HasColumnType("decimal(, 20)");
 
+                entity.Property(e => e.Quantidade)
+                    .HasColumnName("Quantidade")
+                    .HasColumnType("decimal(18, 4)");
+
                 entity.Property(e => e.TipoRefeição)
                     .HasColumnName("Tipo Refeição")
                     .HasMaxLength(20);

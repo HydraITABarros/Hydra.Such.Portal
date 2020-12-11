@@ -825,8 +825,8 @@ namespace Hydra.Such.Portal.Controllers
                                 linha.QuantidadeDisponivel = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code, linha.LocalCode).QuantDisponivel;
                             }
 
-                            if (linha.QuantityToRequire <= linha.QuantidadeDisponivel)
-                            {
+                            //if (linha.QuantityToRequire <= linha.QuantidadeDisponivel)
+                            //{
                                 NAVProductsViewModel PRODUTO = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
 
                                 linha.Description = PRODUTO.Name;
@@ -844,12 +844,12 @@ namespace Hydra.Such.Portal.Controllers
                                     result.eReasonCode = 2;
                                     result.eMessage = "Ocorreu um erro ao atualizar a linha.";
                                 }
-                            }
-                            else
-                            {
-                                result.eReasonCode = 2;
-                                result.eMessage = "A Qt. a Requerer tem que ser inferior ou igual a " + linha.QuantidadeDisponivel.ToString() + " para o produto escolhido.";
-                            }
+                            //}
+                            //else
+                            //{
+                            //    result.eReasonCode = 2;
+                            //    result.eMessage = "A Qt. a Requerer tem que ser inferior ou igual a " + linha.QuantidadeDisponivel.ToString() + " para o produto escolhido.";
+                            //}
                         }
                         else
                         {
@@ -3453,11 +3453,11 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
-                        if (x.QuantidadeARequerer > Quantidades.QuantDisponivel)
-                        {
-                            erro = true;
-                            msgErro = msgErro + x.Código + ", ";
-                        }
+                        //if (x.QuantidadeARequerer > Quantidades.QuantDisponivel)
+                        //{
+                        //    erro = true;
+                        //    msgErro = msgErro + x.Código + ", ";
+                        //}
                     });
                     if (erro == true)
                     {

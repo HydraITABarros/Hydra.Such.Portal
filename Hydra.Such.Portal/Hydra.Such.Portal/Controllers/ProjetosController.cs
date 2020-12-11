@@ -2781,6 +2781,7 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.MeasurementUnitCode = item.UnitMeasure;
                         newRow.UnitCost = item.PriceCost.HasValue ? Math.Round((decimal)item.PriceCost, 4) : decimal.Zero;
                         newRow.UnitPrice = item.SalePrice.HasValue ? Math.Round((decimal)item.SalePrice, 4) : decimal.Zero;
+                        newRow.Quantity = item.Quantidade.HasValue ? Math.Round((decimal)item.Quantidade, 4) : decimal.Zero;
                         newRow.Billable = true;
                         newRow.ProjectContabGroup = proj.GrupoContabObra;
                         newRow.MovementType = 1;
@@ -6307,6 +6308,7 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.MeasurementUnitCode = item.UnitMeasure;
                         newRow.UnitCost = item.PriceCost.HasValue ? Math.Round((decimal)item.PriceCost, 4) : decimal.Zero;
                         newRow.UnitPrice = item.SalePrice.HasValue ? Math.Round((decimal)item.SalePrice, 4) : decimal.Zero;
+                        newRow.Quantity = item.Quantidade.HasValue ? Math.Round((decimal)item.Quantidade, 4) : decimal.Zero;
                         newRow.Billable = true;
                         newRow.ProjectContabGroup = proj.GrupoContabObra;
                         newRow.MovementType = 1;
@@ -6683,6 +6685,7 @@ namespace Hydra.Such.Portal.Controllers
                 row.CreateCell(12).SetCellValue("Codigo Região");
                 row.CreateCell(13).SetCellValue("Codigo Area");
                 row.CreateCell(14).SetCellValue("Codigo Centro Responsabilidade");
+                row.CreateCell(15).SetCellValue("Quantidade");
 
                 if (dp != null)
                 {
@@ -6705,6 +6708,7 @@ namespace Hydra.Such.Portal.Controllers
                         row.CreateCell(12).SetCellValue(item.RegionCode);
                         row.CreateCell(13).SetCellValue(item.FunctionalAreaCode);
                         row.CreateCell(14).SetCellValue(item.ResponsabilityCenterCode);
+                        row.CreateCell(15).SetCellValue(item.Quantidade.HasValue ? item.Quantidade.ToString() : "");
                         count++;
                     }
                 }
@@ -6782,6 +6786,7 @@ namespace Hydra.Such.Portal.Controllers
                                 nrow.RegionCode = row.GetCell(12) == null ? "" : row.GetCell(12).ToString();
                                 nrow.FunctionalAreaCode = row.GetCell(13) == null ? "" : row.GetCell(13).ToString();
                                 nrow.ResponsabilityCenterCode = row.GetCell(14) == null ? "" : row.GetCell(14).ToString();
+                                nrow.strQuantidade = row.GetCell(15) == null ? "" : row.GetCell(15).ToString();
                                 ListToCreate.Add(nrow);
                             }
                         }
@@ -6800,6 +6805,11 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             item.SalePrice = Convert.ToDecimal(item.strSalePrice);
                             item.strSalePrice = "";
+                        }
+                        if (!string.IsNullOrEmpty(item.strQuantidade))
+                        {
+                            item.Quantidade = Convert.ToDecimal(item.strQuantidade);
+                            item.strQuantidade = "";
                         }
                     }
                 }

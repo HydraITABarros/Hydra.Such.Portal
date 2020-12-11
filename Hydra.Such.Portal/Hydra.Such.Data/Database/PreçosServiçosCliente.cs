@@ -21,6 +21,7 @@ namespace Hydra.Such.Data.Database
         public string CodigoRegião { get; set; }
         public string CodigoArea { get; set; }
         public string CodigoCentroResponsabilidade { get; set; }
+        public decimal? Quantidade { get; set; }
         public DateTime? DataHoraCriação { get; set; }
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorCriação { get; set; }

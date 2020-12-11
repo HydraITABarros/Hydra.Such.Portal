@@ -1784,12 +1784,15 @@
                         e.detail.value = stringVal.replace(",", ".");
                         this.$._QuantityToRequire.value = e.detail.value
 
+                        //if (this._QuantityToOpen != "" && this.$._CBPurchaseLine.value != "") {
+                        //    if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
+                        //        this._QuantityToRequire = 0;
+                        //        this.$._QuantityToRequire.value = 0;
+                        //        this._openToastError("A quantidade a requerer é maior do que a disponivel!");
+                        //    }
+                        //}
                         if (this._QuantityToOpen != "" && this.$._CBPurchaseLine.value != "") {
-                            if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
-                                this._QuantityToRequire = 0;
-                                this.$._QuantityToRequire.value = 0;
-                                this._openToastError("A quantidade a requerer é maior do que a disponivel!");
-                            }
+                            this._openToastError("Verifique a Qt. Disponivel.");
                         }
                     }
                 },
@@ -2501,7 +2504,7 @@
                             if (this._Products != undefined & this._Products != "") {
                                 if (validLocalCode) {
                                     if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
-                                        if (parseFloat(this._QuantityToRequire) <= parseFloat(this.$._QuantityToOpen.value)) {
+                                        //if (parseFloat(this._QuantityToRequire) <= parseFloat(this.$._QuantityToOpen.value)) {
                                             var totalCost = this._QuantityToRequire * this._UnitCost;
                                             if (isNaN(totalCost)) {
                                                 totalCost = 0;
@@ -2555,10 +2558,10 @@
                                             this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
                                             this.$.prereqLines_databound_ajax.generateRequest();
                                             this.$.grid_prereqlines.clearCache();
-                                        }
-                                        else {
-                                            this._openToastError('A Qt. a Requerer tem que ser inferior ou igual a Qt. Disponível.');
-                                        }
+                                        //}
+                                        //else {
+                                        //    this._openToastError('A Qt. a Requerer tem que ser inferior ou igual a Qt. Disponível.');
+                                        //}
                                     }
                                     else {
                                         this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
