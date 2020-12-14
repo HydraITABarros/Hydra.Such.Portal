@@ -115,9 +115,15 @@ namespace Hydra.Such.Data.Logic.ComprasML
             {
                 using (var ctx = new SuchDBContext())
                 {
-                    items.ForEach(x => x.DataHoraCriação = DateTime.Now);
-                    ctx.LinhasPréRequisição.AddRange(items);
-                    ctx.SaveChanges();
+                    items.ForEach(x =>
+                    {
+                        x.DataHoraCriação = DateTime.Now;
+                        ctx.LinhasPréRequisição.Add(x);
+                        ctx.SaveChanges();
+
+                    });
+                    //ctx.LinhasPréRequisição.AddRange(items);
+                    //ctx.SaveChanges();
                 }
 
                 return true;

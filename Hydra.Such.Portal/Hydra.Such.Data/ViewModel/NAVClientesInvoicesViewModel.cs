@@ -23,6 +23,9 @@ namespace Hydra.Such.Data.ViewModel
         public bool Paid { get; set; }
         public string SellToCustomerNo { get; set; }
         public string BillToCustomerNo { get; set; }
+        public string NoContrato { get; set; }
+        public string NoCompromisso { get; set; }
+        public string NoPedido { get; set; }
         public string RegionId { get; set; }
         public string FunctionalAreaId { get; set; }
         public string RespCenterId { get; set; }

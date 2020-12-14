@@ -25,6 +25,10 @@ using System.Threading.Tasks;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Hydra.Such.Data.Logic.Viatura;
+using Hydra.Such.Data.NAV;
+using WSSisLog;
+using System.ServiceModel;
+using System.Net;
 
 namespace Hydra.Such.Portal.Controllers
 {
@@ -33,11 +37,12 @@ namespace Hydra.Such.Portal.Controllers
         private readonly GeneralConfigurations _config;
         private readonly NAVConfigurations _configNAV;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly NAVWSConfigurations _configws;
 
-
-        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings, IOptions<NAVConfigurations> appSettingsNAV, IHostingEnvironment _hostingEnvironment)
+        public PreRequisicoesController(IOptions<GeneralConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<NAVConfigurations> appSettingsNAV, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
+            _configws = NAVWSConfigs.Value;
             _configNAV = appSettingsNAV.Value;
             this._hostingEnvironment = _hostingEnvironment;
         }
@@ -737,25 +742,114 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     if (!string.IsNullOrEmpty(linha.Code))
                     {
+                        NAVProductsViewModel product = new NAVProductsViewModel();
+                        product = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+
+                        linha.Code = product.Code;
+                        if (product.InventoryValueZero == 1)
+                        {
+                            linha.LocalCode = DBConfigurations.GetById(1).ArmazemCompraDireta;
+                        }
+                        else
+                        {
+                            List<ConfiguracaoParametros> AllArmazens = new List<ConfiguracaoParametros>();
+                            if (!string.IsNullOrEmpty(linha.RegionCode) && linha.RegionCode == "12")
+                                AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem12");
+                            if (!string.IsNullOrEmpty(linha.RegionCode) && linha.RegionCode == "23")
+                                AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem23");
+                            if (!string.IsNullOrEmpty(linha.RegionCode) && linha.RegionCode == "33")
+                                AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem33");
+                            if (!string.IsNullOrEmpty(linha.RegionCode) && linha.RegionCode == "43")
+                                AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem43");
+
+                            List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                            NAVStockKeepingUnitViewModel ProductArmazem = null;
+
+                            if (!string.IsNullOrEmpty(linha.Code))
+                                AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code);
+
+                            if (AllProductsArmazem != null && AllProductsArmazem.Count > 0)
+                            {
+                                if (AllArmazens != null && AllArmazens.Count > 0)
+                                {
+                                    AllArmazens.ForEach(Armazem =>
+                                    {
+                                        if (ProductArmazem == null)
+                                            ProductArmazem = AllProductsArmazem.Where(x => x.LocationCode == Armazem.Valor).FirstOrDefault() ?? null;
+                                    });
+                                }
+                            }
+
+                            if (ProductArmazem != null && !string.IsNullOrEmpty(ProductArmazem.ItemNo_))
+                            {
+                                linha.UnitCost = ProductArmazem.UnitCost;
+                                linha.LocalCode = ProductArmazem.LocationCode;
+                            }
+                        }
+
                         if (linha.QuantityToRequire > 0)
                         {
-                            NAVProductsViewModel PRODUTO = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
-
-                            linha.Description = PRODUTO.Name;
-                            linha.Description2 = PRODUTO.Name2;
-                            linha.UnitMeasureCode = PRODUTO.MeasureUnit;
-
-                            if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
+                            //AMARO SISLOG UPDATE LINHA
+                            if (linha.LocalCode == "4300")
                             {
-                                result.eReasonCode = 1;
-                                result.eMessage = "Linha Atualizada com Sucesso.";
+                                string armazem = "001";
+                                string produto = linha.Code;
+                                Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                                try
+                                {
+                                    TReadStock.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
 
+                                    if (Produto != null)
+                                        linha.QuantidadeDisponivel = Produto.QtdDisponivel;
+                                    else
+                                        linha.QuantidadeDisponivel = 0;
+                                }
+                                if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
+                                    linha.QuantidadeDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
+                                else
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        linha.QuantidadeDisponivel = Produto.QtdDisponivel;
+                                    else
+                                        linha.QuantidadeDisponivel = 0;
+                                }
                             }
                             else
                             {
-                                result.eReasonCode = 2;
-                                result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                                linha.QuantidadeDisponivel = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code, linha.LocalCode).QuantDisponivel;
                             }
+
+                            //if (linha.QuantityToRequire <= linha.QuantidadeDisponivel)
+                            //{
+                                NAVProductsViewModel PRODUTO = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code).FirstOrDefault();
+
+                                linha.Description = PRODUTO.Name;
+                                linha.Description2 = PRODUTO.Name2;
+                                linha.UnitMeasureCode = PRODUTO.MeasureUnit;
+
+                                if (DBPreRequesitionLines.Update(DBPreRequesitionLines.ParseToDB(linha)) != null)
+                                {
+                                    result.eReasonCode = 1;
+                                    result.eMessage = "Linha Atualizada com Sucesso.";
+
+                                }
+                                else
+                                {
+                                    result.eReasonCode = 2;
+                                    result.eMessage = "Ocorreu um erro ao atualizar a linha.";
+                                }
+                            //}
+                            //else
+                            //{
+                            //    result.eReasonCode = 2;
+                            //    result.eMessage = "A Qt. a Requerer tem que ser inferior ou igual a " + linha.QuantidadeDisponivel.ToString() + " para o produto escolhido.";
+                            //}
                         }
                         else
                         {
@@ -1465,7 +1559,7 @@ namespace Hydra.Such.Portal.Controllers
                                         AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem43");
 
                                     List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
-                                    NAVStockKeepingUnitViewModel ProductArmazem = new NAVStockKeepingUnitViewModel();
+                                    NAVStockKeepingUnitViewModel ProductArmazem = null;
 
                                     if (!string.IsNullOrEmpty(newline.Código))
                                         AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, newline.Código);
@@ -1477,8 +1571,8 @@ namespace Hydra.Such.Portal.Controllers
 
                                             AllArmazens.ForEach(Armazem =>
                                             {
-                                                if (ProductArmazem == null || string.IsNullOrEmpty(ProductArmazem.ItemNo_))
-                                                    ProductArmazem = AllProductsArmazem.Where(y => y.LocationCode == Armazem.Valor).FirstOrDefault();
+                                                if (ProductArmazem == null)
+                                                    ProductArmazem = AllProductsArmazem.Where(z => z.LocationCode == Armazem.Valor).FirstOrDefault() ?? null;
                                             });
                                         }
                                     }
@@ -1510,15 +1604,51 @@ namespace Hydra.Such.Portal.Controllers
                             }
                         }
 
-                        QuantidadesViewModel Quantidades = new QuantidadesViewModel();
-
                         if (!string.IsNullOrEmpty(newline.Código) && !string.IsNullOrEmpty(newline.CódigoLocalização))
                         {
-                            Quantidades = AllQuantidades.Where(y => y.Codigo == newline.Código && y.CodLocalizacao == newline.CódigoLocalização).FirstOrDefault();
-
-                            if (Quantidades != null)
+                            //AMARO SISLOG COPIAR MODELO
+                            if (newline.CódigoLocalização == "4300")
                             {
-                                newline.QuantidadeDisponivel = Quantidades.QuantDisponivel;
+                                string armazem = "001";
+                                string produto = newline.Código;
+                                Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                                try
+                                {
+                                    TReadStock.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        newline.QuantidadeDisponivel = Produto.QtdDisponivel;
+                                    else
+                                        newline.QuantidadeDisponivel = 0;
+                                }
+                                if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
+                                    newline.QuantidadeDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
+                                else
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        newline.QuantidadeDisponivel = Produto.QtdDisponivel;
+                                    else
+                                        newline.QuantidadeDisponivel = 0;
+                                }
+                            }
+                            else
+                            {
+                                if (AllQuantidades != null && AllQuantidades.Count > 0)
+                                {
+                                    QuantidadesViewModel Quantidades = new QuantidadesViewModel();
+                                    Quantidades = AllQuantidades.Where(y => y.Codigo == newline.Código && y.CodLocalizacao == newline.CódigoLocalização).FirstOrDefault();
+
+                                    if (Quantidades != null)
+                                    {
+                                        newline.QuantidadeDisponivel = Quantidades.QuantDisponivel;
+                                    }
+                                }
                             }
                         }
 
@@ -1532,6 +1662,9 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         return Json(result);
                     }
+
+                    result.eReasonCode = 1;
+                    result.eMessage = "Linhas copiadas com sucesso.";
 
                     if (DBPreRequesitionLines.CreateMultiple(preReqLines))
                     {
@@ -2279,6 +2412,30 @@ namespace Hydra.Such.Portal.Controllers
                         ctx.RequisicoesRegAlteracoes.Add(logEntry);
                         ctx.SaveChanges();
 
+                        //SISLOGRESERVAS Create Lines Data
+                        if (createReq.LinhasRequisição != null && createReq.LinhasRequisição.Count > 0)
+                        {
+                            foreach (LinhasRequisição linha in createReq.LinhasRequisição)
+                            {
+                                if (!string.IsNullOrEmpty(linha.CódigoLocalização) && (linha.CódigoLocalização == "2300" || linha.CódigoLocalização == "3300" || linha.CódigoLocalização == "4300"))
+                                {
+                                    SISLOGReservas Reserva = new SISLOGReservas
+                                    {
+                                        NoRequisicao = linha.NºRequisição,
+                                        NoLinha = linha.NºLinha,
+                                        NoProduto = linha.Código,
+                                        QuantidadeReserva = linha.QuantidadeARequerer,
+                                        DataInicioReserva = DateTime.Now,
+                                        Reservado = true,
+                                        UtilizadorCriacao = User.Identity.Name,
+                                        DataHoraCriacao = DateTime.Now
+                                    };
+                                    ctx.SISLOGReservas.Add(Reserva);
+                                    ctx.SaveChanges();
+                                }
+                            }
+                        }
+
                         //copy files
                         var preReq = data.PreRequesitionsNo;
                         List<Anexos> FilesLoaded = DBAttachments.GetById(preReq);
@@ -2954,7 +3111,7 @@ namespace Hydra.Such.Portal.Controllers
                             AllArmazens = DBConfiguracaoParametros.GetListByParametro("RegiaoArmazem43");
 
                         List<NAVStockKeepingUnitViewModel> AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
-                        NAVStockKeepingUnitViewModel ProductArmazem = new NAVStockKeepingUnitViewModel();
+                        NAVStockKeepingUnitViewModel ProductArmazem = null;
 
                         if (!string.IsNullOrEmpty(linha.Code))
                             AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, linha.Code);
@@ -2965,8 +3122,8 @@ namespace Hydra.Such.Portal.Controllers
                             {
                                 AllArmazens.ForEach(Armazem =>
                                 {
-                                    if (ProductArmazem != null && ProductArmazem.ItemNo_ == null)
-                                        ProductArmazem = AllProductsArmazem.Where(x => x.LocationCode == Armazem.Valor).FirstOrDefault();
+                                    if (ProductArmazem == null)
+                                        ProductArmazem = AllProductsArmazem.Where(x => x.LocationCode == Armazem.Valor).FirstOrDefault() ?? null;
                                 });
                             }
                         }
@@ -3249,6 +3406,62 @@ namespace Hydra.Such.Portal.Controllers
                     if (erro == true)
                     {
                         return Json("Nas Linhas, existe o produto com o código Nº " + codigo + "que não têm stock em armazém.");
+                    }
+
+                    erro = false;
+                    string msgErro = "Nas Linhas, no(s) produto(s) a Qt. Disponível neste momento é inferior a Qt. a Requerer: ";
+                    QuantidadesViewModel Quantidades = new QuantidadesViewModel();
+                    PreLinhas.ForEach(x =>
+                    {
+                        if (!string.IsNullOrEmpty(x.Código) && !string.IsNullOrEmpty(x.CódigoLocalização))
+                        {
+                            //AMARO SISLOG CRIAR REQUISIÇÃO
+                            string armazem = x.CódigoLocalização;
+                            string produto = x.Código;
+                            if (armazem == "4300")
+                            {
+                                armazem = "001";
+                                Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                                try
+                                {
+                                    TReadStock.Wait();
+                                }
+                                catch (Exception ex)
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        Quantidades.QuantDisponivel = (decimal)Produto.QtdDisponivel;
+                                    else
+                                        Quantidades.QuantDisponivel = 0;
+                                }
+                                if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
+                                    Quantidades.QuantDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
+                                else
+                                {
+                                    SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                                    if (Produto != null)
+                                        Quantidades.QuantDisponivel = (decimal)Produto.QtdDisponivel;
+                                    else
+                                        Quantidades.QuantDisponivel = 0;
+                                }
+                            }
+                            else
+                            {
+                                Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto, armazem);
+                            }
+                        }
+
+                        //if (x.QuantidadeARequerer > Quantidades.QuantDisponivel)
+                        //{
+                        //    erro = true;
+                        //    msgErro = msgErro + x.Código + ", ";
+                        //}
+                    });
+                    if (erro == true)
+                    {
+                        return Json(msgErro);
                     }
                 }
             }
@@ -4143,5 +4356,52 @@ namespace Hydra.Such.Portal.Controllers
             //return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Requisições Linhas Arquivadas.xlsx");
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
+
+        [HttpPost]
+        public JsonResult GetQuantidades(string produto, string armazem)
+        {
+            QuantidadesViewModel Quantidades = new QuantidadesViewModel();
+
+            if (!string.IsNullOrEmpty(produto) && !string.IsNullOrEmpty(armazem))
+            {
+                //AMARO SISLOG CRIAR LINHA
+                if (armazem == "4300")
+                {
+                    armazem = "001";
+                    Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto, _configws);
+                    try
+                    {
+                        TReadStock.Wait();
+                    }
+                    catch (Exception ex)
+                    {
+                        SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                        if (Produto != null)
+                            Quantidades.QuantDisponivel = (decimal)Produto.QtdDisponivel;
+                        else
+                            Quantidades.QuantDisponivel = 0;
+                    }
+                    if (TReadStock.Result != null && TReadStock.Result.stocksActuales.Length > 0)
+                        Quantidades.QuantDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
+                    else
+                    {
+                        SISLOGProdutos Produto = DBSISLOGProdutos.GetById(produto);
+
+                        if (Produto != null)
+                            Quantidades.QuantDisponivel = (decimal)Produto.QtdDisponivel;
+                        else
+                            Quantidades.QuantDisponivel = 0;
+                    }
+                }
+                else
+                {
+                    Quantidades = DBNAV2017Products.GetQuantidades(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, produto, armazem);
+                }
+            }
+
+            return Json(Quantidades);
+        }
     }
+
 }

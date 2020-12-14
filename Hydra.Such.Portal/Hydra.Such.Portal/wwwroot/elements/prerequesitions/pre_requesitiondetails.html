@@ -158,7 +158,7 @@
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLine}}" id="purchaselines_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/getOpenOrderLineByHeader" last-response="{{CBPurchaseLineGrid}}" id="purchaselinesgrid_ajax" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
-        <iron-ajax url="/NecessidadeCompras/GetQuantidades" id="ajax_GetQuantidades" last-response="{{quantidadesResult}}" on-response="_getQuantidadesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PreRequisicoes/GetQuantidades" id="ajax_GetQuantidades" last-response="{{quantidadesResult}}" on-response="_getQuantidadesResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
         <!--<iron-ajax url="/PopulateDropdowns/GetProjectById" last-response="{{ProjectDims}}" id="get_project_dims" on-response="_getprojectdimsResponse" method="post" handle-as="json" content-type="application/json"></iron-ajax>-->
 
@@ -754,9 +754,6 @@
                         <paper-collapse-group>
                             <paper-collapse-item class="panel-heading" header="Linhas" opened>
                                 <div class="row break_clear">
-                                    <!--<div class="col-lg-2">
-                                    <vaadin-text-field value="{{_LocalCode}}" id="_LocalCode" name="_LocalCode" label="Código Localização" disabled="{{ !_permissions.update }}"> </vaadin-text-field>
-                                </div>-->
                                     <div class="col-lg-2">
                                         <such-selectbox id="_CBPurchaseLine" value="{{PurchaseLine}}" label="Nº Linha Enc. Aberto" on-value-changed="_setPurchaseLine"
                                                         items="[[CBPurchaseLine]]"
@@ -786,17 +783,6 @@
                                     </div>
 
                                     <div class="col-sm-2">
-                                        <!--on-value-changed="_getCDirect"-->
-                                        <!--<vaadin-combo-box items="[[CBLocations]]" id="_CBLocations" item-value-path="id" value="{{_LocalCode}}" item-label-path="id" label="Cód. Localização" required error-message="Este campo é obrigatório" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>-->
                                         <such-selectbox id="_CBLocations" value="{{_LocalCode}}" label="Cód. Localização"
                                                         items="[[CBLocations]]"
                                                         text-path="id"
@@ -817,16 +803,6 @@
                                     </div>
 
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[LCBMeasuresUnit]]" id="_UnitMeasureCode" name="_UnitMeasureCode" item-value-path="id" item-label-path="id" value="{{_UnitMeasureCode}}" label="Código Unid. Medida" disabled="{{ !_permissions.update }}">
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>-->
                                         <such-selectbox id="_UnitMeasureCode" value="{{_UnitMeasureCode}}" label="Código Unid. Medida"
                                                         items="[[LCBMeasuresUnit]]"
                                                         text-path="id"
@@ -881,16 +857,6 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[LProjectRegionCodes]]" id="_CLRegion" name="_CLRegion" item-value-path="id" item-label-path="value" value="[[data.regionCode]]" label="Cód. Região" disabled>
-                                        <template>
-                                            <table width="200px">
-                                                <tr>
-                                                    <td width="40%">[[item.id]]</td>
-                                                    <td width="60%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>-->
                                         <such-selectbox id="_CLRegion" value="[[data.regionCode]]" label="Cód. Região"
                                                         items="[[LProjectRegionCodes]]"
                                                         text-path="value"
@@ -900,16 +866,6 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[LProjectFunctionalAreaCodes]]" id="_CLFunctionalAreaCode" name="_CLFunctionalAreaCode" item-value-path="id" item-label-path="value" value="[[data.functionalAreaCode]]" label="Cód. Área Funcional" disabled>
-                                        <template>
-                                            <table width="500px">
-                                                <tr>
-                                                    <td width="10%">[[item.id]]</td>
-                                                    <td width="90%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>-->
                                         <such-selectbox id="_CLFunctionalAreaCode" value="[[data.functionalAreaCode]]" label="Cód. Área Funcional"
                                                         items="[[LProjectFunctionalAreaCodes]]"
                                                         text-path="value"
@@ -919,16 +875,6 @@
                                         </such-selectbox>
                                     </div>
                                     <div class="col-lg-2">
-                                        <!--<vaadin-combo-box items="[[LProjectResponsabilityCenterCodes]]" id="_CLResponsabilityCenterCode" name="_CLResponsabilityCenterCode" item-value-path="id" item-label-path="value" on-change="_RespChange" value="[[data.responsabilityCenterCode]]" label="Cód. Centro Responsabilidade" disabled>
-                                        <template>
-                                            <table width="550px">
-                                                <tr>
-                                                    <td width="20%">[[item.id]]</td>
-                                                    <td width="80%"> <b>[[item.value]]</b></td>
-                                                </tr>
-                                            </table>
-                                        </template>
-                                    </vaadin-combo-box>-->
                                         <such-selectbox id="_CLResponsabilityCenterCode" value="[[data.responsabilityCenterCode]]" label="Cód. Centro Responsabilidade"
                                                         items="[[LProjectResponsabilityCenterCodes]]"
                                                         on-change="_RespChange"
@@ -959,16 +905,6 @@
                                         </template>
                                     </vaadin-grid-column>
 
-                                    <!--<vaadin-grid-column width="150px">
-        <template class="header">
-            <vaadin-grid-sorter path="lineNo">Nº Linha</vaadin-grid-sorter>
-            <vaadin-grid-filter path="lineNo" />
-        </template>
-        <template>
-            <vaadin-text-field value="{{item.lineNo}}" id="cblineNo" disabled> </vaadin-text-field>
-        </template>
-    </vaadin-grid-column>-->
-
                                     <vaadin-grid-column width="150px" resizable>
                                         <template class="header">
                                             <vaadin-grid-sorter path="localCode">Código Localização</vaadin-grid-sorter>
@@ -976,29 +912,10 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <!--<vaadin-combo-box items="[[CBLocations]]" id="_CBLocalizations" item-value-path="id" item-label-path="id" value="{{item.localCode}}" required disabled="{{ _setDisabled(item) }}" onchange="_GridLocationChange" on-blur="_updateLinhaPreRequisicao">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="40%">[[item.id]]</td>
-                                <td width="60%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>-->
-                                                <!--<such-selectbox id="_CBLocalizations" value="{{item.localCode}}"
-                                items="[[CBLocations]]"
-                                on-change="_updateLinhaPreRequisicao"
-                                text-path="id"
-                                value-path="id"
-                                fields='[{"field":"id", "name":"Código"}, {"field":"value", "name":"Localização"}]'
-                                required disabled="{{ _setDisabled(item) }}">
-                </such-selectbox>-->
                                                 [[item.localCode]]
                                             </template>
                                             <template is="dom-if" if="{{ !item.selected }}">
                                                 [[item.localCode]]
-                                                <!--[[ _clFormatLocation(item.localCode) ]]-->
                                             </template>
                                         </template>
                                     </vaadin-grid-column>
@@ -1020,23 +937,6 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <!--<such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}" label="Cód. Produto"
-                                items="[[Products]]"
-                                text-path="code"
-                                value-path="code"
-                                fields='[{"field":"code", "name":"Cód. Produto"}, {"field":"name", "name":"Descrição"}, {"field":"name2", "name":"Descrição 2"}, {"field":"measureUnit", "name":"Unidade de Medida"}, {"field":"itemCategoryCode", "name":"Cód. Categoria"}, {"field":"productGroupCode", "name":"Cód. Grupo"}]'
-                                on-value-changed="_onProductInGridChanged">
-                </such-selectbox>-->
-                                                <!--<vaadin-combo-box items="[[Products]]" id="_CLGridSupplierProductCode" name="_CLGridSupplierProductCode" item-value-path="code" item-label-path="code" value="{{item.code}}" disabled="{{ _setDisabled(item) }}" on-blur="_onProductInGridChanged">
-                    <template>
-                        <table width="180px">
-                            <tr>
-                                <td width="40%">[[item.code]]</td>
-                                <td width="60%"> <b>[[item.name]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridSupplierProductCode" value="{{item.code}}"
                                                                 items="[[Products]]"
                                                                 on-change="_onProductInGridChanged"
@@ -1089,16 +989,6 @@
                                         </template>
                                         <template>
                                             <template is="dom-if" if="{{ item.selected }}">
-                                                <!--<vaadin-combo-box items="[[LCBMeasuresUnit]]" id="_CLGridUnitMeasureCode" name="_CLGridUnitMeasureCode" item-value-path="id" item-label-path="id" value="{{item.unitMeasureCode}}" disabled="{{ !_permissions.update }}" on-blur="_updateLinhaPreRequisicao">
-                    <template>
-                        <table width="200px">
-                            <tr>
-                                <td width="40%">[[item.id]]</td>
-                                <td width="60%"> <b>[[item.value]]</b></td>
-                            </tr>
-                        </table>
-                    </template>
-                </vaadin-combo-box>-->
                                                 <such-selectbox id="_CLGridUnitMeasureCode" value="{{item.unitMeasureCode}}"
                                                                 items="[[LCBMeasuresUnit]]"
                                                                 on-change="_updateLinhaPreRequisicao"
@@ -1890,17 +1780,19 @@
                 },
                 _onChangeQuantity: function (e) {
                     if (e != undefined) {
-
                         var stringVal = "" + e.detail.value;
                         e.detail.value = stringVal.replace(",", ".");
                         this.$._QuantityToRequire.value = e.detail.value
 
+                        //if (this._QuantityToOpen != "" && this.$._CBPurchaseLine.value != "") {
+                        //    if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
+                        //        this._QuantityToRequire = 0;
+                        //        this.$._QuantityToRequire.value = 0;
+                        //        this._openToastError("A quantidade a requerer é maior do que a disponivel!");
+                        //    }
+                        //}
                         if (this._QuantityToOpen != "" && this.$._CBPurchaseLine.value != "") {
-                            if (parseInt(this._QuantityToOpen) < parseInt(e.detail.value)) {
-                                this._QuantityToRequire = 0;
-                                this.$._QuantityToRequire.value = 0;
-                                this._openToastError("A quantidade a requerer é maior do que a disponivel!");
-                            }
+                            this._openToastError("Verifique a Qt. Disponivel.");
                         }
                     }
                 },
@@ -2612,59 +2504,64 @@
                             if (this._Products != undefined & this._Products != "") {
                                 if (validLocalCode) {
                                     if (this.$._QuantityToRequire.validate() && parseFloat(this.$._QuantityToRequire.value) > 0) {
-                                        var totalCost = this._QuantityToRequire * this._UnitCost;
-                                        if (isNaN(totalCost)) {
-                                            totalCost = 0;
-                                        }
+                                        //if (parseFloat(this._QuantityToRequire) <= parseFloat(this.$._QuantityToOpen.value)) {
+                                            var totalCost = this._QuantityToRequire * this._UnitCost;
+                                            if (isNaN(totalCost)) {
+                                                totalCost = 0;
+                                            }
 
-                                        var purchHeaderNo = "";
-                                        var purchLineNo = "";
-                                        if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
-                                            var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
-                                            purchHeaderNo = composedKey[0];
-                                            purchLineNo = composedKey[1];
-                                        }
+                                            var purchHeaderNo = "";
+                                            var purchLineNo = "";
+                                            if (this.$._CBPurchaseLine.value != undefined & this.$._CBPurchaseLine.value != "") {
+                                                var composedKey = this.$._CBPurchaseLine.value.split(" ", 2);
+                                                purchHeaderNo = composedKey[0];
+                                                purchLineNo = composedKey[1];
+                                            }
 
-                                        this.dataLines.lines.unshift({
-                                            preRequisitionLineNo: this.data.preRequesitionsNo,
-                                            type: 2, //PRODUTO
-                                            code: this._Products,
-                                            description: this._Description,
-                                            description2: this._Description2,
-                                            localCode: localCode,
-                                            unitMeasureCode: this._UnitMeasureCode,
-                                            quantityToRequire: this._QuantityToRequire,
-                                            regionCode: this.$._CLRegion.value,
-                                            functionalAreaCode: this.$._CLFunctionalAreaCode.value,
-                                            centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
-                                            projectNo: this.$._ProjectNo.value,
-                                            //qtyByUnitOfMeasure
-                                            //quantityRequired
-                                            //quantityPending:
-                                            quantidadeDisponivel: this.$._QuantityToOpen.value,
-                                            quantidadeInicial: this._QuantityToRequire,
-                                            unitCost: this._UnitCost,
-                                            //sellUnityPrice
-                                            //budgetValue
-                                            //expectedReceivingDate
-                                            //billable
-                                            maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
-                                            //employeeNo
-                                            vehicle: this.$._VehicleLines.value,
-                                            supplierNo: this._CBVendor,
-                                            //supplierProductCode
-                                            armazemCDireta: this._CBItemsCDirect,
-                                            //unitNutritionProduction
-                                            //customerNo
-                                            openOrderNo: purchHeaderNo,
-                                            openOrderLineNo: purchLineNo,
-                                            totalCost: totalCost > 0 ? totalCost : "",
-                                        });
+                                            this.dataLines.lines.unshift({
+                                                preRequisitionLineNo: this.data.preRequesitionsNo,
+                                                type: 2, //PRODUTO
+                                                code: this._Products,
+                                                description: this._Description,
+                                                description2: this._Description2,
+                                                localCode: localCode,
+                                                unitMeasureCode: this._UnitMeasureCode,
+                                                quantityToRequire: this._QuantityToRequire,
+                                                regionCode: this.$._CLRegion.value,
+                                                functionalAreaCode: this.$._CLFunctionalAreaCode.value,
+                                                centerResponsibilityCode: this.$._CLResponsabilityCenterCode.value,
+                                                projectNo: this.$._ProjectNo.value,
+                                                //qtyByUnitOfMeasure
+                                                //quantityRequired
+                                                //quantityPending:
+                                                quantidadeDisponivel: this.$._QuantityToOpen.value,
+                                                quantidadeInicial: this._QuantityToRequire,
+                                                unitCost: this._UnitCost,
+                                                //sellUnityPrice
+                                                //budgetValue
+                                                //expectedReceivingDate
+                                                //billable
+                                                maintenanceOrderLineNo: this._MaintenanceOrderLineNo,
+                                                //employeeNo
+                                                vehicle: this.$._VehicleLines.value,
+                                                supplierNo: this._CBVendor,
+                                                //supplierProductCode
+                                                armazemCDireta: this._CBItemsCDirect,
+                                                //unitNutritionProduction
+                                                //customerNo
+                                                openOrderNo: purchHeaderNo,
+                                                openOrderLineNo: purchLineNo,
+                                                totalCost: totalCost > 0 ? totalCost : "",
+                                            });
 
-                                        this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
-                                        this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
-                                        this.$.prereqLines_databound_ajax.generateRequest();
-                                        this.$.grid_prereqlines.clearCache();
+                                            this.$.prereqLines_databound_ajax.url = "/PreRequisicoes/UpdateContractLines";
+                                            this.$.prereqLines_databound_ajax.body = JSON.stringify(this.dataLines);
+                                            this.$.prereqLines_databound_ajax.generateRequest();
+                                            this.$.grid_prereqlines.clearCache();
+                                        //}
+                                        //else {
+                                        //    this._openToastError('A Qt. a Requerer tem que ser inferior ou igual a Qt. Disponível.');
+                                        //}
                                     }
                                     else {
                                         this._openToastError('O valor do campo Qt. a Requerer tem que estar preenchido, ser superior a 0 e só pode ter 4 casas decimais.');
@@ -2762,53 +2659,58 @@
                     //    e.model.item.openOrderNo = line.documentNO;
                     //}
 
-                    if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
-                        this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
-                            preRequisitionLineNo: e.model.item.preRequisitionLineNo,
-                            lineNo: e.model.item.lineNo,
-                            type: e.model.item.type,
-                            code: e.model.item.code,
-                            description: e.model.item.description,
-                            description2: e.model.item.description2,
-                            localCode: e.model.item.localCode,
-                            unitMeasureCode: e.model.item.unitMeasureCode,
-                            quantityToRequire: e.model.item.quantityToRequire,
-                            quantidadeDisponivel: e.model.item.quantidadeDisponivel,
-                            quantidadeInicial: e.model.item.quantityToRequire,
-                            regionCode: e.model.item.regionCode,
-                            functionalAreaCode: e.model.item.functionalAreaCode,
-                            centerResponsibilityCode: e.model.item.centerResponsibilityCode,
-                            projectNo: e.model.item.projectNo,
-                            createDateTime: e.model.item.createDateTime,
-                            createUser: e.model.item.createUser,
-                            updateDateTime: e.model.item.updateDateTime,
-                            updateUser: e.model.item.updateUser,
-                            qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
-                            quantityRequired: e.model.item.quantityRequired,
-                            quantityPending: e.model.item.quantityPending,
-                            unitCost: e.model.item.unitCost,
-                            sellUnityPrice: e.model.item.sellUnityPrice,
-                            budgetValue: e.model.item.budgetValue,
-                            expectedReceivingDate: e.model.item.expectedReceivingDate,
-                            billable: e.model.item.billable,
-                            maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
-                            employeeNo: e.model.item.employeeNo,
-                            vehicle: e.model.item.vehicle,
-                            supplierNo: e.model.item.supplierNo,
-                            supplierProductCode: e.model.item.supplierProductCode,
-                            unitNutritionProduction: e.model.item.unitNutritionProduction,
-                            customerNo: e.model.item.customerNo,
-                            openOrderNo: e.model.item.openOrderNo,
-                            openOrderLineNo: e.model.item.openOrderLineNo,
-                            totalCost: e.model.item.totalCost,
-                            armazemCDireta: e.model.item.armazemCDireta,
-                            selected: e.model.item.selected,
-                        });
-                        this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.generateRequest();
-                        this.$.grid_prereqlines.clearCache();
+                    if (e.model.item.quantityToRequire > e.model.item.quantidadeDisponivel) {
+                        this._openToastError('Na linha a Qt. a Requerer não pode ser superior a Qt. Disponível.');
                     }
                     else {
-                        this._openToastError('Na linha o campo Nº Ordem/Projeto é de preenchimento obrigatório.');
+                        if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
+                            this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
+                                preRequisitionLineNo: e.model.item.preRequisitionLineNo,
+                                lineNo: e.model.item.lineNo,
+                                type: e.model.item.type,
+                                code: e.model.item.code,
+                                description: e.model.item.description,
+                                description2: e.model.item.description2,
+                                localCode: e.model.item.localCode,
+                                unitMeasureCode: e.model.item.unitMeasureCode,
+                                quantityToRequire: e.model.item.quantityToRequire,
+                                quantidadeDisponivel: e.model.item.quantidadeDisponivel,
+                                quantidadeInicial: e.model.item.quantityToRequire,
+                                regionCode: e.model.item.regionCode,
+                                functionalAreaCode: e.model.item.functionalAreaCode,
+                                centerResponsibilityCode: e.model.item.centerResponsibilityCode,
+                                projectNo: e.model.item.projectNo,
+                                createDateTime: e.model.item.createDateTime,
+                                createUser: e.model.item.createUser,
+                                updateDateTime: e.model.item.updateDateTime,
+                                updateUser: e.model.item.updateUser,
+                                qtyByUnitOfMeasure: e.model.item.qtyByUnitOfMeasure,
+                                quantityRequired: e.model.item.quantityRequired,
+                                quantityPending: e.model.item.quantityPending,
+                                unitCost: e.model.item.unitCost,
+                                sellUnityPrice: e.model.item.sellUnityPrice,
+                                budgetValue: e.model.item.budgetValue,
+                                expectedReceivingDate: e.model.item.expectedReceivingDate,
+                                billable: e.model.item.billable,
+                                maintenanceOrderLineNo: e.model.item.maintenanceOrderLineNo,
+                                employeeNo: e.model.item.employeeNo,
+                                vehicle: e.model.item.vehicle,
+                                supplierNo: e.model.item.supplierNo,
+                                supplierProductCode: e.model.item.supplierProductCode,
+                                unitNutritionProduction: e.model.item.unitNutritionProduction,
+                                customerNo: e.model.item.customerNo,
+                                openOrderNo: e.model.item.openOrderNo,
+                                openOrderLineNo: e.model.item.openOrderLineNo,
+                                totalCost: e.model.item.totalCost,
+                                armazemCDireta: e.model.item.armazemCDireta,
+                                selected: e.model.item.selected,
+                            });
+                            this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.generateRequest();
+                            this.$.grid_prereqlines.clearCache();
+                        }
+                        else {
+                            this._openToastError('Na linha o campo Nº Ordem/Projeto é de preenchimento obrigatório.');
+                        }
                     }
                 },
                 _UpdateLinhaPreRequisicao_ResponseProcessor: function (e) {
@@ -2953,11 +2855,11 @@
                         }
                         else
                             this._openToastError('É obrigatório ter preenchido o campo Cód. Área Funcional no Cabeçalho.');
-                    }
 
-                    if (this.$._CBPurchaseLine.value == "" && this.$._Products.value != "" && this.$._CBLocations.value != "") {
-                        this.$.ajax_GetQuantidades.params = { "produto": this.$._Products.value, "armazem": this.$._CBLocations.value };
-                        this.$.ajax_GetQuantidades.generateRequest();
+                        if (this.$._CBPurchaseLine.value == "" && this.$._Products.value != "" && this.$._CBLocations.value != "") {
+                            this.$.ajax_GetQuantidades.params = { "produto": this.$._Products.value, "armazem": this.$._CBLocations.value };
+                            this.$.ajax_GetQuantidades.generateRequest();
+                        }
                     }
                 },
                 _onProductClick: function (e) {

@@ -20,6 +20,7 @@ namespace Hydra.Such.Data.ViewModel
         public string UnitMeasure { get; set; }
         public string TypeMeal { get; set; }
         public string TypeMealDescription { get; set; }
+        public decimal? Quantidade { get; set; }
         public string RegionCode { get; set; }
         public string FunctionalAreaCode { get; set; }
         public string ResponsabilityCenterCode { get; set; }
@@ -29,6 +30,7 @@ namespace Hydra.Such.Data.ViewModel
         public string UpdateUser { get; set; }
         public string strSalePrice { get; set; }
         public string strPriceCost { get; set; }
+        public string strQuantidade { get; set; }
         public bool Selected { get; set; }
 
         //EXPORTAR PARA EXCEL

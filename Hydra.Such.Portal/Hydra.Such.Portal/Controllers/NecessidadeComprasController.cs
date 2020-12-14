@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Hydra.Such.Data;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
@@ -1533,15 +1534,32 @@ namespace Hydra.Such.Portal.Controllers
 
 
         [HttpPost]
-
         public JsonResult GetQuantidades(string produto, string armazem)
         {
+            //QuantidadesViewModel Quantidades = new QuantidadesViewModel();
             QuantidadesViewModel Quantidades = DBNAV2017Products.GetQuantidades(_config.NAVDatabaseName, _config.NAVCompanyName, produto, armazem);
+
+            //if (!string.IsNullOrEmpty(produto) && !string.IsNullOrEmpty(armazem) && armazem == "4300")
+            //{
+            //    Task<WSSisLog.getStockResponse> TReadStock = WS_SisLog.GetSTOCK(armazem, produto);
+            //    try
+            //    {
+            //        TReadStock.Wait();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Quantidades.QuantDisponivel = 0;
+            //    }
+            //    if (TReadStock.Result.stocksActuales != null && TReadStock.Result.stocksActuales.Length > 0)
+            //        Quantidades.QuantDisponivel = TReadStock.Result.stocksActuales.FirstOrDefault().cantdisponible;
+            //    else
+            //        Quantidades.QuantDisponivel = 0;
+            //}
+
             if (Quantidades != null)
                 return Json(Quantidades);
             else
                 return Json(null);
         }
-
     }
 }

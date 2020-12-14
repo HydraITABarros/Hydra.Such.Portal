@@ -157,7 +157,7 @@
                         <vaadin-text-field id="description" name="description" value="{{diary.description}}" label="Descrição"></vaadin-text-field>
                     </div>
                     <div class="col-lg-2">
-                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*([,.]\d+)?$" on-value-changed="_ConvertDecimals" value="{{diary.value}}" label="Valor" required error-message="O campo Valor é de preenchimento obrigatório."></vaadin-text-field>
+                        <vaadin-text-field id="value" name="value" pattern="^[1-9]\d*([,.]\d+)?$" on-value-changed="_ConvertDecimals" value="{{diary.value}}" label="Valor"></vaadin-text-field> @*required error-message="O campo Valor é de preenchimento obrigatório."*@
                     </div>
 
                     <div class="col-lg-1" style="padding-top:25px">
@@ -319,7 +319,7 @@
                     this.$.btnCreateCoffeeShopDiary.disabled = false;
                 }
                 else {
-                    this.$.value.validate();
+                    //this.$.value.validate();
                     if (this.$.value.value == "" || this.$.value.value == undefined) {
                         this._openToastError("O campo Valor é de preenchimento obrigatório.");
                         this.$.btnCreateCoffeeShopDiary.disabled = false;
@@ -420,7 +420,7 @@
                             ok = 2;
                         }
                         else {
-                            if (this.result[ind].value == null || this.result[ind].value == "") {
+                            if (this.result[ind].value == null) {
                                 ok = 3;
                             }
                         }

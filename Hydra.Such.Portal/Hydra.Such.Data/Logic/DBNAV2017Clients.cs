@@ -249,6 +249,9 @@ namespace Hydra.Such.Data.Logic
                             DueDate = (DateTime?)temp.DueDate,
                             FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
                             Paid = (bool)temp.Paid,
+                            NoContrato = temp.NoContrato.Equals(DBNull.Value) ? "" : (string)temp.NoContrato,
+                            NoCompromisso = temp.NoCompromisso.Equals(DBNull.Value) ? "" : (string)temp.NoCompromisso,
+                            NoPedido = temp.NoPedido.Equals(DBNull.Value) ? "" : (string)temp.NoPedido,
                             RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
                             RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
                             SellToCustomerNo = temp.SellToCustomerNo.Equals(DBNull.Value) ? "" : (string)temp.SellToCustomerNo,
@@ -397,6 +400,9 @@ namespace Hydra.Such.Data.Logic
                             NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
                             NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
                             DataConsumo = temp.DataConsumo.Equals(DBNull.Value) ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString().Contains("01/01/1753") ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString(),
+                            NoContrato = temp.NoContrato.Equals(DBNull.Value) ? "" : (string)temp.NoContrato.ToString(),
+                            NoCompromisso = temp.NoCompromisso.Equals(DBNull.Value) ? "" : (string)temp.NoCompromisso.ToString(),
+                            NoPedido = temp.DocumentNo.Equals(DBNull.Value) ? "" : (string)temp.NoPedido.ToString(),
                         });
                     }
                     return result;
@@ -457,6 +463,9 @@ namespace Hydra.Such.Data.Logic
                             NGuiaResiduosGAR = temp.NGuiaResiduosGAR.Equals(DBNull.Value) ? "" : (string)temp.NGuiaResiduosGAR.ToString(),
                             NGuiaExterna = temp.NGuiaExterna.Equals(DBNull.Value) ? "" : (string)temp.NGuiaExterna.ToString(),
                             DataConsumo = temp.DataConsumo.Equals(DBNull.Value) ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString().Contains("01/01/1753") ? "" : Convert.ToDateTime((string)temp.DataConsumo.ToString()).ToShortDateString(),
+                            NoContrato = temp.NoContrato.Equals(DBNull.Value) ? "" : (string)temp.NoContrato.ToString(),
+                            NoCompromisso = temp.NoCompromisso.Equals(DBNull.Value) ? "" : (string)temp.NoCompromisso.ToString(),
+                            NoPedido = temp.NoPedido.Equals(DBNull.Value) ? "" : (string)temp.NoPedido.ToString(),
                         });
                     }
                     return result;

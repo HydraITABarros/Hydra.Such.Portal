@@ -1103,7 +1103,7 @@
                             this.$.mOpenOrderLinesId.value = linhaAcordo.codProduto;
                             //this.$.txtProdDescription.value = linhaAcordo.descricaoProduto;
 
-                            this.$.ajax_GetQuantidades.params = { "produto": linhaAcordo.codProduto, "armazem": this.armazem };
+                            this.$.ajax_GetQuantidades.params = { "produto": linhaAcordo.codProduto, "armazem": this.armazem};
                             this.$.ajax_GetQuantidades.generateRequest();
                         }
                     }
