@@ -47,8 +47,6 @@ namespace Hydra.Such.Data.Logic
             Funcao = f.Funcao;
             CodEstabelecimento = f.CodEstabelecimento;
             DescricaoEstabelecimento = f.DescricaoEstabelecimento;
-
-            PedidosFormacao = DBAcademia.__GetAllPedidosFormacao(f.No);
         }
 
         public bool AlreadyRegisteredForCourse(string courseId, ref string requestId)
@@ -73,6 +71,11 @@ namespace Hydra.Such.Data.Logic
             }
 
             return false;
+        }
+
+        public void GetAllTrainingRequestsForTrainne()
+        {
+            PedidosFormacao = DBAcademia.__GetAllPedidosFormacao(No);
         }
     }
 
@@ -467,8 +470,7 @@ namespace Hydra.Such.Data.Logic
                         List<TemaFormacao> temas = _ctx.TemaFormacao.Where(t => t.Activo == 1).ToList();
                         foreach (var item in temas)
                         {
-                            item.AccoesTema = __GetAllAccoesFormacao(item.IdTema, DateTime.Now)
-                                .Where(a => a.Activa.Value == 1).ToList();
+                            item.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == item.IdTema && a.DataInicio > DateTime.Now && a.Activa.Value == 1).ToList();                                
 
                             if (item.AccoesTema == null || (item.AccoesTema != null && item.AccoesTema.Count == 0))
                             {
@@ -483,6 +485,40 @@ namespace Hydra.Such.Data.Logic
                     {
                         return _ctx.TemaFormacao.ToList();
                     }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
+        public static List<TemaFormacao> __GetCatalogo()
+        {
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    DateTime inicio = DateTime.Parse(DateTime.Now.Year.ToString() + "-01-01");
+                    List<TemaFormacao> temas = _ctx.TemaFormacao.ToList();
+                    foreach (var item in temas)
+                    {
+                        item.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == item.IdTema && a.DataInicio >= inicio)
+                            .OrderBy(a => a.DataInicio).ToList();
+
+                        if (item.AccoesTema == null || (item.AccoesTema != null && item.AccoesTema.Count == 0))
+                        {
+                            item.Activo = 0;
+                        }
+
+                        if (item.AccoesTema != null && item.AccoesTema.Count > 0)
+                        {
+                            item.Activo = 1;
+                        }
+                    }
+                    return temas.Where(t => t.Activo.Value == 1).ToList();
 
                 }
             }
@@ -520,6 +556,38 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static TemaFormacaoView __GetDetailsTemaView(string idTema)
+        {
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    DateTime inicio = DateTime.Now.AddYears(-1);
+                    TemaFormacao tema = _ctx.TemaFormacao.Where(t => t.IdTema == idTema).FirstOrDefault();
+
+                    tema.AccoesTema = _ctx.AccaoFormacao.Where(a => a.IdTema == idTema && a.DataInicio.Value >= inicio)
+                        .OrderByDescending(a => a.DataInicio)
+                        .ThenByDescending(a => a.CodigoInterno)
+                        .ToList();
+
+                    foreach (var item in tema.AccoesTema)
+                    {
+                        item.SessoesFormacao = _ctx.SessaoAccaoFormacao.Where(s => s.IdAccao == item.IdAccao).ToList();
+                    }
+
+                    TemaFormacaoView temaV = new TemaFormacaoView(tema);
+                    temaV.AccoesDoTema(tema);
+                    return temaV;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+
+        }
+
         public static EntidadeFormadora __GetDetailsEntidade(string idEntidade)
         {
             try
@@ -542,7 +610,7 @@ namespace Hydra.Such.Data.Logic
         /// <param name="userName">O nome do utilizdor</param>
         /// <param name="onlyActives">Apenas os pedidos que não estejam no estado Finalizado, ou em Curso</param>
         /// <returns></returns>
-        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(string userName, bool? onlyActives)
+        public static List<PedidoParticipacaoFormacao> __GetAllPedidosFormacao(string userName, string employeeNo, bool? onlyActives)
         {
             if (string.IsNullOrEmpty(userName))
                 return null;
@@ -556,7 +624,7 @@ namespace Hydra.Such.Data.Logic
                         // são considerados activos todos os pedidos que não estejam finalizados ou cancelados
                         using (var _ctx = new SuchDBContext())
                         {
-                            return _ctx.PedidoParticipacaoFormacao.Where(p => p.UtilizadorCriacao == userName && p.Estado.Value < (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                            return _ctx.PedidoParticipacaoFormacao.Where(p => (p.UtilizadorCriacao == userName || p.IdEmpregado == employeeNo) && p.Estado.Value < (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
                         }
                     }
                     else
@@ -564,7 +632,7 @@ namespace Hydra.Such.Data.Logic
                         // todos os pedidos do utilizador que estejam finalizados ou cancelados
                         using (var _ctx = new SuchDBContext())
                         {
-                            return _ctx.PedidoParticipacaoFormacao.Where(p => p.UtilizadorCriacao == userName && p.Estado.Value >= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
+                            return _ctx.PedidoParticipacaoFormacao.Where(p => (p.UtilizadorCriacao == userName || p.IdEmpregado == employeeNo) && p.Estado.Value >= (int)Enumerations.EstadoPedidoFormacao.PedidoFinalizado).ToList();
                         }
                     }
                 }
@@ -943,38 +1011,6 @@ namespace Hydra.Such.Data.Logic
             
         }
 
-        public static bool __UpdatePedidoFormacao(PedidoParticipacaoFormacao pedido, int tipoAlteracao, string descricaoAlteracao, string userName)
-        {
-            if (pedido == null)
-                return false;
-
-            if(pedido.RegistosAlteracoes == null)
-            {
-                pedido.RegistosAlteracoes = __GetRegistosAlteracaoPedido(pedido.IdPedido);
-            }
-
-            if (pedido.RegistosAlteracoes == null)
-                return false;
-
-            try
-            {
-                using(var _ctx = new SuchDBContext())
-                {
-                    _ctx.PedidoParticipacaoFormacao.Update(pedido);
-                    _ctx.SaveChanges();
-                }
-
-
-                __CriarRegistoAlteracaoPedidoFormacao(pedido, tipoAlteracao, descricaoAlteracao, userName);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-
-                return false;
-            }
-        }
 
         public static bool __UpdateAccaoFormacao(AccaoFormacao accao)
         {

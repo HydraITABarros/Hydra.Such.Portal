@@ -30,6 +30,11 @@
 
 <link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
 
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload-file.html">
+<link rel="import" href="/lib/vaadin-upload/vaadin-upload.html">
+
+<link rel="import" href="/lib/paper-spinner/paper-spinner.html" />
+
 <dom-module id="x-detalhepedido">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -143,6 +148,91 @@
                 height: 100px;
                 background-size: contain;
             }
+
+            .details {
+                padding: 10px;
+                margin: 10px;
+                display: inline-block;
+                justify-content: space-around;
+                align-items: center;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
+                /*font-size: 20px;*/
+            }
+
+            /*DETALHES.begin*/
+            vaadin-grid#gridAccoes {
+                /*font: 500 13px "Open Sans", sans-serif;*/
+                color: rgb(148, 154, 171);
+                --divider-color: rgb(223, 232, 239);
+                --vaadin-grid-cell: {
+                    padding: 0 13px;
+                };
+                --vaadin-grid-body-cell: {
+                    height: 35px;
+                };
+                --vaadin-grid-header-cell: {
+                    background: rgba(235, 238, 246, 0.9);
+                    border-bottom: 1px solid rgba(208, 217, 225, 0.9);
+                    border-top: 1px solid rgba(248, 250, 252, 0.9);
+                    min-height: 35px;
+
+                    background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
+                    background-size: 1px 100%;
+                    background-position: 100% 0%;
+                    background-repeat: no-repeat;
+                };
+                --vaadin-grid-body-row-selected-cell: {
+                    background-color: rgb(131, 183, 236);
+                    color: #fff;
+                    border-bottom-color: rgb(108, 160, 218);
+                };
+                --vaadin-grid-body-row-odd-cell: {
+                    background-color: rgb(251, 252, 254);
+                };
+                --vaadin-grid-body-row-hover-cell: {
+                    background-color: rgb(235, 238, 246);
+                };
+                --vaadin-grid-body-row-details-cell: {
+                    text-align: center;
+                };
+                --vaadin-grid-column-resize-handle: {
+                    opacity: 0;
+                };
+            }
+
+                vaadin-grid#gridAccoes input[type=checkbox] {
+                    height: 16px;
+                    width: 16px;
+                }
+
+                vaadin-grid#gridAccoes .image {
+                    height: 40px;
+                    width: 40px;
+                    display: inline-block;
+                    border-radius: 50%;
+                    vertical-align: middle;
+                    margin-right: 15px;
+                }
+
+                vaadin-grid#gridAccoes .header-content {
+                    display: flex;
+                    padding: 16px;
+                    justify-content: space-between;
+                }
+
+                vaadin-grid#gridAccoes .details-cell {
+                    background: #fff;
+                    width: 100%;
+                }
+            /*DETALHES.end*/
+
+            paper-spinner.multi {
+                display:flex;
+                --paper-spinner-layer-1-color: var(--paper-purple-500);
+                --paper-spinner-layer-2-color: var(--paper-cyan-500);
+                --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
+                --paper-spinner-layer-4-color: var(--paper-amber-500);
+            }
         </style>
 
         <iron-ajax url="/Academia/GetDetalhePedido"
@@ -151,6 +241,34 @@
                    handle-as="json"
                    id="page_databound_ajax"
                    on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/GetCatalogoToPedido"
+                   last-response="{{ catalogo }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_catalogo_ajax"
+                   content-type="application/json"
+                   loading="{{loading}}">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/GetDetalhesTemaParaPedido"
+                   last-response="{{ temaDetail }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_tema_ajax"
+                   on-response="_temaResponseProcessor"
+                   content-type="application/json"
+                   loading="{{loading}}">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/UpdatePedido"
+                   last-response="{{ pedidoUpdated }}"
+                   method="post"
+                   handle-as="json"
+                   id="page_update_ajax"
+                   on-response="_updatePedidoResponse"
                    content-type="application/json">
         </iron-ajax>
 
@@ -168,315 +286,490 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetProjectNavList"
+                   last-response="{{ listaProjectos }}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/LoadAttachments"
+                   last-response="{{uploads}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_loadattchments_ajax"
+                   on-response="_loadattchmentsResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/DeleteAttachment"
+                   last-response="{{ attachDeleted }}"
+                   method="post"
+                   handle-as="json"
+                   id="delete_attach_ajax"
+                   on-response="_attachDeletedResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/GetEmpregadosHierarquia"
+                   last-response="{{ employeeList }}"
+                   method="post"
+                   handle-as="json"
+                   id="employees_page_ajax"
+                   on-response="_getEmployeeListResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
-            <!--<paper-button raised id="btnCreate" class="tablinks" on-tap="_createRequest" title="Criar Pedido" style="background-color:#1DB73C"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Criar Pedido</paper-button>-->
+            <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Guardar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
         </div>
 
         <div class="panel panel-default break_clear">
             <iron-form>
-               <div id="customer-form">
-                   <div class="panel-body">
-                       <div class="panel panel-default">
-                           <div class="panel-heading">Cabeçalho</div>
-                           <div class="panel-body">
-                               <div class="row break_clear">
-                                   <div class="col-md-6">
-                                       <div class="col-md-6">
-                                           <vaadin-text-field id="idPedido" name="idPedido" label="Nº" value="{{ data.idPedido }}" disabled="true"></vaadin-text-field>
-                                       </div>
-                                       <div class="col-md-6">
-                                           <vaadin-combo-box items="[[estadoPedido]]" id="estadoPedido_cbox" label="Estado" item-label-path="value" item-value-path="id" value="{{ data.estado}}" disabled></vaadin-combo-box>
-                                       </div>
-                                   </div>
-                                   <div class="col-md-6" style="border: 2px solid #71BCC1; padding: 10px 0 10px">
-                                       <div class="col-md-6">
-                                           <vaadin-text-field id="utilizadorAutAdmin" name="utilizadorAutAdmin" label="Autorizou CA" value="{{ data.utilizadorAutorizacaoAdmin}}" disabled></vaadin-text-field>
-                                       </div>
-                                       <div class="col-md-6">
-                                           <vaadin-text-field id="dataAutAdmin" name="dataAutAdmin" label="Data Autorização CA" value="{{ data.dataAutorizacaoAdminTxt}}" disabled></vaadin-text-field>
-                                       </div>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                       <!-- I - Identificação Empregado -->
-                       <div class="panel panel-default">
-                           <paper-collapse-item header="I - Identificação do Trabalhador">
-                               <div class="panel-body">
-                                   <div class="break_clear">
-                                       <div class="row break_clear">
-                                           <div class="col-md-4">
-                                               <vaadin-text-field id="idEmpregado" name="idEmpregado" label="Nº Mecanográfico" value="{{ data.idEmpregado }}" required disabled></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-4">
-                                               <vaadin-text-field id="nomeEmpregado" name="nomeEmpregado" label="Nome" value="{{ data.nomeEmpregado}}" required disabled></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-4">
-                                               <vaadin-text-field id="funcaoEmpregado" name="funcaoEmpregado" label="Função" value="{{ data.funcaoEmpregado }}" required disabled></vaadin-text-field>
-                                           </div>
-                                       </div>
-                                       <div class="row break_clear">
-                                           <div class="col-md-4">
-                                               <vaadin-text-field id="areaFuncional" name="areaFuncional" label="Área" value="{{ data.areaFuncionalEmpregado }}" required disabled></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-3">
-                                               <vaadin-text-field id="crespEmpregado" name="crespEmpregado" label="Centro Responsabilidade" value="{{ data.centroResponsabilidadeEmpregado }}" required disabled></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-2">
-                                               <vaadin-text-field id="projectoEmpregado" name="projectoEmpregado" label="Projecto" value="{{ data.projectoEmpregado }}" disabled></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-3">
-                                               <vaadin-text-field id="estabelecimento" name="estabelecimento" label="Estabelecimento" value="{{ data.descricaoEstabelecimento }}" reqired disabled></vaadin-text-field>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                           </paper-collapse-item>
-                       </div>
+                <div id="customer-form">
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Cabeçalho</div>
+                            <div class="panel-body">
+                                <div class="row break_clear">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="idPedido" name="idPedido" label="Nº" value="{{ data.idPedido }}" disabled="true"></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <vaadin-combo-box items="[[estadoPedido]]" id="estadoPedido_cbox" label="Estado" item-label-path="value" item-value-path="id" value="{{ data.estado}}" disabled></vaadin-combo-box>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="border: 2px solid #71BCC1; padding: 10px 0 10px">
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="utilizadorAutAdmin" name="utilizadorAutAdmin" label="Autorizou CA" value="{{ data.utilizadorAutorizacaoAdmin}}" disabled></vaadin-text-field>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <vaadin-text-field id="dataAutAdmin" name="dataAutAdmin" label="Data Autorização CA" value="{{ data.dataAutorizacaoAdminTxt}}" disabled></vaadin-text-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- I - Identificação Empregado -->
+                        <div class="panel panel-default">
+                            <paper-collapse-item header="I - Identificação do Trabalhador" opened="{{ _openI }}">
+                                <div class="panel-body">
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="idEmpregado" name="idEmpregado" label="Nº Mecanográfico" required value="{{ data.idEmpregado }}" disabled></vaadin-text-field>
+                                                <!-- apenas visivel quando se trata de Chefia/Director -->
+                                                <such-selectbox id="idEmpregadoCbox"
+                                                                label="Nº Mecanográfico"
+                                                                items="[[employeeList]]"
+                                                                value="{{data.idEmpregado}}"
+                                                                on-change="_setEmployeeDetails"
+                                                                value-path="no"
+                                                                text-path="no"
+                                                                fields='[{"field":"no", "name":"No. Mecanográfico"},{"field":"name", "name":"Nome"},{"field":"funcao", "name":"Função"},{"field":"regiaoNav2017", "name":"Região"},{"field":"areaNav2017", "name":"Area"},{"field":"crespNav2017", "name":"CResp"}]'
+                                                                required>
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="nomeEmpregado" name="nomeEmpregado" label="Nome" required value="{{ data.nomeEmpregado}}" disabled></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="funcaoEmpregado" name="funcaoEmpregado" label="Função" required value="{{ data.funcaoEmpregado }}" disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="areaFuncional" name="areaFuncional" label="Área" required value="{{ data.areaFuncionalEmpregado }}" disabled></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="crespEmpregado" name="crespEmpregado" label="Centro Responsabilidade" required value="{{ data.centroResponsabilidadeEmpregado }}" disabled></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="projectoEmpregado" name="projectoEmpregado" label="Projecto" on-tap="_onClickProject" required value="{{ data.projectoEmpregado }}"></vaadin-text-field>
 
-                       <!-- II - Identificação Acção -->
-                       <div class="panel panel-default">
-                           <paper-collapse-item header="II - Identificação do Curso/Acção">
-                               <div class="panel-body">
-                                   <div class="break_clear">
-                                       <div class="row break_clear">
-                                           <div class="col-md-6">
-                                               <such-textarea id="designacaoAccao" name="designacaoAccao" label="Designação da Acção" rows="2" value="{{ data.designacaoAccao}}" required></such-textarea>
-                                           </div>
-                                           <div class="col-md-3">
-                                               <vaadin-text-field id="localRealizacao" name="localRealizacao" label="Local Realização" value="{{ data.localRealizacao}}" required></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-3">
-                                               <vaadin-text-field id="horario" name="horario" label="Horário" value="{{ data.horario}}" required></vaadin-text-field>
-                                           </div>
-                                       </div>
-                                       <div class="row break_clear">
-                                           <div class="col-md-6">
-                                               <vaadin-text-field id="descricaoEntidadeFormadora" name="descricaoEntidadeFormadora" label="Entidade Formadora" value="{{ data.descricaoEntidadeFormadora}}" required></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-2">
-                                               <vaadin-date-picker required id="dataInicio" name="dataInicio" label="Data Inicio" error-message="A data de inicio da acção é de preenchimento obrigatório" value="{{ data.dataInicioTxt }}"></vaadin-date-picker>
-                                           </div>
-                                           <div class="col-md-2">
-                                               <vaadin-date-picker required id="dataFim" name="dataFim" label="Data Fim" error-message="A data de término da acção é de preenchimento obrigatório" value="{{ data.dataFimTxt }}"></vaadin-date-picker>
-                                           </div>
-                                           <div class="col-md-2">
-                                               <vaadin-text-field id="numeroTotalHoras" name="numeroTotalHoras" label="Nº Total Horas" error-message="A duração da acção é de preenchimento obrigatório!" value="{{ data.numeroTotalHoras}}" required></vaadin-text-field>
-                                           </div>
-                                       </div>
-                                       <div class="row break_clear">
-                                           <div class="col-md-3">
-                                               <vaadin-text-field id="custoInscricao" name="custoInscricao" label="Custo Inscrição" value="{{ data.custoInscricao }}"></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-3">
-                                               <vaadin-text-field id="valorIva" name="valorIva" label="Valor IVA" value="{{ data.valorIva }}"></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-3">
-                                               <vaadin-text-field id="custoDeslocacoes" name="custoDeslocacoes" label="Custo Deslocações" value="{{ data.custoDeslocacoes }}"></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-3">
-                                               <vaadin-text-field id="custoEstadia" name="custoEstadia" label="Custo Estadia" value="{{ data.custoEstadia }}"></vaadin-text-field>
-                                           </div>
-                                       </div>
-                                       <div class="row break_clear">
-                                           <div class="col-md-6">
-                                               <such-textarea id="descricaoConhecimentos" name="descricaoConhecimentos" maxlength="2048" error-message="Máximo 2048 caracteres" label="Identificação dos conhecimentos que pretende adquirir/reforçar" rows="3" value="{{ data.descricaoConhecimentos}}" required></such-textarea>
-                                           </div>
-                                           <div class="col-md-2">
-                                               <paper-tooltip for="planeada" position="top" offset="-1" animation-delay="1">
-                                                   O Curso/Ação a realizar enquadra-se na Formação Planeada?
-                                               </paper-tooltip>
-                                               <vaadin-combo-box id="planeada"
-                                                                 items="[[boolValues]]"
-                                                                 item-value-path="id"
-                                                                 item-label-path="value"
-                                                                 required
-                                                                 label="Planeada?"
-                                                                 value="{{ data.planeada }}">
-                                                   <template>
-                                                       <paper-icon-item>
-                                                           <paper-item-body two-line>
-                                                               <div>[[item.value]]</div>
-                                                           </paper-item-body>
-                                                       </paper-icon-item>
-                                                   </template>
-                                               </vaadin-combo-box>
-                                           </div>
-                                           <div class="col-md-4">
-                                               <paper-tooltip for="cursoPlanoFormacao" position="top" offset="-1" animation-delay="1">
-                                                   Se se tratar de um Curso/Acção Planeada deverá indentificar qual o item do Plano de Formação
-                                               </paper-tooltip>
-                                               <such-textarea id="cursoPlanoFormacao" name="cursoPlanoFormacao" maxlength="512" error-message="Máximo 512 caracteres" label="Curso/Ação que consta do Plano de Formação" rows="3" value="{{ data.cursoPlanoFormacao}}"></such-textarea>
-                                           </div>
-                                       </div>
-                                       <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
-                                           <div class="col-md-4">
-                                               <vaadin-text-field id="dataSubmissaoTxt" name="dataSubmissaoTxt" label="Data Submissão" value="{{ data.dataSubmissaoTxt }}" disabled></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-8">
-                                               <vaadin-text-field id="utilizadorSubmissao" name="utilizadorSubmissao" label="O Requerente" value="{{ data.utilizadorSubmissao }}" disabled></vaadin-text-field>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                           </paper-collapse-item>
-                       </div>
+                                                <such-selectbox id="projectoEmpregadoCbox"
+                                                                label="Projecto"
+                                                                items="[[listaProjectos]]"
+                                                                value="{{data.projectoEmpregado}}"
+                                                                on-blur="_hideProjectCbox"
+                                                                on-focusout="_hideProjectCbox"
+                                                                value-path="no"
+                                                                text-path="no"
+                                                                fields='[{"field": "no", "name":"Código"},{"field":"description", "name":"Descrição"},{"field":"areaCode", "name":"Área"},{"field":"regionCode", "name":"Região"},{"field":"centerResponsibilityCode", "name":"CResp"}]'
+                                                                required>
+                                                </such-selectbox>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="estabelecimento" name="estabelecimento" label="Estabelecimento" required value="{{ data.descricaoEstabelecimento }}" reqired disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </div>
 
-                       <!-- III-Informação do Superior Hierárquico -->
-                       <div class="panel panel-default">
-                           <paper-collapse-item header="III - Informação do Superior Hierárquico">
-                               <div class="panel-body">
-                                   <div class="break_clear">
-                                       <div class="row break_clear">
-                                           <div class="col-md-12">
-                                               <paper-tooltip for="fundamentacaoChefia" position="top" offset="-1" animation-delay="1">
-                                                   A Chefia deverá fundamentar a pertinência da acção para o desempenho do trabalhador
-                                               </paper-tooltip>
-                                               <such-textarea id="fundamentacaoChefia" name="fundamentacaoChefia" maxlength="2048" error-message="Máximo 2048 caracteres" label="Fundamentação" rows="3" value="{{ data.fundamentacaoChefia }}" required></such-textarea>
-                                           </div>
-                                       </div>
-                                       <div class="row break_clear">
-                                           <div class="panel panel-default" style="border:0">
-                                               <div class="panel-body">
-                                                   <div class="row break_clear">
-                                                       <div class="col-xs-6" style="padding:3px">
-                                                           <div class="panel panel-default">
-                                                               <div class="panel-heading" style="font-weight:bold">Aprovação Chefia</div>
-                                                               <div class="panel-body">
-                                                                   <div class="col-xs-4">
-                                                                       <vaadin-text-field id="dataAprovacaoChefiaTxt" name="dataAprovacaoChefiaTxt" label="Data Aprovação" value="{{ data.dataAprovacaoChefiaTxt }}" disabled></vaadin-text-field>
-                                                                   </div>
-                                                                   <div class="col-xs-8">
-                                                                       <vaadin-text-field id="utilizadorAprovacaoChefia" name="utilizadorAprovacaoChefia" label="O Responsável" value="{{ data.utilizadorAprovacaoChefia }}" disabled></vaadin-text-field>
-                                                                   </div>
-                                                               </div>
-                                                           </div>
-                                                       </div>
-                                                       <div class="col-xs-6" style="padding:3px">
-                                                           <div class="panel panel-default">
-                                                               <div class="panel-heading" style="font-weight:bold">Aprovação Direcção</div>
-                                                               <div class="panel-body">
-                                                                   <div class="col-xs-4">
-                                                                       <vaadin-text-field id="dataAprovacaoDireccaoTxt" name="dataAprovacaoDireccaoTxt" label="Data Aprovação" value="{{ data.dataAprovacaoDireccaoTxt }}" disabled></vaadin-text-field>
-                                                                   </div>
-                                                                   <div class="col-xs-8">
-                                                                       <vaadin-text-field id="utilizadorAprovacaoDireccao" name="utilizadorAprovacaoDireccao" label="O Director da UP/AAS" value="{{ data.utilizadorAprovacaoDireccao }}" disabled></vaadin-text-field>
-                                                                   </div>
-                                                               </div>
-                                                           </div>
-                                                       </div>
-                                                       </div>
-                                                   </div>
-                                               </div>
-                                           </div>
-                                       </div>
-                               </div>
-                           </paper-collapse-item>
-                       </div>
+                        <!-- II - Identificação Acção -->
+                        <div class="panel panel-default">
+                            <paper-collapse-item header="II - Identificação do Curso/Acção" opened="{{ _openI }}">
+                                <div class="panel-body">
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <div class="col-md-6">
+                                                <such-textarea id="designacaoAccao" name="designacaoAccao" label="Designação da Acção" rows="2" value="{{ data.designacaoAccao}}" on-click="_onClickCourse" required></such-textarea>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="localRealizacao" name="localRealizacao" label="Local Realização" value="{{ data.localRealizacao}}" required></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="horario" name="horario" label="Horário" value="{{ data.horario}}" required></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-md-6">
+                                                <vaadin-text-field id="descricaoEntidadeFormadora" name="descricaoEntidadeFormadora" label="Entidade Formadora" value="{{ data.descricaoEntidadeFormadora}}" required></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <vaadin-date-picker required id="dataInicio" name="dataInicio" label="Data Inicio" error-message="A data de inicio da acção é de preenchimento obrigatório" value="{{ data.dataInicioTxt }}"></vaadin-date-picker>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <vaadin-date-picker required id="dataFim" name="dataFim" label="Data Fim" error-message="A data de término da acção é de preenchimento obrigatório" value="{{ data.dataFimTxt }}"></vaadin-date-picker>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <vaadin-text-field id="numeroTotalHoras" name="numeroTotalHoras" label="Nº Total Horas" error-message="A duração da acção é de preenchimento obrigatório!" value="{{ data.numeroTotalHoras}}" required></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="custoInscricao" name="custoInscricao" label="Custo Inscrição" value="{{ data.custoInscricao }}"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="valorIva" name="valorIva" label="Valor IVA" value="{{ data.valorIva }}"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="custoDeslocacoes" name="custoDeslocacoes" label="Custo Deslocações" value="{{ data.custoDeslocacoes }}"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="custoEstadia" name="custoEstadia" label="Custo Estadia" value="{{ data.custoEstadia }}"></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-md-6">
+                                                <such-textarea id="descricaoConhecimentos" name="descricaoConhecimentos" maxlength="2048" error-message="Máximo 2048 caracteres" label="Identificação dos conhecimentos que pretende adquirir/reforçar" rows="3" value="{{ data.descricaoConhecimentos}}" required></such-textarea>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <paper-tooltip for="planeada" position="top" offset="-1" animation-delay="1">
+                                                    O Curso/Ação a realizar enquadra-se na Formação Planeada?
+                                                </paper-tooltip>
+                                                <vaadin-combo-box id="planeada"
+                                                                  items="[[boolValues]]"
+                                                                  item-value-path="id"
+                                                                  item-label-path="value"
+                                                                  required
+                                                                  label="Planeada?"
+                                                                  value="{{ data.planeada }}">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <paper-tooltip for="cursoPlanoFormacao" position="top" offset="-1" animation-delay="1">
+                                                    Se se tratar de um Curso/Acção Planeada deverá indentificar qual o item do Plano de Formação
+                                                </paper-tooltip>
+                                                <such-textarea id="cursoPlanoFormacao" name="cursoPlanoFormacao" maxlength="512" error-message="Máximo 512 caracteres" label="Curso/Ação que consta do Plano de Formação" rows="3" value="{{ data.cursoPlanoFormacao}}"></such-textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="dataSubmissaoTxt" name="dataSubmissaoTxt" label="Data Submissão" value="{{ data.dataSubmissaoTxt }}" disabled></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <vaadin-text-field id="utilizadorSubmissao" name="utilizadorSubmissao" label="O Requerente" value="{{ data.utilizadorSubmissao }}" disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </div>
 
-                       <!-- IV-Informação Formação Profissional -->
-                       <div class="panel panel-default">
-                           <paper-collapse-item header="IV - Informação Formação Profissional">
-                               <div class="panel-body">
-                                   <div class="break_clear">
-                                       <div class="row break_clear">
-                                           <div class="col-md-3">
-                                               <paper-tooltip for="temDotacaoOrcamental" position="top" offset="-1" animation-delay="1">
-                                                   Existe cabimento orçamental disponível?
-                                               </paper-tooltip>
-                                               <vaadin-combo-box id="temDotacaoOrcamental"
-                                                                 items="[[boolValues]]"
-                                                                 item-value-path="id"
-                                                                 item-label-path="value"
-                                                                 required
-                                                                 label="Tem cabimento?"
-                                                                 value="{{ data.temDotacaoOrcamental }}">
-                                                   <template>
-                                                       <paper-icon-item>
-                                                           <paper-item-body two-line>
-                                                               <div>[[item.value]]</div>
-                                                           </paper-item-body>
-                                                       </paper-icon-item>
-                                                   </template>
-                                               </vaadin-combo-box>
-                                           </div>
-                                           <div class="col-md-9">
-                                               <such-textarea id="parecerDotacaoAcademia" name="parecerDotacaoAcademia" maxlength="2048" error-message="Máximo 2048 caracteres" label="Informação" rows="3" value="{{ data.parecerDotacaoAcademia }}" required></such-textarea>
-                                           </div>
-                                       </div> 
-                                       <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
-                                           <div class="col-md-4">
-                                               <vaadin-text-field id="dataParecerAcademiaTxt" name="dataParecerAcademiaTxt" label="Data" value="{{ data.dataParecerAcademiaTxt }}" disabled></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-8">
-                                               <vaadin-text-field id="utilizadorParecerAcademia" name="utilizadorParecerAcademia" label="Analisou" value="{{ data.utilizadorParecerAcademia }}" disabled></vaadin-text-field>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                           </paper-collapse-item>
-                       </div>
+                        <!-- III-Informação do Superior Hierárquico -->
+                        <div class="panel panel-default">
+                            <paper-collapse-item header="III - Informação do Superior Hierárquico" opened="{{_openIII}}">
+                                <div class="panel-body">
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <div class="col-md-12">
+                                                <paper-tooltip for="fundamentacaoChefia" position="top" offset="-1" animation-delay="1">
+                                                    A Chefia deverá fundamentar a pertinência da acção para o desempenho do trabalhador
+                                                </paper-tooltip>
+                                                <such-textarea id="fundamentacaoChefia" name="fundamentacaoChefia" maxlength="2048" error-message="Máximo 2048 caracteres" label="Fundamentação" rows="3" value="{{ data.fundamentacaoChefia }}" required></such-textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="panel panel-default" style="border:0">
+                                                <div class="panel-body">
+                                                    <div class="row break_clear">
+                                                        <div class="col-xs-6" style="padding:3px">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading" style="font-weight:bold">Aprovação Chefia</div>
+                                                                <div class="panel-body">
+                                                                    <div class="col-xs-4">
+                                                                        <vaadin-text-field id="dataAprovacaoChefiaTxt" name="dataAprovacaoChefiaTxt" label="Data Aprovação" value="{{ data.dataAprovacaoChefiaTxt }}" disabled></vaadin-text-field>
+                                                                    </div>
+                                                                    <div class="col-xs-8">
+                                                                        <vaadin-text-field id="utilizadorAprovacaoChefia" name="utilizadorAprovacaoChefia" label="O Responsável" value="{{ data.utilizadorAprovacaoChefia }}" disabled></vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xs-6" style="padding:3px">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading" style="font-weight:bold">Aprovação Direcção</div>
+                                                                <div class="panel-body">
+                                                                    <div class="col-xs-4">
+                                                                        <vaadin-text-field id="dataAprovacaoDireccaoTxt" name="dataAprovacaoDireccaoTxt" label="Data Aprovação" value="{{ data.dataAprovacaoDireccaoTxt }}" disabled></vaadin-text-field>
+                                                                    </div>
+                                                                    <div class="col-xs-8">
+                                                                        <vaadin-text-field id="utilizadorAprovacaoDireccao" name="utilizadorAprovacaoDireccao" label="O Director da UP/AAS" value="{{ data.utilizadorAprovacaoDireccao }}" disabled></vaadin-text-field>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </div>
 
-                       <!-- V-Parecer ACAS -->
-                       <div class="panel panel-default">
-                           <paper-collapse-item header="V - Parecer ACAS">
-                               <div class="panel-body">
-                                   <div class="break_clear">
-                                       <div class="row break_clear">
-                                           <div class="col-md-12">
-                                               <such-textarea id="parecerAcademia" name="parecerAcademia" maxlength="2048" error-message="Máximo 2048 caracteres" label="Informação" rows="3" value="{{ data.parecerAcademia }}" required></such-textarea>
-                                           </div>
-                                       </div>
-                                       <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
-                                           <div class="col-md-4">
-                                               <vaadin-text-field id="dataAnaliseAcademiaTxt" name="dataAnaliseAcademiaTxt" label="Data" value="{{ data.dataAnaliseAcademiaTxt }}" disabled></vaadin-text-field>
-                                           </div>
-                                           <div class="col-md-8">
-                                               <vaadin-text-field id="utilizadorAnaliseAcademia" name="utilizadorAnaliseAcademia" label="Analisou" value="{{ data.utilizadorAnaliseAcademia }}" disabled></vaadin-text-field>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                           </paper-collapse-item>
-                       </div>
+                        <!-- IV-Informação Formação Profissional -->
+                        <div class="panel panel-default">
+                            <paper-collapse-item header="IV - Informação Formação Profissional" opened="{{ _openIV }}">
+                                <div class="panel-body">
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <div class="col-md-3">
+                                                <paper-tooltip for="temDotacaoOrcamental" position="top" offset="-1" animation-delay="1">
+                                                    Existe cabimento orçamental disponível?
+                                                </paper-tooltip>
+                                                <vaadin-combo-box id="temDotacaoOrcamental"
+                                                                  items="[[boolValues]]"
+                                                                  item-value-path="id"
+                                                                  item-label-path="value"
+                                                                  required
+                                                                  label="Tem cabimento?"
+                                                                  value="{{ data.temDotacaoOrcamental }}">
+                                                    <template>
+                                                        <paper-icon-item>
+                                                            <paper-item-body two-line>
+                                                                <div>[[item.value]]</div>
+                                                            </paper-item-body>
+                                                        </paper-icon-item>
+                                                    </template>
+                                                </vaadin-combo-box>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <such-textarea id="parecerDotacaoAcademia" name="parecerDotacaoAcademia" maxlength="2048" error-message="Máximo 2048 caracteres" label="Informação" rows="3" value="{{ data.parecerDotacaoAcademia }}" required></such-textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="dataParecerAcademiaTxt" name="dataParecerAcademiaTxt" label="Data" value="{{ data.dataParecerAcademiaTxt }}" disabled></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <vaadin-text-field id="utilizadorParecerAcademia" name="utilizadorParecerAcademia" label="Analisou" value="{{ data.utilizadorParecerAcademia }}" disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </div>
 
-                       <!-- VI-Anexos -->
-                       <div class="panel panel-default">
-                           <paper-collapse-item header="VI-Anexos">
-                               <div class="panel-body">
-                                   <div class="break_clear">
-                                       <div class="row break_clear">
+                        <!-- V-Parecer ACAS -->
+                        <div class="panel panel-default">
+                            <paper-collapse-item header="V - Parecer ACAS" opened="{{ _openIV }}">
+                                <div class="panel-body">
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <div class="col-md-12">
+                                                <such-textarea id="parecerAcademia" name="parecerAcademia" maxlength="2048" error-message="Máximo 2048 caracteres" label="Informação" rows="3" value="{{ data.parecerAcademia }}" required></such-textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
+                                            <div class="col-md-4">
+                                                <vaadin-text-field id="dataAnaliseAcademiaTxt" name="dataAnaliseAcademiaTxt" label="Data" value="{{ data.dataAnaliseAcademiaTxt }}" disabled></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <vaadin-text-field id="utilizadorAnaliseAcademia" name="utilizadorAnaliseAcademia" label="Analisou" value="{{ data.utilizadorAnaliseAcademia }}" disabled></vaadin-text-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </div>
 
-                                       </div>
-                                       <div class="row break_clear">
+                        <!-- VI-Anexos -->
+                        <div class="panel panel-default">
+                            <paper-collapse-item header="VI - Anexos">
+                                <div class="panel-body">
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <vaadin-upload id="uploadDocuments"
+                                                           target="/Academia/DocumentUpload/{{ _idpedido }}"
+                                                           method="post"
+                                                           headers="{'Accept':'application/json'}"
+                                                           timeout="15000"
+                                                           max-files="1"
+                                                           accept="text/csv,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,model/vnd.dwf,image/vnd.dwg,image/vnd.dxf,application/vnd.oasis.opendocument.presentation,application/vnd.oasis.opendocument.spreadsheet,application/vnd.oasis.opendocument.text,application/vnd.oasis.opendocument.text-web,application/vnd.oasis.opendocument.text-template,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.slideshow,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/rtf,text/plain,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                                <span slot="drop-label">Coloque o(s) documento(s) aqui......</span>
+                                            </vaadin-upload>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <vaadin-grid id="gridAnexos" aria-label="gridAnexos" items="[[data.anexosPedido]]" class="grid" multi-sort="true">
+                                                <vaadin-grid-column resizable width="90%">
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="url">Nome Ficheiro</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        <a href="/Academia/DownloadDocument/{{item.docNumber}}/{{item.url}}" target="_blank">{{item.url}}</a>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column width="10%">
+                                                    <template class="header">
+                                                    </template>
+                                                    <template>
+                                                        <center>
+                                                            <paper-button class="btnRemove tableBtn" raised on-tap="_deleteAttachment" title="Eliminar"><i class="fa fa-trash" aria-hidden="true"></i></paper-button>
+                                                        </center>
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </div>
 
-                                       </div>
-                                   </div>
-                               </div>
-                           </paper-collapse-item>
-                       </div>
-
-                       <!-- VII-Registos -->
-                       <div class="panel panel-default">
-                           <paper-collapse-item header="VII-Registos">
-                               <div class="panel-body">
-                                   <div class="break_clear">
-                                       <div class="row break_clear">
-
-                                       </div>
-                                       <div class="row break_clear">
-
-                                       </div>
-                                   </div>
-                               </div>
-                           </paper-collapse-item>
-                       </div>
-                   </div>
-               </div>
+                        <!-- VII-Registos -->
+                        <div class="panel panel-default">
+                            <paper-collapse-item header="VII - Registos">
+                                <div class="panel-body">
+                                    <div class="break_clear">
+                                        <div class="row break_clear">
+                                            <vaadin-grid id="gridRegistos" arai-label="gridRegistos" items="[[data.registosAlteracoes]]" class="grid" multi-sort="true">
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="descricaoAlteracao">Alteração</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        {{ item.descricaoAlteracao }}
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="utilizadorAlteracao">Utilizador</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        {{ item.utilizadorAlteracao }}
+                                                    </template>
+                                                </vaadin-grid-column>
+                                                <vaadin-grid-column resizable>
+                                                    <template class="header">
+                                                        <vaadin-grid-sorter path="dataHoraAlteracao">Data</vaadin-grid-sorter>
+                                                    </template>
+                                                    <template>
+                                                        {{ item.dataHoraAlteracao }}
+                                                    </template>
+                                                </vaadin-grid-column>
+                                            </vaadin-grid>
+                                        </div>
+                                    </div>
+                                </div>
+                            </paper-collapse-item>
+                        </div>
+                    </div>
+                </div>
             </iron-form>
         </div>
 
+        <paper-dialog id="selectCourse" class="dialgoBox">
+            <h2>Catálogo</h2>
+            
+                <template is="dom-if" if="{{loading}}">
+                    <p><paper-spinner class="multi" active></paper-spinner><br />A carregar..... </p>
+                </template>
+            
+            <vaadin-grid id="gridCatalogo" aria-label="gridCatalogo" items="[[catalogo]]" class="grid" on-active-item-changed="_onActiveItemChanged" multi-sort="true">
+                <template class="row-details">
+                    <div class="details">
+                        <vaadin-grid aria-label="accoesTema" id="gridAccoes" items="[[temaDetail.accoes]]" active-item="{{activeCourse}}" multi-sort="true">
+                            <vaadin-grid-column width="10%">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    [[item.codigoInterno]]
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column resizable width="40%">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    [[item.designacaoAccao]]
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column resizable width="20%">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dataInicio">Data Inicio</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    [[item.dataInicio]]
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column resizable width="20%">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    [[item.dataFim]]
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column width="10%">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="numeroTotalHoras">Total Horas</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    [[item.numeroTotalHoras]]
+                                </template>
+                            </vaadin-grid-column>
+                        </vaadin-grid>
+                    </div>
+                </template>
+                <vaadin-grid-column>
+                    <!--<template class="header">
+            <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
+        </template>-->
+                    <template>
+                        {{ item.descricaoTema }}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -486,7 +779,7 @@
                 is: 'x-detalhepedido',
                 properties: {
                     _idpedido: {
-                        type: String    
+                        type: String
                     },
 
                     _ischief: {
@@ -499,11 +792,41 @@
                         value: false
                     },
 
+                    _istraningmanager: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _openI: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _openIII: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _openIV: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    prjEnabled: {
+                        type: Boolean,
+                        value: false
+                    },
+
                     selected: {
                         type: Number,
                         value: 0
+                    },
+
+                    activeCourse: {
+                        observer:'_courseSelected'
                     }
                 },
+
                 _openToast: function (message) {
                     this.$.ToastMessage.text = message;
                     this.$.ToastMessage.open();
@@ -539,14 +862,268 @@
                     debugger;;
                     this.$.page_databound_ajax.body = JSON.stringify({ "idPedido": this._idpedido });
                     this.$.page_databound_ajax.generateRequest();
+
+                    if (this.$.uploadDocuments != null) {
+                        this.$.uploadDocuments.addEventListener('upload-response', function (e) {
+                            if (e.detail.xhr.status == 200) {
+                                debugger;;
+                                e.detail.xhr.requestURL;
+                                var dd = document.querySelector("x-detalhepedido");
+                                dd.$.page_loadattchments_ajax.body = JSON.stringify({ "id": dd.__data._idpedido, "origem": "pedido" })
+                                dd.$.page_loadattchments_ajax.generateRequest();
+                            }
+                        });
+                    }
                 },
 
                 _responseProcessor: function (data) {
                     debugger;;
                     var self = this;
                     if (this.data != null) {
+                        debugger;;
+                       
+                        this.$.page_catalogo_ajax.body = JSON.stringify();
+                        this.$.page_catalogo_ajax.generateRequest();
+
+                        var obj = this.data;
+
+                        this._openI = obj.estado == 0;
+                        this._openIII = this._ischief && (obj.estado == 1 || obj.estado == 2);
+                        this._openIV = this._istraningmanager && (obj.estado == 3 || obj.estado == 7);
+
+                        this.prjEnabled = obj.projectoEmpregado != null && obj.projectoEmpregado != "";
+
+                        $(self.$.idEmpregadoCbox).addClass('hidden');
+
+                        if (!this.prjEnabled) {
+                            $(self.$.projectoEmpregado).addClass('hidden');
+                        } else {
+                            $(self.$.projectoEmpregadoCbox).addClass('hidden');
+                        }
+
+                        if (this._ischief || this._isdirector) {
+                            this.$.employees_page_ajax.body = JSON.stringify({ "isChief": this._ischief, "isDirector": this._isdirector });
+                            this.$.employees_page_ajax.generateRequest();
+
+                            $(self.$.idEmpregado).addClass('hidden');
+                            $(self.$.idEmpregadoCbox).removeClass('hidden');
+                        }
+                        
+                    }
+                },
+
+                _onClickProject: function (e) {
+                    debugger;;
+                    var self = this;
+                    $(self.$.projectoEmpregado).addClass('hidden');
+                    $(self.$.projectoEmpregadoCbox).removeClass('hidden');
+                },
+
+                _hideProjectCbox: function (e) {
+                    var self = this;
+                    $(self.$.projectoEmpregadoCbox).addClass('hidden');
+                    $(self.$.projectoEmpregado).removeClass('hidden');
+                },
+
+                _onClickCourse: function (e) {
+                    debugger;;
+                    //this.$.catalogo_databound_ajax.generateRequest();
+                    //if (this.catalogo != null) {
+                        this.$.selectCourse.open();
+                    //}
+                    
+
+                },
+
+
+                _onActiveItemChanged: function (e) {
+                    debugger;;
+                    if (e.detail.value != null) {
+                        this.temaDetail = null;
+
+                        this.$.page_tema_ajax.body = JSON.stringify({ "idTema": e.detail.value.idTema});
+                        this.$.page_tema_ajax.generateRequest();
+                        this.$.gridCatalogo.expandedItems = [e.detail.value];
+                    }
+
+                },
+
+                _temaResponseProcessor: function (e) {
+                    debugger;;
+                    if (this.temaDetail != null) {
+                        //this.$.gridCatalogo.expandedItems = [this.temaDetail];
+                    }
+                },
+
+                _courseSelected: function (item) {
+                    debugger;;
+                    if (item != null) {
+                        if (this.data != null) {
+                            this.$.selectCourse.close();
+                            var dataObj = this.data;
+                            var _self = this.$;
+
+                            var dtInicio = item.dataInicio;
+                            var dtFim = item.dataFim;
+
+                            dtInicio = dtInicio.split("-").reverse().join("-");
+                            dtFim = dtFim.split("-").reverse().join("-");
+
+                            dataObj.idAccaoFormacao = item.idAccao;
+
+                            dataObj.designacaoAccao = item.designacaoAccao;
+                            _self.designacaoAccao.value = item.designacaoAccao;
+                            _self.designacaoAccao.valueText = item.designacaoAccao; 
+
+                            dataObj.dataInicio = item.dataInicio;
+                            dataObj.dataInicioTxt = this.__formatDate(dtInicio, 1);
+                            _self.dataInicio.value = dataObj.dataInicioTxt;
+
+                            dataObj.dataFim = item.dataFim;
+                            dataObj.dataFimTxt = this.__formatDate(dtFim, 1);
+                            _self.dataFim.value = dataObj.dataFimTxt;
+
+                            dataObj.numeroTotalHoras = item.numeroTotalHoras;
+                            _self.numeroTotalHoras.value = item.numeroTotalHoras;
+                            _self.numeroTotalHoras.valueText = item.numeroTotalHoras;
+                        }
+                    }
+                },
+
+                _update: function () {
+                    debugger;
+                    this.$.page_update_ajax.body = JSON.stringify(this.data);
+                    this.$.page_update_ajax.generateRequest();
+                },
+
+                _updatePedidoResponse: function (e) {
+                    debugger;;
+
+                    if (this.pedidoUpdated) {
+                        this._openToast("Sucesso a actualizar o Pedido de Participação em Formação!")
+                    } else {
+                        this._openToastError("Erro ao actualizar o Pedido de Participação em Formação!");
+                    }
+                },
+
+                _loadattchmentsResponse: function (e) {
+                    debugger;;
+                    if (this.uploads != null && this.data != null) {
+                        debugger;;
+                        this.data.anexosPedido = this.uploads;
+                        this.$.page_databound_ajax.generateRequest();
+                    }
+                },
+
+                _getEmployeeListResponse: function (e) {
+                    debugger;;
+                    if (this.employeeList == null) {
 
                     }
+                },
+
+                _setEmployeeDetails: function (e) {
+                    if (this.data != undefined && this.employeeList != null && this.$.idEmpregadoCbox.value != undefined) {
+                        var _self = this.$;
+                        var id = this.$.idEmpregadoCbox.value;
+                        var emp = this.employeeList.find(e => e.no == id);
+                        //this.data.idEmpregado = this.employeeList.no;
+                        this.data.nomeEmpregado = emp.name;
+                        _self.nomeEmpregado.value = emp.name;
+                        _self.nomeEmpregado.valueText = emp.name;
+
+                        this.data.funcaoEmpregado = emp.funcao;
+                        _self.funcaoEmpregado.value = emp.funcao;
+                        _self.funcaoEmpregado.valueText = emp.funcao;
+
+                        this.data.projectoEmpregado = emp.projecto;
+                        _self.projectoEmpregado.value = emp.projecto;
+                        _self.projectoEmpregado.valueText = emp.projecto;
+                        _self.projectoEmpregadoCbox.value = emp.projecto;
+                        _self.projectoEmpregadoCbox.valueText = emp.projecto;
+
+                        this.data.idAreaFuncional = emp.areaNav2017;
+                        
+                        this.data.areaFuncionalEmpregado = emp.descAreaNav2017;
+                        _self.areaFuncional.value = emp.descAreaNav2017;
+                        _self.areaFuncional.valueText = emp.descAreaNav2017;
+
+                        this.data.idCentroResponsabilidade = emp.crespNav2017;
+
+                        this.data.centroResponsabilidadeEmpregado = emp.descCrespNav2017;
+                        _self.crespEmpregado.value = emp.descCrespNav2017;
+                        _self.crespEmpregado.valueText = emp.descCrespNav2017;
+
+                        this.data.idEstabelecimento = emp.codEstabelecimento;
+
+                        this.data.descricaoEstabelecimento = emp.descricaoEstabelecimento;
+                        _self.estabelecimento.value = emp.descricaoEstabelecimento;
+                        _self.estabelecimento.valueText = emp.descricaoEstabelecimento;
+
+                        this.$.page_update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_update_ajax.generateRequest();
+                    } else {
+                        if (this.data != undefined) {
+
+                        }
+                    }
+                },
+
+                _deleteAttachment: function (e) {
+                    var ajax_request = this.$.delete_attach_ajax;
+                    ajax_request.body = JSON.stringify(e.model.item);
+
+                    this._confirmAndExecuteActionToast(
+                        "Confirma a eliminação do Anexo?",
+                        ajax_request
+                    );
+
+                    var index = this.data.anexosPedido.indexOf(e.model.item);
+                    this.data.anexosPedido.splice(index, 1);
+                    this.$.gridAnexos.clearCache();
+                },
+
+                _attachDeletedResponse: function (e) {
+                    if (this.attachDeleted) {
+                        this._openToast("Anexo eliminado com sucesso!");
+                    } else {
+                        this._openToast("Não foi possível eliminar a imagem!");
+                    }
+                },
+
+                __formatDate: function (_date, _dtFormat) {
+                    var d = new Date(_date),
+                        month = '' + (d.getMonth() + 1),
+                        day = '' + d.getDate(),
+                        year = d.getFullYear();
+
+                    if (d == null)
+                        return "";
+
+                    if (month < 1 || month > 12)
+                        return "";
+
+                    if (day < 1 || day > 31)
+                        return "";
+
+                    if (month == 2) {
+                        var lastDayofMonth = new Date(year, month, 0).getDate();
+
+                        if (day > lastDayofMonth)
+                            return "";
+                    }
+
+                    if (month.length < 2)
+                        month = '0' + month;
+
+                    if (day.length < 2)
+                        day = '0' + day;
+
+
+                    if (_dtFormat === 1)
+                        return [year, month, day].join('-');
+
+                    return [day, month, year].join('-');
                 },
 
                 _goBack: function (e) {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Hydra.Such.Data.Extensions;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,6 +13,7 @@ namespace Hydra.Such.Data.Database
         public int? TipoAlteracao { get; set; }
         public string DescricaoAlteracao { get; set; }
         public string UtilizadorAlteracao { get; set; }
+        [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy HH:mm:ss")]
         public DateTime? DataHoraAlteracao { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]

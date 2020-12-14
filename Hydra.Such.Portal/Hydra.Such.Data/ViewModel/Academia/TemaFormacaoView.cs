@@ -53,15 +53,21 @@ namespace Hydra.Such.Data.ViewModel.Academia
             Activo = tema.Activo == null ? 0 : tema.Activo.Value;
             TemaActivo = tema.Activo == null ? false : tema.Activo.Value == 1;
             UrlImagem = tema.UrlImagem;
+
+        }
+
+        public void AccoesDoTema(TemaFormacao tema)
+        {
             AccoesTema = tema.AccoesTema;
-
-            Accoes = CastToAccaoView(AccoesTema);
-
             NoAccoesTema = AccoesTema == null ? 0 : AccoesTema.Count();
+            Accoes = CastToAccaoView(AccoesTema);
+        }
 
-            List<Anexos> imagens = DBAttachments.GetById(TipoOrigemAnexos.TemaFormacao, tema.IdTema);
+        public void ImagensDoTema()
+        {
+            List<Anexos> imagens = DBAttachments.GetById(TipoOrigemAnexos.TemaFormacao, IdTema);
             ImagensTema = DBAttachments.ParseToViewModel(imagens);
-            foreach(var i in ImagensTema)
+            foreach (var i in ImagensTema)
             {
                 i.Visivel = i.Visivel == null ? false : i.Visivel.Value;
             }
@@ -98,16 +104,23 @@ namespace Hydra.Such.Data.ViewModel.Academia
             }
             else
             {
-                return new TemaFormacaoView(tema);
+                TemaFormacaoView temaV = new TemaFormacaoView(tema);
+
+                return temaV;
             }
         }
 
-        private List<AccaoFormacaoView> CastToAccaoView(ICollection<AccaoFormacao> accoes)
+        public List<AccaoFormacaoView> CastToAccaoView(ICollection<AccaoFormacao> accoes)
         {
             List<AccaoFormacaoView> accoesView = new List<AccaoFormacaoView>();
             foreach (var item in accoes)
             {
-                accoesView.Add(new AccaoFormacaoView(item));
+                AccaoFormacaoView accaoV = new AccaoFormacaoView(item);
+                accaoV.SessoesDaAccao(item);
+                accaoV.ImagensDaAccao();
+                accaoV.DetalhesEntidade();
+
+                accoesView.Add(accaoV);
             }
 
             return accoesView;
