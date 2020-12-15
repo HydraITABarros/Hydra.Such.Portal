@@ -69,6 +69,7 @@ namespace Hydra.Such.Data.Database
         public bool? CriarMovNav2017 { get; set; }
         public bool? Selecionada { get; set; }
         public string Fatura { get; set; }
+        public decimal? TaxaIVA { get; set; }
 
 
         public DestinosFinaisResíduos CódDestinoFinalResíduosNavigation { get; set; }

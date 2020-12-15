@@ -382,6 +382,7 @@ namespace Hydra.Such.Data.Logic.Project
                 ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                 InvoiceToClientNo = x.FaturaANºCliente,
                 ServiceClientCode = x.CódServiçoCliente,
+                TaxaIVA = x.TaxaIVA,
 
                 AdjustedPrice = x.AcertoDePreços,
                 ResidueFinalDestinyCode = x.CódDestinoFinalResíduos,
@@ -451,6 +452,7 @@ namespace Hydra.Such.Data.Logic.Project
                 DataHoraModificação = x.UpdateDate,
                 UtilizadorModificação = x.UpdateUser,
                 PréRegisto = x.PreRegistered,
+                TaxaIVA = x.TaxaIVA,
 
                 AcertoDePreços = x.AdjustedPrice,
                 CódDestinoFinalResíduos = x.ResidueFinalDestinyCode,

@@ -1813,7 +1813,8 @@ namespace Hydra.Such.Portal.Controllers
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente
+                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente,
+                    TaxaIVA = x.TaxaIVA
                 }).ToList();
                 //return Json(dp);
             }
@@ -1856,7 +1857,8 @@ namespace Hydra.Such.Portal.Controllers
                     ExternalGuideNo = x.NºGuiaExterna,
                     ConsumptionDate = !x.DataConsumo.HasValue ? "" : x.DataConsumo.Value.ToString("yyyy-MM-dd"),
                     InvoiceToClientNo = x.FaturaANºCliente,
-                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente
+                    ServiceClientCode = (x.CódServiçoCliente != null && x.CódServiçoCliente != "") ? x.CódServiçoCliente : codServiceCliente,
+                    TaxaIVA = x.TaxaIVA
                 }).ToList();
                 //return Json(dp);
             }
@@ -1957,8 +1959,31 @@ namespace Hydra.Such.Portal.Controllers
 
                 dp.ForEach(x =>
                 {
-                    List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
+                    decimal IVA = new decimal();
+                    if (!string.IsNullOrEmpty(x.ProjectNo) && !string.IsNullOrEmpty(x.Code))
+                    {
+                        Projetos Projeto = DBProjects.GetById(x.ProjectNo);
 
+                        if (Projeto != null && !string.IsNullOrEmpty(Projeto.NºCliente))
+                        {
+                            NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Projeto.NºCliente);
+
+                            if (Cliente != null && !string.IsNullOrEmpty(Cliente.VATBusinessPostingGroup))
+                            {
+                                NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code).FirstOrDefault();
+
+                                if (Product != null && !string.IsNullOrEmpty(Product.VATProductPostingGroup))
+                                {
+                                    IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente.VATBusinessPostingGroup, Product.VATProductPostingGroup);
+                                }
+                            }
+                        }
+                    }
+
+
+
+
+                    List<DiárioDeProjeto> dpObject = DBProjectDiary.GetByLineNo(x.LineNo, User.Identity.Name);
                     if (dpObject.Count > 0)
                     {
                         DiárioDeProjeto newdp = dpObject.FirstOrDefault();
@@ -1997,6 +2022,7 @@ namespace Hydra.Such.Portal.Controllers
                         newdp.DataHoraModificação = DateTime.Now;
                         newdp.UtilizadorModificação = User.Identity.Name;
                         newdp.PréRegisto = false;
+                        newdp.TaxaIVA = IVA;
 
                         DBProjectDiary.Update(newdp);
                     }
@@ -2034,9 +2060,10 @@ namespace Hydra.Such.Portal.Controllers
                             NºGuiaExterna = x.ExternalGuideNo,
                             DataConsumo = x.ConsumptionDate == "" || x.ConsumptionDate == null ? (DateTime?)null : DateTime.Parse(x.ConsumptionDate),
                             CódServiçoCliente = x.ServiceClientCode,
-                            PréRegisto = false
+                            PréRegisto = false,
+                            TaxaIVA = IVA
 
-                        };
+                    };
 
                         newdp.Faturada = false;
                         newdp.DataHoraCriação = DateTime.Now;
@@ -2236,6 +2263,27 @@ namespace Hydra.Such.Portal.Controllers
                                     }
                                     if (newUnitCost)
                                     {
+                                        decimal IVA = new decimal();
+                                        if (!string.IsNullOrEmpty(pjD.ProjectNo) && !string.IsNullOrEmpty(pjD.Code))
+                                        {
+                                            Projetos Projeto = DBProjects.GetById(pjD.ProjectNo);
+
+                                            if (Projeto != null && !string.IsNullOrEmpty(Projeto.NºCliente))
+                                            {
+                                                NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Projeto.NºCliente);
+
+                                                if (Cliente != null && !string.IsNullOrEmpty(Cliente.VATBusinessPostingGroup))
+                                                {
+                                                    NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, pjD.Code).FirstOrDefault();
+
+                                                    if (Product != null && !string.IsNullOrEmpty(Product.VATProductPostingGroup))
+                                                    {
+                                                        IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente.VATBusinessPostingGroup, Product.VATProductPostingGroup);
+                                                    }
+                                                }
+                                            }
+                                        }
+
                                         //Create
                                         DiárioDeProjeto newdp = new DiárioDeProjeto()
                                         {
@@ -2266,6 +2314,7 @@ namespace Hydra.Such.Portal.Controllers
                                             PréRegisto = false,
                                             CódDestinoFinalResíduos = pjD.ResidueFinalDestinyCode,
                                             TipoRecurso = pjD.ResourceType,
+                                            TaxaIVA = IVA,
 
                                             NºGuiaResíduos = pjD.ResidueGuideNo,
                                             NºGuiaExterna = pjD.ExternalGuideNo,
@@ -2339,6 +2388,27 @@ namespace Hydra.Such.Portal.Controllers
                     //Create
                     dp.ForEach(x =>
                     {
+                        decimal IVA = new decimal();
+                        if (!string.IsNullOrEmpty(x.ProjectNo) && !string.IsNullOrEmpty(x.Code))
+                        {
+                            Projetos Projeto = DBProjects.GetById(x.ProjectNo);
+
+                            if (Projeto != null && !string.IsNullOrEmpty(Projeto.NºCliente))
+                            {
+                                NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Projeto.NºCliente);
+
+                                if (Cliente != null && !string.IsNullOrEmpty(Cliente.VATBusinessPostingGroup))
+                                {
+                                    NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code).FirstOrDefault();
+
+                                    if (Product != null && !string.IsNullOrEmpty(Product.VATProductPostingGroup))
+                                    {
+                                        IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente.VATBusinessPostingGroup, Product.VATProductPostingGroup);
+                                    }
+                                }
+                            }
+                        }
+
                         DiárioDeProjeto newdp = new DiárioDeProjeto()
                         {
                             NºLinha = x.LineNo,
@@ -2368,6 +2438,7 @@ namespace Hydra.Such.Portal.Controllers
                             PréRegisto = false,
                             CódDestinoFinalResíduos = x.ResidueFinalDestinyCode,
                             TipoRecurso = x.ResourceType,
+                            TaxaIVA = IVA,
 
                             NºGuiaResíduos = x.ResidueGuideNo,
                             NºGuiaExterna = x.ExternalGuideNo,
@@ -2579,7 +2650,8 @@ namespace Hydra.Such.Portal.Controllers
                                         DataHoraCriação = DateTime.Now,
                                         FaturaçãoAutorizada = false,
                                         NºDocumento = "ES_" + newdp.NºProjeto,
-                                        CriarMovNav2017 = false
+                                        CriarMovNav2017 = false,
+                                        TaxaIVA = newdp.TaxaIVA
                                     };
 
                                     DBProjectMovements.Create(ProjectMovement);
@@ -2713,12 +2785,33 @@ namespace Hydra.Such.Portal.Controllers
                         }
                         foreach (var item in projectDiaryItems)
                         {
+                            decimal IVA = new decimal();
+                            if (!string.IsNullOrEmpty(item.ProjectNo) && !string.IsNullOrEmpty(item.Code))
+                            {
+                                Projetos Projeto = DBProjects.GetById(item.ProjectNo);
+
+                                if (Projeto != null && !string.IsNullOrEmpty(Projeto.NºCliente))
+                                {
+                                    NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Projeto.NºCliente);
+
+                                    if (Cliente != null && !string.IsNullOrEmpty(Cliente.VATBusinessPostingGroup))
+                                    {
+                                        NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, item.Code).FirstOrDefault();
+
+                                        if (Product != null && !string.IsNullOrEmpty(Product.VATProductPostingGroup))
+                                        {
+                                            IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente.VATBusinessPostingGroup, Product.VATProductPostingGroup);
+                                        }
+                                    }
+                                }
+                            }
 
                             DiárioDeProjeto dpValidation = new DiárioDeProjeto();
                             item.Type = 2; //Recurso
                             item.CreateUser = User.Identity.Name;
                             item.CreateDate = DateTime.Now;
                             item.InvoiceToClientNo = proj.NºCliente;
+                            item.TaxaIVA = IVA;
                             dpValidation = DBProjectDiary.Create(DBProjectDiary.ParseToDatabase(item));
                             if (dpValidation == null)
                             {
@@ -2767,6 +2860,27 @@ namespace Hydra.Such.Portal.Controllers
 
                     foreach (PriceServiceClientViewModel item in dp)
                     {
+                        decimal IVA = new decimal();
+                        if (!string.IsNullOrEmpty(projectNo) && !string.IsNullOrEmpty(item.Resource))
+                        {
+                            Projetos Projeto = DBProjects.GetById(projectNo);
+
+                            if (Projeto != null && !string.IsNullOrEmpty(Projeto.NºCliente))
+                            {
+                                NAVClientsViewModel Cliente = DBNAV2017Clients.GetClientById(_config.NAVDatabaseName, _config.NAVCompanyName, Projeto.NºCliente);
+
+                                if (Cliente != null && !string.IsNullOrEmpty(Cliente.VATBusinessPostingGroup))
+                                {
+                                    NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, item.Resource).FirstOrDefault();
+
+                                    if (Product != null && !string.IsNullOrEmpty(Product.VATProductPostingGroup))
+                                    {
+                                        IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente.VATBusinessPostingGroup, Product.VATProductPostingGroup);
+                                    }
+                                }
+                            }
+                        }
+
                         ProjectDiaryViewModel newRow = new ProjectDiaryViewModel();
                         DiárioDeProjeto dpValidation = new DiárioDeProjeto();
 
@@ -2800,6 +2914,7 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.User = User.Identity.Name;
                         newRow.Registered = false;
                         newRow.PreRegistered = false;
+                        newRow.TaxaIVA = IVA;
 
                         newRow.CreateUser = User.Identity.Name;
                         newRow.CreateDate = DateTime.Now;
@@ -7931,6 +8046,11 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("Fatura");
                     Col = Col + 1;
                 }
+                if (dp["taxaIVA"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Taxa IVA");
+                    Col = Col + 1;
+                }
                 if (dp["createUser"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Utilizador Criação");
@@ -8268,6 +8388,11 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["fatura"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.Fatura);
+                            Col = Col + 1;
+                        }
+                        if (dp["taxaIVA"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.TaxaIVA.ToString());
                             Col = Col + 1;
                         }
                         if (dp["createUser"]["hidden"].ToString() == "False")
@@ -8697,6 +8822,7 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["autorizatedInvoiceDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Autorização Faturação"); Col = Col + 1; }
                 if (dp["authorizedBy"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Autorizado Por"); Col = Col + 1; }
                 if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Fatura"); Col = Col + 1; }
+                if (dp["taxaIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Taxa IVA"); Col = Col + 1; }
                 if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador"); Col = Col + 1; }
 
                 if (dp != null)
@@ -8743,6 +8869,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["autorizatedInvoiceDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AutorizatedInvoiceDate); Col = Col + 1; }
                         if (dp["authorizedBy"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.AuthorizedBy); Col = Col + 1; }
                         if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceGroup.ToString()); Col = Col + 1; }
+                        if (dp["taxaIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TaxaIVA.ToString()); Col = Col + 1; }
                         if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.User); Col = Col + 1; }
 
                         count++;

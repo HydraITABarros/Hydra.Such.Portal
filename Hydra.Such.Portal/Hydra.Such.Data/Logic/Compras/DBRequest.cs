@@ -188,7 +188,7 @@ namespace Hydra.Such.Data.Logic.Request
                 {
                     return ctx.Requisição
                         .Where(x => stateValues.Contains(x.Estado.Value) && x.TipoReq == TipoReq)
-                        .Include("LinhasRequisição")
+                        //.Include("LinhasRequisição")
                         .ToList();
                 }
             }
@@ -642,7 +642,7 @@ namespace Hydra.Such.Data.Logic.Request
                     NºConsultaMercado = item.MarketInquiryNo,
                     NºEncomenda = item.OrderNo,
                     Orçamento = item.Budget,
-                    ValorEstimado = item.Lines.Sum(x => x.QuantityToRequire * x.UnitCost), //item.EstimatedValue,
+                    ValorEstimado = item.EstimatedValue,
                     PrecoIvaincluido = item.PricesIncludingVAT,
                     Adiantamento = item.InAdvance,
                     PedirOrcamento = item.PedirOrcamento,
@@ -808,7 +808,7 @@ namespace Hydra.Such.Data.Logic.Request
                     MarketInquiryNo = item.NºConsultaMercado,
                     OrderNo = item.NºEncomenda,
                     Budget = item.Orçamento,
-                    EstimatedValue = item.LinhasRequisição.Sum(x => x.QuantidadeARequerer * x.CustoUnitário), //item.ValorEstimado,
+                    EstimatedValue = item.ValorEstimado,
                     PricesIncludingVAT = item.PrecoIvaincluido.HasValue ? item.PrecoIvaincluido.Value : false,
                     InAdvance = item.Adiantamento.HasValue ? item.Adiantamento.Value : false,
                     PedirOrcamento = item.PedirOrcamento,
@@ -919,7 +919,7 @@ namespace Hydra.Such.Data.Logic.Request
                         NºConsultaMercado = item.MarketInquiryNo,
                         NºEncomenda = item.OrderNo,
                         Orçamento = item.Budget,
-                        ValorEstimado = item.Lines.Sum(x => x.QuantityToRequire * x.UnitCost), //item.EstimatedValue,
+                        ValorEstimado = item.EstimatedValue,
                         PrecoIvaincluido = item.PricesIncludingVAT,
                         Adiantamento = item.InAdvance,
                         PedirOrcamento = item.PedirOrcamento,

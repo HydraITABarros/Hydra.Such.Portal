@@ -304,9 +304,9 @@ namespace Hydra.Such.Portal.Controllers
                                                         Reserva.Reservado = false;
                                                         Reserva.UtilizadorModificacao = User.Identity.Name;
                                                         Reserva.DataHoraModificacao = DateTime.Now;
-                                                    }
 
-                                                    DBSISLOGReservas.Update(Reserva);
+                                                        DBSISLOGReservas.Update(Reserva);
+                                                    }
                                                 }
                                             });
                                         }
