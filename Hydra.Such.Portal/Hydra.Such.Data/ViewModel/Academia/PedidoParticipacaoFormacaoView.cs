@@ -41,6 +41,10 @@ namespace Hydra.Such.Data.ViewModel.Academia
 
         public ICollection<AttachmentsViewModel> AnexosPedido { get; set; }
 
+        public PedidoParticipacaoFormacaoView()
+        {
+
+        }
         public PedidoParticipacaoFormacaoView(PedidoParticipacaoFormacao Pedido)
         {
             IdPedido = Pedido.IdPedido;
@@ -122,6 +126,49 @@ namespace Hydra.Such.Data.ViewModel.Academia
             {
                 return DateTime.Parse("1900-01-01");
             }
+        }
+
+        public PedidoParticipacaoFormacao ParseToDb()
+        {
+            PedidoParticipacaoFormacao pedido = new PedidoParticipacaoFormacao()
+            {
+                IdPedido = IdPedido,
+                Estado = Estado,
+                IdEmpregado = IdEmpregado,
+                NomeEmpregado = NomeEmpregado,
+                FuncaoEmpregado = FuncaoEmpregado,
+                ProjectoEmpregado = ProjectoEmpregado,
+                IdAreaFuncional = IdAreaFuncional,
+                AreaFuncionalEmpregado = AreaFuncionalEmpregado,
+                IdCentroResponsabilidade = IdCentroResponsabilidade,
+                CentroResponsabilidadeEmpregado = CentroResponsabilidadeEmpregado,
+                IdEstabelecimento = IdEstabelecimento,
+                DescricaoEstabelecimento = DescricaoEstabelecimento,
+                IdAccaoFormacao = IdAccaoFormacao,
+                DesignacaoAccao = DesignacaoAccao,
+                LocalRealizacao = LocalRealizacao,
+                DataInicio = DataInicio,
+                DataFim = DataFim,
+                NumeroTotalHoras = NumeroTotalHoras,
+                IdEntidadeFormadora = IdEntidadeFormadora,
+                DescricaoEntidadeFormadora = DescricaoEntidadeFormadora,
+                CustoInscricao = CustoInscricao,
+                ValorIva = ValorIva,
+                CustoDeslocacoes = CustoDeslocacoes,
+                CustoEstadia = CustoEstadia,
+                DescricaoConhecimentos = DescricaoConhecimentos,
+                FundamentacaoChefia = FundamentacaoChefia,
+                Planeada = Planeada ?? 0,
+                CursoPlanoFormacao = CursoPlanoFormacao,
+                TemDotacaoOrcamental = TemDotacaoOrcamental ?? 0,
+                ParecerAcademia = ParecerAcademia,
+                UtilizadorCriacao = UtilizadorCriacao,
+                DataHoraCriacao = DataHoraCriacao,
+                UtilizadorUltimaModificacao = UtilizadorUltimaModificacao,
+                DataHoraUltimaModificacao = DataHoraUltimaModificacao
+            };
+
+            return pedido;
         }
     }
 }

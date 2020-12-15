@@ -35,19 +35,29 @@ namespace Hydra.Such.Data.ViewModel.Academia
             NumeroTotalHoras = accao.NumeroTotalHoras == null ? 0 : accao.NumeroTotalHoras.Value;
             UrlImagem = accao.UrlImagem;
 
+        }
+
+        public void ImagensDaAccao()
+        {
+            List<Anexos> imagens = DBAttachments.GetById(TipoOrigemAnexos.AccaoFormacao, IdAccao);
+            ImagensAccao = DBAttachments.ParseToViewModel(imagens);
+            foreach (var item in ImagensAccao)
+            {
+                item.Visivel = item.Visivel ?? false;
+            }
+        }
+
+        public void SessoesDaAccao(AccaoFormacao accao)
+        {
             SessoesFormacao = accao.SessoesFormacao;
 
             NoSessoes = accao.SessoesFormacao == null ? 0 : accao.SessoesFormacao.Count();
             TemSessoes = NoSessoes > 0;
+        }
 
+        public void DetalhesEntidade()
+        {
             Entidade = DBAcademia.__GetDetailsEntidade(IdEntidadeFormadora);
-
-            List<Anexos> imagens = DBAttachments.GetById(TipoOrigemAnexos.AccaoFormacao, accao.IdAccao);
-            ImagensAccao = DBAttachments.ParseToViewModel(imagens);
-            foreach (var item in ImagensAccao)
-            {
-                item.Visivel = item.Visivel == null ? false : item.Visivel.Value;
-            }
         }
 
         public AccaoFormacao ParseToDb()

@@ -192,9 +192,9 @@ namespace Hydra.Such.Portal.Controllers
             if (Project != null)
             {
                 result.ProjectNo = ProjectNo;
-                result.RegionCode = Project.RegionCode != null ? Project.RegionCode : "";
-                result.FunctionalAreaCode = Project.AreaCode != null ? Project.AreaCode : "";
-                result.ResponsabilityCenterCode = Project.CenterResponsibilityCode != null ? Project.CenterResponsibilityCode : "";
+                result.RegionCode = Project.RegionCode ?? "";
+                result.FunctionalAreaCode = Project.AreaCode ?? "";
+                result.ResponsabilityCenterCode = Project.CenterResponsibilityCode ?? "";
             }
             else
             {

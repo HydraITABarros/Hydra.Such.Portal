@@ -1,0 +1,16 @@
+{
+  "name": "paper-spinner",
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/PolymerElements/paper-spinner",
+  "version": "3.0.2",
+  "_release": "3.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v3.0.2",
+    "commit": "1d2d9d3d9d97a42f4a372ceb1e39d3adf3b5d464"
+  },
+  "_source": "https://github.com/PolymerElements/paper-spinner.git",
+  "_target": "v3.0.2",
+  "_originalSource": "paper-spinner",
+  "_direct": true
+}

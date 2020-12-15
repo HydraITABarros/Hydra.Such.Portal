@@ -39,13 +39,24 @@
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
 
-<dom-module id="x-catalogo">
+
+<dom-module id="x-testcatalogo">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
         <link rel="stylesheet" href="/css/main.css" />
         <custom-style>
             <style is="custom-style">
+                .details {
+                    padding: 10px;
+                    margin: 10px;
+                    display: inline-block;
+                    justify-content: space-around;
+                    align-items: center;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
+                    /*font-size: 20px;*/
+                }
+
                 #sizing-contain {
                     width: 100%;
                     height: 80px;
@@ -84,7 +95,7 @@
                 }
             </style>
         </custom-style>
-        <iron-ajax url="/Academia/GetCatalogo"
+        <iron-ajax url="/Academia/GetCatalogoToPedido"
                    last-response="{{ result }}"
                    auto method="post"
                    handle-as="json"
@@ -92,9 +103,38 @@
                    on-response="_responseProcessor"
                    content-type="application/json">
         </iron-ajax>
-
+        <h1>TESTE 1</h1>
         <vaadin-grid aria-label="catalogoGrid" id="gridCatalogo" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column resizable>
+            <template class="row-details">
+                <div class="details">
+                    <vaadin-grid aria-label="accoesTema" id="gridAccoes" items="[[item.accoes]]" multi-sort="true">
+                        <vaadin-grid-column>
+                            <template class="header">
+                                <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
+                            </template>
+                            <template>
+                                [[item.codigoInterno]]
+                            </template>
+                        </vaadin-grid-column>
+                        <vaadin-grid-column>
+                            <template class="header">
+                                <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                            </template>
+                            <template>
+                                [[item.designacaoAccao]]
+                            </template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                </div>
+            </template>
+            <vaadin-grid-column width="10%">
+                <template class="header">
+                </template>
+                <template>
+                    <paper-checkbox id="showDetailsFor" aria-label$="Show Details for [[item.codigoInterno]]" checked="{{expanded}}">Ver Acções</paper-checkbox>
+                </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column resizable width="30%">
                 <template class="header">
                     <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
                     <!--<vaadin-grid-filter path="descricaoTema" />-->
@@ -103,7 +143,7 @@
                     {{ item.descricaoTema }}
                 </template>
             </vaadin-grid-column>
-            <vaadin-grid-column>
+            <vaadin-grid-column width="50%">
                 <template class="header">
                 </template>
                 <template>
@@ -118,7 +158,7 @@
     <script>
         document.addEventListener('WebComponentsReady', function () {
             Polymer({
-                is: 'x-catalogo',
+                is: 'x-testcatalogo',
                 properties: {
                     activeItem: {
                         observer: '_rowSelected'
@@ -134,10 +174,38 @@
                     this.$.ToastMessage.open();
                 },
 
+                _onActiveItemChanged: function (e) {
+                    debugger;;
+                    this.$.gridCatalogo2.expandedItems = [e.detail.value];
+                },
+
+                //_setCourse: function (item) {
+                //    if (item != null) {
+                //        var _model = item.model.__data.item;
+                //        if (_model != undefined) {
+                //            if (_model.idTema != "" && item.detail.value) {
+                //                this.$.page_tema_databound_ajax.body = JSON.stringify({ "idTema": _model.idTema, "fromCatalogo": true });
+                //                this.$.page_tema_databound_ajax.generateRequest();
+                //            } else {
+                //                this.coursesArray = null;
+                //            }
+                //        }
+                        
+                //    }
+
+                //},
+
+                _detalheResponseProcessor: function (e) {
+                    debugger;;
+                    if (this.temaDetail != null) {
+                        this.coursesArray = this.temaDetail.accoes;
+                    }
+                },
+
                 ready: function () {
                     debugger;;
 
-                    this.$.grid_databound_ajax.body = JSON.stringify({ "apenasActivos": true });
+                    this.$.grid_databound_ajax.body = JSON.stringify();
                     this.$.grid_databound_ajax.generateRequest();
 
                     /*FILTROS*/
@@ -158,13 +226,8 @@
                     var self = this;
 
                     if (data.detail.status === 200) {
-                        if (this.result == null || this.result.length == 0) {
-                            this._openToast("Não há nada para mostrar no catálogo!");
-
-                            setTimeout(
-                                function () {
-                                    window.location.replace("/");
-                                }, 2500);
+                        if (this.result != null && this.result.length > 0) {
+                            //this.coursesArray = this.result;  
                         } 
                     }
                 },
