@@ -2895,7 +2895,7 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.MeasurementUnitCode = item.UnitMeasure;
                         newRow.UnitCost = item.PriceCost.HasValue ? Math.Round((decimal)item.PriceCost, 4) : decimal.Zero;
                         newRow.UnitPrice = item.SalePrice.HasValue ? Math.Round((decimal)item.SalePrice, 4) : decimal.Zero;
-                        newRow.Quantity = item.Quantidade.HasValue ? Math.Round((decimal)item.Quantidade, 4) : decimal.Zero;
+                        if (item.Quantidade.HasValue && item.Quantidade > 0) newRow.Quantity = Math.Round((decimal)item.Quantidade, 4);
                         newRow.Billable = true;
                         newRow.ProjectContabGroup = proj.GrupoContabObra;
                         newRow.MovementType = 1;
@@ -6423,7 +6423,7 @@ namespace Hydra.Such.Portal.Controllers
                         newRow.MeasurementUnitCode = item.UnitMeasure;
                         newRow.UnitCost = item.PriceCost.HasValue ? Math.Round((decimal)item.PriceCost, 4) : decimal.Zero;
                         newRow.UnitPrice = item.SalePrice.HasValue ? Math.Round((decimal)item.SalePrice, 4) : decimal.Zero;
-                        newRow.Quantity = item.Quantidade.HasValue ? Math.Round((decimal)item.Quantidade, 4) : decimal.Zero;
+                        if (item.Quantidade.HasValue && item.Quantidade > 0) newRow.Quantity = item.Quantidade;
                         newRow.Billable = true;
                         newRow.ProjectContabGroup = proj.GrupoContabObra;
                         newRow.MovementType = 1;
