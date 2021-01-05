@@ -1957,9 +1957,9 @@ namespace Hydra.Such.Portal.Controllers
                 if (response.eReasonCode == 6)
                     return Json(response);
 
+                decimal IVA = new decimal();
                 dp.ForEach(x =>
                 {
-                    decimal IVA = new decimal();
                     if (!string.IsNullOrEmpty(x.ProjectNo) && !string.IsNullOrEmpty(x.Code))
                     {
                         Projetos Projeto = DBProjects.GetById(x.ProjectNo);
@@ -1970,11 +1970,25 @@ namespace Hydra.Such.Portal.Controllers
 
                             if (Cliente != null && !string.IsNullOrEmpty(Cliente.VATBusinessPostingGroup))
                             {
-                                NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code).FirstOrDefault();
-
-                                if (Product != null && !string.IsNullOrEmpty(Product.VATProductPostingGroup))
+                                if (x.Type == 1) //PRODUTOS
                                 {
-                                    IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente.VATBusinessPostingGroup, Product.VATProductPostingGroup);
+                                    NAVProductsViewModel Product = DBNAV2017Products.GetAllProducts(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code).FirstOrDefault();
+
+                                    if (Product != null && !string.IsNullOrEmpty(Product.VATProductPostingGroup))
+                                    {
+                                        IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente.VATBusinessPostingGroup, Product.VATProductPostingGroup);
+                                    }
+                                }
+
+                                if (x.Type == 2) //RECURSOS
+                                {
+
+                                    NAVResourcesViewModel Resource = DBNAV2017Resources.GetAllResources(_config.NAVDatabaseName, _config.NAVCompanyName, x.Code).FirstOrDefault();
+
+                                    if (Resource != null && !string.IsNullOrEmpty(Resource.VATProductPostingGroup))
+                                    {
+                                        IVA = DBNAV2017VATPostingSetup.GetIVA(_config.NAVDatabaseName, _config.NAVCompanyName, Cliente.VATBusinessPostingGroup, Resource.VATProductPostingGroup);
+                                    }
                                 }
                             }
                         }
