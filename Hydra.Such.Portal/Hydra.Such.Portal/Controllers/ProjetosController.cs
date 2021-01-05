@@ -3103,7 +3103,8 @@ namespace Hydra.Such.Portal.Controllers
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
                         Fatura = x.Fatura,
-                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : "Informação indisponível" : ""
+                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : "Informação indisponível" : "",
+                        TaxaIVA = x.TaxaIVA
                     }).OrderByDescending(x => x.Date).ToList();
                 }
                 else
@@ -3192,7 +3193,8 @@ namespace Hydra.Such.Portal.Controllers
                         NameDB = _config.NAVDatabaseName,
                         CompanyName = _config.NAVCompanyName,
                         Fatura = x.Fatura,
-                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : "Informação indisponível" : ""
+                        ProductGroupCode = !string.IsNullOrEmpty(x.Código) ? AllProducts != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault() != null ? AllProducts.Where(y => y.Code == x.Código).FirstOrDefault().ProductGroupCode : "" : "Informação indisponível" : "",
+                        TaxaIVA = x.TaxaIVA
                     }).OrderByDescending(x => x.Date).ToList();
                 }
 
@@ -6984,10 +6986,10 @@ namespace Hydra.Such.Portal.Controllers
                     AllMovFilter.RemoveAll(x => x.TipoMovimento != filtroTipoMovimento);
 
                 if (filtroDataInicio > DateTime.MinValue)
-                    AllMovFilter.RemoveAll(x => Convert.ToDateTime(x.DataHoraCriação).Date < filtroDataInicio);
+                    AllMovFilter.RemoveAll(x => Convert.ToDateTime(x.Data).Date < filtroDataInicio);
 
                 if (filtroDataFim > DateTime.MinValue)
-                    AllMovFilter.RemoveAll(x => Convert.ToDateTime(x.DataHoraCriação).Date > filtroDataFim);
+                    AllMovFilter.RemoveAll(x => Convert.ToDateTime(x.Data).Date > filtroDataFim);
 
                 if (AllMovFilter.Count <= 15000)
                 {

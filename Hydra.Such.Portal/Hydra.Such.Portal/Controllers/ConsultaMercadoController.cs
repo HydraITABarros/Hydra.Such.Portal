@@ -191,6 +191,7 @@ namespace Hydra.Such.Portal.Controllers
                     selecao.DataRespostaArea_Show = selecao.DataRespostaArea == Convert.ToDateTime("1900-01-01") ? "" : selecao.DataRespostaArea.Value.ToString("yyyy-MM-dd");
                     selecao.DataPedidoCotacaoCriadoEm_Show = selecao.PedidoCotacaoCriadoEm == Convert.ToDateTime("1900-01-01") ? "" : selecao.PedidoCotacaoCriadoEm.Value.ToString("yyyy-MM-dd");
                     selecao.Historico_Show = selecao.Historico == false ? "Não" : "Sim";
+                    selecao.NaoRespostaDoFornecedor_Show = selecao.NaoRespostaDoFornecedor == true ? "Sim" : "Não";
 
                     //RegistoDePropostas REG = AllRegistoDePropostas.Where(x => x.NumConsultaMercado == selecao.NumConsultaMercado).FirstOrDefault();
                     //if (REG != null)
