@@ -814,7 +814,7 @@ namespace Hydra.Such.Data.Logic
         public static bool CreateLinhasGuiaTransporte(List<LinhaGuiaTransporteNavViewModel> linhas)
         {
 
-            if (linhas == null)
+            if (linhas == null || linhas.Count() == 0)
             {
                 return false;
             }
@@ -844,7 +844,7 @@ namespace Hydra.Such.Data.Logic
 
                 linhasRq = _context.LinhasRequisição.Where(r => r.NºRequisição == requisitionNo && r.QuantidadeDisponibilizada > 0).ToList();
 
-                if (linhasRq == null)
+                if (linhasRq == null || linhasRq.Count() == 0)
                     return false;
 
                 List<LinhaGuiaTransporteNavViewModel> linhasGT = new List<LinhaGuiaTransporteNavViewModel>();
