@@ -238,7 +238,7 @@
                     </such-selectbox>
                 </div>
                 <div class="col-lg-4">
-                    <vaadin-text-field id="piDescription" label="Descrição" maxlength="100" value="{{description}}" disabled></vaadin-text-field>
+                    <vaadin-text-field id="piDescription" label="Descrição" maxlength="100" value="{{description}}" disabled="{{ !_permissions.create }}"></vaadin-text-field>
                 </div>
             </div>
             <div class="row">
@@ -484,13 +484,12 @@
                     <vaadin-grid-filter path="description"></vaadin-grid-filter>
                 </template>
                 <template>
-                        {{item.description}}
-                    <!--<template is="dom-if" if="{{ item.selected }}">
+                    <template is="dom-if" if="{{ item.selected }}">
                         <vaadin-text-field id="description" disabled="{{ !_permissions.update }}" maxlength="100" value="{{item.description}}"></vaadin-text-field>
                     </template>
                     <template is="dom-if" if="{{ !item.selected }}">
                         {{item.description}}
-                    </template>-->
+                    </template>
                 </template>
             </vaadin-grid-column>
 
@@ -867,6 +866,18 @@
                     <template is="dom-if" if="{{ !item.selected }}">
                         [[ _parseResponsabilityCenter(item.responsabilityCenterCode) ]]
                     </template>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="7%" resizable>
+                <template class="header">
+                    <vaadin-grid-sorter path="taxaIVA">Taxa IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="taxaIVA"></vaadin-grid-filter>
+                </template>
+                <template>
+                    <div class="alignRight">
+                        {{ item.taxaIVA }} %
+                    </div>
                 </template>
             </vaadin-grid-column>
 

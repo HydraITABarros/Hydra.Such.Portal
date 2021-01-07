@@ -720,7 +720,7 @@ namespace Hydra.Such.Portal.Controllers
                                     for (int j = (sheet.FirstRowNum + 1); j <= sheet.LastRowNum; j++)
                                     {
                                         IRow row = sheet.GetRow(j);
-                                        if (row != null && !string.IsNullOrEmpty(row.GetCell(0).ToString()))
+                                        if (row != null && row.Cells.Count > 10)
                                         {
                                             nrow = new RequisitionTemplateLineViewModel();
 

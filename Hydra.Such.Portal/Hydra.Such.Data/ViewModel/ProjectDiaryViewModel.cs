@@ -84,6 +84,7 @@ namespace Hydra.Such.Data.ViewModel
         public string UpdateUser { get; set; }
         public DateTime? UpdateDate { get; set; }
 
+
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }
 
@@ -116,6 +117,7 @@ namespace Hydra.Such.Data.ViewModel
         public bool? PreRegistered { get; set; }
         public string ServiceClientDescription { get; set; }
         public string ProductGroupCode { get; set; }
+        public decimal? TaxaIVA { get; set; }
 
 
         public string LicensePlate { get; set; }

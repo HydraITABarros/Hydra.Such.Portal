@@ -816,6 +816,18 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.taxaIVA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="taxaIVA">Taxa IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="taxaIVA" />
+                </template>
+                <template>
+                    <div class="alignRight">
+                        {{item.taxaIVA}} %
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="15%" resizable hidden$="{{ _columns.createUser.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="createUser">Utilizador Criação</vaadin-grid-sorter>
@@ -1032,6 +1044,7 @@
                         "authorizedBy": { hidden: false, label: "Autorizado Por" },
                         "serviceObject": { hidden: false, label: "Objeto Serviço" },
                         "fatura": { hidden: false, label: "Fatura" },
+                        "taxaIVA": { hidden: false, label: "Taxa IVA" },
                         "createUser": { hidden: false, label: "Utilizador Criação" },
                         "createDateText": { hidden: false, label: "Data Criação" },
                         "createHourText": { hidden: false, label: "Hora Criação" }

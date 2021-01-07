@@ -2397,6 +2397,7 @@ namespace Hydra.Such.Portal.Controllers
                     req.RequisitionDate = DateTime.Now.ToString();
                     req.CreateUser = User.Identity.Name;
                     req.CreateDate = DateTime.Now.ToString();
+                    req.EstimatedValue = req.Lines.Sum(x => x.QuantityToRequire * x.UnitCost);
                     Requisição createReq = DBRequest.ParseToDB(req);
 
                     createReq = DBRequest.Create(createReq);
@@ -2835,6 +2836,7 @@ namespace Hydra.Such.Portal.Controllers
                     req.RequisitionDate = DateTime.Now.ToString();
                     req.CreateUser = User.Identity.Name;
                     req.CreateDate = DateTime.Now.ToString();
+                    req.EstimatedValue = req.Lines.Sum(x => x.QuantityToRequire * x.UnitCost);
                     Requisição createReq = DBRequest.ParseToDB(req);
 
                     createReq = DBRequest.Create(createReq);

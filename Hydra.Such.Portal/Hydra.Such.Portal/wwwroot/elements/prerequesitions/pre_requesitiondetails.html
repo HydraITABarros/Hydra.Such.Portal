@@ -2659,10 +2659,10 @@
                     //    e.model.item.openOrderNo = line.documentNO;
                     //}
 
-                    if (e.model.item.quantityToRequire > e.model.item.quantidadeDisponivel) {
-                        this._openToastError('Na linha a Qt. a Requerer não pode ser superior a Qt. Disponível.');
-                    }
-                    else {
+                    //if (e.model.item.quantityToRequire > e.model.item.quantidadeDisponivel) {
+                    //    this._openToastError('Na linha a Qt. a Requerer não pode ser superior a Qt. Disponível.');
+                    //}
+                    //else {
                         if (e.model.item.projectNo != "" & e.model.item.projectNo != null) {
                             this.$.prereqLines_UpdateLinhaPreRequisicao_ajax.body = JSON.stringify({
                                 preRequisitionLineNo: e.model.item.preRequisitionLineNo,
@@ -2711,7 +2711,7 @@
                         else {
                             this._openToastError('Na linha o campo Nº Ordem/Projeto é de preenchimento obrigatório.');
                         }
-                    }
+                    //}
                 },
                 _UpdateLinhaPreRequisicao_ResponseProcessor: function (e) {
                     if (this.updateLinhaPreRequisicaoResponse.eReasonCode == 1) {

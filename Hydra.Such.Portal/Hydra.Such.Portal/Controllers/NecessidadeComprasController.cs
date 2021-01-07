@@ -1167,6 +1167,7 @@ namespace Hydra.Such.Portal.Controllers
 
                     requisition.RequisitionNo = RequisitionNo;
                     requisition.ResponsibleCreation = User.Identity.Name;
+                    requisition.EstimatedValue = requisition.Lines.Sum(x => x.QuantityToRequire * x.UnitCost);
                     Requisição createReq = DBRequest.ParseToDB(requisition);
 
                     createReq = DBRequest.Create(createReq);

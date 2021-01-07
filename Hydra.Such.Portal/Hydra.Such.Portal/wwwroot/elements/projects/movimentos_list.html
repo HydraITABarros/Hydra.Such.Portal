@@ -577,6 +577,18 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.taxaIVA.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="taxaIVA">Taxa IVA</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="taxaIVA" />
+                </template>
+                <template>
+                    <div class="alignRight">
+                        {{item.taxaIVA}} %
+                    </div>
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.user.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
@@ -742,6 +754,7 @@
                         "autorizatedInvoiceDate": { hidden: false, label: "Data Autorização Faturação" },
                         "authorizedBy": { hidden: false, label: "Autorizado Por" },
                         "invoiceGroup": { hidden: false, label: "Grupo Fatura" },
+                        "taxaIVA": { hidden: false, label: "Taxa IVA" },
                         "user": { hidden: false, label: "Utilizador" },
                     };
 
