@@ -980,7 +980,6 @@ namespace Hydra.Such.Portal.Controllers
                 data.eMessage = "Ocorreu um erro ao criar o projeto";
             }
             return Json(data);
-
         }
 
         [HttpPost]
@@ -1666,6 +1665,112 @@ namespace Hydra.Such.Portal.Controllers
                 }
             }
             return Json(false);
+        }
+
+        [HttpPost]
+        public JsonResult DuplicarProject([FromBody] ProjectDetailsViewModel data)
+        {
+            try
+            {
+                if (data != null)
+                {
+                    //Get Project Numeration
+                    bool autoGenId = false;
+                    Configuração Configs = DBConfigurations.GetById(1);
+                    int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
+                    string projNoAuto = "";
+                    data.ProjectNo = null;
+
+                    if (data.ProjectNo == "" || data.ProjectNo == null)
+                    {
+                        autoGenId = true;
+                        projNoAuto = DBNumerationConfigurations.GetNextNumeration(ProjectNumerationConfigurationId, autoGenId, false);
+                        data.ProjectNo = projNoAuto;
+                    }
+
+                    if (data.ProjectNo != null)
+                    {
+                        ErrorHandler resultApprovalMovement = new ErrorHandler();
+                        Projetos cProject = new Projetos()
+                        {
+                            NºProjeto = data.ProjectNo,
+                            Área = data.Area,
+                            Descrição = data.Description,
+                            NºCliente = data.ClientNo,
+                            Data = data.Date != "" && data.Date != null ? DateTime.Parse(data.Date) : (DateTime?)null,
+                            Estado = EstadoProjecto.Pendente,
+                            //MovimentosVenda = data
+                            CódigoRegião = data.RegionCode,
+                            CódigoÁreaFuncional = data.FunctionalAreaCode,
+                            CódigoCentroResponsabilidade = data.ResponsabilityCenterCode,
+                            Faturável = data.Billable,
+                            NºContrato = data.ContractNo,
+                            CódEndereçoEnvio = data.ShippingAddressCode,
+                            EnvioANome = data.ShippingName,
+                            EnvioAEndereço = data.ShippingAddress,
+                            EnvioACódPostal = data.ShippingPostalCode,
+                            EnvioALocalidade = data.ShippingLocality,
+                            EnvioAContato = data.ShippingContact,
+                            CódTipoProjeto = data.ProjectTypeCode,
+                            NossaProposta = data.OurProposal,
+                            CódObjetoServiço = data.ServiceObjectCode,
+                            NºCompromisso = data.CommitmentCode,
+                            GrupoContabObra = "PROJETO",
+                            TipoGrupoContabProjeto = data.GroupContabProjectType,
+                            TipoGrupoContabOmProjeto = data.GroupContabOMProjectType,
+                            PedidoDoCliente = data.ClientRequest,
+                            DataDoPedido = data.RequestDate != "" && data.RequestDate != null ? DateTime.Parse(data.RequestDate) : (DateTime?)null,
+                            ValidadeDoPedido = data.RequestValidity,
+                            DescriçãoDetalhada = data.DetailedDescription,
+                            CategoriaProjeto = data.ProjectCategory,
+                            NºContratoOrçamento = data.BudgetContractNo,
+                            ProjetoInterno = data.InternalProject,
+                            ChefeProjeto = User.Identity.Name,
+                            ResponsávelProjeto = data.ProjectResponsible,
+                            DataHoraCriação = DateTime.Now,
+                            UtilizadorCriação = User.Identity.Name,
+                            DataHoraModificação = DateTime.Now,
+                            UtilizadorModificação = User.Identity.Name,
+                            FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido,
+                            FechoAutomatico = data.FechoAutomatico,
+                        };
+
+                        //Create Project On Database
+                        cProject = DBProjects.Create(cProject);
+
+                        if (cProject == null)
+                        {
+                            data.eReasonCode = 3;
+                            data.eMessage = "Ocorreu um erro ao criar o projeto duplicado no portal.";
+                        }
+                        else
+                        {
+                            resultApprovalMovement = ApprovalMovementsManager.StartApprovalMovement_Projetos(5, data.FunctionalAreaCode, data.ResponsabilityCenterCode, data.RegionCode, 0, data.ProjectNo, User.Identity.Name);
+
+                            if (autoGenId)
+                            {
+                                ConfiguraçãoNumerações ConfigNumerations = DBNumerationConfigurations.GetById(ProjectNumerationConfigurationId);
+                                ConfigNumerations.ÚltimoNºUsado = data.ProjectNo;
+                                ConfigNumerations.UtilizadorModificação = User.Identity.Name;
+                                DBNumerationConfigurations.Update(ConfigNumerations);
+                            }
+                            data.eReasonCode = 1;
+                            data.eMessage = "Foi criado um projeto duplicado no Portal com o código " + data.ProjectNo;
+                        }
+                    }
+                    else
+                    {
+                        data.eReasonCode = 5;
+                        data.eMessage = "A numeração configurada não é compativel com a inserida.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data.eReasonCode = 4;
+                data.eMessage = "Ocorreu um erro ao criar o projeto";
+            }
+            return Json(data);
         }
 
         [HttpPost]
@@ -9207,7 +9312,7 @@ namespace Hydra.Such.Portal.Controllers
                                             {
                                                 result.eReasonCode = 1;
                                                 result.eMessage = "A Fatura foi eliminada com sucesso do NAV2017.";
-                                                //return Json(result);
+                                                return Json(result);
                                             }
                                         }
                                         catch (Exception ex)

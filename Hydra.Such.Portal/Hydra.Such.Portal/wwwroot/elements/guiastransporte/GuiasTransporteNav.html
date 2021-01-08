@@ -36,8 +36,8 @@
                     font: inherit;
                 }
 
-                vaadin-checkbox{
-                    text-align:center;
+                vaadin-checkbox {
+                    text-align: center;
                 }
 
                 .grid {
@@ -71,12 +71,21 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/GuiasTransporteNav/ExportToExcel_GuiasList"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
         <div class="subMenu">
 
             <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
             <paper-button class="tablinks" id="showActive" on-tap="_showHistory"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
             <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Novo</paper-button>
-            <!--<paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>-->
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
 
         </div>
@@ -364,7 +373,19 @@
                         window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.guiaTransporteId  + "?isHistoric=" + false;
                     }                                                                              
 
-                }   
+                },
+
+                _exportEXCEL: function () {
+                    var result = this.$.grid._filter(this.result);
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../GuiasTransporteNav/ExportToExcelDownload_GuiasList?sFileName=' + FileName;
+                },
 
             });
         });

@@ -1635,12 +1635,12 @@
                 _ResetProjetoResponse: function () {
                     if (this.ResetProjetoResponse.eReasonCode == 1) {
                         this.openToast(this.ResetProjetoResponse.eMessage);
-
-                        this.$.page_databound_ajax.generateRequest();
                     }
                     else {
                         this.openToastError(this.ResetProjetoResponse.eMessage);
                     }
+
+                    this.$.page_databound_ajax.generateRequest();
                 },
 
                 _HistoryUndo: function (selectedItem, selectedItems) {

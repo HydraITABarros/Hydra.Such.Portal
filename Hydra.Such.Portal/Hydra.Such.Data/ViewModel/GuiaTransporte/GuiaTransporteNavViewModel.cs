@@ -90,6 +90,9 @@ namespace Hydra.Such.Data.ViewModel.GuiaTransporte
 
         public string Viatura { get; set; }
 
+        //EXPORTAR PARA EXCEL
+        public Object ColunasEXCEL { get; set; }
+        
         // zpgm.18072019.b
         public bool ReadyToRegister { get; set; }
         public string UserEmail { get; set; }

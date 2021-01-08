@@ -118,6 +118,14 @@
                    on-response="_responseReabrirProcessor"
                    content-type="application/json"></iron-ajax>
 
+        <iron-ajax url="/Projetos/DuplicarProject"
+                   last-response="{{duplicarData}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_duplicar_project"
+                   on-response="_responseDuplicarProcessor"
+                   content-type="application/json"></iron-ajax>
+
         <iron-ajax url="/Projetos/EnviarAprovacao"
                    last-response="{{enviarAprovacao}}"
                    method="post"
@@ -143,8 +151,7 @@
                    id="address_ajax"
                    content-type="application/json"></iron-ajax>
 
-        <iron-ajax
-                   url="/Projetos/GoFaturasNotas"
+        <iron-ajax url="/Projetos/GoFaturasNotas"
                    id="ajax_GoFaturasNotas_ajax">
         </iron-ajax>
 
@@ -154,6 +161,7 @@
 
                 <template is="dom-if" if="{{ _permissions.create }}">
                     <paper-button id="btnProjectAdd" class="tablinks" on-tap="_createNewProject"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Novo</paper-button>
+                    <paper-button id="btnProjectDuplicate" class="tablinks" on-tap="_DuplicateProject"><i class="fa fa-copy" aria-hidden="true"></i>&nbsp; Duplicar</paper-button>
                 </template>
 
                 <template is="dom-if" if="{{ data.verMenu }}">
@@ -1075,6 +1083,45 @@
 
                     //this.$.ajax_GoFaturasNotas_ajax.body = JSON.stringify(this.data.projectNo);
                     //this.$.ajax_GoFaturasNotas_ajax.generateRequest();
+                },
+
+                _DuplicateProject: function () {
+                    var Project = this.data;
+                    var ajax_request = this.$.ajax_duplicar_project;
+                    bootbox.confirm({
+                        message: "Tem a certeza que pretende duplicar este projeto " + this.data.projectNo + "?",
+                        buttons: {
+                            confirm: {
+                                label: 'Sim',
+                                className: 'btn-success'
+                            },
+                            cancel: {
+                                label: 'Não',
+                                className: 'btn-danger'
+                            }
+                        },
+                        callback: function (result) {
+                            if (result) {
+                                ajax_request.body = JSON.stringify(Project);
+                                ajax_request.generateRequest();
+                            }
+                        }
+                    });
+                },
+
+                _responseDuplicarProcessor: function (data) {
+                    var self = this;
+                    if (data.detail.status === 200) {
+                        if (this.duplicarData.eReasonCode != 0) {
+                            this._openToastError(this.duplicarData.eMessage);
+                        } else {
+                            this._openToast(this.duplicarData.eMessage);
+                            setTimeout(
+                                function () {
+                                    window.location.href = "/";
+                                }, 2500);
+                        }
+                    }
                 },
 
             });
