@@ -13075,6 +13075,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("NumeroTotalHoras")
                     .HasColumnType("decimal(18, 2)");
 
+                entity.Property(e => e.LocalRealizacao)
+                    .HasColumnName("LocalRealizacao")
+                    .HasMaxLength(150);
+
                 entity.Property(e => e.UrlImagem)
                     .HasColumnName("UrlImagem")
                     .HasMaxLength(250);
@@ -13171,6 +13175,11 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.LocalRealizacao)
                     .HasColumnName("LocalRealizacao")
                     .HasMaxLength(150);
+
+                entity.Property(e => e.IdSessao)
+                    .HasColumnName("IdSessao")
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Horario)
                     .HasColumnName("Horario")
                     .HasMaxLength(100);

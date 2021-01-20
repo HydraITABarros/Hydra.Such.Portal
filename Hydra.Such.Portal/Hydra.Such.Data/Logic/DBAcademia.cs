@@ -131,8 +131,7 @@ namespace Hydra.Such.Data.Logic
             {
 
                 TipoUtilizadorGlobal = Enumerations.TipoUtilizadorFluxoPedidoFormacao.Formando;
-            }
-            
+            }            
 
             ConfiguracaoAprovAcademia = new List<ConfiguracaoAprovacaoAcademia>();
 
@@ -190,6 +189,11 @@ namespace Hydra.Such.Data.Logic
             return ConfiguracaoAprovAcademia.Where(
                     c => c.TipoUtilizadorConfiguracao == Enumerations.TipoUtilizadorFluxoPedidoFormacao.AprovadorDireccao).FirstOrDefault() == null ||
                     AreasDirige == null ? false : true;
+        }
+
+        public bool IsBoardMember()
+        {
+            return TipoUtilizadorGlobal == Enumerations.TipoUtilizadorFluxoPedidoFormacao.ConselhoAdministracao;
         }
 
     }   
@@ -415,8 +419,28 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<EntidadeFormadora> __GetAllEntidades()
+        {
+            try
+            {
+                using (var _ctx = new SuchDBContext())
+                {
+                    return _ctx.EntidadeFormadora.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<SessaoAccaoFormacao> __GetSessoesFormacao(string idAccao)
         {
+            if (string.IsNullOrEmpty(idAccao))
+            {
+                return null;
+            }
             using(var _ctx = new SuchDBContext())
             {
                 try
@@ -501,7 +525,10 @@ namespace Hydra.Such.Data.Logic
             {
                 using (var _ctx = new SuchDBContext())
                 {
-                    DateTime inicio = DateTime.Parse(DateTime.Now.Year.ToString() + "-01-01");
+                    int ano = DateTime.Now.Year - 1;
+
+                    DateTime inicio = DateTime.Parse(ano.ToString()  + "-01-01");
+                    
                     List<TemaFormacao> temas = _ctx.TemaFormacao.ToList();
                     foreach (var item in temas)
                     {

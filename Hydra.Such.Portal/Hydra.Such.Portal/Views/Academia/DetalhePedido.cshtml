@@ -6,5 +6,12 @@
 
 <link rel="import" href="~/elements/academia/DetalhePedido.html" />
 
-<x-detalhepedido _idpedido="@ViewBag.idPedido" _ischief="@ViewBag.isChief" _isdirector="@ViewBag.isDirector" _istraningmanager="@ViewBag.isTrainingManager"></x-detalhepedido>
+<x-detalhepedido 
+                 _idpedido="@ViewBag.idPedido" 
+                 _employeeno="@ViewBag.employeeNo" 
+                 _ischief="@ViewBag.isChief" 
+                 _isdirector="@ViewBag.isDirector" 
+                 _istrainingmanager="@ViewBag.isTrainingManager" 
+                 _isboardmember="@ViewBag.isBoardMember">
+</x-detalhepedido>
 

@@ -28,6 +28,7 @@ namespace Hydra.Such.Data.Database
         public string IdAccaoFormacao { get; set; }
         public string DesignacaoAccao { get; set; }
         public string LocalRealizacao { get; set; }
+        public string IdSessao { get; set; }
         public string Horario { get; set; }
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? DataInicio { get; set; }

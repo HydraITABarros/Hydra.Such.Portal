@@ -48,8 +48,10 @@ namespace Hydra.Such.Portal.Controllers
             UserAccessesViewModel UPerm = DBUserAccesses.GetByUserAreaFunctionality(User.Identity.Name, Enumerations.Features.ImpressaoGuiaTransporteNAV);
             if (UPerm != null && UPerm.Read.Value)
             {
+                
                 ViewBag.ifHistoric = false;
                 ViewBag.Historic = " ";
+                ViewBag.filtroData = DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd");
                 return View();
             }
             else
@@ -95,8 +97,14 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetListGuiasTransporteNav([FromBody] JObject requestParams)
         {
             bool historic = requestParams["Historic"] == null ? false : bool.Parse(requestParams["Historic"].ToString());
+            string filtroData = requestParams["filtroData"] == null ? "2017-01-01" : (string)requestParams["filtroData"];
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            List<GuiaTransporteNavViewModel> result = DBNAV2017GuiasTransporte.GetListByDim(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, historic);
+            List<GuiaTransporteNavViewModel> result = DBNAV2017GuiasTransporte.GetListByDim(
+                _config.NAVDatabaseName, 
+                _config.NAVCompanyName, 
+                userDimensions, 
+                historic, 
+                DateTime.Parse(filtroData));
 
             if (historic)
             {
@@ -112,10 +120,28 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetListGuiasTransporteNavToCopyFrom()
+        public JsonResult GetListGuiasTransporteNavToCopyFrom([FromBody] JObject reqParam)
         {
+            DateTime filtroData;
+
+            try
+            {
+                filtroData = reqParam["filtroData"] == null ? DateTime.Parse("2017-01-01") : DateTime.Parse((string)reqParam["filtroData"]);
+            }
+            catch (Exception ex)
+            {
+
+                filtroData = DateTime.Parse("2017-01-01");
+            }
+
+
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-            List<GuiaTransporteNavViewModel> result = DBNAV2017GuiasTransporte.GetListByDim(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, true);
+            List<GuiaTransporteNavViewModel> result = DBNAV2017GuiasTransporte.GetListByDim(
+                _config.NAVDatabaseName, 
+                _config.NAVCompanyName, 
+                userDimensions, 
+                true,
+               filtroData);
 
             return Json(result);
         }
@@ -213,8 +239,20 @@ namespace Hydra.Such.Portal.Controllers
         }
    
         [HttpPost]
-        public JsonResult GetRequisicoes()
+        public JsonResult GetRequisicoes([FromBody] JObject reqParam)
         {
+            DateTime filtroData = DateTime.Parse("2017-01-01");
+            try
+            {
+                filtroData = reqParam["filtroData"] == null ? DateTime.Parse("2017-01-01") : DateTime.Parse((string)reqParam["filtroData"]);
+            }
+            catch (Exception ex)
+            {
+
+                filtroData = DateTime.Parse("2017-01-01");
+            }
+            
+
             List<RequisitionStates> states = new List<RequisitionStates>()
             {
               RequisitionStates.Approved,
@@ -230,8 +268,14 @@ namespace Hydra.Such.Portal.Controllers
 
             List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
 
-            
-            List<RequisitionViewModel> requisitions = DBRequest.GetByState(states, userDimensions, _config.NAVDatabaseName, _config.NAVCompanyName).ParseToViewModel();
+            List<RequisitionViewModel> requisitions = DBRequest.GetByState(
+                                                    states, 
+                                                    userDimensions, 
+                                                    _config.NAVDatabaseName, 
+                                                    _config.NAVCompanyName)
+                                                .Where(r => r.DataHoraCriação >= filtroData)
+                                                .ToList()
+                                                .ParseToViewModel();
 
             return Json(requisitions);
         }

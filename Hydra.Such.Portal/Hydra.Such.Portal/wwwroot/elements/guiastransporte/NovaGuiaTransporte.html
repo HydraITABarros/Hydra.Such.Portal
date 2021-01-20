@@ -28,6 +28,8 @@
 <link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
 <link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
 
+<link rel="import" href="/lib/paper-tooltip-master/paper-tooltip.html">
+
 <dom-module id="x-newguiatransportenav">
     <template>
         <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
@@ -85,6 +87,29 @@
                 background-color: var(--valo-contrast-5pct);
                 color: var(--valo-contrast-60pct) !important;
                 width: 100%;
+            }
+
+            paper-tooltip {
+                padding: 11px;
+                right: 5px;
+                opacity: 1;
+                box-sizing: border-box;
+                pointer-events: none;
+                max-width: 500px;
+                left: 2px !important;
+                right: none;
+                white-space: initial;
+                --paper-tooltip: {
+                                  font-size: 13px;
+                                  background: #f5f5f5;
+                                  background: white;
+                                  color: #2A2A2A;
+                                  padding: 10px;
+                                  line-height: 1.3em;
+                                  -webkit-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                                  -moz-box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                                  box-shadow: 5px 5px 10px -1px rgba(0,0,0,0.2);
+                             }
             }
 
             .marginSpace {
@@ -145,8 +170,7 @@
                 cursor: pointer;
                 text-decoration: none;
                 text-shadow: 0px 1px 0px #263666;
-            }
-               
+            }    
         </style>
 
         <iron-ajax url="/GuiasTransporteNav/GetDetailsGuia"
@@ -963,221 +987,251 @@
             </div>
         </paper-dialog>
 
-        <paper-dialog id="copyLinesFromReq" class="dialgoBox">
-            <h2>Copiar de Requisição</h2>
-            <vaadin-grid aria-label="gridRequisicao" items="[[requisitions]]" class="grid" multi-sort="true">
-                <vaadin-grid-column>
-                    <template class="header">
-                    </template>
-                    <template>
-                        <center>
-                            <paper-button class="btnSave fa fa-caret-square-o-down" raised on-tap="_copyLinesFromRequisition"></paper-button>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="120px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="requisitionNo" />
-                    </template>
-                    <template>
-                        {{ item.requisitionNo }}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="120px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                        <!--<vaadin-grid-filter path="estado" />-->
-                    </template>
-                    <template>
-                        [[ _clFormatState(item.state) ]]
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="regionCode">Região</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="regionCode" />
-                    </template>
-                    <template>
-                        {{item.regionCode}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="functionalAreaCode">Área</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="functionalAreaCode" />
-                    </template>
-                    <template>
-                        {{item.functionalAreaCode}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="centerResponsibilityCode">CResp</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="centerResponsibilityCode" />
-                    </template>
-                    <template>
-                        {{item.centerResponsibilityCode}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="localCode">Cód. Localização</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="localCode" />
-                    </template>
-                    <template>
-                        {{item.localCode}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="localCollectionCode">Cód. Recolha</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="localCollectionCode" />
-                    </template>
-                    <template>
-                        {{item.localCollectionCode}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="projectNo">Projecto</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="projectNo" />
-                    </template>
-                    <template>
-                        {{item.projectNo}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="responsibleCreation">Resp. Criação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="responsibleCreation" />
-                    </template>
-                    <template>
-                        {{item.responsibleCreation}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="responsibleApproval">Resp. Aprovação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="responsibleApproval" />
-                    </template>
-                    <template>
-                        {{item.responsibleApproval}}
-                    </template>
-                </vaadin-grid-column>
+        <paper-dialog id="copyLinesFromReq" class="dialgoBox" style="height:700px">
+            <h3>Copiar de Requisição</h3>
+            <div class="row break_clear" style="margin: 0px">
+                <div class="col-sm-2">
+                    <br />
+                    <paper-tooltip for="pesquisaDataRequisicao" position="bottom" offset="-1" animation-delay="1">
+                        Mostra apenas Requisições criadas a partir da data indicada.
+                    </paper-tooltip>
+                    <vaadin-date-picker id="pesquisaDataRequisicao" name="pesquisaDataRequisicao" label="Data criação Requisição:" value="{{ _filtroDataRequisicao }}" title="Filtrar Datas:"></vaadin-date-picker>
+                </div>
 
-            </vaadin-grid>
-            <div class="buttons">
-                <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
+                <div class="col-sm-2 alignPoga">
+                    <paper-button raised id="btnFiltroDatas" class="btnSave" on-tap="_filtrarDataRequisicao"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Filtrar</paper-button>
+                </div>
+            </div>
+            <div class="row break_clear">
+                <vaadin-grid aria-label="gridRequisicao" items="[[requisitions]]" class="grid" multi-sort="true">
+                    <vaadin-grid-column>
+                        <template class="header">
+                        </template>
+                        <template>
+                            <center>
+                                <paper-button class="btnSave fa fa-caret-square-o-down" raised on-tap="_copyLinesFromRequisition"></paper-button>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="120px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="requisitionNo">Nº Requisição</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="requisitionNo" />
+                        </template>
+                        <template>
+                            {{ item.requisitionNo }}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="120px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
+                            <!--<vaadin-grid-filter path="estado" />-->
+                        </template>
+                        <template>
+                            [[ _clFormatState(item.state) ]]
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="regionCode">Região</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="regionCode" />
+                        </template>
+                        <template>
+                            {{item.regionCode}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="functionalAreaCode">Área</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="functionalAreaCode" />
+                        </template>
+                        <template>
+                            {{item.functionalAreaCode}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="centerResponsibilityCode">CResp</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="centerResponsibilityCode" />
+                        </template>
+                        <template>
+                            {{item.centerResponsibilityCode}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="localCode">Cód. Localização</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="localCode" />
+                        </template>
+                        <template>
+                            {{item.localCode}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="localCollectionCode">Cód. Recolha</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="localCollectionCode" />
+                        </template>
+                        <template>
+                            {{item.localCollectionCode}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="projectNo">Projecto</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="projectNo" />
+                        </template>
+                        <template>
+                            {{item.projectNo}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="responsibleCreation">Resp. Criação</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="responsibleCreation" />
+                        </template>
+                        <template>
+                            {{item.responsibleCreation}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="responsibleApproval">Resp. Aprovação</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="responsibleApproval" />
+                        </template>
+                        <template>
+                            {{item.responsibleApproval}}
+                        </template>
+                    </vaadin-grid-column>
+
+                </vaadin-grid>
+                <div class="buttons">
+                    <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
+                </div>
             </div>
         </paper-dialog>
 
-        <paper-dialog id="copyFromGuiaRegistada" class="dialgoBox">
-            <h2>Copiar de Guia Transporte Registada</h2>
-            <vaadin-grid aria-label="gridGuiasRegistadas" items="[[guiasRegistadas]]" class="grid" multi-sort="true">
-                <vaadin-grid-column>
-                    <template class="header">
-                    </template>
-                    <template>
-                        <center>
-                            <paper-button class="btnSave fa fa-caret-square-o-down" raised on-tap="_copyLinesFromGuia"></paper-button>
-                        </center>
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="noGuiaTransporte">Nº</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="noGuiaTransporte" value="[[filter.noGuiaTransporte]]" />
-                    </template>
-                    <template>
-                        {{item.noGuiaTransporte}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="documentCodeId">Código AT</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="documentCodeId" value="[[filter.documentCodeId]]" />
-                    </template>
-                    <template>
-                        {{item.fiscalCommunicationLog.documentCodeId}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="dataGuia">Data Guia</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="dataGuia" value="[[filter.dataGuia]]" />
-                    </template>
-                    <template>
-                        {{item.dataGuia}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="noProjecto">Nº Projecto</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="noProjecto" value="[[filter.noProjecto]]" />
-                    </template>
-                    <template>
-                        {{item.noProjecto}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="utilizador">Utilizador</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="utilizador" value="[[filter.utilizador]]" />
-                    </template>
-                    <template>
-                        {{item.utilizador}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="noCliente" value="[[filter.noCliente]]" />
-                    </template>
-                    <template>
-                        {{item.noCliente}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="nomeCliente">Nome Cliente</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="nomeCliente" value="[[filter.nomeCliente]]" />
-                    </template>
-                    <template>
-                        {{item.nomeCliente}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="globalDimension1Code">Região</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="globalDimension1Code" value="[[filter.globalDimension1Code]]" />
-                    </template>
-                    <template>
-                        {{item.globalDimension1Code}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="globalDimension2Code">Área Funcional</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="globalDimension2Code" value="[[filter.globalDimension2Code]]" />
-                    </template>
-                    <template>
-                        {{item.globalDimension2Code}}
-                    </template>
-                </vaadin-grid-column>
-                <vaadin-grid-column width="110px" resizable>
-                    <template class="header">
-                        <vaadin-grid-sorter path="userEmail">Email Criação</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="userEmail" value="[[filter.userEmail]]" />
-                    </template>
-                    <template>
-                        {{item.userEmail}}
-                    </template>
-                </vaadin-grid-column>
-            </vaadin-grid>
+        <paper-dialog id="copyFromGuiaRegistada" class="dialgoBox" style="height:700px">
+            <h3>Copiar de Guia Transporte Registada</h3>
+            <div class="row break_clear" style="margin: 0px">
+                <div class="col-sm-2">
+                    <br />
+                    <paper-tooltip for="pesquisaDataGuia" position="bottom" offset="-1" animation-delay="1">
+                        Mostra apenas Guias criadas a partir da data indicada
+                    </paper-tooltip>
+                    <vaadin-date-picker id="pesquisaDataGuia" name="pesquisaDataGuia" label="Data Guia:" value="{{ _filtroDataGuia }}" title="Filtrar Datas:"></vaadin-date-picker>
+                </div>
 
-            <div class="buttons">
-                <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
+                <div class="col-sm-2 alignPoga">
+                    <paper-button raised id="btnFiltroDataGuia" class="btnSave" on-tap="_filtrarDataGuiaTransporte"><i class="fa fa-search" aria-hidden="true"></i>&nbsp; Filtrar</paper-button>
+                </div>
+            </div>
+            <div class="row break_clear">
+                <vaadin-grid aria-label="gridGuiasRegistadas" items="[[guiasRegistadas]]" class="grid" multi-sort="true">
+                    <vaadin-grid-column>
+                        <template class="header">
+                        </template>
+                        <template>
+                            <center>
+                                <paper-button class="btnSave fa fa-caret-square-o-down" raised on-tap="_copyLinesFromGuia"></paper-button>
+                            </center>
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="noGuiaTransporte">Nº</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="noGuiaTransporte" value="[[filter.noGuiaTransporte]]" />
+                        </template>
+                        <template>
+                            {{item.noGuiaTransporte}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="documentCodeId">Código AT</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="documentCodeId" value="[[filter.documentCodeId]]" />
+                        </template>
+                        <template>
+                            {{item.fiscalCommunicationLog.documentCodeId}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="dataGuia">Data Guia</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="dataGuia" value="[[filter.dataGuia]]" />
+                        </template>
+                        <template>
+                            {{item.dataGuia}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="noProjecto">Nº Projecto</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="noProjecto" value="[[filter.noProjecto]]" />
+                        </template>
+                        <template>
+                            {{item.noProjecto}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="utilizador">Utilizador</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="utilizador" value="[[filter.utilizador]]" />
+                        </template>
+                        <template>
+                            {{item.utilizador}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="noCliente">Nº Cliente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="noCliente" value="[[filter.noCliente]]" />
+                        </template>
+                        <template>
+                            {{item.noCliente}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="nomeCliente">Nome Cliente</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="nomeCliente" value="[[filter.nomeCliente]]" />
+                        </template>
+                        <template>
+                            {{item.nomeCliente}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="globalDimension1Code">Região</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="globalDimension1Code" value="[[filter.globalDimension1Code]]" />
+                        </template>
+                        <template>
+                            {{item.globalDimension1Code}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="globalDimension2Code">Área Funcional</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="globalDimension2Code" value="[[filter.globalDimension2Code]]" />
+                        </template>
+                        <template>
+                            {{item.globalDimension2Code}}
+                        </template>
+                    </vaadin-grid-column>
+                    <vaadin-grid-column width="110px" resizable>
+                        <template class="header">
+                            <vaadin-grid-sorter path="userEmail">Email Criação</vaadin-grid-sorter>
+                            <vaadin-grid-filter path="userEmail" value="[[filter.userEmail]]" />
+                        </template>
+                        <template>
+                            {{item.userEmail}}
+                        </template>
+                    </vaadin-grid-column>
+                </vaadin-grid>
+
+                <div class="buttons">
+                    <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
+                </div>
             </div>
         </paper-dialog>
 
@@ -1240,6 +1294,16 @@
                     _isPageLoad: {
                         type: Boolean,
                         value: false
+                    },
+
+                    _filtroDataRequisicao: {
+                        type: String,
+                        value: ""
+                    },
+
+                    _filtroDataGuia: {
+                        type: String,
+                        value: ""
                     },
 
                     _skipMsg: {
@@ -1429,6 +1493,7 @@
                         this._openToast("Apenas para edição de guias que não estejam em histórico!")
                         window.location.href = "/GuiasTransporteNav";
                     }
+
                     
                 },
 
@@ -1436,6 +1501,12 @@
                     var self = this;
                     
                     if (data.detail.status === 200) {
+                        var _today = new Date();                          
+                        this._filtroDataRequisicao = this.__formatDate(_today.setMonth(_today.getMonth() - 1), 1);
+
+                        _today = new Date();
+                        this._filtroDataGuia = this.__formatDate(_today.setMonth(_today.getMonth() - 1), 1);
+
                         this.$.ajax_post_codes.generateRequest();
 
                         this.$.ajax_thirdparties.body = JSON.stringify({ "type": this.data.tipo });
@@ -2477,7 +2548,14 @@
                     return param;
                 },
 
+                _filtrarDataRequisicao: function (e) {
+                    debugger;;
+                    this.$.ajax_requisitions.body = JSON.stringify({ "filtroData": this._filtroDataRequisicao });
+                    this.$.ajax_requisitions.generateRequest();
+                },
+
                 _copyLines: function (e) {
+                    this.$.ajax_requisitions.body = JSON.stringify({"filtroData": this._filtroDataRequisicao});
                     this.$.ajax_requisitions.generateRequest();
                     this.$.copyLinesFromReq.open();
                     
@@ -2513,8 +2591,14 @@
                     }
                 },
 
+                _filtrarDataGuiaTransporte: function (e) {
+                    this.$.ajax_guias_to_copy_from.body = JSON.stringify({ "filtroData": this._filtroDataGuia });
+                    this.$.ajax_guias_to_copy_from.generateRequest();
+                },
+
                 _copyFromGuia: function (e) {
                     ////debugger;;  
+                    this.$.ajax_guias_to_copy_from.body = JSON.stringify({"filtroData": this._filtroDataGuia});
                     this.$.ajax_guias_to_copy_from.generateRequest();
                     this.$.copyFromGuiaRegistada.open();
                 },

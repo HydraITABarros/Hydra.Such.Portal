@@ -318,7 +318,9 @@ namespace Hydra.Such.Data
             [Description("Autorização CA")]
             AutorizacaoConsAdmin = 12,
             [Description("Criação de Inscrição e Finalização do Pedido")]
-            CriacaoInscricao = 13
+            CriacaoInscricao = 13,
+            [Description("Encerrado")]
+            PedidoEncerrado = 99
         }
 
         public enum AcademiaOrigemAcessoFuncionalidade

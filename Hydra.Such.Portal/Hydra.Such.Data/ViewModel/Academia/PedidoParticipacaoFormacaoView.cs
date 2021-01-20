@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Hydra.Such.Data.Database;
 using Hydra.Such.Data.Logic;
+using System.Linq;
 
 namespace Hydra.Such.Data.ViewModel.Academia
 {
@@ -18,8 +19,9 @@ namespace Hydra.Such.Data.ViewModel.Academia
         #endregion
 
         #region Rastreabilidade das transições de Estado
-        public string UtilizadorSubmissão { get; set; }
+        public string UtilizadorSubmissao { get; set; }
         public string DataSubmissaoTxt { get; set; }
+
         public string UtilizadorAprovacaoChefia { get; set; }
         public string DataAprovacaoChefiaTxt { get; set; }
 
@@ -66,6 +68,8 @@ namespace Hydra.Such.Data.ViewModel.Academia
             IdAccaoFormacao = Pedido.IdAccaoFormacao;
             DesignacaoAccao = Pedido.DesignacaoAccao;
             LocalRealizacao = Pedido.LocalRealizacao;
+            IdSessao = Pedido.IdSessao;
+            Horario = Pedido.Horario;
             DataInicio = Pedido.DataInicio;
             DataFim = Pedido.DataFim;
             NumeroTotalHoras = Pedido.NumeroTotalHoras;
@@ -84,16 +88,58 @@ namespace Hydra.Such.Data.ViewModel.Academia
             UtilizadorCriacao = Pedido.UtilizadorCriacao;
             DataHoraCriacao = Pedido.DataHoraCriacao;
             UtilizadorUltimaModificacao = Pedido.UtilizadorUltimaModificacao;
-            DataHoraUltimaModificacao = Pedido.DataHoraUltimaModificacao;
+            DataHoraUltimaModificacao = Pedido.DataHoraUltimaModificacao;            
 
-            
-
-            //AccaoNavigation = Pedido.AccaoNavigation;
 
             RegistosAlteracoes = Pedido.RegistosAlteracoes;
             if (RegistosAlteracoes != null && RegistosAlteracoes.Count > 0)
             {
-                // TO DO: preencher os campos de rastreabilidade
+                RegistoAlteracoesPedidoFormacao registo = RegistosAlteracoes.Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.SubmissaoChefia).LastOrDefault();
+                if (registo != null)
+                {
+                    DataSubmissaoTxt = DateToText(registo.DataHoraAlteracao);
+                    UtilizadorSubmissao = registo.UtilizadorAlteracao;
+                }                
+
+                registo = null;
+
+                registo = RegistosAlteracoes.Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoChefia).LastOrDefault();
+                if (registo == null)
+                {
+                    registo = RegistosAlteracoes.Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao).LastOrDefault();
+                    if (registo != null)
+                    {
+                        DataAprovacaoDireccaoTxt = DateToText(registo.DataHoraAlteracao);
+                        UtilizadorAprovacaoDireccao = registo.UtilizadorAlteracao;
+
+                        DataAprovacaoChefiaTxt = DataAprovacaoDireccaoTxt;
+                        UtilizadorAprovacaoChefia = UtilizadorAprovacaoDireccao;
+                    }                   
+                }
+                else
+                {
+                    DataAprovacaoChefiaTxt = DateToText(registo.DataHoraAlteracao); 
+                    UtilizadorAprovacaoChefia = registo.UtilizadorAlteracao;
+                }
+
+                registo = null;
+
+                registo = RegistosAlteracoes.Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.AprovacaoDireccao).LastOrDefault();
+                if (registo != null)
+                {
+                    DataAprovacaoDireccaoTxt = DateToText(registo.DataHoraAlteracao);
+                    UtilizadorAprovacaoDireccao = registo.UtilizadorAlteracao;
+                }
+
+                registo = null;
+
+                registo = RegistosAlteracoes.Where(r => r.TipoAlteracao == (int)Enumerations.TipoAlteracaoPedidoFormacao.ParecerAcademia).LastOrDefault();
+                if (registo != null)
+                {
+                    DataParecerAcademiaTxt = DateToText(registo.DataHoraAlteracao);
+                    UtilizadorParecerAcademia = registo.UtilizadorAlteracao;
+                }
+               
             }
 
             DataHoraCriacaoTxt = DateToText(Pedido.DataHoraCriacao);
@@ -128,6 +174,16 @@ namespace Hydra.Such.Data.ViewModel.Academia
             }
         }
 
+        public void GetCourse()
+        {
+            Accao = DBAcademia.__GetDetailsAccaoFormacao(IdAccaoFormacao);
+        }
+
+        public void GetTrackingHistory()
+        {
+
+        }
+
         public PedidoParticipacaoFormacao ParseToDb()
         {
             PedidoParticipacaoFormacao pedido = new PedidoParticipacaoFormacao()
@@ -147,8 +203,10 @@ namespace Hydra.Such.Data.ViewModel.Academia
                 IdAccaoFormacao = IdAccaoFormacao,
                 DesignacaoAccao = DesignacaoAccao,
                 LocalRealizacao = LocalRealizacao,
-                DataInicio = DataInicio,
-                DataFim = DataFim,
+                IdSessao = IdSessao,
+                Horario = Horario,
+                DataInicio = TextToDateTime(DataInicioTxt),
+                DataFim = TextToDateTime(DataFimTxt),
                 NumeroTotalHoras = NumeroTotalHoras,
                 IdEntidadeFormadora = IdEntidadeFormadora,
                 DescricaoEntidadeFormadora = DescricaoEntidadeFormadora,
