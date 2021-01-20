@@ -320,6 +320,7 @@ namespace Hydra.Such.Data.Logic.Request
                         CódigoLocalização = Rq.CódigoLocalização,
                         NºProjeto = Rq.NºProjeto,
                         ResponsávelAprovação = Rq.ResponsávelAprovação,
+                        DataHoraCriação = Rq.DataHoraCriação,
                         ResponsávelCriação = Rq.ResponsávelCriação
                     }).ToList();
 

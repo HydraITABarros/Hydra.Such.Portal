@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.ViewModel.Academia
             DataFim = accao.DataFim;
             IdEntidadeFormadora = accao.IdEntidadeFormadora;
             NumeroTotalHoras = accao.NumeroTotalHoras == null ? 0 : accao.NumeroTotalHoras.Value;
+            LocalRealizacao = accao.LocalRealizacao;
             UrlImagem = accao.UrlImagem;
 
         }
@@ -73,6 +74,7 @@ namespace Hydra.Such.Data.ViewModel.Academia
                 DataFim = DataFim,
                 IdEntidadeFormadora = IdEntidadeFormadora,
                 NumeroTotalHoras = NumeroTotalHoras,
+                LocalRealizacao = LocalRealizacao,
                 UrlImagem = UrlImagem
             };
 

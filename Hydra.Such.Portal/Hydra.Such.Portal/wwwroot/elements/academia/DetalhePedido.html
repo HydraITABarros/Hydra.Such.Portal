@@ -132,16 +132,21 @@
             }
 
             such-dropdown-menu {
-                box-shadow: inset 0px -3px 7px 0px #71BCC1;
-                background-color: transparent;
-                border-radius: 3px;
-                /*border: 1px solid #0b0e07;*/
-                padding: 0px 20px 0px 0px;
-                display: inline-block;
+                box-shadow: inset 0px -3px 7px 0px #AD4526;
+                background-color: #FF8E2B !important;
+                padding: 0px !important;
+                min-width: 100px !important;
+                height: 30px !important;
                 cursor: pointer;
+                margin-top: 7px;
+                border-radius: 4px !important;
                 text-decoration: none;
-                text-shadow: 0px 1px 0px #263666;
+                text-shadow: 0px 1px 0px #611827;
             }
+                such-dropdown-menu.disabled {
+                    cursor: not-allowed;
+                    pointer-events:none;
+                }
 
             #imgcontainer {
                 width: 25%;
@@ -227,11 +232,21 @@
             /*DETALHES.end*/
 
             paper-spinner.multi {
-                display:flex;
+                display: flex;
                 --paper-spinner-layer-1-color: var(--paper-purple-500);
                 --paper-spinner-layer-2-color: var(--paper-cyan-500);
                 --paper-spinner-layer-3-color: var(--paper-blue-grey-500);
                 --paper-spinner-layer-4-color: var(--paper-amber-500);
+            }
+
+            .btn--confirm {
+                min-width: 50px !important;
+                height: 30px !important;
+                padding: 5px 10px;
+                cursor: pointer;
+                background: #71BCC1;
+                color: white;
+                margin-top: 7px;
             }
         </style>
 
@@ -249,6 +264,7 @@
                    method="post"
                    handle-as="json"
                    id="page_catalogo_ajax"
+                   on-response="_catalogoResponse"
                    content-type="application/json"
                    loading="{{loading}}">
         </iron-ajax>
@@ -320,6 +336,41 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/Academia/GetEntidadesFormadoras"
+                   last-response="{{ entidadeList }}"
+                   method="post"
+                   handle-as="json"
+                   id="entidades_page_ajax"
+                   on-response="_getEntidadeListResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/GetSessoesAccao"
+                   last-response="{{ sessoesList }}"
+                   method="post"
+                   handle-as="json"
+                   id="sessoes_page_ajax"
+                   on-response="_getSessoesListResponse"
+                   content-type="application/json"
+                   loading="{{loading}}">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/TransitarPedidoDeEstado"
+                   last-response="{{ transitou }}"
+                   method="post"
+                   handle-as="json"
+                   id="transicao_estado_page_ajax"
+                   on-response="_transicaoEstadoResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Academia/RegistaParecerDotacaoOrcamental"
+                   last-response="{{parecerRegistado}}"
+                   method="post"
+                   handle-as="json"
+                   id="regista_parecerdotacao_page_ajax"
+                   on-response="_registaParecerResponse"
+                   content-type="application/json"></iron-ajax>
 
 
         <div class="subMenu">
@@ -422,15 +473,25 @@
                                                 <such-textarea id="designacaoAccao" name="designacaoAccao" label="Designação da Acção" rows="2" value="{{ data.designacaoAccao}}" on-click="_onClickCourse" required></such-textarea>
                                             </div>
                                             <div class="col-md-3">
-                                                <vaadin-text-field id="localRealizacao" name="localRealizacao" label="Local Realização" value="{{ data.localRealizacao}}" required></vaadin-text-field>
+                                                <vaadin-text-field id="localRealizacao" name="localRealizacao" label="Local Realização" value="{{ data.localRealizacao}}" disabled></vaadin-text-field>
                                             </div>
                                             <div class="col-md-3">
-                                                <vaadin-text-field id="horario" name="horario" label="Horário" value="{{ data.horario}}" required></vaadin-text-field>
+                                                <vaadin-text-field id="horario" name="horario" label="Horário" value="{{ data.horario}}" on-click="_onClickSchedule"></vaadin-text-field>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
                                             <div class="col-md-6">
-                                                <vaadin-text-field id="descricaoEntidadeFormadora" name="descricaoEntidadeFormadora" label="Entidade Formadora" value="{{ data.descricaoEntidadeFormadora}}" required></vaadin-text-field>
+                                                <such-selectbox id="idEntidadeFormadora"
+                                                                label="Entidade Formadora"
+                                                                items="[[entidadeList]]"
+                                                                value="{{data.idEntidadeFormadora }}"
+                                                                on-tap="_setTapped"
+                                                                on-value-changed="_setEntidadeDetails"
+                                                                value-path="idEntidade"
+                                                                text-path="descricaoEntidade"
+                                                                fields='[{"field":"descricaoEntidade", "name":"Descrição"}]'
+                                                                required>
+                                                </such-selectbox>
                                             </div>
                                             <div class="col-md-2">
                                                 <vaadin-date-picker required id="dataInicio" name="dataInicio" label="Data Inicio" error-message="A data de inicio da acção é de preenchimento obrigatório" value="{{ data.dataInicioTxt }}"></vaadin-date-picker>
@@ -488,10 +549,14 @@
                                             </div>
                                         </div>
                                         <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
+                                                <br />
+                                                <paper-button raised id="btnSubmitPedido" class="btn--confirm pull-left" on-tap="_submitPedido"><i class="fa fa-share" aria-hidden="true"></i>&nbsp; Submeter</paper-button>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <vaadin-text-field id="dataSubmissaoTxt" name="dataSubmissaoTxt" label="Data Submissão" value="{{ data.dataSubmissaoTxt }}" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-8">
+                                            <div class="col-md-7">
                                                 <vaadin-text-field id="utilizadorSubmissao" name="utilizadorSubmissao" label="O Requerente" value="{{ data.utilizadorSubmissao }}" disabled></vaadin-text-field>
                                             </div>
                                         </div>
@@ -511,6 +576,11 @@
                                                     A Chefia deverá fundamentar a pertinência da acção para o desempenho do trabalhador
                                                 </paper-tooltip>
                                                 <such-textarea id="fundamentacaoChefia" name="fundamentacaoChefia" maxlength="2048" error-message="Máximo 2048 caracteres" label="Fundamentação" rows="3" value="{{ data.fundamentacaoChefia }}" required></such-textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row break_clear">
+                                            <div class="col-lg-6">
+                                                <such-dropdown-menu id="menuValidacao" on-value-changed="_getOpcaoValidacao" title="{{textValidacao}}" items="[[itemsValidacao]]"></such-dropdown-menu>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -583,10 +653,14 @@
                                             </div>
                                         </div>
                                         <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
+                                                <br />
+                                                <such-dropdown-menu id="menuParecerAcademia" on-value-changed="_getOpcaoParecerAcademia" title="Opções Academia" items="[[itemsParecerAcademia]]"></such-dropdown-menu>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <vaadin-text-field id="dataParecerAcademiaTxt" name="dataParecerAcademiaTxt" label="Data" value="{{ data.dataParecerAcademiaTxt }}" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-8">
+                                            <div class="col-md-7">
                                                 <vaadin-text-field id="utilizadorParecerAcademia" name="utilizadorParecerAcademia" label="Analisou" value="{{ data.utilizadorParecerAcademia }}" disabled></vaadin-text-field>
                                             </div>
                                         </div>
@@ -606,10 +680,14 @@
                                             </div>
                                         </div>
                                         <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
+                                                <br />
+                                                <paper-button raised id="btnSubmeteCA" class="btn--confirm pull-left" on-tap="_submeteConselhoAdministracao"><i class="fa fa-level-up" aria-hidden="true"></i>&nbsp; Submete CA</paper-button>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <vaadin-text-field id="dataAnaliseAcademiaTxt" name="dataAnaliseAcademiaTxt" label="Data" value="{{ data.dataAnaliseAcademiaTxt }}" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-8">
+                                            <div class="col-md-7">
                                                 <vaadin-text-field id="utilizadorAnaliseAcademia" name="utilizadorAnaliseAcademia" label="Analisou" value="{{ data.utilizadorAnaliseAcademia }}" disabled></vaadin-text-field>
                                             </div>
                                         </div>
@@ -703,24 +781,26 @@
         </div>
 
         <paper-dialog id="selectCourse" class="dialgoBox">
-            <h2>Catálogo</h2>
-            
+            <h2>
+                Catálogo<br />
+
                 <template is="dom-if" if="{{loading}}">
-                    <p><paper-spinner class="multi" active></paper-spinner><br />A carregar..... </p>
+                    <p style="font-style: italic;font-size:small;"><paper-spinner class="multi" active></paper-spinner><br />A carregar acções..... </p>
                 </template>
-            
-            <vaadin-grid id="gridCatalogo" aria-label="gridCatalogo" items="[[catalogo]]" class="grid" on-active-item-changed="_onActiveItemChanged" multi-sort="true">
+            </h2>
+
+            <vaadin-grid id="gridCatalogo" aria-label="gridCatalogo" items="[[catalogo]]" class="grid" on-active-item-changed="_onActiveTemaChanged" multi-sort="true">
                 <template class="row-details">
                     <div class="details">
                         <vaadin-grid aria-label="accoesTema" id="gridAccoes" items="[[temaDetail.accoes]]" active-item="{{activeCourse}}" multi-sort="true">
-                            <vaadin-grid-column width="10%">
-                                <template class="header">
-                                    <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
-                                </template>
-                                <template>
-                                    [[item.codigoInterno]]
-                                </template>
-                            </vaadin-grid-column>
+                            <!--<vaadin-grid-column width="8%">
+                            <template class="header">
+                                <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
+                            </template>
+                            <template>
+                                [[item.codigoInterno]]
+                            </template>
+                        </vaadin-grid-column>-->
                             <vaadin-grid-column resizable width="40%">
                                 <template class="header">
                                     <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
@@ -729,7 +809,7 @@
                                     [[item.designacaoAccao]]
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column resizable width="20%">
+                            <vaadin-grid-column resizable width="10%">
                                 <template class="header">
                                     <vaadin-grid-sorter path="dataInicio">Data Inicio</vaadin-grid-sorter>
                                 </template>
@@ -737,7 +817,7 @@
                                     [[item.dataInicio]]
                                 </template>
                             </vaadin-grid-column>
-                            <vaadin-grid-column resizable width="20%">
+                            <vaadin-grid-column resizable width="10%">
                                 <template class="header">
                                     <vaadin-grid-sorter path="dataFim">Data Fim</vaadin-grid-sorter>
                                 </template>
@@ -753,13 +833,29 @@
                                     [[item.numeroTotalHoras]]
                                 </template>
                             </vaadin-grid-column>
+                            <vaadin-grid-column resizable width="14%">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="descricaoEntidade">Entidade Formadora</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    [[item.entidade.descricaoEntidade]]
+                                </template>
+                            </vaadin-grid-column>
+                            <vaadin-grid-column resizable width="16%">
+                                <template class="header">
+                                    <vaadin-grid-sorter path="localRealizacao">Local</vaadin-grid-sorter>
+                                </template>
+                                <template>
+                                    [[item.localRealizacao]]
+                                </template>
+                            </vaadin-grid-column>
                         </vaadin-grid>
                     </div>
                 </template>
                 <vaadin-grid-column>
                     <!--<template class="header">
-            <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
-        </template>-->
+                    <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
+                </template>-->
                     <template>
                         {{ item.descricaoTema }}
                     </template>
@@ -770,6 +866,45 @@
                 <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
             </div>
         </paper-dialog>
+
+        <paper-dialog id="selectSession" class="dialgoBox">
+            <h2>
+                Sessões da Acção de Formação: [[courseDescription]]
+                <template is="dom-if" if="{{loading}}">
+                    <p style="font-style: italic;font-size:small;"><paper-spinner class="multi" active></paper-spinner><br />A carregar sessões..... </p>
+                </template>
+            </h2>
+            <vaadin-grid id="gridSessoes" aria-label="gridSessoes" items="[[sessoesList]]" class="grid" active-item="{{activeSession}}" multi-sort="true">
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataSessao">Data Sessão</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.dataSessao}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="horaInicioSessao">Hora Inicio</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.horaInicioSessao}}
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="horaFimSessao">Hora Fim</vaadin-grid-sorter>
+                    </template>
+                    <template>
+                        {{item.horaFimSessao}}
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+            <div class="buttons">
+                <paper-button class="btnRemove" dialog-dismiss>Fechar</paper-button>
+            </div>
+        </paper-dialog>
+
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
     </template>
@@ -779,6 +914,10 @@
                 is: 'x-detalhepedido',
                 properties: {
                     _idpedido: {
+                        type: String
+                    },
+
+                    _employeeno: {
                         type: String
                     },
 
@@ -792,7 +931,12 @@
                         value: false
                     },
 
-                    _istraningmanager: {
+                    _istrainingmanager: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _isboardmember: {
                         type: Boolean,
                         value: false
                     },
@@ -817,13 +961,53 @@
                         value: false
                     },
 
+                    courseDescription: {
+                        type: String,
+                        value: ""
+                    },
+
+                    doNotShowMsg: {
+                        type: Boolean,
+                        value: false
+                    },
+
+                    _msg: {
+                        type: String,
+                        value: ""
+                    },
+
                     selected: {
                         type: Number,
                         value: 0
                     },
 
+                    itemsValidacao: {
+                        type: Array,
+                        value: [
+                            {value: 1, description: "Aprovar" },
+                            {value: 2, description: "Rejeitar"}
+                        ]
+                    },
+
+                    itemsParecerAcademia: {
+                        type: Array,
+                        value: [
+                            {value: 1, description: "Confirma" },
+                            {value: 2, description: "Devolver Direcção"}
+                        ]
+                    },
+
+                    textValidacao: {
+                        type: String,
+                        value: ""
+                    },
+
                     activeCourse: {
                         observer:'_courseSelected'
+                    },
+
+                    activeSession: {
+                        observer: '_sessionSelected'
                     }
                 },
 
@@ -885,25 +1069,20 @@
                         this.$.page_catalogo_ajax.body = JSON.stringify();
                         this.$.page_catalogo_ajax.generateRequest();
 
+                        this.$.entidades_page_ajax.generateRequest();
+
                         var obj = this.data;
 
-                        this._openI = obj.estado == 0;
-                        this._openIII = this._ischief && (obj.estado == 1 || obj.estado == 2);
-                        this._openIV = this._istraningmanager && (obj.estado == 3 || obj.estado == 7);
+                        this._setValidacaoMenuText();
 
-                        this.prjEnabled = obj.projectoEmpregado != null && obj.projectoEmpregado != "";
-
-                        $(self.$.idEmpregadoCbox).addClass('hidden');
-
-                        if (!this.prjEnabled) {
-                            $(self.$.projectoEmpregado).addClass('hidden');
-                        } else {
-                            $(self.$.projectoEmpregadoCbox).addClass('hidden');
-                        }
-
+                        this.__setEditableFields(this.data);                    
+                                                      
                         if (this._ischief || this._isdirector) {
+                            this.$.idEmpregadoCbox.value = this.data.idEmpregado;
+                            this.$.idEmpregadoCbox.valueText = this.data.idEmpregado;
+
                             this.$.employees_page_ajax.body = JSON.stringify({ "isChief": this._ischief, "isDirector": this._isdirector });
-                            this.$.employees_page_ajax.generateRequest();
+                            this.$.employees_page_ajax.generateRequest();     
 
                             $(self.$.idEmpregado).addClass('hidden');
                             $(self.$.idEmpregadoCbox).removeClass('hidden');
@@ -926,17 +1105,48 @@
                 },
 
                 _onClickCourse: function (e) {
-                    debugger;;
-                    //this.$.catalogo_databound_ajax.generateRequest();
-                    //if (this.catalogo != null) {
+                    //if (this.data.estado == 0) {
                         this.$.selectCourse.open();
-                    //}
-                    
+                   // }                                
+                },
+
+                _catalogoResponse: function (e) {
+                    if (this.catalogo == null) {
+
+                    }
+                },
+
+                _onClickSchedule: function (e) {
+                    this.courseDescription = this.data.designacaoAccao; 
+
+                    this.$.sessoes_page_ajax.body = JSON.stringify({ "idAccao": this.data.idAccaoFormacao });
+                    this.$.sessoes_page_ajax.generateRequest();                       
+                },
+
+                _setValidacaoMenuText: function () {
+                    if (this.data != null) {
+                        var obj = this.data;
+
+                        this.textValidacao = "Opções Validação";
+
+                        if (obj.estado == 1) {
+                            this.textValidacao = "Opções Chefia";
+                        }
+
+                        if (obj.estado == 2) {
+                            this.textValidacao = "Opções Direcção";
+                        }
+                    }
 
                 },
 
+                _getSessoesListResponse: function (e) {
+                    if (this.sessoesList != null && this.sessoesList.length > 0) {
+                        this.$.selectSession.open();
+                    }
+                },
 
-                _onActiveItemChanged: function (e) {
+                _onActiveTemaChanged: function (e) {
                     debugger;;
                     if (e.detail.value != null) {
                         this.temaDetail = null;
@@ -948,6 +1158,7 @@
 
                 },
 
+                                
                 _temaResponseProcessor: function (e) {
                     debugger;;
                     if (this.temaDetail != null) {
@@ -971,6 +1182,11 @@
 
                             dataObj.idAccaoFormacao = item.idAccao;
 
+                            dataObj.idSessao = null;
+                            dataObj.horario = "";
+                            _self.horario.value = "";
+                            _self.horario.valueText = "";
+
                             dataObj.designacaoAccao = item.designacaoAccao;
                             _self.designacaoAccao.value = item.designacaoAccao;
                             _self.designacaoAccao.valueText = item.designacaoAccao; 
@@ -986,7 +1202,32 @@
                             dataObj.numeroTotalHoras = item.numeroTotalHoras;
                             _self.numeroTotalHoras.value = item.numeroTotalHoras;
                             _self.numeroTotalHoras.valueText = item.numeroTotalHoras;
+
+                            dataObj.idEntidadeFormadora = item.entidade.idEntidade;
+                            dataObj.descricaoEntidadeFormadora = item.entidade.descricaoEntidade;
+
+                            dataObj.localRealizacao = item.localRealizacao;
+                            _self.localRealizacao.value = item.localRealizacao;
+                            _self.localRealizacao.valueText = item.localRealizacao;
+
                         }
+                    }
+                },
+
+                _sessionSelected: function (item) {
+                    debugger;
+
+                    if (item != null && this.data != null) {
+                        this.$.selectSession.close();
+                        var dataObj = this.data;
+                        var _self = this.$;
+
+                        var _horario = "Dia " + item.dataSessao + ", das " + item.horaInicioSessao + " às " + item.horaFimSessao;
+
+                        dataObj.idSessao = item.idSessaoFormacao;
+                        dataObj.horario = _horario;
+                        _self.horario.value = _horario;
+                        _self.horario.valueText = _horario;
                     }
                 },
 
@@ -999,11 +1240,20 @@
                 _updatePedidoResponse: function (e) {
                     debugger;;
 
-                    if (this.pedidoUpdated) {
-                        this._openToast("Sucesso a actualizar o Pedido de Participação em Formação!")
+                    if (!this.doNotShowMsg) {
+                        if (this.pedidoUpdated) {
+                            this._openToast("Sucesso a actualizar o Pedido de Participação em Formação!")
+                        } else {
+                            this._openToastError("Erro ao actualizar o Pedido de Participação em Formação!");
+                        }
                     } else {
-                        this._openToastError("Erro ao actualizar o Pedido de Participação em Formação!");
+                        if (!this.pedidoUpdated) {
+                            this._openToastError("Erro ao actualizar o Pedido de Participação em Formação!");
+                        }
                     }
+
+                    this.doNotShowMsg = false;
+                    
                 },
 
                 _loadattchmentsResponse: function (e) {
@@ -1022,6 +1272,13 @@
                     }
                 },
 
+                _getEntidadeListResponse: function (e) {
+                    debugger;;
+                    if (this.entidadeList == null) {
+
+                    }
+                },
+                     
                 _setEmployeeDetails: function (e) {
                     if (this.data != undefined && this.employeeList != null && this.$.idEmpregadoCbox.value != undefined) {
                         var _self = this.$;
@@ -1062,11 +1319,20 @@
 
                         this.$.page_update_ajax.body = JSON.stringify(this.data);
                         this.$.page_update_ajax.generateRequest();
-                    } else {
-                        if (this.data != undefined) {
+                    } 
+                },
 
-                        }
+                _setEntidadeDetails: function (e) {
+                    debugger;
+
+                    if (this.data != undefined && this.entidadeList != null) {
+                        var _id = this.$.idEntidadeFormadora.value;
+                        var _entity = this.entidadeList.find(_e => _e.idEntidade == _id); 
+
+                        this.data.idEntidadeFormadora = _entity.idEntidade;
+                        this.data.descricaoEntidadeFormadora = _entity.descricaoEntidade;                        
                     }
+                    
                 },
 
                 _deleteAttachment: function (e) {
@@ -1089,6 +1355,220 @@
                     } else {
                         this._openToast("Não foi possível eliminar a imagem!");
                     }
+                },
+
+                //*** Transições de Estado
+                _checkBeforeSubmit: function (_data) {
+                    if (_data.estado != 0) {
+                        return -10;
+                    }
+
+                    if (this.__isNullOrEmptyString(_data.idEmpregado) || this.__isNullOrEmptyString(_data.nomeEmpregado)) {
+                        return -20;
+                    }
+
+                    if (this.__isNullOrEmptyString(_data.funcaoEmpregado)) {
+                        return -30;
+                    }
+
+                    if (this.__isNullOrEmptyString(_data.projectoEmpregado)) {
+                        return -40;
+                    }
+
+                    if ((this.__isNullOrEmptyString(_data.idAreaFuncional) || this.__isNullOrEmptyString(_data.areaFuncionalEmpregado)) ||
+                        (this.__isNullOrEmptyString(_data.idCentroResponsabilidade) || this.__isNullOrEmptyString(_data.centroResponsabilidadeEmpregado))) {
+                        return -50;
+                    }
+
+                    if (this.__isNullOrEmptyString(_data.idEstabelecimento) || this.__isNullOrEmptyString(_data.descricaoEstabelecimento)) {
+                        return -60;
+                    }
+
+                    var _descConhecimentos = _data.descricaoConhecimentos;
+
+                    if (this.__isNullOrEmptyString(_descConhecimentos)) {
+                        return -70;
+                    } else {
+                        if (_descConhecimentos.length < 5) {
+                            return -71;
+                        }
+                    }
+
+                    // TODO. Verificar se esta validação faz sentido no Estado "Criado"
+                    if (_data.planeada == 1) {
+                        var _cursoPlaneado = _data.cursoPlanoFormacao;
+
+                        if (_cursoPlaneado.length < 5) {
+                            return -80;
+                        }
+                    }
+
+                    return 0;
+                },
+
+                _submitPedido: function (e) {
+                    debugger;;
+                    this.doNotShowMsg = true; 
+
+                    this.$.page_update_ajax.body = JSON.stringify(this.data);
+                    this.$.page_update_ajax.generateRequest();
+
+                    var checkResult = this._checkBeforeSubmit(this.data);
+                    if (checkResult == 0) {
+                        var ajax_request = this.$.transicao_estado_page_ajax;
+                        ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 1 });
+
+                        var str = "Confirma a submissão do pedido " + this.data.idPedido + " para Aprovação pela Chefia?"; 
+                        this._msg = "Pedido " + this.data.idPedido + " Submetido para Aprovação pela Chefia com sucesso.";
+
+                        this._confirmAndExecuteActionToast(str, ajax_request);
+
+                    } else {
+                        switch (checkResult) {
+                            case -10: this._openToastError("O pedido não está no estado de Criado!");
+                                break;
+                            case -20: this._openToastError("Nº Mecanográfico e/ou Nome Formando não preenchido(s)!");
+                                break;
+                            case -30: this._openToastError("Função do Formando não preenchida!");
+                                break;
+                            case -40: this._openToastError("Projecto de Formação não preenchido!");
+                                break;
+                            case -50: this._openToastError("Por favor verifique o preenchimento das Dimensões do Formando!");
+                                break;
+                            case -60: this._openToastError("Por favor verifique o preenchimento da informação relativa ao Estabelecimento do Formando!");
+                                break;
+                            case -70:
+                            case -71: this._openToastError("A descrição dos conhecimentos é de preenchimento obrigatória!");
+                                break;
+                            case -80: this._openToastError("A identificação do Curso planeado é obrigatória!")
+                                break;
+                        } 
+                    }
+
+                },
+
+                _getOpcaoValidacao: function (e) {
+                    debugger;;
+                    if (this.data != null) {
+                        var _option = e.detail.value;
+                        var _data = this.data;
+
+                        if (_option == null) {
+                            return;
+                        }
+
+                        if (_option.value == 1) {
+                            if (_data.estado == 1) {
+                                var _execute = false;
+
+                                var ajax_request = this.$.transicao_estado_page_ajax;
+
+                                var fundamentacao = _data.fundamentacaoChefia;
+                                if (this.__isNullOrEmptyString(fundamentacao) || fundamentacao.length < 5) {
+                                    this._openToastError("Deverá justificar a pertinência da Acção para o desempenho do trabalhador");
+                                    return;
+                                }
+
+                                this.doNotShowMsg = true;
+
+                                this.$.page_update_ajax.body = JSON.stringify(this.data);
+                                this.$.page_update_ajax.generateRequest();
+
+                                if (this._ischief && !this._isdirector) {
+                                    var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Direcção da UP/AAS?";
+                                    this._msg = "Pedido " + _data.idPedido + " submetido à Direcção da UP/AAS com sucesso.";
+
+                                    ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 2 });
+
+                                    _execute = true;
+                                }
+
+                                if (this._ischief && this._isdirector) {
+                                    var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Academia?";
+                                    this._msg = "Pedido " + _data.idPedido + " submetido à Academia com sucesso.";
+
+                                    ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 3 });
+
+                                    _execute = true;
+                                }
+
+                                if (_execute) {
+                                    this._confirmAndExecuteActionToast(str, ajax_request);
+                                }
+
+                            } 
+                        }
+
+                        if (_option.value == 2) {
+                            var ajax_request = this.$.transicao_estado_page_ajax;
+                            var str = "Confirma o cancelamento do pedido " + _data.idPedido + "?";
+                            this._msg = "Pedido " + _data.idPedido + " cancelado.";
+
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 99 });
+                        }                    
+                    }
+                    
+                },  
+
+                _getOpcaoParecerAcademia: function (e) {
+                    if (this.data != null) {
+                        if (!this._istrainingmanager) {
+                            this._openToastError("Não está autorizado a utilizar esta opção!");
+                            return;
+                        }
+                        var _option = e.detail.value;
+                        var _data = this.data;
+
+                        if (_option == null) {
+                            return;
+                        }
+
+                        if (_option.value == 1) {
+                            var _execute = false;
+                            var infoDotacao = _data.parecerDotacaoAcademia;
+
+                            if (this.__isNullOrEmptyString(infoDotacao) || infoDotacao.length < 5) {
+                                this._openToastError("O parecer relativo à dotação orçamental é obrigatório!");
+                                return;
+                            }
+
+                            this.doNotShowMsg = true;
+
+                            this.$.page_update_ajax.body = JSON.stringify(this.data);
+                            this.$.page_update_ajax.generateRequest();
+
+                            var str = "Confirma o parecer de dotação orçamental do pedido " + _data.idPedido + "?";                          
+
+                            var ajax_request = this.$.regista_parecerdotacao_page_ajax;
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "idAlteracao": 6 });
+
+                            this._confirmAndExecuteActionToast(str, ajax_request);                                                             
+                        }
+
+                        if (_option.value == 2) {
+                            var str = "Confirma a devolução do pedido " + _data.idPedido + " para a Direcção da UP/AAS?";
+                            this._msg = "Pedido " + _data.idPedido + " submetido à Direcção da UP/AAS com sucesso.";
+
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 4 });
+
+                        }
+                    }
+                },
+
+                _transicaoEstadoResponse: function () {
+                    debugger;
+                    if (this.transitou) {
+                        if (this._msg != "") {
+                            this._openToast(this._msg);
+
+                            this.$.page_databound_ajax.body = JSON.stringify({ "idPedido": this._idpedido });
+                            this.$.page_databound_ajax.generateRequest();
+                        }                        
+                    } else {
+                        this._openToastError("Não foi possível executar o seu pedido! Tente novamente!");
+                    }
+
+                    this._msg = "";
                 },
 
                 __formatDate: function (_date, _dtFormat) {
@@ -1124,6 +1604,72 @@
                         return [year, month, day].join('-');
 
                     return [day, month, year].join('-');
+                },
+
+                __isNullOrEmptyString: function (value) {
+                    return (!value);
+                },
+
+                __setEditableFields: function (data) {
+                    debugger;
+                    if (data != null) {
+                        var self = this;
+
+                        this._openI = data.estado == 0;
+                        this._openIII = this._ischief && (data.estado == 1 || data.estado == 2);
+                        this._openIV = this._istrainingmanager && (data.estado == 3 || data.estado == 7);
+
+                        this.prjEnabled = data.projectoEmpregado != null && data.projectoEmpregado != "";
+
+                        $(self.$.idEmpregadoCbox).addClass('hidden');
+                        $(self.$.btnSubmitPedido).addClass('disabled');
+
+                        if (data.idEmpregado == this._employeeno) {
+                            $(self.$.menuValidacao).addClass('disabled');
+                        }
+
+                        if (!this.prjEnabled) {
+                            $(self.$.projectoEmpregado).addClass('hidden');
+                        } else {
+                            $(self.$.projectoEmpregadoCbox).addClass('hidden');
+                        }
+
+                        
+                        if (data.estado > 0) {  
+                            self.$.idEmpregadoCbox.disabled = true;
+                            self.$.projectoEmpregado.disabled = true;
+                            self.$.projectoEmpregadoCbox.disabled = true;
+                            self.$.designacaoAccao.disabled = true;
+                            self.$.horario.disabled = true;
+                            self.$.idEntidadeFormadora.disabled = true;
+                            self.$.dataInicio.disabled = true;
+                            self.$.dataFim.disabled = true;
+                            self.$.numeroTotalHoras.disabled = true;
+                            self.$.custoInscricao.disabled = true;
+                            self.$.valorIva.disabled = true;
+                            self.$.custoDeslocacoes.disabled = true;
+                            self.$.custoEstadia.disabled = true;
+                            self.$.descricaoConhecimentos.disabled = true;
+                            self.$.planeada.disabled = true;
+                            self.$.cursoPlanoFormacao.disabled = true;
+                            $(self.$.btnSubmitPedido).addClass('disabled');    
+                        }
+
+                        if (this.data.estado > 1) {
+                            self.$.fundamentacaoChefia.disabled = true;
+                            $(self.$.menuValidacao).addClass('disabled');
+                        }
+
+                        if (this.data.estado == 0) {
+                            $(self.$.btnSubmitPedido).removeClass('disabled');
+                        }
+
+                        if (this.data.estado != 3 || !this._istrainingmanager) {
+                            //$(self.$.btnSubmeteInfoFormacaoProf).addClass('disabled');
+                            $(self.$.menuParecerAcademia).addClass('disabled');
+                            $(self.$.btnSubmeteCA).addClass('disabled');
+                        }
+                    }
                 },
 
                 _goBack: function (e) {

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Hydra.Such.Data.Logic
 {
@@ -42,10 +43,22 @@ namespace Hydra.Such.Data.Logic
 
             return true;
         }
-        public static List<GuiaTransporteNavViewModel> GetListByDim(string NAVDatabase, string NAVCompany, List<AcessosDimensões> Dimensions, bool isHistoric)
+        public static List<GuiaTransporteNavViewModel> GetListByDim(string NAVDatabase, string NAVCompany, List<AcessosDimensões> Dimensions, bool isHistoric, DateTime filtroData)
         {
             try
             {
+                try
+                {
+                    if (filtroData.Year < 2017)
+                    {
+                        filtroData = DateTime.Parse("2017-01-01");
+                    }
+                }
+                catch (Exception)
+                {
+
+                    filtroData = DateTime.Parse("2017-01-01"); 
+                }
                 SuchDBContextExtention _contextExt = new SuchDBContextExtention();
                 List<GuiaTransporteNavViewModel> result = new List<GuiaTransporteNavViewModel>();
 
@@ -65,11 +78,12 @@ namespace Hydra.Such.Data.Logic
                         new SqlParameter("@Regions", regions != null && regions.Count() > 0 ? string.Join(',', regions) : null),
                         new SqlParameter("@FunctionalAreas",functionalAreas != null && functionalAreas.Count() > 0 ?  string.Join(',', functionalAreas): null),
                         new SqlParameter("@RespCenters", responsabilityCenters != null && responsabilityCenters.Count() > 0 ? '\'' + string.Join("',\'",responsabilityCenters) + '\'': null),
-                        new SqlParameter("@IsHistoric", isHistoric ? 1 : 0)
+                        new SqlParameter("@IsHistoric", isHistoric ? 1 : 0),
+                        new SqlParameter("@DataReferencia", filtroData.ToString("yyyy-MM-dd"))
                 };
 
-                IEnumerable<dynamic> data = _contextExt.execStoredProcedure("exec NAV2017GuiasTransporteList @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @IsHistoric", parameters);
-
+                IEnumerable<dynamic> data = _contextExt.execStoredProcedure("exec NAV2017GuiasTransporteList @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @IsHistoric, @DataReferencia", parameters);
+                            
                 foreach (dynamic temp in data)
                 {
                     int hist = 0;
@@ -104,25 +118,46 @@ namespace Hydra.Such.Data.Logic
                             }
                             else
                             {
-                                guia.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog();
-                                var logParameters = new[]{
+                                try
+                                {
+                                    string atCodeId = temp.DocCodId.Equals(DBNull.Value) ? string.Empty : (string)temp.DocCodId;
+                                    DateTime dateTimeComm = temp.DateTimeCommunication.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : ((DateTime)temp.DateTimeCommunication).ToLocalTime();
+                                    string returnCode = temp.ReturnCode.Equals(DBNull.Value) ? string.Empty : (string)temp.ReturnCode;
+                                    string returnMsg = temp.ReturnMessage.Equals(DBNull.Value) ? string.Empty : (string)temp.ReturnMessage;
+
+                                    guia.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog()
+                                    {
+                                        SourceNo = guia.NoGuiaTransporte,
+                                        DocumentCodeId = atCodeId,
+                                        CommunicationDateTime = dateTimeComm,
+                                        ReturnCode = returnCode,
+                                        ReturnMessage = returnMsg
+                                    };
+                                }
+                                catch (Exception ex)
+                                {
+
+                                    guia.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog();
+
+                                    var logParameters = new[]{
                                     new SqlParameter("@DBName", NAVDatabase),
                                     new SqlParameter("@CompanyName", NAVCompany),
                                     new SqlParameter("@No", guia.NoGuiaTransporte)
                                 };
 
-                                dynamic flog = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteCommunicationLog @DBName, @CompanyName, @No", logParameters).FirstOrDefault();
-                                if (flog != null)
-                                {
-                                    guia.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog()
+                                    dynamic flog = _contextExt.execStoredProcedure("exec NAV2017GuiaTransporteCommunicationLog @DBName, @CompanyName, @No", logParameters).FirstOrDefault();
+                                    if (flog != null)
                                     {
-                                        SourceNo = flog.SourceNo.Equals(DBNull.Value) ? "" : (string)flog.SourceNo,
-                                        DocumentCodeId = flog.DocCodId.Equals(DBNull.Value) ? "" : (string)flog.DocCodId,
-                                        CommunicationDateTime = flog.DateTimeCommunication.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : ((DateTime)flog.DateTimeCommunication).ToLocalTime(),
-                                        ReturnCode = flog.ReturnCode.Equals(DBNull.Value) ? "" : (string)flog.ReturnCode,
-                                        ReturnMessage = flog.ReturnMessage.Equals(DBNull.Value) ? "" : (string)flog.ReturnMessage
-                                    };
+                                        guia.FiscalCommunicationLog = new FiscalAuthorityCommunicationLog()
+                                        {
+                                            SourceNo = flog.SourceNo.Equals(DBNull.Value) ? "" : (string)flog.SourceNo,
+                                            DocumentCodeId = flog.DocCodId.Equals(DBNull.Value) ? "" : (string)flog.DocCodId,
+                                            CommunicationDateTime = flog.DateTimeCommunication.Equals(DBNull.Value) ? DateTime.Parse("1900-01-01") : ((DateTime)flog.DateTimeCommunication).ToLocalTime(),
+                                            ReturnCode = flog.ReturnCode.Equals(DBNull.Value) ? "" : (string)flog.ReturnCode,
+                                            ReturnMessage = flog.ReturnMessage.Equals(DBNull.Value) ? "" : (string)flog.ReturnMessage
+                                        };
 
+                                    }
                                 }
                             }
 
@@ -145,15 +180,15 @@ namespace Hydra.Such.Data.Logic
                                     break;
                             }
 
-
+                            
                             result.Add(guia);
                         }
                         
                     }
                 }
 
-
-                if(userRegions != "")
+                
+                if (userRegions != "")
                 {
                     result = result.Where(r => userRegions.Contains(r.GlobalDimension1Code) || r.GlobalDimension1Code == null).ToList();
                 }
@@ -168,7 +203,6 @@ namespace Hydra.Such.Data.Logic
                     result = result.Where(c => userCResps.Contains(c.GlobalDimension3Code) || c.GlobalDimension3Code == null).ToList();
                 }
 
-                
                 return result;
             }
             catch (Exception ex)

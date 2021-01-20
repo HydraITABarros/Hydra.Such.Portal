@@ -241,7 +241,7 @@ namespace Hydra.Such.Data.Database
 
     }
 
-    #region Extension classes to use in Tabele-valued stored procedure
+    #region Extension classes to use in Table-valued stored procedure
     [Flags]
     public enum PropertyReflectionOptions : int
     {
