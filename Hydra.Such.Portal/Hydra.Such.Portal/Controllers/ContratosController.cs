@@ -3122,8 +3122,8 @@ namespace Hydra.Such.Portal.Controllers
             {
                 List<AutorizarFaturaçãoContratos> contract_List = new List<AutorizarFaturaçãoContratos>();
 
-                //AMARO VERSÃO CORRETA if (itm.InvoiceGroupValue >= 0)
-                if (itm.InvoiceGroupValue > 0)
+                if (itm.InvoiceGroupValue >= 0)
+                //ALTERAÇÂO FEITA 08-01-2021 if (itm.InvoiceGroupValue > 0)
                     contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo).Where(x => x.GrupoFatura == itm.InvoiceGroupValue).ToList();
                 else
                     contract_List = DBAuthorizeInvoiceContracts.GetAllByContGroup(itm.ContractNo);

@@ -33,11 +33,14 @@ namespace Hydra.Such.Portal.Controllers
         private readonly NAVConfigurations _config;
         private readonly NAVWSConfigurations _configws;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly GeneralConfigurations _generalConfig;
+
         public GuiasTransporteNavController(IOptions<NAVConfigurations> appSettings, IOptions<NAVWSConfigurations> NAVWSConfigs, IOptions<GeneralConfigurations> appSettingsGeneral, IHostingEnvironment _hostingEnvironment)
         {
             _config = appSettings.Value;
             _configws = NAVWSConfigs.Value;
             this._hostingEnvironment = _hostingEnvironment;
+            _generalConfig = appSettingsGeneral.Value;
         }
 
         [HttpGet]
@@ -591,6 +594,72 @@ namespace Hydra.Such.Portal.Controllers
         }
         #endregion
 
+        //1
+        [HttpPost]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<JsonResult> ExportToExcel_GuiasList([FromBody] List<GuiaTransporteNavViewModel> Lista)
+        {
+            string sWebRootFolder = _generalConfig.FileUploadFolder + "GuiasTransporte\\" + "tmp\\";
+            string user = User.Identity.Name;
+            user = user.Replace("@", "_");
+            user = user.Replace(".", "_");
+            string sFileName = @"" + user + "_ExportEXCEL.xlsx";
+            string URL = string.Format("{0}://{1}/{2}", Request.Scheme, Request.Host, sFileName);
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+            var memory = new MemoryStream();
+            using (var fs = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Create, FileAccess.Write))
+            {
+                IWorkbook workbook;
+                workbook = new XSSFWorkbook();
+                ISheet excelSheet = workbook.CreateSheet("Guias Transporte Nav");
+                IRow row = excelSheet.CreateRow(0);
+
+                row.CreateCell(0).SetCellValue("Nº");
+                row.CreateCell(1).SetCellValue("Nº Guia Original");
+                row.CreateCell(2).SetCellValue("Data Guia");
+                row.CreateCell(3).SetCellValue("Nº Projecto");
+                row.CreateCell(4).SetCellValue("Utilizador");
+                row.CreateCell(5).SetCellValue("Nº Cliente");
+                row.CreateCell(6).SetCellValue("Nome Cliente");
+                row.CreateCell(7).SetCellValue("Nº Requisição");
+                row.CreateCell(8).SetCellValue("Região");
+                row.CreateCell(9).SetCellValue("Área Funcional");
+                row.CreateCell(10).SetCellValue("Email Criação");
+
+                int count = 1;
+                foreach (GuiaTransporteNavViewModel item in Lista)
+                {
+                    row = excelSheet.CreateRow(count);
+
+                    row.CreateCell(0).SetCellValue(item.NoGuiaTransporte);
+                    row.CreateCell(1).SetCellValue(item.NoGuiaOriginalInterface);
+                    row.CreateCell(2).SetCellValue(item.DataGuia);
+                    row.CreateCell(3).SetCellValue(item.NoProjecto);
+                    row.CreateCell(4).SetCellValue(item.Utilizador);
+                    row.CreateCell(5).SetCellValue(item.NoCliente);
+                    row.CreateCell(6).SetCellValue(item.NomeCliente);
+                    row.CreateCell(7).SetCellValue(item.NoRequisicao);
+                    row.CreateCell(8).SetCellValue(item.GlobalDimension1Code);
+                    row.CreateCell(9).SetCellValue(item.GlobalDimension2Code);
+                    row.CreateCell(10).SetCellValue(item.UserEmail);
+
+                    count++;
+                }
+                workbook.Write(fs);
+            }
+            using (var stream = new FileStream(Path.Combine(sWebRootFolder, sFileName), FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return Json(sFileName);
+        }
+        //2
+        public IActionResult ExportToExcelDownload_GuiasList(string sFileName)
+        {
+            sFileName = _generalConfig.FileUploadFolder + "GuiasTransporte\\" + "tmp\\" + sFileName;
+            return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
 
     }
 }
