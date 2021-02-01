@@ -94,7 +94,7 @@
                 "@progress/kendo-react-gauges": "^2.10.0",
                 "@progress/kendo-react-intl": "^2.10.0",
                 "any-resize-event": "^1.0.0",
-                "axios": "^0.18.0",
+                "axios": "^0.21.1",
                 "circular-dependency-plugin": "^5.0.2",
                 "color": "^3.1.0",
                 "d3": "^5.9.2",
