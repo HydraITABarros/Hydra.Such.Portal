@@ -437,6 +437,20 @@ namespace Hydra.Such.Portal.Controllers
 
             switch (RequestOrigin)
             {
+                case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao:
+                    if (UPerm != null && UPerm.Read.Value && cfgUser.IsChief())
+                    {
+                        // TO DO 01-02-2021: avalia necessidade do ciclo switch e de diferentes métodos....
+                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuGestao, 3, false);
+                        if (meusPedidos != null && meusPedidos.Count > 0)
+                        {
+                            foreach (var p in meusPedidos)
+                            {
+                                meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
+                            }
+                        }
+                    }
+                    break;
                 case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia:
                     if (UPerm != null && UPerm.Read.Value && cfgUser.IsChief())
                     {
@@ -454,6 +468,21 @@ namespace Hydra.Such.Portal.Controllers
                     if (UPerm != null && UPerm.Read.Value && cfgUser.IsDirector())
                     {
                         List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuDirector, apenasCompletos);
+                        if (meusPedidos != null && meusPedidos.Count > 0)
+                        {
+                            foreach (var p in meusPedidos)
+                            {
+                                meusPedidosView.Add(new PedidoParticipacaoFormacaoView(p));
+                            }
+
+                            return Json(meusPedidosView);
+                        }
+                    }
+                    break;
+                case (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA:
+                    if (UPerm != null && UPerm.Read.Value && cfgUser.IsDirector())
+                    {
+                        List<PedidoParticipacaoFormacao> meusPedidos = DBAcademia.__GetAllPedidosFormacao(cfgUser, Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuCA, apenasCompletos);
                         if (meusPedidos != null && meusPedidos.Count > 0)
                         {
                             foreach (var p in meusPedidos)
@@ -1093,7 +1122,7 @@ namespace Hydra.Such.Portal.Controllers
 
             if (UPerm != null && UPerm.Read.Value && cfgUser.IsChief())
             {
-                ViewBag.OnlyCompleted = true;
+                ViewBag.OnlyCompleted = false;
                 ViewBag.RequestOrigin = (int)Enumerations.AcademiaOrigemAcessoFuncionalidade.MenuChefia;
                 return View();
             }
