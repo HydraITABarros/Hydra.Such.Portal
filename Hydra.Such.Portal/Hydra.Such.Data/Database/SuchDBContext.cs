@@ -199,6 +199,7 @@ namespace Hydra.Such.Data.Database
         public virtual DbSet<ConfiguracaoParametros> ConfiguracaoParametros { get; set; }
         public virtual DbSet<SISLOGReservas> SISLOGReservas { get; set; }
         public virtual DbSet<SISLOGProdutos> SISLOGProdutos { get; set; }
+        public virtual DbSet<Ocorrencias> Ocorrencias { get; set; }
 
         #region zpgm.ALT_CCP_#001.y2019
         public virtual DbSet<TipoProcedimentoCcp> TipoProcedimentoCcp { get; set; }
@@ -13031,6 +13032,110 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataAtualizacao)
                     .HasColumnName("DataAtualizacao")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Ocorrencias>(entity =>
+            {
+                entity.HasKey(e => new { e.CodOcorrencia });
+
+                entity.ToTable("Ocorrencias");
+
+                entity.Property(e => e.CodOcorrencia)
+                    .HasColumnName("CodOcorrencia");
+
+                entity.Property(e => e.CodEstado)
+                    .HasColumnName("CodEstado");
+
+                entity.Property(e => e.CodFornecedor)
+                    .HasColumnName("CodFornecedor")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.NomeFornecedor)
+                    .HasColumnName("NomeFornecedor")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.CodEncomenda)
+                    .HasColumnName("CodEncomenda")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodRegiao)
+                    .HasColumnName("CodRegiao")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodAreaFuncional)
+                    .HasColumnName("CodAreaFuncional")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodCentroResponsabilidade)
+                    .HasColumnName("CodCentroResponsabilidade")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.DataOcorrencia)
+                    .HasColumnName("DataOcorrencia")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.LocalEntrega)
+                    .HasColumnName("LocalEntrega")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.NoDocExterno)
+                    .HasColumnName("NoDocExterno")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.CodArtigo)
+                    .HasColumnName("CodArtigo")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Descricao)
+                    .HasColumnName("Descricao")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.UnidMedida)
+                    .HasColumnName("UnidMedida")
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Quantidade)
+                    .HasColumnName("Quantidade")
+                    .HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.Motivo)
+                    .HasColumnName("Motivo")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.GrauGravidade)
+                    .HasColumnName("GrauGravidade");
+
+                entity.Property(e => e.Observacao)
+                    .HasColumnName("Observacao")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.MedidaCorretiva)
+                    .HasColumnName("MedidaCorretiva")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.UtilizadorMedidaCorretiva)
+                    .HasColumnName("UtilizadorMedidaCorretiva")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataMedidaCorretiva)
+                    .HasColumnName("DataMedidaCorretiva")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorCriacao)
+                    .HasColumnName("UtilizadorCriacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataCriacao)
+                    .HasColumnName("DataCriacao")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.UtilizadorModificacao)
+                    .HasColumnName("UtilizadorModificacao")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.DataModificacao)
+                    .HasColumnName("DataModificacao")
                     .HasColumnType("datetime");
             });
 

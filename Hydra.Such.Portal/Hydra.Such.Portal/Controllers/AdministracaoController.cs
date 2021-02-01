@@ -218,6 +218,18 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult CreateUserConfig([FromBody] UserConfigurationsViewModel data)
         {
+            if (data != null && !string.IsNullOrEmpty(data.IdUser))
+            {
+                ConfigUtilizadores User = DBUserConfigurations.GetById(data.IdUser);
+
+                if (User != null)
+                {
+                    data.eReasonCode = 2;
+                    data.eMessage = "Não é possivel criar o Utilizador, por o mesmo já existir na Base de Dados.";
+                    return Json(data);
+                }
+            }
+
             ConfigUtilizadores ObjectCreated = DBUserConfigurations.Create(new ConfigUtilizadores()
             {
                 IdUtilizador = data.IdUser,
