@@ -1365,7 +1365,11 @@
                         </template>
                     </vaadin-combo-box>
                 </div>
-
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <vaadin-checkbox id="ProjDiaryInverterDlg" checked="{{invertersinal}}" on-click="_InverterSinalCheck"> Trocar Sinal de Quantidades</vaadin-checkbox>
+                </div>
             </div>
 
             <div class="buttons">
@@ -1605,7 +1609,13 @@
                     Flag: {
                         type: Boolean,
                         value: false
-                    }
+                    },
+                    invertersinal: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+
                 },
 
                 observers: [
@@ -2513,9 +2523,17 @@
                         value = value + " €";
                     }
                     return value;
-                }
-            });
+                },
 
+                _InverterSinalCheck: function () {
+                    this.invertersinal = !this.invertersinal;
+                    this._projectChange();
+                }
+
+
+
+
+            });
         });
     </script>
 </dom-module>

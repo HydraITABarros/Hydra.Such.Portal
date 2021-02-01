@@ -964,7 +964,6 @@
 
                 },
                 ready: function () {
-                    debugger;;
                     this._GetAllcodigoCentroResponsabilidade();
                 },
                 _showMessage: function (message) {
@@ -1076,7 +1075,11 @@
                 _responseProcessor: function (e) {
                     if (e.detail.status === 200) {
                         if (e.detail.url.indexOf("Create") !== -1) {
-                            window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + this.data.idUser;
+                            if (this.data.eReasonCode == 2) {
+                                this._showErrorMessage(this.data.eMessage);
+                            }
+                            else
+                                window.location.href = "/Administracao/ConfiguracaoUtilizadoresDetalhes/" + this.data.idUser;
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
                             if (this.data.id == 0) {
@@ -1091,7 +1094,11 @@
                         }
                     } else {
                         if (e.detail.url.indexOf("Create") !== -1) {
-                            this._showErrorMessage("Ocorreu um erro ao criar o perfil modelo.");
+                            if (this.data.eReasonCode == 2) {
+                                this._showErrorMessage(this.data.eMessage);
+                            }
+                            else
+                                this._showErrorMessage("Ocorreu um erro ao criar o perfil modelo.");
                         }
                         else if (e.detail.url.indexOf("Delete") !== -1) {
                             this._showErrorMessage("Ocorreu um erro ao remover o Perfil Modelo!");

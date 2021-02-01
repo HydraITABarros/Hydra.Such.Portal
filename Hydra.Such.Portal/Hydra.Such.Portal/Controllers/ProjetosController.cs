@@ -1680,6 +1680,7 @@ namespace Hydra.Such.Portal.Controllers
                     int ProjectNumerationConfigurationId = Configs.NumeraçãoProjetos.Value;
                     string projNoAuto = "";
                     data.ProjectNo = null;
+                    ConfigUtilizadores Utilizador = DBUserConfigurations.GetById(User.Identity.Name);
 
                     if (data.ProjectNo == "" || data.ProjectNo == null)
                     {
@@ -1725,14 +1726,15 @@ namespace Hydra.Such.Portal.Controllers
                             CategoriaProjeto = data.ProjectCategory,
                             NºContratoOrçamento = data.BudgetContractNo,
                             ProjetoInterno = data.InternalProject,
-                            ChefeProjeto = User.Identity.Name,
-                            ResponsávelProjeto = data.ProjectResponsible,
+                            ChefeProjeto = Utilizador.EmployeeNo,
+                            ResponsávelProjeto = "",
                             DataHoraCriação = DateTime.Now,
                             UtilizadorCriação = User.Identity.Name,
                             DataHoraModificação = DateTime.Now,
                             UtilizadorModificação = User.Identity.Name,
                             FaturaPrecosIvaIncluido = data.FaturaPrecosIvaIncluido,
                             FechoAutomatico = data.FechoAutomatico,
+                            
                         };
 
                         //Create Project On Database
