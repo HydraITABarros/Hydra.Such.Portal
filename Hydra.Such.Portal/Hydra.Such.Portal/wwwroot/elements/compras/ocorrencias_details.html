@@ -1,0 +1,535 @@
+﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<!--link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html"-->
+<link rel="import" href="/lib/such-dropdown-menu/such-dropdown-menu.html" />
+
+<!--ACORDEÃO-->
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+
+<dom-module id="x-ocorrenciasdetails">
+    <template>
+        <!-- STYLES -->
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            vaadin-upload {
+                padding: 0px;
+            }
+
+            vaadin-upload {
+                --primary-color: rgba(48, 64, 84, 0.06);
+                --paper-font-button_-_font-size: 13px;
+                --primary-font-color: rgba(48, 64, 84, 0.91);
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+
+        <!-- DROPDOWNS POPULATE -->
+        <iron-ajax url="/PopulateDropdowns/GetAllPurchase" last-response="{{ListPurchases}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllOcorrenciasGrauGravidade" last-response="{{ListGrauGravidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+
+
+
+
+        <iron-ajax url="/Ocorrencias/GetOcorrenciaDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Ocorrencias/GetEncomendaDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_GetEncomenda_ajax"
+                   on-response="_responseGetEncomenda"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Ocorrencias/CreateOcorrencia"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Create_ajax"
+                   on-response="_responseCreate"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Ocorrencias/UpdateOcorrencia"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="page_Update_ajax"
+                   on-response="_responseUpdate"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Ocorrencias/CreateMedidaCorretiva"
+                   last-response="{{medidaCorretivaResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_CreateMedidaCorretiva"
+                   on-response="_createMedidaCorretivaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+
+
+
+        <div class="subMenu">
+            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+
+            <template is="dom-if" if="{{ _isCreate }}">
+                <template is="dom-if" if="{{ _permissions.create }}">
+                    <paper-button id="btnCreate" class="btnEdit tablinks" on-tap="_Create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Criar</paper-button>
+                </template>
+            </template>
+
+            <template is="dom-if" if="{{ !_isCreate }}">
+                <template is="dom-if" if="{{ _isEdit }}">
+                    <paper-button id="btn_Update" class="btnEdit tablinks" on-tap="_Update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
+                    <paper-button id="btn_OpenMedidaCorretiva" class="btnEdit tablinks" on-tap="_CriarMedidaCorretiva"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Med. Corretiva</paper-button>
+                </template>
+            </template>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-md-2">
+                <vaadin-text-field id="nomeEstado" name="NomeEstado" value="{{data.nomeEstado}}" label="Estado" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <such-selectbox id="codEncomenda" name="codEncomenda" value="{{ data.codEncomenda }}" label="Cód. Encomenda" disabled="{{ !_isEdit }}"
+                                items="[[ListPurchases]]"
+                                text-path="id"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Nº Encomenda"}, {"field":"value", "name":"teste"}]'
+                                on-value-changed="_EncomendaChanged">
+                </such-selectbox>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="codFornecedor" name="codFornecedor" value="{{data.codFornecedor}}" label="Cód. Fornecedor" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-6">
+                <vaadin-text-field id="nomeFornecedor" name="nomeFornecedor" value="{{data.nomeFornecedor}}" label="Fornecedor" disabled></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-md-2">
+                <vaadin-text-field id="codRegiao" name="codRegiao" value="{{data.codRegiao}}" label="Cód. Região" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="codAreaFuncional" name="codAreaFuncional" value="{{data.codAreaFuncional}}" label="Cód. Área Funcional" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="codCentroResponsabilidade" name="codCentroResponsabilidade" value="{{data.codCentroResponsabilidade}}" label="Cód. Centro Responsabilidade" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-date-picker id="dataOcorrenciaTexto" name="dataOcorrenciaTexto" value="{{data.dataOcorrenciaTexto}}" label="Data Ocorrência" disabled></vaadin-date-picker>
+            </div>
+
+            <div class="col-md-4">
+                <vaadin-text-field id="localEntrega" name="localEntrega" value="{{data.localEntrega}}" label="Local Entrega" disabled></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-md-2">
+                <vaadin-text-field id="noDocExterno" name="noDocExterno" value="{{data.noDocExterno}}" label="No. Documento Externo" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="codArtigo" name="codArtigo" value="{{data.codArtigo}}" label="Cód. Artigo" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-8">
+                <vaadin-text-field id="descricao" name="descricao" value="{{data.descricao}}" label="Descrição" disabled></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-md-2">
+                <vaadin-text-field id="unidMedida" name="unidMedida" value="{{data.unidMedida}}" label="Unidade Medida" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="quantidade" name="quantidade" value="{{data.quantidade}}" label="Quantidade" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="utilizadorCriacao" name="utilizadorCriacao" value="{{data.utilizadorCriacao}}" label="Utilizador Criador" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-date-picker id="dataCriacaoTexto" name="dataCriacaoTexto" value="{{data.dataCriacaoTexto}}" label="Data Criação" disabled></vaadin-date-picker>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-md-2">
+                <vaadin-combo-box id="grauGravidade" name="grauGravidade" items="[[ListGrauGravidade]]" item-value-path="id" item-label-path="value" value="{{data.grauGravidade}}" label="Grau Gravidade" disabled="{{ !_isEdit }}">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-md-10">
+                <vaadin-text-field id="motivo" name="motivo" value="{{data.motivo}}" label="Motivo" disabled="{{ !_isEdit }}" maxlength="200"></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-md-12">
+                <vaadin-text-field id="observacao" name="observacao" value="{{data.observacao}}" label="Observação" disabled="{{ !_isEdit }}" maxlength="200"></vaadin-text-field>
+            </div>
+        </div>
+
+        <div class="row break_clear">
+            <div class="col-md-10">
+                <such-textarea id="medidaCorretiva" name="medidaCorretiva" value="{{data.medidaCorretiva}}" label="Medida Corretiva" disabled rows="7"> </such-textarea>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-text-field id="utilizadorMedidaCorretiva" name="utilizadorMedidaCorretiva" value="{{data.utilizadorMedidaCorretiva}}" label="Medida Corretiva Utilizador Criador" disabled></vaadin-text-field>
+            </div>
+
+            <div class="col-md-2">
+                <vaadin-date-picker id="dataMedidaCorretivaTexto" name="dataMedidaCorretivaTexto" value="{{data.dataMedidaCorretivaTexto}}" label="Medida Corretiva Data Criação" disabled></vaadin-date-picker>
+            </div>
+        </div>
+
+
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-ocorrenciasdetails',
+                properties: {
+                    _ocorrencia: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _criarMedidasCorretivas: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _isCreate: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _isEdit: {
+                        type: Boolean,
+                        value: false
+                    },
+                },
+
+                ready: function () {
+                    //GET PROJECT DATA
+                    this.$.page_databound_ajax.body = JSON.stringify({ "codOcorrencia": this._ocorrencia });
+                    this.$.page_databound_ajax.generateRequest();
+                },
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _goBack: function () {
+                    window.location.href = "../OcorrenciasList/";
+                },
+
+                _responseProcessor: function (data) {
+                    var self = this;
+
+                    if (data.detail.status === 200) {
+                        if (data.detail.url.indexOf("GetOcorrencia") !== -1) {
+                            window.data = this.data;
+
+                            this._isCreate = false;
+                            if (this.data.codOcorrencia == "")
+                                this._isCreate = true;
+
+                            this._isEdit = false;
+                            if (this.data.codEstado == 1 && (this._permissions.create == true || this._permissions.update == true))
+                                    this._isEdit = true;
+                        }
+
+                        else if (data.detail.url.indexOf("Create") !== -1) {
+                            this._responseCreateProcessor();
+                        }
+
+                        else if (data.detail.url.indexOf("Update") !== -1) {
+                            this._responseUpdateProcessor();
+                        }
+                    } else {
+                        this._openToastError("Ocorreu um erro ao criar a Ocorrencia.")
+                    }
+                },
+
+                _EncomendaChanged: function () {
+                    if (this.$.codEncomenda.__data.value == "") {
+                        this.$.codFornecedor._clearSelection();
+                        this.$.nomeFornecedor.value = "";
+                        this.$.codEncomenda._clearSelection();
+                        this.$.codRegiao._clearSelection();
+                        this.$.codAreaFuncional._clearSelection();
+                        this.$.codCentroResponsabilidade._clearSelection();
+                        this.$.dataOcorrenciaTexto.value = "";
+                        this.$.localEntrega.value = "";
+                        this.$.noDocExterno.value = "";
+                        this.$.codArtigo.value = "";
+                        this.$.descricao.value = "";
+                        this.$.unidMedida.value = "";
+                        this.$.quantidade.value = "";
+                    }
+                    else {
+                        this.data.codEncomenda = this.$.codEncomenda.__data.value;
+                        this.$.page_GetEncomenda_ajax.body = JSON.stringify(this.data);
+                        this.$.page_GetEncomenda_ajax.generateRequest();
+                    }
+
+                },
+
+                _Create: function () {
+                    this.$.page_Create_ajax.body = JSON.stringify(this.data);
+                    this.$.page_Create_ajax.generateRequest();
+                },
+
+                _responseCreate: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._openToast(this.data.eMessage);
+                    } else {
+                        this._openToastError(this.data.eMessage);
+                    }
+                },
+
+                _Update: function () {
+                    this.$.page_Update_ajax.body = JSON.stringify(this.data);
+                    this.$.page_Update_ajax.generateRequest();
+                },
+
+                _responseUpdate: function () {
+                    if (this.data.eReasonCode == 1) {
+                        this._openToast(this.data.eMessage);
+                    } else {
+                        this._openToastError(this.data.eMessage);
+                    }
+                },
+
+                _CriarMedidaCorretiva: function (e) {
+                    if (e != null) {
+                        var TMessage = this.$.ToastMessage;
+                        var TMessageError = this.$.ToastError;
+                        var ARequest = this.$.ajax_CreateMedidaCorretiva;
+                        var Ocorrencia = this._ocorrencia;
+
+                        bootbox.prompt({
+                            title: "Introduza a Medida Corretiva!",
+                            inputType: 'textarea',
+                            buttons: {
+                                confirm: {
+                                    label: 'Inserir',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Fechar',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result != null) {
+                                    if (result == "") {
+                                        TMessageError.text = "É necessário preencher a Medida Corretiva.";
+                                        TMessageError.open();
+                                        return false;
+                                    } else {
+                                        ARequest.body = JSON.stringify({ codOcorrencia: Ocorrencia, medidaCorretiva: result });
+                                        ARequest.generateRequest();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                },
+
+                _createMedidaCorretivaResponse: function (data) {
+                    if (data.detail.status === 200) {
+                        if (this.medidaCorretivaResult.eReasonCode == 1) {
+                            this._openToast(this.medidaCorretivaResult.eMessage);
+
+                            this.$.page_databound_ajax.body = JSON.stringify({ "codOcorrencia": this._ocorrencia });
+                            this.$.page_databound_ajax.generateRequest();
+                        } else {
+                            this._openToastError(this.medidaCorretivaResult.eMessage);
+                        }
+                    }
+                },
+
+
+
+
+
+
+
+
+
+
+
+
+            });
+        });
+    </script>
+
+</dom-module>

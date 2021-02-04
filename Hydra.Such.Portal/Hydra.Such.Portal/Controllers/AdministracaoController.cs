@@ -173,6 +173,7 @@ namespace Hydra.Such.Portal.Controllers
                 result.CMHistoricoToActivo = userConfig.CMHistoricoToActivo.HasValue ? userConfig.CMHistoricoToActivo : false;
                 result.ValidarPedidoPagamento = userConfig.ValidarPedidoPagamento.HasValue ? userConfig.ValidarPedidoPagamento : false;
                 result.ArquivarREQPendentes = userConfig.ArquivarREQPendentes.HasValue ? userConfig.ArquivarREQPendentes : false;
+                result.CriarMedidasCorretivas = userConfig.CriarMedidasCorretivas.HasValue ? userConfig.CriarMedidasCorretivas : false;
 
                 #region SGPPF
                 result.TipoUtilizadorFormacao = userConfig.TipoUtilizadorFormacao;
@@ -267,6 +268,7 @@ namespace Hydra.Such.Portal.Controllers
                 CriarProjetoSemAprovacao = data.CriarProjetoSemAprovacao.HasValue ? data.CriarProjetoSemAprovacao : false,
                 CMHistoricoToActivo = data.CMHistoricoToActivo.HasValue ? data.CMHistoricoToActivo : false,
                 ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false,
+                CriarMedidasCorretivas = data.CriarMedidasCorretivas.HasValue ? data.CriarMedidasCorretivas : false,
 
                 #region SGPPF
                 TipoUtilizadorFormacao = data.TipoUtilizadorFormacao
@@ -354,6 +356,7 @@ namespace Hydra.Such.Portal.Controllers
                 userConfig.CMHistoricoToActivo = data.CMHistoricoToActivo.HasValue ? data.CMHistoricoToActivo : false;
                 userConfig.ValidarPedidoPagamento = data.ValidarPedidoPagamento.HasValue ? data.ValidarPedidoPagamento : false;
                 userConfig.ArquivarREQPendentes = data.ArquivarREQPendentes.HasValue ? data.ArquivarREQPendentes : false;
+                userConfig.CriarMedidasCorretivas = data.CriarMedidasCorretivas.HasValue ? data.CriarMedidasCorretivas : false;
 
                 #region SGPPF
                 userConfig.TipoUtilizadorFormacao = data.TipoUtilizadorFormacao;

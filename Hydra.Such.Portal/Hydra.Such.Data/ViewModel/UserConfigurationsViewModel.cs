@@ -44,6 +44,7 @@ namespace Hydra.Such.Data.ViewModel
         public bool? CriarProjetoSemAprovacao { get; set; }
         public bool? CMHistoricoToActivo { get; set; }
         public bool? ArquivarREQPendentes { get; set; }
+        public bool? CriarMedidasCorretivas { get; set; }
 
         #region SGPPF
         public int? TipoUtilizadorFormacao { get; set; }

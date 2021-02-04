@@ -1,0 +1,682 @@
+﻿<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
+<link rel="import" href="/lib/such-textarea/such-textarea.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/such-selectbox/such-selectbox.html">
+<link rel="import" href="/lib/paper-dialog/paper-dialog.html" />
+<link rel="import" href="/lib/paper-dialog-behavior/paper-dialog-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html" />
+
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+
+<dom-module id="x-ocorrenciaslist">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <style>
+            vaadin-combo-box {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-date-picker {
+                margin-top: 0px !important;
+                width: 100% !important;
+            }
+
+            vaadin-text-field {
+                margin-top: 0px !important;
+                width: 100%;
+            }
+
+            paper-button {
+                margin-top: 10px;
+            }
+
+            .break_clear {
+                margin-top: 15px;
+                margin-right: 0px !important;
+                margin-left: 0px !important;
+            }
+
+            .break_frm {
+                margin-top: 15px;
+            }
+
+            .label_custom {
+                color: var(--valo-contrast-60pct) !important;
+                font-weight: 500 !important;
+                font-size: var(--valo-font-size-s) !important;
+                margin-left: calc(var(--valo-text-field-border-radius, var(--valo-border-radius)) / 4) !important;
+                margin-bottom: var(--valo-space-xs) !important;
+                transition: color 0.4s !important;
+                line-height: 1 !important;
+                font-family: var(--valo-font-family) !important;
+            }
+
+            datetime-picker {
+                border-radius: var(--valo-text-field-border-radius, var(--valo-border-radius));
+                background-color: var(--valo-contrast-5pct);
+                color: var(--valo-contrast-60pct) !important;
+                width: 100%;
+            }
+
+            .marginSpace {
+                margin: 0px !important;
+            }
+
+            textarea {
+                background-color: #f5f5f5;
+                border: none;
+                border-radius: 3px 4px;
+                align-self: baseline;
+                font-weight: 500;
+            }
+
+                textarea:hover {
+                    background-color: #eeeeee;
+                }
+
+                textarea:focus {
+                    background-color: white;
+                    border: none;
+                    outline: 1px solid #eeeeee;
+                    border-radius: 3px 4px;
+                }
+
+            datetime-picker {
+                --datetime-selected-background: #71BCC1 !important;
+                --datetime-background: #1f3133;
+                --datetime-color: #eeeeee;
+            }
+
+            paper-collapse-item {
+                --paper-item: {
+                    padding: 0 0;
+                };
+                --paper-collapse-item-header: {
+                    padding: 0 15px;
+                    color: #333;
+                    background-color: #f5f5f5;
+                    border-bottom: solid #ddd 1px;
+                    border-top-left-radius: 3px;
+                    border-top-right-radius: 3px;
+                };
+            }
+
+            .panel-body {
+                padding-top: 0px !important;
+            }
+
+            vaadin-upload {
+                padding: 0px;
+            }
+
+            vaadin-upload {
+                --primary-color: rgba(48, 64, 84, 0.06);
+                --paper-font-button_-_font-size: 13px;
+                --primary-font-color: rgba(48, 64, 84, 0.91);
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+
+        <iron-ajax url="/Ocorrencias/GetList"
+                   last-response="{{result}}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Ocorrencias/ExportToExcel_Ocorrencias"
+                   last-response="{{export}}"
+                   id="ajax_Export"
+                   method="post"
+                   handle-as="json"
+                   on-response="_exportEXCELResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Ocorrencias/CreateMedidaCorretiva"
+                   last-response="{{medidaCorretivaResult}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_CreateMedidaCorretiva"
+                   on-response="_createMedidaCorretivaResponse"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <template is="dom-if" if="{{ _permissions.create }}">
+                <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Nova</paper-button>
+            </template>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
+
+            <paper-button class="tablinks" id="showHistorico" on-tap="_showHistorico"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showHistoricoMessage }}</paper-button>
+
+            <!--start ColumnToggle-->
+            <paper-menu-button class="column-toggle" no-animations>
+                <paper-icon-button icon="view-column" slot="dropdown-trigger" alt="Colunas"></paper-icon-button>
+                <div class="list-group" slot="dropdown-content">
+                    <template is="dom-repeat" items="[[ _toArray(_columns)]]" id="columnsList">
+                        <a href="javascript:void(0);" on-tap="_toggleColumn" data-item$="[[item]]" class$="list-group-item [[ _getColumnItemClass( item.key ) ]]">
+                            {{ item.value.label }}
+                        </a>
+                        <hr />
+                    </template>
+                </div>
+            </paper-menu-button>
+            <!--end ColumnToggle-->
+        </div>
+
+        <vaadin-grid column-reordering-allowed id="ocorrenciasGrid" aria-label="ocorrenciasGrid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+            <vaadin-grid-column width="150px" resizable hidden="{{ _historico }}">
+                <template class="header">
+                </template>
+                <template>
+                    <center>
+                        <paper-button raised id="btn_OpenMedidaCorretiva" class="btnSave" on-tap="_CriarMedidaCorretiva" disabled="{{ _criarMedidasCorretivas }}" title="Inserir Medida Corretiva"><i class="fa fa-check" aria-hidden="true"></i>Med. Corretiva</paper-button>
+                    </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeEstado.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeEstado">Estado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeEstado" value="[[filter.nomeEstado]]" />
+                </template>
+                <template>
+                    {{item.nomeEstado}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codFornecedor">Cód. Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codFornecedor" value="[[filter.codFornecedor]]" />
+                </template>
+                <template>
+                    {{item.codFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.nomeFornecedor.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="nomeFornecedor">Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="nomeFornecedor" value="[[filter.nomeFornecedor]]" />
+                </template>
+                <template>
+                    {{item.nomeFornecedor}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codEncomenda.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codEncomenda">Cód. Encomenda</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codEncomenda" value="[[filter.codEncomenda]]" />
+                </template>
+                <template>
+                    {{item.codEncomenda}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codRegiao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codRegiao">Cód. Região</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codRegiao" value="[[filter.codRegiao]]" />
+                </template>
+                <template>
+                    {{item.codRegiao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codAreaFuncional.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codAreaFuncional">Cód. Área Funcional</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codAreaFuncional" value="[[filter.codAreaFuncional]]" />
+                </template>
+                <template>
+                    {{item.codAreaFuncional}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codCentroResponsabilidade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codCentroResponsabilidade">Cód. Centro Responsabilidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codCentroResponsabilidade" value="[[filter.codCentroResponsabilidade]]" />
+                </template>
+                <template>
+                    {{item.codCentroResponsabilidade}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataOcorrenciaTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataOcorrenciaTexto">Data Ocorrência</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataOcorrenciaTexto" value="[[filter.dataOcorrenciaTexto]]" />
+                </template>
+                <template>
+                    {{item.dataOcorrenciaTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.localEntrega.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="localEntrega">Local Entrega</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="localEntrega" value="[[filter.localEntrega]]" />
+                </template>
+                <template>
+                    {{item.localEntrega}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.noDocExterno.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="noDocExterno">No. Documento Externo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="noDocExterno" value="[[filter.noDocExterno]]" />
+                </template>
+                <template>
+                    {{item.noDocExterno}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codArtigo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codArtigo">Cód. Artigo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codArtigo" value="[[filter.codArtigo]]" />
+                </template>
+                <template>
+                    {{item.codArtigo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.descricao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="descricao">Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="descricao" value="[[filter.descricao]]" />
+                </template>
+                <template>
+                    {{item.descricao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.unidMedida.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="unidMedida">Unidade Medida</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="unidMedida" value="[[filter.unidMedida]]" />
+                </template>
+                <template>
+                    {{item.unidMedida}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.quantidade.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="quantidade">Quantidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="quantidade" value="[[filter.quantidade]]" />
+                </template>
+                <template>
+                    {{item.quantidade}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.motivo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="motivo">Motivo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="motivo" value="[[filter.motivo]]" />
+                </template>
+                <template>
+                    {{item.motivo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.grauGravidadeTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="grauGravidadeTexto">Grau Gravidade</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="grauGravidadeTexto" value="[[filter.grauGravidadeTexto]]" />
+                </template>
+                <template>
+                    {{item.grauGravidadeTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.observacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="observacao">Observação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="observacao" value="[[filter.observacao]]" />
+                </template>
+                <template>
+                    {{item.observacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorCriacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorCriacao" value="[[filter.utilizadorCriacao]]" />
+                </template>
+                <template>
+                    {{item.utilizadorCriacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataCriacaoTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataCriacaoTexto">Data Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataCriacaoTexto" value="[[filter.dataCriacaoTexto]]" />
+                </template>
+                <template>
+                    {{item.dataCriacaoTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ !_historico }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="medidaCorretiva">Medida Corretiva</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="medidaCorretiva" value="[[filter.medidaCorretiva]]" />
+                </template>
+                <template>
+                    {{item.medidaCorretiva}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ !_historico }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorMedidaCorretiva">Medida Corretiva Utilizador Criador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorMedidaCorretiva" value="[[filter.utilizadorMedidaCorretiva]]" />
+                </template>
+                <template>
+                    {{item.utilizadorMedidaCorretiva}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ !_historico }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataMedidaCorretivaTexto">Medida Corretiva Data Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataMedidaCorretivaTexto" value="[[filter.dataMedidaCorretivaTexto]]" />
+                </template>
+                <template>
+                    {{item.dataMedidaCorretivaTexto}}
+                </template>
+            </vaadin-grid-column>
+        </vaadin-grid>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-ocorrenciaslist',
+                properties: {
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    _permissions: {
+                        type: Array
+                    },
+                    _criarMedidasCorretivas: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _columns: {
+                        type: Object,
+                        value: function () {
+                            return {};
+                        }
+                    },
+                    _historico: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _showHistoricoMessage: {
+                        type: String,
+                        notify: true,
+                        value: "Exibir Histórico"
+                    },
+                    _linhaCodOcorrencia: {
+                        type: String,
+                        notify: true,
+                        value: ""
+                    },
+                    /*FILTROS*/
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        /*FILTROS*/
+                        //window.handleGridListColumnsOrder(this.$.ocorrenciasGrid, 'ocorrencias-ocorrenciaslist');
+                        //window.grid = this.$.ocorrenciasGrid;
+                        //window._this = this;
+
+                        window.location.href = "/Ocorrencias/OcorrenciasDetails/" + item.codOcorrencia;
+                    }
+                },
+                /*FILTROS*/
+                created: function () {
+                    this.filter = window.getGridFilter('ocorrencias-ocorrenciaslist');
+                },
+                _create: function (item) {
+                    if (item != null) {
+                        window.location.href = "/Ocorrencias/OcorrenciasDetails/";
+                    }
+                },
+                ready: function () {
+                    this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.ocorrenciasGrid, 'ocorrencias-ocorrenciaslist');
+                    window.grid = this.$.ocorrenciasGrid;
+                    window._this = this;
+
+                    /*ColumnToggle*/
+                    this._startColumnToggle();
+
+                    var _this = this;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.ocorrenciasGrid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var offsetTop = $(this).offset().top;
+                    var height = parentHeight - offsetTop;
+                    grid_el.height(height);
+                },
+
+                _exportEXCEL: function () {
+                    var result = this.$.ocorrenciasGrid._filter(this.result);
+                    result[0].ColunasEXCEL = this._columns;
+
+                    this.$.ajax_Export.body = JSON.stringify(result);
+                    this.$.ajax_Export.generateRequest();
+                },
+
+                _exportEXCELResponse: function (e) {
+                    var FileName = this.export;
+                    location.href = '../Ocorrencias/ExportToExcelDownload_Ocorrencias?sFileName=' + FileName;
+                },
+
+                _showHistorico: function (item) {
+                    if (item != null) {
+                        if (this._historico) {
+                            this._showHistoricoMessage = "Exibir Histórico";
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
+                            this.$.grid_databound_ajax.generateRequest();
+                        } else {
+                            this._showHistoricoMessage = "Exibir Activas";
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": false });
+                            this.$.grid_databound_ajax.generateRequest();
+                        }
+
+                        this._historico = !this._historico;
+                    }
+                },
+
+
+
+                /*start - ColumnToggle*/
+                _startColumnToggle: function () {
+                    var columns = {
+                        "nomeEstado": { hidden: false, label: "Estado" },
+                        "codFornecedor": { hidden: false, label: "Cód. Fornecedor" },
+                        "nomeFornecedor": { hidden: false, label: "Fornecedor" },
+                        "codEncomenda": { hidden: false, label: "Cód. Encomenda" },
+                        "codRegiao": { hidden: false, label: "Cód. Região" },
+                        "codAreaFuncional": { hidden: false, label: "Cód. Área Funcional" },
+                        "codCentroResponsabilidade": { hidden: false, label: "Cód. Centro Responsabilidade" },
+                        "dataOcorrenciaTexto": { hidden: false, label: "Data Ocorrência" },
+                        "localEntrega": { hidden: false, label: "Local Entrega" },
+                        "noDocExterno": { hidden: false, label: "No. Documento Externo" },
+                        "codArtigo": { hidden: false, label: "Cód. Artigo" },
+                        "descricao": { hidden: false, label: "Descrição" },
+                        "unidMedida": { hidden: false, label: "Unidade Medida" },
+                        "quantidade": { hidden: false, label: "Quantidade" },
+                        "motivo": { hidden: false, label: "Motivo" },
+                        "grauGravidadeTexto": { hidden: false, label: "Grau Gravidade" },
+                        "observacao": { hidden: false, label: "Observação" },
+                        "utilizadorCriacao": { hidden: false, label: "Utilizador Criador" },
+                        "dataCriacaoTexto": { hidden: false, label: "Data Criação" },
+                        "medidaCorretiva": { hidden: false, label: "Medida Corretiva" },
+                        "utilizadorMedidaCorretiva": { hidden: false, label: "Medida Corretiva Utilizador Criador" },
+                        "dataMedidaCorretivaTexto": { hidden: false, label: "Medida Corretiva Data Criação" },
+                    };
+
+                    if (localStorage["ocorrenciaslist.ToggleColumn"]) {
+                        var keys = Object.keys(columns);
+                        var storedColumns = JSON.parse(localStorage["ocorrenciaslist.ToggleColumn"]);
+                        for (var i = 0; i < keys.length; i++) {
+                            columns[keys[i]] = storedColumns[keys[i]];
+                        }
+                    };
+                    this._columns = columns;
+                },
+                _toggleColumn: function (event) {
+                    var columnIndex = JSON.parse(event.target.dataset.item).key;
+                    event.path[0].classList.toggle("selected");
+                    this.set('_columns.' + columnIndex + '.hidden', (!this._columns[columnIndex].hidden));
+                    if (typeof (Storage) !== "undefined") {
+                        localStorage["ocorrenciaslist.ToggleColumn"] = JSON.stringify(this._columns);
+                    }
+                },
+                _getColumnItemClass: function (columnIndex) {
+                    return !this._columns[columnIndex].hidden ? "selected" : "";
+                },
+                _toArray: function (obj) {
+                    return Object.keys(obj).map(function (key) {
+                        return {
+                            key: key,
+                            value: obj[key]
+                        };
+                    });
+                },
+                /* end - ColumnToggle */
+
+                _openToast: function (message) {
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _openToastError: function (message) {
+                    this.$.ToastError.text = message;
+                    this.$.ToastError.open();
+                },
+
+                _CriarMedidaCorretiva: function (e) {
+                    if (e != null) {
+                        /*FILTROS*/
+                        window.handleGridListColumnsOrder(this.$.ocorrenciasGrid, 'ocorrencias-ocorrenciaslist');
+                        window.grid = this.$.ocorrenciasGrid;
+                        window._this = this;
+
+                        var TMessage = this.$.ToastMessage;
+                        var TMessageError = this.$.ToastError;
+                        var ARequest = this.$.ajax_CreateMedidaCorretiva;
+
+                        bootbox.prompt({
+                            title: "Introduza a Medida Corretiva!",
+                            inputType: 'textarea',
+                            buttons: {
+                                confirm: {
+                                    label: 'Inserir',
+                                    className: 'btn-success'
+                                },
+                                cancel: {
+                                    label: 'Fechar',
+                                    className: 'btn-danger'
+                                }
+                            },
+                            callback: function (result) {
+                                if (result != null) {
+                                    if (result == "") {
+                                        TMessageError.text = "É necessário preencher a Medida Corretiva.";
+                                        TMessageError.open();
+                                        return false;
+                                    } else {
+                                        ARequest.body = JSON.stringify({ codOcorrencia: e.model.item.codOcorrencia, medidaCorretiva: result });
+                                        ARequest.generateRequest();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                },
+
+                _createMedidaCorretivaResponse: function (data) {
+                    debugger;
+                    if (data.detail.status === 200) {
+                        if (this.medidaCorretivaResult.eReasonCode == 1) {
+                            this._openToast(this.medidaCorretivaResult.eMessage);
+
+                            this.$.grid_databound_ajax.body = JSON.stringify({ "ativas": true });
+                            this.$.grid_databound_ajax.generateRequest();
+                        } else {
+                            this._openToastError(this.medidaCorretivaResult.eMessage);
+                        }
+                    }
+                },
+
+
+
+            });
+        });
+    </script>
+</dom-module>

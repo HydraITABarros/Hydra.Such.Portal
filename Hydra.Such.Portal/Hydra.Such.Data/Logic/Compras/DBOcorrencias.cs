@@ -8,21 +8,6 @@ namespace Hydra.Such.Data.Logic.ComprasML
 {
     public static class DBOcorrencias
     {
-        public static List<Ocorrencias> GetAll()
-        {
-            try
-            {
-                using (var ctx = new SuchDBContext())
-                {
-                    return ctx.Ocorrencias.ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
         public static Ocorrencias GetByID(int CodOcorrencia)
         {
             try
@@ -38,6 +23,38 @@ namespace Hydra.Such.Data.Logic.ComprasML
             }
         }
 
+        public static List<Ocorrencias> GetAll()
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.Ocorrencias.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static List<Ocorrencias> GetAllByState(bool Ativas = true)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    if (Ativas == true)
+                        return ctx.Ocorrencias.Where(x => x.CodEstado == 1).ToList();
+                    else
+                        return ctx.Ocorrencias.Where(x => x.CodEstado == 2).ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
         public static Ocorrencias Create(Ocorrencias ObjectToCreate)
         {

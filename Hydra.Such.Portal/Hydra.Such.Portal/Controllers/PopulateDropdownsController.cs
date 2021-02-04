@@ -3542,6 +3542,13 @@ namespace Hydra.Such.Portal.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult GetAllOcorrenciasGrauGravidade()
+        {
+            List<EnumData> result = EnumerablesFixed.OcorrenciasGrauGravidade;
+            return Json(result);
+        }
+
         //PEDIDOS DE DESENVOLVIMENTO
         [HttpPost]
         public JsonResult Get_DEV_Estados()

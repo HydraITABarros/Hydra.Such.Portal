@@ -13112,7 +13112,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.MedidaCorretiva)
                     .HasColumnName("MedidaCorretiva")
-                    .HasMaxLength(200);
+                    .HasMaxLength(2000);
 
                 entity.Property(e => e.UtilizadorMedidaCorretiva)
                     .HasColumnName("UtilizadorMedidaCorretiva")

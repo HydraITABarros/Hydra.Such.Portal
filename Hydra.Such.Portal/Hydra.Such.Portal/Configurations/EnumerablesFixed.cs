@@ -1670,6 +1670,39 @@ namespace Hydra.Such.Portal.Configurations
             }
         };
 
+        public static readonly List<EnumData> OcorrenciasEstado = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Activo"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Histórico"
+            },
+        };
+
+        public static readonly List<EnumData> OcorrenciasGrauGravidade = new List<EnumData>()
+        {
+            new EnumData
+            {
+                Id = 1,
+                Value = "Muito Grave"
+            },
+            new EnumData
+            {
+                Id = 2,
+                Value = "Grave"
+            },
+            new EnumData
+            {
+                Id = 3,
+                Value = "Com Alguma Gravidade"
+            },
+        };
+
         public static readonly List<EnumData> ViaturasTipoCombustivel = new List<EnumData>()
         {
             new EnumData
@@ -2900,6 +2933,7 @@ namespace Hydra.Such.Portal.Configurations
                 Value = "Concluído"
             }
         };
+
     }
 
     public class EnumDataString

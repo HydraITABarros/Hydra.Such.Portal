@@ -207,8 +207,8 @@ namespace Hydra.Such.Portal.Extensions
                 }
                 else
                 {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Não existe configuração de aprovação para as dimensões indicadas. Solicite esta configuração submeta para aprovação nas suas requisições pendentes.";
+                    result.eReasonCode = 150;
+                    result.eMessage = "Não existe configuração de aprovação para as dimensões indicadas ou o valor excedeu o limite permitido. Solicite esta configuração, posteriormente vá ás Minhas Requisições para criar o Movimento de Aprovação.";
                 }
                 return result;
             }

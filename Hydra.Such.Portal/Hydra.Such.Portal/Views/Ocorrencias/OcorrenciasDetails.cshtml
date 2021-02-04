@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewData["Title"] = "Ocorrência " + ViewBag.Ocorrencia; ;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/compras/ocorrencias_details.html">
+
+<x-ocorrenciasdetails _ocorrencia="@ViewBag.Ocorrencia"
+                      _criarMedidasCorretivas='@Html.Raw(Json.Serialize(ViewBag.CriarMedidasCorretivas))'
+                      _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'>
+</x-ocorrenciasdetails>
+

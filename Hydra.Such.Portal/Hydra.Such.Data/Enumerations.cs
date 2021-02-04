@@ -205,6 +205,8 @@ namespace Hydra.Such.Data
             #endregion
             [Description("Visitas")]
             Visitas = 79,
+            [Description("Ocorrências")]
+            Ocorrencias = 80,
 
 
 

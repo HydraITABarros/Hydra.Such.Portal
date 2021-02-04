@@ -106,6 +106,22 @@ namespace Hydra.Such.Data.Logic
                         RegionId = data.RegionId.Equals(DBNull.Value) ? "" : (string)data.RegionId,
                         FunctionalAreaId = data.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)data.FunctionalAreaId,
                         RespCenterId = data.RespCenterId.Equals(DBNull.Value) ? "" : (string)data.RespCenterId,
+
+                        VATRegistrationNo = data.VATRegistrationNo.Equals(DBNull.Value) ? "" : (string)data.VATRegistrationNo,
+                        LocationCode = data.LocationCode.Equals(DBNull.Value) ? "" : (string)data.LocationCode,
+                        AllocationNo = data.AllocationNo.Equals(DBNull.Value) ? "" : (string)data.AllocationNo,
+                        CommitmentNo = data.CommitmentNo.Equals(DBNull.Value) ? "" : (string)data.CommitmentNo,
+                        BuyFromVendorNo = data.BuyFromVendorNo.Equals(DBNull.Value) ? "" : (string)data.BuyFromVendorNo,
+                        VPropNum = data.VPropNum.Equals(DBNull.Value) ? "" : (string)data.VPropNum,
+                        PaymentTermsCode = data.PaymentTermsCode.Equals(DBNull.Value) ? "" : (string)data.PaymentTermsCode,
+                        PayToAddress = data.PayToAddress.Equals(DBNull.Value) ? "" : (string)data.PayToAddress,
+                        PayToAddress2 = data.PayToAddress2.Equals(DBNull.Value) ? "" : (string)data.PayToAddress2,
+                        PayToPostCode = data.PayToPostCode.Equals(DBNull.Value) ? "" : (string)data.PayToPostCode,
+                        PayToCity = data.PayToCity.Equals(DBNull.Value) ? "" : (string)data.PayToCity,
+                        PayToCounty = data.PayToCounty.Equals(DBNull.Value) ? "" : (string)data.PayToCounty,
+                        PayToCountryRegionCode = data.PayToCountryRegionCode.Equals(DBNull.Value) ? "" : (string)data.PayToCountryRegionCode,
+                        PostingDescription = data.PostingDescription.Equals(DBNull.Value) ? "" : (string)data.PostingDescription,
+
                         HasAnAdvance = (bool)data.HasAnAdvance,
                     };
 
