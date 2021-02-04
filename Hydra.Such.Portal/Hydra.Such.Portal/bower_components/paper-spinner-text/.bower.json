@@ -1,0 +1,37 @@
+{
+  "name": "paper-spinner-text",
+  "version": "0.1.3",
+  "authors": [
+    "Ryu Heechul <ryuhcii@gmail.com>"
+  ],
+  "description": "Polymer element paper-spinner with text.",
+  "main": "paper-spinner-text.html",
+  "keywords": [
+    "Polymer",
+    "paper-spinner",
+    "text",
+    "web-components"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.2",
+    "paper-spinner": "Polymer/paper-spinner#^0.5.2"
+  },
+  "homepage": "https://github.com/ryuheechul/paper-spinner-text",
+  "_release": "0.1.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.3",
+    "commit": "1c65b462dd7c82e3023cfaeb5b90ce1965076646"
+  },
+  "_source": "https://github.com/ryuheechul/paper-spinner-text.git",
+  "_target": "0.1.3",
+  "_originalSource": "paper-spinner-text"
+}

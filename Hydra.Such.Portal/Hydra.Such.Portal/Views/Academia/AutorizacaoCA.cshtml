@@ -4,13 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<link rel="import" href="~/elements/academia/AutororizacaoConselhoAdmin.html" />
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>AutorizacaoCA</title>
-</head>
-<body>
-</body>
-</html>
+<x-aprovacaoconselhoadmin _onlycompleted="@ViewBag.OnlyCompleted" _requestorigin="@ViewBag.RequestOrigin"></x-aprovacaoconselhoadmin>
+

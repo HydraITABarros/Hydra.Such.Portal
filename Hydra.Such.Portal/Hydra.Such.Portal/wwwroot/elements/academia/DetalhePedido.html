@@ -131,7 +131,7 @@
                 margin: 0px !important;
             }
 
-            such-dropdown-menu {
+            .suchdropdown {
                 box-shadow: inset 0px -3px 7px 0px #AD4526;
                 background-color: #FF8E2B !important;
                 padding: 0px !important;
@@ -143,10 +143,22 @@
                 text-decoration: none;
                 text-shadow: 0px 1px 0px #611827;
             }
-                such-dropdown-menu.disabled {
+                .suchdropdown.disabled {
                     cursor: not-allowed;
                     pointer-events:none;
                 }
+
+            .suchdropdown-menu {
+                background-color: #BAC2EC !important;
+                padding: 0px !important;
+                min-width: 100px !important;
+                height: 30px !important;
+                cursor: pointer;
+                margin-top: 7px;
+                border-radius: 4px !important;
+                font-weight: bold;
+                text-decoration: none;
+            }
 
             #imgcontainer {
                 width: 25%;
@@ -164,8 +176,10 @@
                 /*font-size: 20px;*/
             }
 
+            
+
             /*DETALHES.begin*/
-            vaadin-grid#gridAccoes {
+            #gridAccoes {
                 /*font: 500 13px "Open Sans", sans-serif;*/
                 color: rgb(148, 154, 171);
                 --divider-color: rgb(223, 232, 239);
@@ -176,7 +190,8 @@
                     height: 35px;
                 };
                 --vaadin-grid-header-cell: {
-                    background: rgba(235, 238, 246, 0.9);
+                   /* background: rgba(235, 238, 246, 0.9); */
+                    background-color: rgba(235,238,246,0.9);
                     border-bottom: 1px solid rgba(208, 217, 225, 0.9);
                     border-top: 1px solid rgba(248, 250, 252, 0.9);
                     min-height: 35px;
@@ -205,12 +220,12 @@
                 };
             }
 
-                vaadin-grid#gridAccoes input[type=checkbox] {
+                #gridAccoes input[type=checkbox] {
                     height: 16px;
                     width: 16px;
                 }
 
-                vaadin-grid#gridAccoes .image {
+                #gridAccoes .image {
                     height: 40px;
                     width: 40px;
                     display: inline-block;
@@ -219,13 +234,13 @@
                     margin-right: 15px;
                 }
 
-                vaadin-grid#gridAccoes .header-content {
+                #gridAccoes .header-content {
                     display: flex;
                     padding: 16px;
                     justify-content: space-between;
                 }
 
-                vaadin-grid#gridAccoes .details-cell {
+                #gridAccoes .details-cell {
                     background: #fff;
                     width: 100%;
                 }
@@ -375,6 +390,7 @@
 
         <div class="subMenu">
             <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <such-dropdown-menu id="menuConsAdmin" class="suchdropdown-menu" on-value-changed="_getDecisaoConsAdmin" title="Conselho de Administração" items="[[itemsMenuCA]]"></such-dropdown-menu>
             <paper-button raised id="btnUpdate" class="tablinks" on-tap="_update" title="Guardar" style="background-color:#1DB73C"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
         </div>
 
@@ -415,13 +431,14 @@
                                                 <vaadin-text-field id="idEmpregado" name="idEmpregado" label="Nº Mecanográfico" required value="{{ data.idEmpregado }}" disabled></vaadin-text-field>
                                                 <!-- apenas visivel quando se trata de Chefia/Director -->
                                                 <such-selectbox id="idEmpregadoCbox"
+                                                                name="idEmpregadoCbox"
                                                                 label="Nº Mecanográfico"
-                                                                items="[[employeeList]]"
+                                                                on-value-changed="_setEmployeeDetails"                                                                
                                                                 value="{{data.idEmpregado}}"
-                                                                on-change="_setEmployeeDetails"
-                                                                value-path="no"
+                                                                items="[[employeeList]]"                                                                
                                                                 text-path="no"
-                                                                fields='[{"field":"no", "name":"No. Mecanográfico"},{"field":"name", "name":"Nome"},{"field":"funcao", "name":"Função"},{"field":"regiaoNav2017", "name":"Região"},{"field":"areaNav2017", "name":"Area"},{"field":"crespNav2017", "name":"CResp"}]'
+                                                                value-path="no"
+                                                                fields='[{"field":"no", "name":"No. Mecanográfico"},{"field":"name", "name":"Nome"},{"field":"funcao", "name":"Função"},{"field":"areaNav2017", "name":"Area"},{"field":"crespNav2017", "name":"CResp"},{"field":"regiaoNav2017", "name":"Região"}]'
                                                                 required>
                                                 </such-selectbox>
                                             </div>
@@ -580,7 +597,7 @@
                                         </div>
                                         <div class="row break_clear">
                                             <div class="col-lg-6">
-                                                <such-dropdown-menu id="menuValidacao" on-value-changed="_getOpcaoValidacao" title="{{textValidacao}}" items="[[itemsValidacao]]"></such-dropdown-menu>
+                                                <such-dropdown-menu id="menuValidacao" class="suchdropdown" on-value-changed="_getOpcaoValidacao" title="{{textValidacao}}" items="[[itemsValidacao]]"></such-dropdown-menu>
                                             </div>
                                         </div>
                                         <div class="row break_clear">
@@ -655,7 +672,7 @@
                                         <div class="row break_clear" style="border: 2px solid #DDDDDD; padding: 10px 0 10px">
                                             <div class="col-md-2">
                                                 <br />
-                                                <such-dropdown-menu id="menuParecerAcademia" on-value-changed="_getOpcaoParecerAcademia" title="Opções Academia" items="[[itemsParecerAcademia]]"></such-dropdown-menu>
+                                                <such-dropdown-menu id="menuParecerAcademia" class="suchdropdown" on-value-changed="_getOpcaoParecerAcademia" title="Opções Academia" items="[[itemsParecerAcademia]]"></such-dropdown-menu>
                                             </div>
                                             <div class="col-md-3">
                                                 <vaadin-text-field id="dataParecerAcademiaTxt" name="dataParecerAcademiaTxt" label="Data" value="{{ data.dataParecerAcademiaTxt }}" disabled></vaadin-text-field>
@@ -792,7 +809,7 @@
             <vaadin-grid id="gridCatalogo" aria-label="gridCatalogo" items="[[catalogo]]" class="grid" on-active-item-changed="_onActiveTemaChanged" multi-sort="true">
                 <template class="row-details">
                     <div class="details">
-                        <vaadin-grid aria-label="accoesTema" id="gridAccoes" items="[[temaDetail.accoes]]" active-item="{{activeCourse}}" multi-sort="true">
+                        <vaadin-grid name="gridAccoes" aria-label="gridAccoes" id="gridAccoes" items="[[temaDetail.accoes]]" active-item="{{activeCourse}}" multi-sort="true">
                             <!--<vaadin-grid-column width="8%">
                             <template class="header">
                                 <vaadin-grid-sorter path="codigoInterno">Código</vaadin-grid-sorter>
@@ -853,9 +870,6 @@
                     </div>
                 </template>
                 <vaadin-grid-column>
-                    <!--<template class="header">
-                    <vaadin-grid-sorter path="descricaoTema">Descrição</vaadin-grid-sorter>
-                </template>-->
                     <template>
                         {{ item.descricaoTema }}
                     </template>
@@ -984,16 +998,25 @@
                     itemsValidacao: {
                         type: Array,
                         value: [
-                            {value: 1, description: "Aprovar" },
-                            {value: 2, description: "Rejeitar"}
+                            { value: 1, description: "Aprovar" },
+                            { value: 2, description: "Rejeitar"}
                         ]
                     },
 
                     itemsParecerAcademia: {
                         type: Array,
                         value: [
-                            {value: 1, description: "Confirma" },
-                            {value: 2, description: "Devolver Direcção"}
+                            { value: 1, description: "Confirma Parecer" },
+                            { value: 2, description: "Devolver Direcção"}
+                        ]
+                    },
+
+                    itemsMenuCA: {
+                        type: Array,
+                        value: [
+                            { value: 1, description: "Autorizar" },
+                            { value: 2, description: "Devolver Academia" },
+                            { value: 3, description: "Cancelar Pedido"}
                         ]
                     },
 
@@ -1065,11 +1088,12 @@
                     var self = this;
                     if (this.data != null) {
                         debugger;;
-                       
-                        this.$.page_catalogo_ajax.body = JSON.stringify();
-                        this.$.page_catalogo_ajax.generateRequest();
 
-                        this.$.entidades_page_ajax.generateRequest();
+                        if (this.data.estado == 0) {
+                            this.$.page_catalogo_ajax.body = JSON.stringify();
+                            this.$.page_catalogo_ajax.generateRequest();
+                            this.$.entidades_page_ajax.generateRequest();
+                        }                                                                                                  
 
                         var obj = this.data;
 
@@ -1081,8 +1105,10 @@
                             this.$.idEmpregadoCbox.value = this.data.idEmpregado;
                             this.$.idEmpregadoCbox.valueText = this.data.idEmpregado;
 
-                            this.$.employees_page_ajax.body = JSON.stringify({ "isChief": this._ischief, "isDirector": this._isdirector });
-                            this.$.employees_page_ajax.generateRequest();     
+                            if (this.data.estado == 0) {
+                                this.$.employees_page_ajax.body = JSON.stringify({ "isChief": this._ischief, "isDirector": this._isdirector });
+                                this.$.employees_page_ajax.generateRequest(); 
+                            }                                  
 
                             $(self.$.idEmpregado).addClass('hidden');
                             $(self.$.idEmpregadoCbox).removeClass('hidden');
@@ -1156,8 +1182,7 @@
                         this.$.gridCatalogo.expandedItems = [e.detail.value];
                     }
 
-                },
-
+                },   
                                 
                 _temaResponseProcessor: function (e) {
                     debugger;;
@@ -1205,6 +1230,8 @@
 
                             dataObj.idEntidadeFormadora = item.entidade.idEntidade;
                             dataObj.descricaoEntidadeFormadora = item.entidade.descricaoEntidade;
+                            _self.idEntidadeFormadora.value = item.idEntidade;
+                            _self.idEntidadeFormadora.valueText = item.entidade.descricaoEntidade;
 
                             dataObj.localRealizacao = item.localRealizacao;
                             _self.localRealizacao.value = item.localRealizacao;
@@ -1398,9 +1425,14 @@
                     if (_data.planeada == 1) {
                         var _cursoPlaneado = _data.cursoPlanoFormacao;
 
-                        if (_cursoPlaneado.length < 5) {
+                        if (_cursoPlaneado != null) {
+                            if (_cursoPlaneado.length < 5) {
+                                return -80;
+                            }
+                        } else {
                             return -80;
                         }
+                        
                     }
 
                     return 0;
@@ -1408,43 +1440,45 @@
 
                 _submitPedido: function (e) {
                     debugger;;
-                    this.doNotShowMsg = true; 
+                    if (this.data != null) {
+                        this.doNotShowMsg = true;
 
-                    this.$.page_update_ajax.body = JSON.stringify(this.data);
-                    this.$.page_update_ajax.generateRequest();
+                        this.$.page_update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_update_ajax.generateRequest();
 
-                    var checkResult = this._checkBeforeSubmit(this.data);
-                    if (checkResult == 0) {
-                        var ajax_request = this.$.transicao_estado_page_ajax;
-                        ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 1 });
+                        var checkResult = this._checkBeforeSubmit(this.data);
+                        if (checkResult == 0) {
+                            var ajax_request = this.$.transicao_estado_page_ajax;
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 1 });
 
-                        var str = "Confirma a submissão do pedido " + this.data.idPedido + " para Aprovação pela Chefia?"; 
-                        this._msg = "Pedido " + this.data.idPedido + " Submetido para Aprovação pela Chefia com sucesso.";
+                            var str = "Confirma a submissão do pedido " + this.data.idPedido + " para Aprovação pela Chefia?";
+                            this._msg = "Pedido " + this.data.idPedido + " Submetido para Aprovação pela Chefia com sucesso.";
 
-                        this._confirmAndExecuteActionToast(str, ajax_request);
+                            this._confirmAndExecuteActionToast(str, ajax_request);
 
-                    } else {
-                        switch (checkResult) {
-                            case -10: this._openToastError("O pedido não está no estado de Criado!");
-                                break;
-                            case -20: this._openToastError("Nº Mecanográfico e/ou Nome Formando não preenchido(s)!");
-                                break;
-                            case -30: this._openToastError("Função do Formando não preenchida!");
-                                break;
-                            case -40: this._openToastError("Projecto de Formação não preenchido!");
-                                break;
-                            case -50: this._openToastError("Por favor verifique o preenchimento das Dimensões do Formando!");
-                                break;
-                            case -60: this._openToastError("Por favor verifique o preenchimento da informação relativa ao Estabelecimento do Formando!");
-                                break;
-                            case -70:
-                            case -71: this._openToastError("A descrição dos conhecimentos é de preenchimento obrigatória!");
-                                break;
-                            case -80: this._openToastError("A identificação do Curso planeado é obrigatória!")
-                                break;
-                        } 
+                        } else {
+                            switch (checkResult) {
+                                case -10: this._openToastError("O pedido não está no estado de Criado!");
+                                    break;
+                                case -20: this._openToastError("Nº Mecanográfico e/ou Nome Formando não preenchido(s)!");
+                                    break;
+                                case -30: this._openToastError("Função do Formando não preenchida!");
+                                    break;
+                                case -40: this._openToastError("Projecto de Formação não preenchido!");
+                                    break;
+                                case -50: this._openToastError("Por favor verifique o preenchimento das Dimensões do Formando!");
+                                    break;
+                                case -60: this._openToastError("Por favor verifique o preenchimento da informação relativa ao Estabelecimento do Formando!");
+                                    break;
+                                case -70:
+                                case -71: this._openToastError("A descrição dos conhecimentos é de preenchimento obrigatória!");
+                                    break;
+                                case -80: this._openToastError("A identificação do Curso planeado é obrigatória!")
+                                    break;
+                            }
+                        }
+
                     }
-
                 },
 
                 _getOpcaoValidacao: function (e) {
@@ -1497,6 +1531,19 @@
                                 }
 
                             } 
+                            if (_data.estado == 4) {
+                                var ajax_request = this.$.transicao_estado_page_ajax;
+                                this.doNotShowMsg = true;
+
+                                this.$.page_update_ajax.body = JSON.stringify(this.data);
+                                this.$.page_update_ajax.generateRequest();
+
+                                var str = "Confirma a submissão do pedido " + _data.idPedido + " para a Academia?";
+                                this._msg = "Pedido " + _data.idPedido + " submetido à Academia com sucesso.";
+
+                                ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 3 });
+                                this._confirmAndExecuteActionToast(str, ajax_request);
+                            }
                         }
 
                         if (_option.value == 2) {
@@ -1505,6 +1552,7 @@
                             this._msg = "Pedido " + _data.idPedido + " cancelado.";
 
                             ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 99 });
+                            this._confirmAndExecuteActionToast(str, ajax_request);
                         }                    
                     }
                     
@@ -1522,20 +1570,24 @@
                         if (_option == null) {
                             return;
                         }
+                        debugger;;
+
+                        this.$.page_update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_update_ajax.generateRequest();
+
+                        debugger;;
+
+                        var infoDotacao = _data.parecerDotacaoAcademia;
+
+                        if (this.__isNullOrEmptyString(infoDotacao) || infoDotacao.length < 5) {
+                            this._openToastError("O parecer relativo à dotação orçamental é obrigatório!");
+                            return;
+                        }
 
                         if (_option.value == 1) {
-                            var _execute = false;
-                            var infoDotacao = _data.parecerDotacaoAcademia;
+                            var _execute = false;                              
 
-                            if (this.__isNullOrEmptyString(infoDotacao) || infoDotacao.length < 5) {
-                                this._openToastError("O parecer relativo à dotação orçamental é obrigatório!");
-                                return;
-                            }
-
-                            this.doNotShowMsg = true;
-
-                            this.$.page_update_ajax.body = JSON.stringify(this.data);
-                            this.$.page_update_ajax.generateRequest();
+                            this.doNotShowMsg = true;                             
 
                             var str = "Confirma o parecer de dotação orçamental do pedido " + _data.idPedido + "?";                          
 
@@ -1546,12 +1598,99 @@
                         }
 
                         if (_option.value == 2) {
+                            var ajax_request = this.$.transicao_estado_page_ajax;
                             var str = "Confirma a devolução do pedido " + _data.idPedido + " para a Direcção da UP/AAS?";
                             this._msg = "Pedido " + _data.idPedido + " submetido à Direcção da UP/AAS com sucesso.";
 
                             ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 4 });
+                            this._confirmAndExecuteActionToast(str, ajax_request); 
 
                         }
+                    }
+                },
+
+                _submeteConselhoAdministracao: function (e) {
+                    if (this.data != null) {
+                        var _data = this.data;
+                        debugger;;
+                        if (!this._istrainingmanager) {
+                            this._openToastError("Não está autorizado a utilizar esta opção!");
+                            return;
+                        }
+                       
+                        debugger;;
+
+                        this.$.page_update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_update_ajax.generateRequest();
+
+                        var parecerAcademia = _data.parecerAcademia;
+
+                        if (this.__isNullOrEmptyString(parecerAcademia) || parecerAcademia.length < 5) {
+                            this._openToastError("O parecer da Academia é obrigatório!");
+                            return;
+                        }
+
+                        var ajax_request = this.$.transicao_estado_page_ajax;
+                        var str = "Confirma a submissão do pedido " + _data.idPedido + " ao CA para autorização?";
+                        this._msg = "Pedido " + _data.idPedido + " submetido ao CA com sucesso.";
+
+                        ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 5 });
+                        this._confirmAndExecuteActionToast(str, ajax_request); 
+                    }
+                },
+
+                _getDecisaoConsAdmin: function (e) {
+                    if (this.data != null) {
+                        if (!this._isboardmember) {
+                            this._openToastError("Não está autorizado a utilizar esta opção!");
+                            return;
+                        }
+
+                        var _option = e.detail.value;
+                        var _data = this.data;
+
+                        if (_option == null) {
+                            return;
+                        }
+
+                        this.$.page_update_ajax.body = JSON.stringify(this.data);
+                        this.$.page_update_ajax.generateRequest();
+
+                        var str = "";
+                        var _execute = false;
+                        var ajax_request = this.$.transicao_estado_page_ajax;
+                        
+                        if (_option.value == 1) {
+                            var str = "Confirma a autorização do pedido " + _data.idPedido + "?";
+                            this._msg = "Pedido " + _data.idPedido + " Autorizado.";
+
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 6 });
+
+                            _execute = true;
+                        }
+
+                        if (_option.value == 2) {
+                            var str = "Confirma a devolução à Academia do pedido " + _data.idPedido + "?";
+                            this._msg = "Pedido " + _data.idPedido + " devolvido à Academia.";
+
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 7 });
+
+                            _execute = true;
+                        }
+
+                        if (_option.value == 3) {
+                            var str = "Confirma o cancelamento do pedido " + _data.idPedido + "?";
+                            this._msg = "Pedido " + _data.idPedido + " cancelado.";
+
+                            ajax_request.body = JSON.stringify({ "idPedido": this.data.idPedido, "estado": 99 });
+
+                            _execute = true;
+                        }
+
+                        if (_execute) {
+                            this._confirmAndExecuteActionToast(str, ajax_request);
+                        }
+
                     }
                 },
 
@@ -1569,6 +1708,13 @@
                     }
 
                     this._msg = "";
+                },
+
+                _registaParecerResponse: function () {
+                    if (this.parecerRegistado) {
+                        this.$.page_databound_ajax.body = JSON.stringify({ "idPedido": this._idpedido });
+                        this.$.page_databound_ajax.generateRequest();
+                    }
                 },
 
                 __formatDate: function (_date, _dtFormat) {
@@ -1615,17 +1761,23 @@
                     if (data != null) {
                         var self = this;
 
-                        this._openI = data.estado == 0;
-                        this._openIII = this._ischief && (data.estado == 1 || data.estado == 2);
+                        this._openI = true;
+                        this._openIII = this._ischief && (data.estado == 1 || data.estado == 2 || data.estado == 4);
                         this._openIV = this._istrainingmanager && (data.estado == 3 || data.estado == 7);
+
+                        $(self.$.menuConsAdmin).addClass('hidden');  
+
+                        if (this._isboardmember && data.estado == 5) {
+                            $(self.$.menuConsAdmin).removeClass('hidden');
+                        }
 
                         this.prjEnabled = data.projectoEmpregado != null && data.projectoEmpregado != "";
 
                         $(self.$.idEmpregadoCbox).addClass('hidden');
                         $(self.$.btnSubmitPedido).addClass('disabled');
 
-                        if (data.idEmpregado == this._employeeno) {
-                            $(self.$.menuValidacao).addClass('disabled');
+                        if (data.idEmpregado == this._employeeno) {                            
+                            $(self.$.menuValidacao).addClass('disabled'); 
                         }
 
                         if (!this.prjEnabled) {
@@ -1655,7 +1807,7 @@
                             $(self.$.btnSubmitPedido).addClass('disabled');    
                         }
 
-                        if (this.data.estado > 1) {
+                        if (this.data.estado > 1 && this.data.estado != 4) {
                             self.$.fundamentacaoChefia.disabled = true;
                             $(self.$.menuValidacao).addClass('disabled');
                         }
@@ -1665,15 +1817,18 @@
                         }
 
                         if (this.data.estado != 3 || !this._istrainingmanager) {
-                            //$(self.$.btnSubmeteInfoFormacaoProf).addClass('disabled');
                             $(self.$.menuParecerAcademia).addClass('disabled');
                             $(self.$.btnSubmeteCA).addClass('disabled');
+                            self.$.temDotacaoOrcamental.disabled = true;
+                            self.$.parecerDotacaoAcademia.disabled = true;
+                            self.$.parecerAcademia.disabled = true;
                         }
                     }
                 },
 
                 _goBack: function (e) {
-                    window.location.href = "/Academia/MeusPedidos";
+                    window.history.back();
+                    //window.location.href = "/Academia/MeusPedidos";
                 }
             });
         });

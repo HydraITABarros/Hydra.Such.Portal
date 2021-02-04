@@ -34,9 +34,7 @@
 <link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
-<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />
-
-
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" />   
 
 
 <dom-module id="x-aprovacaochefia">
@@ -59,8 +57,43 @@
                     text-align: center;
                 }
 
+                .break_clear {
+                    margin-top: 15px;
+                    margin-right: 0px !important;
+                    margin-left: 0px !important;
+                }
+
                 .grid {
                     font-size: 13px;
+                    --vaadin-grid-header-cell: {
+                       /* background: rgba(235, 238, 246, 0.9); */
+                        background-color: rgba(235,238,246,0.9);
+                        border-bottom: 1px solid rgba(208, 217, 225, 0.9);
+                        border-top: 1px solid rgba(248, 250, 252, 0.9);
+                        min-height: 35px;
+
+                        background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
+                        background-size: 1px 100%;
+                        background-position: 100% 0%;
+                        background-repeat: no-repeat;
+                    };
+                    --vaadin-grid-body-row-selected-cell: {
+                        background-color: rgb(131, 183, 236);
+                        color: #fff;
+                        border-bottom-color: rgb(108, 160, 218);
+                    };
+                    --vaadin-grid-body-row-odd-cell: {
+                        background-color: rgb(251, 252, 254);
+                    };
+                    --vaadin-grid-body-row-hover-cell: {
+                        background-color: rgb(235, 238, 246);
+                    };
+                    --vaadin-grid-body-row-details-cell: {
+                        text-align: center;
+                    };
+                    --vaadin-grid-column-resize-handle: {
+                        opacity: 0;
+                    };
                 }
 
                     .grid input {
@@ -91,87 +124,101 @@
         <div class="subMenu">
             <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
             <paper-button class="tablinks" id="showActive" on-tap="_showHistory"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
-            <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Novo</paper-button>
-
         </div>
-        <vaadin-grid aria-label="pedidosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
-            <vaadin-grid-column width="7.5%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="idPedido" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="15%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="estado">Estado</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="estado" />
-                </template>
-                <template>
-                    <vaadin-combo-box items="[[estadoPedido]]" id="estadoPedido-cbox" item-label-path="value" item-value-path="id" value="{{item.estado}}" disabled>
-                        <template>
-                            [[item.value]]
-                        </template>
-                    </vaadin-combo-box>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="20%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="designacaoAccao" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="7.5%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataInicio" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="7.5%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataFim" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="7.5%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="numeroTotalHoras" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="17.5%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="localRealizacao" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column width="17.5%" resizable>
-                <template class="header">
-                    <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="descricaoEntidadeFormadora" />
-                </template>
-                <template>
-                    <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
-                </template>
-            </vaadin-grid-column>
-        </vaadin-grid>
+        <div class="row break_clear">
+            <vaadin-grid aria-label="pedidosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                <vaadin-grid-column width="7.5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="idPedido" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="idEmpregado">Nº Formando</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="idEmpregado" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="20%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="nomeEmpregado">Nome Formando</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="nomeEmpregado" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="idCentroResponsabilidade">CResp Formando</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="idCentroResponsabilidade" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.idCentroResponsabilidade}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="20%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="designacaoAccao" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataInicio" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataFim" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="numeroTotalHoras" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="localRealizacao" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="descricaoEntidadeFormadora" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+        </div>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
         <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
@@ -285,26 +332,13 @@
                 },
                 _rowSelected: function (item) {
                     if (item != null) {
-                        //if (item.historico) {
-                        //    /*FILTROS*/
-                        //    var filters = {};
-                        //    this.$.grid._filters.map(function (value, index) {
-                        //        filters[value.path] = value.value;
-                        //    });
-                        //    window.setGridFilter('guiastransporte-guiastransportenav', filters || {});
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('pedido-pedidoformacao', filters || {});
 
-                        //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + item.historico;
-                        //} else {
-                        //    /*FILTROS*/
-                        //    var filters = {};
-                        //    this.$.grid._filters.map(function (value, index) {
-                        //        filters[value.path] = value.value;
-                        //    });
-                        //    window.setGridFilter('guiastransporte-guiastransportenav', filters || {});
-
-                        //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + item.noGuiaTransporte + "?isHistoric=" + false;
-                        //}
-
+                        window.location.href = "/Academia/DetalhePedido/" + item.idPedido;
                     }
                 },
 
@@ -346,21 +380,9 @@
 
                 created: function () {
                     this.filter = window.getGridFilter('pedido-meuspedidos');
-                },
-
-                _create: function (item) {
-                    //this.$.create_guia_ajax.generateRequest();
-                },
-
-                _createResponse: function (e) {
-                    //if (this.guiaTransporteId == "" || this.guiaTransporteId == null) {
-                    //    this._showErrorMessage("Não foi possível criar uma nova guia de transporte!")
-                    //} else {
-
-                    //    window.location.href = "/GuiasTransporteNav/GuiaTransporteDetails/" + this.guiaTransporteId + "?isHistoric=" + false;
-                    //}
-
                 }
+
+               
             });
         });
     </script>

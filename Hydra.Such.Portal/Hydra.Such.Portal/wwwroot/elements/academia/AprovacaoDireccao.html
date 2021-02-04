@@ -1,10 +1,388 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+﻿<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sorter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-sort-behavior.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter.html" />
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid-filter-behavior.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-themable-mixin/vaadin-themable-mixin.html" />
+<link rel="import" href="/lib/iron-form/iron-form.html" />
+<link rel="import" href="/lib/paper-input/paper-input.html" />
+<link rel="import" href="/lib/paper-button/paper-button.html" />
+<link rel="import" href="/lib/paper-toast-master/paper-toast.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-combo-box.html">
+<!--Datepicker com correção de bug que impede visualização nas grids -->
+<link rel="import" href="/lib/vaadin-date-picker-3.0.0-alpha1/vaadin-date-picker.html">
+<link rel="import" href="/lib/paper-tabs-master/paper-tabs.html" />
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-group.html">
+<link rel="import" href="/lib/paper-collapse-item/paper-collapse-item.html">
+<link rel="import" href="/lib/vaadin-checkbox/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html" />
+<link rel="import" href="/lib/paper-checkbox-master/paper-checkbox.html" />
+<link rel="import" href="/lib/datetime-picker-master/date-picker.html" />
+<!--start ColumnToggle-->
+<link rel="import" href="/lib/iron-menu-behavior/iron-menubar-behavior.html" />
+<link rel="import" href="/lib/iron-icons/iron-icons.html" />
+<link rel="import" href="/lib/iron-behaviors/iron-button-state.html" />
+<link rel="import" href="/lib/paper-menu-button/paper-menu-button.html" />
+<!--end ColumnToggle-->
+<link rel="import" href="/lib/paper-tabs-master/paper-tab.html" />
+<link rel="import" href="/lib/iron-pages-master/iron-pages.html" />
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-valo-theme/vaadin-checkbox.html">
+<link rel="import" href="/lib/vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="/lib/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="/lib/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/lib/vaadin-combo-box/vaadin-combo-box.html" /> 
 
-</body>
-</html>
+<dom-module id="x-aprovacaodirector">
+    <template>
+        <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="/css/main.css" />
+
+        <custom-style>
+            <style is="custom-style">
+                .break_clear {
+                    margin-top: 15px;
+                    margin-right: 0px !important;
+                    margin-left: 0px !important;
+                }
+
+                input[readonly] {
+                    border: 2px solid transparent;
+                }
+
+                input {
+                    font: inherit;
+                }
+
+                vaadin-checkbox {
+                    text-align: center;
+                }
+
+                .grid {
+                    font-size: 13px;
+                    --vaadin-grid-header-cell: {
+                       /* background: rgba(235, 238, 246, 0.9); */
+                        background-color: rgba(235,238,246,0.9);
+                        border-bottom: 1px solid rgba(208, 217, 225, 0.9);
+                        border-top: 1px solid rgba(248, 250, 252, 0.9);
+                        min-height: 35px;
+
+                        background-image: linear-gradient(rgba(108, 160, 218, 0), rgba(108, 160, 218, 0.15));
+                        background-size: 1px 100%;
+                        background-position: 100% 0%;
+                        background-repeat: no-repeat;
+                    };
+                    --vaadin-grid-body-row-selected-cell: {
+                        background-color: rgb(131, 183, 236);
+                        color: #fff;
+                        border-bottom-color: rgb(108, 160, 218);
+                    };
+                    --vaadin-grid-body-row-odd-cell: {
+                        background-color: rgb(251, 252, 254);
+                    };
+                    --vaadin-grid-body-row-hover-cell: {
+                        background-color: rgb(235, 238, 246);
+                    };
+                    --vaadin-grid-body-row-details-cell: {
+                        text-align: center;
+                    };
+                    --vaadin-grid-column-resize-handle: {
+                        opacity: 0;
+                    };
+                }
+
+                    .grid input {
+                        border: none;
+                        padding-left: 5px;
+                    }
+
+                paper-input {
+                    max-width: 200px !important;
+                }
+            </style>
+        </custom-style>
+        <iron-ajax url="/PopulateDropdowns/GetEstadoPedidoFormacao"
+                   last-response="{{ estadoPedido }}"
+                   auto method="post"
+                   handle-as="json"
+                   content-type="application/json">
+        </iron-ajax>
+        <iron-ajax url="/Academia/GetMeusPedidosAprovacao"
+                   last-response="{{ result }}"
+                   method="post"
+                   handle-as="json"
+                   id="grid_databound_ajax"
+                   on-response="_responseProcessor"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <div class="subMenu">
+            <paper-button class="tablinks" id="showHistory" on-tap="_showHistory"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
+            <paper-button class="tablinks" id="showActive" on-tap="_showHistory"><i class="fa fa-archive" aria-hidden="true"></i>&nbsp;{{ _showHistoryMessage }}</paper-button>
+        </div>
+        <div class="row break_clear">
+            <vaadin-grid aria-label="pedidosGrid" id="grid" items="[[result]]" class="grid" active-item="{{activeItem}}" multi-sort="true">
+                <vaadin-grid-column width="5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="idPedido">Nº</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="idPedido" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.idPedido}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="idEmpregado">Nº Formando</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="idEmpregado" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.idEmpregado}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="20%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="nomeEmpregado">Nome Formando</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="nomeEmpregado" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.nomeEmpregado}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%">
+                    <template class="header">
+                        <vaadin-grid-sorter path="idCentroResponsabilidade">CResp Formando</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="idCentroResponsabilidade" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.idCentroResponsabilidade}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="20%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="designacaoAccao">Designação Acção</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="designacaoAccao" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.designacaoAccao}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataInicio">Dt. Início</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataInicio" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.dataInicio}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="7.5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="dataFim">Dt. Fim</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="dataFim" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.dataFim}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="5%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="numeroTotalHoras">Nº Horas</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="numeroTotalHoras" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.numeroTotalHoras}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="localRealizacao">Local Realização</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="localRealizacao" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.localRealizacao}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="descricaoEntidadeFormadora">Entidade Formadora</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="descricaoEntidadeFormadora" />
+                    </template>
+                    <template>
+                        <vaadin-text-field value="{{item.descricaoEntidadeFormadora}}" disabled></vaadin-text-field>
+                    </template>
+                </vaadin-grid-column>
+            </vaadin-grid>
+        </div>
+
+        <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
+        <paper-toast id="ToastError" duration="4000" horizontalAlign="right" class="toastError">&nbsp;<i class="fa fa-exclamation-triangle" aria-hidden="true"></i></paper-toast>
+    </template>
+
+    <script>
+        document.addEventListener('WebComponentsReady', function () {
+            Polymer({
+                is: 'x-aprovacaodirector',
+                properties: {
+                    _permissions: {
+                        type: Array
+                    },
+                    activeItem: {
+                        observer: '_rowSelected'
+                    },
+                    filter: {
+                        type: Object,
+                        value: {},
+                    },
+                    _onlycompleted: {
+                        type: Boolean,
+                        notify: true,
+                        value: false
+                    },
+                    _requestorigin: {
+                        type: Number,
+                        notify: true,
+                        value: 0
+                    },
+                    _showHistoryMessage: {
+                        type: String,
+                        value: "Mostrar Histórico"
+                    },
+                    _showClosedRequestsMessage: {
+                        type: String,
+                        value: "Pedidos Finalizados"
+                    },
+                },
+                _openToast: function (message) {
+
+                    this.$.ToastMessage.text = message;
+                    this.$.ToastMessage.open();
+                },
+
+                _showMessage: function (message) {
+                    this.$.ToastMessageSuccess.text = message;
+                    this.$.ToastMessageSuccess.open();
+                },
+
+                _showErrorMessage: function (message) {
+                    this.$.ToastMessageError.text = message;
+                    this.$.ToastMessageError.open();
+                },
+
+                ready: function () {
+                    debugger;;
+
+                    //this.$.estados_databound_ajax.generateRequest();
+
+                    this.$.grid_databound_ajax.body = JSON.stringify({
+                        "apenasCompletos": this._onlycompleted,
+                        "requestOrigin": this._requestorigin
+                    });
+                    this.$.grid_databound_ajax.generateRequest();
+
+                    if (!this._onlyCompleted) {
+                        $(this.$.showActive).removeClass('hidden');
+                        $(this.$.showHistory).addClass('hidden');
+
+                        this._showHistoryMessage = "Mostrar Histórico";
+                    }
+                    if (this._onlyCompleted) {
+                        $(this.$.showHistory).removeClass('hidden');
+                        $(this.$.showActive).addClass('hidden');
+                        this._showHistoryMessage = "Mostrar Ativos";
+                    }
+
+                    /*FILTROS*/
+                    window.handleGridListColumnsOrder(this.$.grid, 'pedido-meuspedidos');
+                    window.grid = this.$.grid;
+                    window._this = this;
+
+                    var _this = this;
+                    var gridToBottomTimeout;
+                    $(window).resize(function () {
+                        _this.fixGridToBottom();
+                    });
+                    $(window).trigger('resize');
+                },
+
+                _responseProcessor: function (data) {
+                    var self = this;
+                    debugger;;
+                    if (data.detail.status === 200) {
+                        //this.$.estados_databound_ajax.generateRequest();
+                        //this._openToast("data.detail.status === 200");
+                    } else {
+                        this._openToastError("Ocorreu um erro desconhecido.")
+                    }
+                },
+
+                fixGridToBottom: function () {
+                    var grid_el = $(this.$.grid);
+                    var parentHeight = $(this).offsetParent().height();
+                    var windowHeight = $(window).height();
+                    //var paddingTop = $(this).offsetParent().css('padding-top').replace("px", "");
+                    var offsetTop = $(this).offset().top;
+                    var height = windowHeight - offsetTop;// - paddingTop;
+                    $(this.$.grid).height(height);
+                },
+                _rowSelected: function (item) {
+                    if (item != null) {
+                        var filters = {};
+                        this.$.grid._filters.map(function (value, index) {
+                            filters[value.path] = value.value;
+                        });
+                        window.setGridFilter('pedido-pedidoformacao', filters || {});
+
+                        window.location.href = "/Academia/DetalhePedido/" + item.idPedido;
+                    }
+                },
+
+                _showHistory: function (item) {
+                    var _self = this;
+
+                    if (item != null) {
+                        if (!this._onlycompleted) {
+                            this._onlycompleted = true;
+                            //this._isHistoricTxt = "true";
+
+                        } else {
+                            this._onlycompleted = false;
+                            //this._isHistoricTxt = "false";
+                        }
+
+                        debugger;;
+
+                        this.$.grid_databound_ajax.body = JSON.stringify({ "apenasCompletos": this._onlycompleted, "requestOrigin": this._requestorigin });
+                        this.$.grid_databound_ajax.generateRequest();
+                        this._setButtonTexts();
+                    }
+                },
+
+                _setButtonTexts: function () {
+                    if (!this._onlycompleted) {
+                        $(this.$.showActive).removeClass('hidden');
+                        $(this.$.showHistory).addClass('hidden');
+
+                        this._showHistoryMessage = "Mostrar Histórico";
+                    }
+                    if (this._onlycompleted) {
+                        $(this.$.showHistory).removeClass('hidden');
+                        $(this.$.showActive).addClass('hidden');
+
+                        this._showHistoryMessage = "Mostrar Ativos";
+                    }
+                },
+
+                created: function () {
+                    this.filter = window.getGridFilter('pedido-meuspedidos');
+                }
+
+               
+            });
+        });
+    </script>
+</dom-module>

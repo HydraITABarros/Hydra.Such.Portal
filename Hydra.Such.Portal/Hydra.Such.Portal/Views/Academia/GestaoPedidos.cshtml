@@ -1,16 +1,9 @@
-﻿
+﻿@model IEnumerable<Hydra.Such.Data.Database.PedidoParticipacaoFormacao>
 @{
     ViewData["Title"] = "Academia | Gestão de Pedidos de Participação em Formação Externa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<link rel="import" href="~/elements/academia/GestaoPedidos.html" />
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>GestaoPedidos</title>
-</head>
-<body>
-</body>
-</html>
+<x-gestaopedidos _onlycompleted="@ViewBag.OnlyCompleted" _requestorigin="@ViewBag.RequestOrigin"></x-gestaopedidos>

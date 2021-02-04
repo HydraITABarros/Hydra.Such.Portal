@@ -4,14 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
+<link rel="import" href="~/elements/academia/AprovacaoDireccao.html" />
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>AprovacaoDireccao</title>
-    <h1>DIRECÇÃO | OS MEUS PEDIDOS PARA APROVAR ESTÃO AQUI</h1>
-</head>
-<body>
-</body>
-</html>
+<x-aprovacaodirector _onlycompleted="@ViewBag.OnlyCompleted" _requestorigin="@ViewBag.RequestOrigin"></x-aprovacaodirector>
