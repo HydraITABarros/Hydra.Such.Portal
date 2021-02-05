@@ -449,6 +449,20 @@ namespace Hydra.Such.Portal.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetAllPurchaseLines([FromBody] string CodEncomenda)
+        {
+            List<DDMessageString> result = null;
+
+            result = DBNAV2017Encomendas.ListLinesByNo(_config.NAVDatabaseName, _config.NAVCompanyName, CodEncomenda, "").Select(x => new DDMessageString()
+            {
+                id = x.No,
+                value = x.Description
+            }).ToList();
+
+            return Json(result);
+        }
+
+        [HttpPost]
         public JsonResult GetpriceAgreementByDate([FromBody] DateTime date, int produtivityUnitId, int type)
         {
             try
@@ -3546,6 +3560,23 @@ namespace Hydra.Such.Portal.Controllers
         public JsonResult GetAllOcorrenciasGrauGravidade()
         {
             List<EnumData> result = EnumerablesFixed.OcorrenciasGrauGravidade;
+            return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllOcorrenciasMotivos()
+        {
+            List<ConfiguracaoTabelas> AllResults = DBConfiguracaoTabelas.GetAllByTabela("OCORRENCIAS_MOTIVO");
+            List<DDMessage> result = new List<DDMessage>();
+
+            if (AllResults != null && AllResults.Count > 0)
+            {
+                result = AllResults.Select(x => new DDMessage()
+                {
+                    id = x.ID,
+                    value = x.Descricao
+                }).ToList();
+            }
             return Json(result);
         }
 

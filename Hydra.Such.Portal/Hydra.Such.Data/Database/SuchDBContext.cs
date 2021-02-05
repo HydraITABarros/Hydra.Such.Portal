@@ -13037,12 +13037,16 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<Ocorrencias>(entity =>
             {
-                entity.HasKey(e => new { e.CodOcorrencia });
+                entity.HasKey(e => new { e.Ind });
 
                 entity.ToTable("Ocorrencias");
 
+                entity.Property(e => e.Ind)
+                    .HasColumnName("Ind");
+
                 entity.Property(e => e.CodOcorrencia)
-                    .HasColumnName("CodOcorrencia");
+                    .HasColumnName("CodOcorrencia")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.CodEstado)
                     .HasColumnName("CodEstado");
@@ -13099,8 +13103,11 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Quantidade")
                     .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.Motivo)
-                    .HasColumnName("Motivo")
+                entity.Property(e => e.CodMotivo)
+                    .HasColumnName("CodMotivo");
+
+                entity.Property(e => e.MotivoDescricao)
+                    .HasColumnName("MotivoDescricao")
                     .HasMaxLength(200);
 
                 entity.Property(e => e.GrauGravidade)
@@ -13120,6 +13127,18 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataMedidaCorretiva)
                     .HasColumnName("DataMedidaCorretiva")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataEnvioFornecedor)
+                    .HasColumnName("DataEnvioFornecedor")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataReforco)
+                    .HasColumnName("DataReforco")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataRespostaFornecedor)
+                    .HasColumnName("DataRespostaFornecedor")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.UtilizadorCriacao)

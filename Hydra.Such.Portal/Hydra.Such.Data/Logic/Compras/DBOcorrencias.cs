@@ -8,7 +8,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
 {
     public static class DBOcorrencias
     {
-        public static Ocorrencias GetByID(int CodOcorrencia)
+        public static Ocorrencias GetByID(string CodOcorrencia)
         {
             try
             {
@@ -119,6 +119,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             Ocorrencias ocorrencia = new Ocorrencias()
             {
+                Ind = x.Ind,
                 CodOcorrencia = x.CodOcorrencia,
                 CodEstado = x.CodEstado,
                 CodFornecedor = x.CodFornecedor,
@@ -134,12 +135,16 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 Descricao = x.Descricao,
                 UnidMedida = x.UnidMedida,
                 Quantidade = x.Quantidade,
-                Motivo = x.Motivo,
+                CodMotivo = x.CodMotivo,
+                MotivoDescricao = x.MotivoDescricao,
                 GrauGravidade = x.GrauGravidade,
                 Observacao = x.Observacao,
                 MedidaCorretiva = x.MedidaCorretiva,
                 UtilizadorMedidaCorretiva = x.UtilizadorMedidaCorretiva,
                 //DataMedidaCorretiva = x.DataMedidaCorretiva,
+                //DataEnvioFornecedor = x.DataEnvioFornecedor,
+                //DataReforco = x.DataReforco,
+                //DataRespostaFornecedor = x.DataRespostaFornecedor,
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 //DataCriacao = x.DataCriacao,
                 UtilizadorModificacao = x.UtilizadorModificacao,
@@ -148,6 +153,9 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
             if (!string.IsNullOrEmpty(x.DataOcorrenciaTexto)) ocorrencia.DataOcorrencia = Convert.ToDateTime(x.DataOcorrenciaTexto);
             if (!string.IsNullOrEmpty(x.DataMedidaCorretivaTexto)) ocorrencia.DataMedidaCorretiva = Convert.ToDateTime(x.DataMedidaCorretivaTexto);
+            if (!string.IsNullOrEmpty(x.DataEnvioFornecedorTexto)) ocorrencia.DataEnvioFornecedor = Convert.ToDateTime(x.DataEnvioFornecedorTexto);
+            if (!string.IsNullOrEmpty(x.DataReforcoTexto)) ocorrencia.DataReforco = Convert.ToDateTime(x.DataReforcoTexto);
+            if (!string.IsNullOrEmpty(x.DataRespostaFornecedorTexto)) ocorrencia.DataRespostaFornecedor = Convert.ToDateTime(x.DataRespostaFornecedorTexto);
             if (!string.IsNullOrEmpty(x.DataCriacaoTexto)) ocorrencia.DataCriacao = Convert.ToDateTime(x.DataCriacaoTexto);
             if (!string.IsNullOrEmpty(x.DataModificacaoTexto)) ocorrencia.DataModificacao = Convert.ToDateTime(x.DataModificacaoTexto);
 
@@ -167,6 +175,7 @@ namespace Hydra.Such.Data.Logic.ComprasML
         {
             OcorrenciasViewModel ocorrencia = new OcorrenciasViewModel()
             {
+                Ind = x.Ind,
                 CodOcorrencia = x.CodOcorrencia,
                 CodEstado = x.CodEstado,
                 CodFornecedor = x.CodFornecedor,
@@ -182,12 +191,16 @@ namespace Hydra.Such.Data.Logic.ComprasML
                 Descricao = x.Descricao,
                 UnidMedida = x.UnidMedida,
                 Quantidade = x.Quantidade,
-                Motivo = x.Motivo,
+                CodMotivo = x.CodMotivo,
+                MotivoDescricao = x.MotivoDescricao,
                 GrauGravidade = x.GrauGravidade,
                 Observacao = x.Observacao,
                 MedidaCorretiva = x.MedidaCorretiva,
                 UtilizadorMedidaCorretiva = x.UtilizadorMedidaCorretiva,
                 //DataMedidaCorretiva = x.DataMedidaCorretiva,
+                //DataEnvioFornecedor = x.DataEnvioFornecedor,
+                //DataReforco = x.DataReforco,
+                //DataRespostaFornecedor = x.DataRespostaFornecedor,
                 UtilizadorCriacao = x.UtilizadorCriacao,
                 //DataCriacao = x.DataCriacao,
                 UtilizadorModificacao = x.UtilizadorModificacao,
@@ -196,6 +209,9 @@ namespace Hydra.Such.Data.Logic.ComprasML
 
             if (x.DataOcorrencia != null) ocorrencia.DataOcorrenciaTexto = x.DataOcorrencia.Value.ToString("yyyy-MM-dd");
             if (x.DataMedidaCorretiva != null) ocorrencia.DataMedidaCorretivaTexto = x.DataMedidaCorretiva.Value.ToString("yyyy-MM-dd");
+            if (x.DataEnvioFornecedor != null) ocorrencia.DataEnvioFornecedorTexto = x.DataEnvioFornecedor.Value.ToString("yyyy-MM-dd");
+            if (x.DataReforco != null) ocorrencia.DataReforcoTexto = x.DataReforco.Value.ToString("yyyy-MM-dd");
+            if (x.DataRespostaFornecedor != null) ocorrencia.DataRespostaFornecedorTexto = x.DataRespostaFornecedor.Value.ToString("yyyy-MM-dd");
             if (x.DataCriacao != null) ocorrencia.DataCriacaoTexto = x.DataCriacao.Value.ToString("yyyy-MM-dd");
             if (x.DataModificacao != null) ocorrencia.DataModificacaoTexto = x.DataModificacao.Value.ToString("yyyy-MM-dd");
 

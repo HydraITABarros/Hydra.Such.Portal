@@ -176,9 +176,9 @@
             <template is="dom-if" if="{{ _permissions.create }}">
                 <paper-button class="tablinks" on-tap="_create"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Nova</paper-button>
             </template>
-            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <paper-button class="tablinks" id="showHistorico" on-tap="_showHistorico"><i class="fa fa-eye" aria-hidden="true"></i>&nbsp;{{ _showHistoricoMessage }}</paper-button>
+            <paper-button id="btnExport" class="tablinks" on-tap="_exportEXCEL" title="Exportar para Excel"><i class="fa fa-file-excel-o" aria-hidden="true"></i>&nbsp; Exportar</paper-button>
 
             <!--start ColumnToggle-->
             <paper-menu-button class="column-toggle" no-animations>
@@ -203,6 +203,16 @@
                     <center>
                         <paper-button raised id="btn_OpenMedidaCorretiva" class="btnSave" on-tap="_CriarMedidaCorretiva" disabled="{{ _criarMedidasCorretivas }}" title="Inserir Medida Corretiva"><i class="fa fa-check" aria-hidden="true"></i>Med. Corretiva</paper-button>
                     </center>
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codOcorrencia.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="codOcorrencia">Cód. Ocorrência</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codOcorrencia" value="[[filter.codOcorrencia]]" />
+                </template>
+                <template>
+                    {{item.codOcorrencia}}
                 </template>
             </vaadin-grid-column>
 
@@ -346,13 +356,23 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.motivo.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.codMotivoTexto.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="motivo">Motivo</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="motivo" value="[[filter.motivo]]" />
+                    <vaadin-grid-sorter path="codMotivoTexto">Motivo</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="codMotivoTexto" value="[[filter.codMotivoTexto]]" />
                 </template>
                 <template>
-                    {{item.motivo}}
+                    {{item.codMotivoTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.motivoDescricao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="motivoDescricao">Motivo Descrição</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="motivoDescricao" value="[[filter.motivoDescricao]]" />
+                </template>
+                <template>
+                    {{item.motivoDescricao}}
                 </template>
             </vaadin-grid-column>
 
@@ -376,23 +396,33 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorCriacao.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataEnvioFornecedorTexto.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criador</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="utilizadorCriacao" value="[[filter.utilizadorCriacao]]" />
+                    <vaadin-grid-sorter path="dataEnvioFornecedorTexto">Data Envio Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataEnvioFornecedorTexto" value="[[filter.dataEnvioFornecedorTexto]]" />
                 </template>
                 <template>
-                    {{item.utilizadorCriacao}}
+                    {{item.dataEnvioFornecedorTexto}}
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataCriacaoTexto.hidden }}">
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataReforcoTexto.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataCriacaoTexto">Data Criação</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="dataCriacaoTexto" value="[[filter.dataCriacaoTexto]]" />
+                    <vaadin-grid-sorter path="dataReforcoTexto">Data Reforço</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataReforcoTexto" value="[[filter.dataReforcoTexto]]" />
                 </template>
                 <template>
-                    {{item.dataCriacaoTexto}}
+                    {{item.dataReforcoTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataRespostaFornecedorTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataRespostaFornecedorTexto">Data Resposta Fornecedor</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataRespostaFornecedorTexto" value="[[filter.dataRespostaFornecedorTexto]]" />
+                </template>
+                <template>
+                    {{item.dataRespostaFornecedorTexto}}
                 </template>
             </vaadin-grid-column>
 
@@ -425,6 +455,47 @@
                     {{item.dataMedidaCorretivaTexto}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorCriacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorCriacao">Utilizador Criador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorCriacao" value="[[filter.utilizadorCriacao]]" />
+                </template>
+                <template>
+                    {{item.utilizadorCriacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataCriacaoTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataCriacaoTexto">Data Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataCriacaoTexto" value="[[filter.dataCriacaoTexto]]" />
+                </template>
+                <template>
+                    {{item.dataCriacaoTexto}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.utilizadorModificacao.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="utilizadorModificacao">Utilizador Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="utilizadorModificacao" value="[[filter.utilizadorModificacao]]" />
+                </template>
+                <template>
+                    {{item.utilizadorModificacao}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.dataModificacaoTexto.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataModificacaoTexto">Data Modificação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataModificacaoTexto" value="[[filter.dataModificacaoTexto]]" />
+                </template>
+                <template>
+                    {{item.dataModificacaoTexto}}
+                </template>
+            </vaadin-grid-column>
+
         </vaadin-grid>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -556,6 +627,7 @@
                 /*start - ColumnToggle*/
                 _startColumnToggle: function () {
                     var columns = {
+                        "codOcorrencia": { hidden: false, label: "Cód. Ocorrência" },
                         "nomeEstado": { hidden: false, label: "Estado" },
                         "codFornecedor": { hidden: false, label: "Cód. Fornecedor" },
                         "nomeFornecedor": { hidden: false, label: "Fornecedor" },
@@ -570,14 +642,20 @@
                         "descricao": { hidden: false, label: "Descrição" },
                         "unidMedida": { hidden: false, label: "Unidade Medida" },
                         "quantidade": { hidden: false, label: "Quantidade" },
-                        "motivo": { hidden: false, label: "Motivo" },
+                        "codMotivoTexto": { hidden: false, label: "Motivo" },
+                        "motivoDescricao": { hidden: false, label: "Motivo Descrição" },
                         "grauGravidadeTexto": { hidden: false, label: "Grau Gravidade" },
                         "observacao": { hidden: false, label: "Observação" },
-                        "utilizadorCriacao": { hidden: false, label: "Utilizador Criador" },
-                        "dataCriacaoTexto": { hidden: false, label: "Data Criação" },
+                        "dataEnvioFornecedorTexto": { hidden: false, label: "Data Envio Fornecedor" },
+                        "dataReforcoTexto": { hidden: false, label: "Data Reforço" },
+                        "dataRespostaFornecedorTexto": { hidden: false, label: "Data Resposta Fornecedor" },
                         "medidaCorretiva": { hidden: false, label: "Medida Corretiva" },
                         "utilizadorMedidaCorretiva": { hidden: false, label: "Medida Corretiva Utilizador Criador" },
                         "dataMedidaCorretivaTexto": { hidden: false, label: "Medida Corretiva Data Criação" },
+                        "utilizadorCriacao": { hidden: false, label: "Utilizador Criador" },
+                        "dataCriacaoTexto": { hidden: false, label: "Data Criação" },
+                        "utilizadorModificacao": { hidden: false, label: "Utilizador Modificação" },
+                        "dataModificacaoTexto": { hidden: false, label: "Data Modificação" },
                     };
 
                     if (localStorage["ocorrenciaslist.ToggleColumn"]) {
@@ -621,42 +699,73 @@
                 },
 
                 _CriarMedidaCorretiva: function (e) {
+                    debugger;
                     if (e != null) {
-                        /*FILTROS*/
-                        window.handleGridListColumnsOrder(this.$.ocorrenciasGrid, 'ocorrencias-ocorrenciaslist');
-                        window.grid = this.$.ocorrenciasGrid;
-                        window._this = this;
+                        if (e.model.item.codEncomenda != null && e.model.item.codEncomenda != "") {
+                            if (e.model.item.dataOcorrenciaTexto != null && e.model.item.dataOcorrenciaTexto != "") {
+                                if (e.model.item.quantidade != null && e.model.item.quantidade != "") {
+                                    if (e.model.item.grauGravidade != null && e.model.item.grauGravidade != "") {
+                                        if (e.model.item.codMotivo != null && e.model.item.codMotivo != "") {
+                                            if (e.model.item.noDocExterno != null && e.model.item.noDocExterno != "") {
+                                                /*FILTROS*/
+                                                window.handleGridListColumnsOrder(this.$.ocorrenciasGrid, 'ocorrencias-ocorrenciaslist');
+                                                window.grid = this.$.ocorrenciasGrid;
+                                                window._this = this;
 
-                        var TMessage = this.$.ToastMessage;
-                        var TMessageError = this.$.ToastError;
-                        var ARequest = this.$.ajax_CreateMedidaCorretiva;
+                                                var TMessage = this.$.ToastMessage;
+                                                var TMessageError = this.$.ToastError;
+                                                var ARequest = this.$.ajax_CreateMedidaCorretiva;
 
-                        bootbox.prompt({
-                            title: "Introduza a Medida Corretiva!",
-                            inputType: 'textarea',
-                            buttons: {
-                                confirm: {
-                                    label: 'Inserir',
-                                    className: 'btn-success'
-                                },
-                                cancel: {
-                                    label: 'Fechar',
-                                    className: 'btn-danger'
-                                }
-                            },
-                            callback: function (result) {
-                                if (result != null) {
-                                    if (result == "") {
-                                        TMessageError.text = "É necessário preencher a Medida Corretiva.";
-                                        TMessageError.open();
-                                        return false;
-                                    } else {
-                                        ARequest.body = JSON.stringify({ codOcorrencia: e.model.item.codOcorrencia, medidaCorretiva: result });
-                                        ARequest.generateRequest();
+                                                bootbox.prompt({
+                                                    title: "Introduza a Medida Corretiva!",
+                                                    inputType: 'textarea',
+                                                    buttons: {
+                                                        confirm: {
+                                                            label: 'Inserir',
+                                                            className: 'btn-success'
+                                                        },
+                                                        cancel: {
+                                                            label: 'Fechar',
+                                                            className: 'btn-danger'
+                                                        }
+                                                    },
+                                                    callback: function (result) {
+                                                        if (result != null) {
+                                                            if (result == "") {
+                                                                TMessageError.text = "É necessário preencher a Medida Corretiva.";
+                                                                TMessageError.open();
+                                                                return false;
+                                                            } else {
+                                                                ARequest.body = JSON.stringify({ codOcorrencia: e.model.item.codOcorrencia, medidaCorretiva: result });
+                                                                ARequest.generateRequest();
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                            else {
+                                                this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
+                                            }
+                                        }
+                                        else {
+                                            this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                        }
+                                    }
+                                    else {
+                                        this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
                                     }
                                 }
+                                else {
+                                    this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                                }
                             }
-                        });
+                            else {
+                                this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
+                            }
+                        }
+                        else {
+                            this._openToastError("O campo Cód. Encomenda é de preenchimento obrigatório.");
+                        }
                     }
                 },
 

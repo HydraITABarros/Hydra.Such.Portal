@@ -37,6 +37,8 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         public string PayToCounty { get; set; }
         public string PayToCountryRegionCode { get; set; }
         public string PostingDescription { get; set; }
+        public string ShipToName { get; set; }
+        public string VendorShipmentNo { get; set; }
 
         public bool HasAnAdvance { get; set; }
         public decimal Total { get; set; }

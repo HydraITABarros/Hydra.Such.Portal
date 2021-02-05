@@ -150,6 +150,7 @@
         <!-- DROPDOWNS POPULATE -->
         <iron-ajax url="/PopulateDropdowns/GetAllPurchase" last-response="{{ListPurchases}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
         <iron-ajax url="/PopulateDropdowns/GetAllOcorrenciasGrauGravidade" last-response="{{ListGrauGravidade}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
+        <iron-ajax url="/PopulateDropdowns/GetAllOcorrenciasMotivos" last-response="{{ListMotivos}}" auto method="post" handle-as="json" content-type="application/json"></iron-ajax>
 
 
 
@@ -199,6 +200,21 @@
                    content-type="application/json">
         </iron-ajax>
 
+        <iron-ajax url="/PopulateDropdowns/GetAllPurchaseLines"
+                   last-response="{{ListPurchaseLines}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_GetEncomendaLines"
+                   content-type="application/json">
+        </iron-ajax>
+
+        <iron-ajax url="/Ocorrencias/GetEncomendaLineDetails"
+                   last-response="{{data}}"
+                   method="post"
+                   handle-as="json"
+                   id="ajax_GetEncomendaLineDetails"
+                   content-type="application/json">
+        </iron-ajax>
 
 
 
@@ -212,7 +228,7 @@
             </template>
 
             <template is="dom-if" if="{{ !_isCreate }}">
-                <template is="dom-if" if="{{ _isEdit }}">
+                <template is="dom-if" if="{{ _isEditV2 }}">
                     <paper-button id="btn_Update" class="btnEdit tablinks" on-tap="_Update"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; Guardar</paper-button>
                     <paper-button id="btn_OpenMedidaCorretiva" class="btnEdit tablinks" on-tap="_CriarMedidaCorretiva"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp; Med. Corretiva</paper-button>
                 </template>
@@ -225,12 +241,14 @@
             </div>
 
             <div class="col-md-2">
-                <such-selectbox id="codEncomenda" name="codEncomenda" value="{{ data.codEncomenda }}" label="Cód. Encomenda" disabled="{{ !_isEdit }}"
+                <label id="lblcodEncomenda">Cód. Encomenda</label>
+                <such-selectbox id="codEncomenda" name="codEncomenda" value="{{ data.codEncomenda }}" disabled="{{ !_isEdit }}"
                                 items="[[ListPurchases]]"
                                 text-path="id"
                                 value-path="id"
-                                fields='[{"field":"id", "name":"Nº Encomenda"}, {"field":"value", "name":"teste"}]'
-                                on-value-changed="_EncomendaChanged">
+                                fields='[{"field":"id", "name":"Cód. Encomenda"}, {"field":"value", "name":"Encomenda"}]'
+                                on-value-changed="_EncomendaChanged"
+                                required error-message="Campo de preenchimento obrigatório">
                 </such-selectbox>
             </div>
 
@@ -257,7 +275,8 @@
             </div>
 
             <div class="col-md-2">
-                <vaadin-date-picker id="dataOcorrenciaTexto" name="dataOcorrenciaTexto" value="{{data.dataOcorrenciaTexto}}" label="Data Ocorrência" disabled></vaadin-date-picker>
+                <label id="lbldataOcorrenciaTexto">Data Ocorrência</label>
+                <vaadin-date-picker id="dataOcorrenciaTexto" name="dataOcorrenciaTexto" value="{{data.dataOcorrenciaTexto}}" disabled="{{ !_isEdit }}" required error-message="Campo de preenchimento obrigatório"></vaadin-date-picker>
             </div>
 
             <div class="col-md-4">
@@ -267,11 +286,19 @@
 
         <div class="row break_clear">
             <div class="col-md-2">
-                <vaadin-text-field id="noDocExterno" name="noDocExterno" value="{{data.noDocExterno}}" label="No. Documento Externo" disabled></vaadin-text-field>
+                <label id="lblnoDocExterno">No. Documento Externo</label>
+                <vaadin-text-field id="noDocExterno" name="noDocExterno" value="{{data.noDocExterno}}" disabled="{{ !_isEditALL }}"></vaadin-text-field>
             </div>
 
             <div class="col-md-2">
-                <vaadin-text-field id="codArtigo" name="codArtigo" value="{{data.codArtigo}}" label="Cód. Artigo" disabled></vaadin-text-field>
+                <label id="lblcodArtigo">Cód. Artigo</label>
+                <such-selectbox id="codArtigo" name="codArtigo" value="{{ data.codArtigo }}" disabled="{{ !_isEdit }}"
+                                items="[[ListPurchaseLines]]"
+                                text-path="id"
+                                value-path="id"
+                                fields='[{"field":"id", "name":"Nº Cód. Artigo"}, {"field":"value", "name":"Descrição"}]'
+                                on-value-changed="_EncomendaLineChanged">
+                </such-selectbox>
             </div>
 
             <div class="col-md-8">
@@ -280,26 +307,18 @@
         </div>
 
         <div class="row break_clear">
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <vaadin-text-field id="unidMedida" name="unidMedida" value="{{data.unidMedida}}" label="Unidade Medida" disabled></vaadin-text-field>
             </div>
 
-            <div class="col-md-2">
-                <vaadin-text-field id="quantidade" name="quantidade" value="{{data.quantidade}}" label="Quantidade" disabled></vaadin-text-field>
+            <div class="col-md-1">
+                <label id="lblquantidade">Quantidade</label>
+                <vaadin-text-field id="quantidade" name="quantidade" value="{{data.quantidade}}" disabled="{{ !_isEdit }}" type="number" class="alignRight" required error-message="Campo de preenchimento obrigatório"></vaadin-text-field>
             </div>
 
             <div class="col-md-2">
-                <vaadin-text-field id="utilizadorCriacao" name="utilizadorCriacao" value="{{data.utilizadorCriacao}}" label="Utilizador Criador" disabled></vaadin-text-field>
-            </div>
-
-            <div class="col-md-2">
-                <vaadin-date-picker id="dataCriacaoTexto" name="dataCriacaoTexto" value="{{data.dataCriacaoTexto}}" label="Data Criação" disabled></vaadin-date-picker>
-            </div>
-        </div>
-
-        <div class="row break_clear">
-            <div class="col-md-2">
-                <vaadin-combo-box id="grauGravidade" name="grauGravidade" items="[[ListGrauGravidade]]" item-value-path="id" item-label-path="value" value="{{data.grauGravidade}}" label="Grau Gravidade" disabled="{{ !_isEdit }}">
+                <label id="lblgrauGravidade">Grau Gravidade</label>
+                <vaadin-combo-box id="grauGravidade" name="grauGravidade" items="[[ListGrauGravidade]]" item-value-path="id" item-label-path="value" value="{{data.grauGravidade}}" disabled="{{ !_isEdit }}" required error-message="Campo de preenchimento obrigatório">
                     <template>
                         <paper-icon-item>
                             <paper-item-body two-line>
@@ -310,28 +329,78 @@
                 </vaadin-combo-box>
             </div>
 
-            <div class="col-md-10">
-                <vaadin-text-field id="motivo" name="motivo" value="{{data.motivo}}" label="Motivo" disabled="{{ !_isEdit }}" maxlength="200"></vaadin-text-field>
+            <div class="col-md-2">
+                <label id="lblcodMotivo">Motivo</label>
+                <vaadin-combo-box id="codMotivo" name="codMotivo" items="[[ListMotivos]]" item-value-path="id" item-label-path="value" value="{{data.codMotivo}}" disabled="{{ !_isEdit }}" required error-message="Campo de preenchimento obrigatório">
+                    <template>
+                        <paper-icon-item>
+                            <paper-item-body two-line>
+                                <div>[[item.value]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </vaadin-combo-box>
+            </div>
+
+            <div class="col-md-6">
+                <label id="lblmotivo">Motivo Descrição</label>
+                <vaadin-text-field id="motivoDescricao" name="motivoDescricao" value="{{data.motivoDescricao}}" disabled="{{ !_isEdit }}" maxlength="200"></vaadin-text-field>
             </div>
         </div>
 
         <div class="row break_clear">
             <div class="col-md-12">
-                <vaadin-text-field id="observacao" name="observacao" value="{{data.observacao}}" label="Observação" disabled="{{ !_isEdit }}" maxlength="200"></vaadin-text-field>
+                <label id="lblobservacao">Observação</label>
+                <vaadin-text-field id="observacao" name="observacao" value="{{data.observacao}}" disabled="{{ !_isEdit }}" maxlength="200"></vaadin-text-field>
             </div>
         </div>
 
-        <div class="row break_clear">
-            <div class="col-md-10">
-                <such-textarea id="medidaCorretiva" name="medidaCorretiva" value="{{data.medidaCorretiva}}" label="Medida Corretiva" disabled rows="7"> </such-textarea>
+        <div hidden="{{ _isCreate }}">
+            <div class="row break_clear">
+                <div class="col-md-2">
+                    <label id="lbldataEnvioFornecedorTexto">Data Envio Fornecedor</label>
+                    <vaadin-date-picker id="dataEnvioFornecedorTexto" name="dataEnvioFornecedorTexto" value="{{data.dataEnvioFornecedorTexto}}" disabled="{{ !_isEditV2 }}"></vaadin-date-picker>
+                </div>
+
+                <div class="col-md-2">
+                    <label id="lbldataReforcoTexto">Data Reforço</label>
+                    <vaadin-date-picker id="dataReforcoTexto" name="dataReforcoTexto" value="{{data.dataReforcoTexto}}" disabled="{{ !_isEditV2 }}"></vaadin-date-picker>
+                </div>
+
+                <div class="col-md-2">
+                    <label id="lbldataRespostaFornecedorTexto">Data Resposta Fornecedor</label>
+                    <vaadin-date-picker id="dataRespostaFornecedorTexto" name="dataRespostaFornecedorTexto" value="{{data.dataRespostaFornecedorTexto}}" disabled="{{ !_isEditV2 }}"></vaadin-date-picker>
+                </div>
+
+                <div class="col-md-2">
+                    <vaadin-text-field id="utilizadorCriacao" name="utilizadorCriacao" value="{{data.utilizadorCriacao}}" label="Utilizador Criador" disabled></vaadin-text-field>
+                </div>
+
+                <div class="col-md-1">
+                    <vaadin-date-picker id="dataCriacaoTexto" name="dataCriacaoTexto" value="{{data.dataCriacaoTexto}}" label="Data Criação" disabled></vaadin-date-picker>
+                </div>
+
+                <div class="col-md-2">
+                    <vaadin-text-field id="utilizadorModificacao" name="utilizadorModificacao" value="{{data.utilizadorModificacao}}" label="Utilizador Modificação" disabled></vaadin-text-field>
+                </div>
+
+                <div class="col-md-1">
+                    <vaadin-date-picker id="dataModificacaoTexto" name="dataModificacaoTexto" value="{{data.dataModificacaoTexto}}" label="Data Modificação" disabled></vaadin-date-picker>
+                </div>
             </div>
 
-            <div class="col-md-2">
-                <vaadin-text-field id="utilizadorMedidaCorretiva" name="utilizadorMedidaCorretiva" value="{{data.utilizadorMedidaCorretiva}}" label="Medida Corretiva Utilizador Criador" disabled></vaadin-text-field>
-            </div>
+            <div class="row break_clear">
+                <div class="col-md-10">
+                    <such-textarea id="medidaCorretiva" name="medidaCorretiva" value="{{data.medidaCorretiva}}" label="Medida Corretiva" disabled rows="7" maxlength="2000"> </such-textarea>
+                </div>
 
-            <div class="col-md-2">
-                <vaadin-date-picker id="dataMedidaCorretivaTexto" name="dataMedidaCorretivaTexto" value="{{data.dataMedidaCorretivaTexto}}" label="Medida Corretiva Data Criação" disabled></vaadin-date-picker>
+                <div class="col-md-2">
+                    <vaadin-text-field id="utilizadorMedidaCorretiva" name="utilizadorMedidaCorretiva" value="{{data.utilizadorMedidaCorretiva}}" label="Medida Corretiva Utilizador Criador" disabled></vaadin-text-field>
+                </div>
+
+                <div class="col-md-2">
+                    <vaadin-date-picker id="dataMedidaCorretivaTexto" name="dataMedidaCorretivaTexto" value="{{data.dataMedidaCorretivaTexto}}" label="Medida Corretiva Data Criação" disabled></vaadin-date-picker>
+                </div>
             </div>
         </div>
 
@@ -368,6 +437,14 @@
                         type: Boolean,
                         value: false
                     },
+                    _isEditV2: {
+                        type: Boolean,
+                        value: false
+                    },
+                    _isEditALL: {
+                        type: Boolean,
+                        value: false
+                    },
                 },
 
                 ready: function () {
@@ -398,12 +475,24 @@
                             window.data = this.data;
 
                             this._isCreate = false;
-                            if (this.data.codOcorrencia == "")
+                            if (this.data.codOcorrencia == "" || this.data.codOcorrencia == null)
                                 this._isCreate = true;
 
                             this._isEdit = false;
-                            if (this.data.codEstado == 1 && (this._permissions.create == true || this._permissions.update == true))
-                                    this._isEdit = true;
+                            this._isEditV2 = false;
+                            this._isEditALL = false;
+                            if (this.data.codEstado == 1 && (this._permissions.create == true || this._permissions.update == true)) {
+                                this._isEdit = true;
+                                this._isEditALL = true;
+                            }
+                            if (this.data.codEstado == 1 && this._permissions.update == true && (this.data.codOcorrencia != null && this.data.codOcorrencia != "")) {
+                                this._isEdit = false;
+                                this._isEditV2 = true;
+                                this._isEditALL = true;
+                            }
+
+                            this.$.ajax_GetEncomendaLines.body = JSON.stringify(this.data.codEncomenda);
+                            this.$.ajax_GetEncomendaLines.generateRequest();
                         }
 
                         else if (data.detail.url.indexOf("Create") !== -1) {
@@ -418,46 +507,116 @@
                     }
                 },
 
-                _EncomendaChanged: function () {
-                    if (this.$.codEncomenda.__data.value == "") {
-                        this.$.codFornecedor._clearSelection();
+                _EncomendaChanged: function (e) {
+                    if (this.$.codEncomenda.__data.value != "") {
+                        this.data.codEncomenda = this.$.codEncomenda.__data.value;
+                        this.$.page_GetEncomenda_ajax.body = JSON.stringify(this.data);
+                        this.$.page_GetEncomenda_ajax.generateRequest();
+
+                        this.$.codArtigo._clearSelection();
+                        this.$.descricao.value = "";
+                        this.$.unidMedida.value = "";
+                        this.$.quantidade.value = "";
+                        this.$.ajax_GetEncomendaLines.body = JSON.stringify(this.data.codEncomenda);
+                        this.$.ajax_GetEncomendaLines.generateRequest();
+                    }
+                    else {
+                        this.$.codFornecedor.value = "";
                         this.$.nomeFornecedor.value = "";
-                        this.$.codEncomenda._clearSelection();
-                        this.$.codRegiao._clearSelection();
-                        this.$.codAreaFuncional._clearSelection();
-                        this.$.codCentroResponsabilidade._clearSelection();
+                        this.$.codRegiao.value = "";
+                        this.$.codAreaFuncional.value = "";
+                        this.$.codCentroResponsabilidade.value = "";
                         this.$.dataOcorrenciaTexto.value = "";
                         this.$.localEntrega.value = "";
                         this.$.noDocExterno.value = "";
-                        this.$.codArtigo.value = "";
+                        this.$.codArtigo._clearSelection();
                         this.$.descricao.value = "";
                         this.$.unidMedida.value = "";
                         this.$.quantidade.value = "";
                     }
-                    else {
-                        this.data.codEncomenda = this.$.codEncomenda.__data.value;
-                        this.$.page_GetEncomenda_ajax.body = JSON.stringify(this.data);
-                        this.$.page_GetEncomenda_ajax.generateRequest();
-                    }
+                },
 
+                _EncomendaLineChanged: function (e) {
+                    if (this.$.codArtigo.__data.value != "") {
+                        this.data.codArtigo = this.$.codArtigo.__data.value;
+                        this.$.ajax_GetEncomendaLineDetails.body = JSON.stringify(this.data);
+                        this.$.ajax_GetEncomendaLineDetails.generateRequest();
+                    }
+                    else {
+                        this.$.descricao.value = "";
+                        this.$.unidMedida.value = "";
+                        this.$.quantidade.value = "";
+                    }
                 },
 
                 _Create: function () {
-                    this.$.page_Create_ajax.body = JSON.stringify(this.data);
-                    this.$.page_Create_ajax.generateRequest();
+                    if (this.$.codEncomenda.validate() && this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
+                        if (this.$.dataOcorrenciaTexto.validate() && this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
+                            if (this.$.quantidade.validate() && this.$.quantidade.value != null && this.$.quantidade.value != "") {
+                                if (this.$.grauGravidade.validate() && this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
+                                    if (this.$.codMotivo.validate() && this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
+                                        this.$.page_Create_ajax.body = JSON.stringify(this.data);
+                                        this.$.page_Create_ajax.generateRequest();
+                                    }
+                                    else {
+                                        this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                    }
+                                }
+                                else {
+                                    this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                }
+                            }
+                            else {
+                                this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                            }
+                        }
+                        else {
+                            this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
+                        }
+                    }
+                    else {
+                        this._openToastError("O campo Cód. Encomenda é de preenchimento obrigatório.");
+                    }
                 },
 
                 _responseCreate: function () {
                     if (this.data.eReasonCode == 1) {
                         this._openToast(this.data.eMessage);
+
+                        window.location.href = "/Ocorrencias/OcorrenciasDetails/" + this.data.codOcorrencia;
                     } else {
                         this._openToastError(this.data.eMessage);
                     }
                 },
 
                 _Update: function () {
-                    this.$.page_Update_ajax.body = JSON.stringify(this.data);
-                    this.$.page_Update_ajax.generateRequest();
+                    if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
+                        if (this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
+                            if (this.$.quantidade.value != null && this.$.quantidade.value != "") {
+                                if (this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
+                                    if (this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
+                                        this.$.page_Update_ajax.body = JSON.stringify(this.data);
+                                        this.$.page_Update_ajax.generateRequest();
+                                    }
+                                    else {
+                                        this._openToastError("O campo Motivo é de preenchimento obrigatório.");
+                                    }
+                                }
+                                else {
+                                    this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                }
+                            }
+                            else {
+                                this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                            }
+                        }
+                        else {
+                            this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
+                        }
+                    }
+                    else {
+                        this._openToastError("O campo Cód. Encomenda é de preenchimento obrigatório.");
+                    }
                 },
 
                 _responseUpdate: function () {
@@ -468,39 +627,67 @@
                     }
                 },
 
-                _CriarMedidaCorretiva: function (e) {
-                    if (e != null) {
-                        var TMessage = this.$.ToastMessage;
-                        var TMessageError = this.$.ToastError;
-                        var ARequest = this.$.ajax_CreateMedidaCorretiva;
-                        var Ocorrencia = this._ocorrencia;
+                _CriarMedidaCorretiva: function () {
+                    if (this.$.codEncomenda.value != null && this.$.codEncomenda.value != "") {
+                        if (this.$.dataOcorrenciaTexto.value != null && this.$.dataOcorrenciaTexto.value != "") {
+                            if (this.$.quantidade.value != null && this.$.quantidade.value != "") {
+                                if (this.$.grauGravidade.value != null && this.$.grauGravidade.value != "") {
+                                    if (this.$.codMotivo.value != null && this.$.codMotivo.value != "") {
+                                        if (this.$.noDocExterno.value != null && this.$.noDocExterno.value != "") {
+                                            var TMessage = this.$.ToastMessage;
+                                            var TMessageError = this.$.ToastError;
+                                            var ARequest = this.$.ajax_CreateMedidaCorretiva;
+                                            var Ocorrencia = this._ocorrencia;
 
-                        bootbox.prompt({
-                            title: "Introduza a Medida Corretiva!",
-                            inputType: 'textarea',
-                            buttons: {
-                                confirm: {
-                                    label: 'Inserir',
-                                    className: 'btn-success'
-                                },
-                                cancel: {
-                                    label: 'Fechar',
-                                    className: 'btn-danger'
-                                }
-                            },
-                            callback: function (result) {
-                                if (result != null) {
-                                    if (result == "") {
-                                        TMessageError.text = "É necessário preencher a Medida Corretiva.";
-                                        TMessageError.open();
-                                        return false;
-                                    } else {
-                                        ARequest.body = JSON.stringify({ codOcorrencia: Ocorrencia, medidaCorretiva: result });
-                                        ARequest.generateRequest();
+                                            bootbox.prompt({
+                                                title: "Introduza a Medida Corretiva!",
+                                                inputType: 'textarea',
+                                                buttons: {
+                                                    confirm: {
+                                                        label: 'Inserir',
+                                                        className: 'btn-success'
+                                                    },
+                                                    cancel: {
+                                                        label: 'Fechar',
+                                                        className: 'btn-danger'
+                                                    }
+                                                },
+                                                callback: function (result) {
+                                                    if (result != null) {
+                                                        if (result == "") {
+                                                            TMessageError.text = "É necessário preencher a Medida Corretiva.";
+                                                            TMessageError.open();
+                                                            return false;
+                                                        } else {
+                                                            ARequest.body = JSON.stringify({ codOcorrencia: Ocorrencia, medidaCorretiva: result });
+                                                            ARequest.generateRequest();
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            this._openToastError("O campo No. Documento Externo é de preenchimento obrigatório.");
+                                        }
+                                    }
+                                    else {
+                                        this._openToastError("O campo Motivo é de preenchimento obrigatório.");
                                     }
                                 }
+                                else {
+                                    this._openToastError("O campo Grau Gravidade é de preenchimento obrigatório.");
+                                }
                             }
-                        });
+                            else {
+                                this._openToastError("O campo Quantidade é de preenchimento obrigatório.");
+                            }
+                        }
+                        else {
+                            this._openToastError("O campo Data Ocorrência é de preenchimento obrigatório.");
+                        }
+                    }
+                    else {
+                        this._openToastError("O campo Cód. Encomenda é de preenchimento obrigatório.");
                     }
                 },
 

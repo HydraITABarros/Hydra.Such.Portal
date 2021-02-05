@@ -121,6 +121,8 @@ namespace Hydra.Such.Data.Logic
                         PayToCounty = data.PayToCounty.Equals(DBNull.Value) ? "" : (string)data.PayToCounty,
                         PayToCountryRegionCode = data.PayToCountryRegionCode.Equals(DBNull.Value) ? "" : (string)data.PayToCountryRegionCode,
                         PostingDescription = data.PostingDescription.Equals(DBNull.Value) ? "" : (string)data.PostingDescription,
+                        ShipToName = data.ShipToName.Equals(DBNull.Value) ? "" : (string)data.ShipToName,
+                        VendorShipmentNo = data.VendorShipmentNo.Equals(DBNull.Value) ? "" : (string)data.VendorShipmentNo,
 
                         HasAnAdvance = (bool)data.HasAnAdvance,
                     };
