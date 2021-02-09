@@ -604,6 +604,7 @@ namespace Hydra.Such.Data.Logic.ProjectMovements
                 projMovement.InvoiceToClientNo = item.FaturaANºCliente;
                 projMovement.CreateUser = item.UtilizadorCriação;
                 projMovement.CreateDate = item.DataHoraCriação;
+                projMovement.CreateDateText = item.DataHoraCriação?.ToString("yyyy-MM-dd");
                 projMovement.UpdateUser = item.UtilizadorModificação;
                 projMovement.UpdateDate = item.DataHoraModificação;
                 //ServiceData = item;

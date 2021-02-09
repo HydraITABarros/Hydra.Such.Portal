@@ -479,7 +479,7 @@
         </iron-ajax>
 
         <div class="subMenu">
-            <paper-button class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
+            <paper-button id="btn_Voltar" class="tablinks" on-tap="_goBack" title="Voltar"><i class="fa fa-arrow-left" aria-hidden="true"></i> Voltar</paper-button>
             <paper-button id="btn_calcularAjudasCusto" class="tablinks" on-tap="_calcularAjudasCusto" disabled="{{ !_permissions.create }}" title="Calcular Aj. Custo"><i class="fa fa-check-square" aria-hidden="true"></i> Calcular Aj. Custo</paper-button>
             <paper-button id="btn_terminarFolhaDeHoras" class="tablinks" on-tap="_btnTerminarFolhaDeHoras" disabled="{{ !_permissions.create }}" title="Terminar" style="background-color:deepskyblue"><i class="fa fa-check-square" aria-hidden="true"></i> Terminar</paper-button>
             <paper-button id="btn_validarFolhaDeHoras" class="tablinks" on-tap="_validarFolhaDeHoras" disabled="{{ !_permissions.create }}" title="Validar"><i class="fa fa-check-square" aria-hidden="true"></i> Validar</paper-button>
@@ -2419,6 +2419,7 @@
 
                 _validarFolhaDeHoras: function () {
                     $(this.$.btn_validarFolhaDeHoras).addClass('disabled');
+                    $(this.$.btn_Voltar).addClass('disabled');
 
                     if (this._validateFolhaHoras()) {
                         if (this.$.tipoDeslocacao.value == 1) {
@@ -2429,6 +2430,7 @@
                             else {
                                 this._showErrorMessage("Falta preencher o campo Matrícula.");
                                 $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
+                                $(this.$.btn_Voltar).removeClass('disabled');
                             }
                         }
                         else {
@@ -2438,11 +2440,13 @@
                     }
                     else {
                         $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
                     }
                 },
 
                 _integrarEmRH: function () {
                     $(this.$.btn_integrarEmRH).addClass('disabled');
+                    $(this.$.btn_Voltar).addClass('disabled');
                     
                     if (this._validateFolhaHoras()) {
                         if (this.$.integradorEmRH.value == null | this.$.integradorEmRH.value == "") {
@@ -2454,6 +2458,7 @@
                                 else {
                                     this._showErrorMessage("Falta preencher o campo Matrícula.");
                                     $(this.$.btn_integrarEmRH).removeClass('disabled');
+                                    $(this.$.btn_Voltar).removeClass('disabled');
                                 }
                             }
                             else {
@@ -2464,15 +2469,18 @@
                         else {
                             this._showErrorMessage("A Integração da Ajuda de Custo já foi feita.");
                             $(this.$.btn_integrarEmRH).removeClass('disabled');
+                            $(this.$.btn_Voltar).removeClass('disabled');
                         }
                     }
                     else {
                         $(this.$.btn_integrarEmRH).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
                     }
                 },
 
                 _integrarEmRHKM: function () {
                     $(this.$.btn_integrarEmRHKM).addClass('disabled');
+                    $(this.$.btn_Voltar).addClass('disabled');
 
                     if (this._validateFolhaHoras()) {
                         if (this.$.integradorEmRHKM.value == null | this.$.integradorEmRHKM.value == "") {
@@ -2484,6 +2492,7 @@
                                 else {
                                     this._showErrorMessage("Falta preencher o campo Matrícula.");
                                     $(this.$.btn_integrarEmRHKM).removeClass('disabled');
+                                    $(this.$.btn_Voltar).removeClass('disabled');
 
                                 }
                             }
@@ -2495,10 +2504,13 @@
                         else {
                             this._showErrorMessage("A Integração dos km já foi feita.");
                             $(this.$.btn_integrarEmRHKM).removeClass('disabled');
+                            $(this.$.btn_Voltar).removeClass('disabled');
                         }
                     }
                     else {
-                        $(this.$.btn_integrarEmRHKM).removeClass('disabled');                    }
+                        $(this.$.btn_integrarEmRHKM).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
+                    }
                 },
 
 
@@ -2709,7 +2721,6 @@
 
                 //AJUDA
                 _createAjuda: function () {
-                    debugger;
                     if (this.$.ajudaProjeto.value != "") {
                         if (this.$.empregadoNo.validate() & this.$.empregadoNo.value != "") {
                             if (this.$.ajudaTipoCusto.validate() & this.$.ajudaTipoCusto.value != "") {
@@ -3908,6 +3919,7 @@
                     if (this.validarFolhaDeHoras.eReasonCode == 0 || this.validarFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.validarFolhaDeHoras.eMessage);
                         $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
 
                         this.$.validarfolhadehorasgetnext_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                         this.$.validarfolhadehorasgetnext_ajax.generateRequest();
@@ -3917,11 +3929,11 @@
                     } else {
                         this._showErrorMessage(this.validarFolhaDeHoras.eMessage);
                         $(this.$.btn_validarFolhaDeHoras).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
                     };
                 },
 
                 _validarfolhadehorasGetNextResponse: function (e) {
-                    debugger;
                     if (this.validarFolhaDeHorasGetNext != null && this.validarFolhaDeHorasGetNext != "") {
                         window.location.href = "/FolhasDeHoras/Detalhes/?FHNo=" + this.validarFolhaDeHorasGetNext;
                     }
@@ -3934,6 +3946,7 @@
                     if (this.integrarEmRHFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.integrarEmRHFolhaDeHoras.eMessage);
                         $(this.$.btn_integrarEmRH).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
 
                         this.$.integraremrhfolhadehorasGetNext_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                         this.$.integraremrhfolhadehorasGetNext_ajax.generateRequest();
@@ -3942,6 +3955,7 @@
                     } else {
                         this._showErrorMessage(this.integrarEmRHFolhaDeHoras.eMessage);
                         $(this.$.btn_integrarEmRH).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
                     };
                 },
 
@@ -3958,6 +3972,7 @@
                     if (this.integrarEmRHKMFolhaDeHoras.eReasonCode == 0 || this.integrarEmRHKMFolhaDeHoras.eReasonCode == 100) {
                         this._showMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
                         $(this.$.btn_integrarEmRHKM).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
 
                         this.$.integraremrhkmfolhadehorasGetNext_ajax.body = JSON.stringify({ "folhaDeHorasNo": this._folhadehoraid });
                         this.$.integraremrhkmfolhadehorasGetNext_ajax.generateRequest();
@@ -3966,6 +3981,7 @@
                     } else {
                         this._showErrorMessage(this.integrarEmRHKMFolhaDeHoras.eMessage);
                         $(this.$.btn_integrarEmRHKM).removeClass('disabled');
+                        $(this.$.btn_Voltar).removeClass('disabled');
                     };
                 },
 

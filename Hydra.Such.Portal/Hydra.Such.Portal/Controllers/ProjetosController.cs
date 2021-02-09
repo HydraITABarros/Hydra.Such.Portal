@@ -8947,6 +8947,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Grupo Fatura"); Col = Col + 1; }
                 if (dp["taxaIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Taxa IVA"); Col = Col + 1; }
                 if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Utilizador"); Col = Col + 1; }
+                if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Criador"); Col = Col + 1; }
+                if (dp["createDateText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Criação"); Col = Col + 1; }
 
                 if (dp != null)
                 {
@@ -8994,6 +8996,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["invoiceGroup"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.InvoiceGroup.ToString()); Col = Col + 1; }
                         if (dp["taxaIVA"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.TaxaIVA.ToString()); Col = Col + 1; }
                         if (dp["user"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.User); Col = Col + 1; }
+                        if (dp["createUser"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CreateUser); Col = Col + 1; }
+                        if (dp["createDateText"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CreateDateText); Col = Col + 1; }
 
                         count++;
                     }
