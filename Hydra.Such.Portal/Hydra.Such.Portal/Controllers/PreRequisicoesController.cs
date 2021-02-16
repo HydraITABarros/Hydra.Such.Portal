@@ -3395,13 +3395,18 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (erro == false)
                         {
-                            AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
-                            AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Código);
+                            NAVProductsViewModel Produto = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Código).FirstOrDefault();
 
-                            if (AllProductsArmazem == null || AllProductsArmazem.Count == 0)
+                            if (Produto != null && Produto.InventoryValueZero == 0)
                             {
-                                erro = true;
-                                codigo = x.Código;
+                                AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                                AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Código);
+
+                                if (AllProductsArmazem == null || AllProductsArmazem.Count == 0)
+                                {
+                                    erro = true;
+                                    codigo = x.Código;
+                                }
                             }
                         }
                     });

@@ -11,7 +11,7 @@ namespace WSCreatePreInvoiceLine
 {
     
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", ConfigurationName="WSCreatePreInvoiceLine.WsPreInvoiceLine_Port")]
     public interface WsPreInvoiceLine_Port
     {
@@ -62,7 +62,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline")]
     public partial class WsPreInvoiceLine
@@ -175,6 +175,14 @@ namespace WSCreatePreInvoiceLine
         private System.DateTime consumption_DateField;
         
         private bool consumption_DateFieldSpecified;
+        
+        private System.DateTime data_Inicio_Serv_PrestadoField;
+        
+        private bool data_Inicio_Serv_PrestadoFieldSpecified;
+        
+        private System.DateTime data_Fim_Serv_PrestadoField;
+        
+        private bool data_Fim_Serv_PrestadoFieldSpecified;
         
         private string service_Contract_NoField;
         
@@ -993,7 +1001,63 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=36)]
+        public System.DateTime Data_Inicio_Serv_Prestado
+        {
+            get
+            {
+                return this.data_Inicio_Serv_PrestadoField;
+            }
+            set
+            {
+                this.data_Inicio_Serv_PrestadoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Data_Inicio_Serv_PrestadoSpecified
+        {
+            get
+            {
+                return this.data_Inicio_Serv_PrestadoFieldSpecified;
+            }
+            set
+            {
+                this.data_Inicio_Serv_PrestadoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=37)]
+        public System.DateTime Data_Fim_Serv_Prestado
+        {
+            get
+            {
+                return this.data_Fim_Serv_PrestadoField;
+            }
+            set
+            {
+                this.data_Fim_Serv_PrestadoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool Data_Fim_Serv_PrestadoSpecified
+        {
+            get
+            {
+                return this.data_Fim_Serv_PrestadoFieldSpecified;
+            }
+            set
+            {
+                this.data_Fim_Serv_PrestadoFieldSpecified = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
         public string Service_Contract_No
         {
             get
@@ -1007,7 +1071,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
         public int Nº_Linha_OM
         {
             get
@@ -1035,7 +1099,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
         public string Nº_Objecto_Ref
         {
             get
@@ -1049,7 +1113,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
         public string Nº_Cliente_OM
         {
             get
@@ -1063,7 +1127,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
         public string Nº_Guia_Resíduos_GAR
         {
             get
@@ -1077,7 +1141,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
         public string Nº_Guia_Externa
         {
             get
@@ -1091,7 +1155,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
         public string Tipo_Refeicao
         {
             get
@@ -1105,7 +1169,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
         public bool Factura_de_Contrato
         {
             get
@@ -1133,7 +1197,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
         public bool Factura_CAF
         {
             get
@@ -1161,7 +1225,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
         public string Nº_Objecto_Ref_2
         {
             get
@@ -1175,7 +1239,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
         public Tipo_Objecto_Ref Tipo_Objecto_Ref
         {
             get
@@ -1203,7 +1267,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=49)]
         public string Grupo_Serviço
         {
             get
@@ -1217,7 +1281,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=50)]
         public string Cod_Serv_Cliente
         {
             get
@@ -1231,7 +1295,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=49)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=51)]
         public string Des_Serv_Cliente
         {
             get
@@ -1245,7 +1309,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=50)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=52)]
         public Tipo_Recurso Tipo_Recurso
         {
             get
@@ -1273,7 +1337,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=51)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=53)]
         public System.DateTime Data_Registo_Diario
         {
             get
@@ -1301,7 +1365,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=52)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=54)]
         public string Contract_No
         {
             get
@@ -1315,7 +1379,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=53)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=55)]
         public string Gen_Bus_Posting_Group
         {
             get
@@ -1329,7 +1393,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=54)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=56)]
         public string Gen_Prod_Posting_Group
         {
             get
@@ -1343,7 +1407,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=55)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=57)]
         public string VAT_Bus_Posting_Group
         {
             get
@@ -1357,7 +1421,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=56)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=58)]
         public string VAT_Prod_Posting_Group
         {
             get
@@ -1371,7 +1435,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=57)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=59)]
         public string Unit_of_Measure_Code
         {
             get
@@ -1385,7 +1449,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=58)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=60)]
         public string Description100
         {
             get
@@ -1399,7 +1463,7 @@ namespace WSCreatePreInvoiceLine
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=59)]
+        [System.Xml.Serialization.XmlElementAttribute(Order=61)]
         public string gJobDimension
         {
             get
@@ -1414,7 +1478,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline")]
     public enum Document_Type
     {
@@ -1439,7 +1503,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline")]
     public enum Type
     {
@@ -1464,7 +1528,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline")]
     public enum Tipo_Objecto_Ref
     {
@@ -1480,7 +1544,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline")]
     public enum Tipo_Recurso
     {
@@ -1502,7 +1566,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline")]
     public partial class WsPreInvoiceLine_Filter
@@ -1542,7 +1606,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline")]
     public enum WsPreInvoiceLine_Fields
     {
@@ -1653,6 +1717,12 @@ namespace WSCreatePreInvoiceLine
         Consumption_Date,
         
         /// <remarks/>
+        Data_Inicio_Serv_Prestado,
+        
+        /// <remarks/>
+        Data_Fim_Serv_Prestado,
+        
+        /// <remarks/>
         Service_Contract_No,
         
         /// <remarks/>
@@ -1726,7 +1796,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class Read
@@ -1754,7 +1824,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Read_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class Read_Result
@@ -1774,7 +1844,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class ReadByRecId
@@ -1794,7 +1864,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadByRecId_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class ReadByRecId_Result
@@ -1814,7 +1884,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class ReadMultiple
@@ -1843,7 +1913,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="ReadMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class ReadMultiple_Result
@@ -1864,7 +1934,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class IsUpdated
@@ -1884,7 +1954,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="IsUpdated_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class IsUpdated_Result
@@ -1904,7 +1974,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class GetRecIdFromKey
@@ -1924,7 +1994,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="GetRecIdFromKey_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class GetRecIdFromKey_Result
@@ -1944,7 +2014,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class Create
     {
@@ -1963,7 +2033,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Create_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class Create_Result
     {
@@ -1982,7 +2052,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class CreateMultiple
     {
@@ -2002,7 +2072,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="CreateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class CreateMultiple_Result
     {
@@ -2022,7 +2092,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class Update
     {
@@ -2041,7 +2111,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Update_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class Update_Result
     {
@@ -2060,7 +2130,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class UpdateMultiple
     {
@@ -2080,7 +2150,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ServiceModel.MessageContractAttribute(WrapperName="UpdateMultiple_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class UpdateMultiple_Result
     {
@@ -2100,7 +2170,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class Delete
@@ -2120,7 +2190,7 @@ namespace WSCreatePreInvoiceLine
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(WrapperName="Delete_Result", WrapperNamespace="urn:microsoft-dynamics-schemas/page/wspreinvoiceline", IsWrapped=true)]
     public partial class Delete_Result
@@ -2139,13 +2209,13 @@ namespace WSCreatePreInvoiceLine
         }
     }
     
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public interface WsPreInvoiceLine_PortChannel : WSCreatePreInvoiceLine.WsPreInvoiceLine_Port, System.ServiceModel.IClientChannel
     {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "1.0.0.1")]
     public partial class WsPreInvoiceLine_PortClient : System.ServiceModel.ClientBase<WSCreatePreInvoiceLine.WsPreInvoiceLine_Port>, WSCreatePreInvoiceLine.WsPreInvoiceLine_Port
     {
         
@@ -2319,8 +2389,7 @@ namespace WSCreatePreInvoiceLine
         {
             if ((endpointConfiguration == EndpointConfiguration.WsPreInvoiceLine_Port))
             {
-                return new System.ServiceModel.EndpointAddress("http://such-navdev.such.local:8047/DynamicsNAV100_QUAL/WS/SUCH - QUALIDADE/Page/W" +
-                        "sPreInvoiceLine");
+                return new System.ServiceModel.EndpointAddress("http://10.101.1.11:7047/DynamicsNAV100/WS/SUCH/Page/WsPreInvoiceLine");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

@@ -4511,6 +4511,8 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.CódigoServiço = line.ServiceClientNo;
                                         PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 0 : Contract.InvocePeriod == 5 ? 12 : Contract.InvocePeriod == 4 ? 6 : Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
+                                        PreInvoiceLinesToCreate.Data_Inicio_Serv_Prestado = DataInicioFatura;
+                                        PreInvoiceLinesToCreate.Data_Fim_Serv_Prestado = DataFimFatura;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }
@@ -4786,6 +4788,8 @@ namespace Hydra.Such.Portal.Controllers
                                         PreInvoiceLinesToCreate.Quantidade = line.Quantity * (Contract.InvocePeriod == 6 ? 0 : Contract.InvocePeriod == 5 ? 12 : Contract.InvocePeriod == 4 ? 6 : Contract.InvocePeriod);
                                         PreInvoiceLinesToCreate.PreçoUnitário = line.UnitPrice;
                                         PreInvoiceLinesToCreate.GrupoFatura = line.InvoiceGroup ?? 0;
+                                        PreInvoiceLinesToCreate.Data_Inicio_Serv_Prestado = DataInicioFatura;
+                                        PreInvoiceLinesToCreate.Data_Fim_Serv_Prestado = DataFimFatura;
                                         LinhasFaturacao.Add(PreInvoiceLinesToCreate);
                                     }
                                 }

@@ -139,6 +139,10 @@ namespace Hydra.Such.Data.NAV
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,
+                   Data_Inicio_Serv_PrestadoSpecified = true,
+                   Data_Inicio_Serv_Prestado = x.Data_Inicio_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Inicio_Serv_Prestado) : DateTime.MinValue,
+                   Data_Fim_Serv_PrestadoSpecified = true,
+                   Data_Fim_Serv_Prestado = x.Data_Fim_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Fim_Serv_Prestado) : DateTime.MinValue
                }).ToArray();
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);
@@ -188,7 +192,11 @@ namespace Hydra.Such.Data.NAV
                    gJobDimension = x.NºContrato,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
-                   ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
+                   ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,
+                   Data_Inicio_Serv_PrestadoSpecified = true,
+                   Data_Inicio_Serv_Prestado = x.Data_Inicio_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Inicio_Serv_Prestado) : DateTime.MinValue,
+                   Data_Fim_Serv_PrestadoSpecified = true,
+                   Data_Fim_Serv_Prestado = x.Data_Fim_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Fim_Serv_Prestado) : DateTime.MinValue,
                }).ToArray();
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);

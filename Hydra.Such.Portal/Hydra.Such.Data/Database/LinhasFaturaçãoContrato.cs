@@ -26,5 +26,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataHoraModificação { get; set; }
         public string UtilizadorModificação { get; set; }
         public string NºProjeto { get; set; }
+        public DateTime? Data_Inicio_Serv_Prestado { get; set; }
+        public DateTime? Data_Fim_Serv_Prestado { get; set; }
     }
 }
