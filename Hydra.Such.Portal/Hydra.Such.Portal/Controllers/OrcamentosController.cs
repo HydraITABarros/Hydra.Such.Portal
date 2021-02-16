@@ -832,6 +832,17 @@ namespace Hydra.Such.Portal.Controllers
                 return new FileStreamResult(new FileStream("C:\\Data\\eSUCH\\Orcamentos\\" + id, FileMode.Open), "application/xlsx");
         }
 
+        private static string MakeValidFileName(string name)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            name = System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+            name = name.Replace("+", "_");
+
+            return name;
+        }
+
         [HttpPost]
         [Route("Orcamentos/FileUpload")]
         [Route("Orcamentos/FileUpload/{id}")]
@@ -857,6 +868,7 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             string filename = Path.GetFileName(file.FileName);
 
+                            filename = MakeValidFileName(filename);
                             full_filename = id + "_" + filename;
                             var path = "";
                             if (_generalConfig.Conn == "eSUCH_Prod" || _generalConfig.Conn == "PlataformaOperacionalSUCH_TST")

@@ -3404,6 +3404,9 @@ namespace Hydra.Such.Portal.Controllers
 
                                         if (IVA > 0)
                                             linha.PreçoUnitário = linha.PreçoUnitário * IVA;
+
+                                        linha.Data_Inicio_Serv_Prestado = StContractDate;
+                                        linha.Data_Fim_Serv_Prestado = Lastdate;
                                     }
                                 }
 
@@ -3777,6 +3780,9 @@ namespace Hydra.Such.Portal.Controllers
 
                                                 if (IVA > 0 && i == 1)
                                                     linha.PreçoUnitário = linha.PreçoUnitário * IVA;
+
+                                                linha.Data_Inicio_Serv_Prestado = StContractDate;
+                                                linha.Data_Fim_Serv_Prestado = Lastdate;
                                             }
                                         }
 

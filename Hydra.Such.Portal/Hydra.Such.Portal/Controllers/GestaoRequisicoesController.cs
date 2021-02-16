@@ -4948,6 +4948,17 @@ namespace Hydra.Such.Portal.Controllers
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
+        private static string MakeValidFileName(string name)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            name = System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+            name = name.Replace("+", "_");
+
+            return name;
+        }
+
         [HttpPost]
         [Route("GestaoRequisicoes/FileUpload")]
         [Route("GestaoRequisicoes/FileUpload/{id}")]
@@ -4971,8 +4982,8 @@ namespace Hydra.Such.Portal.Controllers
                             extension.ToLower() == ".png" || extension.ToLower() == ".gif")
                         {
                             string filename = Path.GetFileName(file.FileName);
-                            //full_filename = "Requisicoes/" + id + "_" + filename;
 
+                            filename = MakeValidFileName(filename);
                             full_filename = id + "_" + filename;
                             //var path = Path.Combine(_config.FileUploadFolder, full_filename);
                             var path = "";
