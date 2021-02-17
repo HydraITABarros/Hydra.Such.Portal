@@ -335,12 +335,15 @@
                                         </div>
                                         <div class="row break_clear">
                                             <div class="col-md-2 ">
-                                                <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Prestação Serviços" on-value-changed="serviceDateChanged"></vaadin-date-picker>
+                                                <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Início Prestação Serviços" on-value-changed="serviceDateChanged"></vaadin-date-picker>
                                             </div>
-                                            <div class="col-md-5 ">
+                                            <div class="col-md-2 ">
+                                                <vaadin-date-picker id="dpDataPrestacaoServFim" label="Data Fim Prestação Serviços"></vaadin-date-picker>
+                                            </div>
+                                            <div class="col-md-4 ">
                                                 <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" disabled></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-5 alignRight">
+                                            <div class="col-md-4 alignRight">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
                                             </div>
                                         </div>
@@ -1293,6 +1296,7 @@
                             "customerRequestNo": this._customerRequestNo,
                             "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
+                            "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
                             "dataServPrestado": this.$.txtDataPrestacaoServ.value,
                             "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                             "projMovements": this.selectedItems,
@@ -1344,6 +1348,7 @@
                                     "customerRequestNo": this._customerRequestNo,
                                     "customerRequestDate": this._customerRequestDate,
                                     "serviceDate": this.$.dpDataPrestacaoServ.value,
+                                    "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
                                     "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                                     "projMovements": this.selectedItems,
                                 };
@@ -1552,6 +1557,7 @@
                         var today = yyyy + '-' + mm + '-' + dd; //value="2018-07-31"
 
                         this.$.dpDataPrestacaoServ.value = today;
+                        this.$.dpDataPrestacaoServFim.value = today;
                     }
                     catch (err) { }
                 },

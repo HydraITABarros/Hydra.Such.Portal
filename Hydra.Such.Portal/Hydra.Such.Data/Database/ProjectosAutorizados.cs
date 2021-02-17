@@ -24,6 +24,7 @@ namespace Hydra.Such.Data.Database
         public DateTime? DataAutorizacao { get; set; }
         public string DataServPrestado { get; set; }
         public DateTime? DataPrestacaoServico { get; set; }
+        public DateTime? DataPrestacaoServicoFim { get; set; }
         public string Observacoes { get; set; }
         public string Observacoes1 { get; set; }
         public string PedidoCliente { get; set; }

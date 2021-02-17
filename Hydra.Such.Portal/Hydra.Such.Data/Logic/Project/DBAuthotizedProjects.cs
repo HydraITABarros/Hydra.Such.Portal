@@ -53,6 +53,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.DataAutorizacao = item.DataAutorizacao.HasValue ? item.DataAutorizacao.Value.ToString("yyyy-MM-dd") : "";
                 proj.DataServPrestado = item.DataServPrestado;
                 proj.DataPrestacaoServico = item.DataPrestacaoServico.HasValue ? item.DataPrestacaoServico.Value.ToString("yyyy-MM-dd") : "";
+                proj.DataPrestacaoServicoFim = item.DataPrestacaoServicoFim.HasValue ? item.DataPrestacaoServicoFim.Value.ToString("yyyy-MM-dd") : "";
                 proj.Observacoes = item.Observacoes;
                 proj.Observacoes1 = item.Observacoes1;
                 proj.PedidoCliente = item.PedidoCliente;
@@ -106,6 +107,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.DataAutorizacao = string.IsNullOrEmpty(item.DataAutorizacao) ? (DateTime?)null : DateTime.Parse(item.DataAutorizacao);
                 proj.DataServPrestado = item.DataServPrestado;
                 proj.DataPrestacaoServico = string.IsNullOrEmpty(item.DataPrestacaoServico) ? (DateTime?)null : DateTime.Parse(item.DataPrestacaoServico);
+                proj.DataPrestacaoServicoFim = string.IsNullOrEmpty(item.DataPrestacaoServicoFim) ? (DateTime?)null : DateTime.Parse(item.DataPrestacaoServicoFim);
                 proj.Observacoes = item.Observacoes;
                 proj.Observacoes1 = item.Observacoes1;
                 proj.PedidoCliente = item.PedidoCliente;

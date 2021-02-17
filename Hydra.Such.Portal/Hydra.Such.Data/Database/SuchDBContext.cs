@@ -8032,6 +8032,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataPrestacaoServico).HasColumnType("datetime");
 
+                entity.Property(e => e.DataPrestacaoServicoFim).HasColumnType("datetime");
+
                 entity.Property(e => e.DataServPrestado)
                     .HasMaxLength(24)
                     .IsUnicode(false);

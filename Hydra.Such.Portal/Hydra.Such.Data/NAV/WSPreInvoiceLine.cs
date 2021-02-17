@@ -117,7 +117,6 @@ namespace Hydra.Such.Data.NAV
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                {
-                   
                    Document_No = HeaderNo,
                    Line_No = counter+=10000,
                    Line_NoSpecified = true,
@@ -139,6 +138,7 @@ namespace Hydra.Such.Data.NAV
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,
+
                    Data_Inicio_Serv_PrestadoSpecified = true,
                    Data_Inicio_Serv_Prestado = x.Data_Inicio_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Inicio_Serv_Prestado) : DateTime.MinValue,
                    Data_Fim_Serv_PrestadoSpecified = true,
@@ -171,7 +171,6 @@ namespace Hydra.Such.Data.NAV
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                {
-
                    Document_No = HeaderNo,
                    Line_No = counter += 10000,
                    Line_NoSpecified = true,
@@ -193,6 +192,7 @@ namespace Hydra.Such.Data.NAV
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,
+
                    Data_Inicio_Serv_PrestadoSpecified = true,
                    Data_Inicio_Serv_Prestado = x.Data_Inicio_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Inicio_Serv_Prestado) : DateTime.MinValue,
                    Data_Fim_Serv_PrestadoSpecified = true,
@@ -239,12 +239,8 @@ namespace Hydra.Such.Data.NAV
                 line.QuantitySpecified = true;
                 line.Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0;
                 line.TypeSpecified = true;
-
-
                 line.Unit_of_Measure = x.MeasurementUnitCode;
                 //line.Unit_of_Measure_Code = x.MeasurementUnitCode;
-
-
                 line.Location_Code = x.LocationCode;
                 line.Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0;
                 line.Unit_PriceSpecified = true;
@@ -262,7 +258,6 @@ namespace Hydra.Such.Data.NAV
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
-
                 line.Grupo_Serviço = !string.IsNullOrEmpty(x.ServiceGroupCode) ? x.ServiceGroupCode : "";
                 line.Service_Group_Description = !string.IsNullOrEmpty(x.ServiceGroupCode) && DBServices.GetById(x.ServiceGroupCode) != null ? DBServices.GetById(x.ServiceGroupCode).Descrição : "";
                 line.Nº_Guia_Externa = x.ExternalGuideNo;
@@ -271,21 +266,24 @@ namespace Hydra.Such.Data.NAV
                 line.FunctionAreaCode20 = x.FunctionalAreaCode;
                 line.ResponsabilityCenterCode20 = x.ResponsabilityCenterCode;
                 line.Des_Serv_Cliente = !string.IsNullOrEmpty(x.ServiceClientCode) ? DBServices.GetById(x.ServiceClientCode) != null ? DBServices.GetById(x.ServiceClientCode).Descrição : "" : "";
-
                 line.Data_Registo_Diario = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Data_Registo_DiarioSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
-
                 if (x.ResourceType.HasValue)
                 {
                     line.Tipo_Recurso = (WSCreatePreInvoiceLine.Tipo_Recurso)x.ResourceType.Value;
                     line.Tipo_RecursoSpecified = true;
                 }
+
+                line.Data_Inicio_Serv_PrestadoSpecified = true;
+                line.Data_Inicio_Serv_Prestado = !string.IsNullOrEmpty(x.Date) ? Convert.ToDateTime(x.Date) : DateTime.MinValue;
+                line.Data_Fim_Serv_PrestadoSpecified = true;
+                line.Data_Fim_Serv_Prestado = !string.IsNullOrEmpty(x.DateFim) ? Convert.ToDateTime(x.DateFim) : DateTime.MinValue;
+
                 parsedList[array] = line;
                 array++;
 
                 //Job_Journal_Line_No_Portal = x.LineNo,
                 //Job_Journal_Line_No_PortalSpecified = true,
-
             };
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);

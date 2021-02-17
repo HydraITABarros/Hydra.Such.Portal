@@ -34,6 +34,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string NumCompromisso { get; set; }
         public string SituacoesPendentes { get; set; }
         public string DataPrestacaoServico { get; set; }
+        public string DataPrestacaoServicoFim { get; set; }
         //{
         //    get { return this.dataPrestacaoServico; }
         //    set

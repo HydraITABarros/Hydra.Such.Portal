@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string ProjectDimension { get; set; }
         public string ContractNo { get; set; }
         public string Date { get; set; }
+        public string DateFim { get; set; }
         public string DataPedido { get; set; }
         public int? MovementType { get; set; }
         public int? Type { get; set; }
@@ -127,6 +128,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
     {
         public string InvoiceToClientNo { get; set; }
         public string Date { get; set; }
+        public string DateFim { get; set; }
         public string DataPedido { get; set; }
         public string CommitmentNumber { get; set; }
         public string ClientRequest { get; set; }

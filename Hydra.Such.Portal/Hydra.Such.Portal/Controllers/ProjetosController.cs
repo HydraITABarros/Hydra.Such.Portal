@@ -3587,6 +3587,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (serviceDateValue != null)
                     DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
 
+                DateTime serviceDateFim = DateTime.MinValue;
+                JValue serviceDateFimValue = requestParams["serviceDateFim"] as JValue;
+                if (serviceDateFimValue != null)
+                    DateTime.TryParse((string)serviceDateFimValue.Value, out serviceDateFim);
+
                 string billingPeriod = string.Empty;
                 JValue billingPeriodValue = requestParams["dataServPrestado"] as JValue;
                 if (billingPeriodValue != null)
@@ -3661,6 +3666,7 @@ namespace Hydra.Such.Portal.Controllers
                             DataServPrestado = billingPeriod,
                             DataPedido = customerRequestDate > DateTime.MinValue ? customerRequestDate : (DateTime?)null,
                             DataPrestacaoServico = serviceDate > DateTime.MinValue ? serviceDate : (DateTime?)null,
+                            DataPrestacaoServicoFim = serviceDateFim > DateTime.MinValue ? serviceDateFim : (DateTime?)null,
                             CodEnderecoEnvio = !string.IsNullOrEmpty(project.CódEndereçoEnvio) ? project.CódEndereçoEnvio : "",
                             ValorAutorizado = Math.Round((decimal)authorizationTotal, 2),
                             GrupoContabilisticoProjeto = project.TipoGrupoContabProjeto.HasValue ? project.TipoGrupoContabProjeto.ToString() : string.Empty
@@ -3832,6 +3838,11 @@ namespace Hydra.Such.Portal.Controllers
                 JValue serviceDateValue = requestParams["serviceDate"] as JValue;
                 if (serviceDateValue != null)
                     DateTime.TryParse((string)serviceDateValue.Value, out serviceDate);
+
+                DateTime serviceDateFim;
+                JValue serviceDateFimValue = requestParams["serviceDateFim"] as JValue;
+                if (serviceDateFimValue != null)
+                    DateTime.TryParse((string)serviceDateFimValue.Value, out serviceDateFim);
 
                 decimal authorizationTotal;
                 JValue authorizationTotalValue = requestParams["authorizationTotalValue"] as JValue;
@@ -4589,6 +4600,7 @@ namespace Hydra.Such.Portal.Controllers
                             //SituacoesPendentes = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).SituacoesPendentes,
                             //Comments = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).Observacoes,
                             Date = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataPrestacaoServico,
+                            DateFim = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).DataPrestacaoServicoFim,
 
                             //##################################    Obter de projetos autorizados (campos não editaveis)
                             InvoiceToClientNo = authProjectMovements.FirstOrDefault(y => y.CodProjeto == mpa.CodProjeto && y.GrupoFactura == mpa.GrupoFactura).CodCliente,
@@ -4703,6 +4715,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     x.InvoiceToClientNo,
                     x.Date,
+                    x.DateFim,
                     x.CommitmentNumber,
                     x.ClientRequest
                 },
@@ -4711,8 +4724,10 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         InvoiceToClientNo = key.InvoiceToClientNo,
                         Date = key.Date,
+                        DateFim = key.DateFim,
                         CommitmentNumber = key.CommitmentNumber,
                         ClientRequest = key.ClientRequest,
+
                         ClientVATReg = customers.FirstOrDefault(x => x.No_ == key.InvoiceToClientNo)?.VATRegistrationNo_,// DBNAV2017Clients.GetClientVATByNo(key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName),
                         ContractNo = projectsDetails.Select(x => x.NºContrato).FirstOrDefault(y => !string.IsNullOrEmpty(y)),
                         Currency = items.FirstOrDefault(y => y.InvoiceToClientNo == key.InvoiceToClientNo)?.Currency,
@@ -5349,6 +5364,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     x.InvoiceToClientNo,
                     x.Date,
+                    x.DateFim,
                     x.CommitmentNumber,
                     x.ClientRequest,
 
@@ -5356,6 +5372,7 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     InvoiceToClientNo = x.Key.InvoiceToClientNo,
                     Date = x.Key.Date,
+                    DateFim = x.Key.DateFim,
                     CommitmentNumber = x.Key.CommitmentNumber,
                     ClientRequest = x.Key.ClientRequest,
                     ClientVATReg = DBNAV2017Clients.GetClientVATByNo(x.Key.InvoiceToClientNo, _config.NAVDatabaseName, _config.NAVCompanyName)
@@ -7660,7 +7677,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
                 if (dp["codTermosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Termos de Pagamento"); Col = Col + 1; }
-                if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Serv. Prestado"); Col = Col + 1; }
+                if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Início Serv. Prestado"); Col = Col + 1; }
+                if (dp["dataPrestacaoServicoFim"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Fim Serv. Prestado"); Col = Col + 1; }
                 if (dp["numCompromisso"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Núm. Compromisso"); Col = Col + 1; }
                 if (dp["pedidoCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedido Cliente"); Col = Col + 1; }
                 if (dp["dataPedido"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Pedido"); Col = Col + 1; }
@@ -7690,6 +7708,7 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade); Col = Col + 1; }
                         if (dp["codTermosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodTermosPagamento); Col = Col + 1; }
                         if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPrestacaoServico); Col = Col + 1; }
+                        if (dp["dataPrestacaoServicoFim"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPrestacaoServicoFim); Col = Col + 1; }
                         if (dp["numCompromisso"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumCompromisso); Col = Col + 1; }
                         if (dp["pedidoCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedidoCliente); Col = Col + 1; }
                         if (dp["dataPedido"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPedido); Col = Col + 1; }
