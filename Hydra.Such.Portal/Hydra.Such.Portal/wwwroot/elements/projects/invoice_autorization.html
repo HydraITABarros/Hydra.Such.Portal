@@ -340,10 +340,13 @@
                                             <div class="col-md-2 ">
                                                 <vaadin-date-picker id="dpDataPrestacaoServFim" label="Data Fim Prestação Serviços" on-value-changed="serviceDateFimChanged" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                             </div>
-                                            <div class="col-md-4 ">
-                                                <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                            <div class="col-md-3 ">
+                                                <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" maxlength="40" required error-message="Este campo é obrigatório"></vaadin-text-field>
                                             </div>
-                                            <div class="col-md-4 alignRight">
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="txtNoFaturaRelacionada" name="txtNoFaturaRelacionada" label="Nº Fatura Relacionada " value="" maxlength="20"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-2 alignRight">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
                                             </div>
                                         </div>
@@ -1310,19 +1313,20 @@
                     }
                 },
                 _openDlg: function () {
+                    debugger;
                     var TextoInicio = this.$.dpDataPrestacaoServ.value;
                     var TextoFim = this.$.dpDataPrestacaoServFim.value;
                     var Texto = this.$.txtDataPrestacaoServ.value;
 
-                    if (TextoInicio = "" || !this.$.dpDataPrestacaoServ.validate()) {
+                    if (TextoInicio == "" || !this.$.dpDataPrestacaoServ.validate()) {
                         this.openToastError("A Data Início Prestação Serviços é de preenchimento obrigatório.");
                         return;
                     }
-                    if (TextoFim = "" || !this.$.dpDataPrestacaoServFim.validate()) {
+                    if (TextoFim == "" || !this.$.dpDataPrestacaoServFim.validate()) {
                         this.openToastError("A Data Fim Prestação Serviços é de preenchimento obrigatório.");
                         return;
                     }
-                    if (Texto = "" || !this.$.txtDataPrestacaoServ.validate()) {
+                    if (Texto == "" || !this.$.txtDataPrestacaoServ.validate()) {
                         this.openToastError("A Data Prestação Serviços é de preenchimento obrigatório.");
                         return;
                     }
