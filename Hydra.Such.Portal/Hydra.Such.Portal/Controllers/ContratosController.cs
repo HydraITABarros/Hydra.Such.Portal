@@ -2365,13 +2365,18 @@ namespace Hydra.Such.Portal.Controllers
             foreach (AutorizarFaturaçãoContratos fc in ALLcontractList)
             {
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(fc.NºContrato);
-                Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == fc.GrupoFatura).Sum(x => x.ValorVenda).Value;
-                if (sum <= 0 && !fc.Situação.Contains("Valor da Fatura está a 0!"))
+                Decimal sum = 0;
+                if (contractInvoiceLines != null && contractInvoiceLines.Count > 0)
                 {
-                    fc.Situação = fc.Situação + "Valor da Fatura está a 0!";
-                    fc.UtilizadorModificação = User.Identity.Name;
-                    fc.DataHoraModificação = DateTime.Now;
-                    DBAuthorizeInvoiceContracts.Update(fc);
+                    sum = (decimal)contractInvoiceLines.Where(x => x.GrupoFatura == fc.GrupoFatura).Sum(x => x.ValorVenda).Value;
+
+                    if (sum <= 0 && !fc.Situação.Contains("Valor da Fatura está a 0!"))
+                    {
+                        fc.Situação = fc.Situação + "Valor da Fatura está a 0!";
+                        fc.UtilizadorModificação = User.Identity.Name;
+                        fc.DataHoraModificação = DateTime.Now;
+                        DBAuthorizeInvoiceContracts.Update(fc);
+                    }
                 }
             }
             List<AutorizarFaturaçãoContratos> contractList = DBContractInvoices.GetAllInvoice();
@@ -2394,8 +2399,13 @@ namespace Hydra.Such.Portal.Controllers
                 // Valor Fatura
 
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(item.NºContrato);
-                Decimal sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
-                Decimal Count = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Count();
+                Decimal sum = 0;
+                Decimal Count = 0;
+                if (contractInvoiceLines != null && contractInvoiceLines.Count > 0)
+                {
+                    sum = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Sum(x => x.ValorVenda).Value;
+                    Count = contractInvoiceLines.Where(x => x.GrupoFatura == item.GrupoFatura).Count();
+                }
 
                 result.Add(new FaturacaoContratosViewModel
                 {
@@ -3158,7 +3168,7 @@ namespace Hydra.Such.Portal.Controllers
                         Lastdate = StContractDate;
                     Month = StContractDate.ToString("MMMM").ToUpper();
                     Year = StContractDate.Year.ToString();
-                    InvoiceBorrowed = Month + "/" + Year;
+                    InvoiceBorrowed = GetTextoFatura(StContractDate, Lastdate); // Month + "/" + Year;
                     if (CountLines != null && CountLines > 1)
                     {
                         RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
@@ -4396,20 +4406,21 @@ namespace Hydra.Such.Portal.Controllers
                         //CREATE SALES HEADER
                         NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                         PreInvoiceToCreate.PeriododeFact_Contrato = DataInicioFatura.ToString("dd/MM/yyyy") + " a " + DataFimFatura.ToString("dd/MM/yyyy");
-                        string mes = DataFimFatura.ToString("MMMM");
 
-                        if (Contract.Type != 3)
-                            PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DataFimFatura.Year);
-                        else
-                        {
-                            string TextoFatura = Contract.TextoFatura;
-                            if (!string.IsNullOrEmpty(TextoFatura))
-                            {
-                                TextoFatura = TextoFatura.Replace("<MES>", mes.ToUpper());
-                                TextoFatura = TextoFatura.Replace("<ANO>", DataFimFatura.Year.ToString());
-                                PreInvoiceToCreate.DataServ_Prestado = TextoFatura;
-                            }
-                        }
+                        //string mes = DataFimFatura.ToString("MMMM");
+                        //if (Contract.Type != 3)
+                        //    PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DataFimFatura.Year);
+                        //else
+                        //{
+                        //    string TextoFatura = Contract.TextoFatura;
+                        //    if (!string.IsNullOrEmpty(TextoFatura))
+                        //    {
+                        //        TextoFatura = TextoFatura.Replace("<MES>", mes.ToUpper());
+                        //        TextoFatura = TextoFatura.Replace("<ANO>", DataFimFatura.Year.ToString());
+                        //        PreInvoiceToCreate.DataServ_Prestado = TextoFatura;
+                        //    }
+                        //}
+                        PreInvoiceToCreate.DataServ_Prestado = GetTextoFatura(DataInicioFatura, DataFimFatura);
 
                         PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                         PreInvoiceToCreate.DocumentDate = lastDay;
@@ -4686,7 +4697,8 @@ namespace Hydra.Such.Portal.Controllers
                             NAVSalesHeaderViewModel PreInvoiceToCreate = new NAVSalesHeaderViewModel();
                             PreInvoiceToCreate.PeriododeFact_Contrato = DataInicioFatura.ToString("dd/MM/yyyy") + " a " + DataFimFatura.ToString("dd/MM/yyyy");
                             string mes = DataFimFatura.ToString("MMMM");
-                            PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DataFimFatura.Year);
+                            //PreInvoiceToCreate.DataServ_Prestado = String.Format("{0}/{1}", mes.ToUpper(), DataFimFatura.Year);
+                            PreInvoiceToCreate.DataServ_Prestado = GetTextoFatura(DataInicioFatura, DataFimFatura);
 
                             PreInvoiceToCreate.Sell_toCustomerNo = Contract.ClientNo;
                             PreInvoiceToCreate.DocumentDate = lastDay;
@@ -7392,9 +7404,65 @@ namespace Hydra.Such.Portal.Controllers
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
+        public string GetTextoFatura(DateTime DataInicioFatura, DateTime DataFimFatura)
+        {
+            string TextoFatura = "";
+            string mes = DataFimFatura.ToString("MMMM");
 
+            int DiaInicio = DataInicioFatura.Day;
+            string DiaInicioTexto = DiaInicio < 10 ? "0" + DiaInicio.ToString() : DiaInicio.ToString();
+            int MesInicio = DataInicioFatura.Month;
+            string MesInicioTexto = MesInicio < 10 ? "0" + MesInicio.ToString() : MesInicio.ToString();
+            int AnoInicio = DataInicioFatura.Year;
+            string AnoInicioTexto = AnoInicio.ToString();
 
+            int DiaFim = DataFimFatura.Day;
+            string DiaFimTexto = DiaFim < 10 ? "0" + DiaFim.ToString() : DiaFim.ToString();
+            int MesFim = DataFimFatura.Month;
+            string MesFimTexto = MesFim < 10 ? "0" + MesFim.ToString() : MesFim.ToString();
+            int AnoFim = DataFimFatura.Year;
+            string AnoFimTexto = AnoFim.ToString();
 
+            var UltimoDia = DateTime.DaysInMonth(AnoFim, MesFim);
 
+            if (DataInicioFatura == DataFimFatura)
+            {
+                TextoFatura = DiaInicioTexto + "/" + MesInicioTexto + "/" + AnoInicioTexto;
+            }
+            else
+            {
+                if (DiaInicio == 1)
+                {
+                    if (DiaFim == UltimoDia && MesInicio == MesFim && AnoInicio == AnoFim)
+                    {
+                        TextoFatura = DataInicioFatura.ToString("MMMM").ToUpper() + "/" + AnoFimTexto;
+                    }
+                    else
+                    {
+                        if (DiaFim == UltimoDia && MesInicio != MesFim && AnoInicio == AnoFim)
+                        {
+                            TextoFatura = DataInicioFatura.ToString("MMMM").ToUpper() + " a " + DataFimFatura.ToString("MMMM").ToUpper() + "/" + AnoFimTexto;
+                        }
+                        else
+                        {
+                            if (DiaFim == UltimoDia && MesInicio != MesFim && AnoInicio != AnoFim)
+                            {
+                                TextoFatura = DataInicioFatura.ToString("MMMM").ToUpper() + "/" + AnoInicioTexto + " a " + DataFimFatura.ToString("MMMM").ToUpper() + "/" + AnoFimTexto;
+                            }
+                            else
+                            {
+                                TextoFatura = DiaInicioTexto + "/" + MesInicioTexto + "/" + AnoInicioTexto + " a " + DiaFimTexto + "/" + MesFimTexto + "/" + AnoFimTexto;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    TextoFatura = DiaInicioTexto + "/" + MesInicioTexto + "/" + AnoInicioTexto + " a " + DiaFimTexto + "/" + MesFimTexto + "/" + AnoFimTexto;
+                }
+            }
+
+            return TextoFatura;
+        }
     }
 }

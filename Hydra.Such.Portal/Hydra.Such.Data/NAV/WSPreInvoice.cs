@@ -335,8 +335,8 @@ namespace Hydra.Such.Data.NAV
             DateTime now = DateTime.Now;
             string PostingNoSeries = "";
             string Observacoes = "";
-            string Mes = InvoiceBorrowed.Substring(0, InvoiceBorrowed.IndexOf("/"));
-            string Ano = InvoiceBorrowed.Substring(InvoiceBorrowed.IndexOf("/") + 1, 4);
+            //string Mes = InvoiceBorrowed.Substring(0, InvoiceBorrowed.IndexOf("/"));
+            //string Ano = InvoiceBorrowed.Substring(InvoiceBorrowed.IndexOf("/") + 1, 4);
             ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
             Contratos Contrato = DBContracts.GetByIdLastVersion(CreateInvoice.NºContrato);
             WSCreatePreInvoice.Create_Result result = new WSCreatePreInvoice.Create_Result();
@@ -352,8 +352,9 @@ namespace Hydra.Such.Data.NAV
                 if (Contrato != null && !string.IsNullOrEmpty(Contrato.TextoFatura))
                 {
                     Observacoes = Contrato.TextoFatura;
-                    Observacoes = Observacoes.Replace("<MES>", Mes);
-                    Observacoes = Observacoes.Replace("<ANO>", Ano);
+                    //Observacoes = Observacoes.Replace("<MES>", Mes);
+                    //Observacoes = Observacoes.Replace("<ANO>", Ano);
+                    Observacoes = Observacoes + Environment.NewLine + InvoiceBorrowed;
                 }
             }
             else
