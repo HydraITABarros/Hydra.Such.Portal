@@ -66,6 +66,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.SituacoesPendentes = item.SituacoesPendentes;
                 proj.CodMetodoPagamento = item.CodMetodoPagamento;
                 proj.Faturado = item.Faturado;
+                proj.NoFaturaRelacionada = item.NoFaturaRelacionada;
                 //proj.ValorAutorizado = 0;//item.ValorAutorizado;
 
                 return proj;
@@ -120,6 +121,7 @@ namespace Hydra.Such.Data.Logic.Project
                 proj.SituacoesPendentes = item.SituacoesPendentes;
                 proj.CodMetodoPagamento = item.CodMetodoPagamento;
                 proj.Faturado = item.Faturado;
+                proj.NoFaturaRelacionada = item.NoFaturaRelacionada;
 
                 return proj;
             }

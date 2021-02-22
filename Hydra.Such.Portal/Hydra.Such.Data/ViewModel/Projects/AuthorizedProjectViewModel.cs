@@ -55,6 +55,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string CodMetodoPagamento { get; set; }
         public bool Faturado { get; set; }
         public decimal ValorAutorizado { get; set; }
+        public string NoFaturaRelacionada { get; set; }
 
         //EXPORTAR PARA EXCEL
         public Object ColunasEXCEL { get; set; }

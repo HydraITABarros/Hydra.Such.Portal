@@ -3616,6 +3616,11 @@ namespace Hydra.Such.Portal.Controllers
                 if (projMovementsValue != null)
                     projMovements = projMovementsValue.ToObject<List<ProjectMovementViewModel>>();
 
+                string noFaturaRelacionada = string.Empty;
+                JValue noFaturaRelacionadaValue = requestParams["noFaturaRelacionada"] as JValue;
+                if (noFaturaRelacionadaValue != null)
+                    noFaturaRelacionada = (string)noFaturaRelacionadaValue.Value;
+
                 #endregion
 
                 Projetos project = null;
@@ -3669,8 +3674,9 @@ namespace Hydra.Such.Portal.Controllers
                             DataPrestacaoServicoFim = serviceDateFim > DateTime.MinValue ? serviceDateFim : (DateTime?)null,
                             CodEnderecoEnvio = !string.IsNullOrEmpty(project.CódEndereçoEnvio) ? project.CódEndereçoEnvio : "",
                             ValorAutorizado = Math.Round((decimal)authorizationTotal, 2),
-                            GrupoContabilisticoProjeto = project.TipoGrupoContabProjeto.HasValue ? project.TipoGrupoContabProjeto.ToString() : string.Empty
-                        };
+                            GrupoContabilisticoProjeto = project.TipoGrupoContabProjeto.HasValue ? project.TipoGrupoContabProjeto.ToString() : string.Empty,
+                            NoFaturaRelacionada = !string.IsNullOrEmpty(noFaturaRelacionada) ? noFaturaRelacionada : string.Empty
+                    };
 
                         //Atualizar apenas os campos relativos à autorização. Nos movimentos de projeto atualizar apenas os necessários à listagem/apresentação
                         List<MovimentosProjectoAutorizados> authorizedProjMovements = new List<MovimentosProjectoAutorizados>();
@@ -4792,6 +4798,7 @@ namespace Hydra.Such.Portal.Controllers
                     x.SetDimensionsFor(authProj, projectRegion, customer);
                     x.DataPedido = authProj != null ? authProj.DataPedido : null;
                     x.GrupoFatura = authProj.GrupoFactura;
+                    x.NoFaturaRelacionada = authProj.NoFaturaRelacionada;
 
                     TiposGrupoContabProjeto contabGroupType = new TiposGrupoContabProjeto();
                     x.Items.ForEach(item =>

@@ -202,6 +202,8 @@ namespace WSCreatePreInvoice
         
         private bool grupo_FaturaFieldSpecified;
         
+        private string related_InvoiceField;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string Key
@@ -1139,6 +1141,20 @@ namespace WSCreatePreInvoice
                 this.grupo_FaturaFieldSpecified = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=52)]
+        public string Related_Invoice
+        {
+            get
+            {
+                return this.related_InvoiceField;
+            }
+            set
+            {
+                this.related_InvoiceField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -1364,6 +1380,9 @@ namespace WSCreatePreInvoice
         
         /// <remarks/>
         Grupo_Fatura,
+        
+        /// <remarks/>
+        Related_Invoice,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]

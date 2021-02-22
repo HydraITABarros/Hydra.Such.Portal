@@ -1303,7 +1303,8 @@
                             "dataServPrestado": this.$.txtDataPrestacaoServ.value,
                             "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                             "projMovements": this.selectedItems,
-                            "projObs": this.$.IdObs.value
+                            "projObs": this.$.IdObs.value,
+                            "noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value
                         };
                         this.$.autorize_ajax.body = JSON.stringify(authorizationRequest);
                         this.$.autorize_ajax.generateRequest();
@@ -1347,10 +1348,10 @@
                         this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à data atual.");
                         return;
                     }
-                    if (DataFim > DataMaxima) {
-                        this.openToastError("A Data Fim Prestação Serviços tem que ser inferior ou igual à data atual.");
-                        return;
-                    }
+                    //if (DataFim > DataMaxima) {
+                    //    this.openToastError("A Data Fim Prestação Serviços tem que ser inferior ou igual à data atual.");
+                    //    return;
+                    //}
                     if (DataInicio > DataFim) {
                         this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à Data Fim Prestação Serviços.");
                         return;
@@ -1608,7 +1609,27 @@
                     catch (err) { }
                 },
                 serviceDateInicioChanged: function (e) {
-                    this.$.dpDataPrestacaoServFim.value = this.$.dpDataPrestacaoServ.value;
+                    debugger;
+                    var TextoInicio = this.$.dpDataPrestacaoServ.value;
+                    if (TextoInicio != "") {
+                        var DiaInicioTexto = TextoInicio.substring(8, 10);
+                        var DiaInicio = parseFloat(DiaInicioTexto);
+                        var MesInicioTexto = TextoInicio.substring(5, 7);
+                        var MesInicio = parseFloat(MesInicioTexto);
+                        var AnoInicioTexto = TextoInicio.substring(0, 4);
+                        var AnoInicio = parseFloat(AnoInicioTexto);
+
+                        var DataFim = new Date(AnoInicio, MesInicio, 0);
+                        var UltimoDia = DataFim.getDate()
+
+                        if (DiaInicio == 1) {
+                            this.$.dpDataPrestacaoServFim.value = AnoInicioTexto + "-" + MesInicioTexto + "-" + UltimoDia.toString();
+                        }
+                        else {
+                            this.$.dpDataPrestacaoServFim.value = this.$.dpDataPrestacaoServ.value;
+                        }
+                    }
+
                     this.getBillingPeriod();
                 },
                 serviceDateFimChanged: function (e) {
@@ -1639,10 +1660,10 @@
                             this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à data atual.");
                             return;
                         }
-                        if (DataFim > DataMaxima) {
-                            this.openToastError("A Data Fim Prestação Serviços tem que ser inferior ou igual à data atual.");
-                            return;
-                        }
+                        //if (DataFim > DataMaxima) {
+                        //    this.openToastError("A Data Fim Prestação Serviços tem que ser inferior ou igual à data atual.");
+                        //    return;
+                        //}
                         if (DataInicio > DataFim) {
                             this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à Data Fim Prestação Serviços.");
                             return;
@@ -1663,11 +1684,8 @@
                         var AnoFimTexto = TextoFim.substring(0, 4);
                         var AnoFim = parseFloat(AnoFimTexto);
 
-                        var DataFim = new Date(AnoFim, MesFim, 0);
-                        var UltimoDia = DataFim.getUTCDate();
-                        if (MesFim > 2) {
-                            UltimoDia = UltimoDia + 1;
-                        }
+                        var DataFim = new Date(AnoInicio, MesInicio, 0);
+                        var UltimoDia = DataFim.getDate()
 
                         if (TextoInicio == TextoFim) {
                             this._billingPeriod = DiaInicioTexto + "/" + MesInicioTexto + "/" + AnoInicioTexto;

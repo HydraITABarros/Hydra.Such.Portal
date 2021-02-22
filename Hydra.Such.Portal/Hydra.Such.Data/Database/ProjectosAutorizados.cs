@@ -37,5 +37,6 @@ namespace Hydra.Such.Data.Database
         public string SituacoesPendentes { get; set; }
         public string CodMetodoPagamento { get; set; }
         public bool Faturado { get; set; }
+        public string NoFaturaRelacionada { get; set; }
     }
 }

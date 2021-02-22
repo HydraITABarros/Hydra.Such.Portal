@@ -91,6 +91,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string Ship_to_Post_Code { get; set; }
         public bool Apagar_Linha { get; set; }
         public bool? FaturaPrecosIvaIncluido { get; set; }
+        public string NoFaturaRelacionada { get; set; }
 
 
         //EXPORTAR PARA EXCEL
@@ -148,6 +149,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string CreateUser { get; set; }
         //public List<SPInvoiceListViewModel> Items { get; set; }
         public bool? FaturaPrecosIvaIncluido { get; set; }
+        public string NoFaturaRelacionada { get; set; }
 
         public void SetDimensionsFor(AuthorizedProjectViewModel authProj, string projectRegion, NAVClientsViewModel customer)
         {
