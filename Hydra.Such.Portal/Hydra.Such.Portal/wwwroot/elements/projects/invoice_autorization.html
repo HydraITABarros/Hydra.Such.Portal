@@ -1288,7 +1288,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _confirm: function (selectedItem, selectedItems) {
-                    debugger;
                     if (this._commitmentNo == null)
                         this._commitmentNo = "";
                     if (this.selectedItems != null && this.selectedItems.length > 0) {
@@ -1314,21 +1313,24 @@
                     }
                 },
                 _openDlg: function () {
-                    debugger;
+                    this.$.btnConfirm.disabled = true;
                     var TextoInicio = this.$.dpDataPrestacaoServ.value;
                     var TextoFim = this.$.dpDataPrestacaoServFim.value;
                     var Texto = this.$.txtDataPrestacaoServ.value;
 
                     if (TextoInicio == "" || !this.$.dpDataPrestacaoServ.validate()) {
                         this.openToastError("A Data Início Prestação Serviços é de preenchimento obrigatório.");
+                        this.$.btnConfirm.disabled = false;
                         return;
                     }
                     if (TextoFim == "" || !this.$.dpDataPrestacaoServFim.validate()) {
                         this.openToastError("A Data Fim Prestação Serviços é de preenchimento obrigatório.");
+                        this.$.btnConfirm.disabled = false;
                         return;
                     }
                     if (Texto == "" || !this.$.txtDataPrestacaoServ.validate()) {
                         this.openToastError("A Data Prestação Serviços é de preenchimento obrigatório.");
+                        this.$.btnConfirm.disabled = false;
                         return;
                     }
                     var DataInicio = new Date(TextoInicio);
@@ -1338,14 +1340,17 @@
 
                     if (DataInicio < DataMinima) {
                         this.openToastError("A Data Início Prestação Serviços tem que ser superior a 01/01/2016.");
+                        this.$.btnConfirm.disabled = false;
                         return;
                     }
                     if (DataFim < DataMinima) {
                         this.openToastError("A Data Fim Prestação Serviços tem que ser superior a 01/01/2016.");
+                        this.$.btnConfirm.disabled = false;
                         return;
                     }
                     if (DataInicio > DataMaxima) {
                         this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à data atual.");
+                        this.$.btnConfirm.disabled = false;
                         return;
                     }
                     //if (DataFim > DataMaxima) {
@@ -1354,6 +1359,7 @@
                     //}
                     if (DataInicio > DataFim) {
                         this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à Data Fim Prestação Serviços.");
+                        this.$.btnConfirm.disabled = false;
                         return;
                     }
 
@@ -1361,6 +1367,7 @@
                         this._commitmentNo = "";
                     if (this._commitmentNo.length > 50) {
                         this.openToastError("O Nº Compromisso não pode ter mais de 50 carateres.");
+                        this.$.btnConfirm.disabled = false;
                     }
                     else {
                         if (this.selectedItems != null && this.selectedItems.length > 0) {
@@ -1386,7 +1393,6 @@
                                 }
                             }
                             if (this._totalToAuthorize == this.roundToTwo(total)) {
-                                this.$.btnConfirm.disabled = true;
                                 this.validationMessages = [];
                                 var validationRequest = {
                                     "projectNo": this._projectno,
@@ -1609,7 +1615,6 @@
                     catch (err) { }
                 },
                 serviceDateInicioChanged: function (e) {
-                    debugger;
                     var TextoInicio = this.$.dpDataPrestacaoServ.value;
                     if (TextoInicio != "") {
                         var DiaInicioTexto = TextoInicio.substring(8, 10);
@@ -1684,7 +1689,7 @@
                         var AnoFimTexto = TextoFim.substring(0, 4);
                         var AnoFim = parseFloat(AnoFimTexto);
 
-                        var DataFim = new Date(AnoInicio, MesInicio, 0);
+                        var DataFim = new Date(AnoFim, MesFim, 0);
                         var UltimoDia = DataFim.getDate()
 
                         if (TextoInicio == TextoFim) {

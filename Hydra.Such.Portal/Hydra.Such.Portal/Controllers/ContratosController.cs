@@ -2365,18 +2365,14 @@ namespace Hydra.Such.Portal.Controllers
             foreach (AutorizarFaturaçãoContratos fc in ALLcontractList)
             {
                 List<LinhasFaturaçãoContrato> contractInvoiceLines = DBInvoiceContractLines.GetById(fc.NºContrato);
-                Decimal sum = 0;
-                if (contractInvoiceLines != null && contractInvoiceLines.Count > 0)
-                {
-                    sum = (decimal)contractInvoiceLines.Where(x => x.GrupoFatura == fc.GrupoFatura).Sum(x => x.ValorVenda).Value;
+                decimal sum = (decimal)contractInvoiceLines.Where(x => x.GrupoFatura == fc.GrupoFatura).Sum(x => x.ValorVenda).Value;
 
-                    if (sum <= 0 && !fc.Situação.Contains("Valor da Fatura está a 0!"))
-                    {
-                        fc.Situação = fc.Situação + "Valor da Fatura está a 0!";
-                        fc.UtilizadorModificação = User.Identity.Name;
-                        fc.DataHoraModificação = DateTime.Now;
-                        DBAuthorizeInvoiceContracts.Update(fc);
-                    }
+                if (sum <= 0 && !fc.Situação.Contains("Valor da Fatura está a 0!"))
+                {
+                    fc.Situação = fc.Situação + "Valor da Fatura está a 0!";
+                    fc.UtilizadorModificação = User.Identity.Name;
+                    fc.DataHoraModificação = DateTime.Now;
+                    DBAuthorizeInvoiceContracts.Update(fc);
                 }
             }
             List<AutorizarFaturaçãoContratos> contractList = DBContractInvoices.GetAllInvoice();

@@ -7684,8 +7684,9 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
                 if (dp["codTermosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Termos de Pagamento"); Col = Col + 1; }
-                if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Início Serv. Prestado"); Col = Col + 1; }
-                if (dp["dataPrestacaoServicoFim"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Fim Serv. Prestado"); Col = Col + 1; }
+                if (dp["dataServPrestado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data de Serviço Prestado"); Col = Col + 1; }
+                //if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Início Serv. Prestado"); Col = Col + 1; }
+                //if (dp["dataPrestacaoServicoFim"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Fim Serv. Prestado"); Col = Col + 1; }
                 if (dp["numCompromisso"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Núm. Compromisso"); Col = Col + 1; }
                 if (dp["pedidoCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedido Cliente"); Col = Col + 1; }
                 if (dp["dataPedido"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Pedido"); Col = Col + 1; }
@@ -7714,8 +7715,9 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["codAreaFuncional"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodAreaFuncional); Col = Col + 1; }
                         if (dp["codCentroResponsabilidade"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodCentroResponsabilidade); Col = Col + 1; }
                         if (dp["codTermosPagamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CodTermosPagamento); Col = Col + 1; }
-                        if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPrestacaoServico); Col = Col + 1; }
-                        if (dp["dataPrestacaoServicoFim"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPrestacaoServicoFim); Col = Col + 1; }
+                        if (dp["dataServPrestado"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataServPrestado); Col = Col + 1; }
+                        //if (dp["dataPrestacaoServico"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPrestacaoServico); Col = Col + 1; }
+                        //if (dp["dataPrestacaoServicoFim"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPrestacaoServicoFim); Col = Col + 1; }
                         if (dp["numCompromisso"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.NumCompromisso); Col = Col + 1; }
                         if (dp["pedidoCliente"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedidoCliente); Col = Col + 1; }
                         if (dp["dataPedido"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.DataPedido); Col = Col + 1; }
