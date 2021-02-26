@@ -3164,7 +3164,6 @@ namespace Hydra.Such.Portal.Controllers
                         Lastdate = StContractDate;
                     Month = StContractDate.ToString("MMMM").ToUpper();
                     Year = StContractDate.Year.ToString();
-                    InvoiceBorrowed = GetTextoFatura(StContractDate, Lastdate); // Month + "/" + Year;
                     if (CountLines != null && CountLines > 1)
                     {
                         RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
@@ -3253,12 +3252,15 @@ namespace Hydra.Such.Portal.Controllers
                         //Validação cajo existam Requisições Cliente tem que existir pelo menos uma no período da fatura, se não existir sai do processo e retorna mensagem de erro
                         List<RequisiçõesClienteContrato> ListaContratos = new List<RequisiçõesClienteContrato>();
                         RequisiçõesClienteContrato Reqcontract = new RequisiçõesClienteContrato();
+                        RequisiçõesClienteContrato ReqLastcontract = new RequisiçõesClienteContrato();
                         Reqcontract = null;
+                        DateTime DataInicioFatura;
+                        DateTime DataFimFatura = Lastdate;
 
                         ListaContratos = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
                         if (ListaContratos != null && ListaContratos.Count > 0)
                         {
-                            Reqcontract = ListaContratos.Find(x => x.GrupoFatura == item.GrupoFatura
+                            Reqcontract = ListaContratos.OrderByDescending(x => x.DataÚltimaFatura).ToList().Find(x => x.GrupoFatura == item.GrupoFatura
                                 && x.DataInícioCompromisso <= Lastdate
                                 && x.DataFimCompromisso >= Lastdate);
 
@@ -3268,6 +3270,18 @@ namespace Hydra.Such.Portal.Controllers
                                 result.eMessage = "Não foi encontrada a Requisição Cliente do Contrato Nº " + item.NºContrato + " para o grupo de fatura Nº " + item.GrupoFatura.ToString() + " para o período " + Lastdate.ToShortDateString();
                                 return Json(result);
                             }
+                            else
+                            {
+                                ReqLastcontract = ListaContratos.OrderByDescending(x => x.DataÚltimaFatura).ToList().Find(x => x.GrupoFatura == item.GrupoFatura && x.DataÚltimaFatura.HasValue);
+                                if (ReqLastcontract != null)
+                                    DataInicioFatura = Convert.ToDateTime(ReqLastcontract.DataÚltimaFatura).AddDays(1);
+                                else
+                                    DataInicioFatura = Convert.ToDateTime(contractLine.DataInicial);
+                            }
+                        }
+                        else
+                        {
+                            DataInicioFatura = contractLine.ÚltimaDataFatura.HasValue ? Convert.ToDateTime(contractLine.ÚltimaDataFatura).AddDays(1) : Convert.ToDateTime(contractLine.DataInicial);
                         }
 
                         item.NoRequisicaoDoCliente = Reqcontract != null ? Reqcontract.NºRequisiçãoCliente : contractLine.NºRequisiçãoDoCliente;
@@ -3277,6 +3291,8 @@ namespace Hydra.Such.Portal.Controllers
                         item.CódigoRegião = contractLine.CódigoRegião;
                         item.CódigoÁreaFuncional = contractLine.CódigoÁreaFuncional;
                         item.CódigoCentroResponsabilidade = contractLine.CódigoCentroResponsabilidade;
+
+                        InvoiceBorrowed = GetTextoFatura(DataInicioFatura, DataFimFatura);
 
                         //AMARO DUEDATE = DataExpiração
                         item.DataDeExpiração = DataDocumento;
@@ -3334,6 +3350,8 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             MetdoPagamento = !string.IsNullOrEmpty(cont.CódFormaPagamento) ? cont.CódFormaPagamento : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                         }
+
+
 
                         Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, MetdoPagamento, PricesIncludingVAT, Ship_to_Code);
                         InvoiceHeader.Wait();
@@ -3411,8 +3429,16 @@ namespace Hydra.Such.Portal.Controllers
                                         if (IVA > 0)
                                             linha.PreçoUnitário = linha.PreçoUnitário * IVA;
 
-                                        linha.Data_Inicio_Serv_Prestado = StContractDate;
-                                        linha.Data_Fim_Serv_Prestado = Lastdate;
+                                        linha.Data_Inicio_Serv_Prestado = DataInicioFatura;
+                                        linha.Data_Fim_Serv_Prestado = DataFimFatura;
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (var linha in itemList)
+                                    {
+                                        linha.Data_Inicio_Serv_Prestado = DataInicioFatura;
+                                        linha.Data_Fim_Serv_Prestado = DataFimFatura;
                                     }
                                 }
 
@@ -3715,6 +3741,8 @@ namespace Hydra.Such.Portal.Controllers
                                     MetdoPagamento = !string.IsNullOrEmpty(cont.CódFormaPagamento) ? cont.CódFormaPagamento : DBConfiguracaoParametros.GetByParametro("QuotasMetPagamento").Valor;
                                 }
 
+                                InvoiceBorrowed = GetTextoFatura(StContractDate, Lastdate);
+
                                 //1
                                 Task<WSCreatePreInvoice.Create_Result> InvoiceHeader = WSPreInvoice.CreateContractInvoice(item, _configws, ContractInvoicePeriod, InvoiceBorrowed, CodTermosPagamento, MetdoPagamento, PricesIncludingVAT, Ship_to_Code);
                                 InvoiceHeader.Wait();
@@ -3787,6 +3815,14 @@ namespace Hydra.Such.Portal.Controllers
                                                 if (IVA > 0 && i == 1)
                                                     linha.PreçoUnitário = linha.PreçoUnitário * IVA;
 
+                                                linha.Data_Inicio_Serv_Prestado = StContractDate;
+                                                linha.Data_Fim_Serv_Prestado = Lastdate;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            foreach (var linha in itemList)
+                                            {
                                                 linha.Data_Inicio_Serv_Prestado = StContractDate;
                                                 linha.Data_Fim_Serv_Prestado = Lastdate;
                                             }

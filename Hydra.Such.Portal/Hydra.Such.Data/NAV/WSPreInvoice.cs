@@ -382,7 +382,6 @@ namespace Hydra.Such.Data.NAV
                     Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
                     Posting_DateSpecified = true,
                     Periodo_de_Fact_Contrato = !string.IsNullOrEmpty(ContractInvoicePeriod) ? ContractInvoicePeriod : "",
-                    Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
                     Responsibility_Center = !string.IsNullOrEmpty(CUsers.CentroDeResponsabilidade) ? CUsers.CentroDeResponsabilidade : "",
 
                     Posting_No_Series = PostingNoSeries,
@@ -411,6 +410,8 @@ namespace Hydra.Such.Data.NAV
 
                     //Contratos Quotas
                     Payment_Method_Code = MetdoPagamento,
+
+                    Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
                 }
             };
 
