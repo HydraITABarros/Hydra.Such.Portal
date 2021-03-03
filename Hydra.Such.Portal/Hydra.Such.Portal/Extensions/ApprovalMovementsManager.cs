@@ -633,7 +633,7 @@ namespace Hydra.Such.Portal.Extensions
                 bool IntegradoEmRhkm = false;
                 string Criador = FolhaHoras.CriadoPor;
                 string FHEmployeeNo = FolhaHoras.NºEmpregado;
-                string FHEmployeeID = DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo).IdUtilizador;
+                string FHEmployeeID = DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo) != null ? DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo).IdUtilizador : "";
 
                 if ((NoAjudasCusto > 0) || (FolhaHoras.TipoDeslocação == 2 && Nokm > 0))
                 {
