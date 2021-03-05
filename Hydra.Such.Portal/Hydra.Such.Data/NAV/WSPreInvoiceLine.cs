@@ -101,6 +101,7 @@ namespace Hydra.Such.Data.NAV
             string Ano = InvoiceBorrowed.Substring(InvoiceBorrowed.IndexOf("/") + 1, 4);
             bool ContratoQuota = false;
             Contratos Contrato = DBContracts.GetByIdLastVersion(LinesList.FirstOrDefault().NºContrato);
+            LinhasFaturaçãoContrato Linha = LinesList.FirstOrDefault();
 
             if (Contrato != null && Contrato.TipoContrato == 3 && Contrato.Tipo == 3) //Contrato Quotas
             {
@@ -108,9 +109,10 @@ namespace Hydra.Such.Data.NAV
 
                 if (Contrato != null && !string.IsNullOrEmpty(Contrato.TextoFatura))
                 {
-                    TextoFatura = Contrato.TextoFatura;
-                    TextoFatura = TextoFatura.Replace("<MES>", Mes);
-                    TextoFatura = TextoFatura.Replace("<ANO>", Ano);
+                    //TextoFatura = Contrato.TextoFatura;
+                    //TextoFatura = TextoFatura.Replace("<MES>", Mes);
+                    //TextoFatura = TextoFatura.Replace("<ANO>", Ano);
+                    TextoFatura = Linha.Descrição;
                 }
             }
 

@@ -357,7 +357,8 @@ namespace Hydra.Such.Data.NAV
                     Observacoes = Contrato.TextoFatura;
                     //Observacoes = Observacoes.Replace("<MES>", Mes);
                     //Observacoes = Observacoes.Replace("<ANO>", Ano);
-                    Observacoes = Observacoes + Environment.NewLine + InvoiceBorrowed;
+                    if (Contrato.Tipo == 3)
+                        Observacoes = CreateInvoice.Descrição;
                 }
             }
             else
