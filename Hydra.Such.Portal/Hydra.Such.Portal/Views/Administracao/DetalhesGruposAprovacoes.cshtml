@@ -366,15 +366,21 @@
                     }
                 },
                 _updateResponseGroup: function (e) {
+                    debugger;
                     var self = this;
                     if (e.detail.status === 200) {
                         if (this.groupresult.eReasonCode == 101) {
                             this.openToastError('Erro ao Actualizar grupo');
                         } else {
-                            this._isCreate = false;
-                            this._showLines = "";
-                            this._requestno = this.groupresult.code;
-                            this.openToast('Actualizado com sucesso!');
+                            if (this.groupresult.eReasonCode == 102) {
+                                this.openToastError('Já existe um grupo com essa Descrição.');
+                            }
+                            else {
+                                this._isCreate = false;
+                                this._showLines = "";
+                                this._requestno = this.groupresult.code;
+                                this.openToast('Actualizado com sucesso!');
+                            }
                         }
                     }
                     else {
@@ -414,13 +420,17 @@
                 },
                   _deleteResponseGroup: function (e) {
                     var self = this;
-                    if (e.detail.status === 200) {
-                        this.openToast('Eliminado com sucesso!');
-                        setTimeout(
-                            function () {
-                                window.location.href = "/Administracao/GruposAprovacoes/Administracao";
-                            }, 2500);
-
+                      if (e.detail.status === 200) {
+                          if (this.deleteResult == 100) {
+                              this.openToast('Eliminado com sucesso!');
+                              setTimeout(
+                                  function () {
+                                      window.location.href = "/Administracao/GruposAprovacoes/Administracao";
+                                  }, 2500);
+                          }
+                          else {
+                              this.openToastError('Não foi possivel eliminar o Grupo de Aprovação.');
+                          }
                     }
                     else {
                         this.openToastError('Ocorreu um erro ao atualizar o perfil modelo.');

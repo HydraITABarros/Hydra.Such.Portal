@@ -2017,6 +2017,15 @@ namespace Hydra.Such.Portal.Controllers
                     if (!dp.Any(x => x.LineNo == line.NºLinha))
                     {
                         DBProjectDiary.Delete(line);
+
+                        TabelaLog TabLog = new TabelaLog
+                        {
+                            Tabela = "[dbo].[Diário de Projeto]",
+                            Descricao = "Delete - [Nº Linha]: " + line.NºLinha.ToString() + " - [Nº Projeto]: " + line.NºProjeto + " - [Data]: " + Convert.ToDateTime(line.Data).ToShortDateString() + " - [Código]: " + line.Código,
+                            Utilizador = User.Identity.Name,
+                            DataHora = DateTime.Now
+                        };
+                        DBTabelaLog.Create(TabLog);
                     }
                 }
 
@@ -2224,6 +2233,15 @@ namespace Hydra.Such.Portal.Controllers
                 if (!dp.Any(x => x.LineNo == line.NºLinha))
                 {
                     DBProjectDiary.Delete(line);
+
+                    TabelaLog TabLog = new TabelaLog
+                    {
+                        Tabela = "[dbo].[Diário de Projeto]",
+                        Descricao = "Delete - [Nº Linha]: " + line.NºLinha.ToString() + " - [Nº Projeto]: " + line.NºProjeto + " - [Data]: " + Convert.ToDateTime(line.Data).ToShortDateString() + " - [Código]: " + line.Código,
+                        Utilizador = User.Identity.Name,
+                        DataHora = DateTime.Now
+                    };
+                    DBTabelaLog.Create(TabLog);
                 }
             }
 
@@ -3332,13 +3350,18 @@ namespace Hydra.Such.Portal.Controllers
         [HttpPost]
         public JsonResult GetProjectMovementsDp([FromBody] string ProjectNo, bool allProjs, string projectTarget, string NoDocument, string Resources, string ProjDiaryPrice, bool InverterSinal)
         {
+            List<EnumData> TipoMovimentos = EnumerablesFixed.ProjectDiaryMovements;
+            List<EnumData> Tipos = EnumerablesFixed.ProjectDiaryTypes;
+
             List<ProjectDiaryViewModel> dp = DBProjectMovements.GetRegisteredDiaryDp(ProjectNo, User.Identity.Name, allProjs).Select(x => new ProjectDiaryViewModel()
             {
                 LineNo = x.NºLinha,
                 ProjectNo = x.NºProjeto,
                 Date = x.Data == null ? String.Empty : x.Data.Value.ToString("yyyy-MM-dd"),
                 MovementType = x.TipoMovimento,
+                MovementTypeText = x.TipoMovimento != null ? TipoMovimentos.Where(y => y.Id == x.TipoMovimento).FirstOrDefault().Value : "",
                 Type = x.Tipo,
+                TypeText = x.Tipo != null ? Tipos.Where(y => y.Id == x.Tipo).FirstOrDefault().Value : "",
                 Code = x.Código,
                 Description = x.Descrição,
                 CodigoTipoTrabalho = x.CodigoTipoTrabalho,
@@ -6029,6 +6052,15 @@ namespace Hydra.Such.Portal.Controllers
                     if (!dp.Any(x => x.LineNo == line.NºLinha))
                     {
                         DBProjectDiary.Delete(line);
+
+                        TabelaLog TabLog = new TabelaLog
+                        {
+                            Tabela = "[dbo].[Diário de Projeto]",
+                            Descricao = "Delete - [Nº Linha]: " + line.NºLinha.ToString() + " - [Nº Projeto]: " + line.NºProjeto + " - [Data]: " + Convert.ToDateTime(line.Data).ToShortDateString() + " - [Código]: " + line.Código,
+                            Utilizador = User.Identity.Name,
+                            DataHora = DateTime.Now
+                        };
+                        DBTabelaLog.Create(TabLog);
                     }
                 }
 

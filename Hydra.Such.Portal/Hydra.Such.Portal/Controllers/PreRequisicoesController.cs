@@ -150,6 +150,8 @@ namespace Hydra.Such.Portal.Controllers
                 result.RegionCode = Project.RegionCode != null ? Project.RegionCode : "";
                 result.FunctionalAreaCode = Project.AreaCode != null ? Project.AreaCode : "";
                 result.ResponsabilityCenterCode = Project.CenterResponsibilityCode != null ? Project.CenterResponsibilityCode : "";
+                result.ClientNo = !string.IsNullOrEmpty(Project.CustomerNo) ? Project.CustomerNo : "";
+                result.ClientName = !string.IsNullOrEmpty(Project.CustomerName) ? Project.CustomerName : "";
             }
             else
             {
@@ -1086,6 +1088,8 @@ namespace Hydra.Such.Portal.Controllers
                         PreRequisicaoDB.Área = data.Area;
                         PreRequisicaoDB.TipoRequisição = data.RequesitionType;
                         PreRequisicaoDB.NºProjeto = data.ProjectNo;
+                        PreRequisicaoDB.ClientNo = data.ClientNo;
+                        PreRequisicaoDB.ClientName = data.ClientName;
                         PreRequisicaoDB.CódigoRegião = data.RegionCode;
                         PreRequisicaoDB.CódigoÁreaFuncional = data.FunctionalAreaCode;
                         PreRequisicaoDB.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
@@ -2189,6 +2193,8 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.ResponsabilityCenterCode,
                                 Vehicle = data.Vehicle,
                                 ProjectNo = data.ProjectNo,
+                                ClientCode = data.ClientNo,
+                                ClientName = data.ClientName,
                                 ReceivedDate = data.ReceptionDate,
                                 Comments = data.Notes,
                                 NoDocumento = data.NoDocumento,
@@ -2277,6 +2283,8 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.ResponsabilityCenterCode,
                                 Vehicle = data.Vehicle,
                                 ProjectNo = data.ProjectNo,
+                                ClientCode = data.ClientNo,
+                                ClientName = data.ClientName,
                                 ReceivedDate = data.ReceptionDate,
                                 Comments = data.Notes,
                                 NoDocumento = data.NoDocumento,

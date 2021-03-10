@@ -5278,15 +5278,24 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult CreateApprovalGroup([FromBody] ApprovalGroupViewModel data)
         {
-            ApprovalGroupViewModel result;
+            ApprovalGroupViewModel result = new ApprovalGroupViewModel();
+
+            GruposAprovação Grupo = DBApprovalGroups.GetByDescricao(data.Description);
+
             //Create new 
-            result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.Create(DBApprovalGroups.ParseToDatabase(data)));
-            if (result != null)
+            if (Grupo == null)
             {
-                result.eReasonCode = 100;
+                result = DBApprovalGroups.ParseToViewModel(DBApprovalGroups.Create(DBApprovalGroups.ParseToDatabase(data)));
+                if (result != null)
+                {
+                    result.eReasonCode = 100;
+                }
+                else
+                    result.eReasonCode = 101;
             }
             else
-                result.eReasonCode = 101;
+                result.eReasonCode = 102;
+
             return Json(result);
         }
 
@@ -5300,50 +5309,91 @@ namespace Hydra.Such.Portal.Controllers
 
         public JsonResult DeleteApprovalGroup([FromBody] ApprovalGroupViewModel data)
         {
-            string eReasonCode = "";
-            if (!DBApprovalConfigurations.GetAll().Exists(x => x.GrupoAprovação == data.Code) && !DBApprovalConfigurations.GetAll().Exists(x => x.UtilizadorAprovação == data.Description))
+            string eReasonCode = "101";
+            ConfigUtilizadores Admin = DBUserConfigurations.GetById(User.Identity.Name);
+
+            try
             {
-                List<UtilizadoresGruposAprovação> results2 = DBApprovalUserGroup.GetAll();
-                results2.ForEach(x =>
+                if (data != null)
                 {
-                    if (x.GrupoAprovação == data.Code)
+                    if (Admin != null && Admin.Administrador == true)
                     {
-                        DBApprovalUserGroup.Delete(x);
-
-                        TabelaLog log = new TabelaLog
+                        GruposAprovação Grupo = DBApprovalGroups.GetById(data.Code);
+                        if (Grupo != null)
                         {
-                            Tabela = "[dbo].[Utilizadores Grupos Aprovação]",
-                            Descricao = "Delete - [Grupo Aprovação]: " + x.GrupoAprovação.ToString() + " [Utilizador Aprovação]: " + x.UtilizadorAprovação,
-                            Utilizador = User.Identity.Name,
-                            DataHora = DateTime.Now
-                        };
-                        DBTabelaLog.Create(log);
-                    }
-                });
+                            List<string> GrupoUsers = DBApprovalUserGroup.GetAllFromGroup(Grupo.Código);
 
-                List<GruposAprovação> results = DBApprovalGroups.GetAll();
-                results.ForEach(x =>
-                {
-                    if (x.Código == data.Code)
-                    {
-                        DBApprovalGroups.Delete(x);
+                            if (GrupoUsers != null && GrupoUsers.Count > 0)
+                            {
+                                GrupoUsers.ForEach(x =>
+                                {
+                                    UtilizadoresGruposAprovação Utilizador = DBApprovalUserGroup.GetById(Grupo.Código, x);
 
-                        TabelaLog log = new TabelaLog
-                        {
-                            Tabela = "[dbo].[Grupos Aprovação]",
-                            Descricao = "Delete - [Código]: " + x.Código.ToString() + " [Descrição]: " + x.Descrição,
-                            Utilizador = User.Identity.Name,
-                            DataHora = DateTime.Now
-                        };
-                        DBTabelaLog.Create(log);
+                                    if (Utilizador != null)
+                                    {
+                                        if (DBApprovalUserGroup.Delete(Utilizador) == true)
+                                        {
+                                            TabelaLog log = new TabelaLog
+                                            {
+                                                Tabela = "[dbo].[Utilizadores Grupos Aprovação]",
+                                                Descricao = "Delete - [Grupo Aprovação ID]: " + Grupo.Código.ToString() + " - [Grupo Aprovação Nome]: " + Grupo.Descrição + " - [Utilizador Aprovação]: " + Utilizador.UtilizadorAprovação,
+                                                Utilizador = User.Identity.Name,
+                                                DataHora = DateTime.Now
+                                            };
+                                            DBTabelaLog.Create(log);
+                                        }
+                                    }
+                                });
+                            }
+
+                            List<ConfiguraçãoAprovações> GruposAprovacao = DBApprovalConfigurations.GetAllByGrupo(Grupo.Código);
+
+                            if (GruposAprovacao != null && GruposAprovacao.Count > 0)
+                            {
+                                GruposAprovacao.ForEach(x =>
+                                {
+                                    ConfiguraçãoAprovações GrupoAprovacao = DBApprovalConfigurations.GetById(x.Id);
+
+                                    if (GrupoAprovacao != null)
+                                    {
+                                        if (DBApprovalConfigurations.Delete(GrupoAprovacao) == true)
+                                        {
+                                            TabelaLog log = new TabelaLog
+                                            {
+                                                Tabela = "[dbo].[Configuração Aprovações]",
+                                                Descricao = "Delete - [Configuração Aprovações]: " + GrupoAprovacao.Id.ToString(),
+                                                Utilizador = User.Identity.Name,
+                                                DataHora = DateTime.Now
+                                            };
+                                            DBTabelaLog.Create(log);
+                                        }
+                                    }
+                                });
+
+                            }
+
+                            if (DBApprovalGroups.Delete(Grupo) == true)
+                            {
+                                TabelaLog log = new TabelaLog
+                                {
+                                    Tabela = "[dbo].[Grupos Aprovação]",
+                                    Descricao = "Delete - [Código]: " + Grupo.Código.ToString() + " [Descrição]: " + Grupo.Descrição,
+                                    Utilizador = User.Identity.Name,
+                                    DataHora = DateTime.Now
+                                };
+                                DBTabelaLog.Create(log);
+
+                                eReasonCode = "100";
+                            }
+                        }
                     }
-                });
-                eReasonCode = "100";
+                }
             }
-            else
+            catch (Exception ex)
             {
                 eReasonCode = "101";
             }
+
             return Json(eReasonCode);
         }
 

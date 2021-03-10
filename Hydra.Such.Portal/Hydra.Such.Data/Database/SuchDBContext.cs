@@ -7248,6 +7248,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Projeto")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.ClientNo).HasMaxLength(20);
+
+                entity.Property(e => e.ClientName).HasMaxLength(200);
+
                 entity.Property(e => e.NºRequesiçãoReclamada)
                     .HasColumnName("Nº Requesição Reclamada")
                     .HasMaxLength(20);

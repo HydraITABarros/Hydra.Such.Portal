@@ -438,17 +438,7 @@
                                             <vaadin-text-field id="PreRequesitionsNo" name="PreRequesitionsNo" label="Nº Pré-Requisição" value="{{data.preRequesitionsNo}}" disabled></vaadin-text-field>
                                         </div>
 
-                                        <div class="col-md-3 ">
-                                            <!--<vaadin-combo-box items="[[CBRequesitionType]]" on-value-changed="_getRequesitionType" id="requesitionType" item-value-path="id" item-label-path="value" value="{{data.requesitionType}}" label="Tipo Requisição">
-                                            <template>
-                                                <table width="350px">
-                                                    <tr>
-                                                        <td width="40%">[[item.id]]</td>
-                                                        <td width="60%"> <b>[[item.value]]</b></td>
-                                                    </tr>
-                                                </table>
-                                            </template>
-                                        </vaadin-combo-box>-->
+                                        <div class="col-md-2">
                                             <such-selectbox id="requesitionType" name="requesitionType" label="Tipo Requisição" value="{{data.requesitionType}}"
                                                             on-value-changed="_getRequesitionType"
                                                             items="[[CBRequesitionType]]"
@@ -458,7 +448,7 @@
                                             </such-selectbox>
                                         </div>
 
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2 ">
                                             <such-selectbox id="projectNo" value="{{data.projectNo}}" on-value-changed="_setProjectDim" label="Nº Ordem/Projecto"
                                                             items="[[CBJobNo]]"
                                                             text-path="no"
@@ -468,11 +458,19 @@
                                             </such-selectbox>
                                         </div>
 
-                                        <div class="col-md-3" hidden>
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="txtClientNo" name="txtClientNo" label="Cliente Nº" value="{{data.clientNo}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <vaadin-text-field id="txtClientName" name="txtClientName" label="Cliente Nome" value="{{data.clientName}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-2" hidden>
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{data.claimedRequesitionNo}}"></vaadin-text-field>
                                         </div>
 
-                                        <div class="col-md-3" id="VehicleDiv" hidden>
+                                        <div class="col-md-2" id="VehicleDiv" hidden>
                                             <such-selectbox id="Vehicle" name="Vehicle" label="Viatura" value="{{data.vehicle}}"
                                                             on-value-changed="_GetNoProjetoCabecalho"
                                                             items="[[CBVehicle]]"
@@ -482,7 +480,7 @@
                                             </such-selectbox>
                                         </div>
 
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <vaadin-date-picker label="Data Receção" id="dpReceptionDate" name="dpReceptionDate" value="{{data.receptionDate}}" disabled="{{ !_permissions.update }}"></vaadin-date-picker>
                                         </div>
                                     </div>
@@ -1714,6 +1712,9 @@
                         this.$._CLResponsabilityCenterCode.valueText = "";
                         this.$.ResponsabilityCenterCode.value = "";
                         this.$.ResponsabilityCenterCode.valueText = "";
+
+                        this.$.txtClientNo.value = "";
+                        this.$.txtClientName.value = "";
                     }
                 },
 
@@ -1841,6 +1842,9 @@
                             this.$.ResponsabilityCenterCode.value = "";
                             this.$.ResponsabilityCenterCode.valueText = "";
                         }
+
+                        this.$.txtClientNo.value = this.ProjectDims.clientNo;
+                        this.$.txtClientName.value = this.ProjectDims.clientName;
 
                         this.data.contractType = 3;
                         this.$.page_databoundNoMessage_ajax.url = "/PreRequisicoes/UpdatePreRequesition";
@@ -2106,7 +2110,8 @@
                             }
 
                             if (ok == 0) {
-                                ajax_request.generateRequest();                            }
+                                ajax_request.generateRequest();
+                            }
                             else {
                                 bootbox.confirm({
                                     message: "Existe(m) linha(s) sem Qt. a Requerer definida(s), deseja continuar (Sim/Não)?",

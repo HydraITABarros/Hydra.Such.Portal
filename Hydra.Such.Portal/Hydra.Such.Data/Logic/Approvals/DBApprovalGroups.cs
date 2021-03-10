@@ -27,6 +27,22 @@ namespace Hydra.Such.Data.Logic.Approvals
             }
         }
 
+        public static GruposAprovação GetByDescricao(string descricao)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    return ctx.GruposAprovação.Where(x => x.Descrição == descricao).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return null;
+            }
+        }
+
         public static List<GruposAprovação> GetAll()
         {
             try
