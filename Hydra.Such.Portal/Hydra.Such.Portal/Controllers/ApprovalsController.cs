@@ -137,6 +137,9 @@ namespace Hydra.Such.Portal.Controllers
                                 break;
                         }
 
+                        x.RequisicaoProjectNo = REQ.NºProjeto;
+                        x.RequisicaoClientNo = REQ.ClientNo;
+                        x.RequisicaoClientName = REQ.ClientName;
                         x.RequisicaoAcordosPrecos = REQ.RequisiçãoNutrição;
                         x.RequisicaoUrgente = REQ.Urgente;
                         x.RequisicaoOrcamentoEmAnexo = REQ.Orçamento;
@@ -1613,6 +1616,21 @@ namespace Hydra.Such.Portal.Controllers
                     row.CreateCell(Col).SetCellValue("FH Dia da Chegada");
                     Col = Col + 1;
                 }
+                if (dp["requisicaoProjectNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Projeto Nº");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoClientNo"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Cliente Nº");
+                    Col = Col + 1;
+                }
+                if (dp["requisicaoClientName"]["hidden"].ToString() == "False")
+                {
+                    row.CreateCell(Col).SetCellValue("Req Cliente Nome");
+                    Col = Col + 1;
+                }
                 if (dp["requisicaoAcordosPrecos"]["hidden"].ToString() == "False")
                 {
                     row.CreateCell(Col).SetCellValue("Req Acordos Preços");
@@ -1735,6 +1753,21 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["fhDateChegada"]["hidden"].ToString() == "False")
                         {
                             row.CreateCell(Col).SetCellValue(item.FHDateChegada);
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoProjectNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoProjectNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoClientNo"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoClientNo);
+                            Col = Col + 1;
+                        }
+                        if (dp["requisicaoClientName"]["hidden"].ToString() == "False")
+                        {
+                            row.CreateCell(Col).SetCellValue(item.RequisicaoClientName);
                             Col = Col + 1;
                         }
                         if (dp["requisicaoAcordosPrecos"]["hidden"].ToString() == "False")

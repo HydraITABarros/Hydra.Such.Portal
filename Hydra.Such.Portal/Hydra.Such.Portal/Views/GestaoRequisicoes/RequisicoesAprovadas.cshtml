@@ -160,6 +160,26 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.clientCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientCode">Cliente Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientCode" value="[[filter.clientCode]]" />
+                </template>
+                <template>
+                    {{item.clientCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.clientName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Cliente Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" value="[[filter.clientName]]" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
@@ -403,6 +423,8 @@
                         "pedirOrcamento": { hidden: false, label: "Pedir Orçamento" },
                         "attachment": { hidden: false, label: "Anexo(s)" },
                         "projectNo": { hidden: false, label: "Nº Projeto" },
+                        "clientCode": { hidden: false, label: "Cliente Nº" },
+                        "clientName": { hidden: false, label: "Cliente Nome" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },

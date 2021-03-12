@@ -3996,6 +3996,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["pedirOrcamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedir Orçamento"); Col = Col + 1; }
                 if (dp["attachment"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Anexo(s)"); Col = Col + 1; }
                 if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
+                if (dp["clientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nº"); Col = Col + 1; }
+                if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nome"); Col = Col + 1; }
                 if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
                 if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
@@ -4020,6 +4022,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["pedirOrcamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedirOrcamento.ToString()); Col = Col + 1; }
                         if (dp["attachment"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Attachment.ToString()); Col = Col + 1; }
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
+                        if (dp["clientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientCode); Col = Col + 1; }
+                        if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientName); Col = Col + 1; }
                         if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
                         if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
@@ -4083,6 +4087,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região Mercado Local"); Col = Col + 1; }
                 if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Mercado Local"); Col = Col + 1; }
                 if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
+                if (dp["clientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nº"); Col = Col + 1; }
+                if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nome"); Col = Col + 1; }
                 if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
                 if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
@@ -4122,6 +4128,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketRegion); Col = Col + 1; }
                         if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString()); Col = Col + 1; }
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
+                        if (dp["clientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientCode); Col = Col + 1; }
+                        if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientName); Col = Col + 1; }
                         if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
                         if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }

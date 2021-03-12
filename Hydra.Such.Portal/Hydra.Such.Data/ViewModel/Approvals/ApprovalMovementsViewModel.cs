@@ -20,6 +20,9 @@ namespace Hydra.Such.Data.ViewModel.Approvals
         public string RegionText { get; set; }
         public string Number { get; set; }
         public string NumberLink { get; set; }
+        public string RequisicaoProjectNo { get; set; }
+        public string RequisicaoClientNo { get; set; }
+        public string RequisicaoClientName { get; set; }
         public bool? RequisicaoAcordosPrecos { get; set; }
         public bool? RequisicaoUrgente { get; set; }
         public bool? RequisicaoOrcamentoEmAnexo { get; set; }
