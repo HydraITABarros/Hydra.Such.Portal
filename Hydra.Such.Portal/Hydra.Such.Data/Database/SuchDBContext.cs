@@ -1420,6 +1420,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataHoraModificacao).HasColumnType("datetime");
 
+                entity.Property(e => e.DiasParaEnvioAlertaAudienciaPrevia).HasColumnName("DiasParaEnvioAlertaAudienciaPrevia");
+
                 entity.Property(e => e.Email1Regiao12).HasMaxLength(100);
 
                 entity.Property(e => e.Email1Regiao23).HasMaxLength(100);

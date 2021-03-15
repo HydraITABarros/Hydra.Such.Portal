@@ -5709,6 +5709,7 @@ namespace Hydra.Such.Portal.Controllers
                 Email2Regiao43 = data.Email2Regiao43,
                 Email3Regiao43 = data.Email3Regiao43,
                 DiasParaEnvioAlerta = data.DiasParaEnvioAlerta,
+                DiasParaEnvioAlertaAudienciaPrevia = data.DiasParaEnvioAlertaAudienciaPrevia,
                 UtilizadorCriacao = data.UtilizadorCriacao,
                 DataHoraCriacao = data.DataHoraCriacao,
                 UtilizadorModificacao = User.Identity.Name,

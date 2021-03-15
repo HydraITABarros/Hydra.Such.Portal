@@ -21,6 +21,7 @@ namespace Hydra.Such.Data.ViewModel
         public string Email2Regiao43 { get; set; }
         public string Email3Regiao43 { get; set; }
         public int? DiasParaEnvioAlerta { get; set; }
+        public int? DiasParaEnvioAlertaAudienciaPrevia { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataHoraCriacao { get; set; }
         public string UtilizadorModificacao { get; set; }
