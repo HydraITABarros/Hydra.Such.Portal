@@ -8604,14 +8604,18 @@ namespace Hydra.Such.Portal.Controllers
                         {
                             if (!string.IsNullOrEmpty(DataProducaoMes) && int.TryParse(DataProducaoMes, out int TempDataProducaoMes) == true)
                             {
+                                ValorProducao = ValorProducao.Replace(".", ",");
                                 if (!string.IsNullOrEmpty(ValorProducao) && float.TryParse(ValorProducao, out float TempValorProducao) == true)
                                 {
                                     if (string.IsNullOrEmpty(ValorProducaoGrafico))
                                     {
                                         ValorProducaoGrafico = "0";
                                     }
+                                    ValorProducaoGrafico = ValorProducaoGrafico.Replace(".", ",");
                                     if (float.TryParse(ValorProducaoGrafico, out float TempValorProducaoGrafico) == true)
                                     {
+                                        ValorProducao = ValorProducao.Replace(",", ".");
+                                        ValorProducaoGrafico = ValorProducaoGrafico.Replace(",", ".");
 
                                         int resultado = DBPBIGestiControl.Insert_MovProducao(Area, Indicador, DataProducaoAno, DataProducaoMes, ValorProducao, ValorProducaoGrafico);
 
