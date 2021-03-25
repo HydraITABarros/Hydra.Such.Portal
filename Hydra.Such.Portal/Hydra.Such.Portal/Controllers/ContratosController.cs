@@ -2516,7 +2516,7 @@ namespace Hydra.Such.Portal.Controllers
             List<NAVClientsViewModel> AllClients = DBNAV2017Clients.GetClients(_config.NAVDatabaseName, _config.NAVCompanyName, "");
 
             //AMARO COMENTAR
-            contractList.RemoveAll(x => x.NºDeContrato != "VCI190038");
+            //contractList.RemoveAll(x => x.NºDeContrato != "VCI190038");
 
             foreach (var item in contractList)
             {
@@ -3494,6 +3494,9 @@ namespace Hydra.Such.Portal.Controllers
                     if (item.NºDeFaturasAEmitir > 1)
                     {
                         bool FirstTime = true;
+                        bool FirstTimeLine = true;
+                        string LinhaDescricaoOriginal = "";
+                        string LinhaDescricao2Original = "";
                         for (int i = 1; i <= item.NºDeFaturasAEmitir; i++)
                         {
                             int? CountLines = data.Where(x => x.ContractNo == item.NºContrato && x.InvoiceGroupValue == item.GrupoFatura).Count();
@@ -3506,15 +3509,16 @@ namespace Hydra.Such.Portal.Controllers
                             DateTime StContractDate = new DateTime();
                             Contratos contractLine = DBContracts.GetByIdAvencaFixa(item.NºContrato);
 
-                            DateTime today = new DateTime();
-                            if (FirstTime == true)
-                            {
-                                StContractDate = (DateTime)item.DataPróximaFatura;
+                            DateTime todayStart = new DateTime();
+                            DateTime todayEnd = new DateTime();
+                            //if (FirstTime == true)
+                            //{
+                            //    StContractDate = (DateTime)item.DataPróximaFatura;
 
-                                FirstTime = false;
-                            }
-                            else
-                            {
+                            //    FirstTime = false;
+                            //}
+                            //else
+                            //{
                                 List<RequisiçõesClienteContrato> ListaReqClientes = new List<RequisiçõesClienteContrato>();
                                 RequisiçõesClienteContrato ReqCliente = new RequisiçõesClienteContrato();
                                 ListaReqClientes = DBContractClientRequisition.GetByContract(contractLine.NºDeContrato);
@@ -3523,18 +3527,20 @@ namespace Hydra.Such.Portal.Controllers
                                     ReqCliente = ListaReqClientes.OrderByDescending(x => x.DataÚltimaFatura).ToList().Find(x => x.GrupoFatura == item.GrupoFatura);
                                     if (ReqCliente != null && ReqCliente.DataÚltimaFatura.HasValue)
                                     {
-                                        today = (DateTime)ReqCliente.DataÚltimaFatura;
+                                        todayEnd = (DateTime)ReqCliente.DataÚltimaFatura;
                                     }
                                     else
                                     {
-                                        today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
+                                        todayEnd = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
                                     }
                                 }
                                 else
                                 {
-                                    today = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
+                                    todayEnd = contractLine.ÚltimaDataFatura != null ? (DateTime)contractLine.ÚltimaDataFatura : Convert.ToDateTime(contractLine.DataInicial).AddDays(-1); //DateTime.Now;
                                 }
-                                StContractDate = today;
+
+                                todayStart = todayEnd.AddDays(1);
+                                StContractDate = todayStart;
 
                                 if (contractLine.DataInicial != null && contractLine.DataExpiração != null)// && item.DataPróximaFatura == null)
                                 {
@@ -3544,52 +3550,54 @@ namespace Hydra.Such.Portal.Controllers
                                     //Mensal 
                                     if (contractLine.PeríodoFatura == 1)
                                     {
-                                        today = today.AddMonths(1);
+                                        todayEnd = todayEnd.AddMonths(1);
                                     }
                                     //Bimensal 
                                     if (contractLine.PeríodoFatura == 2)
                                     {
-                                        today = today.AddMonths(2);
+                                        todayEnd = todayEnd.AddMonths(2);
                                     }
                                     //Trimestral 
                                     if (contractLine.PeríodoFatura == 3)
                                     {
-                                        today = today.AddMonths(3);
+                                        todayEnd = todayEnd.AddMonths(3);
                                     }
                                     //Semestral 
                                     if (contractLine.PeríodoFatura == 4)
                                     {
-                                        today = today.AddMonths(6);
+                                        todayEnd = todayEnd.AddMonths(6);
                                     }
                                     //Anual 
                                     if (contractLine.PeríodoFatura == 5)
                                     {
-                                        today = today.AddMonths(12);
+                                        todayEnd = todayEnd.AddMonths(12);
                                     }
 
-                                    if (today < contractLine.DataInicial)
+                                    if (todayStart < contractLine.DataInicial)
                                     {
                                         StContractDate = (DateTime)contractLine.DataInicial;
                                     }
-                                    else if (today > contractLine.DataExpiração)
+                                    else if (todayEnd > contractLine.DataExpiração)
                                     {
-                                        StContractDate = (DateTime)contractLine.DataExpiração;
+                                        Lastdate = (DateTime)contractLine.DataExpiração;
                                     }
                                     else
                                     {
-                                        StContractDate = today;
+                                        Lastdate = todayEnd;
                                     }
                                 }
-                            }
+                            //}
 
-                            if (Lastdate != StContractDate)
-                            {
-                                Lastdate = StContractDate;
-                            }
+                            //if (Lastdate != StContractDate)
+                            //{
+                            //    Lastdate = StContractDate;
+                            //}
 
                             Month = StContractDate.ToString("MMMM").ToUpper();
                             Year = StContractDate.Year.ToString();
-                            InvoiceBorrowed = Month + "/" + Year;
+                            //InvoiceBorrowed = Month + "/" + Year;
+                            InvoiceBorrowed = GetTextoFatura(StContractDate, Lastdate);
+
                             if (CountLines != null && CountLines > 1)
                             {
                                 RequisiçõesClienteContrato GetReqClientCont = DBContractClientRequisition.GetByContractAndGroup(item.NºContrato, item.GrupoFatura);
@@ -3838,8 +3846,22 @@ namespace Hydra.Such.Portal.Controllers
 
                                                 if (cont != null && cont.Tipo == 3)
                                                 {
+                                                    if (FirstTimeLine == true)
+                                                    {
+                                                        LinhaDescricaoOriginal = linha.Descrição;
+                                                        LinhaDescricao2Original = linha.Descricao2;
+                                                        FirstTimeLine = false;
+                                                    }
+                                                    else
+                                                    {
+                                                        linha.Descrição = LinhaDescricaoOriginal;
+                                                        linha.Descricao2 = LinhaDescricao2Original;
+                                                    }
+
                                                     linha.Descrição = linha.Descrição.Replace("<MES>", StContractDate.ToString("MMMM").ToUpper());
                                                     linha.Descrição = linha.Descrição.Replace("<ANO>", StContractDate.Year.ToString());
+                                                    linha.Descricao2 = linha.Descricao2.Replace("<MES>", StContractDate.ToString("MMMM").ToUpper());
+                                                    linha.Descricao2 = linha.Descricao2.Replace("<ANO>", StContractDate.Year.ToString());
                                                 }
                                             }
                                         }
@@ -3852,6 +3874,18 @@ namespace Hydra.Such.Portal.Controllers
 
                                                 if (cont != null && cont.Tipo == 3)
                                                 {
+                                                    if (FirstTimeLine == true)
+                                                    {
+                                                        LinhaDescricaoOriginal = linha.Descrição;
+                                                        LinhaDescricao2Original = linha.Descricao2;
+                                                        FirstTimeLine = false;
+                                                    }
+                                                    else
+                                                    {
+                                                        linha.Descrição = LinhaDescricaoOriginal;
+                                                        linha.Descricao2 = LinhaDescricao2Original;
+                                                    }
+
                                                     linha.Descrição = linha.Descrição.Replace("<MES>", StContractDate.ToString("MMMM").ToUpper());
                                                     linha.Descrição = linha.Descrição.Replace("<ANO>", StContractDate.Year.ToString());
 
@@ -3863,7 +3897,7 @@ namespace Hydra.Such.Portal.Controllers
 
                                         try
                                         {
-                                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, _configws);
+                                            Task<WSCreatePreInvoiceLine.CreateMultiple_Result> InvoiceLines = WSPreInvoiceLine.CreatePreInvoiceLineList(itemList, InvoiceHeaderNo, InvoiceBorrowed, _configws);
                                             InvoiceLines.Wait();
                                         }
                                         catch (Exception ex)

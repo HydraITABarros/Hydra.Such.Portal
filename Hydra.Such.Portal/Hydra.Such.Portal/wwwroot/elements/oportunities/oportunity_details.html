@@ -301,7 +301,7 @@
                                             <vaadin-text-field id="contractNo" name="contractNo" label="Nº Oportunidade" value="{{data.contractNo}}" maxlength="20" disabled="{{ !_isCreate}}"></vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
-                                            <vaadin-text-field value="{{data.description}}" id="description" name="description" label="Âmbito do Serviço" maxlength="200" disabled="{{ !_permissions.update }}">  </vaadin-text-field>
+                                            <vaadin-text-field value="{{data.description}}" id="description" name="description" label="Âmbito do Serviço" maxlength="100" disabled="{{ !_permissions.update }}">  </vaadin-text-field>
                                         </div>
                                         <div class="col-md-3 ">
                                             <such-selectbox id="mClients" value="{{data.clientNo}}" label="Nome Cliente"
