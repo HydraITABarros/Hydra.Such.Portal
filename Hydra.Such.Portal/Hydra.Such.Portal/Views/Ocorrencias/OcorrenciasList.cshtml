@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewData["Title"] = "Lista de Ocorrências";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="import" href="~/elements/compras/ocorrencias_list.html">
+
+<x-ocorrenciaslist _permissions='@Html.Raw(Json.Serialize(ViewBag.UPermissions))'
+                   _criarMedidasCorretivas='@Html.Raw(Json.Serialize(ViewBag.CriarMedidasCorretivas))'>
+</x-ocorrenciaslist>
+

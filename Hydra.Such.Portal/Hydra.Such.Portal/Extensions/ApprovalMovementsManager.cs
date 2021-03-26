@@ -207,8 +207,8 @@ namespace Hydra.Such.Portal.Extensions
                 }
                 else
                 {
-                    result.eReasonCode = 101;
-                    result.eMessage = "Não existe configuração de aprovação para as dimensões indicadas. Solicite esta configuração submeta para aprovação nas suas requisições pendentes.";
+                    result.eReasonCode = 150;
+                    result.eMessage = "Não existe configuração de aprovação para as dimensões indicadas ou o valor excedeu o limite permitido. Solicite esta configuração, posteriormente vá ás Minhas Requisições para criar o Movimento de Aprovação.";
                 }
                 return result;
             }
@@ -633,12 +633,12 @@ namespace Hydra.Such.Portal.Extensions
                 bool IntegradoEmRhkm = false;
                 string Criador = FolhaHoras.CriadoPor;
                 string FHEmployeeNo = FolhaHoras.NºEmpregado;
-                string FHEmployeeID = DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo).IdUtilizador;
+                string FHEmployeeID = DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo) != null ? DBUserConfigurations.GetByEmployeeNo(FHEmployeeNo).IdUtilizador : "";
 
                 if ((NoAjudasCusto > 0) || (FolhaHoras.TipoDeslocação == 2 && Nokm > 0))
                 {
                     Estado = 1; //VALIDADO 
-                    if ((FolhaHoras.IntegradoEmRh == false || FolhaHoras.IntegradoEmRh == null) && FolhaHoras.Estado == Estado)
+                    if (NoAjudasCusto > 0 && (FolhaHoras.IntegradoEmRh == false || FolhaHoras.IntegradoEmRh == null) && FolhaHoras.Estado == Estado)
                     {
                         IntegradoEmRh = true; //IntegracaoAjuda
                         ApprovalMovement.Value = FolhaHoras.CustoTotalAjudaCusto;
@@ -646,7 +646,7 @@ namespace Hydra.Such.Portal.Extensions
                     }
                     else
                     {
-                        if ((FolhaHoras.IntegradoEmRhkm == false || FolhaHoras.IntegradoEmRhkm == null) && FolhaHoras.Estado == Estado && FolhaHoras.TipoDeslocação == 2)
+                        if (Nokm > 0 && (FolhaHoras.IntegradoEmRhkm == false || FolhaHoras.IntegradoEmRhkm == null) && FolhaHoras.Estado == Estado && FolhaHoras.TipoDeslocação == 2)
                         {
                             IntegradoEmRhkm = true; //IntegracaoKMS
                             ApprovalMovement.Value = FolhaHoras.CustoTotalKm;

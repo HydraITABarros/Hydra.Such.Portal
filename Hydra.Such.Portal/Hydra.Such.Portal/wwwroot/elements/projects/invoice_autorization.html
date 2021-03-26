@@ -335,12 +335,18 @@
                                         </div>
                                         <div class="row break_clear">
                                             <div class="col-md-2 ">
-                                                <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Prestação Serviços" on-value-changed="serviceDateChanged"></vaadin-date-picker>
+                                                <vaadin-date-picker id="dpDataPrestacaoServ" label="Data Início Prestação Serviços" on-value-changed="serviceDateInicioChanged" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                             </div>
-                                            <div class="col-md-5 ">
-                                                <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" disabled></vaadin-text-field>
+                                            <div class="col-md-2 ">
+                                                <vaadin-date-picker id="dpDataPrestacaoServFim" label="Data Fim Prestação Serviços" on-value-changed="serviceDateFimChanged" required error-message="Este campo é obrigatório"></vaadin-date-picker>
                                             </div>
-                                            <div class="col-md-5 alignRight">
+                                            <div class="col-md-3 ">
+                                                <vaadin-text-field id="txtDataPrestacaoServ" name="txtDataPrestacaoServ" label=" " value="[[_billingPeriod]]" maxlength="40" required error-message="Este campo é obrigatório"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <vaadin-text-field id="txtNoFaturaRelacionada" name="txtNoFaturaRelacionada" label="Nº Fatura Relacionada " value="" maxlength="20"></vaadin-text-field>
+                                            </div>
+                                            <div class="col-md-2 alignRight">
                                                 <vaadin-text-field id="txtValorAAutorizar" name="txtValorAAutorizar" label="Total a Autorizar" value="[[_totalToAuthorize]]" disabled></vaadin-text-field>
                                             </div>
                                         </div>
@@ -1282,7 +1288,6 @@
                     this.$.ToastMessageError.open();
                 },
                 _confirm: function (selectedItem, selectedItems) {
-                    debugger;
                     if (this._commitmentNo == null)
                         this._commitmentNo = "";
                     if (this.selectedItems != null && this.selectedItems.length > 0) {
@@ -1293,10 +1298,12 @@
                             "customerRequestNo": this._customerRequestNo,
                             "customerRequestDate": this._customerRequestDate,
                             "serviceDate": this.$.dpDataPrestacaoServ.value,
+                            "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
                             "dataServPrestado": this.$.txtDataPrestacaoServ.value,
                             "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                             "projMovements": this.selectedItems,
-                            "projObs": this.$.IdObs.value
+                            "projObs": this.$.IdObs.value,
+                            "noFaturaRelacionada": this.$.txtNoFaturaRelacionada.value
                         };
                         this.$.autorize_ajax.body = JSON.stringify(authorizationRequest);
                         this.$.autorize_ajax.generateRequest();
@@ -1306,10 +1313,61 @@
                     }
                 },
                 _openDlg: function () {
+                    this.$.btnConfirm.disabled = true;
+                    var TextoInicio = this.$.dpDataPrestacaoServ.value;
+                    var TextoFim = this.$.dpDataPrestacaoServFim.value;
+                    var Texto = this.$.txtDataPrestacaoServ.value;
+
+                    if (TextoInicio == "" || !this.$.dpDataPrestacaoServ.validate()) {
+                        this.openToastError("A Data Início Prestação Serviços é de preenchimento obrigatório.");
+                        this.$.btnConfirm.disabled = false;
+                        return;
+                    }
+                    if (TextoFim == "" || !this.$.dpDataPrestacaoServFim.validate()) {
+                        this.openToastError("A Data Fim Prestação Serviços é de preenchimento obrigatório.");
+                        this.$.btnConfirm.disabled = false;
+                        return;
+                    }
+                    if (Texto == "" || !this.$.txtDataPrestacaoServ.validate()) {
+                        this.openToastError("A Data Prestação Serviços é de preenchimento obrigatório.");
+                        this.$.btnConfirm.disabled = false;
+                        return;
+                    }
+                    var DataInicio = new Date(TextoInicio);
+                    var DataFim = new Date(TextoFim);
+                    var DataMinima = new Date('2016-01-01');
+                    var DataMaxima = new Date();
+
+                    if (DataInicio < DataMinima) {
+                        this.openToastError("A Data Início Prestação Serviços tem que ser superior a 01/01/2016.");
+                        this.$.btnConfirm.disabled = false;
+                        return;
+                    }
+                    if (DataFim < DataMinima) {
+                        this.openToastError("A Data Fim Prestação Serviços tem que ser superior a 01/01/2016.");
+                        this.$.btnConfirm.disabled = false;
+                        return;
+                    }
+                    if (DataInicio > DataMaxima) {
+                        this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à data atual.");
+                        this.$.btnConfirm.disabled = false;
+                        return;
+                    }
+                    //if (DataFim > DataMaxima) {
+                    //    this.openToastError("A Data Fim Prestação Serviços tem que ser inferior ou igual à data atual.");
+                    //    return;
+                    //}
+                    if (DataInicio > DataFim) {
+                        this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à Data Fim Prestação Serviços.");
+                        this.$.btnConfirm.disabled = false;
+                        return;
+                    }
+
                     if (this._commitmentNo == null)
                         this._commitmentNo = "";
                     if (this._commitmentNo.length > 50) {
                         this.openToastError("O Nº Compromisso não pode ter mais de 50 carateres.");
+                        this.$.btnConfirm.disabled = false;
                     }
                     else {
                         if (this.selectedItems != null && this.selectedItems.length > 0) {
@@ -1335,7 +1393,6 @@
                                 }
                             }
                             if (this._totalToAuthorize == this.roundToTwo(total)) {
-                                this.$.btnConfirm.disabled = true;
                                 this.validationMessages = [];
                                 var validationRequest = {
                                     "projectNo": this._projectno,
@@ -1344,6 +1401,7 @@
                                     "customerRequestNo": this._customerRequestNo,
                                     "customerRequestDate": this._customerRequestDate,
                                     "serviceDate": this.$.dpDataPrestacaoServ.value,
+                                    "serviceDateFim": this.$.dpDataPrestacaoServFim.value,
                                     "authorizationTotalValue": parseFloat(this.$.txtValorAAutorizar.value).toFixed(2),
                                     "projMovements": this.selectedItems,
                                 };
@@ -1552,19 +1610,124 @@
                         var today = yyyy + '-' + mm + '-' + dd; //value="2018-07-31"
 
                         this.$.dpDataPrestacaoServ.value = today;
+                        this.$.dpDataPrestacaoServFim.value = today;
                     }
                     catch (err) { }
                 },
-                serviceDateChanged: function (e) {
-                    var date = e.detail.value;
-                    if (date != "") {
-                        var monthNames = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
-                        this._billingPeriod = monthNames[parseInt(date.split("-")[1]) - 1] + "/" + date.split("-")[0];
-                    }
-                    else {
-                        this._billingPeriod = "";
+                serviceDateInicioChanged: function (e) {
+                    var TextoInicio = this.$.dpDataPrestacaoServ.value;
+                    if (TextoInicio != "") {
+                        var DiaInicioTexto = TextoInicio.substring(8, 10);
+                        var DiaInicio = parseFloat(DiaInicioTexto);
+                        var MesInicioTexto = TextoInicio.substring(5, 7);
+                        var MesInicio = parseFloat(MesInicioTexto);
+                        var AnoInicioTexto = TextoInicio.substring(0, 4);
+                        var AnoInicio = parseFloat(AnoInicioTexto);
+
+                        var DataFim = new Date(AnoInicio, MesInicio, 0);
+                        var UltimoDia = DataFim.getDate()
+
+                        if (DiaInicio == 1) {
+                            this.$.dpDataPrestacaoServFim.value = AnoInicioTexto + "-" + MesInicioTexto + "-" + UltimoDia.toString();
+                        }
+                        else {
+                            this.$.dpDataPrestacaoServFim.value = this.$.dpDataPrestacaoServ.value;
+                        }
                     }
 
+                    this.getBillingPeriod();
+                },
+                serviceDateFimChanged: function (e) {
+                    this.getBillingPeriod();
+                },
+
+                getBillingPeriod: function () {
+                    debugger;
+                    this._billingPeriod = "";
+                    var TextoInicio = this.$.dpDataPrestacaoServ.value;
+                    var TextoFim = this.$.dpDataPrestacaoServFim.value;
+
+                    if (TextoInicio != "" && TextoFim != "") {
+                        var DataInicio = new Date(TextoInicio);
+                        var DataFim = new Date(TextoFim);
+                        var DataMinima = new Date('2016-01-01');
+                        var DataMaxima = new Date();
+
+                        if (DataInicio < DataMinima) {
+                            this.openToastError("A Data Início Prestação Serviços tem que ser superior a 01/01/2016.");
+                            return;
+                        }
+                        if (DataFim < DataMinima) {
+                            this.openToastError("A Data Fim Prestação Serviços tem que ser superior a 01/01/2016.");
+                            return;
+                        }
+                        if (DataInicio > DataMaxima) {
+                            this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à data atual.");
+                            return;
+                        }
+                        //if (DataFim > DataMaxima) {
+                        //    this.openToastError("A Data Fim Prestação Serviços tem que ser inferior ou igual à data atual.");
+                        //    return;
+                        //}
+                        if (DataInicio > DataFim) {
+                            this.openToastError("A Data Início Prestação Serviços tem que ser inferior ou igual à Data Fim Prestação Serviços.");
+                            return;
+                        }
+
+                        var monthNames = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+                        var DiaInicioTexto = TextoInicio.substring(8, 10);
+                        var DiaInicio = parseFloat(DiaInicioTexto);
+                        var MesInicioTexto = TextoInicio.substring(5, 7);
+                        var MesInicio = parseFloat(MesInicioTexto);
+                        var AnoInicioTexto = TextoInicio.substring(0, 4);
+                        var AnoInicio = parseFloat(AnoInicioTexto);
+
+                        var DiaFimTexto = TextoFim.substring(8, 10);
+                        var DiaFim = parseFloat(DiaFimTexto);
+                        var MesFimTexto = TextoFim.substring(5, 7);
+                        var MesFim = parseFloat(MesFimTexto);
+                        var AnoFimTexto = TextoFim.substring(0, 4);
+                        var AnoFim = parseFloat(AnoFimTexto);
+
+                        var DataFim = new Date(AnoFim, MesFim, 0);
+                        var UltimoDia = DataFim.getDate()
+
+                        if (TextoInicio == TextoFim) {
+                            this._billingPeriod = DiaInicioTexto + "/" + MesInicioTexto + "/" + AnoInicioTexto;
+                        }
+                        else {
+                            if (DiaInicio == 1) {
+                                if (DiaFim == UltimoDia && MesInicio == MesFim && AnoInicio == AnoFim) {
+                                    this._billingPeriod = monthNames[MesInicio - 1] + "/" + AnoFimTexto;
+                                }
+                                else {
+                                    if (DiaFim == UltimoDia && MesInicio != MesFim && AnoInicio == AnoFim) {
+                                        this._billingPeriod = monthNames[MesInicio - 1] + " a " + monthNames[MesFim - 1] + "/" + AnoFimTexto;
+                                    }
+                                    else {
+                                        if (DiaFim == UltimoDia && MesInicio != MesFim && AnoInicio != AnoFim) {
+                                            this._billingPeriod = monthNames[MesInicio - 1] + "/" + AnoInicioTexto + " a " + monthNames[MesFim - 1] + "/" + AnoFimTexto;
+                                        }
+                                        else {
+                                            this._billingPeriod = DiaInicioTexto + "/" + MesInicioTexto + "/" + AnoInicioTexto + " a " + DiaFimTexto + "/" + MesFimTexto + "/" + AnoFimTexto;
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                this._billingPeriod = DiaInicioTexto + "/" + MesInicioTexto + "/" + AnoInicioTexto + " a " + DiaFimTexto + "/" + MesFimTexto + "/" + AnoFimTexto;
+                            }
+                        }
+                    }
+
+                    var date = this.$.dpDataPrestacaoServ.value;
+                    //if (date != "") {
+                    //    var monthNames = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+                    //    this._billingPeriod = monthNames[parseInt(date.split("-")[1]) - 1] + "/" + date.split("-")[0];
+                    //}
+                    //else {
+                    //    this._billingPeriod = "";
+                    //}
                     if (date != "" && !this._settedFromProjectOrContract) {
                         this.$.get_commitment_ajax.body = JSON.stringify({ "projectNo": this._projectno, "serviceDeliveryDate": date });
                         this.$.get_commitment_ajax.generateRequest();

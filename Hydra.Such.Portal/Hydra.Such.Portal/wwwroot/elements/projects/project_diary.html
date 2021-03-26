@@ -906,7 +906,7 @@
             <vaadin-grid column-reordering-allowed aria-label="Movimentos de Projeto" class="editDialogGrid" selected-items={{selectedItems}} active-item="{{selectedItem}}" id="projectMovementTable" items="[[resultMovements]]">
                 <vaadin-grid-selection-column auto-select>
                 </vaadin-grid-selection-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="projectNo">Nº Projeto</vaadin-grid-sorter>
@@ -927,25 +927,35 @@
                     </template>
                 </vaadin-grid-column>
 
+                <!--<vaadin-grid-column width="10%" resizable>
+        <template class="header">
+            <vaadin-grid-sorter path="moveType">Tipo Movimento</vaadin-grid-sorter>
+            <vaadin-grid-filter path="moveType" />
+        </template>
+        <template>
+            <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
+                <template>
+                    <paper-icon-item>
+                        <paper-item-body two-line>
+                            <div>[[item.value]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </template>
+            </vaadin-combo-box>
+        </template>
+    </vaadin-grid-column>-->
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
-                        <vaadin-grid-sorter path="moveType">Tipo Movimento</vaadin-grid-sorter>
-                        <vaadin-grid-filter path="moveType" />
+                        <vaadin-grid-sorter path="movementTypeText">Tipo Movimento</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="movementTypeText"></vaadin-grid-filter>
                     </template>
                     <template>
-                        <vaadin-combo-box items="[[response2]]" item-value-path="id" disabled item-label-path="value" value="{{item.movementType}}">
-                            <template>
-                                <paper-icon-item>
-                                    <paper-item-body two-line>
-                                        <div>[[item.value]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </template>
-                        </vaadin-combo-box>
+                        {{item.movementTypeText}}
                     </template>
                 </vaadin-grid-column>
 
-                <vaadin-grid-column width="10%" resizable>
+                <!--<vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="type">Tipo</vaadin-grid-sorter>
                         <vaadin-grid-filter path="type" />
@@ -961,8 +971,18 @@
                             </template>
                         </vaadin-combo-box>
                     </template>
+                </vaadin-grid-column>-->
+
+                <vaadin-grid-column width="10%" resizable>
+                    <template class="header">
+                        <vaadin-grid-sorter path="typeText">Tipo</vaadin-grid-sorter>
+                        <vaadin-grid-filter path="typeText"></vaadin-grid-filter>
+                    </template>
+                    <template>
+                        {{item.typeText}}
+                    </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="code">Código</vaadin-grid-sorter>
@@ -972,7 +992,7 @@
                         {{item.code}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="20%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="description">Descrição</vaadin-grid-sorter>
@@ -982,7 +1002,7 @@
                         {{item.description}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header" width="200px" resizable>
                         <vaadin-grid-sorter path="quantity">Quantidade</vaadin-grid-sorter>
@@ -1004,7 +1024,7 @@
                         {{item.measurementUnitCode}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="locationCode">Cód. Localização</vaadin-grid-sorter>
@@ -1022,7 +1042,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable hidden>
                     <template class="header">
                         <vaadin-grid-sorter path="serviceObject">Objeto Serviço</vaadin-grid-sorter>
@@ -1032,7 +1052,7 @@
                         {{item.serviceObject}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="regionCode">Cód. Região</vaadin-grid-sorter>
@@ -1051,7 +1071,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="functionalAreaCode">Cód Área Funcional</vaadin-grid-sorter>
@@ -1070,7 +1090,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="responsabilityCenterCode">Cód. Centro Responsabilidade</vaadin-grid-sorter>
@@ -1089,7 +1109,7 @@
                         </vaadin-combo-box>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="user">Utilizador</vaadin-grid-sorter>
@@ -1099,7 +1119,7 @@
                         {{item.user}}
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="unitCost">Custo Unitário</vaadin-grid-sorter>
@@ -1111,7 +1131,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="totalCost">Custo Total</vaadin-grid-sorter>
@@ -1123,7 +1143,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="unitPrice">Preço Unitário</vaadin-grid-sorter>
@@ -1135,7 +1155,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="TotalPrice">Preço total</vaadin-grid-sorter>
@@ -1147,7 +1167,7 @@
                         </div>
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" hidden>
                     <template class="header">
                         <vaadin-grid-sorter path="consumptionDate">Data Consumo</vaadin-grid-sorter>
@@ -1157,7 +1177,7 @@
                         [[ _parseDateFormat(item.consumptionDate) ]]
                     </template>
                 </vaadin-grid-column>
-                
+
                 <vaadin-grid-column width="10%" resizable>
                     <template class="header">
                         <vaadin-grid-sorter path="billable">Faturável</vaadin-grid-sorter>

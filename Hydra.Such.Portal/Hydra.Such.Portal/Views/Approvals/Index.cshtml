@@ -139,6 +139,36 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoProjectNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoProjectNo">Req Projeto Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoProjectNo" value="[[filter.requisicaoProjectNo]]" />
+                </template>
+                <template>
+                    {{item.requisicaoProjectNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoClientNo.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoClientNo">Req Cliente Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoClientNo" value="[[filter.requisicaoClientNo]]" />
+                </template>
+                <template>
+                    {{item.requisicaoClientNo}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoClientName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="requisicaoClientName">Req Cliente Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="requisicaoClientName" value="[[filter.requisicaoClientName]]" />
+                </template>
+                <template>
+                    {{item.requisicaoClientName}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="150px" resizable hidden$="{{ _columns.requisicaoAcordosPrecos.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="requisicaoAcordosPrecos">Req Acordos Preços</vaadin-grid-sorter>
@@ -480,6 +510,9 @@
                         "number": { hidden: false, label: "Associado" },
                         "fhDatePartida": { hidden: false, label: "FH Dia da Partida" },
                         "fhDateChegada": { hidden: false, label: "FH Dia da Chegada" },
+                        "requisicaoProjectNo": { hidden: false, label: "Req Projeto Nº" },
+                        "requisicaoClientNo": { hidden: false, label: "Req Cliente Nº" },
+                        "requisicaoClientName": { hidden: false, label: "Req Cliente Nome" },
                         "requisicaoAcordosPrecos": { hidden: false, label: "Req Acordos Preços" },
                         "requisicaoUrgente": { hidden: false, label: "Req Urgente" },
                         "requisicaoOrcamentoEmAnexo": { hidden: false, label: "Req Oçamento Em Anexo" },

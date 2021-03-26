@@ -931,6 +931,7 @@
                 },
 
                 _Insert_MovProducao: function () {
+                    debugger;
                     if (this._permissionsInsert == true) {
                         if (this.$.movProducao_Area.value != null && this.$.movProducao_Area.value != "") {
                             if (this.$.movProducao_Indicador.value != null && this.$.movProducao_Indicador.value) {
@@ -976,6 +977,9 @@
                         this._openToast(this.dataMovProducaoResponse.eMessage);
 
                         this.$.page_PBIGestiControl_Get_MovProducao_ajax.generateRequest();
+
+                        this.$.movProducao_ValorProducao.value = "";
+                        this.$.movProducao_ValorProducaoGrafico.value = "";
                     }
                     else {
                         this._openToastError(this.dataMovProducaoResponse.eMessage);

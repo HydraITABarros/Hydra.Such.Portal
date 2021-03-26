@@ -33,6 +33,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string ProjectDimension { get; set; }
         public string ContractNo { get; set; }
         public string Date { get; set; }
+        public string DateFim { get; set; }
         public string DataPedido { get; set; }
         public int? MovementType { get; set; }
         public int? Type { get; set; }
@@ -90,6 +91,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string Ship_to_Post_Code { get; set; }
         public bool Apagar_Linha { get; set; }
         public bool? FaturaPrecosIvaIncluido { get; set; }
+        public string NoFaturaRelacionada { get; set; }
 
 
         //EXPORTAR PARA EXCEL
@@ -127,6 +129,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
     {
         public string InvoiceToClientNo { get; set; }
         public string Date { get; set; }
+        public string DateFim { get; set; }
         public string DataPedido { get; set; }
         public string CommitmentNumber { get; set; }
         public string ClientRequest { get; set; }
@@ -146,6 +149,7 @@ namespace Hydra.Such.Data.ViewModel.Projects
         public string CreateUser { get; set; }
         //public List<SPInvoiceListViewModel> Items { get; set; }
         public bool? FaturaPrecosIvaIncluido { get; set; }
+        public string NoFaturaRelacionada { get; set; }
 
         public void SetDimensionsFor(AuthorizedProjectViewModel authProj, string projectRegion, NAVClientsViewModel customer)
         {

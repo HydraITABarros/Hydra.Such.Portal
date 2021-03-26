@@ -1422,6 +1422,8 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataHoraModificacao).HasColumnType("datetime");
 
+                entity.Property(e => e.DiasParaEnvioAlertaAudienciaPrevia).HasColumnName("DiasParaEnvioAlertaAudienciaPrevia");
+
                 entity.Property(e => e.Email1Regiao12).HasMaxLength(100);
 
                 entity.Property(e => e.Email1Regiao23).HasMaxLength(100);
@@ -7250,6 +7252,10 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Nº Projeto")
                     .HasMaxLength(20);
 
+                entity.Property(e => e.ClientNo).HasMaxLength(20);
+
+                entity.Property(e => e.ClientName).HasMaxLength(200);
+
                 entity.Property(e => e.NºRequesiçãoReclamada)
                     .HasColumnName("Nº Requesição Reclamada")
                     .HasMaxLength(20);
@@ -8033,6 +8039,8 @@ namespace Hydra.Such.Data.Database
                 entity.Property(e => e.DataPedido).HasColumnType("datetime");
 
                 entity.Property(e => e.DataPrestacaoServico).HasColumnType("datetime");
+
+                entity.Property(e => e.DataPrestacaoServicoFim).HasColumnType("datetime");
 
                 entity.Property(e => e.DataServPrestado)
                     .HasMaxLength(24)
@@ -13039,12 +13047,16 @@ namespace Hydra.Such.Data.Database
 
             modelBuilder.Entity<Ocorrencias>(entity =>
             {
-                entity.HasKey(e => new { e.CodOcorrencia });
+                entity.HasKey(e => new { e.Ind });
 
                 entity.ToTable("Ocorrencias");
 
+                entity.Property(e => e.Ind)
+                    .HasColumnName("Ind");
+
                 entity.Property(e => e.CodOcorrencia)
-                    .HasColumnName("CodOcorrencia");
+                    .HasColumnName("CodOcorrencia")
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.CodEstado)
                     .HasColumnName("CodEstado");
@@ -13101,8 +13113,11 @@ namespace Hydra.Such.Data.Database
                     .HasColumnName("Quantidade")
                     .HasColumnType("decimal(18, 4)");
 
-                entity.Property(e => e.Motivo)
-                    .HasColumnName("Motivo")
+                entity.Property(e => e.CodMotivo)
+                    .HasColumnName("CodMotivo");
+
+                entity.Property(e => e.MotivoDescricao)
+                    .HasColumnName("MotivoDescricao")
                     .HasMaxLength(200);
 
                 entity.Property(e => e.GrauGravidade)
@@ -13114,7 +13129,7 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.MedidaCorretiva)
                     .HasColumnName("MedidaCorretiva")
-                    .HasMaxLength(200);
+                    .HasMaxLength(2000);
 
                 entity.Property(e => e.UtilizadorMedidaCorretiva)
                     .HasColumnName("UtilizadorMedidaCorretiva")
@@ -13122,6 +13137,18 @@ namespace Hydra.Such.Data.Database
 
                 entity.Property(e => e.DataMedidaCorretiva)
                     .HasColumnName("DataMedidaCorretiva")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataEnvioFornecedor)
+                    .HasColumnName("DataEnvioFornecedor")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataReforco)
+                    .HasColumnName("DataReforco")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.DataRespostaFornecedor)
+                    .HasColumnName("DataRespostaFornecedor")
                     .HasColumnType("datetime");
 
                 entity.Property(e => e.UtilizadorCriacao)

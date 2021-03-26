@@ -46,6 +46,37 @@ namespace Hydra.Such.Data.Logic.Contracts
             }
         }
 
+        public static bool DeleteByID(string NoContrato, int GrupoFatura)
+        {
+            try
+            {
+                using (var ctx = new SuchDBContext())
+                {
+                    AutorizarFaturaçãoContratos itemToDelete =  ctx.AutorizarFaturaçãoContratos.Where(p => p.NºContrato == NoContrato && p.GrupoFatura == GrupoFatura).FirstOrDefault();
+
+                    if (itemToDelete != null)
+                    {
+                        List<LinhasFaturaçãoContrato> linesToDelete = ctx.LinhasFaturaçãoContrato.Where(x => x.NºContrato == NoContrato && x.GrupoFatura == GrupoFatura).ToList();
+                        if (linesToDelete != null && linesToDelete.Count > 0)
+                        {
+                            foreach (var line in linesToDelete)
+                            {
+                                ctx.LinhasFaturaçãoContrato.Remove(line);
+                            }
+                        }
+                        ctx.AutorizarFaturaçãoContratos.Remove(itemToDelete);
+
+                        ctx.SaveChanges();
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static bool DeleteAll()
         {
             try

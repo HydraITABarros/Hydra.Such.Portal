@@ -101,6 +101,7 @@ namespace Hydra.Such.Data.NAV
             string Ano = InvoiceBorrowed.Substring(InvoiceBorrowed.IndexOf("/") + 1, 4);
             bool ContratoQuota = false;
             Contratos Contrato = DBContracts.GetByIdLastVersion(LinesList.FirstOrDefault().NºContrato);
+            LinhasFaturaçãoContrato Linha = LinesList.FirstOrDefault();
 
             if (Contrato != null && Contrato.TipoContrato == 3 && Contrato.Tipo == 3) //Contrato Quotas
             {
@@ -108,16 +109,16 @@ namespace Hydra.Such.Data.NAV
 
                 if (Contrato != null && !string.IsNullOrEmpty(Contrato.TextoFatura))
                 {
-                    TextoFatura = Contrato.TextoFatura;
-                    TextoFatura = TextoFatura.Replace("<MES>", Mes);
-                    TextoFatura = TextoFatura.Replace("<ANO>", Ano);
+                    //TextoFatura = Contrato.TextoFatura;
+                    //TextoFatura = TextoFatura.Replace("<MES>", Mes);
+                    //TextoFatura = TextoFatura.Replace("<ANO>", Ano);
+                    TextoFatura = Linha.Descrição;
                 }
             }
 
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                {
-                   
                    Document_No = HeaderNo,
                    Line_No = counter+=10000,
                    Line_NoSpecified = true,
@@ -127,7 +128,8 @@ namespace Hydra.Such.Data.NAV
                    TypeSpecified = true,
                    Type = ConvertToSaleslineType(x.Tipo.Replace(" ", String.Empty)),
                    Description = ContratoQuota == false ? x.Descrição != null && x.Descrição.Length > 50 ? x.Descrição.Substring(0, 50) : !string.IsNullOrEmpty(x.Descrição) ? x.Descrição : "" : !string.IsNullOrEmpty(TextoFatura) ? TextoFatura : "",
-                   Description_2 = ContratoQuota == false ? x.Descricao2 != null && x.Descricao2.Length > 50 ? x.Descricao2.Substring(0, 50) : !string.IsNullOrEmpty(x.Descricao2) ? x.Descricao2 : "" : "",
+                   //Description_2 = ContratoQuota == false ? x.Descricao2 != null && x.Descricao2.Length > 50 ? x.Descricao2.Substring(0, 50) : !string.IsNullOrEmpty(x.Descricao2) ? x.Descricao2 : "" : "",
+                   Description_2 = x.Descricao2 != null && x.Descricao2.Length > 50 ? x.Descricao2.Substring(0, 50) : !string.IsNullOrEmpty(x.Descricao2) ? x.Descricao2 : "",
                    Quantity = x.Quantidade.HasValue ? x.Quantidade.Value : 0,
                    QuantitySpecified = true,
                    Unit_of_Measure = x.CódUnidadeMedida,
@@ -139,6 +141,11 @@ namespace Hydra.Such.Data.NAV
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
                    ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,
+
+                   Data_Inicio_Serv_PrestadoSpecified = true,
+                   Data_Inicio_Serv_Prestado = x.Data_Inicio_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Inicio_Serv_Prestado) : DateTime.MinValue,
+                   Data_Fim_Serv_PrestadoSpecified = true,
+                   Data_Fim_Serv_Prestado = x.Data_Fim_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Fim_Serv_Prestado) : DateTime.MinValue
                }).ToArray();
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);
@@ -167,7 +174,6 @@ namespace Hydra.Such.Data.NAV
             WSCreatePreInvoiceLine.WsPreInvoiceLine[] parsedList = LinesList.Select(
                x => new WSCreatePreInvoiceLine.WsPreInvoiceLine
                {
-
                    Document_No = HeaderNo,
                    Line_No = counter += 10000,
                    Line_NoSpecified = true,
@@ -188,7 +194,12 @@ namespace Hydra.Such.Data.NAV
                    gJobDimension = x.NºContrato,
                    RegionCode20 = x.CódigoRegião,
                    FunctionAreaCode20 = x.CódigoÁreaFuncional,
-                   ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade
+                   ResponsabilityCenterCode20 = x.CódigoCentroResponsabilidade,
+
+                   Data_Inicio_Serv_PrestadoSpecified = true,
+                   Data_Inicio_Serv_Prestado = x.Data_Inicio_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Inicio_Serv_Prestado) : DateTime.MinValue,
+                   Data_Fim_Serv_PrestadoSpecified = true,
+                   Data_Fim_Serv_Prestado = x.Data_Fim_Serv_Prestado.HasValue ? Convert.ToDateTime(x.Data_Fim_Serv_Prestado) : DateTime.MinValue,
                }).ToArray();
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);
@@ -231,12 +242,8 @@ namespace Hydra.Such.Data.NAV
                 line.QuantitySpecified = true;
                 line.Quantity = x.Quantity.HasValue ? x.Quantity.Value : 0;
                 line.TypeSpecified = true;
-
-
                 line.Unit_of_Measure = x.MeasurementUnitCode;
                 //line.Unit_of_Measure_Code = x.MeasurementUnitCode;
-
-
                 line.Location_Code = x.LocationCode;
                 line.Unit_Price = x.UnitPrice.HasValue ? x.UnitPrice.Value : 0;
                 line.Unit_PriceSpecified = true;
@@ -254,7 +261,6 @@ namespace Hydra.Such.Data.NAV
                 line.Cod_Serv_Cliente = x.ServiceClientCode;
                 line.Consumption_Date = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Consumption_DateSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
-
                 line.Grupo_Serviço = !string.IsNullOrEmpty(x.ServiceGroupCode) ? x.ServiceGroupCode : "";
                 line.Service_Group_Description = !string.IsNullOrEmpty(x.ServiceGroupCode) && DBServices.GetById(x.ServiceGroupCode) != null ? DBServices.GetById(x.ServiceGroupCode).Descrição : "";
                 line.Nº_Guia_Externa = x.ExternalGuideNo;
@@ -263,21 +269,24 @@ namespace Hydra.Such.Data.NAV
                 line.FunctionAreaCode20 = x.FunctionalAreaCode;
                 line.ResponsabilityCenterCode20 = x.ResponsabilityCenterCode;
                 line.Des_Serv_Cliente = !string.IsNullOrEmpty(x.ServiceClientCode) ? DBServices.GetById(x.ServiceClientCode) != null ? DBServices.GetById(x.ServiceClientCode).Descrição : "" : "";
-
                 line.Data_Registo_Diario = !string.IsNullOrEmpty(x.ConsumptionDate) ? DateTime.Parse(x.ConsumptionDate) : DateTime.MinValue;
                 line.Data_Registo_DiarioSpecified = !string.IsNullOrEmpty(x.ConsumptionDate);
-
                 if (x.ResourceType.HasValue)
                 {
                     line.Tipo_Recurso = (WSCreatePreInvoiceLine.Tipo_Recurso)x.ResourceType.Value;
                     line.Tipo_RecursoSpecified = true;
                 }
+
+                line.Data_Inicio_Serv_PrestadoSpecified = true;
+                line.Data_Inicio_Serv_Prestado = !string.IsNullOrEmpty(x.Date) ? Convert.ToDateTime(x.Date) : DateTime.MinValue;
+                line.Data_Fim_Serv_PrestadoSpecified = true;
+                line.Data_Fim_Serv_Prestado = !string.IsNullOrEmpty(x.DateFim) ? Convert.ToDateTime(x.DateFim) : DateTime.MinValue;
+
                 parsedList[array] = line;
                 array++;
 
                 //Job_Journal_Line_No_Portal = x.LineNo,
                 //Job_Journal_Line_No_PortalSpecified = true,
-
             };
 
             WSCreatePreInvoiceLine.CreateMultiple NAVCreate = new WSCreatePreInvoiceLine.CreateMultiple(parsedList);

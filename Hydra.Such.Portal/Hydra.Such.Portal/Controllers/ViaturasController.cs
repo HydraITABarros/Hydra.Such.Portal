@@ -289,6 +289,17 @@ namespace Hydra.Such.Portal.Controllers
                 return new FileStreamResult(new FileStream(imgPathDefault, FileMode.Open), "image/jpeg");
         }
 
+        private static string MakeValidFileName(string name)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            name = System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+            name = name.Replace("+", "_");
+
+            return name;
+        }
+
         [Route("Viaturas/UploadImage/{matricula}")]
         public JsonResult UploadImage(string matricula)
         {

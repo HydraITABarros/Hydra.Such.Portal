@@ -378,10 +378,10 @@
                                 <!--Geral-->
                                 <div>
                                     <div class="row break_clear">
-                                        <div class="col-md-3 ">
+                                        <div class="col-md-2 ">
                                             <vaadin-text-field id="requisitionNo" name="requisitionNo" label="Nº Requisição" value="{{Requisition.requisitionNo}}" disabled></vaadin-text-field>
                                         </div>
-                                        <div class="col-md-3" id="divLocalMarketRegions">
+                                        <div class="col-md-2" id="divLocalMarketRegions">
                                             <vaadin-combo-box items="[[CBLocalMarketRegions]]" id="requesitionType" item-value-path="id" item-label-path="value" value="{{Requisition.localMarketRegion}}" label="Região Mercado Local" disabled>
                                                 <template>
                                                     <table width="180px">
@@ -393,10 +393,10 @@
                                                 </template>
                                             </vaadin-combo-box>
                                         </div>
-                                        <div class="col-md-3 " hidden>
+                                        <div class="col-md-2 " hidden>
                                             <vaadin-text-field id="ClaimedRequesitionNo" name="ClaimedRequesitionNo" label="Nº Requisição Reclamada" value="{{Requisition.requestReclaimNo}}" disabled></vaadin-text-field>
                                         </div>
-                                        <div class="col-lg-3">
+                                        <div class="col-lg-2">
                                             <such-selectbox id="CBHeaderProjects" name="CBHeaderProjects" value="{{Requisition.projectNo}}" label="Nº Ordem/Projeto" disabled
                                                             items="[[Projects]]"
                                                             text-path="no"
@@ -405,7 +405,15 @@
                                             </such-selectbox>
                                         </div>
 
-                                        <div class="col-lg-3">
+                                        <div class="col-md-1">
+                                            <vaadin-text-field id="txtClientNo" name="txtClientNo" label="Cliente Nº" value="{{Requisition.clientCode}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <vaadin-text-field id="txtClientName" name="txtClientName" label="Cliente Nome" value="{{Requisition.clientName}}" disabled></vaadin-text-field>
+                                        </div>
+
+                                        <div class="col-lg-2">
                                             <vaadin-combo-box items="[[CBVehicle]]" id="Vehicle" item-value-path="id" item-label-path="id" value="{{Requisition.vehicle}}" label="Viatura" disabled on-value-changed="_GetNoProjetoCabecalho">
                                                 <template>
                                                     <b>[[item.id]]</b>

@@ -3996,6 +3996,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["pedirOrcamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Pedir Orçamento"); Col = Col + 1; }
                 if (dp["attachment"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Anexo(s)"); Col = Col + 1; }
                 if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
+                if (dp["clientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nº"); Col = Col + 1; }
+                if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nome"); Col = Col + 1; }
                 if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
                 if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
@@ -4020,6 +4022,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["pedirOrcamento"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.PedirOrcamento.ToString()); Col = Col + 1; }
                         if (dp["attachment"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.Attachment.ToString()); Col = Col + 1; }
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
+                        if (dp["clientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientCode); Col = Col + 1; }
+                        if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientName); Col = Col + 1; }
                         if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
                         if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
@@ -4083,6 +4087,8 @@ namespace Hydra.Such.Portal.Controllers
                 if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Região Mercado Local"); Col = Col + 1; }
                 if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Data Mercado Local"); Col = Col + 1; }
                 if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Nº Projeto"); Col = Col + 1; }
+                if (dp["clientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nº"); Col = Col + 1; }
+                if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Cliente Nome"); Col = Col + 1; }
                 if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Região"); Col = Col + 1; }
                 if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Área Funcional"); Col = Col + 1; }
                 if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue("Código Centro Responsabilidade"); Col = Col + 1; }
@@ -4122,6 +4128,8 @@ namespace Hydra.Such.Portal.Controllers
                         if (dp["localMarketRegion"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketRegion); Col = Col + 1; }
                         if (dp["localMarketDate"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.LocalMarketDate.ToString()); Col = Col + 1; }
                         if (dp["projectNo"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ProjectNo); Col = Col + 1; }
+                        if (dp["clientCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientCode); Col = Col + 1; }
+                        if (dp["clientName"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.ClientName); Col = Col + 1; }
                         if (dp["regionCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.RegionCode); Col = Col + 1; }
                         if (dp["functionalAreaCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.FunctionalAreaCode); Col = Col + 1; }
                         if (dp["centerResponsibilityCode"]["hidden"].ToString() == "False") { row.CreateCell(Col).SetCellValue(item.CenterResponsibilityCode); Col = Col + 1; }
@@ -4948,6 +4956,17 @@ namespace Hydra.Such.Portal.Controllers
             return new FileStreamResult(new FileStream(sFileName, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
 
+        private static string MakeValidFileName(string name)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            name = System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+            name = name.Replace("+", "_");
+
+            return name;
+        }
+
         [HttpPost]
         [Route("GestaoRequisicoes/FileUpload")]
         [Route("GestaoRequisicoes/FileUpload/{id}")]
@@ -4971,8 +4990,8 @@ namespace Hydra.Such.Portal.Controllers
                             extension.ToLower() == ".png" || extension.ToLower() == ".gif")
                         {
                             string filename = Path.GetFileName(file.FileName);
-                            //full_filename = "Requisicoes/" + id + "_" + filename;
 
+                            filename = MakeValidFileName(filename);
                             full_filename = id + "_" + filename;
                             //var path = Path.Combine(_config.FileUploadFolder, full_filename);
                             var path = "";

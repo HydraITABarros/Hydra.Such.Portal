@@ -115,7 +115,9 @@ namespace Hydra.Such.Data.NAV
                     Ship_to_Post_Code = preInvoiceToCreate.Ship_to_Post_Code,
 
                     Prices_Including_VAT = preInvoiceToCreate.FaturaPrecosIvaIncluido.HasValue ? (bool)preInvoiceToCreate.FaturaPrecosIvaIncluido : false,
-                    Prices_Including_VATSpecified = true
+                    Prices_Including_VATSpecified = true,
+
+                    Related_Invoice = !string.IsNullOrEmpty(preInvoiceToCreate.NoFaturaRelacionada) ? preInvoiceToCreate.NoFaturaRelacionada : ""
                 }
 
             };
@@ -136,6 +138,7 @@ namespace Hydra.Such.Data.NAV
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
             invoiceHeader.Date = billingHeader.Date;
+            invoiceHeader.DateFim = billingHeader.DateFim;
             invoiceHeader.CommitmentNumber = billingHeader.CommitmentNumber;
             invoiceHeader.ClientRequest = billingHeader.ClientRequest;
             invoiceHeader.ClientVATReg = billingHeader.ClientVATReg;
@@ -184,6 +187,7 @@ namespace Hydra.Such.Data.NAV
             SPInvoiceListViewModel invoiceHeader = new SPInvoiceListViewModel();
             invoiceHeader.InvoiceToClientNo = billingHeader.InvoiceToClientNo;
             invoiceHeader.Date = billingHeader.Date;
+            invoiceHeader.DateFim = billingHeader.DateFim;
             invoiceHeader.DataPedido = billingHeader.DataPedido;
             invoiceHeader.CommitmentNumber = billingHeader.CommitmentNumber;
             invoiceHeader.ClientRequest = billingHeader.ClientRequest;
@@ -218,6 +222,7 @@ namespace Hydra.Such.Data.NAV
             //invoiceHeader.Ship_to_Post_Code = Ship.Ship_to_Post_Code;
 
             invoiceHeader.FaturaPrecosIvaIncluido = billingHeader.FaturaPrecosIvaIncluido.HasValue ? (bool)billingHeader.FaturaPrecosIvaIncluido : false;
+            invoiceHeader.NoFaturaRelacionada = !string.IsNullOrEmpty(billingHeader.NoFaturaRelacionada) ? billingHeader.NoFaturaRelacionada : "";
 
             return await CreatePreInvoice(invoiceHeader, WSConfigurations);
 
@@ -307,7 +312,7 @@ namespace Hydra.Such.Data.NAV
                     RegionCode20 = PreInvoiceToCreate.RegionCode20,
 
                     Prices_Including_VAT = PreInvoiceToCreate.PricesIncludingVAT == 1 ? true : false,
-                    Prices_Including_VATSpecified = true
+                    Prices_Including_VATSpecified = true,
                 }
             };
 
@@ -333,8 +338,8 @@ namespace Hydra.Such.Data.NAV
             DateTime now = DateTime.Now;
             string PostingNoSeries = "";
             string Observacoes = "";
-            string Mes = InvoiceBorrowed.Substring(0, InvoiceBorrowed.IndexOf("/"));
-            string Ano = InvoiceBorrowed.Substring(InvoiceBorrowed.IndexOf("/") + 1, 4);
+            //string Mes = InvoiceBorrowed.Substring(0, InvoiceBorrowed.IndexOf("/"));
+            //string Ano = InvoiceBorrowed.Substring(InvoiceBorrowed.IndexOf("/") + 1, 4);
             ConfigUtilizadores CUsers = DBUserConfigurations.GetById(CreateInvoice.UtilizadorCriação);
             Contratos Contrato = DBContracts.GetByIdLastVersion(CreateInvoice.NºContrato);
             WSCreatePreInvoice.Create_Result result = new WSCreatePreInvoice.Create_Result();
@@ -350,8 +355,10 @@ namespace Hydra.Such.Data.NAV
                 if (Contrato != null && !string.IsNullOrEmpty(Contrato.TextoFatura))
                 {
                     Observacoes = Contrato.TextoFatura;
-                    Observacoes = Observacoes.Replace("<MES>", Mes);
-                    Observacoes = Observacoes.Replace("<ANO>", Ano);
+                    //Observacoes = Observacoes.Replace("<MES>", Mes);
+                    //Observacoes = Observacoes.Replace("<ANO>", Ano);
+                    if (Contrato.Tipo == 3)
+                        Observacoes = CreateInvoice.Descrição;
                 }
             }
             else
@@ -376,7 +383,6 @@ namespace Hydra.Such.Data.NAV
                     Posting_Date = CreateInvoice.DataDeRegisto ?? DateTime.Now,
                     Posting_DateSpecified = true,
                     Periodo_de_Fact_Contrato = !string.IsNullOrEmpty(ContractInvoicePeriod) ? ContractInvoicePeriod : "",
-                    Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
                     Responsibility_Center = !string.IsNullOrEmpty(CUsers.CentroDeResponsabilidade) ? CUsers.CentroDeResponsabilidade : "",
 
                     Posting_No_Series = PostingNoSeries,
@@ -404,7 +410,9 @@ namespace Hydra.Such.Data.NAV
                     Ship_to_Code = !string.IsNullOrEmpty(Ship_to_Code) ? Ship_to_Code : "",
 
                     //Contratos Quotas
-                    Payment_Method_Code = MetdoPagamento
+                    Payment_Method_Code = MetdoPagamento,
+
+                    Data_Serv_Prestado = !string.IsNullOrEmpty(InvoiceBorrowed) ? InvoiceBorrowed : "",
                 }
             };
 

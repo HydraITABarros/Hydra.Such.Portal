@@ -101,7 +101,7 @@ FROM Requisição
 	INNER JOIN [Linhas Requisição] ON Requisição.[Nº Requisição] = [Linhas Requisição].[Nº Requisição] AND ([Linhas Requisição].[SemEfeito] IS NULL OR [Linhas Requisição].[SemEfeito] = 0)
 	INNER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Job] AS Proj ON Requisição.[Nº Projeto] COLLATE DATABASE_DEFAULT = Proj.[No_]
 	INNER JOIN [Config. Utilizadores] AS UTIL ON Requisição.[Utilizador Criação] = UTIL.[Id Utilizador]
-	LEFT OUTER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Vendor] AS CLI ON Proj.[Bill-to Customer No_] = CLI.[No_]
+	LEFT OUTER JOIN [SUCH_NAV_PROD].[dbo].[SUCH$Customer] AS CLI ON Proj.[Bill-to Customer No_] = CLI.[No_]
 WHERE (Requisição.[Nº Requisição] = @NoRequisicao)</CommandText>
       <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
     </Query>

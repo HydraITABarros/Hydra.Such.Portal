@@ -16,14 +16,30 @@ namespace Hydra.Such.Data.ViewModel.Encomendas
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime OrderDate { get; set; }
         public string NoConsulta { get; set; }
-
         [JsonConverter(typeof(DateFormatConverter), "dd-MM-yyyy")]
         public DateTime? ExpectedReceiptDate { get; set; }
-
         public string RequisitionNo { get; set; }
         public string RegionId { get; set; }
         public string FunctionalAreaId { get; set; }
         public string RespCenterId { get; set; }
+
+        public string VATRegistrationNo { get; set; }
+        public string LocationCode { get; set; }
+        public string AllocationNo { get; set; }
+        public string CommitmentNo { get; set; }
+        public string BuyFromVendorNo { get; set; }
+        public string VPropNum { get; set; }
+        public string PaymentTermsCode { get; set; }
+        public string PayToAddress { get; set; }
+        public string PayToAddress2 { get; set; }
+        public string PayToPostCode { get; set; }
+        public string PayToCity { get; set; }
+        public string PayToCounty { get; set; }
+        public string PayToCountryRegionCode { get; set; }
+        public string PostingDescription { get; set; }
+        public string ShipToName { get; set; }
+        public string VendorShipmentNo { get; set; }
+
         public bool HasAnAdvance { get; set; }
         public decimal Total { get; set; }
 

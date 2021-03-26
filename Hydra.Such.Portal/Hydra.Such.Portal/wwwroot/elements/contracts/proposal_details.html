@@ -1646,6 +1646,7 @@
                 },
 
                 _statusMenuItemSelected: function (e) {
+                    debugger;
                     var item = e.detail.value;
 
                     if (item == null)
@@ -1676,6 +1677,7 @@
                 },
 
                 _setProposalStatus: function () {
+                    debugger;
                     if (this._newStatus < 1) {
                         this._openToastError("Não é possivel alterar o estado. Atualize a página e tente novemante.");
                         return;

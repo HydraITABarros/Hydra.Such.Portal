@@ -150,6 +150,8 @@ namespace Hydra.Such.Portal.Controllers
                 result.RegionCode = Project.RegionCode != null ? Project.RegionCode : "";
                 result.FunctionalAreaCode = Project.AreaCode != null ? Project.AreaCode : "";
                 result.ResponsabilityCenterCode = Project.CenterResponsibilityCode != null ? Project.CenterResponsibilityCode : "";
+                result.ClientNo = !string.IsNullOrEmpty(Project.CustomerNo) ? Project.CustomerNo : "";
+                result.ClientName = !string.IsNullOrEmpty(Project.CustomerName) ? Project.CustomerName : "";
             }
             else
             {
@@ -1086,6 +1088,8 @@ namespace Hydra.Such.Portal.Controllers
                         PreRequisicaoDB.Área = data.Area;
                         PreRequisicaoDB.TipoRequisição = data.RequesitionType;
                         PreRequisicaoDB.NºProjeto = data.ProjectNo;
+                        PreRequisicaoDB.ClientNo = data.ClientNo;
+                        PreRequisicaoDB.ClientName = data.ClientName;
                         PreRequisicaoDB.CódigoRegião = data.RegionCode;
                         PreRequisicaoDB.CódigoÁreaFuncional = data.FunctionalAreaCode;
                         PreRequisicaoDB.CódigoCentroResponsabilidade = data.ResponsabilityCenterCode;
@@ -2189,6 +2193,8 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.ResponsabilityCenterCode,
                                 Vehicle = data.Vehicle,
                                 ProjectNo = data.ProjectNo,
+                                ClientCode = data.ClientNo,
+                                ClientName = data.ClientName,
                                 ReceivedDate = data.ReceptionDate,
                                 Comments = data.Notes,
                                 NoDocumento = data.NoDocumento,
@@ -2277,6 +2283,8 @@ namespace Hydra.Such.Portal.Controllers
                                 CenterResponsibilityCode = data.ResponsabilityCenterCode,
                                 Vehicle = data.Vehicle,
                                 ProjectNo = data.ProjectNo,
+                                ClientCode = data.ClientNo,
+                                ClientName = data.ClientName,
                                 ReceivedDate = data.ReceptionDate,
                                 Comments = data.Notes,
                                 NoDocumento = data.NoDocumento,
@@ -3395,13 +3403,18 @@ namespace Hydra.Such.Portal.Controllers
                     {
                         if (erro == false)
                         {
-                            AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
-                            AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Código);
+                            NAVProductsViewModel Produto = DBNAV2017Products.GetAllProducts(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Código).FirstOrDefault();
 
-                            if (AllProductsArmazem == null || AllProductsArmazem.Count == 0)
+                            if (Produto != null && Produto.InventoryValueZero == 0)
                             {
-                                erro = true;
-                                codigo = x.Código;
+                                AllProductsArmazem = new List<NAVStockKeepingUnitViewModel>();
+                                AllProductsArmazem = DBNAV2017StockKeepingUnit.GetByProductsNo(_configNAV.NAVDatabaseName, _configNAV.NAVCompanyName, x.Código);
+
+                                if (AllProductsArmazem == null || AllProductsArmazem.Count == 0)
+                                {
+                                    erro = true;
+                                    codigo = x.Código;
+                                }
                             }
                         }
                     });
@@ -3493,6 +3506,17 @@ namespace Hydra.Such.Portal.Controllers
         #endregion
 
         #region Attachments
+        private static string MakeValidFileName(string name)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            name = System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+            name = name.Replace("+", "_");
+
+            return name;
+        }
+
         [HttpPost]
         [Route("PreRequisicoes/FileUpload")]
         [Route("PreRequisicoes/FileUpload/{id}")]
@@ -3516,8 +3540,8 @@ namespace Hydra.Such.Portal.Controllers
                             extension.ToLower() == ".png" || extension.ToLower() == ".gif")
                         {
                             string filename = Path.GetFileName(file.FileName);
-                            //full_filename = "Requisicoes/" + id + "_" + filename;
 
+                            filename = MakeValidFileName(filename);
                             full_filename = id + "_" + filename;
                             var path = Path.Combine(_config.FileUploadFolder + "Requisicoes\\", full_filename);
 

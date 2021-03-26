@@ -664,6 +664,17 @@ namespace Hydra.Such.Portal.Controllers
             return Json(data);
         }
 
+        private static string MakeValidFileName(string name)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            name = System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+            name = name.Replace("+", "_");
+
+            return name;
+        }
+
         [HttpPost]
         [Route("Fornecedores/FileUpload")]
         public JsonResult FileUpload()
@@ -686,8 +697,8 @@ namespace Hydra.Such.Portal.Controllers
                             extension.ToLower() == ".png" || extension.ToLower() == ".gif")
                         {
                             string filename = Path.GetFileName(file.FileName);
-                            //full_filename = "Requisicoes/" + id + "_" + filename;
 
+                            filename = MakeValidFileName(filename);
                             full_filename = "FORNECEDOR_" + User.Identity.Name + "_" + filename;
                             var path = Path.Combine(_generalConfig.FileUploadFolder + "Fornecedores\\tmp\\", full_filename);
 

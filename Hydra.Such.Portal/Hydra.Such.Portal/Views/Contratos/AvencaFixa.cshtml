@@ -590,6 +590,10 @@
                     if (this.invoiceCount == true) {
                         this.$.avencaFixaTable.clearCache();
                         this.openToastSuccess("Faturas contabilizadas com sucesso.");
+
+                        this.selectedItems = [];
+                        this._NotshowColCheckBox = false;
+                        this.$.ajax_getall.generateRequest();
                     }
                     else if (this.invoiceCount.eMessages.length > 0) {
 

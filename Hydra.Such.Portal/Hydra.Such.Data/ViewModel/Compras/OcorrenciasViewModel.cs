@@ -4,7 +4,8 @@ namespace Hydra.Such.Data.ViewModel.Compras
 {
     public class OcorrenciasViewModel : ErrorHandler
     {
-        public int CodOcorrencia { get; set; }
+        public int Ind { get; set; }
+        public string CodOcorrencia { get; set; }
         public int? CodEstado { get; set; }
         public string NomeEstado { get; set; }
         public string CodFornecedor { get; set; }
@@ -21,7 +22,9 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string Descricao { get; set; }
         public string UnidMedida { get; set; }
         public decimal? Quantidade { get; set; }
-        public string Motivo { get; set; }
+        public int? CodMotivo { get; set; }
+        public string CodMotivoTexto { get; set; }
+        public string MotivoDescricao { get; set; }
         public int? GrauGravidade { get; set; }
         public string GrauGravidadeTexto { get; set; }
         public string Observacao { get; set; }
@@ -29,6 +32,12 @@ namespace Hydra.Such.Data.ViewModel.Compras
         public string UtilizadorMedidaCorretiva { get; set; }
         public DateTime? DataMedidaCorretiva { get; set; }
         public string DataMedidaCorretivaTexto { get; set; }
+        public DateTime? DataEnvioFornecedor { get; set; }
+        public string DataEnvioFornecedorTexto { get; set; }
+        public DateTime? DataReforco { get; set; }
+        public string DataReforcoTexto { get; set; }
+        public DateTime? DataRespostaFornecedor { get; set; }
+        public string DataRespostaFornecedorTexto { get; set; }
         public string UtilizadorCriacao { get; set; }
         public DateTime? DataCriacao { get; set; }
         public string DataCriacaoTexto { get; set; }

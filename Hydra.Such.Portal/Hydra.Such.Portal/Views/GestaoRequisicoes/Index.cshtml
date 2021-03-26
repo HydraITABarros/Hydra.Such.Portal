@@ -228,13 +228,13 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.buyCash.hidden }}">
-                <template class="header">
-                    Compra a Dinheiro
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>*@
+            <template class="header">
+                Compra a Dinheiro
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.buyCash}}" disabled></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.alreadyPerformed.hidden }}">
                 <template class="header">
@@ -321,6 +321,26 @@
                 </template>
             </vaadin-grid-column>
 
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.clientCode.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientCode">Cliente Nº</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientCode" value="[[filter.clientCode]]" />
+                </template>
+                <template>
+                    {{item.clientCode}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.clientName.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="clientName">Cliente Nome</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="clientName" value="[[filter.clientName]]" />
+                </template>
+                <template>
+                    {{item.clientName}}
+                </template>
+            </vaadin-grid-column>
+
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.regionCode.hidden }}">
                 <template class="header">
                     <vaadin-grid-sorter path="regionCode">Código Região</vaadin-grid-sorter>
@@ -404,23 +424,23 @@
             </vaadin-grid-column>
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.reclamation.hidden }}">
-                <template class="header">
-                    Reclamação
-                </template>
-                <template>
-                    <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
-                </template>
-            </vaadin-grid-column>*@
+            <template class="header">
+                Reclamação
+            </template>
+            <template>
+                <vaadin-checkbox checked="{{item.reclamation}}" disabled></vaadin-checkbox>
+            </template>
+        </vaadin-grid-column>*@
 
             @*<vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requestReclaimNo.hidden }}">
-                <template class="header">
-                    <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="requestReclaimNo" value="[[filter.requestReclaimNo]]" />
-                </template>
-                <template>
-                    {{item.requestReclaimNo}}
-                </template>
-            </vaadin-grid-column>*@
+            <template class="header">
+                <vaadin-grid-sorter path="requestReclaimNo">Nº Requisição Reclamada</vaadin-grid-sorter>
+                <vaadin-grid-filter path="requestReclaimNo" value="[[filter.requestReclaimNo]]" />
+            </template>
+            <template>
+                {{item.requestReclaimNo}}
+            </template>
+        </vaadin-grid-column>*@
 
             <vaadin-grid-column width="160px" resizable hidden$="{{ _columns.requisitionDate.hidden }}">
                 <template class="header">
@@ -652,6 +672,8 @@
                         "localMarketRegion": { hidden: false, label: "Região Mercado Local" },
                         "localMarketDate": { hidden: false, label: "Data Mercado Local" },
                         "projectNo": { hidden: false, label: "Nº Projeto" },
+                        "clientCode": { hidden: false, label: "Cliente Nº" },
+                        "clientName": { hidden: false, label: "Cliente Nome" },
                         "regionCode": { hidden: false, label: "Código Região" },
                         "functionalAreaCode": { hidden: false, label: "Código Área Funcional" },
                         "centerResponsibilityCode": { hidden: false, label: "Código Centro Responsabilidade" },

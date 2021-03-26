@@ -77,6 +77,70 @@ namespace Hydra.Such.Data.Logic
             }
         }
 
+        public static List<EncomendasViewModel> ListByDimListAndNoFilter_Archive(string NAVDatabaseName, string NAVCompanyName, List<AcessosDimensões> Dimensions, string No_FilterExpression, string from = null, string to = null, string fornecedor = null, string requisitionNo = null)
+        {
+            try
+            {
+                List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+                using (var ctx = new SuchDBContextExtention())
+                {
+
+                    var regions = Dimensions.Where(d => d.Dimensão == (int)Enumerations.Dimensions.Region).Select(s => s.ValorDimensão);
+                    var functionalAreas = Dimensions.Where(d => d.Dimensão == (int)Enumerations.Dimensions.FunctionalArea).Select(s => s.ValorDimensão);
+                    var responsabilityCenters = Dimensions.Where(d => d.Dimensão == (int)Enumerations.Dimensions.ResponsabilityCenter).Select(s => s.ValorDimensão);
+
+                    var parameters = new[]{
+                        new SqlParameter("@DBName", NAVDatabaseName),
+                        new SqlParameter("@CompanyName", NAVCompanyName),
+                        new SqlParameter("@Regions", regions != null && regions.Count() > 0 ? string.Join(',', regions) : null),
+                        new SqlParameter("@FunctionalAreas",functionalAreas != null && functionalAreas.Count() > 0 ?  string.Join(',', functionalAreas): null),
+                        new SqlParameter("@RespCenters", responsabilityCenters != null && responsabilityCenters.Count() > 0 ? '\'' + string.Join("',\'",responsabilityCenters) + '\'': null),
+                        new SqlParameter("@CodFornecedor", fornecedor),
+                        new SqlParameter("@RequisitionNo", requisitionNo),
+                        new SqlParameter("@From", from),
+                        new SqlParameter("@To", to),
+                        new SqlParameter("@No_FilterExpression", No_FilterExpression )
+                    };
+
+                    IEnumerable<dynamic> data = ctx.execStoredProcedure("exec NAV2017EncomendasList_Archive @DBName, @CompanyName, @Regions, @FunctionalAreas, @RespCenters, @CodFornecedor, @RequisitionNo, @From, @To, @No_FilterExpression", parameters);
+
+                    foreach (dynamic temp in data)
+                    {
+                        if (!temp.NoFirstTwoInt.Equals(DBNull.Value) && ((int)temp.NoFirstTwoInt >= 18))
+                        {
+                            DateTime? ExpectedReceiptDate = (DateTime)temp.ExpectedReceiptDate;
+                            var minDate = new DateTime(2008, 1, 1);
+
+                            result.Add(new EncomendasViewModel()
+                            {
+                                No = temp.No.Equals(DBNull.Value) ? "" : (string)temp.No,
+                                PayToVendorNo = temp.PayToVendorNo.Equals(DBNull.Value) ? "" : (string)temp.PayToVendorNo,
+                                PayToName = temp.PayToName.Equals(DBNull.Value) ? "" : (string)temp.PayToName,
+                                YourReference = temp.YourReference.Equals(DBNull.Value) ? "" : (string)temp.YourReference,
+                                OrderDate = (DateTime)temp.OrderDate,
+                                NoConsulta = temp.NConsulta.Equals(DBNull.Value) ? "" : (string)temp.NConsulta,
+                                ExpectedReceiptDate = ExpectedReceiptDate != null && ExpectedReceiptDate > minDate ? ExpectedReceiptDate : null,
+                                RequisitionNo = temp.RequisitionNo.Equals(DBNull.Value) ? "" : (string)temp.RequisitionNo,
+                                RegionId = temp.RegionId.Equals(DBNull.Value) ? "" : (string)temp.RegionId,
+                                FunctionalAreaId = temp.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)temp.FunctionalAreaId,
+                                RespCenterId = temp.RespCenterId.Equals(DBNull.Value) ? "" : (string)temp.RespCenterId,
+                                HasAnAdvance = (bool)temp.HasAnAdvance,
+                                Total = temp.Total.Equals(DBNull.Value) ? 0 : (decimal)temp.Total,
+                                VlrRececionadoComIVA = temp.VlrRececionadoComIVA.Equals(DBNull.Value) ? 0 : (decimal)temp.VlrRececionadoComIVA,
+                                VlrRececionadoSemIVA = temp.VlrRececionadoSemIVA.Equals(DBNull.Value) ? 0 : (decimal)temp.VlrRececionadoSemIVA,
+                            });
+                        }
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public static EncomendasViewModel GetDetailsByNo(string NAVDatabaseName, string NAVCompanyName, string No, string No_FilterExpression)
         {
             try
@@ -106,6 +170,24 @@ namespace Hydra.Such.Data.Logic
                         RegionId = data.RegionId.Equals(DBNull.Value) ? "" : (string)data.RegionId,
                         FunctionalAreaId = data.FunctionalAreaId.Equals(DBNull.Value) ? "" : (string)data.FunctionalAreaId,
                         RespCenterId = data.RespCenterId.Equals(DBNull.Value) ? "" : (string)data.RespCenterId,
+
+                        VATRegistrationNo = data.VATRegistrationNo.Equals(DBNull.Value) ? "" : (string)data.VATRegistrationNo,
+                        LocationCode = data.LocationCode.Equals(DBNull.Value) ? "" : (string)data.LocationCode,
+                        AllocationNo = data.AllocationNo.Equals(DBNull.Value) ? "" : (string)data.AllocationNo,
+                        CommitmentNo = data.CommitmentNo.Equals(DBNull.Value) ? "" : (string)data.CommitmentNo,
+                        BuyFromVendorNo = data.BuyFromVendorNo.Equals(DBNull.Value) ? "" : (string)data.BuyFromVendorNo,
+                        VPropNum = data.VPropNum.Equals(DBNull.Value) ? "" : (string)data.VPropNum,
+                        PaymentTermsCode = data.PaymentTermsCode.Equals(DBNull.Value) ? "" : (string)data.PaymentTermsCode,
+                        PayToAddress = data.PayToAddress.Equals(DBNull.Value) ? "" : (string)data.PayToAddress,
+                        PayToAddress2 = data.PayToAddress2.Equals(DBNull.Value) ? "" : (string)data.PayToAddress2,
+                        PayToPostCode = data.PayToPostCode.Equals(DBNull.Value) ? "" : (string)data.PayToPostCode,
+                        PayToCity = data.PayToCity.Equals(DBNull.Value) ? "" : (string)data.PayToCity,
+                        PayToCounty = data.PayToCounty.Equals(DBNull.Value) ? "" : (string)data.PayToCounty,
+                        PayToCountryRegionCode = data.PayToCountryRegionCode.Equals(DBNull.Value) ? "" : (string)data.PayToCountryRegionCode,
+                        PostingDescription = data.PostingDescription.Equals(DBNull.Value) ? "" : (string)data.PostingDescription,
+                        ShipToName = data.ShipToName.Equals(DBNull.Value) ? "" : (string)data.ShipToName,
+                        VendorShipmentNo = data.VendorShipmentNo.Equals(DBNull.Value) ? "" : (string)data.VendorShipmentNo,
+
                         HasAnAdvance = (bool)data.HasAnAdvance,
                     };
 

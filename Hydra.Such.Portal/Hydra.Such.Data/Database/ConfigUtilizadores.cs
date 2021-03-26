@@ -52,6 +52,7 @@ namespace Hydra.Such.Data.Database
         public bool? CMHistoricoToActivo { get; set; }
         public bool? ArquivarREQPendentes { get; set; }
         public bool? RegistoDataDiarioCafetaria { get; set; }
+        public bool? CriarMedidasCorretivas { get; set; }
 
         #region SGPPF
         public int? TipoUtilizadorFormacao { get; set; }

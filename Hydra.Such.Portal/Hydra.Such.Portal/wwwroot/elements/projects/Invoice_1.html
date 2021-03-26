@@ -453,15 +453,35 @@
                 </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dataPrestacaoServico.hidden }}">
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dataServPrestado.hidden }}">
                 <template class="header">
-                    <vaadin-grid-sorter path="dataPrestacaoServico">Data Serv. Prestado</vaadin-grid-sorter>
+                    <vaadin-grid-sorter path="dataServPrestado">Data de Serviço Prestado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataServPrestado" value="[[filter.dataServPrestado]]" />
+                </template>
+                <template>
+                    {{item.dataServPrestado}}
+                </template>
+            </vaadin-grid-column>
+
+            <!--<vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dataPrestacaoServico.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataPrestacaoServico">Data Início Serv. Prestado</vaadin-grid-sorter>
                     <vaadin-grid-filter path="dataPrestacaoServico" value="[[filter.dataPrestacaoServico]]" />
                 </template>
                 <template>
                     <vaadin-date-picker value="{{item.dataPrestacaoServico}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
                 </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column>-->
+
+            <!--<vaadin-grid-column width="10%" resizable hidden$="{{ _columns.dataPrestacaoServicoFim.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="dataPrestacaoServicoFim">Data Fim Serv. Prestado</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="dataPrestacaoServicoFim" value="[[filter.dataPrestacaoServicoFim]]" />
+                </template>
+                <template>
+                    <vaadin-date-picker value="{{item.dataPrestacaoServicoFim}}" on-blur="_updateLinhasFaturacao" disabled="{{ !isHistoricUpdate }}"></vaadin-date-picker>
+                </template>
+            </vaadin-grid-column>-->
 
             <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.numCompromisso.hidden }}">
                 <template class="header">
@@ -1408,7 +1428,9 @@
                         "codAreaFuncional": { hidden: false, label: "Código Área Funcional" },
                         "codCentroResponsabilidade": { hidden: false, label: "Código Centro Responsabilidade" },
                         "codTermosPagamento": { hidden: false, label: "Termos de Pagamento" },
-                        "dataPrestacaoServico": { hidden: false, label: "Data Serv. Prestado" },
+                        "dataServPrestado": { hidden: false, label: "Data de Serviço Prestado" },
+                        //"dataPrestacaoServico": { hidden: false, label: "Data Início Serv. Prestado" },
+                        //"dataPrestacaoServicoFim": { hidden: false, label: "Data Fim Serv. Prestado" },
                         "numCompromisso": { hidden: false, label: "Núm. Compromisso" },
                         "pedidoCliente": { hidden: false, label: "Pedido Cliente" },
                         "dataPedido": { hidden: false, label: "Data Pedido" },

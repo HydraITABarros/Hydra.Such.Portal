@@ -91,6 +91,7 @@ namespace Hydra.Such.Portal.Controllers
                 int.TryParse(requestParams.GetValue("month")?.ToString(), out month);
                 string fornecedor = (string)requestParams.GetValue("fornecedor");
                 string requisitionNo = (string)requestParams.GetValue("requisitionNo");
+                string historico = !string.IsNullOrEmpty((string)requestParams.GetValue("historico")) ? (string)requestParams.GetValue("historico") : "0";
                 string from = "";
                 string to = "";
                 if (year != 0)
@@ -104,7 +105,12 @@ namespace Hydra.Such.Portal.Controllers
                 {
                     List<PedidosPagamento> AllPedidos = DBPedidoPagamento.GetAllPedidosPagamento();
                     List<AcessosDimensões> userDimensions = DBUserDimensions.GetByUserId(User.Identity.Name);
-                    List<EncomendasViewModel> result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", from, to, fornecedor, requisitionNo);
+                    List<EncomendasViewModel> result = new List<EncomendasViewModel>();
+
+                    if (historico == "0")
+                        result = DBNAV2017Encomendas.ListByDimListAndNoFilter(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", from, to, fornecedor, requisitionNo);
+                    else
+                        result = DBNAV2017Encomendas.ListByDimListAndNoFilter_Archive(_config.NAVDatabaseName, _config.NAVCompanyName, userDimensions, "C%", from, to, fornecedor, requisitionNo);
 
                     foreach (EncomendasViewModel item in result)
                     {

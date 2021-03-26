@@ -598,6 +598,26 @@
                     {{item.user}}
                 </template>
             </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.createUser.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="createUser">Criador</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createUser" />
+                </template>
+                <template>
+                    {{item.createUser}}
+                </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="10%" resizable hidden$="{{ _columns.createDateText.hidden }}">
+                <template class="header">
+                    <vaadin-grid-sorter path="createDateText">Data Criação</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="createDateText" />
+                </template>
+                <template>
+                    {{item.createDateText}}
+                </template>
+            </vaadin-grid-column>
         </vaadin-grid>
 
         <paper-toast id="ToastMessage" duration="4000" horizontalAlign="right" class="toastSuccess">&nbsp;<i class="fa fa-check fa-lg" aria-hidden="true"></i></paper-toast>
@@ -756,6 +776,8 @@
                         "invoiceGroup": { hidden: false, label: "Grupo Fatura" },
                         "taxaIVA": { hidden: false, label: "Taxa IVA" },
                         "user": { hidden: false, label: "Utilizador" },
+                        "createUser": { hidden: false, label: "Criador" },
+                        "createDateText": { hidden: false, label: "Data Criação" },
                     };
 
                     if (localStorage["movimentoslist.ToggleColumn"]) {
